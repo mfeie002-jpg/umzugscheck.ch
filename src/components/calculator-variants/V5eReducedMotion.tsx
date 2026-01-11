@@ -94,27 +94,38 @@ export const V5eReducedMotion: React.FC = () => {
             Bitte wählen Sie eine der folgenden Optionen:
           </p>
 
-          {/* Simple, clear options without animations */}
-          <div className="space-y-3">
-            <SimpleOption
-              label="Privatumzug"
-              description="Für Wohnungen und Häuser"
-              selected={selected === 'privat'}
-              onClick={() => setSelected('privat')}
-            />
-            <SimpleOption
-              label="Firmenumzug"
-              description="Für Büros und Geschäfte"
-              selected={selected === 'firma'}
-              onClick={() => setSelected('firma')}
-            />
-            <SimpleOption
-              label="Seniorenumzug"
-              description="Mit besonderer Betreuung und Unterstützung"
-              selected={selected === 'senior'}
-              onClick={() => setSelected('senior')}
-            />
-          </div>
+          {/* Step-specific content */}
+          {currentStep === 1 && (
+            <div className="space-y-3">
+              <SimpleOption label="Privatumzug" description="Für Wohnungen und Häuser" selected={selected === 'privat'} onClick={() => setSelected('privat')} />
+              <SimpleOption label="Firmenumzug" description="Für Büros und Geschäfte" selected={selected === 'firma'} onClick={() => setSelected('firma')} />
+              <SimpleOption label="Seniorenumzug" description="Mit besonderer Betreuung" selected={selected === 'senior'} onClick={() => setSelected('senior')} />
+            </div>
+          )}
+
+          {currentStep === 2 && (
+            <div className="space-y-3">
+              <SimpleOption label="Lokal (gleiche Stadt)" description="Umzug innerhalb des Ortes" selected={selected === 'lokal'} onClick={() => setSelected('lokal')} />
+              <SimpleOption label="Regional (< 50km)" description="Umzug in die Nähe" selected={selected === 'regional'} onClick={() => setSelected('regional')} />
+              <SimpleOption label="National (> 50km)" description="Schweizweiter Umzug" selected={selected === 'national'} onClick={() => setSelected('national')} />
+            </div>
+          )}
+
+          {currentStep === 3 && (
+            <div className="space-y-3">
+              <SimpleOption label="Standard-Service" description="Transport und Be-/Entladen" selected={selected === 'standard'} onClick={() => setSelected('standard')} />
+              <SimpleOption label="Komfort-Service" description="Inkl. Ein- und Auspacken" selected={selected === 'komfort'} onClick={() => setSelected('komfort')} />
+              <SimpleOption label="Premium-Service" description="Rundum-Sorglos-Paket" selected={selected === 'premium'} onClick={() => setSelected('premium')} />
+            </div>
+          )}
+
+          {currentStep === 4 && (
+            <div className="space-y-3">
+              <SimpleOption label="Per E-Mail" description="max@example.ch" selected={selected === 'email'} onClick={() => setSelected('email')} />
+              <SimpleOption label="Per Telefon" description="079 123 45 67" selected={selected === 'phone'} onClick={() => setSelected('phone')} />
+              <SimpleOption label="Beides" description="E-Mail und Telefon" selected={selected === 'both'} onClick={() => setSelected('both')} />
+            </div>
+          )}
 
           {/* Clear, simple navigation */}
           <div className="mt-8 pt-6 border-t border-border">

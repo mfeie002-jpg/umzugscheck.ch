@@ -45,10 +45,17 @@ const QUESTIONS = [
 ];
 
 export const V3eFullscreen: React.FC = () => {
-  // Note: V3e uses 0-based index for questions, so uc_step=1 maps to index 0
+  // Use useInitialStep to start at the correct step from uc_step URL param
   const initialStep = useInitialStep(1);
+  // V3e uses 0-based index for questions, so uc_step=1 maps to index 0
   const [currentQuestion, setCurrentQuestion] = useState(Math.max(0, initialStep - 1));
-  const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [answers, setAnswers] = useState<Record<number, string>>(() => {
+    // Pre-fill for capture mode
+    if (initialStep > 1) {
+      return { 1: 'privat', 2: '3-4', 3: 'regional' };
+    }
+    return {};
+  });
   const question = QUESTIONS[currentQuestion];
   const progress = ((currentQuestion + 1) / QUESTIONS.length) * 100;
 

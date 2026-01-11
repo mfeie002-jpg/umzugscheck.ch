@@ -16,6 +16,7 @@
 import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { 
   Trophy, 
   Star, 
@@ -207,25 +208,86 @@ export const V4dGamified: React.FC = () => {
               <h1 className="text-xl font-bold">{currentStepData?.label}</h1>
             </div>
 
-            <h2 className="text-lg font-semibold mb-4 text-foreground">
-              Welche Art von Umzug planen Sie?
-            </h2>
+            {/* Step 1: Move Type Selection */}
+            {currentStep === 1 && (
+              <>
+                <h2 className="text-lg font-semibold mb-4 text-foreground">
+                  Welche Art von Umzug planen Sie?
+                </h2>
+                <div className="space-y-3 mb-6" role="radiogroup" aria-label="Umzugsart wählen">
+                  {MOVE_TYPES.map((type) => (
+                    <GameOption
+                      key={type.id}
+                      id={type.id}
+                      label={type.label}
+                      description={type.description}
+                      points={type.points}
+                      badge={type.badge}
+                      selected={selectedType === type.id}
+                      onSelect={() => setSelectedType(type.id)}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
 
-            {/* Options with proper touch targets and visual feedback */}
-            <div className="space-y-3 mb-6" role="radiogroup" aria-label="Umzugsart wählen">
-              {MOVE_TYPES.map((type) => (
-                <GameOption
-                  key={type.id}
-                  id={type.id}
-                  label={type.label}
-                  description={type.description}
-                  points={type.points}
-                  badge={type.badge}
-                  selected={selectedType === type.id}
-                  onSelect={() => setSelectedType(type.id)}
-                />
-              ))}
-            </div>
+            {/* Step 2: Details */}
+            {currentStep === 2 && (
+              <>
+                <h2 className="text-lg font-semibold mb-4 text-foreground">
+                  Wohin zügeln Sie?
+                </h2>
+                <div className="space-y-4 mb-6">
+                  <div className="p-4 rounded-xl border-2 border-primary bg-primary/5">
+                    <span className="text-sm text-muted-foreground">Von</span>
+                    <p className="font-medium">8048 Zürich</p>
+                  </div>
+                  <div className="p-4 rounded-xl border-2 border-primary bg-primary/5">
+                    <span className="text-sm text-muted-foreground">Nach</span>
+                    <p className="font-medium">3011 Bern</p>
+                  </div>
+                  <div className="p-4 rounded-xl border-2 border-muted">
+                    <span className="text-sm text-muted-foreground">Wohnungsgrösse</span>
+                    <p className="font-medium">3-3.5 Zimmer</p>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* Step 3: Contact */}
+            {currentStep === 3 && (
+              <>
+                <h2 className="text-lg font-semibold mb-4 text-foreground">
+                  Ihre Kontaktdaten
+                </h2>
+                <div className="space-y-4 mb-6">
+                  <div className="p-4 rounded-xl border-2 border-muted">
+                    <span className="text-sm text-muted-foreground">Name</span>
+                    <p className="font-medium">Max Muster</p>
+                  </div>
+                  <div className="p-4 rounded-xl border-2 border-muted">
+                    <span className="text-sm text-muted-foreground">E-Mail</span>
+                    <p className="font-medium">max@example.ch</p>
+                  </div>
+                  <div className="p-4 rounded-xl border-2 border-muted">
+                    <span className="text-sm text-muted-foreground">Telefon</span>
+                    <p className="font-medium">079 123 45 67</p>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* Step 4: Success */}
+            {currentStep === 4 && (
+              <div className="text-center py-8">
+                <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Trophy className="h-10 w-10 text-white" />
+                </div>
+                <h2 className="text-2xl font-bold mb-2">Champion-Status erreicht! 🎉</h2>
+                <p className="text-muted-foreground mb-4">Sie erhalten in Kürze Ihre Offerten</p>
+                <Badge className="bg-amber-500 text-white">10% Rabatt freigeschaltet</Badge>
+              </div>
+            )}
           </Card>
 
           {/* Achievement hint */}
