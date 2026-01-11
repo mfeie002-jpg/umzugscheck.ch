@@ -74,6 +74,31 @@ export function BulkScreenshotCapture() {
 
       if (analysisError) throw analysisError;
 
+      // Get step counts from flow_versions (authoritative source)
+      const { data: versionData } = await supabase
+        .from('flow_versions')
+        .select('flow_id, step_configs');
+
+      // Build step count map from flow_versions
+      const flowStepCounts = new Map<string, number>();
+      for (const v of versionData || []) {
+        const stepConfigs = v.step_configs as any[] | null;
+        const stepCount = Array.isArray(stepConfigs) && stepConfigs.length > 0 ? stepConfigs.length : 0;
+        // Keep the highest step count for each flow_id (some flows have multiple versions)
+        const existing = flowStepCounts.get(v.flow_id) || 0;
+        if (stepCount > existing) {
+          flowStepCounts.set(v.flow_id, stepCount);
+        }
+        // Also map normalized ID
+        const normalized = v.flow_id.startsWith('umzugsofferten-') 
+          ? v.flow_id.replace('umzugsofferten-', '') 
+          : v.flow_id;
+        const existingNorm = flowStepCounts.get(normalized) || 0;
+        if (stepCount > existingNorm) {
+          flowStepCounts.set(normalized, stepCount);
+        }
+      }
+
       // Get existing screenshots from flow_step_metrics
       const { data: metricsData } = await supabase
         .from('flow_step_metrics')
@@ -90,10 +115,23 @@ export function BulkScreenshotCapture() {
         }
       }
 
+      // Get step count for a flow - try normalized and prefixed variants
+      const getStepCount = (flowId: string): number => {
+        const normalized = flowId.startsWith('umzugsofferten-') 
+          ? flowId.replace('umzugsofferten-', '') 
+          : flowId;
+        const prefixed = `umzugsofferten-${normalized}`;
+        
+        return flowStepCounts.get(flowId) || 
+               flowStepCounts.get(normalized) || 
+               flowStepCounts.get(prefixed) || 
+               6; // fallback to 6 steps
+      };
+
       const flowConfigs: FlowConfig[] = Array.from(uniqueFlowMap.values()).map(f => ({
         flowId: f.flow_id,
         flowName: f.flow_name || f.flow_id,
-        stepCount: 6,
+        stepCount: getStepCount(f.flow_id),
         flowPath: getFlowPath(f.flow_id),
         hasScreenshots: flowsWithScreenshots.has(f.flow_id)
       }));
