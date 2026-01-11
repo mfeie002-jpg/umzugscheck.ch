@@ -8,6 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { SITE_CONFIG } from "@/data/constants";
+import { Link } from "react-router-dom";
 import {
   Camera,
   CheckCircle2,
@@ -19,7 +20,8 @@ import {
   Monitor,
   Smartphone,
   AlertTriangle,
-  Clock
+  Clock,
+  ExternalLink
 } from "lucide-react";
 import { captureScreenshot } from "@/lib/screenshot-service";
 
@@ -28,6 +30,7 @@ interface FlowConfig {
   flowName: string;
   stepCount: number;
   flowPath: string;
+  hasScreenshots: boolean;
 }
 
 interface CaptureStatus {
@@ -45,6 +48,10 @@ const getFlowPath = (flowId: string): string => {
   if (flowId === 'umzugsofferten-v1' || flowId === 'v1') return '/umzugsofferten';
   if (flowId.startsWith('v') && flowId.length <= 4) {
     // Short codes like v3a, v9a
+    return `/umzugsofferten?v=${flowId}`;
+  }
+  // ChatGPT flows
+  if (flowId.startsWith('chatgpt-flow-')) {
     return `/umzugsofferten?v=${flowId}`;
   }
   // Standard patterns like umzugsofferten-v3
@@ -70,7 +77,7 @@ export function BulkScreenshotCapture() {
   const abortControllerRef = useRef<AbortController | null>(null);
   const pauseRef = useRef(false);
 
-  // Load flows from database
+  // Load flows from database - combining flow_versions AND flow_analysis_runs
   useEffect(() => {
     loadFlows();
   }, []);
@@ -78,27 +85,47 @@ export function BulkScreenshotCapture() {
   const loadFlows = async () => {
     setIsLoading(true);
     try {
-      const { data, error } = await supabase
-        .from('flow_versions')
-        .select('flow_id, version_name, step_configs')
-        .eq('is_active', true)
-        .order('flow_id');
+      // Get all unique flows from flow_analysis_runs (has 74 unique flows)
+      const { data: analysisFlows, error: analysisError } = await supabase
+        .from('flow_analysis_runs')
+        .select('flow_id, flow_name')
+        .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (analysisError) throw analysisError;
 
-      const flowConfigs: FlowConfig[] = (data || []).map(f => {
-        const stepConfigs = f.step_configs as any[] || [];
-        return {
-          flowId: f.flow_id,
-          flowName: f.version_name || f.flow_id,
-          stepCount: stepConfigs.length || 6,
-          flowPath: getFlowPath(f.flow_id)
-        };
+      // Get existing screenshots from flow_step_metrics
+      const { data: metricsData } = await supabase
+        .from('flow_step_metrics')
+        .select('flow_id')
+        .or('mobile_screenshot_url.not.is.null,desktop_screenshot_url.not.is.null');
+
+      const flowsWithScreenshots = new Set((metricsData || []).map(m => m.flow_id));
+
+      // Deduplicate by flow_id, keeping the first (most recent) entry
+      const uniqueFlowMap = new Map<string, { flow_id: string; flow_name: string }>();
+      for (const f of analysisFlows || []) {
+        if (!uniqueFlowMap.has(f.flow_id)) {
+          uniqueFlowMap.set(f.flow_id, f);
+        }
+      }
+
+      const flowConfigs: FlowConfig[] = Array.from(uniqueFlowMap.values()).map(f => ({
+        flowId: f.flow_id,
+        flowName: f.flow_name || f.flow_id,
+        stepCount: 6, // Default step count
+        flowPath: getFlowPath(f.flow_id),
+        hasScreenshots: flowsWithScreenshots.has(f.flow_id)
+      }));
+
+      // Sort: flows without screenshots first
+      flowConfigs.sort((a, b) => {
+        if (a.hasScreenshots === b.hasScreenshots) return a.flowId.localeCompare(b.flowId);
+        return a.hasScreenshots ? 1 : -1;
       });
 
       setFlows(flowConfigs);
-      // Select all by default
-      setSelectedFlows(new Set(flowConfigs.map(f => f.flowId)));
+      // Select all flows without screenshots by default
+      setSelectedFlows(new Set(flowConfigs.filter(f => !f.hasScreenshots).map(f => f.flowId)));
     } catch (error) {
       console.error('Failed to load flows:', error);
       toast.error('Flows konnten nicht geladen werden');
@@ -392,20 +419,59 @@ export function BulkScreenshotCapture() {
     );
   }
 
+  const flowsWithoutScreenshots = flows.filter(f => !f.hasScreenshots).length;
+  const flowsWithScreenshots = flows.filter(f => f.hasScreenshots).length;
+
   return (
     <div className="space-y-6">
-      {/* Configuration */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+      {/* Header with Link to Flow Review */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-semibold flex items-center gap-2">
             <Camera className="h-5 w-5" />
             Bulk Screenshot Capture
-          </CardTitle>
-          <CardDescription>
-            Erfasse alle Flow-Screenshots auf einmal. Die Screenshots werden automatisch in der Datenbank gespeichert.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            {flows.length} Flows gefunden • {flowsWithoutScreenshots} ohne Screenshots
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" asChild>
+            <Link to="/flow-review">
+              <ExternalLink className="h-4 w-4 mr-2" />
+              Flow Review
+            </Link>
+          </Button>
+          <Button variant="outline" size="sm" onClick={loadFlows}>
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Aktualisieren
+          </Button>
+        </div>
+      </div>
+
+      {/* Status Summary */}
+      {flowsWithoutScreenshots > 0 && (
+        <div className="p-3 bg-orange-500/10 border border-orange-500/30 rounded-lg flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="h-5 w-5 text-orange-500" />
+            <span className="text-sm font-medium text-orange-600">
+              {flowsWithoutScreenshots} Flows ohne Screenshots
+            </span>
+          </div>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="border-orange-500/50 text-orange-600 hover:bg-orange-500/10"
+            onClick={() => setSelectedFlows(new Set(flows.filter(f => !f.hasScreenshots).map(f => f.flowId)))}
+          >
+            Nur diese auswählen
+          </Button>
+        </div>
+      )}
+
+      {/* Configuration */}
+      <Card>
+        <CardContent className="pt-6 space-y-4">
           {/* Device Selection */}
           <div className="flex items-center gap-6">
             <label className="flex items-center gap-2 cursor-pointer">
@@ -433,13 +499,10 @@ export function BulkScreenshotCapture() {
               <div className="flex gap-2">
                 <Button variant="outline" size="sm" onClick={selectAll}>Alle</Button>
                 <Button variant="outline" size="sm" onClick={selectNone}>Keine</Button>
-                <Button variant="outline" size="sm" onClick={loadFlows}>
-                  <RefreshCw className="h-4 w-4" />
-                </Button>
               </div>
             </div>
             
-            <ScrollArea className="h-48 border rounded-lg p-3">
+            <ScrollArea className="h-64 border rounded-lg p-3">
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                 {flows.map(flow => (
                   <label 
@@ -447,7 +510,9 @@ export function BulkScreenshotCapture() {
                     className={`flex items-center gap-2 p-2 rounded cursor-pointer transition-colors ${
                       selectedFlows.has(flow.flowId) 
                         ? 'bg-primary/10 border border-primary/30' 
-                        : 'bg-muted/50 hover:bg-muted'
+                        : flow.hasScreenshots 
+                          ? 'bg-green-500/5 hover:bg-green-500/10' 
+                          : 'bg-muted/50 hover:bg-muted'
                     }`}
                   >
                     <Checkbox 
@@ -456,7 +521,12 @@ export function BulkScreenshotCapture() {
                     />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium truncate">{flow.flowName}</p>
-                      <p className="text-xs text-muted-foreground">{flow.stepCount} Steps</p>
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <span>{flow.stepCount} Steps</span>
+                        {flow.hasScreenshots && (
+                          <CheckCircle2 className="h-3 w-3 text-green-500 ml-1" />
+                        )}
+                      </div>
                     </div>
                   </label>
                 ))}
