@@ -587,9 +587,10 @@ export const SUB_VARIANT_CONFIGS: Record<string, FlowConfig> = {
     description: 'V5c: Archetype 2026 - Invisible Interface Design',
     parentFlow: 'umzugsofferten-v5',
     steps: [
-      { step: 1, name: 'Focus Mode', description: 'Keyboard-first Navigation' },
-      { step: 2, name: 'Details', description: 'Tab-navigierbare Felder' },
-      { step: 3, name: 'Kontakt', description: 'Kontaktdaten + Absenden' },
+      { step: 1, name: 'Route', description: 'Von-Nach Adressen + Lift/Stockwerk' },
+      { step: 2, name: 'Volumen', description: 'Zimmer + Video-Scan Option' },
+      { step: 3, name: 'Offerten', description: 'Firmenauswahl mit Preisen' },
+      { step: 4, name: 'Kontakt', description: 'Kontaktdaten + Absenden' },
     ],
   },
   'v5d': {
