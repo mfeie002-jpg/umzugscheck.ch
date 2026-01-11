@@ -889,35 +889,69 @@ const ExportDownload = () => {
             </div>
           </div>
 
-          {/* Missing Screenshots Alert */}
+          {/* PROMINENT Auto-Capture Button - Always visible when screenshots are missing */}
           {flowsWithoutScreenshots.length > 0 && (
-            <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3">
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <AlertTriangle className="h-4 w-4 text-amber-600" />
-                  <span className="text-sm font-medium text-amber-800 dark:text-amber-200">
-                    {flowsWithoutScreenshots.length} Flows ohne Screenshots
-                  </span>
+            <div className="space-y-3">
+              {/* Big prominent button */}
+              <Button 
+                onClick={captureMissingScreenshots}
+                disabled={isCapturing || isAutoRefreshing}
+                className="w-full h-14 text-lg bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-lg"
+                size="lg"
+              >
+                {isCapturing ? (
+                  <>
+                    <Loader2 className="h-6 w-6 mr-3 animate-spin" />
+                    Erfasse Screenshots... {captureProgress.current}/{captureProgress.total}
+                  </>
+                ) : isAutoRefreshing ? (
+                  <>
+                    <RefreshCw className="h-6 w-6 mr-3 animate-spin" />
+                    Warte auf Screenshots... (Auto-Refresh)
+                  </>
+                ) : (
+                  <>
+                    <Camera className="h-6 w-6 mr-3" />
+                    🚀 Auto-Capture starten ({flowsWithoutScreenshots.length} fehlende Flows)
+                  </>
+                )}
+              </Button>
+              
+              {/* Info box */}
+              <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3">
+                <div className="flex items-start gap-3">
+                  <AlertTriangle className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
+                  <div className="space-y-1">
+                    <span className="text-sm font-medium text-amber-800 dark:text-amber-200 block">
+                      {flowsWithoutScreenshots.length} Flows ohne Screenshots
+                    </span>
+                    <p className="text-xs text-amber-700/80 dark:text-amber-300/80">
+                      Klicke auf "Auto-Capture" um automatisch alle fehlenden Screenshots zu erfassen.
+                      Die Screenshots werden im Hintergrund erstellt und nach Fertigstellung hier angezeigt.
+                    </p>
+                    {flowsWithoutScreenshots.length <= 5 && (
+                      <div className="flex flex-wrap gap-1 mt-1.5">
+                        {flowsWithoutScreenshots.map(f => (
+                          <Badge key={f.id} variant="outline" className="text-xs bg-white/50">
+                            {f.name}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={captureMissingScreenshots}
-                  disabled={isCapturing}
-                  className="h-7 text-xs border-amber-300 hover:bg-amber-100"
-                >
-                  {isCapturing ? (
-                    <>
-                      <Loader2 className="h-3 w-3 mr-1 animate-spin" />
-                      {captureProgress.current}/{captureProgress.total}
-                    </>
-                  ) : (
-                    <>
-                      <Zap className="h-3 w-3 mr-1" />
-                      Auto-Capture
-                    </>
-                  )}
-                </Button>
+              </div>
+            </div>
+          )}
+          
+          {/* All screenshots complete - success state */}
+          {flowsWithoutScreenshots.length === 0 && filteredScreenshots.length > 0 && (
+            <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg p-3">
+              <div className="flex items-center gap-2 text-green-700 dark:text-green-300">
+                <CheckCircle2 className="h-5 w-5" />
+                <span className="text-sm font-medium">
+                  Alle {uniqueFlowCount} Flows haben Screenshots - bereit zum Download!
+                </span>
               </div>
             </div>
           )}
