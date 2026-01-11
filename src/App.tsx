@@ -297,6 +297,7 @@ const VariantTestHub = lazy(() => import("./pages/admin/VariantTestHub"));
 const FlowCommandCenter = lazy(() => import("./pages/admin/FlowCommandCenter"));
 const AnalysisFramework = lazy(() => import("./pages/admin/AnalysisFramework"));
 const FlowFeedbackVariants = lazy(() => import("./pages/admin/FlowFeedbackVariants"));
+const AllFlowsScreenshotReview = lazy(() => import("./pages/admin/AllFlowsScreenshotReview"));
 
 // ChatGPT Flow pages
 const ChatGPTFlow1 = lazy(() => import("./pages/ChatGPTFlow1"));
@@ -413,6 +414,8 @@ const AdminRoutes = () => (
       <Route path="/admin/code-export" element={<CodeExport />} />
       <Route path="/admin/tools" element={<AdminTools />} />
       <Route path="/admin/screenshots" element={<AdminScreenshots />} />
+      <Route path="/admin/screenshot-review" element={<AllFlowsScreenshotReview />} />
+      <Route path="/all-flows-review" element={<AllFlowsScreenshotReview />} />
       <Route path="/admin/ai-export" element={<AdminAIExport />} />
       <Route path="/admin/listings" element={<AdminListings />} />
       <Route path="/admin/chatgpt" element={<ChatGPTOverview />} />
