@@ -698,6 +698,20 @@ const ScreenshotsPanel: React.FC<{
     message: string;
   } | null>(null);
 
+  // Safe capture handler that shows error if flowId missing
+  const handleCaptureClick = () => {
+    if (!flowId) {
+      toast.error('Kein Flow ausgewählt. Bitte wähle einen Flow aus.');
+      return;
+    }
+    if (!onCaptureScreenshots) {
+      toast.error('Capture-Funktion nicht verfügbar.');
+      return;
+    }
+    toast.info(`🚀 Starte Screenshot-Erfassung für ${flowId}...`);
+    onCaptureScreenshots();
+  };
+
   useEffect(() => {
     if (flowId) {
       fetchStepMetrics();
@@ -848,8 +862,8 @@ const ScreenshotsPanel: React.FC<{
           <Button
             variant="outline"
             size="sm"
-            onClick={onCaptureScreenshots}
-            disabled={isCapturing}
+            onClick={handleCaptureClick}
+            disabled={isCapturing || !flowId}
           >
             {isCapturing ? (
               <>
@@ -896,7 +910,7 @@ const ScreenshotsPanel: React.FC<{
             <p className="text-sm text-muted-foreground mt-1 mb-4">
               Starte eine Analyse um Screenshots zu erfassen.
             </p>
-            <Button onClick={onCaptureScreenshots} disabled={isCapturing}>
+            <Button onClick={handleCaptureClick} disabled={isCapturing || !flowId}>
               {isCapturing ? (
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
               ) : (
