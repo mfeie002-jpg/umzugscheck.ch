@@ -172,7 +172,7 @@ export default function FlowFamilyLanding() {
   
   // View mode state: global + per-flow overrides
   const [globalViewMode, setGlobalViewMode] = useState<'mobile' | 'desktop'>('desktop');
-  const [displayMode, setDisplayMode] = useState<'screenshots' | 'live'>('screenshots');
+  const [displayMode, setDisplayMode] = useState<'live' | 'screenshots'>('live');
   const [flowViewModes, setFlowViewModes] = useState<Record<string, 'mobile' | 'desktop'>>({});
   
   const getFlowViewMode = (flowId: string) => flowViewModes[flowId] ?? globalViewMode;
@@ -392,14 +392,12 @@ export default function FlowFamilyLanding() {
               </div>
             </div>
             
-            {/* Global View Mode Toggle (only for screenshots) */}
-            {displayMode === 'screenshots' && (
-              <GlobalViewModeToggle
-                value={globalViewMode}
-                onChange={handleGlobalViewModeChange}
-                flowCount={variants.length}
-              />
-            )}
+            {/* Global View Mode Toggle (for all modes) */}
+            <GlobalViewModeToggle
+              value={globalViewMode}
+              onChange={handleGlobalViewModeChange}
+              flowCount={variants.length}
+            />
           </div>
         </div>
       </div>
@@ -444,31 +442,27 @@ export default function FlowFamilyLanding() {
                     </div>
                     
                     <div className="flex items-center gap-2">
-                      {/* Per-Flow View Mode Toggle (only for screenshots) */}
-                      {displayMode === 'screenshots' && (
-                        <ViewModeToggle
-                          value={getFlowViewMode(variant.id)}
-                          onChange={(mode) => setFlowViewMode(variant.id, mode)}
-                        />
-                      )}
+                      {/* Per-Flow View Mode Toggle (for both modes) */}
+                      <ViewModeToggle
+                        value={getFlowViewMode(variant.id)}
+                        onChange={(mode) => setFlowViewMode(variant.id, mode)}
+                      />
                       
-                      {/* Fullscreen Button (only for live) */}
-                      {displayMode === 'live' && (
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => openFullscreen(variant.id)}
-                          className="gap-2"
-                        >
-                          <Maximize2 className="h-4 w-4" />
-                          Vollbild
-                        </Button>
-                      )}
+                      {/* Fullscreen Button */}
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => openFullscreen(variant.id)}
+                        className="gap-2"
+                      >
+                        <Maximize2 className="h-4 w-4" />
+                        Vollbild
+                      </Button>
                     </div>
                   </div>
                 </div>
                 
-                {/* Flow Content - Screenshots or Live */}
+                {/* Flow Content - Screenshots or Live with viewport simulation */}
                 <div className="w-full">
                   {displayMode === 'screenshots' ? (
                     <div className="container mx-auto px-4">
@@ -478,26 +472,54 @@ export default function FlowFamilyLanding() {
                       />
                     </div>
                   ) : (
-                    <Suspense fallback={
-                      <div className="container mx-auto px-4">
-                        <div className="h-[600px] rounded-2xl bg-muted/30 animate-pulse flex items-center justify-center">
-                          <p className="text-muted-foreground">Flow wird geladen...</p>
-                        </div>
-                      </div>
-                    }>
-                      {FlowComponent ? (
-                        <FlowComponent />
-                      ) : (
-                        <div className="container mx-auto px-4">
-                          <div className="h-[400px] rounded-2xl border-2 border-dashed border-muted-foreground/30 flex items-center justify-center">
-                            <div className="text-center">
-                              <p className="text-muted-foreground mb-2">Flow-Komponente nicht gefunden</p>
-                              <Badge variant="outline">{variant.id}</Badge>
-                            </div>
+                    <div className="container mx-auto px-4">
+                      {/* Viewport Simulator Container */}
+                      <div className={`
+                        mx-auto transition-all duration-300 ease-in-out
+                        ${getFlowViewMode(variant.id) === 'mobile' 
+                          ? 'max-w-[390px] border rounded-[40px] shadow-2xl bg-background overflow-hidden p-2' 
+                          : 'max-w-full'
+                        }
+                      `}>
+                        {/* Mobile Frame Notch */}
+                        {getFlowViewMode(variant.id) === 'mobile' && (
+                          <div className="flex justify-center mb-2">
+                            <div className="w-32 h-6 bg-black rounded-b-xl" />
                           </div>
+                        )}
+                        
+                        <div className={`
+                          ${getFlowViewMode(variant.id) === 'mobile' 
+                            ? 'rounded-[32px] overflow-hidden border' 
+                            : ''
+                          }
+                        `}>
+                          <Suspense fallback={
+                            <div className="h-[600px] rounded-2xl bg-muted/30 animate-pulse flex items-center justify-center">
+                              <p className="text-muted-foreground">Flow wird geladen...</p>
+                            </div>
+                          }>
+                            {FlowComponent ? (
+                              <FlowComponent />
+                            ) : (
+                              <div className="h-[400px] rounded-2xl border-2 border-dashed border-muted-foreground/30 flex items-center justify-center">
+                                <div className="text-center">
+                                  <p className="text-muted-foreground mb-2">Flow-Komponente nicht gefunden</p>
+                                  <Badge variant="outline">{variant.id}</Badge>
+                                </div>
+                              </div>
+                            )}
+                          </Suspense>
                         </div>
-                      )}
-                    </Suspense>
+                        
+                        {/* Mobile Frame Home Indicator */}
+                        {getFlowViewMode(variant.id) === 'mobile' && (
+                          <div className="flex justify-center mt-2">
+                            <div className="w-32 h-1 bg-muted-foreground/50 rounded-full" />
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   )}
                 </div>
                 
