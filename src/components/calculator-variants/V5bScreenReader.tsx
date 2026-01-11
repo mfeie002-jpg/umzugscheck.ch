@@ -24,7 +24,46 @@ export const V5bScreenReader: React.FC = () => {
   const liveRegionRef = useRef<HTMLDivElement>(null);
   const mainRef = useRef<HTMLElement>(null);
   const progress = (currentStep / STEPS.length) * 100;
-
+  
+  // Step-specific content data
+  const getStepContent = () => {
+    switch (currentStep) {
+      case 1:
+        return {
+          options: [
+            { id: 'privat', label: 'Privatumzug', description: 'Für Wohnungen und Häuser' },
+            { id: 'firma', label: 'Firmenumzug', description: 'Für Büros und Geschäfte' },
+            { id: 'senior', label: 'Seniorenumzug', description: 'Mit besonderer Betreuung' },
+          ]
+        };
+      case 2:
+        return {
+          options: [
+            { id: 'studio', label: 'Studio / 1 Zimmer', description: 'Kleine Wohnung' },
+            { id: '2-3', label: '2-3 Zimmer', description: 'Mittlere Wohnung' },
+            { id: '4+', label: '4+ Zimmer', description: 'Grosse Wohnung' },
+          ]
+        };
+      case 3:
+        return {
+          options: [
+            { id: 'lokal', label: 'Lokaler Umzug', description: 'Innerhalb der Stadt' },
+            { id: 'regional', label: 'Regionaler Umzug', description: 'Bis 50km Entfernung' },
+            { id: 'national', label: 'Nationaler Umzug', description: 'Schweizweit' },
+          ]
+        };
+      case 4:
+        return {
+          options: [
+            { id: 'standard', label: 'Standard-Service', description: 'Transport und Laden' },
+            { id: 'comfort', label: 'Komfort-Service', description: 'Inkl. Ein-/Auspacken' },
+            { id: 'premium', label: 'Premium-Service', description: 'Rundum-Sorglos' },
+          ]
+        };
+      default:
+        return { options: [] };
+    }
+  };
   // Announce step changes
   const announce = (message: string) => {
     if (liveRegionRef.current) {
@@ -153,27 +192,16 @@ export const V5bScreenReader: React.FC = () => {
           <fieldset aria-describedby="step-description">
             <legend className="sr-only">Wählen Sie eine Option</legend>
             <div className="space-y-3" role="radiogroup">
-              <ScreenReaderOption
-                id="privat"
-                label="Privatumzug"
-                description="Für Wohnungen und Häuser"
-                selected={selected === 'privat'}
-                onSelect={() => handleSelect('privat', 'Privatumzug')}
-              />
-              <ScreenReaderOption
-                id="firma"
-                label="Firmenumzug"
-                description="Für Büros und Geschäfte"
-                selected={selected === 'firma'}
-                onSelect={() => handleSelect('firma', 'Firmenumzug')}
-              />
-              <ScreenReaderOption
-                id="senior"
-                label="Seniorenumzug"
-                description="Mit besonderer Betreuung"
-                selected={selected === 'senior'}
-                onSelect={() => handleSelect('senior', 'Seniorenumzug')}
-              />
+              {getStepContent().options.map((option) => (
+                <ScreenReaderOption
+                  key={option.id}
+                  id={option.id}
+                  label={option.label}
+                  description={option.description}
+                  selected={selected === option.id}
+                  onSelect={() => handleSelect(option.id, option.label)}
+                />
+              ))}
             </div>
           </fieldset>
 

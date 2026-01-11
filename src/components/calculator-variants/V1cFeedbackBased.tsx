@@ -216,19 +216,22 @@ function ProgressHeader({ step, total, steps }: { step: number; total: number; s
           {steps.map((s, idx) => (
             <div key={s.id} className={`flex items-center ${idx < steps.length - 1 ? 'flex-1' : ''}`}>
               <div className={`flex flex-col items-center ${idx < step ? 'text-primary' : idx === step - 1 ? 'text-primary' : 'text-muted-foreground'}`}>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium mb-1 
-                  ${idx < step ? 'bg-primary text-primary-foreground' : idx === step - 1 ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
+                <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-sm font-medium mb-1 transition-all
+                  ${idx < step ? 'bg-primary text-primary-foreground' : idx === step - 1 ? 'bg-primary text-primary-foreground ring-2 ring-primary/30 scale-110' : 'bg-muted'}`}>
                   {idx < step - 1 ? <CheckCircle2 className="h-4 w-4" /> : s.id}
                 </div>
-                <span className="text-xs hidden sm:block">{s.shortTitle}</span>
+                <span className={`text-xs hidden sm:block ${idx === step - 1 ? 'font-semibold' : ''}`}>{s.shortTitle}</span>
               </div>
               {idx < steps.length - 1 && (
-                <div className={`flex-1 h-0.5 mx-2 ${idx < step - 1 ? 'bg-primary' : 'bg-muted'}`} />
+                <div className={`flex-1 h-0.5 mx-2 transition-colors ${idx < step - 1 ? 'bg-primary' : 'bg-muted'}`} />
               )}
             </div>
           ))}
         </div>
         <Progress value={pct} className="h-1.5" />
+        <p className="text-xs text-center text-muted-foreground mt-2">
+          Schritt {step} von {total} — {steps[step - 1]?.title}
+        </p>
       </div>
     </div>
   );
@@ -269,12 +272,12 @@ function StickyFooterCTA({
   onBack?: () => void;
 }) {
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-30 bg-background/95 backdrop-blur border-t">
+    <div className="fixed bottom-0 left-0 right-0 z-30 bg-background/95 backdrop-blur border-t pb-[max(1rem,env(safe-area-inset-bottom))]">
       <div className="max-w-2xl mx-auto p-4">
         {hint && <p className="text-center text-xs text-muted-foreground mb-2">{hint}</p>}
         <div className="flex gap-3">
           {showBack && onBack && (
-            <Button variant="outline" onClick={onBack} className="h-12 px-4">
+            <Button variant="outline" onClick={onBack} className="h-14 px-4 min-h-[44px] min-w-[44px]">
               <ArrowLeft className="h-4 w-4 mr-1" />
               Zurück
             </Button>
@@ -282,7 +285,7 @@ function StickyFooterCTA({
           <Button
             onClick={onPrimary}
             disabled={disabled}
-            className="flex-1 h-12 text-base font-semibold"
+            className="flex-1 h-14 text-base font-semibold min-h-[44px]"
           >
             {primaryLabel}
             {!disabled && <ArrowRight className="h-4 w-4 ml-2" />}

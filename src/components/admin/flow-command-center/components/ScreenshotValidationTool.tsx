@@ -71,27 +71,51 @@ export function ScreenshotValidationTool({ flowIds, showAllFlowsOption = true }:
   };
 
   const validateScreenshots = async (all: boolean = validateAll) => {
+    console.log('[ValidateScreenshots] Starting validation, all:', all, 'flowIds:', flowIds);
+    
     setIsValidating(true);
     setProgress(0);
     setProgressMessage("Lade Flows...");
     setResults([]);
 
     try {
-      // Get all active flows
-      const { data: flows } = await supabase
+      // Get all active flows from flow_versions
+      const { data: flows, error: flowsError } = await supabase
         .from('flow_versions')
         .select('flow_id, version_name, step_configs')
         .eq('is_active', true)
         .order('flow_id');
+
+      if (flowsError) {
+        console.error('[ValidateScreenshots] Error fetching flows:', flowsError);
+        toast.error("Fehler beim Laden der Flows");
+        return;
+      }
 
       if (!flows || flows.length === 0) {
         toast.error("Keine aktiven Flows gefunden");
         return;
       }
 
-      const flowsToValidate = (!all && flowIds && flowIds.length > 0)
-        ? flows.filter(f => flowIds.includes(f.flow_id))
-        : flows;
+      console.log('[ValidateScreenshots] Found flows:', flows.length, 'Filtering:', !all, flowIds);
+      
+      // Filter flows based on validation mode
+      let flowsToValidate = flows;
+      if (!all && flowIds && flowIds.length > 0) {
+        // Match by flow_id or version_name containing any of the flowIds
+        flowsToValidate = flows.filter(f => 
+          flowIds.some(id => 
+            f.flow_id.toLowerCase().includes(id.toLowerCase()) ||
+            (f.version_name && f.version_name.toLowerCase().includes(id.toLowerCase()))
+          )
+        );
+        console.log('[ValidateScreenshots] Filtered to flows:', flowsToValidate.map(f => f.flow_id));
+      }
+      
+      if (flowsToValidate.length === 0) {
+        toast.warning("Keine passenden Flows gefunden für die Validierung");
+        return;
+      }
 
       const validationResults: FlowValidationResult[] = [];
 

@@ -19,6 +19,55 @@ export const V5dLargeText: React.FC = () => {
   const [fontSize, setFontSize] = useState(1.25); // 1.25rem = 20px base
   const progress = (currentStep / STEPS.length) * 100;
 
+  // Step-specific content
+  const getStepContent = () => {
+    switch (currentStep) {
+      case 1:
+        return {
+          title: 'Welchen Umzug planen Sie?',
+          subtitle: 'Wählen Sie eine Option aus',
+          options: [
+            { id: 'privat', label: 'Privatumzug', description: 'Wohnung oder Haus' },
+            { id: 'firma', label: 'Firmenumzug', description: 'Büro oder Geschäft' },
+            { id: 'senior', label: 'Seniorenumzug', description: 'Mit besonderer Betreuung' },
+          ]
+        };
+      case 2:
+        return {
+          title: 'Wohin zügeln Sie?',
+          subtitle: 'Start- und Zieladresse',
+          options: [
+            { id: 'lokal', label: 'Lokaler Umzug', description: 'Innerhalb der Stadt' },
+            { id: 'regional', label: 'Regionaler Umzug', description: 'Bis 50km' },
+            { id: 'national', label: 'Nationaler Umzug', description: 'Schweizweit' },
+          ]
+        };
+      case 3:
+        return {
+          title: 'Was soll transportiert werden?',
+          subtitle: 'Wohnungsgrösse angeben',
+          options: [
+            { id: 'studio', label: 'Studio', description: '1 Zimmer' },
+            { id: 'mittel', label: 'Mittlere Wohnung', description: '2-3 Zimmer' },
+            { id: 'gross', label: 'Grosse Wohnung', description: '4+ Zimmer' },
+          ]
+        };
+      case 4:
+        return {
+          title: 'Ihre Kontaktdaten',
+          subtitle: 'Wohin sollen die Offerten?',
+          options: [
+            { id: 'email', label: 'Per E-Mail', description: 'max@example.ch' },
+            { id: 'phone', label: 'Per Telefon', description: '079 123 45 67' },
+            { id: 'both', label: 'Beides', description: 'E-Mail und Telefon' },
+          ]
+        };
+      default:
+        return { title: '', subtitle: '', options: [] };
+    }
+  };
+
+  const stepContent = getStepContent();
   return (
     <div 
       className="min-h-screen bg-background"
@@ -84,31 +133,22 @@ export const V5dLargeText: React.FC = () => {
       <main className="p-6">
         <Card className="p-8">
           <h1 className="text-3xl font-bold mb-3">
-            Welchen Umzug planen Sie?
+            {stepContent.title}
           </h1>
           <p className="text-xl text-muted-foreground mb-8">
-            Wählen Sie eine Option aus
+            {stepContent.subtitle}
           </p>
 
           <div className="space-y-4">
-            <LargeOption
-              label="Privatumzug"
-              description="Wohnung oder Haus"
-              selected={selected === 'privat'}
-              onClick={() => setSelected('privat')}
-            />
-            <LargeOption
-              label="Firmenumzug"
-              description="Büro oder Geschäft"
-              selected={selected === 'firma'}
-              onClick={() => setSelected('firma')}
-            />
-            <LargeOption
-              label="Seniorenumzug"
-              description="Mit besonderer Betreuung"
-              selected={selected === 'senior'}
-              onClick={() => setSelected('senior')}
-            />
+            {stepContent.options.map((option) => (
+              <LargeOption
+                key={option.id}
+                label={option.label}
+                description={option.description}
+                selected={selected === option.id}
+                onClick={() => setSelected(option.id)}
+              />
+            ))}
           </div>
 
           <div className="mt-10 flex flex-col sm:flex-row gap-4">
