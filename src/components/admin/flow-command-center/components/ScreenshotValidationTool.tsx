@@ -157,29 +157,22 @@ export function ScreenshotValidationTool({ flowIds, showAllFlowsOption = true }:
         // Get expected steps from FLOW_CONFIGS (source of truth) instead of DB
         const expectedSteps = getExpectedStepsFromConfig(flow.flow_id);
 
-        // Get only completed runs
-        const { data: completedRuns } = await supabase
-          .from('flow_analysis_runs')
-          .select('id')
-          .eq('flow_id', flow.flow_id)
-          .eq('status', 'completed')
-          .order('created_at', { ascending: false })
-          .limit(1);
-
-        const latestRunId = completedRuns?.[0]?.id;
-
-        // Get screenshots from latest completed run
-        let query = supabase
+        // Get screenshots (ignore run_id) and always pick the latest per step
+        // Reason: bulk screenshot jobs write screenshots without a run_id, so filtering by latest run would hide valid screenshots.
+        const { data: screenshotsRaw } = await supabase
           .from('flow_step_metrics')
           .select('step_number, desktop_screenshot_url, mobile_screenshot_url, created_at')
           .eq('flow_id', flow.flow_id)
-          .order('step_number', { ascending: true });
+          .order('created_at', { ascending: false })
+          .limit(500);
 
-        if (latestRunId) {
-          query = query.eq('run_id', latestRunId);
-        }
+        // Keep only the newest entry per step
+        const latestByStep = new Map<number, (typeof screenshotsRaw)[number]>();
+        (screenshotsRaw || []).forEach((row) => {
+          if (!latestByStep.has(row.step_number)) latestByStep.set(row.step_number, row);
+        });
 
-        const { data: screenshots } = await query;
+        const screenshots = Array.from(latestByStep.values());
 
         const issues: string[] = [];
         const missingSteps: number[] = [];
@@ -188,11 +181,9 @@ export function ScreenshotValidationTool({ flowIds, showAllFlowsOption = true }:
         const duplicateScreenshots: { type: 'desktop' | 'mobile'; steps: number[] }[] = [];
 
         // Check for missing steps
-        const foundSteps = new Set(screenshots?.map(s => s.step_number) || []);
+        const foundSteps = new Set(screenshots.map(s => s.step_number));
         for (let step = 1; step <= expectedSteps; step++) {
-          if (!foundSteps.has(step)) {
-            missingSteps.push(step);
-          }
+          if (!foundSteps.has(step)) missingSteps.push(step);
         }
 
         if (missingSteps.length > 0) {
@@ -261,7 +252,7 @@ export function ScreenshotValidationTool({ flowIds, showAllFlowsOption = true }:
         }
 
         // Validate screenshot URLs are accessible (sample check)
-        if (screenshots && screenshots.length > 0) {
+        if (screenshots.length > 0) {
           const sampleUrl = screenshots[0].desktop_screenshot_url;
           if (sampleUrl) {
             try {
@@ -271,7 +262,7 @@ export function ScreenshotValidationTool({ flowIds, showAllFlowsOption = true }:
                 errorScreenshots.push(sampleUrl);
               }
             } catch {
-              // Network error - skip for now
+              // Network error - skip
             }
           }
         }

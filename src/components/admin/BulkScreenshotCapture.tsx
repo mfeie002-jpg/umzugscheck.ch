@@ -74,7 +74,7 @@ const FLOW_CONFIGS: Record<string, { name: string; steps: number; baseUrl: strin
   'v5': { name: 'V5 Marketplace (Baseline)', steps: 4, baseUrl: '/umzugsofferten-v5' },
   'v5a': { name: 'V5a High Contrast', steps: 4, baseUrl: '/umzugsofferten-v5a' },
   'v5b': { name: 'V5b Screen Reader', steps: 3, baseUrl: '/umzugsofferten-v5b' },
-  'v5c': { name: 'V5c Keyboard Nav', steps: 3, baseUrl: '/umzugsofferten-v5c' },
+  'v5c': { name: 'V5c Keyboard Nav', steps: 4, baseUrl: '/umzugsofferten-v5c' },
   'v5d': { name: 'V5d ChatGPT Feedback', steps: 5, baseUrl: '/umzugsofferten-v5d' },
   'v5e': { name: 'V5e Reduced Motion', steps: 3, baseUrl: '/umzugsofferten-v5e' },
   'v5f': { name: 'V5f Marketplace Feedback', steps: 3, baseUrl: '/umzugsofferten-v5f' },
