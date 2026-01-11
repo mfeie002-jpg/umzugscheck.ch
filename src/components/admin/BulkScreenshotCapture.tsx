@@ -32,14 +32,130 @@ interface FlowConfig {
   hasScreenshots: boolean;
 }
 
+// Complete flow registry - matches edge function FLOW_CONFIGS (80+ flows)
+const FLOW_CONFIGS: Record<string, { name: string; steps: number; baseUrl: string }> = {
+  // === V1 - Control Flow (8 variants) ===
+  'v1': { name: 'V1 Control (Baseline)', steps: 2, baseUrl: '/umzugsofferten-v1' },
+  'v1a': { name: 'V1a Control (Feedback)', steps: 2, baseUrl: '/umzugsofferten-v1a' },
+  'v1b': { name: 'V1b ChatGPT Agent', steps: 4, baseUrl: '/umzugsofferten-v1b' },
+  'v1c': { name: 'V1c Archetyp Strategic', steps: 4, baseUrl: '/umzugsofferten-v1c' },
+  'v1d': { name: 'V1d Optimized Funnel', steps: 4, baseUrl: '/umzugsofferten-v1d' },
+  'v1e': { name: 'V1e Trust Enhanced', steps: 4, baseUrl: '/umzugsofferten-v1e' },
+  'v1f': { name: 'V1f Sticky CTA + Trust ⭐', steps: 2, baseUrl: '/umzugsofferten-v1f' },
+  'v1g': { name: 'V1g Input UX + Validation', steps: 2, baseUrl: '/umzugsofferten-v1g' },
+  
+  // === V2 - Premium Full-Journey (7 variants) ===
+  'v2': { name: 'V2 Premium (Baseline)', steps: 4, baseUrl: '/umzugsofferten-v2' },
+  'v2a': { name: 'V2a Progress Enhanced', steps: 4, baseUrl: '/umzugsofferten-v2a' },
+  'v2b': { name: 'V2b Simplified Labels', steps: 6, baseUrl: '/umzugsofferten-v2b' },
+  'v2c': { name: 'V2c Archetyp Calculator', steps: 6, baseUrl: '/umzugsofferten-v2c' },
+  'v2d': { name: 'V2d Speed Optimized', steps: 6, baseUrl: '/umzugsofferten-v2d' },
+  'v2e': { name: 'V2e Chat Funnel', steps: 6, baseUrl: '/umzugsofferten-v2e' },
+  'v2f': { name: 'V2f Premium Upsell ⭐', steps: 3, baseUrl: '/umzugsofferten-v2f' },
+  
+  // === V3 - God Mode Mobile-First (6 variants) ===
+  'v3': { name: 'V3 God Mode (Baseline)', steps: 4, baseUrl: '/umzugsofferten-v3' },
+  'v3a': { name: 'V3a Mobile First', steps: 4, baseUrl: '/umzugsofferten-v3a' },
+  'v3b': { name: 'V3b Swipe Navigation', steps: 4, baseUrl: '/umzugsofferten-v3b' },
+  'v3c': { name: 'V3c Bottom Sheet', steps: 4, baseUrl: '/umzugsofferten-v3c' },
+  'v3d': { name: 'V3d Thumb Zone', steps: 3, baseUrl: '/umzugsofferten-v3d' },
+  'v3e': { name: 'V3e Fullscreen', steps: 3, baseUrl: '/umzugsofferten-v3e' },
+  
+  // === V4 - Video-First Conversion (7 variants) ===
+  'v4': { name: 'V4 Video-First (Baseline)', steps: 4, baseUrl: '/umzugsofferten-v4' },
+  'v4a': { name: 'V4a Urgency Based', steps: 4, baseUrl: '/umzugsofferten-v4a' },
+  'v4b': { name: 'V4b Social Proof', steps: 3, baseUrl: '/umzugsofferten-v4b' },
+  'v4c': { name: 'V4c Value First ⭐', steps: 3, baseUrl: '/umzugsofferten-v4c' },
+  'v4d': { name: 'V4d Gamified', steps: 4, baseUrl: '/umzugsofferten-v4d' },
+  'v4e': { name: 'V4e Minimal Friction', steps: 2, baseUrl: '/umzugsofferten-v4e' },
+  'v4f': { name: 'V4f Video-First Feedback', steps: 3, baseUrl: '/umzugsofferten-v4f' },
+  
+  // === V5 - Marketplace Accessibility (7 variants) ===
+  'v5': { name: 'V5 Marketplace (Baseline)', steps: 4, baseUrl: '/umzugsofferten-v5' },
+  'v5a': { name: 'V5a High Contrast', steps: 4, baseUrl: '/umzugsofferten-v5a' },
+  'v5b': { name: 'V5b Screen Reader', steps: 3, baseUrl: '/umzugsofferten-v5b' },
+  'v5c': { name: 'V5c Keyboard Nav', steps: 3, baseUrl: '/umzugsofferten-v5c' },
+  'v5d': { name: 'V5d ChatGPT Feedback', steps: 5, baseUrl: '/umzugsofferten-v5d' },
+  'v5e': { name: 'V5e Reduced Motion', steps: 3, baseUrl: '/umzugsofferten-v5e' },
+  'v5f': { name: 'V5f Marketplace Feedback', steps: 3, baseUrl: '/umzugsofferten-v5f' },
+  
+  // === V6 - Ultimate 6-Tier (7 variants) ===
+  'v6': { name: 'V6 Ultimate (Baseline)', steps: 6, baseUrl: '/umzugsofferten-v6' },
+  'v6a': { name: 'V6a Package Choice ⭐', steps: 3, baseUrl: '/umzugsofferten-v6a' },
+  'v6b': { name: 'V6b ChatGPT Feedback', steps: 5, baseUrl: '/umzugsofferten-v6b' },
+  'v6c': { name: 'V6c Gemini God Mode', steps: 6, baseUrl: '/umzugsofferten-v6c' },
+  'v6d': { name: 'V6d Deep Research', steps: 5, baseUrl: '/umzugsofferten-v6d' },
+  'v6e': { name: 'V6e Thinking Mode', steps: 5, baseUrl: '/umzugsofferten-v6e' },
+  'v6f': { name: 'V6f Ultimate (Best of All)', steps: 5, baseUrl: '/umzugsofferten-v6f' },
+  
+  // === V7 - SwissMove 90s (2 variants) ===
+  'v7': { name: 'V7 SwissMove (Baseline)', steps: 3, baseUrl: '/umzugsofferten-v7' },
+  'v7a': { name: 'V7a SwissMove Feedback', steps: 3, baseUrl: '/umzugsofferten-v7a' },
+  
+  // === V8 - Decision-Free (2 variants) ===
+  'v8': { name: 'V8 Decision-Free (Baseline)', steps: 2, baseUrl: '/umzugsofferten-v8' },
+  'v8a': { name: 'V8a Decision-Free ⭐', steps: 2, baseUrl: '/umzugsofferten-v8a' },
+  
+  // === V9 - Zero Friction Extended (5 variants) ===
+  'v9': { name: 'V9 Zero Friction (Baseline)', steps: 6, baseUrl: '/umzugsofferten-v9' },
+  'v9a': { name: 'V9a Gemini Archetyp', steps: 6, baseUrl: '/umzugsofferten-v9a' },
+  'v9b': { name: 'V9b Gemini Agent', steps: 5, baseUrl: '/umzugsofferten-v9b' },
+  'v9c': { name: 'V9c Zero Friction Optimized', steps: 5, baseUrl: '/umzugsofferten-v9c' },
+  'v9d': { name: 'V9d Gemini Extended', steps: 6, baseUrl: '/umzugsofferten-v9d' },
+  
+  // === V10 - Golden Flow ===
+  'v10': { name: 'V10 Golden Flow', steps: 4, baseUrl: '/umzugsofferten-v10' },
+  
+  // === Multi Variants ===
+  'multi-a': { name: 'Multi.A ChatGPT Pro ⭐', steps: 3, baseUrl: '/umzugsofferten-multi-a' },
+  
+  // === Ultimate Variants ===
+  'ultimate-best36': { name: 'Ultimate Best36 ⭐⭐', steps: 5, baseUrl: '/umzugsofferten-ultimate-best36' },
+  'ultimate-v7': { name: 'Ultimate V7 (95/100) ⭐', steps: 5, baseUrl: '/umzugsofferten-ultimate-v7' },
+  'ultimate-all': { name: 'Ultimate All', steps: 5, baseUrl: '/umzugsofferten-ultimate-all' },
+  'ultimate-v1': { name: 'Ultimate V1', steps: 5, baseUrl: '/umzugsofferten-ultimate-v1' },
+  'ultimate-v2': { name: 'Ultimate V2', steps: 5, baseUrl: '/umzugsofferten-ultimate-v2' },
+  'ultimate-v5': { name: 'Ultimate V5', steps: 5, baseUrl: '/umzugsofferten-ultimate-v5' },
+  'ultimate-ch': { name: 'Ultimate Swiss CH ⭐', steps: 5, baseUrl: '/umzugsofferten-ultimate-ch' },
+  'v2-archetyp': { name: 'V2 Archetyp ⭐', steps: 6, baseUrl: '/umzugsofferten-v2-archetyp' },
+  'vultimate': { name: 'Ultimate Flow (All) ⭐', steps: 6, baseUrl: '/umzugsofferten?v=vultimate' },
+  'vultimate-v1': { name: 'Ultimate Flow V1 - Swiss Archetype Edition ⭐', steps: 6, baseUrl: '/umzugsofferten?v=vultimate-v1' },
+  'vultimate-v2': { name: 'Ultimate Flow V2 ⭐', steps: 6, baseUrl: '/umzugsofferten?v=vultimate-v2' },
+  
+  // === ChatGPT Optimized Flows ===
+  'chatgpt-flow-1': { name: 'ChatGPT Flow 1 - Zero Friction Pro ⭐', steps: 2, baseUrl: '/chatgpt-flow-1' },
+  'chatgpt-flow-2': { name: 'ChatGPT Flow 2 - Social Proof ⭐', steps: 3, baseUrl: '/chatgpt-flow-2' },
+  'chatgpt-flow-3': { name: 'ChatGPT Flow 3 - Guided Chat ⭐', steps: 3, baseUrl: '/chatgpt-flow-3' },
+  
+  // === Swiss Premium Flows ===
+  'v9-zero-friction': { name: 'V9 Zero Friction Flow ⭐⭐', steps: 5, baseUrl: '/flow/v9-zero-friction' },
+  'golden-flow-v10': { name: 'Golden Flow V10 ⭐⭐', steps: 4, baseUrl: '/flow/golden-flow-v10' },
+  'swiss-lightning': { name: 'Swiss Lightning (90s) ⭐', steps: 3, baseUrl: '/flow/swiss-lightning' },
+  'swiss-premium-choice': { name: 'Swiss Premium Choice ⭐', steps: 4, baseUrl: '/flow/swiss-premium-choice' },
+  'swiss-concierge-hybrid': { name: 'Swiss Concierge Hybrid ⭐', steps: 5, baseUrl: '/flow/swiss-concierge-hybrid' },
+  
+  // === Gemini Flows ===
+  'gemini-pro': { name: 'Gemini Pro', steps: 4, baseUrl: '/umzugsofferten-gemini-pro' },
+  'gemini-pro-ext': { name: 'Gemini Pro Ext', steps: 4, baseUrl: '/umzugsofferten-gemini-pro-ext' },
+  
+  // === ChatGPT Research ===
+  'chatgpt-research': { name: 'ChatGPT Research', steps: 4, baseUrl: '/umzugsofferten-chatgpt-research' },
+  'chatgpt-agent': { name: 'ChatGPT Agent', steps: 4, baseUrl: '/umzugsofferten-chatgpt-agent' },
+};
+
 // Default flow paths based on flowId patterns
 const getFlowPath = (flowId: string): string => {
-  if (flowId === 'umzugsofferten-v1' || flowId === 'v1') return '/umzugsofferten';
+  // Check if we have a config for this flow
+  if (FLOW_CONFIGS[flowId]) {
+    return FLOW_CONFIGS[flowId].baseUrl;
+  }
+  
+  if (flowId === 'umzugsofferten-v1' || flowId === 'v1') return '/umzugsofferten-v1';
   if (flowId.startsWith('v') && flowId.length <= 4) {
-    return `/umzugsofferten?v=${flowId}`;
+    return `/umzugsofferten-${flowId}`;
   }
   if (flowId.startsWith('chatgpt-flow-')) {
-    return `/umzugsofferten?v=${flowId}`;
+    return `/${flowId}`;
   }
   const match = flowId.match(/umzugsofferten-v(\d+[a-z]?)/);
   if (match) {
@@ -66,39 +182,9 @@ export function BulkScreenshotCapture() {
   const loadFlows = async () => {
     setIsLoading(true);
     try {
-      // Get all unique flows from flow_analysis_runs (has 74 unique flows)
-      const { data: analysisFlows, error: analysisError } = await supabase
-        .from('flow_analysis_runs')
-        .select('flow_id, flow_name')
-        .order('created_at', { ascending: false });
-
-      if (analysisError) throw analysisError;
-
-      // Get step counts from flow_versions (authoritative source)
-      const { data: versionData } = await supabase
-        .from('flow_versions')
-        .select('flow_id, step_configs');
-
-      // Build step count map from flow_versions
-      const flowStepCounts = new Map<string, number>();
-      for (const v of versionData || []) {
-        const stepConfigs = v.step_configs as any[] | null;
-        const stepCount = Array.isArray(stepConfigs) && stepConfigs.length > 0 ? stepConfigs.length : 0;
-        // Keep the highest step count for each flow_id (some flows have multiple versions)
-        const existing = flowStepCounts.get(v.flow_id) || 0;
-        if (stepCount > existing) {
-          flowStepCounts.set(v.flow_id, stepCount);
-        }
-        // Also map normalized ID
-        const normalized = v.flow_id.startsWith('umzugsofferten-') 
-          ? v.flow_id.replace('umzugsofferten-', '') 
-          : v.flow_id;
-        const existingNorm = flowStepCounts.get(normalized) || 0;
-        if (stepCount > existingNorm) {
-          flowStepCounts.set(normalized, stepCount);
-        }
-      }
-
+      // Use FLOW_CONFIGS as the authoritative source (80+ flows)
+      // This ensures we always show ALL flows, not just those with previous runs
+      
       // Get existing screenshots from flow_step_metrics
       const { data: metricsData } = await supabase
         .from('flow_step_metrics')
@@ -106,37 +192,43 @@ export function BulkScreenshotCapture() {
         .or('mobile_screenshot_url.not.is.null,desktop_screenshot_url.not.is.null');
 
       const flowsWithScreenshots = new Set((metricsData || []).map(m => m.flow_id));
-
-      // Deduplicate by flow_id
-      const uniqueFlowMap = new Map<string, { flow_id: string; flow_name: string }>();
+      
+      // Also get flows from analysis runs that might not be in FLOW_CONFIGS
+      const { data: analysisFlows } = await supabase
+        .from('flow_analysis_runs')
+        .select('flow_id, flow_name')
+        .order('created_at', { ascending: false });
+      
+      // Build flow list from FLOW_CONFIGS first
+      const flowConfigs: FlowConfig[] = Object.entries(FLOW_CONFIGS).map(([flowId, config]) => ({
+        flowId,
+        flowName: config.name,
+        stepCount: config.steps,
+        flowPath: config.baseUrl,
+        hasScreenshots: flowsWithScreenshots.has(flowId) || 
+                       flowsWithScreenshots.has(`umzugsofferten-${flowId}`)
+      }));
+      
+      // Add any flows from analysis_runs that aren't in FLOW_CONFIGS
+      const existingIds = new Set(Object.keys(FLOW_CONFIGS));
       for (const f of analysisFlows || []) {
-        if (!uniqueFlowMap.has(f.flow_id)) {
-          uniqueFlowMap.set(f.flow_id, f);
+        const normalizedId = f.flow_id.startsWith('umzugsofferten-') 
+          ? f.flow_id.replace('umzugsofferten-', '') 
+          : f.flow_id;
+        
+        if (!existingIds.has(normalizedId) && !existingIds.has(f.flow_id)) {
+          flowConfigs.push({
+            flowId: f.flow_id,
+            flowName: f.flow_name || f.flow_id,
+            stepCount: 4, // default
+            flowPath: getFlowPath(f.flow_id),
+            hasScreenshots: flowsWithScreenshots.has(f.flow_id)
+          });
+          existingIds.add(f.flow_id);
         }
       }
 
-      // Get step count for a flow - try normalized and prefixed variants
-      const getStepCount = (flowId: string): number => {
-        const normalized = flowId.startsWith('umzugsofferten-') 
-          ? flowId.replace('umzugsofferten-', '') 
-          : flowId;
-        const prefixed = `umzugsofferten-${normalized}`;
-        
-        return flowStepCounts.get(flowId) || 
-               flowStepCounts.get(normalized) || 
-               flowStepCounts.get(prefixed) || 
-               6; // fallback to 6 steps
-      };
-
-      const flowConfigs: FlowConfig[] = Array.from(uniqueFlowMap.values()).map(f => ({
-        flowId: f.flow_id,
-        flowName: f.flow_name || f.flow_id,
-        stepCount: getStepCount(f.flow_id),
-        flowPath: getFlowPath(f.flow_id),
-        hasScreenshots: flowsWithScreenshots.has(f.flow_id)
-      }));
-
-      // Sort: flows without screenshots first
+      // Sort: flows without screenshots first, then alphabetically
       flowConfigs.sort((a, b) => {
         if (a.hasScreenshots === b.hasScreenshots) return a.flowId.localeCompare(b.flowId);
         return a.hasScreenshots ? 1 : -1;
