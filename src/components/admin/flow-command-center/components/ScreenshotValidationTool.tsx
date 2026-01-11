@@ -22,6 +22,36 @@ import {
 import { toast } from "sonner";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { SITE_CONFIG } from "@/data/constants";
+import { FLOW_CONFIGS, SUB_VARIANT_CONFIGS, getFlowConfig } from "@/data/flowConfigs";
+
+// Helper to get expected steps from FLOW_CONFIGS
+const getExpectedStepsFromConfig = (flowId: string): number => {
+  // Try to find in main configs
+  const config = getFlowConfig(flowId);
+  if (config) return config.steps.length;
+  
+  // Try matching patterns
+  const lowerFlowId = flowId.toLowerCase();
+  
+  // Check SUB_VARIANT_CONFIGS
+  for (const [key, subConfig] of Object.entries(SUB_VARIANT_CONFIGS)) {
+    if (lowerFlowId.includes(key.toLowerCase()) || 
+        lowerFlowId.includes(subConfig.id.toLowerCase())) {
+      return subConfig.steps.length;
+    }
+  }
+  
+  // Check FLOW_CONFIGS
+  for (const [key, mainConfig] of Object.entries(FLOW_CONFIGS)) {
+    if (lowerFlowId.includes(key.toLowerCase()) || 
+        lowerFlowId.includes(mainConfig.id.toLowerCase())) {
+      return mainConfig.steps.length;
+    }
+  }
+  
+  // Default fallback
+  return 4;
+};
 
 interface MissingScreenshot {
   stepNumber: number;
@@ -124,9 +154,8 @@ export function ScreenshotValidationTool({ flowIds, showAllFlowsOption = true }:
         setProgress(Math.round(((i + 1) / flowsToValidate.length) * 100));
         setProgressMessage(`Prüfe ${flow.version_name || flow.flow_id}...`);
 
-        // Get step configs to determine expected steps
-        const stepConfigs = flow.step_configs as any[];
-        const expectedSteps = Array.isArray(stepConfigs) ? stepConfigs.length : 4;
+        // Get expected steps from FLOW_CONFIGS (source of truth) instead of DB
+        const expectedSteps = getExpectedStepsFromConfig(flow.flow_id);
 
         // Get only completed runs
         const { data: completedRuns } = await supabase
