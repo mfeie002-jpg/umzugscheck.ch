@@ -272,6 +272,8 @@ export function ScreenshotValidationTool({ flowIds, showAllFlowsOption = true }:
   const fixAllBrokenFlows = async () => {
     const brokenFlows = results.filter(r => r.status === 'error' || r.status === 'warning');
     
+    console.log('[FixAllBrokenFlows] Starting with', brokenFlows.length, 'flows');
+    
     if (brokenFlows.length === 0) {
       toast.info("Keine Flows zu reparieren");
       return;
@@ -280,27 +282,49 @@ export function ScreenshotValidationTool({ flowIds, showAllFlowsOption = true }:
     setIsFixing(true);
     setFixProgress(0);
     setFixMessage("Starte Reparatur...");
+    toast.info(`Starte Reparatur von ${brokenFlows.length} Flows...`);
 
     try {
       const baseUrl = SITE_CONFIG.previewUrl.replace(/\/$/, "");
+      let successCount = 0;
+      let errorCount = 0;
 
       for (let i = 0; i < brokenFlows.length; i++) {
         const flow = brokenFlows[i];
-        setFixProgress(Math.round(((i + 1) / brokenFlows.length) * 100));
+        const progressPercent = Math.round(((i + 1) / brokenFlows.length) * 100);
+        setFixProgress(progressPercent);
         setFixMessage(`Erfasse Screenshots für ${flow.flowName}... (${i + 1}/${brokenFlows.length})`);
+        
+        console.log(`[FixAllBrokenFlows] Processing ${flow.flowId} (${i + 1}/${brokenFlows.length})`);
 
         // Get the flow's path from flow_versions
-        const { data: flowVersion } = await supabase
+        const { data: flowVersion, error: fetchError } = await supabase
           .from('flow_versions')
           .select('step_configs')
           .eq('flow_id', flow.flowId)
           .eq('is_active', true)
           .maybeSingle();
 
+        if (fetchError) {
+          console.error(`[FixAllBrokenFlows] Failed to fetch ${flow.flowId}:`, fetchError);
+          errorCount++;
+          continue;
+        }
+
         const stepConfigs = flowVersion?.step_configs as any[] || [];
         
+        if (stepConfigs.length === 0) {
+          console.warn(`[FixAllBrokenFlows] No step_configs for ${flow.flowId}, using defaults`);
+          // Use default 6 steps if no config
+          for (let step = 1; step <= 6; step++) {
+            stepConfigs.push({ name: `Step ${step}`, path: `/?step=${step}` });
+          }
+        }
+        
+        console.log(`[FixAllBrokenFlows] Invoking auto-analyze-flow for ${flow.flowId} with ${stepConfigs.length} steps`);
+        
         // Call the auto-analyze-flow function
-        const { error } = await supabase.functions.invoke('auto-analyze-flow', {
+        const { error, data } = await supabase.functions.invoke('auto-analyze-flow', {
           body: {
             flowId: flow.flowId,
             flowName: flow.flowName,
@@ -310,30 +334,40 @@ export function ScreenshotValidationTool({ flowIds, showAllFlowsOption = true }:
               path: s.path || `/?step=${idx + 1}`
             })),
             baseUrl,
-            runType: 'manual' // Edge function will capture screenshots as part of analysis
+            runType: 'manual'
           }
         });
 
         if (error) {
-          console.error(`Failed to fix ${flow.flowId}:`, error);
+          console.error(`[FixAllBrokenFlows] Edge function error for ${flow.flowId}:`, error);
           toast.error(`Fehler bei ${flow.flowName}: ${error.message}`);
+          errorCount++;
+        } else {
+          console.log(`[FixAllBrokenFlows] Successfully triggered ${flow.flowId}`, data);
+          successCount++;
         }
 
         // Wait a bit between flows to not overload
         if (i < brokenFlows.length - 1) {
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          await new Promise(resolve => setTimeout(resolve, 1500));
         }
       }
 
-      toast.success(`${brokenFlows.length} Flows zur Reparatur gestartet. Screenshots werden im Hintergrund erfasst.`);
+      if (successCount > 0) {
+        toast.success(`${successCount} Flows zur Reparatur gestartet. Screenshots werden im Hintergrund erfasst.`);
+      }
+      if (errorCount > 0) {
+        toast.error(`${errorCount} Flows konnten nicht gestartet werden.`);
+      }
       
       // Re-validate after a delay
+      setFixMessage("Warte auf Screenshot-Erfassung...");
       setTimeout(() => {
         validateScreenshots(validateAll);
-      }, 5000);
+      }, 8000);
 
     } catch (error) {
-      console.error('Fix error:', error);
+      console.error('[FixAllBrokenFlows] Critical error:', error);
       toast.error("Reparatur fehlgeschlagen");
     } finally {
       setIsFixing(false);
