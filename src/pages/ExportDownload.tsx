@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -19,19 +19,25 @@ import { saveAs } from "file-saver";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-// Top 10 Flow IDs - hardcoded for quick access
+// Top 10 Flow IDs - hardcoded for quick access (normalized ids = analysis tables)
 const TOP_10_FLOW_IDS = [
-  { rank: 1, id: "umzugsofferten-ultimate-best36", name: "Ultimate Best36" },
-  { rank: 2, id: "umzugsofferten-v1", name: "V1 Control" },
-  { rank: 3, id: "umzugsofferten-v7", name: "V7 Ultimate" },
+  { rank: 1, id: "ultimate-best36", name: "Ultimate Best36" },
+  { rank: 2, id: "v1", name: "V1 Control" },
+  { rank: 3, id: "v7", name: "V7 Ultimate" },
   { rank: 4, id: "v3a", name: "V3a" },
   { rank: 5, id: "v3b", name: "V3b" },
   { rank: 6, id: "v3c", name: "V3c" },
   { rank: 7, id: "v3d", name: "V3d" },
   { rank: 8, id: "v3e", name: "V3e" },
-  { rank: 9, id: "umzugsofferten-v2", name: "V2" },
-  { rank: 10, id: "umzugsofferten-v2e", name: "V2e" },
+  { rank: 9, id: "v2", name: "V2" },
+  { rank: 10, id: "v2e", name: "V2e" },
 ];
+
+const normalizeFlowId = (id: string) => {
+  // Keep export tool consistent with analysis/screenshot tables.
+  // flow_versions often uses prefix (umzugsofferten-...), analysis tables use normalized ids (v1, v2, ultimate-best36, ...)
+  return id.startsWith("umzugsofferten-") ? id.replace("umzugsofferten-", "") : id;
+};
 
 interface StepScreenshot {
   flowId: string;
@@ -84,6 +90,12 @@ const ExportDownload = () => {
   const [failedDownloads, setFailedDownloads] = useState<FailedDownload[]>([]);
   const [showFlowSelector, setShowFlowSelector] = useState(false);
   const [autoCaptureEnabled, setAutoCaptureEnabled] = useState(false);
+
+  // After auto-capture we need to keep syncing until screenshots actually appear (analysis runs in background)
+  const [isAutoRefreshing, setIsAutoRefreshing] = useState(false);
+  const autoRefreshIntervalRef = useRef<number | null>(null);
+  const autoRefreshAttemptsRef = useRef(0);
+  const flowsWithoutScreenshotsCountRef = useRef(0);
 
   // Fetch all available flows from DB
   const fetchAllFlows = useCallback(async (showSyncState = false) => {
