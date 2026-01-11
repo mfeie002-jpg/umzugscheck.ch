@@ -3,8 +3,9 @@ import { ScreenshotMachine } from "@/components/admin/ScreenshotMachine";
 import { SEOHtmlAnalyzer } from "@/components/admin/SEOHtmlAnalyzer";
 import { AutoFlowScreenshots } from "@/components/admin/AutoFlowScreenshots";
 import { AutoVersionScreenshots } from "@/components/admin/AutoVersionScreenshots";
+import { BulkScreenshotCapture } from "@/components/admin/BulkScreenshotCapture";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Camera, Search, Zap, Database } from "lucide-react";
+import { Camera, Search, Zap, Database, ImagePlus } from "lucide-react";
 
 export default function Screenshots() {
   return (
@@ -17,8 +18,12 @@ export default function Screenshots() {
           </p>
         </div>
         
-        <Tabs defaultValue="version-screenshots" className="space-y-4">
+        <Tabs defaultValue="bulk-capture" className="space-y-4">
           <TabsList>
+            <TabsTrigger value="bulk-capture" className="flex items-center gap-2">
+              <ImagePlus className="h-4 w-4" />
+              Bulk Capture
+            </TabsTrigger>
             <TabsTrigger value="version-screenshots" className="flex items-center gap-2">
               <Database className="h-4 w-4" />
               Versions-Screenshots
@@ -36,6 +41,10 @@ export default function Screenshots() {
               SEO HTML Analyse
             </TabsTrigger>
           </TabsList>
+          
+          <TabsContent value="bulk-capture">
+            <BulkScreenshotCapture />
+          </TabsContent>
           
           <TabsContent value="version-screenshots">
             <AutoVersionScreenshots />
