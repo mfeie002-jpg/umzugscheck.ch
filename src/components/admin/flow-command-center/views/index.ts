@@ -10,3 +10,4 @@ export { ComparisonView } from './ComparisonView';
 export { LandingPagesView } from './LandingPagesView';
 export { FlowTesterResultsView } from './FlowTesterResultsView';
 export { FlowsView } from './FlowsView';
+export { FlowStudioView } from './FlowStudioView';
