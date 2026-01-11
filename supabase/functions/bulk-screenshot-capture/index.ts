@@ -112,8 +112,9 @@ async function saveScreenshotToDb(
   imageBase64: string
 ) {
   try {
-    // Upload to storage
-    const fileName = `${flowId}/step-${step}-${type}-${Date.now()}.png`;
+    // Upload to flow-screenshots storage (consistent with other tools)
+    const runId = crypto.randomUUID();
+    const fileName = `${flowId}/${runId}/step-${step}-${type}.png`;
     const base64Data = imageBase64.replace(/^data:image\/\w+;base64,/, '');
     
     // Convert base64 to binary
@@ -124,7 +125,7 @@ async function saveScreenshotToDb(
     }
     
     const { error: uploadError } = await supabase.storage
-      .from('screenshots-archive')
+      .from('flow-screenshots')
       .upload(fileName, bytes, {
         contentType: 'image/png',
         upsert: true
@@ -136,7 +137,7 @@ async function saveScreenshotToDb(
     }
 
     const { data: urlData } = supabase.storage
-      .from('screenshots-archive')
+      .from('flow-screenshots')
       .getPublicUrl(fileName);
 
     const publicUrl = urlData.publicUrl;
@@ -166,6 +167,7 @@ async function saveScreenshotToDb(
         });
     }
     
+    console.log(`Saved ${type} screenshot for ${flowId} step ${step}`);
     return publicUrl;
   } catch (err) {
     console.error('Failed to save screenshot to DB:', err);
