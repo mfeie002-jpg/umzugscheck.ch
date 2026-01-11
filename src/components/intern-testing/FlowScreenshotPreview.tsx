@@ -61,31 +61,33 @@ export function FlowScreenshotPreview({ flowId, flowName, totalSteps, className 
 
       let runId = latestCompletedRun?.id || null;
 
-      if (!runId) {
-        const { data: latestMetric } = await supabase
+      // Fetch step metrics - either via run_id or directly by flow_id
+      let data: any[] | null = null;
+      let queryError: any = null;
+
+      if (runId) {
+        // We have a valid run_id, fetch by run
+        const result = await supabase
           .from('flow_step_metrics')
-          .select('run_id, created_at')
+          .select('step_number, desktop_screenshot_url, mobile_screenshot_url, created_at')
+          .eq('run_id', runId)
+          .order('created_at', { ascending: false });
+        data = result.data;
+        queryError = result.error;
+      }
+
+      // Fallback: if no run_id or no data found, query directly by flow_id
+      // This handles bulk capture rows that have run_id = NULL
+      if (!data || data.length === 0) {
+        const result = await supabase
+          .from('flow_step_metrics')
+          .select('step_number, desktop_screenshot_url, mobile_screenshot_url, created_at')
           .in('flow_id', flowIds)
           .or('desktop_screenshot_url.not.is.null,mobile_screenshot_url.not.is.null')
-          .order('created_at', { ascending: false })
-          .limit(1)
-          .maybeSingle();
-
-        runId = latestMetric?.run_id || null;
+          .order('created_at', { ascending: false });
+        data = result.data;
+        queryError = result.error;
       }
-
-      if (!runId) {
-        setError('Keine Screenshots verfügbar');
-        setScreenshots([]);
-        return;
-      }
-
-      // Fetch step metrics for the chosen run
-      const { data, error: queryError } = await supabase
-        .from('flow_step_metrics')
-        .select('step_number, desktop_screenshot_url, mobile_screenshot_url, created_at')
-        .eq('run_id', runId)
-        .order('created_at', { ascending: false });
 
       if (queryError) throw queryError;
 
