@@ -39,11 +39,11 @@ const FLOW_CONFIGS: Record<string, { name: string; steps: number; baseUrl: strin
   
   // === V4 - Video-First Conversion (7 variants) ===
   'v4': { name: 'V4 Video-First (Baseline)', steps: 4, baseUrl: '/umzugsofferten-v4' },
-  'v4a': { name: 'V4a Urgency Based', steps: 4, baseUrl: '/umzugsofferten-v4a' },
-  'v4b': { name: 'V4b Social Proof', steps: 3, baseUrl: '/umzugsofferten-v4b' },
+  'v4a': { name: 'V4a Urgency Based', steps: 3, baseUrl: '/umzugsofferten-v4a' },
+  'v4b': { name: 'V4b Social Proof', steps: 4, baseUrl: '/umzugsofferten-v4b' },
   'v4c': { name: 'V4c Value First ⭐', steps: 3, baseUrl: '/umzugsofferten-v4c' },
   'v4d': { name: 'V4d Gamified', steps: 4, baseUrl: '/umzugsofferten-v4d' },
-  'v4e': { name: 'V4e Minimal Friction', steps: 2, baseUrl: '/umzugsofferten-v4e' },
+  'v4e': { name: 'V4e Minimal Friction', steps: 3, baseUrl: '/umzugsofferten-v4e' },
   'v4f': { name: 'V4f Video-First Feedback', steps: 3, baseUrl: '/umzugsofferten-v4f' },
   
   // === V5 - Marketplace Accessibility (7 variants) ===
