@@ -148,33 +148,37 @@ function mapToEdgeFunctionFlowId(flowId: string): string {
   return flowId;
 }
 
-// Valid flow IDs that the edge function supports - must match all flows in DB
+// Valid flow IDs that the edge function supports - must match all flows in DB (75 total)
 const VALID_EDGE_FUNCTION_FLOWS = [
-  // V1 family
+  // V1 family (8)
   'v1', 'v1a', 'v1b', 'v1c', 'v1d', 'v1e', 'v1f', 'v1g',
-  // V2 family
+  // V2 family (8)
   'v2', 'v2a', 'v2b', 'v2c', 'v2d', 'v2e', 'v2f', 'v2-archetyp',
-  // V3 family
+  // V3 family (6)
   'v3', 'v3a', 'v3b', 'v3c', 'v3d', 'v3e',
-  // V4 family
+  // V4 family (7)
   'v4', 'v4a', 'v4b', 'v4c', 'v4d', 'v4e', 'v4f',
-  // V5 family
+  // V5 family (7)
   'v5', 'v5a', 'v5b', 'v5c', 'v5d', 'v5e', 'v5f',
-  // V6 family
+  // V6 family (7)
   'v6', 'v6a', 'v6b', 'v6c', 'v6d', 'v6e', 'v6f',
-  // V7 family
+  // V7 family (2)
   'v7', 'v7a',
-  // V8 family
+  // V8 family (2)
   'v8', 'v8a',
-  // V9 family
+  // V9 family (5)
   'v9', 'v9a', 'v9b', 'v9c', 'v9d',
-  // Ultimate family
-  'ultimate-best36', 'ultimate-v7', 'ultimate-ch',
+  // Ultimate family (9)
+  'ultimate-all', 'ultimate-best36', 'ultimate-v1', 'ultimate-v2', 'ultimate-v5', 'ultimate-v7', 'ultimate-ch',
   'vultimate', 'vultimate-v1', 'vultimate-v2',
-  // ChatGPT flows
+  // ChatGPT flows (3)
   'chatgpt-flow-1', 'chatgpt-flow-2', 'chatgpt-flow-3',
-  // Multi
+  // Multi (1)
   'multi-a',
+  // Swiss Premium flows (5)
+  'v9-zero-friction', 'golden-flow-v10', 'swiss-lightning', 'swiss-premium-choice', 'swiss-concierge-hybrid',
+  // Version 1.1 variants (1)
+  'umzugsofferten-v1.1.a',
 ];
 
 function getAllFlowIds(): string[] {
