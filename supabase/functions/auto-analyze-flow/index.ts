@@ -866,11 +866,24 @@ serve(async (req) => {
 
     console.log(`Starting analysis for flow: ${rawFlowId}`);
 
-    // Normalize flow ID: strip "umzugsofferten-" prefix if present
-    const normalizedFlowId = rawFlowId
-      .replace(/^umzugsofferten-/, '')
-      .replace(/^umzugsofferten$/, 'v1');
-    
+    // Normalize flow ID into a key that exists in FLOW_CONFIGS.
+    // We support a mix of IDs:
+    // - Canonical keys like "v1", "ultimate-all"
+    // - Prefixed IDs like "umzugsofferten-v1.1.a" (kept as-is)
+    // - Legacy DB IDs like "umzugsofferten-all" (alias to "ultimate-all")
+    let normalizedFlowId = rawFlowId;
+
+    // 1) If the raw ID is already a known config key, keep it.
+    if (!FLOW_CONFIGS[normalizedFlowId]) {
+      // 2) Otherwise strip the common prefix.
+      normalizedFlowId = rawFlowId
+        .replace(/^umzugsofferten-/, '')
+        .replace(/^umzugsofferten$/, 'v1');
+
+      // 3) Handle legacy/alias IDs.
+      if (normalizedFlowId === 'all') normalizedFlowId = 'ultimate-all';
+    }
+
     console.log(`Normalized flow ID: ${rawFlowId} -> ${normalizedFlowId}`);
 
     // Validate flow - check FLOW_CONFIGS first
