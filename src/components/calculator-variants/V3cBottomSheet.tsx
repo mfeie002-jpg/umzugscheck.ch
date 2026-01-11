@@ -1,14 +1,21 @@
 /**
  * V3c - Bottom Sheet Pattern
  * Focus: Native app-like bottom sheet interactions
+ * 
+ * Capture Mode Support: Distinct content per step
  */
 
 import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { X, ChevronUp, Layers } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
+import { ChevronUp, Layers, MapPin, Calendar, User, Mail, Phone } from 'lucide-react';
 import { useInitialStep } from '@/hooks/use-initial-step';
+import { useCaptureMode } from '@/hooks/use-capture-mode';
+import { cn } from '@/lib/utils';
 
 const STEPS = [
   { id: 1, title: 'Umzugsart', icon: '🏠' },
@@ -17,11 +24,175 @@ const STEPS = [
   { id: 4, title: 'Kontakt', icon: '📞' },
 ];
 
+const MOVE_TYPES = [
+  { id: 'private', emoji: '🏠', label: 'Privatumzug', desc: 'Wohnung oder Haus' },
+  { id: 'business', emoji: '🏢', label: 'Firmenumzug', desc: 'Büro oder Geschäft' },
+  { id: 'senior', emoji: '👴', label: 'Seniorenumzug', desc: 'Mit extra Betreuung' },
+];
+
+const SERVICES = [
+  { id: 'packing', label: 'Ein- und Auspacken' },
+  { id: 'furniture', label: 'Möbelmontage' },
+  { id: 'cleaning', label: 'Endreinigung' },
+];
+
 export const V3cBottomSheet: React.FC = () => {
   const initialStep = useInitialStep(1);
+  const { isCaptureMode, demoData } = useCaptureMode();
+  
   const [currentStep, setCurrentStep] = useState(initialStep);
   const [sheetExpanded, setSheetExpanded] = useState(true);
+  
+  const [selectedType, setSelectedType] = useState<string>(isCaptureMode ? 'private' : '');
+  const [fromLocation, setFromLocation] = useState(isCaptureMode ? demoData.fromLocation : '');
+  const [toLocation, setToLocation] = useState(isCaptureMode ? demoData.toLocation : '');
+  const [moveDate, setMoveDate] = useState(isCaptureMode ? demoData.moveDate : '');
+  const [selectedServices, setSelectedServices] = useState<Set<string>>(
+    isCaptureMode ? new Set(['packing']) : new Set()
+  );
+  const [name, setName] = useState(isCaptureMode ? demoData.name : '');
+  const [email, setEmail] = useState(isCaptureMode ? demoData.email : '');
+  const [phone, setPhone] = useState(isCaptureMode ? demoData.phone : '');
+  
   const progress = (currentStep / STEPS.length) * 100;
+
+  const toggleService = (serviceId: string) => {
+    setSelectedServices(prev => {
+      const next = new Set(prev);
+      if (next.has(serviceId)) next.delete(serviceId);
+      else next.add(serviceId);
+      return next;
+    });
+  };
+
+  const renderStepContent = () => {
+    switch (currentStep) {
+      case 1:
+        return (
+          <div className="space-y-4">
+            {MOVE_TYPES.map((type) => (
+              <SheetOption
+                key={type.id}
+                emoji={type.emoji}
+                label={type.label}
+                desc={type.desc}
+                selected={selectedType === type.id}
+                onSelect={() => setSelectedType(type.id)}
+              />
+            ))}
+          </div>
+        );
+      case 2:
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label className="flex items-center gap-2">
+                <MapPin className="h-4 w-4 text-green-500" />
+                Von (Abholadresse)
+              </Label>
+              <Input
+                placeholder="z.B. 8048 Zürich"
+                value={fromLocation}
+                onChange={(e) => setFromLocation(e.target.value)}
+                className="h-12"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="flex items-center gap-2">
+                <MapPin className="h-4 w-4 text-red-500" />
+                Nach (Lieferadresse)
+              </Label>
+              <Input
+                placeholder="z.B. 3011 Bern"
+                value={toLocation}
+                onChange={(e) => setToLocation(e.target.value)}
+                className="h-12"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="flex items-center gap-2">
+                <Calendar className="h-4 w-4" />
+                Umzugsdatum
+              </Label>
+              <Input
+                type="date"
+                value={moveDate}
+                onChange={(e) => setMoveDate(e.target.value)}
+                className="h-12"
+              />
+            </div>
+          </div>
+        );
+      case 3:
+        return (
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground">Wählen Sie optionale Services:</p>
+            {SERVICES.map((service) => (
+              <label
+                key={service.id}
+                className={cn(
+                  "flex items-center gap-3 p-4 rounded-2xl border-2 cursor-pointer",
+                  selectedServices.has(service.id)
+                    ? "border-primary bg-primary/5"
+                    : "border-border"
+                )}
+              >
+                <Checkbox
+                  checked={selectedServices.has(service.id)}
+                  onCheckedChange={() => toggleService(service.id)}
+                />
+                <span className="font-medium">{service.label}</span>
+              </label>
+            ))}
+          </div>
+        );
+      case 4:
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label className="flex items-center gap-2">
+                <User className="h-4 w-4" />
+                Name
+              </Label>
+              <Input
+                placeholder="Ihr vollständiger Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="h-12"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="flex items-center gap-2">
+                <Mail className="h-4 w-4" />
+                E-Mail
+              </Label>
+              <Input
+                type="email"
+                placeholder="ihre@email.ch"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="h-12"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="flex items-center gap-2">
+                <Phone className="h-4 w-4" />
+                Telefon
+              </Label>
+              <Input
+                type="tel"
+                placeholder="+41 79 123 45 67"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="h-12"
+              />
+            </div>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-primary/10 to-background">
@@ -85,36 +256,19 @@ export const V3cBottomSheet: React.FC = () => {
             className="p-2 hover:bg-muted rounded-full"
             onClick={() => setSheetExpanded(!sheetExpanded)}
           >
-            <ChevronUp
-              className={`h-5 w-5 transition-transform ${
-                sheetExpanded ? '' : 'rotate-180'
-              }`}
-            />
+            <ChevronUp className={`h-5 w-5 transition-transform ${sheetExpanded ? '' : 'rotate-180'}`} />
           </button>
         </div>
 
         {/* Sheet content */}
         {sheetExpanded && (
-          <div className="p-6 overflow-y-auto h-[calc(70vh-140px)]">
-            <div className="space-y-4">
-              {currentStep === 1 && (
-                <>
-                  <SheetOption emoji="🏠" label="Privatumzug" desc="Wohnung oder Haus" selected />
-                  <SheetOption emoji="🏢" label="Firmenumzug" desc="Büro oder Geschäft" />
-                  <SheetOption emoji="👴" label="Seniorenumzug" desc="Mit extra Betreuung" />
-                </>
-              )}
-              {currentStep > 1 && (
-                <div className="text-center py-8 text-muted-foreground">
-                  Inhalt für Schritt {currentStep}
-                </div>
-              )}
-            </div>
+          <div className="p-6 overflow-y-auto h-[calc(70vh-180px)]">
+            {renderStepContent()}
           </div>
         )}
 
         {/* Sheet footer */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 bg-background border-t border-border safe-area-inset-bottom">
+        <div className="absolute bottom-0 left-0 right-0 p-4 bg-background border-t border-border pb-[max(1rem,env(safe-area-inset-bottom))]">
           <div className="flex gap-3">
             {currentStep > 1 && (
               <Button
@@ -145,13 +299,16 @@ const SheetOption: React.FC<{
   label: string;
   desc: string;
   selected?: boolean;
-}> = ({ emoji, label, desc, selected }) => (
+  onSelect: () => void;
+}> = ({ emoji, label, desc, selected, onSelect }) => (
   <button
-    className={`w-full p-4 rounded-2xl border-2 text-left flex items-center gap-4 transition-all active:scale-[0.98] ${
+    onClick={onSelect}
+    className={cn(
+      "w-full p-4 rounded-2xl border-2 text-left flex items-center gap-4 transition-all active:scale-[0.98]",
       selected
         ? 'border-primary bg-primary/5'
         : 'border-border hover:border-primary/50'
-    }`}
+    )}
   >
     <span className="text-3xl">{emoji}</span>
     <div>
