@@ -148,7 +148,7 @@ function mapToEdgeFunctionFlowId(flowId: string): string {
   return flowId;
 }
 
-// Valid flow IDs that the edge function supports - must match all flows in DB (75 total)
+// Valid flow IDs that the edge function supports - must match all flows in DB (76 total)
 const VALID_EDGE_FUNCTION_FLOWS = [
   // V1 family (8)
   'v1', 'v1a', 'v1b', 'v1c', 'v1d', 'v1e', 'v1f', 'v1g',
@@ -168,8 +168,8 @@ const VALID_EDGE_FUNCTION_FLOWS = [
   'v8', 'v8a',
   // V9 family (5)
   'v9', 'v9a', 'v9b', 'v9c', 'v9d',
-  // Ultimate family (9)
-  'ultimate-all', 'ultimate-best36', 'ultimate-v1', 'ultimate-v2', 'ultimate-v5', 'ultimate-v7', 'ultimate-ch',
+  // Ultimate family (10)
+  'all', 'ultimate-all', 'ultimate-best36', 'ultimate-v1', 'ultimate-v2', 'ultimate-v5', 'ultimate-v7', 'ultimate-ch',
   'vultimate', 'vultimate-v1', 'vultimate-v2',
   // ChatGPT flows (3)
   'chatgpt-flow-1', 'chatgpt-flow-2', 'chatgpt-flow-3',
@@ -180,6 +180,15 @@ const VALID_EDGE_FUNCTION_FLOWS = [
   // Version 1.1 variants (1)
   'umzugsofferten-v1.1.a',
 ];
+
+// Normalize a flow ID by stripping prefix and handling legacy aliases
+function normalizeFlowIdForMatching(flowId: string): string {
+  // Strip prefix
+  let normalized = flowId.replace(/^umzugsofferten-/, '');
+  // Handle legacy aliases
+  if (normalized === 'all') normalized = 'ultimate-all';
+  return normalized;
+}
 
 function getAllFlowIds(): string[] {
   // Return only the valid edge function flow IDs
@@ -337,19 +346,21 @@ export default function FlowCommandCenter() {
 
     // First, try to match by exact ID or with umzugsofferten- prefix
     for (const id of flowIds) {
-      // Try multiple matching patterns
-      const featureScore = featureData?.find(f =>
-        f.flow_id === id ||
-        f.flow_id === `umzugsofferten-${id}` ||
-        f.flow_id.replace('umzugsofferten-', '') === id
-      );
+      // Try multiple matching patterns - normalize DB IDs for comparison
+      const featureScore = featureData?.find(f => {
+        const dbNormalized = normalizeFlowIdForMatching(f.flow_id);
+        return f.flow_id === id || dbNormalized === id || 
+               f.flow_id === `umzugsofferten-${id}` ||
+               f.flow_id.replace('umzugsofferten-', '') === id;
+      });
 
       // Also check analysis runs
-      const analysisRun = analysisData?.find(a =>
-        a.flow_id === id ||
-        a.flow_id === `umzugsofferten-${id}` ||
-        a.flow_id.replace('umzugsofferten-', '') === id
-      );
+      const analysisRun = analysisData?.find(a => {
+        const dbNormalized = normalizeFlowIdForMatching(a.flow_id);
+        return a.flow_id === id || dbNormalized === id || 
+               a.flow_id === `umzugsofferten-${id}` ||
+               a.flow_id.replace('umzugsofferten-', '') === id;
+      });
 
       // Use feature score if available, otherwise use analysis run
       const sourceData = featureScore || analysisRun;
