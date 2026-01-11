@@ -112,25 +112,26 @@ const ExportDownload = () => {
         .select('flow_id, flow_name')
         .order('created_at', { ascending: false });
       
-      // Get screenshot counts per flow
+      // Get screenshot counts per flow - this is now the PRIMARY source for what flows have screenshots
       const { data: screenshotData } = await supabase
         .from('flow_step_metrics')
-        .select('flow_id, mobile_screenshot_url, desktop_screenshot_url');
+        .select('flow_id, step_number, mobile_screenshot_url, desktop_screenshot_url');
       
-      // Build screenshot status map
-      const flowScreenshotStatus = new Map<string, { mobile: number; desktop: number; total: number }>();
+      // Build screenshot status map AND discover all flows with screenshots
+      const flowScreenshotStatus = new Map<string, { mobile: number; desktop: number; total: number; maxStep: number }>();
       for (const row of screenshotData || []) {
-        const current = flowScreenshotStatus.get(row.flow_id) || { mobile: 0, desktop: 0, total: 0 };
+        const current = flowScreenshotStatus.get(row.flow_id) || { mobile: 0, desktop: 0, total: 0, maxStep: 0 };
         if (row.mobile_screenshot_url) current.mobile++;
         if (row.desktop_screenshot_url) current.desktop++;
         current.total++;
+        current.maxStep = Math.max(current.maxStep, row.step_number || 0);
         flowScreenshotStatus.set(row.flow_id, current);
       }
       
-      // Combine both sources
+      // Combine ALL sources - prioritize flow_step_metrics since that's where screenshots live
       const uniqueFlows = new Map<string, FlowInfo>();
       
-      // First add from flow_versions (authoritative source)
+      // First add from flow_versions (authoritative source for step configs)
       if (versionData) {
         versionData.forEach((row, idx) => {
           if (!uniqueFlows.has(row.flow_id)) {
@@ -170,6 +171,7 @@ const ExportDownload = () => {
               id: row.flow_id,
               name: row.flow_name || row.flow_id,
               rank: uniqueFlows.size + 1,
+              stepCount: ssStatus?.maxStep || 0,
               hasScreenshots: !!ssStatus && (ssStatus.mobile > 0 || ssStatus.desktop > 0),
               screenshotStatus: ssStatus ? (ssStatus.mobile > 0 || ssStatus.desktop > 0 ? 'partial' : 'none') : 'none',
             });
@@ -177,9 +179,24 @@ const ExportDownload = () => {
         });
       }
       
+      // IMPORTANT: Also add any flows from flow_step_metrics that aren't in either table
+      // This ensures we don't miss any flows that have screenshots but no version/analysis record
+      for (const [flowId, ssStatus] of flowScreenshotStatus) {
+        if (!uniqueFlows.has(flowId)) {
+          uniqueFlows.set(flowId, {
+            id: flowId,
+            name: flowId, // Use ID as name if no other source
+            rank: uniqueFlows.size + 1,
+            stepCount: ssStatus.maxStep,
+            hasScreenshots: ssStatus.mobile > 0 || ssStatus.desktop > 0,
+            screenshotStatus: ssStatus.mobile > 0 || ssStatus.desktop > 0 ? 'partial' : 'none',
+          });
+        }
+      }
+      
       setAllFlows(Array.from(uniqueFlows.values()));
       setLastSynced(new Date());
-      console.log(`[Sync] Loaded ${uniqueFlows.size} flows (${totalCount} total in flow_versions)`);
+      console.log(`[Sync] Loaded ${uniqueFlows.size} flows (${totalCount} total in flow_versions, ${flowScreenshotStatus.size} with screenshots)`);
     } catch (err) {
       console.error("Failed to fetch all flows:", err);
       setError("Fehler beim Synchronisieren der Flows.");
@@ -234,74 +251,44 @@ const ExportDownload = () => {
 
       try {
         const flowIds = targetFlows.map(f => f.id);
+        console.log(`[FetchScreenshots] Loading screenshots for ${flowIds.length} flows:`, flowIds);
 
-        // Get ALL runs for these flows (not just completed)
-        const { data: allRuns } = await supabase
-          .from('flow_analysis_runs')
-          .select('id, flow_id, status, created_at')
-          .in('flow_id', flowIds)
-          .order('created_at', { ascending: false });
-
-        // Build a map: flow_id -> best run_id (prefer completed, fallback to latest)
-        const flowToRunId = new Map<string, string>();
-        
-        for (const run of allRuns || []) {
-          if (!flowToRunId.has(run.flow_id)) {
-            flowToRunId.set(run.flow_id, run.id);
-          }
-          if (run.status === 'completed') {
-            flowToRunId.set(run.flow_id, run.id);
-          }
-        }
-
-        const runIdsToQuery = Array.from(flowToRunId.values());
-
-        // Get step metrics for these runs (if we have run IDs)
-        let data: any[] = [];
-        
-        if (runIdsToQuery.length > 0) {
-          const { data: runData, error: queryError } = await supabase
-            .from('flow_step_metrics')
-            .select('flow_id, step_number, mobile_screenshot_url, desktop_screenshot_url, created_at, run_id')
-            .in('run_id', runIdsToQuery)
-            .order('created_at', { ascending: false });
-
-          if (queryError) throw queryError;
-          data = runData || [];
-        }
-
-        // Also fetch screenshots without run_id (from bulk capture)
-        // These have run_id = NULL but still valid screenshots
-        const { data: bulkData } = await supabase
+        // SIMPLIFIED: Get ALL screenshots for these flows directly, regardless of run_id
+        // This ensures we don't miss any screenshots
+        const { data: allScreenshots, error: queryError } = await supabase
           .from('flow_step_metrics')
           .select('flow_id, step_number, mobile_screenshot_url, desktop_screenshot_url, created_at')
           .in('flow_id', flowIds)
-          .is('run_id', null)
           .or('mobile_screenshot_url.not.is.null,desktop_screenshot_url.not.is.null')
           .order('created_at', { ascending: false });
 
-        // Combine both sources
-        const allData = [...data, ...(bulkData || [])];
+        if (queryError) {
+          console.error('[FetchScreenshots] Query error:', queryError);
+          throw queryError;
+        }
+
+        console.log(`[FetchScreenshots] Found ${allScreenshots?.length || 0} screenshot records`);
 
         // Deduplicate: keep only latest per flow_id + step_number
         const latestMap = new Map<string, StepScreenshot>();
         
-        for (const row of allData) {
+        for (const row of allScreenshots || []) {
           const key = `${row.flow_id}-${row.step_number}`;
           if (!latestMap.has(key) && (row.mobile_screenshot_url || row.desktop_screenshot_url)) {
             const flowInfo = targetFlows.find(f => f.id === row.flow_id);
-            if (flowInfo) {
-              latestMap.set(key, {
-                flowId: row.flow_id,
-                flowName: flowInfo.name,
-                rank: flowInfo.rank,
-                stepNumber: row.step_number,
-                mobileUrl: row.mobile_screenshot_url,
-                desktopUrl: row.desktop_screenshot_url,
-              });
-            }
+            // Even if flowInfo is not found, still include the screenshot with fallback name
+            latestMap.set(key, {
+              flowId: row.flow_id,
+              flowName: flowInfo?.name || row.flow_id,
+              rank: flowInfo?.rank || 999,
+              stepNumber: row.step_number,
+              mobileUrl: row.mobile_screenshot_url,
+              desktopUrl: row.desktop_screenshot_url,
+            });
           }
         }
+
+        console.log(`[FetchScreenshots] Deduplicated to ${latestMap.size} unique flow-step combinations`);
 
         // Sort by rank, then step number
         const sorted = Array.from(latestMap.values()).sort((a, b) => {
