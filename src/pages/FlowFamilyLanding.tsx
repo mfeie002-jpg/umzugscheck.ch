@@ -3,11 +3,11 @@ import { useParams, Link, Navigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Star, Sparkles, Zap, Trophy, MessageSquare, Target, Maximize2, X, ChevronDown } from 'lucide-react';
+import { ArrowLeft, Star, Sparkles, Zap, Trophy, MessageSquare, Target, Maximize2, X, ChevronDown, Smartphone, Monitor, Image, Play } from 'lucide-react';
 import { Helmet } from 'react-helmet';
 import { FLOW_CONFIGS, SUB_VARIANT_CONFIGS } from '@/data/flowConfigs';
 import { getFlowComponent } from '@/lib/flowComponentRegistry';
-
+import { FlowScreenshotViewer, ViewModeToggle, GlobalViewModeToggle } from '@/components/flow-viewer/FlowScreenshotViewer';
 // Flow family configurations
 const FLOW_FAMILIES = {
   'v1': {
@@ -170,6 +170,22 @@ export default function FlowFamilyLanding() {
   const [fullscreenFlow, setFullscreenFlow] = useState<string | null>(null);
   const [navOpen, setNavOpen] = useState(false);
   
+  // View mode state: global + per-flow overrides
+  const [globalViewMode, setGlobalViewMode] = useState<'mobile' | 'desktop'>('desktop');
+  const [displayMode, setDisplayMode] = useState<'screenshots' | 'live'>('screenshots');
+  const [flowViewModes, setFlowViewModes] = useState<Record<string, 'mobile' | 'desktop'>>({});
+  
+  const getFlowViewMode = (flowId: string) => flowViewModes[flowId] ?? globalViewMode;
+  
+  const setFlowViewMode = (flowId: string, mode: 'mobile' | 'desktop') => {
+    setFlowViewModes(prev => ({ ...prev, [flowId]: mode }));
+  };
+  
+  // When global changes, reset per-flow overrides
+  const handleGlobalViewModeChange = (mode: 'mobile' | 'desktop') => {
+    setGlobalViewMode(mode);
+    setFlowViewModes({});
+  };
   const family = familyId ? FLOW_FAMILIES[familyId as keyof typeof FLOW_FAMILIES] : null;
   
   // Get all variants for this family
@@ -346,6 +362,47 @@ export default function FlowFamilyLanding() {
           </motion.div>
         </div>
       </section>
+      
+      {/* Global Controls Bar */}
+      <div className="sticky top-[73px] z-40 bg-background/95 backdrop-blur-xl border-b py-3">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            {/* Display Mode Toggle */}
+            <div className="flex items-center gap-3">
+              <span className="text-sm font-medium text-muted-foreground">Ansicht:</span>
+              <div className="inline-flex items-center rounded-lg border p-1 bg-muted/50">
+                <Button
+                  variant={displayMode === 'screenshots' ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => setDisplayMode('screenshots')}
+                  className="gap-2"
+                >
+                  <Image className="h-4 w-4" />
+                  <span className="hidden sm:inline">Screenshots</span>
+                </Button>
+                <Button
+                  variant={displayMode === 'live' ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => setDisplayMode('live')}
+                  className="gap-2"
+                >
+                  <Play className="h-4 w-4" />
+                  <span className="hidden sm:inline">Live</span>
+                </Button>
+              </div>
+            </div>
+            
+            {/* Global View Mode Toggle (only for screenshots) */}
+            {displayMode === 'screenshots' && (
+              <GlobalViewModeToggle
+                value={globalViewMode}
+                onChange={handleGlobalViewModeChange}
+                flowCount={variants.length}
+              />
+            )}
+          </div>
+        </div>
+      </div>
 
       {/* Flow List - Direct Embedding */}
       <main className="py-8">
@@ -386,41 +443,62 @@ export default function FlowFamilyLanding() {
                       </div>
                     </div>
                     
-                    {/* Fullscreen Button */}
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => openFullscreen(variant.id)}
-                      className="gap-2"
-                    >
-                      <Maximize2 className="h-4 w-4" />
-                      Vollbild
-                    </Button>
+                    <div className="flex items-center gap-2">
+                      {/* Per-Flow View Mode Toggle (only for screenshots) */}
+                      {displayMode === 'screenshots' && (
+                        <ViewModeToggle
+                          value={getFlowViewMode(variant.id)}
+                          onChange={(mode) => setFlowViewMode(variant.id, mode)}
+                        />
+                      )}
+                      
+                      {/* Fullscreen Button (only for live) */}
+                      {displayMode === 'live' && (
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => openFullscreen(variant.id)}
+                          className="gap-2"
+                        >
+                          <Maximize2 className="h-4 w-4" />
+                          Vollbild
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </div>
                 
-                {/* Flow Component - Full Width */}
+                {/* Flow Content - Screenshots or Live */}
                 <div className="w-full">
-                  <Suspense fallback={
+                  {displayMode === 'screenshots' ? (
                     <div className="container mx-auto px-4">
-                      <div className="h-[600px] rounded-2xl bg-muted/30 animate-pulse flex items-center justify-center">
-                        <p className="text-muted-foreground">Flow wird geladen...</p>
-                      </div>
+                      <FlowScreenshotViewer
+                        flowId={variant.id}
+                        viewMode={getFlowViewMode(variant.id)}
+                      />
                     </div>
-                  }>
-                    {FlowComponent ? (
-                      <FlowComponent />
-                    ) : (
+                  ) : (
+                    <Suspense fallback={
                       <div className="container mx-auto px-4">
-                        <div className="h-[400px] rounded-2xl border-2 border-dashed border-muted-foreground/30 flex items-center justify-center">
-                          <div className="text-center">
-                            <p className="text-muted-foreground mb-2">Flow-Komponente nicht gefunden</p>
-                            <Badge variant="outline">{variant.id}</Badge>
-                          </div>
+                        <div className="h-[600px] rounded-2xl bg-muted/30 animate-pulse flex items-center justify-center">
+                          <p className="text-muted-foreground">Flow wird geladen...</p>
                         </div>
                       </div>
-                    )}
-                  </Suspense>
+                    }>
+                      {FlowComponent ? (
+                        <FlowComponent />
+                      ) : (
+                        <div className="container mx-auto px-4">
+                          <div className="h-[400px] rounded-2xl border-2 border-dashed border-muted-foreground/30 flex items-center justify-center">
+                            <div className="text-center">
+                              <p className="text-muted-foreground mb-2">Flow-Komponente nicht gefunden</p>
+                              <Badge variant="outline">{variant.id}</Badge>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </Suspense>
+                  )}
                 </div>
                 
                 {/* Divider */}
