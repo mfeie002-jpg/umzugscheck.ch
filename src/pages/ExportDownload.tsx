@@ -256,25 +256,37 @@ const ExportDownload = () => {
 
         const runIdsToQuery = Array.from(flowToRunId.values());
 
-        if (runIdsToQuery.length === 0) {
-          setScreenshots([]);
-          setIsLoading(false);
-          return;
+        // Get step metrics for these runs (if we have run IDs)
+        let data: any[] = [];
+        
+        if (runIdsToQuery.length > 0) {
+          const { data: runData, error: queryError } = await supabase
+            .from('flow_step_metrics')
+            .select('flow_id, step_number, mobile_screenshot_url, desktop_screenshot_url, created_at, run_id')
+            .in('run_id', runIdsToQuery)
+            .order('created_at', { ascending: false });
+
+          if (queryError) throw queryError;
+          data = runData || [];
         }
 
-        // Get step metrics for these runs
-        const { data, error: queryError } = await supabase
+        // Also fetch screenshots without run_id (from bulk capture)
+        // These have run_id = NULL but still valid screenshots
+        const { data: bulkData } = await supabase
           .from('flow_step_metrics')
-          .select('flow_id, step_number, mobile_screenshot_url, desktop_screenshot_url, created_at, run_id')
-          .in('run_id', runIdsToQuery)
+          .select('flow_id, step_number, mobile_screenshot_url, desktop_screenshot_url, created_at')
+          .in('flow_id', flowIds)
+          .is('run_id', null)
+          .or('mobile_screenshot_url.not.is.null,desktop_screenshot_url.not.is.null')
           .order('created_at', { ascending: false });
 
-        if (queryError) throw queryError;
+        // Combine both sources
+        const allData = [...data, ...(bulkData || [])];
 
-        // Deduplicate: keep only latest per flow_id + step_number from completed runs
+        // Deduplicate: keep only latest per flow_id + step_number
         const latestMap = new Map<string, StepScreenshot>();
         
-        for (const row of data || []) {
+        for (const row of allData) {
           const key = `${row.flow_id}-${row.step_number}`;
           if (!latestMap.has(key) && (row.mobile_screenshot_url || row.desktop_screenshot_url)) {
             const flowInfo = targetFlows.find(f => f.id === row.flow_id);
