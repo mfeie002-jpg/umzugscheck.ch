@@ -526,11 +526,15 @@ export default function FlowCommandCenter() {
 
   const handleViewChange = (view: ViewMode) => {
     setActiveView(view);
+    // Scroll to top when view changes
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSelectFlow = (flowId: string) => {
     setSelectedFlowId(flowId);
     setActiveView('analysis');
+    // Scroll to top when selecting a flow
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // Sorted scores for ranking

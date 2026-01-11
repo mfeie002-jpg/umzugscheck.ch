@@ -310,7 +310,7 @@ export function ScreenshotValidationTool({ flowIds, showAllFlowsOption = true }:
               path: s.path || `/?step=${idx + 1}`
             })),
             baseUrl,
-            runType: 'screenshots-only'
+            runType: 'manual' // Edge function will capture screenshots as part of analysis
           }
         });
 
