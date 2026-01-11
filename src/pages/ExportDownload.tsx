@@ -1,12 +1,23 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Download, FileJson, FileText, Image, Loader2, CheckCircle2, Package, FileCode, AlertCircle, ChevronDown, RefreshCw } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import {
+  Download, FileJson, FileText, Image, Loader2, CheckCircle2, Package,
+  FileCode, AlertCircle, ChevronDown, RefreshCw, Camera, Filter,
+  Smartphone, Monitor, RotateCcw, Zap, ChevronRight, CheckCheck,
+  XCircle, AlertTriangle, HardDrive
+} from "lucide-react";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 // Top 10 Flow IDs - hardcoded for quick access
 const TOP_10_FLOW_IDS = [
@@ -35,9 +46,21 @@ interface FlowInfo {
   id: string;
   name: string;
   rank: number;
+  stepCount?: number;
+  hasScreenshots?: boolean;
+  screenshotStatus?: 'complete' | 'partial' | 'none';
 }
 
-type ExportMode = "top10" | "all";
+interface FailedDownload {
+  flowId: string;
+  stepNumber: number;
+  type: 'mobile' | 'desktop';
+  url: string;
+}
+
+type ExportMode = "top10" | "all" | "custom";
+type ScreenshotFilter = "all" | "complete" | "partial" | "none";
+type DeviceFilter = "both" | "mobile" | "desktop";
 
 const ExportDownload = () => {
   const [mode, setMode] = useState<ExportMode>("top10");
@@ -49,23 +72,48 @@ const ExportDownload = () => {
   const [allFlows, setAllFlows] = useState<FlowInfo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSyncing, setIsSyncing] = useState(false);
+  const [isCapturing, setIsCapturing] = useState(false);
+  const [captureProgress, setCaptureProgress] = useState({ current: 0, total: 0 });
   const [error, setError] = useState<string | null>(null);
   const [lastSynced, setLastSynced] = useState<Date | null>(null);
+  
+  // New features state
+  const [screenshotFilter, setScreenshotFilter] = useState<ScreenshotFilter>("all");
+  const [deviceFilter, setDeviceFilter] = useState<DeviceFilter>("both");
+  const [selectedFlowIds, setSelectedFlowIds] = useState<Set<string>>(new Set());
+  const [failedDownloads, setFailedDownloads] = useState<FailedDownload[]>([]);
+  const [showFlowSelector, setShowFlowSelector] = useState(false);
+  const [autoCaptureEnabled, setAutoCaptureEnabled] = useState(false);
 
   // Fetch all available flows from DB
-  const fetchAllFlows = async (showSyncState = false) => {
+  const fetchAllFlows = useCallback(async (showSyncState = false) => {
     if (showSyncState) setIsSyncing(true);
     try {
       // Fetch ALL flow_versions to get the true count
       const { data: versionData, count: totalCount } = await supabase
         .from('flow_versions')
-        .select('flow_id, version_name, flow_code', { count: 'exact' });
+        .select('flow_id, version_name, flow_code, step_configs', { count: 'exact' });
       
       // Also get analysis runs for additional flow info
       const { data: analysisData } = await supabase
         .from('flow_analysis_runs')
         .select('flow_id, flow_name')
         .order('created_at', { ascending: false });
+      
+      // Get screenshot counts per flow
+      const { data: screenshotData } = await supabase
+        .from('flow_step_metrics')
+        .select('flow_id, mobile_screenshot_url, desktop_screenshot_url');
+      
+      // Build screenshot status map
+      const flowScreenshotStatus = new Map<string, { mobile: number; desktop: number; total: number }>();
+      for (const row of screenshotData || []) {
+        const current = flowScreenshotStatus.get(row.flow_id) || { mobile: 0, desktop: 0, total: 0 };
+        if (row.mobile_screenshot_url) current.mobile++;
+        if (row.desktop_screenshot_url) current.desktop++;
+        current.total++;
+        flowScreenshotStatus.set(row.flow_id, current);
+      }
       
       // Combine both sources
       const uniqueFlows = new Map<string, FlowInfo>();
@@ -74,10 +122,28 @@ const ExportDownload = () => {
       if (versionData) {
         versionData.forEach((row, idx) => {
           if (!uniqueFlows.has(row.flow_id)) {
+            const stepConfigs = row.step_configs as any[] | null;
+            const stepCount = Array.isArray(stepConfigs) ? stepConfigs.length : 0;
+            const ssStatus = flowScreenshotStatus.get(row.flow_id);
+            
+            let screenshotStatus: 'complete' | 'partial' | 'none' = 'none';
+            if (ssStatus) {
+              const expectedCount = stepCount * 2; // mobile + desktop
+              const actualCount = ssStatus.mobile + ssStatus.desktop;
+              if (actualCount >= expectedCount && expectedCount > 0) {
+                screenshotStatus = 'complete';
+              } else if (actualCount > 0) {
+                screenshotStatus = 'partial';
+              }
+            }
+            
             uniqueFlows.set(row.flow_id, {
               id: row.flow_id,
               name: row.version_name || row.flow_code || row.flow_id,
               rank: idx + 1,
+              stepCount,
+              hasScreenshots: !!ssStatus && (ssStatus.mobile > 0 || ssStatus.desktop > 0),
+              screenshotStatus,
             });
           }
         });
@@ -87,10 +153,13 @@ const ExportDownload = () => {
       if (analysisData) {
         analysisData.forEach((row) => {
           if (!uniqueFlows.has(row.flow_id)) {
+            const ssStatus = flowScreenshotStatus.get(row.flow_id);
             uniqueFlows.set(row.flow_id, {
               id: row.flow_id,
               name: row.flow_name || row.flow_id,
               rank: uniqueFlows.size + 1,
+              hasScreenshots: !!ssStatus && (ssStatus.mobile > 0 || ssStatus.desktop > 0),
+              screenshotStatus: ssStatus ? (ssStatus.mobile > 0 || ssStatus.desktop > 0 ? 'partial' : 'none') : 'none',
             });
           }
         });
@@ -105,30 +174,46 @@ const ExportDownload = () => {
     } finally {
       if (showSyncState) setIsSyncing(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchAllFlows();
-  }, []);
+  }, [fetchAllFlows]);
 
-  // Get flow list based on mode
+  // Get flow list based on mode and filters
   const targetFlows = useMemo(() => {
+    let flows: FlowInfo[];
+    
     if (mode === "top10") {
-      return TOP_10_FLOW_IDS;
+      flows = TOP_10_FLOW_IDS.map(f => {
+        const dbFlow = allFlows.find(af => af.id === f.id);
+        return {
+          ...f,
+          stepCount: dbFlow?.stepCount,
+          hasScreenshots: dbFlow?.hasScreenshots,
+          screenshotStatus: dbFlow?.screenshotStatus || 'none',
+        };
+      });
+    } else if (mode === "custom") {
+      flows = allFlows.filter(f => selectedFlowIds.has(f.id));
+    } else {
+      flows = allFlows;
     }
-    // "all" mode - use all flows from DB
-    return allFlows.map((f, idx) => ({
-      rank: idx + 1,
-      id: f.id,
-      name: f.name,
-    }));
-  }, [mode, allFlows]);
+    
+    // Apply screenshot filter
+    if (screenshotFilter !== "all") {
+      flows = flows.filter(f => f.screenshotStatus === screenshotFilter);
+    }
+    
+    return flows.map((f, idx) => ({ ...f, rank: idx + 1 }));
+  }, [mode, allFlows, selectedFlowIds, screenshotFilter]);
 
   // Fetch screenshots when mode or targetFlows changes
   useEffect(() => {
     const fetchScreenshots = async () => {
       if (targetFlows.length === 0) {
         setIsLoading(false);
+        setScreenshots([]);
         return;
       }
       
@@ -147,15 +232,12 @@ const ExportDownload = () => {
 
         // Build a map: flow_id -> best run_id (prefer completed, fallback to latest)
         const flowToRunId = new Map<string, string>();
-        const completedRunIds: string[] = [];
         
         for (const run of allRuns || []) {
           if (!flowToRunId.has(run.flow_id)) {
             flowToRunId.set(run.flow_id, run.id);
           }
           if (run.status === 'completed') {
-            completedRunIds.push(run.id);
-            // Override with completed run if we had a non-completed one
             flowToRunId.set(run.flow_id, run.id);
           }
         }
@@ -215,15 +297,109 @@ const ExportDownload = () => {
     fetchScreenshots();
   }, [targetFlows]);
 
-  const mobileCount = screenshots.filter(s => s.mobileUrl).length;
-  const desktopCount = screenshots.filter(s => s.desktopUrl).length;
+  // Filter screenshots by device
+  const filteredScreenshots = useMemo(() => {
+    return screenshots.map(s => ({
+      ...s,
+      mobileUrl: deviceFilter === 'desktop' ? null : s.mobileUrl,
+      desktopUrl: deviceFilter === 'mobile' ? null : s.desktopUrl,
+    })).filter(s => s.mobileUrl || s.desktopUrl);
+  }, [screenshots, deviceFilter]);
+
+  const mobileCount = filteredScreenshots.filter(s => s.mobileUrl).length;
+  const desktopCount = filteredScreenshots.filter(s => s.desktopUrl).length;
   const totalScreenshots = mobileCount + desktopCount;
-  const uniqueFlowCount = new Set(screenshots.map(s => s.flowId)).size;
+  const uniqueFlowCount = new Set(filteredScreenshots.map(s => s.flowId)).size;
+  
+  // Estimated ZIP size (rough: ~200KB per screenshot)
+  const estimatedSizeMB = ((totalScreenshots * 200) / 1024).toFixed(1);
+  
+  // Flows missing screenshots
+  const flowsWithoutScreenshots = useMemo(() => {
+    const flowsWithSS = new Set(screenshots.map(s => s.flowId));
+    return targetFlows.filter(f => !flowsWithSS.has(f.id));
+  }, [targetFlows, screenshots]);
+
+  // Auto-capture missing screenshots
+  const captureMissingScreenshots = async () => {
+    if (flowsWithoutScreenshots.length === 0) {
+      toast.info("Alle Flows haben bereits Screenshots!");
+      return;
+    }
+    
+    setIsCapturing(true);
+    setCaptureProgress({ current: 0, total: flowsWithoutScreenshots.length });
+    
+    try {
+      for (let i = 0; i < flowsWithoutScreenshots.length; i++) {
+        const flow = flowsWithoutScreenshots[i];
+        setCaptureProgress({ current: i + 1, total: flowsWithoutScreenshots.length });
+        setStatus(`Erfasse Screenshots für ${flow.name}...`);
+        
+        // Trigger analysis for this flow
+        const { error } = await supabase.functions.invoke('auto-analyze-flow', {
+          body: {
+            flowId: flow.id,
+            runType: 'manual',
+          },
+        });
+        
+        if (error) {
+          console.error(`Failed to capture ${flow.id}:`, error);
+        }
+        
+        // Small delay between captures
+        await new Promise(r => setTimeout(r, 1000));
+      }
+      
+      toast.success(`${flowsWithoutScreenshots.length} Flows zur Analyse gesendet!`);
+      setStatus("Capture abgeschlossen - Screenshots werden im Hintergrund erstellt.");
+      
+      // Refresh data after capture
+      setTimeout(() => fetchAllFlows(true), 3000);
+    } catch (err) {
+      console.error("Capture error:", err);
+      toast.error("Fehler beim Erfassen der Screenshots");
+    } finally {
+      setIsCapturing(false);
+    }
+  };
+
+  // Retry failed downloads
+  const retryFailedDownloads = async () => {
+    if (failedDownloads.length === 0) return;
+    
+    setIsDownloading(true);
+    setStatus(`Wiederhole ${failedDownloads.length} fehlgeschlagene Downloads...`);
+    
+    const stillFailed: FailedDownload[] = [];
+    
+    for (const failed of failedDownloads) {
+      try {
+        const response = await fetch(failed.url);
+        if (!response.ok) {
+          stillFailed.push(failed);
+        }
+      } catch {
+        stillFailed.push(failed);
+      }
+    }
+    
+    setFailedDownloads(stillFailed);
+    setIsDownloading(false);
+    
+    if (stillFailed.length === 0) {
+      toast.success("Alle Downloads erfolgreich!");
+    } else {
+      toast.error(`${stillFailed.length} Downloads immer noch fehlgeschlagen`);
+    }
+  };
 
   const downloadZip = async () => {
     setIsDownloading(true);
     setProgress(0);
     setCompleted(false);
+    setFailedDownloads([]);
 
     try {
       const zip = new JSZip();
@@ -232,20 +408,23 @@ const ExportDownload = () => {
       
       const total = totalScreenshots;
       let current = 0;
+      const failed: FailedDownload[] = [];
 
       // Generate dynamic JSON manifest
       const manifestData = {
         generatedAt: new Date().toISOString(),
         mode: mode,
+        deviceFilter: deviceFilter,
+        screenshotFilter: screenshotFilter,
         totalFlows: uniqueFlowCount,
-        totalSteps: screenshots.length,
+        totalSteps: filteredScreenshots.length,
         mobileScreenshots: mobileCount,
         desktopScreenshots: desktopCount,
-        flows: targetFlows.filter(f => screenshots.some(s => s.flowId === f.id)).map(f => ({
+        flows: targetFlows.filter(f => filteredScreenshots.some(s => s.flowId === f.id)).map(f => ({
           rank: f.rank,
           id: f.id,
           name: f.name,
-          steps: screenshots.filter(s => s.flowId === f.id).map(s => ({
+          steps: filteredScreenshots.filter(s => s.flowId === f.id).map(s => ({
             step: s.stepNumber,
             hasMobile: !!s.mobileUrl,
             hasDesktop: !!s.desktopUrl,
@@ -258,8 +437,9 @@ const ExportDownload = () => {
       // Generate Markdown summary
       let markdown = `# Umzugscheck Flow Export\n\n`;
       markdown += `**Generated:** ${new Date().toISOString()}\n`;
-      markdown += `**Mode:** ${mode === 'top10' ? 'Top 10 Flows' : `All Flows (${uniqueFlowCount})`}\n`;
-      markdown += `**Total Steps:** ${screenshots.length}\n`;
+      markdown += `**Mode:** ${mode === 'top10' ? 'Top 10 Flows' : mode === 'custom' ? 'Benutzerdefiniert' : `Alle Flows (${uniqueFlowCount})`}\n`;
+      markdown += `**Device Filter:** ${deviceFilter === 'both' ? 'Mobile + Desktop' : deviceFilter === 'mobile' ? 'Nur Mobile' : 'Nur Desktop'}\n`;
+      markdown += `**Total Steps:** ${filteredScreenshots.length}\n`;
       markdown += `**Screenshots:** ${mobileCount} Mobile, ${desktopCount} Desktop\n\n`;
       markdown += `---\n\n`;
 
@@ -306,8 +486,8 @@ const ExportDownload = () => {
   <h1>🚚 Umzugscheck Flow Export</h1>
   <div class="meta">
     <p><strong>Generated:</strong> ${new Date().toISOString()}</p>
-    <p><strong>Mode:</strong> ${mode === 'top10' ? 'Top 10 Flows' : `All Flows (${uniqueFlowCount})`}</p>
-    <p><strong>Total:</strong> ${screenshots.length} Steps | ${mobileCount} Mobile | ${desktopCount} Desktop</p>
+    <p><strong>Mode:</strong> ${mode === 'top10' ? 'Top 10 Flows' : mode === 'custom' ? 'Custom Selection' : `All Flows (${uniqueFlowCount})`}</p>
+    <p><strong>Total:</strong> ${filteredScreenshots.length} Steps | ${mobileCount} Mobile | ${desktopCount} Desktop</p>
   </div>
 `;
 
@@ -348,7 +528,7 @@ const ExportDownload = () => {
       zip.file("summary.html", html);
 
       // Fetch all screenshots from database URLs
-      for (const shot of screenshots) {
+      for (const shot of filteredScreenshots) {
         const prefix = `${String(shot.rank).padStart(2, '0')}-${shot.flowId}-step${shot.stepNumber}`;
         
         // Mobile screenshot
@@ -359,9 +539,12 @@ const ExportDownload = () => {
             if (response.ok) {
               const blob = await response.blob();
               mobileFolder?.file(`${prefix}-mobile.png`, blob);
+            } else {
+              failed.push({ flowId: shot.flowId, stepNumber: shot.stepNumber, type: 'mobile', url: shot.mobileUrl });
             }
           } catch (err) {
             console.error(`Failed to fetch mobile screenshot for ${shot.flowId} step ${shot.stepNumber}:`, err);
+            failed.push({ flowId: shot.flowId, stepNumber: shot.stepNumber, type: 'mobile', url: shot.mobileUrl });
           }
           current++;
           setProgress((current / total) * 100);
@@ -375,14 +558,19 @@ const ExportDownload = () => {
             if (response.ok) {
               const blob = await response.blob();
               desktopFolder?.file(`${prefix}-desktop.png`, blob);
+            } else {
+              failed.push({ flowId: shot.flowId, stepNumber: shot.stepNumber, type: 'desktop', url: shot.desktopUrl });
             }
           } catch (err) {
             console.error(`Failed to fetch desktop screenshot for ${shot.flowId} step ${shot.stepNumber}:`, err);
+            failed.push({ flowId: shot.flowId, stepNumber: shot.stepNumber, type: 'desktop', url: shot.desktopUrl });
           }
           current++;
           setProgress((current / total) * 100);
         }
       }
+
+      setFailedDownloads(failed);
 
       // Generate ZIP
       setStatus("Erstelle ZIP-Datei...");
@@ -391,10 +579,15 @@ const ExportDownload = () => {
       // Download
       const filename = mode === "top10" 
         ? `umzugscheck-top10-flows-${new Date().toISOString().split('T')[0]}.zip`
+        : mode === "custom"
+        ? `umzugscheck-custom-${uniqueFlowCount}-flows-${new Date().toISOString().split('T')[0]}.zip`
         : `umzugscheck-all-${uniqueFlowCount}-flows-${new Date().toISOString().split('T')[0]}.zip`;
       saveAs(content, filename);
       
-      setStatus("Download gestartet!");
+      setStatus(failed.length > 0 
+        ? `Download gestartet! (${failed.length} fehlgeschlagen)` 
+        : "Download gestartet!"
+      );
       setCompleted(true);
     } catch (error) {
       console.error("Download error:", error);
@@ -404,7 +597,35 @@ const ExportDownload = () => {
     }
   };
 
-  if (isLoading) {
+  // Toggle flow selection
+  const toggleFlowSelection = (flowId: string) => {
+    const newSet = new Set(selectedFlowIds);
+    if (newSet.has(flowId)) {
+      newSet.delete(flowId);
+    } else {
+      newSet.add(flowId);
+    }
+    setSelectedFlowIds(newSet);
+  };
+
+  // Select/deselect all flows
+  const toggleAllFlows = (select: boolean) => {
+    if (select) {
+      setSelectedFlowIds(new Set(allFlows.map(f => f.id)));
+    } else {
+      setSelectedFlowIds(new Set());
+    }
+  };
+
+  // Screenshot status stats
+  const statusStats = useMemo(() => {
+    const complete = allFlows.filter(f => f.screenshotStatus === 'complete').length;
+    const partial = allFlows.filter(f => f.screenshotStatus === 'partial').length;
+    const none = allFlows.filter(f => f.screenshotStatus === 'none').length;
+    return { complete, partial, none };
+  }, [allFlows]);
+
+  if (isLoading && allFlows.length === 0) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <Card className="w-full max-w-lg">
@@ -421,7 +642,7 @@ const ExportDownload = () => {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <Card className="w-full max-w-lg">
+      <Card className="w-full max-w-2xl">
         <CardHeader className="text-center">
           <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
             <Package className="h-8 w-8 text-primary" />
@@ -429,8 +650,10 @@ const ExportDownload = () => {
           <CardTitle className="text-2xl">Flow Screenshot Export</CardTitle>
           <CardDescription>
             {mode === "top10" 
-              ? `Top 10 Flows - ${screenshots.length} Steps`
-              : `Alle ${uniqueFlowCount} Flows - ${screenshots.length} Steps`
+              ? `Top 10 Flows - ${filteredScreenshots.length} Steps`
+              : mode === "custom"
+              ? `${selectedFlowIds.size} ausgewählte Flows - ${filteredScreenshots.length} Steps`
+              : `Alle ${uniqueFlowCount} Flows - ${filteredScreenshots.length} Steps`
             }
           </CardDescription>
         </CardHeader>
@@ -457,6 +680,7 @@ const ExportDownload = () => {
               <SelectContent>
                 <SelectItem value="top10">Top 10 Flows</SelectItem>
                 <SelectItem value="all">Alle Flows ({allFlows.length})</SelectItem>
+                <SelectItem value="custom">Benutzerdefiniert ({selectedFlowIds.size})</SelectItem>
               </SelectContent>
             </Select>
             {lastSynced && (
@@ -464,6 +688,93 @@ const ExportDownload = () => {
                 Zuletzt synchronisiert: {lastSynced.toLocaleTimeString('de-CH')}
               </p>
             )}
+          </div>
+
+          {/* Custom Flow Selector */}
+          {mode === "custom" && (
+            <Collapsible open={showFlowSelector} onOpenChange={setShowFlowSelector}>
+              <CollapsibleTrigger asChild>
+                <Button variant="outline" className="w-full justify-between">
+                  <span>Flows auswählen ({selectedFlowIds.size} von {allFlows.length})</span>
+                  <ChevronRight className={`h-4 w-4 transition-transform ${showFlowSelector ? 'rotate-90' : ''}`} />
+                </Button>
+              </CollapsibleTrigger>
+              <CollapsibleContent className="pt-2">
+                <div className="flex gap-2 mb-2">
+                  <Button variant="outline" size="sm" onClick={() => toggleAllFlows(true)}>
+                    <CheckCheck className="h-3.5 w-3.5 mr-1" />
+                    Alle
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => toggleAllFlows(false)}>
+                    <XCircle className="h-3.5 w-3.5 mr-1" />
+                    Keine
+                  </Button>
+                </div>
+                <ScrollArea className="h-48 border rounded-md p-2">
+                  <div className="space-y-1">
+                    {allFlows.map(flow => (
+                      <div 
+                        key={flow.id}
+                        className="flex items-center gap-2 p-1.5 hover:bg-muted/50 rounded cursor-pointer"
+                        onClick={() => toggleFlowSelection(flow.id)}
+                      >
+                        <Checkbox 
+                          checked={selectedFlowIds.has(flow.id)}
+                          onCheckedChange={() => toggleFlowSelection(flow.id)}
+                        />
+                        <span className="text-sm flex-1 truncate">{flow.name}</span>
+                        {flow.screenshotStatus === 'complete' && (
+                          <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
+                        )}
+                        {flow.screenshotStatus === 'partial' && (
+                          <AlertTriangle className="h-3.5 w-3.5 text-amber-500" />
+                        )}
+                        {flow.screenshotStatus === 'none' && (
+                          <XCircle className="h-3.5 w-3.5 text-muted-foreground" />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+              </CollapsibleContent>
+            </Collapsible>
+          )}
+
+          {/* Filters */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-muted-foreground flex items-center gap-1">
+                <Filter className="h-3 w-3" />
+                Screenshot-Status
+              </label>
+              <Select value={screenshotFilter} onValueChange={(v: ScreenshotFilter) => setScreenshotFilter(v)}>
+                <SelectTrigger className="h-9 text-sm">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Alle ({allFlows.length})</SelectItem>
+                  <SelectItem value="complete">Vollständig ({statusStats.complete})</SelectItem>
+                  <SelectItem value="partial">Teilweise ({statusStats.partial})</SelectItem>
+                  <SelectItem value="none">Keine ({statusStats.none})</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-muted-foreground flex items-center gap-1">
+                <Smartphone className="h-3 w-3" />
+                Geräte
+              </label>
+              <Select value={deviceFilter} onValueChange={(v: DeviceFilter) => setDeviceFilter(v)}>
+                <SelectTrigger className="h-9 text-sm">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="both">Mobile + Desktop</SelectItem>
+                  <SelectItem value="mobile">Nur Mobile</SelectItem>
+                  <SelectItem value="desktop">Nur Desktop</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           {error && (
@@ -474,13 +785,13 @@ const ExportDownload = () => {
           )}
 
           {/* Stats */}
-          <div className="grid grid-cols-4 gap-2 text-center">
+          <div className="grid grid-cols-5 gap-2 text-center">
             <div className="bg-muted/50 rounded-lg p-2">
               <div className="text-xl font-bold text-primary">{uniqueFlowCount}</div>
               <div className="text-[10px] text-muted-foreground">Flows</div>
             </div>
             <div className="bg-muted/50 rounded-lg p-2">
-              <div className="text-xl font-bold text-amber-500">{screenshots.length}</div>
+              <div className="text-xl font-bold text-amber-500">{filteredScreenshots.length}</div>
               <div className="text-[10px] text-muted-foreground">Steps</div>
             </div>
             <div className="bg-muted/50 rounded-lg p-2">
@@ -491,7 +802,44 @@ const ExportDownload = () => {
               <div className="text-xl font-bold text-green-500">{desktopCount}</div>
               <div className="text-[10px] text-muted-foreground">Desktop</div>
             </div>
+            <div className="bg-muted/50 rounded-lg p-2">
+              <div className="text-xl font-bold text-purple-500">{estimatedSizeMB}</div>
+              <div className="text-[10px] text-muted-foreground">MB (ca.)</div>
+            </div>
           </div>
+
+          {/* Missing Screenshots Alert */}
+          {flowsWithoutScreenshots.length > 0 && (
+            <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <AlertTriangle className="h-4 w-4 text-amber-600" />
+                  <span className="text-sm font-medium text-amber-800 dark:text-amber-200">
+                    {flowsWithoutScreenshots.length} Flows ohne Screenshots
+                  </span>
+                </div>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={captureMissingScreenshots}
+                  disabled={isCapturing}
+                  className="h-7 text-xs border-amber-300 hover:bg-amber-100"
+                >
+                  {isCapturing ? (
+                    <>
+                      <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                      {captureProgress.current}/{captureProgress.total}
+                    </>
+                  ) : (
+                    <>
+                      <Zap className="h-3 w-3 mr-1" />
+                      Auto-Capture
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          )}
 
           {/* Contents Preview */}
           <div className="bg-muted/50 rounded-lg p-4 space-y-3">
@@ -514,24 +862,54 @@ const ExportDownload = () => {
               </div>
               
               <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide pt-2">Screenshots (aus Datenbank)</p>
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <Image className="h-4 w-4 text-purple-500" />
-                <span>screenshots-mobile/</span>
-                <span className="text-xs bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded">{mobileCount} PNG</span>
-              </div>
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <Image className="h-4 w-4 text-teal-500" />
-                <span>screenshots-desktop/</span>
-                <span className="text-xs bg-teal-100 text-teal-700 px-1.5 py-0.5 rounded">{desktopCount} PNG</span>
+              {deviceFilter !== 'desktop' && (
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Image className="h-4 w-4 text-purple-500" />
+                  <span>screenshots-mobile/</span>
+                  <span className="text-xs bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded">{mobileCount} PNG</span>
+                </div>
+              )}
+              {deviceFilter !== 'mobile' && (
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Image className="h-4 w-4 text-teal-500" />
+                  <span>screenshots-desktop/</span>
+                  <span className="text-xs bg-teal-100 text-teal-700 px-1.5 py-0.5 rounded">{desktopCount} PNG</span>
+                </div>
+              )}
+              
+              <div className="flex items-center gap-2 text-muted-foreground pt-1">
+                <HardDrive className="h-4 w-4 text-gray-500" />
+                <span>Geschätzte Größe:</span>
+                <span className="text-xs bg-gray-100 text-gray-700 px-1.5 py-0.5 rounded">~{estimatedSizeMB} MB</span>
               </div>
             </div>
           </div>
 
           {/* Progress */}
-          {isDownloading && (
+          {(isDownloading || isCapturing) && (
             <div className="space-y-2">
-              <Progress value={progress} className="h-2" />
+              <Progress value={isCapturing ? (captureProgress.current / captureProgress.total) * 100 : progress} className="h-2" />
               <p className="text-sm text-muted-foreground text-center">{status}</p>
+            </div>
+          )}
+
+          {/* Failed Downloads */}
+          {failedDownloads.length > 0 && (
+            <div className="flex items-center justify-between gap-2 bg-red-50 dark:bg-red-950/20 p-3 rounded-lg">
+              <div className="flex items-center gap-2 text-red-700 dark:text-red-300">
+                <XCircle className="h-4 w-4" />
+                <span className="text-sm">{failedDownloads.length} Downloads fehlgeschlagen</span>
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={retryFailedDownloads}
+                disabled={isDownloading}
+                className="h-7 text-xs"
+              >
+                <RotateCcw className="h-3 w-3 mr-1" />
+                Wiederholen
+              </Button>
             </div>
           )}
 
@@ -546,7 +924,7 @@ const ExportDownload = () => {
           {/* Download Button */}
           <Button 
             onClick={downloadZip} 
-            disabled={isDownloading || screenshots.length === 0}
+            disabled={isDownloading || isCapturing || filteredScreenshots.length === 0}
             className="w-full h-12 text-base"
             size="lg"
           >
@@ -558,14 +936,14 @@ const ExportDownload = () => {
             ) : (
               <>
                 <Download className="h-5 w-5 mr-2" />
-                ZIP herunterladen ({totalScreenshots} Screenshots)
+                ZIP herunterladen ({totalScreenshots} Screenshots, ~{estimatedSizeMB} MB)
               </>
             )}
           </Button>
 
-          {screenshots.length === 0 && !isLoading && (
+          {filteredScreenshots.length === 0 && !isLoading && (
             <p className="text-sm text-muted-foreground text-center">
-              Keine Screenshots gefunden. Bitte zuerst Screenshots erfassen.
+              Keine Screenshots gefunden. Verwende "Auto-Capture" oder ändere die Filter.
             </p>
           )}
         </CardContent>
