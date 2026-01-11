@@ -341,34 +341,54 @@ const ExportDownload = () => {
     
     setIsCapturing(true);
     setCaptureProgress({ current: 0, total: flowsWithoutScreenshots.length });
+    flowsWithoutScreenshotsCountRef.current = flowsWithoutScreenshots.length;
+    
+    let successCount = 0;
+    let errorCount = 0;
     
     try {
       for (let i = 0; i < flowsWithoutScreenshots.length; i++) {
         const flow = flowsWithoutScreenshots[i];
         setCaptureProgress({ current: i + 1, total: flowsWithoutScreenshots.length });
-        setStatus(`Erfasse Screenshots für ${flow.name}...`);
         
-        // Trigger analysis for this flow
-        const { error } = await supabase.functions.invoke('auto-analyze-flow', {
-          body: {
-            flowId: flow.id,
-            runType: 'manual',
-          },
-        });
+        // Normalize flow ID for edge function (remove umzugsofferten- prefix)
+        const normalizedId = normalizeFlowId(flow.id);
+        setStatus(`Erfasse Screenshots für ${flow.name} (${normalizedId})...`);
         
-        if (error) {
-          console.error(`Failed to capture ${flow.id}:`, error);
+        try {
+          const { error } = await supabase.functions.invoke('auto-analyze-flow', {
+            body: {
+              flowId: normalizedId,
+              runType: 'manual',
+            },
+          });
+          
+          if (error) {
+            console.error(`Failed to capture ${normalizedId}:`, error);
+            errorCount++;
+          } else {
+            successCount++;
+          }
+        } catch (err) {
+          console.error(`Error capturing ${normalizedId}:`, err);
+          errorCount++;
         }
         
-        // Small delay between captures
-        await new Promise(r => setTimeout(r, 1000));
+        // Small delay between captures to avoid rate limiting
+        await new Promise(r => setTimeout(r, 1500));
       }
       
-      toast.success(`${flowsWithoutScreenshots.length} Flows zur Analyse gesendet!`);
+      if (successCount > 0) {
+        toast.success(`${successCount} Flows zur Analyse gesendet!`);
+      }
+      if (errorCount > 0) {
+        toast.warning(`${errorCount} Flows konnten nicht analysiert werden`);
+      }
+      
       setStatus("Capture abgeschlossen - Screenshots werden im Hintergrund erstellt.");
       
-      // Refresh data after capture
-      setTimeout(() => fetchAllFlows(true), 3000);
+      // Start auto-refresh loop to wait for screenshots to appear
+      startAutoRefresh();
     } catch (err) {
       console.error("Capture error:", err);
       toast.error("Fehler beim Erfassen der Screenshots");
@@ -376,6 +396,56 @@ const ExportDownload = () => {
       setIsCapturing(false);
     }
   };
+
+  // Auto-refresh loop after capture
+  const startAutoRefresh = () => {
+    if (autoRefreshIntervalRef.current) {
+      clearInterval(autoRefreshIntervalRef.current);
+    }
+    
+    autoRefreshAttemptsRef.current = 0;
+    setIsAutoRefreshing(true);
+    
+    // Poll every 5 seconds for up to 60 seconds (12 attempts)
+    autoRefreshIntervalRef.current = window.setInterval(async () => {
+      autoRefreshAttemptsRef.current++;
+      
+      // Sync to check for new screenshots
+      await fetchAllFlows(false);
+      
+      // Check if new screenshots appeared (flows without screenshots decreased)
+      const currentWithoutCount = flowsWithoutScreenshots.length;
+      
+      if (currentWithoutCount < flowsWithoutScreenshotsCountRef.current) {
+        toast.success(`Screenshots aktualisiert! Noch ${currentWithoutCount} ohne Screenshots.`);
+        flowsWithoutScreenshotsCountRef.current = currentWithoutCount;
+      }
+      
+      // Stop after 12 attempts (60 seconds) or if all have screenshots
+      if (autoRefreshAttemptsRef.current >= 12 || currentWithoutCount === 0) {
+        if (autoRefreshIntervalRef.current) {
+          clearInterval(autoRefreshIntervalRef.current);
+          autoRefreshIntervalRef.current = null;
+        }
+        setIsAutoRefreshing(false);
+        
+        if (currentWithoutCount === 0) {
+          toast.success("Alle Screenshots wurden erfolgreich erfasst!");
+        } else {
+          toast.info(`Auto-Refresh beendet. ${currentWithoutCount} Flows noch ohne Screenshots.`);
+        }
+      }
+    }, 5000);
+  };
+
+  // Cleanup auto-refresh on unmount
+  useEffect(() => {
+    return () => {
+      if (autoRefreshIntervalRef.current) {
+        clearInterval(autoRefreshIntervalRef.current);
+      }
+    };
+  }, []);
 
   // Retry failed downloads
   const retryFailedDownloads = async () => {

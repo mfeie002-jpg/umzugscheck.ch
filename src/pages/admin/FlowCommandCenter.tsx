@@ -148,19 +148,33 @@ function mapToEdgeFunctionFlowId(flowId: string): string {
   return flowId;
 }
 
-// Valid flow IDs that the edge function supports
+// Valid flow IDs that the edge function supports - must match all flows in DB
 const VALID_EDGE_FUNCTION_FLOWS = [
+  // V1 family
   'v1', 'v1a', 'v1b', 'v1c', 'v1d', 'v1e', 'v1f', 'v1g',
-  'v2', 'v2a', 'v2b', 'v2c', 'v2d', 'v2e', 'v2f',
+  // V2 family
+  'v2', 'v2a', 'v2b', 'v2c', 'v2d', 'v2e', 'v2f', 'v2-archetyp',
+  // V3 family
   'v3', 'v3a', 'v3b', 'v3c', 'v3d', 'v3e',
+  // V4 family
   'v4', 'v4a', 'v4b', 'v4c', 'v4d', 'v4e', 'v4f',
+  // V5 family
   'v5', 'v5a', 'v5b', 'v5c', 'v5d', 'v5e', 'v5f',
+  // V6 family
   'v6', 'v6a', 'v6b', 'v6c', 'v6d', 'v6e', 'v6f',
+  // V7 family
   'v7', 'v7a',
+  // V8 family
   'v8', 'v8a',
+  // V9 family
   'v9', 'v9a', 'v9b', 'v9c', 'v9d',
+  // Ultimate family
+  'ultimate-best36', 'ultimate-v7', 'ultimate-ch',
+  'vultimate', 'vultimate-v1', 'vultimate-v2',
+  // ChatGPT flows
+  'chatgpt-flow-1', 'chatgpt-flow-2', 'chatgpt-flow-3',
+  // Multi
   'multi-a',
-  'ultimate-v7'
 ];
 
 function getAllFlowIds(): string[] {

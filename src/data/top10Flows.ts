@@ -61,7 +61,7 @@ export const TOP_10_FLOWS = [
   },
   {
     rank: 6,
-    id: "umzugsofferten-ultimate-best36",
+    id: "ultimate-best36",
     name: "Ultimate Best36",
     description: "4 Steps, Best-of 36 Varianten (Ziel: 98/100)",
     reason: "Euer 'Best-of'-Kandidat: sehr stark für Gesamtqualität vs. Steps.",
