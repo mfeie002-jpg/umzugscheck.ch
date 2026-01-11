@@ -345,42 +345,16 @@ export function ScreenshotValidationTool({ flowIds, showAllFlowsOption = true }:
         
         console.log(`[FixAllBrokenFlows] Processing ${flow.flowId} (${i + 1}/${brokenFlows.length})`);
 
-        // Get the flow's path from flow_versions
-        const { data: flowVersion, error: fetchError } = await supabase
-          .from('flow_versions')
-          .select('step_configs')
-          .eq('flow_id', flow.flowId)
-          .eq('is_active', true)
-          .maybeSingle();
-
-        if (fetchError) {
-          console.error(`[FixAllBrokenFlows] Failed to fetch ${flow.flowId}:`, fetchError);
-          errorCount++;
-          continue;
-        }
-
-        const stepConfigs = flowVersion?.step_configs as any[] || [];
+        // Get the flow config from FLOW_CONFIGS (source of truth) - NOT from DB!
+        const flowConfig = getFlowConfig(flow.flowId);
+        const expectedSteps = flowConfig?.steps.length ?? getExpectedStepsFromConfig(flow.flowId);
         
-        if (stepConfigs.length === 0) {
-          console.warn(`[FixAllBrokenFlows] No step_configs for ${flow.flowId}, using defaults`);
-          // Use default 6 steps if no config
-          for (let step = 1; step <= 6; step++) {
-            stepConfigs.push({ name: `Step ${step}`, path: `/?step=${step}` });
-          }
-        }
+        console.log(`[FixAllBrokenFlows] Flow ${flow.flowId} has ${expectedSteps} expected steps from config`);
         
-        console.log(`[FixAllBrokenFlows] Invoking auto-analyze-flow for ${flow.flowId} with ${stepConfigs.length} steps`);
-        
-        // Call the auto-analyze-flow function
+        // Call the auto-analyze-flow function - just pass flowId, the edge function knows the config
         const { error, data } = await supabase.functions.invoke('auto-analyze-flow', {
           body: {
             flowId: flow.flowId,
-            flowName: flow.flowName,
-            steps: stepConfigs.map((s: any, idx: number) => ({
-              number: idx + 1,
-              name: s.name || `Step ${idx + 1}`,
-              path: s.path || `/?step=${idx + 1}`
-            })),
             baseUrl,
             runType: 'manual'
           }
