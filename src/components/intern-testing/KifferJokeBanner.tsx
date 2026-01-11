@@ -51,7 +51,7 @@ const KIFFER_JOKES = [
 ];
 
 interface KifferJokeBannerProps {
-  variant?: "top" | "bottom" | "floating";
+  variant?: "top" | "bottom" | "floating" | "inline";
   autoRotate?: boolean;
   rotateInterval?: number;
   onClose?: () => void;
@@ -106,7 +106,8 @@ export function KifferJokeBanner({
   const baseStyles = {
     top: "w-full",
     bottom: "w-full",
-    floating: "fixed bottom-20 left-4 right-4 z-40 max-w-lg mx-auto"
+    floating: "fixed bottom-20 left-4 right-4 z-40 max-w-lg mx-auto",
+    inline: "w-full"
   };
 
   return (
