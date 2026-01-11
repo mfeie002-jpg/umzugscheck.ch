@@ -442,8 +442,9 @@ const AdminRoutes = () => (
 // Route content component that decides between admin and main layouts
 const AppRouterContent = () => {
   const location = useLocation();
-  const isAdminRoute = location.pathname.toLowerCase().startsWith('/admin');
-  const isFlowTester = location.pathname.toLowerCase() === '/flow-tester';
+  const pathname = location.pathname.toLowerCase();
+  const isAdminRoute = pathname.startsWith('/admin') || pathname === '/all-flows-review';
+  const isFlowTester = pathname === '/flow-tester';
 
   if (isAdminRoute) {
     return <AdminRoutes />;
