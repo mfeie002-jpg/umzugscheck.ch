@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Download, FileJson, FileText, Image, Loader2, CheckCircle2, Package, FileCode, AlertCircle, ChevronDown } from "lucide-react";
+import { Download, FileJson, FileText, Image, Loader2, CheckCircle2, Package, FileCode, AlertCircle, ChevronDown, RefreshCw } from "lucide-react";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { supabase } from "@/integrations/supabase/client";
@@ -48,35 +48,66 @@ const ExportDownload = () => {
   const [screenshots, setScreenshots] = useState<StepScreenshot[]>([]);
   const [allFlows, setAllFlows] = useState<FlowInfo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSyncing, setIsSyncing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [lastSynced, setLastSynced] = useState<Date | null>(null);
 
   // Fetch all available flows from DB
-  useEffect(() => {
-    const fetchAllFlows = async () => {
-      try {
-        const { data } = await supabase
-          .from('flow_analysis_runs')
-          .select('flow_id, flow_name')
-          .order('created_at', { ascending: false });
-        
-        if (data) {
-          // Deduplicate by flow_id
-          const uniqueFlows = new Map<string, FlowInfo>();
-          data.forEach((row, idx) => {
-            if (!uniqueFlows.has(row.flow_id)) {
-              uniqueFlows.set(row.flow_id, {
-                id: row.flow_id,
-                name: row.flow_name || row.flow_id,
-                rank: idx + 1,
-              });
-            }
-          });
-          setAllFlows(Array.from(uniqueFlows.values()));
-        }
-      } catch (err) {
-        console.error("Failed to fetch all flows:", err);
+  const fetchAllFlows = async (showSyncState = false) => {
+    if (showSyncState) setIsSyncing(true);
+    try {
+      // Fetch ALL flow_versions to get the true count
+      const { data: versionData, count: totalCount } = await supabase
+        .from('flow_versions')
+        .select('flow_id, version_name, flow_code', { count: 'exact' });
+      
+      // Also get analysis runs for additional flow info
+      const { data: analysisData } = await supabase
+        .from('flow_analysis_runs')
+        .select('flow_id, flow_name')
+        .order('created_at', { ascending: false });
+      
+      // Combine both sources
+      const uniqueFlows = new Map<string, FlowInfo>();
+      
+      // First add from flow_versions (authoritative source)
+      if (versionData) {
+        versionData.forEach((row, idx) => {
+          if (!uniqueFlows.has(row.flow_id)) {
+            uniqueFlows.set(row.flow_id, {
+              id: row.flow_id,
+              name: row.version_name || row.flow_code || row.flow_id,
+              rank: idx + 1,
+            });
+          }
+        });
       }
-    };
+      
+      // Then add from analysis runs (may have additional flows)
+      if (analysisData) {
+        analysisData.forEach((row) => {
+          if (!uniqueFlows.has(row.flow_id)) {
+            uniqueFlows.set(row.flow_id, {
+              id: row.flow_id,
+              name: row.flow_name || row.flow_id,
+              rank: uniqueFlows.size + 1,
+            });
+          }
+        });
+      }
+      
+      setAllFlows(Array.from(uniqueFlows.values()));
+      setLastSynced(new Date());
+      console.log(`[Sync] Loaded ${uniqueFlows.size} flows (${totalCount} total in flow_versions)`);
+    } catch (err) {
+      console.error("Failed to fetch all flows:", err);
+      setError("Fehler beim Synchronisieren der Flows.");
+    } finally {
+      if (showSyncState) setIsSyncing(false);
+    }
+  };
+
+  useEffect(() => {
     fetchAllFlows();
   }, []);
 
@@ -404,9 +435,21 @@ const ExportDownload = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Mode Selector */}
+          {/* Mode Selector + Sync Button */}
           <div className="space-y-2">
-            <label className="text-sm font-medium">Export-Modus:</label>
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium">Export-Modus:</label>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => fetchAllFlows(true)}
+                disabled={isSyncing}
+                className="h-8 gap-1.5 text-xs"
+              >
+                <RefreshCw className={`h-3.5 w-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
+                {isSyncing ? 'Synchronisiere...' : 'Sync'}
+              </Button>
+            </div>
             <Select value={mode} onValueChange={(v: ExportMode) => setMode(v)}>
               <SelectTrigger>
                 <SelectValue />
@@ -416,6 +459,11 @@ const ExportDownload = () => {
                 <SelectItem value="all">Alle Flows ({allFlows.length})</SelectItem>
               </SelectContent>
             </Select>
+            {lastSynced && (
+              <p className="text-xs text-muted-foreground">
+                Zuletzt synchronisiert: {lastSynced.toLocaleTimeString('de-CH')}
+              </p>
+            )}
           </div>
 
           {error && (
