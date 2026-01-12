@@ -425,13 +425,18 @@ Bitte gib mir konkrete Code-Fixes für:
   
   const screenshots = flowData?.screenshots || [];
   const maxSteps = screenshots.length;
-  
-  // Find current screenshot by matching stepNumber
-  const currentScreenshot = screenshots.find(s => s.stepNumber === currentStep);
-  const compareScreenshot = compareData?.screenshots.find(s => s.stepNumber === currentStep);
-  
-  // Get current index in the array for prev/next navigation
-  const currentIndex = screenshots.findIndex(s => s.stepNumber === currentStep);
+
+  // Base flow screenshot (by stepNumber)
+  const currentScreenshot = screenshots.find((s) => s.stepNumber === currentStep);
+
+  // Compare flow: match by INDEX (not stepNumber) so flows with different step_numbers / missing steps still compare correctly
+  const compareScreenshots = compareData?.screenshots || [];
+
+  // Get current index in the base array for prev/next navigation
+  const currentIndex = screenshots.findIndex((s) => s.stepNumber === currentStep);
+
+  const compareIndex = Math.max(0, Math.min(currentIndex, Math.max(0, compareScreenshots.length - 1)));
+  const compareScreenshot = compareScreenshots.length > 0 ? compareScreenshots[compareIndex] : undefined;
   
   const goToPrevStep = () => {
     if (currentIndex > 0) {

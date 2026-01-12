@@ -12,18 +12,31 @@ interface FlowConfig {
   flowPath: string;
 }
 
+interface BulkCaptureCursor {
+  flowIndex: number;
+  step: number;
+  dimIndex: number;
+  completedCaptures: number;
+  totalCaptures: number;
+  successCount: number;
+  errorCount: number;
+}
+
 interface BulkCaptureRequest {
   jobId: string;
   flows: FlowConfig[];
   baseUrl: string;
   captureDesktop: boolean;
   captureMobile: boolean;
+  cursor?: BulkCaptureCursor;
 }
 
 interface ScreenshotError {
   type: 'quota_exceeded' | 'api_error' | 'network_error';
   message: string;
 }
+
+const MAX_CAPTURES_PER_INVOCATION = 4; // keeps runtime well below platform timeouts
 
 async function captureViaBackend(
   supabase: any,
@@ -37,7 +50,7 @@ async function captureViaBackend(
     try {
       if (attempt > 0) {
         console.log(`Retry attempt ${attempt} for ${dimension}`);
-        await new Promise(resolve => setTimeout(resolve, 3000 * attempt));
+        await new Promise((resolve) => setTimeout(resolve, 3000 * attempt));
       }
       
       const { data, error } = await supabase.functions.invoke('capture-screenshot', {
@@ -55,7 +68,11 @@ async function captureViaBackend(
 
       if (error) {
         const msg = error.message || 'Unknown error';
-        if (msg.includes('Relay Error') || msg.includes('connection closed') || msg.includes('FunctionsFetchError')) {
+        if (
+          msg.includes('Relay Error') ||
+          msg.includes('connection closed') ||
+          msg.includes('FunctionsFetchError')
+        ) {
           lastError = { type: 'network_error', message: msg };
           console.warn(`Transient error on attempt ${attempt}: ${msg}`);
           continue;
@@ -99,7 +116,7 @@ async function updateJobProgress(
     .update({ 
       status,
       progress,
-      progress_message: message
+      progress_message: message,
     })
     .eq('id', jobId);
 }
@@ -112,37 +129,29 @@ async function saveScreenshotToDb(
   imageBase64: string
 ) {
   try {
-    // Upload to flow-screenshots storage (consistent with other tools)
     const runId = crypto.randomUUID();
     const fileName = `${flowId}/${runId}/step-${step}-${type}.png`;
     const base64Data = imageBase64.replace(/^data:image\/\w+;base64,/, '');
     
-    // Convert base64 to binary
     const binaryString = atob(base64Data);
     const bytes = new Uint8Array(binaryString.length);
     for (let i = 0; i < binaryString.length; i++) {
       bytes[i] = binaryString.charCodeAt(i);
     }
     
-    const { error: uploadError } = await supabase.storage
-      .from('flow-screenshots')
-      .upload(fileName, bytes, {
-        contentType: 'image/png',
-        upsert: true
-      });
+    const { error: uploadError } = await supabase.storage.from('flow-screenshots').upload(fileName, bytes, {
+      contentType: 'image/png',
+      upsert: true,
+    });
 
     if (uploadError) {
       console.error('Upload error:', uploadError);
       return null;
     }
 
-    const { data: urlData } = supabase.storage
-      .from('flow-screenshots')
-      .getPublicUrl(fileName);
-
+    const { data: urlData } = supabase.storage.from('flow-screenshots').getPublicUrl(fileName);
     const publicUrl = urlData.publicUrl;
 
-    // Update or insert flow_step_metrics
     const updateColumn = type === 'desktop' ? 'desktop_screenshot_url' : 'mobile_screenshot_url';
     
     const { data: existing } = await supabase
@@ -153,18 +162,13 @@ async function saveScreenshotToDb(
       .maybeSingle();
 
     if (existing) {
-      await supabase
-        .from('flow_step_metrics')
-        .update({ [updateColumn]: publicUrl })
-        .eq('id', existing.id);
+      await supabase.from('flow_step_metrics').update({ [updateColumn]: publicUrl }).eq('id', existing.id);
     } else {
-      await supabase
-        .from('flow_step_metrics')
-        .insert({
-          flow_id: flowId,
-          step_number: step,
-          [updateColumn]: publicUrl
-        });
+      await supabase.from('flow_step_metrics').insert({
+        flow_id: flowId,
+        step_number: step,
+        [updateColumn]: publicUrl,
+      });
     }
     
     console.log(`Saved ${type} screenshot for ${flowId} step ${step}`);
@@ -173,6 +177,17 @@ async function saveScreenshotToDb(
     console.error('Failed to save screenshot to DB:', err);
     return null;
   }
+}
+
+function buildDimensions(captureDesktop: boolean, captureMobile: boolean): ('desktop' | 'mobile')[] {
+  const dimensions: ('desktop' | 'mobile')[] = [];
+  if (captureDesktop) dimensions.push('desktop');
+  if (captureMobile) dimensions.push('mobile');
+  return dimensions;
+}
+
+function computeTotalCaptures(flows: FlowConfig[], dimensions: ('desktop' | 'mobile')[]) {
+  return flows.reduce((acc, f) => acc + f.stepCount * dimensions.length, 0);
 }
 
 Deno.serve(async (req) => {
@@ -185,129 +200,199 @@ Deno.serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const { 
-      jobId, 
+    const {
+      jobId,
       flows,
       baseUrl,
       captureDesktop = true,
-      captureMobile = true 
+      captureMobile = true,
+      cursor,
     }: BulkCaptureRequest = await req.json();
 
-    console.log(`[BulkCapture] Starting job ${jobId} with ${flows.length} flows`);
+    const dimensions = buildDimensions(captureDesktop, captureMobile);
+    const totalCaptures = cursor?.totalCaptures ?? computeTotalCaptures(flows, dimensions);
 
-    // Update job to processing
-    await supabase
-      .from('export_jobs')
-      .update({ 
-        status: 'processing',
-        started_at: new Date().toISOString(),
-        progress: 0,
-        progress_message: 'Bulk Screenshot-Erfassung gestartet...'
-      })
-      .eq('id', jobId);
-
-    const dimensions: ('desktop' | 'mobile')[] = [];
-    if (captureDesktop) dimensions.push('desktop');
-    if (captureMobile) dimensions.push('mobile');
-
-    // Calculate total captures
-    let totalCaptures = 0;
-    for (const flow of flows) {
-      totalCaptures += flow.stepCount * dimensions.length;
+    // First invocation: mark job as started
+    if (!cursor) {
+      console.log(`[BulkCapture] Starting job ${jobId} with ${flows.length} flows`);
+      await supabase
+        .from('export_jobs')
+        .update({
+          status: 'processing',
+          started_at: new Date().toISOString(),
+          progress: 0,
+          progress_message: 'Bulk Screenshot-Erfassung gestartet...',
+        })
+        .eq('id', jobId);
     }
 
-    let completedCaptures = 0;
-    let successCount = 0;
-    let errorCount = 0;
+    // Initialize cursor
+    let state: BulkCaptureCursor = cursor ?? {
+      flowIndex: 0,
+      step: 1,
+      dimIndex: 0,
+      completedCaptures: 0,
+      totalCaptures,
+      successCount: 0,
+      errorCount: 0,
+    };
+
+    let capturesThisRun = 0;
     let quotaExceeded = false;
 
-    for (const flow of flows) {
-      if (quotaExceeded) break;
-      
-      console.log(`[BulkCapture] Processing ${flow.flowId} (${flow.stepCount} steps)`);
+    while (
+      capturesThisRun < MAX_CAPTURES_PER_INVOCATION &&
+      state.flowIndex < flows.length &&
+      !quotaExceeded
+    ) {
+      const flow = flows[state.flowIndex];
 
-      for (let step = 1; step <= flow.stepCount; step++) {
-        if (quotaExceeded) break;
-
-        for (const dim of dimensions) {
-          if (quotaExceeded) break;
-
-          const progressPercent = Math.round((completedCaptures / totalCaptures) * 100);
-          await updateJobProgress(
-            supabase,
-            jobId,
-            progressPercent,
-            `${flow.flowName} Step ${step} (${dim}) - ${completedCaptures + 1}/${totalCaptures}`
-          );
-
-          // Build capture URL
-          const urlObj = new URL(flow.flowPath, baseUrl);
-          urlObj.searchParams.set('uc_capture', '1');
-          urlObj.searchParams.set('uc_step', String(step));
-          urlObj.searchParams.set('uc_render', '1');
-          urlObj.searchParams.set('uc_cb', String(Date.now()));
-          const captureUrl = urlObj.toString();
-
-          const dimension = dim === 'desktop' ? '1920x1080' : '390x844';
-
-          const result = await captureViaBackend(supabase, captureUrl, dimension);
-
-          if (result.error) {
-            console.error(`[BulkCapture] Error for ${flow.flowId} step ${step} ${dim}:`, result.error.message);
-            
-            if (result.error.type === 'quota_exceeded') {
-              quotaExceeded = true;
-              await supabase
-                .from('export_jobs')
-                .update({
-                  status: 'failed',
-                  error_message: `Quota überschritten nach ${successCount} Screenshots: ${result.error.message}`,
-                  completed_at: new Date().toISOString(),
-                  progress: progressPercent,
-                  progress_message: `Gestoppt bei ${flow.flowName} Step ${step} - Quota erreicht`
-                })
-                .eq('id', jobId);
-              break;
-            }
-            
-            errorCount++;
-          } else if (result.data) {
-            await saveScreenshotToDb(supabase, flow.flowId, step, dim, result.data);
-            successCount++;
-          }
-
-          completedCaptures++;
-
-          // Delay between captures
-          await new Promise(resolve => setTimeout(resolve, 2000));
-        }
+      if (state.step > flow.stepCount) {
+        state.flowIndex += 1;
+        state.step = 1;
+        state.dimIndex = 0;
+        continue;
       }
+
+      const dim = dimensions[state.dimIndex] ?? dimensions[0];
+
+      const progressPercent = Math.round((state.completedCaptures / state.totalCaptures) * 100);
+      await updateJobProgress(
+        supabase,
+        jobId,
+        progressPercent,
+        `${flow.flowName} Step ${state.step} (${dim}) - ${state.completedCaptures + 1}/${state.totalCaptures}`
+      );
+
+      const urlObj = new URL(flow.flowPath, baseUrl);
+      urlObj.searchParams.set('uc_capture', '1');
+      urlObj.searchParams.set('uc_step', String(state.step));
+      urlObj.searchParams.set('uc_render', '1');
+      urlObj.searchParams.set('uc_cb', String(Date.now()));
+      const captureUrl = urlObj.toString();
+
+      const dimension = dim === 'desktop' ? '1920x1080' : '390x844';
+
+      const result = await captureViaBackend(supabase, captureUrl, dimension);
+
+      if (result.error) {
+        console.error(`[BulkCapture] Error for ${flow.flowId} step ${state.step} ${dim}:`, result.error.message);
+        
+        if (result.error.type === 'quota_exceeded') {
+          quotaExceeded = true;
+          await supabase
+            .from('export_jobs')
+            .update({
+              status: 'failed',
+              error_message: `Quota überschritten nach ${state.successCount} Screenshots: ${result.error.message}`,
+              completed_at: new Date().toISOString(),
+              progress: progressPercent,
+              progress_message: `Gestoppt bei ${flow.flowName} Step ${state.step} - Quota erreicht`,
+            })
+            .eq('id', jobId);
+          break;
+        }
+        
+        state.errorCount += 1;
+      } else if (result.data) {
+        await saveScreenshotToDb(supabase, flow.flowId, state.step, dim, result.data);
+        state.successCount += 1;
+      }
+
+      state.completedCaptures += 1;
+      capturesThisRun += 1;
+
+      // Advance cursor
+      state.dimIndex += 1;
+      if (state.dimIndex >= dimensions.length) {
+        state.dimIndex = 0;
+        state.step += 1;
+      }
+
+      // Small delay between captures (keep it short; overall flow is chunked)
+      await new Promise((resolve) => setTimeout(resolve, 800));
     }
 
-    if (!quotaExceeded) {
+    // Completed all work
+    if (!quotaExceeded && state.completedCaptures >= state.totalCaptures) {
       await supabase
         .from('export_jobs')
         .update({
           status: 'completed',
           progress: 100,
-          progress_message: `Fertig! ${successCount} erfolgreich, ${errorCount} Fehler`,
-          completed_at: new Date().toISOString()
+          progress_message: `Fertig! ${state.successCount} erfolgreich, ${state.errorCount} Fehler`,
+          completed_at: new Date().toISOString(),
         })
         .eq('id', jobId);
+
+      console.log(`[BulkCapture] Job ${jobId} finished: ${state.successCount} success, ${state.errorCount} errors`);
+
+      return new Response(
+        JSON.stringify({
+          started: true,
+          completed: true,
+          successCount: state.successCount,
+          errorCount: state.errorCount,
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
-    console.log(`[BulkCapture] Job ${jobId} finished: ${successCount} success, ${errorCount} errors`);
+    // Schedule next chunk (avoids edge function timeouts)
+    if (!quotaExceeded) {
+      const nextProgress = Math.round((state.completedCaptures / state.totalCaptures) * 100);
+      await updateJobProgress(
+        supabase,
+        jobId,
+        nextProgress,
+        `Weiter... ${state.completedCaptures}/${state.totalCaptures}`
+      );
+
+      const scheduleNext = async () => {
+        const { error } = await supabase.functions.invoke('bulk-screenshot-capture', {
+          body: {
+            jobId,
+            flows,
+            baseUrl,
+            captureDesktop,
+            captureMobile,
+            cursor: state,
+          },
+        });
+
+        if (error) {
+          console.error('[BulkCapture] Failed to schedule next batch:', error);
+          await supabase
+            .from('export_jobs')
+            .update({
+              status: 'failed',
+              error_message: `Fehler beim Fortsetzen: ${error.message || 'Unknown error'}`,
+              completed_at: new Date().toISOString(),
+              progress: nextProgress,
+              progress_message: 'Job gestoppt (Scheduling-Fehler)',
+            })
+            .eq('id', jobId);
+        }
+      };
+
+      // Run scheduling in background to return quickly
+      // @ts-ignore
+      const waitUntil = (globalThis as any).EdgeRuntime?.waitUntil;
+      if (typeof waitUntil === 'function') {
+        waitUntil(scheduleNext());
+      } else {
+        scheduleNext();
+      }
+    }
 
     return new Response(
-      JSON.stringify({ 
-        success: !quotaExceeded,
-        successCount,
-        errorCount,
-        quotaExceeded
+      JSON.stringify({
+        started: true,
+        completed: false,
+        progress: Math.round((state.completedCaptures / state.totalCaptures) * 100),
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
-
   } catch (error) {
     console.error('[BulkCapture] Error:', error);
     return new Response(
