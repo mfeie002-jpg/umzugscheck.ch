@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { Navigation } from '@/components/Navigation';
-import { Footer } from '@/components/Footer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -151,9 +149,7 @@ Umzugscheck.ch ist die führende Schweizer Umzugs-Vergleichsplattform.
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
       
-      <Navigation />
-      
-      <main className="min-h-screen bg-background pt-24 pb-16">
+      <div className="min-h-screen bg-background pt-24 pb-16">
         <div className="container max-w-5xl mx-auto px-4">
           {/* Header */}
           <div className="text-center mb-12">
@@ -421,9 +417,7 @@ Umzugscheck.ch ist die führende Schweizer Umzugs-Vergleichsplattform.
             </CardContent>
           </Card>
         </div>
-      </main>
-      
-      <Footer />
+      </div>
     </>
   );
 };
