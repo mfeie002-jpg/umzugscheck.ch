@@ -266,7 +266,9 @@ export const FlowStudioView: React.FC<FlowStudioViewProps> = ({
       fetchFlowData(selectedFlow)
         .then(data => {
           setFlowData(data);
-          setCurrentStep(1);
+          // Initialize to first available step number (not index)
+          const firstStepNumber = data.screenshots[0]?.stepNumber ?? 1;
+          setCurrentStep(firstStepNumber);
         })
         .catch(console.error)
         .finally(() => setLoading(false));
@@ -392,12 +394,27 @@ Bitte gib mir konkrete Code-Fixes für:
   // Navigation
   // ─────────────────────────────────────────────────────────────
   
-  const maxSteps = flowData?.screenshots.length || 0;
-  const currentScreenshot = flowData?.screenshots.find(s => s.stepNumber === currentStep);
+  const screenshots = flowData?.screenshots || [];
+  const maxSteps = screenshots.length;
+  
+  // Find current screenshot by matching stepNumber
+  const currentScreenshot = screenshots.find(s => s.stepNumber === currentStep);
   const compareScreenshot = compareData?.screenshots.find(s => s.stepNumber === currentStep);
   
-  const goToPrevStep = () => setCurrentStep(prev => Math.max(1, prev - 1));
-  const goToNextStep = () => setCurrentStep(prev => Math.min(maxSteps, prev + 1));
+  // Get current index in the array for prev/next navigation
+  const currentIndex = screenshots.findIndex(s => s.stepNumber === currentStep);
+  
+  const goToPrevStep = () => {
+    if (currentIndex > 0) {
+      setCurrentStep(screenshots[currentIndex - 1].stepNumber);
+    }
+  };
+  
+  const goToNextStep = () => {
+    if (currentIndex < screenshots.length - 1) {
+      setCurrentStep(screenshots[currentIndex + 1].stepNumber);
+    }
+  };
   
   // Get current screenshot URL based on view mode
   const getCurrentUrl = (data: FlowData | null) => {
@@ -659,7 +676,7 @@ Bitte gib mir konkrete Code-Fixes für:
                 variant="outline"
                 size="icon"
                 onClick={goToPrevStep}
-                disabled={currentStep <= 1}
+                disabled={currentIndex <= 0}
               >
                 <ChevronLeft className="h-4 w-4" />
               </Button>
@@ -667,20 +684,20 @@ Bitte gib mir konkrete Code-Fixes für:
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium">
-                    Step {currentStep} / {maxSteps}
+                    Step {currentIndex + 1} / {maxSteps}
                   </span>
                   {currentScreenshot?.stepName && (
                     <Badge variant="outline">{currentScreenshot.stepName}</Badge>
                   )}
                 </div>
-                <Progress value={(currentStep / maxSteps) * 100} className="h-2" />
+                <Progress value={((currentIndex + 1) / maxSteps) * 100} className="h-2" />
               </div>
               
               <Button
                 variant="outline"
                 size="icon"
                 onClick={goToNextStep}
-                disabled={currentStep >= maxSteps}
+                disabled={currentIndex >= screenshots.length - 1}
               >
                 <ChevronRight className="h-4 w-4" />
               </Button>
