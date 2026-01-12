@@ -125,6 +125,35 @@ interface AnalysisRequest {
   baseUrl?: string;
 }
 
+// Helper: Get or create flow config dynamically (allows ANY flow ID)
+function getFlowConfig(flowId: string, baseUrl?: string): { name: string; steps: number; baseUrl: string } {
+  // Check if we have a predefined config
+  const normalizedId = flowId.toLowerCase().replace(/[._]/g, '-');
+  
+  if (FLOW_CONFIGS[flowId]) {
+    return FLOW_CONFIGS[flowId];
+  }
+  if (FLOW_CONFIGS[normalizedId]) {
+    return FLOW_CONFIGS[normalizedId];
+  }
+  
+  // For unknown flows, create a dynamic config
+  // This allows analyzing ANY flow without requiring it to be predefined
+  console.log(`[Flow] Creating dynamic config for unknown flow: ${flowId}`);
+  
+  // Try to determine a sensible URL
+  let flowUrl = `/umzugsofferten?v=${flowId}`;
+  if (flowId.includes('chatgpt') || flowId.includes('gemini') || flowId.includes('research')) {
+    flowUrl = `/flow/${flowId}`;
+  }
+  
+  return {
+    name: `Dynamic Flow: ${flowId}`,
+    steps: 5, // Default to 5 steps for unknown flows
+    baseUrl: flowUrl
+  };
+}
+
 interface StepAnalysis {
   stepNumber: number;
   stepName: string;
@@ -918,18 +947,15 @@ serve(async (req) => {
         console.log(`Resolved variant "${normalizedFlowId}" to base flow "${baseFlowId}" (${variant.variant_name || variant.variant_label})`);
       }
     }
+    // If still not found in FLOW_CONFIGS or variants, use dynamic config
+    // This allows analyzing ANY flow without requiring it to be predefined
     if (!flowConfig) {
-      console.error(`Unknown flow ID: ${normalizedFlowId}. Available: ${Object.keys(FLOW_CONFIGS).join(', ')}`);
-      return new Response(
-        JSON.stringify({ 
-          error: `Unknown flow: ${rawFlowId}`,
-          available: Object.keys(FLOW_CONFIGS)
-        }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      console.log(`Flow "${normalizedFlowId}" not found anywhere, creating dynamic config...`);
+      flowConfig = getFlowConfig(normalizedFlowId, baseUrl);
+      resolvedFlowId = normalizedFlowId;
     }
 
-    console.log(`Flow config found: ${flowConfig.name} with ${flowConfig.steps} steps`);
+    console.log(`Flow config: ${flowConfig.name} with ${flowConfig.steps} steps`);
 
     // Create analysis run BEFORE starting background task
     // Store both the original flowId (for display) and resolvedFlowId (for analysis)

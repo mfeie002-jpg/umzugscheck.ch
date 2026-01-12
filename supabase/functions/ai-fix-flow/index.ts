@@ -146,6 +146,11 @@ Archetypen: ${Object.values(ARCHETYPES).map(a => a.name).join(', ')}.`
 
     // Store variant (make variant_name unique per run to avoid duplicate-key errors)
     const variantName = `${flowName} - AI Auto-Fix #${queueId.slice(0, 8)}`;
+    
+    // Create a proper output_flow_id for comparison views
+    // Format: original-flow-id-fix-timestamp (normalized for URL routing)
+    const normalizedFlowId = flowId.toLowerCase().replace(/[._]/g, '');
+    const outputFlowId = `${normalizedFlowId}-fix-${Date.now()}`;
 
     const { data: variant, error: variantError } = await supabase
       .from('flow_feedback_variants')
@@ -153,6 +158,7 @@ Archetypen: ${Object.values(ARCHETYPES).map(a => a.name).join(', ')}.`
         flow_id: flowId,
         variant_name: variantName,
         variant_label: `${flowId}-fix-${Date.now()}`,
+        output_flow_id: outputFlowId, // Now properly set for comparison view
         prompt: `Auto-Fix: ${analysis.overallScore} → ${targetScore}+`,
         status: 'done',
         executed_at: new Date().toISOString(),
