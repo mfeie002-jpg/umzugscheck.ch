@@ -679,107 +679,25 @@ Bitte gib mir konkrete Code-Fixes für:
           </div>
         </Card>
       ) : displayMode === 'side-by-side-all' ? (
-        /* Side-by-Side All Steps View - Screenshot links, Live rechts */
-        <div className="space-y-6">
-          <Card className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 border-blue-200 dark:border-blue-800">
-            <CardContent className="py-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Layers className="h-5 w-5 text-blue-600" />
-                  <span className="font-medium text-blue-800 dark:text-blue-200">
-                    Alle {flowData?.screenshots.length || 0} Steps - Screenshot ↔ Live Vergleich
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="bg-white/50">{viewMode === 'mobile' ? 'Mobile' : 'Desktop'}</Badge>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+        /* Side-by-Side Slider View - Flows untereinander, Steps als Slider */
+        <div className="space-y-8">
+          {/* Current Flow with Slider */}
+          <FlowStepSlider
+            flowId={selectedFlow}
+            flowData={flowData}
+            viewMode={viewMode}
+            getLiveUrl={getLiveUrl}
+          />
           
-          {flowData?.screenshots.map((step, index) => {
-            const stepLiveUrl = getLiveUrl(selectedFlow);
-            const screenshotUrl = viewMode === 'mobile' ? step.mobileUrl : step.desktopUrl;
-            
-            return (
-              <Card key={step.stepNumber} className="overflow-hidden">
-                <CardHeader className="py-2 px-4 bg-muted/50 border-b">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">
-                        {step.stepNumber}
-                      </div>
-                      <div>
-                        <CardTitle className="text-base">Step {step.stepNumber}</CardTitle>
-                        {step.stepName && (
-                          <p className="text-xs text-muted-foreground">{step.stepName}</p>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Badge variant={screenshotUrl ? 'default' : 'destructive'} className="text-xs">
-                        {screenshotUrl ? 'Screenshot ✓' : 'Kein Screenshot'}
-                      </Badge>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="p-0">
-                  <div className="grid grid-cols-2 divide-x">
-                    {/* Screenshot Side */}
-                    <div className="relative">
-                      <div className="absolute top-2 left-2 z-10">
-                        <Badge className="bg-blue-600 text-white">📸 Screenshot</Badge>
-                      </div>
-                      {screenshotUrl ? (
-                        <div className={cn(
-                          "bg-muted/30 flex items-center justify-center p-4",
-                          viewMode === 'mobile' ? "min-h-[500px]" : "min-h-[400px]"
-                        )}>
-                          <img
-                            src={screenshotUrl}
-                            alt={`Step ${step.stepNumber} screenshot`}
-                            className={cn(
-                              "max-h-[600px] object-contain rounded shadow-lg border",
-                              viewMode === 'mobile' && "max-w-[280px]"
-                            )}
-                          />
-                        </div>
-                      ) : (
-                        <div className="h-[400px] flex items-center justify-center bg-muted/30">
-                          <div className="text-center text-muted-foreground">
-                            <ImageOff className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                            <p className="text-sm">Kein Screenshot</p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                    
-                    {/* Live Side */}
-                    <div className="relative">
-                      <div className="absolute top-2 left-2 z-10">
-                        <Badge className="bg-green-600 text-white">▶ Live</Badge>
-                      </div>
-                      <div className={cn(
-                        "bg-white flex items-center justify-center",
-                        viewMode === 'mobile' ? "min-h-[500px]" : "min-h-[400px]"
-                      )}>
-                        <div className={cn(
-                          "relative overflow-hidden rounded shadow-lg border bg-white",
-                          viewMode === 'mobile' ? "w-[280px] h-[500px]" : "w-full h-[400px]"
-                        )}>
-                          <iframe
-                            src={`${stepLiveUrl}?step=${step.stepNumber}`}
-                            className="w-full h-full border-0"
-                            title={`Step ${step.stepNumber} live`}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
+          {/* Compare Flow if active */}
+          {isCompareMode && compareFlow && compareData && (
+            <FlowStepSlider
+              flowId={compareFlow}
+              flowData={compareData}
+              viewMode={viewMode}
+              getLiveUrl={getLiveUrl}
+            />
+          )}
         </div>
       ) : (
         <div className={cn(
@@ -879,6 +797,270 @@ const ScoreCard: React.FC<{
     </CardContent>
   </Card>
 );
+// ─────────────────────────────────────────────────────────────
+// Flow Step Slider Component - Swipeable/Clickable Step Navigation
+// ─────────────────────────────────────────────────────────────
+
+const FlowStepSlider: React.FC<{
+  flowId: string;
+  flowData: FlowData | null;
+  viewMode: 'mobile' | 'desktop';
+  getLiveUrl: (flowId: string) => string;
+}> = ({ flowId, flowData, viewMode, getLiveUrl }) => {
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStartX, setDragStartX] = useState(0);
+  const [dragOffset, setDragOffset] = useState(0);
+  
+  const screenshots = flowData?.screenshots || [];
+  const currentStep = screenshots[currentStepIndex];
+  const totalSteps = screenshots.length;
+  const stepLiveUrl = getLiveUrl(flowId);
+  
+  const goToStep = useCallback((index: number) => {
+    if (index >= 0 && index < totalSteps) {
+      setCurrentStepIndex(index);
+    }
+  }, [totalSteps]);
+  
+  const goNext = useCallback(() => {
+    if (currentStepIndex < totalSteps - 1) {
+      setCurrentStepIndex(prev => prev + 1);
+    }
+  }, [currentStepIndex, totalSteps]);
+  
+  const goPrev = useCallback(() => {
+    if (currentStepIndex > 0) {
+      setCurrentStepIndex(prev => prev - 1);
+    }
+  }, [currentStepIndex]);
+  
+  // Touch/Mouse handlers for swipe
+  const handleDragStart = (clientX: number) => {
+    setIsDragging(true);
+    setDragStartX(clientX);
+    setDragOffset(0);
+  };
+  
+  const handleDragMove = (clientX: number) => {
+    if (!isDragging) return;
+    const offset = clientX - dragStartX;
+    setDragOffset(offset);
+  };
+  
+  const handleDragEnd = () => {
+    if (!isDragging) return;
+    setIsDragging(false);
+    
+    const threshold = 80; // pixels needed to trigger navigation
+    if (dragOffset > threshold) {
+      goPrev();
+    } else if (dragOffset < -threshold) {
+      goNext();
+    }
+    setDragOffset(0);
+  };
+  
+  const screenshotUrl = viewMode === 'mobile' ? currentStep?.mobileUrl : currentStep?.desktopUrl;
+  
+  if (!flowData || screenshots.length === 0) {
+    return (
+      <Card className="overflow-hidden">
+        <CardContent className="py-12">
+          <div className="text-center text-muted-foreground">
+            <ImageOff className="h-12 w-12 mx-auto mb-2 opacity-50" />
+            <p>Keine Screenshots für {flowId}</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+  
+  return (
+    <Card className="overflow-hidden">
+      {/* Header with Flow info and Step navigation */}
+      <CardHeader className="py-3 px-4 border-b bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">
+              {currentStep?.stepNumber || 1}
+            </div>
+            <div>
+              <CardTitle className="text-base flex items-center gap-2">
+                {flowId}
+                <Badge variant="outline" className="text-xs">
+                  Step {currentStepIndex + 1} / {totalSteps}
+                </Badge>
+              </CardTitle>
+              {currentStep?.stepName && (
+                <p className="text-xs text-muted-foreground">{currentStep.stepName}</p>
+              )}
+            </div>
+          </div>
+          
+          {/* Step dots indicator */}
+          <div className="flex items-center gap-1">
+            {screenshots.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => goToStep(idx)}
+                className={cn(
+                  "w-2.5 h-2.5 rounded-full transition-all duration-300",
+                  idx === currentStepIndex
+                    ? "bg-primary w-6"
+                    : "bg-primary/30 hover:bg-primary/50"
+                )}
+                aria-label={`Go to step ${idx + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+      </CardHeader>
+      
+      {/* Main slider content */}
+      <CardContent className="p-0 relative">
+        {/* Navigation arrows */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className={cn(
+            "absolute left-2 top-1/2 -translate-y-1/2 z-20 h-10 w-10 rounded-full bg-background/90 backdrop-blur-sm shadow-lg",
+            currentStepIndex === 0 && "opacity-30 pointer-events-none"
+          )}
+          onClick={goPrev}
+          disabled={currentStepIndex === 0}
+        >
+          <ChevronLeft className="h-6 w-6" />
+        </Button>
+        
+        <Button
+          variant="ghost"
+          size="icon"
+          className={cn(
+            "absolute right-2 top-1/2 -translate-y-1/2 z-20 h-10 w-10 rounded-full bg-background/90 backdrop-blur-sm shadow-lg",
+            currentStepIndex === totalSteps - 1 && "opacity-30 pointer-events-none"
+          )}
+          onClick={goNext}
+          disabled={currentStepIndex === totalSteps - 1}
+        >
+          <ChevronRight className="h-6 w-6" />
+        </Button>
+        
+        {/* Swipeable content area */}
+        <div
+          className="grid grid-cols-2 divide-x select-none cursor-grab active:cursor-grabbing touch-pan-y"
+          onMouseDown={(e) => handleDragStart(e.clientX)}
+          onMouseMove={(e) => handleDragMove(e.clientX)}
+          onMouseUp={handleDragEnd}
+          onMouseLeave={handleDragEnd}
+          onTouchStart={(e) => handleDragStart(e.touches[0].clientX)}
+          onTouchMove={(e) => handleDragMove(e.touches[0].clientX)}
+          onTouchEnd={handleDragEnd}
+          style={{
+            transform: isDragging ? `translateX(${dragOffset * 0.3}px)` : undefined,
+            transition: isDragging ? 'none' : 'transform 0.3s ease-out'
+          }}
+        >
+          {/* Screenshot Side (Links) */}
+          <div className="relative">
+            <div className="absolute top-3 left-3 z-10">
+              <Badge className="bg-blue-600 text-white shadow-md">📸 Screenshot</Badge>
+            </div>
+            {screenshotUrl ? (
+              <div className={cn(
+                "bg-muted/30 flex items-center justify-center p-6",
+                viewMode === 'mobile' ? "min-h-[550px]" : "min-h-[450px]"
+              )}>
+                <img
+                  src={screenshotUrl}
+                  alt={`Step ${currentStep?.stepNumber} screenshot`}
+                  className={cn(
+                    "max-h-[600px] object-contain rounded-lg shadow-lg border pointer-events-none",
+                    viewMode === 'mobile' && "max-w-[300px]"
+                  )}
+                  draggable={false}
+                />
+              </div>
+            ) : (
+              <div className="h-[450px] flex items-center justify-center bg-muted/30">
+                <div className="text-center text-muted-foreground">
+                  <ImageOff className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                  <p className="text-sm">Kein Screenshot</p>
+                </div>
+              </div>
+            )}
+          </div>
+          
+          {/* Live Side (Rechts) */}
+          <div className="relative">
+            <div className="absolute top-3 left-3 z-10">
+              <Badge className="bg-green-600 text-white shadow-md">▶ Live</Badge>
+            </div>
+            <div className={cn(
+              "bg-white flex items-center justify-center p-6",
+              viewMode === 'mobile' ? "min-h-[550px]" : "min-h-[450px]"
+            )}>
+              <div className={cn(
+                "relative overflow-hidden rounded-lg shadow-lg border bg-white pointer-events-none",
+                viewMode === 'mobile' ? "w-[300px] h-[550px]" : "w-full h-[450px]"
+              )}>
+                <iframe
+                  src={`${stepLiveUrl}?step=${currentStep?.stepNumber || 1}`}
+                  className="w-full h-full border-0"
+                  title={`Step ${currentStep?.stepNumber} live`}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Bottom step thumbnails */}
+        <div className="border-t bg-muted/30 p-3">
+          <ScrollArea className="w-full">
+            <div className="flex gap-2 pb-1">
+              {screenshots.map((step, idx) => {
+                const thumbUrl = viewMode === 'mobile' ? step.mobileUrl : step.desktopUrl;
+                const isActive = idx === currentStepIndex;
+                
+                return (
+                  <button
+                    key={step.stepNumber}
+                    onClick={() => goToStep(idx)}
+                    className={cn(
+                      "relative flex-shrink-0 w-16 h-12 rounded overflow-hidden border-2 transition-all",
+                      isActive 
+                        ? "border-primary ring-2 ring-primary/30 scale-110" 
+                        : "border-muted hover:border-primary/50"
+                    )}
+                  >
+                    {thumbUrl ? (
+                      <img
+                        src={thumbUrl}
+                        alt={`Step ${step.stepNumber}`}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-muted flex items-center justify-center">
+                        <ImageOff className="h-3 w-3 text-muted-foreground" />
+                      </div>
+                    )}
+                    <div className={cn(
+                      "absolute bottom-0 left-0 right-0 text-center text-[10px] font-bold py-0.5",
+                      isActive ? "bg-primary text-primary-foreground" : "bg-black/60 text-white"
+                    )}>
+                      {step.stepNumber}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
 
 const FlowPreviewCard: React.FC<{
   flowId: string;
