@@ -639,24 +639,27 @@ export const RankingView: React.FC<RankingViewProps> = ({
                     {variant.prompt}
                   </div>
                   <div className="flex items-center gap-2 mt-2">
-                    <Link 
-                      to={`/${variant.output_flow_id || variant.variant_label}`}
-                      target="_blank"
-                    >
-                      <Button variant="ghost" size="sm" className="h-7 text-xs">
-                        <ExternalLink className="h-3 w-3 mr-1" />
-                        Ansehen
+                    {variant.output_flow_id && (
+                      <Link 
+                        to={`/umzugsofferten-${variant.output_flow_id.replace('umzugsofferten-', '')}`}
+                        target="_blank"
+                      >
+                        <Button variant="ghost" size="sm" className="h-7 text-xs">
+                          <ExternalLink className="h-3 w-3 mr-1" />
+                          Ansehen
+                        </Button>
+                      </Link>
+                    )}
+                    <Link to={`/flow-command-center?view=studio&flow=${variant.flow_id}`}>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-7 text-xs"
+                      >
+                        <BarChart3 className="h-3 w-3 mr-1" />
+                        Vergleichen
                       </Button>
                     </Link>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="h-7 text-xs"
-                      onClick={() => onViewFlowDetails(variant.flow_id)}
-                    >
-                      <BarChart3 className="h-3 w-3 mr-1" />
-                      Vergleichen
-                    </Button>
                   </div>
                 </div>
               ))}
