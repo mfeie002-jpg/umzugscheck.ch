@@ -6,6 +6,13 @@
  * Step 1: Details (Von/Nach, Zimmer, Datum)
  * Step 2: Paket & Services (3 Karten + Extras)
  * Step 3: Review & Kontakt (Zusammenfassung + Top 3 Firmen)
+ * 
+ * FEATURES:
+ * - Context-aware prefill (service pages auto-select, canton pages geo-target)
+ * - Swiss PLZ validation with regex /^[1-9]\d{3}$/
+ * - inputMode="numeric" for PLZ fields
+ * - text-base (16px) to prevent iOS zoom
+ * - Large touch targets (min 44px)
  */
 
 import { useState, useCallback, useEffect } from 'react';
@@ -29,7 +36,8 @@ import {
   Building2,
   ArrowRight,
   CheckCircle,
-  Clock
+  Clock,
+  AlertCircle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -39,6 +47,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { FunnelStepShell } from './FunnelStepShell';
 import { usePrefill } from '@/hooks/usePrefill';
+import { validateSwissPLZ, validateEmail, validateName } from '@/lib/swiss-validation';
 import { cn } from '@/lib/utils';
 
 interface CanonicalFlowData {
@@ -60,6 +69,14 @@ interface CanonicalFlowData {
   email: string;
   phone: string;
   acceptPrivacy: boolean;
+}
+
+// Validation errors state
+interface ValidationErrors {
+  fromPLZ?: string;
+  toPLZ?: string;
+  name?: string;
+  email?: string;
 }
 
 const INITIAL_DATA: CanonicalFlowData = {
@@ -135,11 +152,12 @@ const TOP_COMPANIES = [
 export function CanonicalOffertenFlow() {
   const [step, setStep] = useState(1);
   const [data, setData] = useState<CanonicalFlowData>(INITIAL_DATA);
+  const [errors, setErrors] = useState<ValidationErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showExtras, setShowExtras] = useState(false);
   
-  // Prefill handling
+  // Prefill handling (context-aware)
   const { prefill, isPrefilled, sourceLabel, dismiss } = usePrefill({
     autoApply: true,
     onApply: (p) => {
@@ -150,22 +168,49 @@ export function CanonicalOffertenFlow() {
         toPLZ: p.toPLZ,
         toCity: p.toCity,
         roomSize: p.size || prev.roomSize,
+        // Auto-select extras based on source (e.g., reinigung page)
+        extras: p.autoSelectServices?.length 
+          ? [...new Set([...prev.extras, ...p.autoSelectServices])]
+          : prev.extras,
       }));
+      
+      // Auto-open extras if services were auto-selected
+      if (p.autoSelectServices?.length) {
+        setShowExtras(true);
+      }
     },
   });
   
   const updateData = useCallback((updates: Partial<CanonicalFlowData>) => {
     setData(prev => ({ ...prev, ...updates }));
+    // Clear related errors when field is updated
+    if ('fromPLZ' in updates) setErrors(e => ({ ...e, fromPLZ: undefined }));
+    if ('toPLZ' in updates) setErrors(e => ({ ...e, toPLZ: undefined }));
+    if ('name' in updates) setErrors(e => ({ ...e, name: undefined }));
+    if ('email' in updates) setErrors(e => ({ ...e, email: undefined }));
+  }, []);
+  
+  // Swiss PLZ validation on blur
+  const validatePLZField = useCallback((field: 'fromPLZ' | 'toPLZ', value: string) => {
+    if (!value) return;
+    const result = validateSwissPLZ(value);
+    if (!result.valid) {
+      setErrors(e => ({ ...e, [field]: result.error }));
+    }
   }, []);
   
   const canProceed = useCallback((): boolean => {
     switch (step) {
       case 1:
-        return !!(data.fromPLZ && data.toPLZ && data.roomSize);
+        const fromValid = validateSwissPLZ(data.fromPLZ).valid;
+        const toValid = validateSwissPLZ(data.toPLZ).valid;
+        return fromValid && toValid && !!data.roomSize;
       case 2:
         return !!data.packageLevel;
       case 3:
-        return !!(data.name && data.email && data.acceptPrivacy);
+        const nameValid = validateName(data.name).valid;
+        const emailValid = validateEmail(data.email).valid;
+        return nameValid && emailValid && data.acceptPrivacy;
       default:
         return false;
     }
@@ -276,29 +321,45 @@ export function CanonicalOffertenFlow() {
       {/* Step 1: Details */}
       {step === 1 && (
         <div className="space-y-6">
-          {/* Addresses */}
+          {/* Addresses with Swiss PLZ validation */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-green-600" />
-                Von (PLZ/Ort)
+                Von (PLZ/Ort) *
               </Label>
               <div className="flex gap-2">
-                <Input
-                  type="text"
-                  inputMode="numeric"
-                  placeholder="PLZ"
-                  value={data.fromPLZ}
-                  onChange={(e) => updateData({ fromPLZ: e.target.value.slice(0, 4) })}
-                  className="w-24 h-12"
-                  maxLength={4}
-                />
+                <div className="w-28">
+                  <Input
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    placeholder="PLZ"
+                    value={data.fromPLZ}
+                    onChange={(e) => updateData({ fromPLZ: e.target.value.replace(/\D/g, '').slice(0, 4) })}
+                    onBlur={(e) => validatePLZField('fromPLZ', e.target.value)}
+                    className={cn(
+                      "h-12 text-base",
+                      errors.fromPLZ && "border-destructive focus:ring-destructive/20"
+                    )}
+                    maxLength={4}
+                    enterKeyHint="next"
+                    data-error={!!errors.fromPLZ}
+                  />
+                  {errors.fromPLZ && (
+                    <p className="text-xs text-destructive mt-1 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" />
+                      {errors.fromPLZ}
+                    </p>
+                  )}
+                </div>
                 <Input
                   type="text"
                   placeholder="Ort"
                   value={data.fromCity}
                   onChange={(e) => updateData({ fromCity: e.target.value })}
-                  className="flex-1 h-12"
+                  className="flex-1 h-12 text-base"
+                  enterKeyHint="next"
                 />
               </div>
             </div>
@@ -306,24 +367,40 @@ export function CanonicalOffertenFlow() {
             <div className="space-y-2">
               <Label className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-red-600" />
-                Nach (PLZ/Ort)
+                Nach (PLZ/Ort) *
               </Label>
               <div className="flex gap-2">
-                <Input
-                  type="text"
-                  inputMode="numeric"
-                  placeholder="PLZ"
-                  value={data.toPLZ}
-                  onChange={(e) => updateData({ toPLZ: e.target.value.slice(0, 4) })}
-                  className="w-24 h-12"
-                  maxLength={4}
-                />
+                <div className="w-28">
+                  <Input
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    placeholder="PLZ"
+                    value={data.toPLZ}
+                    onChange={(e) => updateData({ toPLZ: e.target.value.replace(/\D/g, '').slice(0, 4) })}
+                    onBlur={(e) => validatePLZField('toPLZ', e.target.value)}
+                    className={cn(
+                      "h-12 text-base",
+                      errors.toPLZ && "border-destructive focus:ring-destructive/20"
+                    )}
+                    maxLength={4}
+                    enterKeyHint="next"
+                    data-error={!!errors.toPLZ}
+                  />
+                  {errors.toPLZ && (
+                    <p className="text-xs text-destructive mt-1 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" />
+                      {errors.toPLZ}
+                    </p>
+                  )}
+                </div>
                 <Input
                   type="text"
                   placeholder="Ort"
                   value={data.toCity}
                   onChange={(e) => updateData({ toCity: e.target.value })}
-                  className="flex-1 h-12"
+                  className="flex-1 h-12 text-base"
+                  enterKeyHint="next"
                 />
               </div>
             </div>
