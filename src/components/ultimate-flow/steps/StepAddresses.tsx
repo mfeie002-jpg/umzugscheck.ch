@@ -1,18 +1,21 @@
 /**
- * Step 1: Start & Ziel
+ * Step 1: Start & Ziel mit Preisband & Service-Slider
  * 
  * UX-OPTIMIZED VERSION:
  * - Größere Touch-Targets (min 44x44px)
  * - Permanente Labels über Feldern
- * - Bessere Lesbarkeit auf Mobile (16px+ Schriftgröße)
- * - Klarere visuelle Hierarchie
- * - Hilfreiche Tipps prominent dargestellt
+ * - Sofortiges Preisband nach PLZ-Eingabe (Prompt 1)
+ * - Service-Level-Slider (Prompt 1)
+ * - Bessere Lesbarkeit auf Mobile
  */
 
+import { useState, useMemo } from "react";
 import { MapPin, ArrowDown, Home, Lightbulb } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { UltimateTrustPills } from "../UltimateTrustBadges";
+import { PriceBandDisplay } from "../PriceBandDisplay";
+import { ServiceLevelSlider } from "../ServiceLevelSlider";
 import type { UltimateFlowData } from "../UltimateSwissFlow";
 
 interface StepAddressesProps {
@@ -21,6 +24,14 @@ interface StepAddressesProps {
 }
 
 export function StepAddresses({ data, updateData }: StepAddressesProps) {
+  // Service level state (default: 50 = Komfort)
+  const [serviceLevel, setServiceLevel] = useState(50);
+  
+  // Check if we have enough data for price estimation
+  const canShowPrice = useMemo(() => {
+    return data.fromPostal?.length >= 4 && data.toPostal?.length >= 4;
+  }, [data.fromPostal, data.toPostal]);
+
   return (
     <div className="space-y-5 sm:space-y-6">
       {/* Header - MOBILE OPTIMIZED: Larger text, better spacing */}
@@ -133,6 +144,26 @@ export function StepAddresses({ data, updateData }: StepAddressesProps) {
           </p>
         </div>
       </div>
+
+      {/* Price Band Display (Prompt 1) - Shows after PLZ entry */}
+      {canShowPrice && (
+        <PriceBandDisplay
+          fromPostal={data.fromPostal}
+          toPostal={data.toPostal}
+          rooms="3" // Default 3 rooms for initial estimate
+          serviceLevel={serviceLevel}
+        />
+      )}
+
+      {/* Service Level Slider (Prompt 1) - Shows after PLZ entry */}
+      {canShowPrice && (
+        <div className="bg-card rounded-xl p-4 sm:p-5 border shadow-sm">
+          <ServiceLevelSlider
+            value={serviceLevel}
+            onChange={setServiceLevel}
+          />
+        </div>
+      )}
 
       {/* Benefits - MOBILE OPTIMIZED: Better touch targets, readable text */}
       <div className="grid grid-cols-2 gap-2 sm:gap-3">
