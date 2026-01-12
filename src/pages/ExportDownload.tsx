@@ -796,7 +796,7 @@ const ExportDownload = () => {
                     {allFlows.map(flow => (
                       <div 
                         key={flow.id}
-                        className="flex items-center gap-2 p-1.5 hover:bg-muted/50 rounded cursor-pointer"
+                        className="flex items-center gap-2 p-1.5 hover:bg-muted/50 rounded cursor-pointer group"
                         onClick={() => toggleFlowSelection(flow.id)}
                       >
                         <Checkbox 
@@ -805,13 +805,22 @@ const ExportDownload = () => {
                         />
                         <span className="text-sm flex-1 truncate">{flow.name}</span>
                         {flow.screenshotStatus === 'complete' && (
-                          <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
+                          <div className="flex items-center gap-1" title="Alle Screenshots vorhanden">
+                            <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
+                          </div>
                         )}
                         {flow.screenshotStatus === 'partial' && (
-                          <AlertTriangle className="h-3.5 w-3.5 text-amber-500" />
+                          <div 
+                            className="flex items-center gap-1 cursor-help" 
+                            title={`${flow.name}: Einige Screenshots fehlen - Flow auswählen für Details`}
+                          >
+                            <AlertTriangle className="h-3.5 w-3.5 text-amber-500" />
+                          </div>
                         )}
                         {flow.screenshotStatus === 'none' && (
-                          <XCircle className="h-3.5 w-3.5 text-muted-foreground" />
+                          <div className="flex items-center gap-1" title="Keine Screenshots vorhanden">
+                            <XCircle className="h-3.5 w-3.5 text-muted-foreground" />
+                          </div>
                         )}
                       </div>
                     ))}

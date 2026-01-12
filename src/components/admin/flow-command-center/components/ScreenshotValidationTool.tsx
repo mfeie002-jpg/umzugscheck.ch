@@ -109,11 +109,11 @@ export function ScreenshotValidationTool({ flowIds, showAllFlowsOption = true }:
     setResults([]);
 
     try {
-      // Get all active flows from flow_versions
-      const { data: flows, error: flowsError } = await supabase
+      // Get ALL flows from BOTH flow_versions AND flow_step_metrics
+      // This ensures we validate ALL flows that have screenshots, not just those in flow_versions
+      const { data: versionFlows, error: flowsError } = await supabase
         .from('flow_versions')
         .select('flow_id, version_name, step_configs')
-        .eq('is_active', true)
         .order('flow_id');
 
       if (flowsError) {
@@ -122,12 +122,43 @@ export function ScreenshotValidationTool({ flowIds, showAllFlowsOption = true }:
         return;
       }
 
-      if (!flows || flows.length === 0) {
-        toast.error("Keine aktiven Flows gefunden");
+      // Also get all unique flow_ids from flow_step_metrics (screenshots table)
+      const { data: screenshotFlows, error: ssError } = await supabase
+        .from('flow_step_metrics')
+        .select('flow_id');
+      
+      if (ssError) {
+        console.error('[ValidateScreenshots] Error fetching screenshot flows:', ssError);
+      }
+
+      // Combine both sources - create a map of all flows
+      const allFlowsMap = new Map<string, { flow_id: string; version_name: string | null; step_configs: any }>();
+      
+      // Add from flow_versions
+      (versionFlows || []).forEach(f => {
+        allFlowsMap.set(f.flow_id, f);
+      });
+      
+      // Add from flow_step_metrics (if not already present)
+      const uniqueScreenshotFlowIds = new Set((screenshotFlows || []).map(f => f.flow_id));
+      uniqueScreenshotFlowIds.forEach(flowId => {
+        if (!allFlowsMap.has(flowId)) {
+          allFlowsMap.set(flowId, { 
+            flow_id: flowId, 
+            version_name: flowId, 
+            step_configs: null 
+          });
+        }
+      });
+
+      const flows = Array.from(allFlowsMap.values());
+
+      if (flows.length === 0) {
+        toast.error("Keine Flows gefunden");
         return;
       }
 
-      console.log('[ValidateScreenshots] Found flows:', flows.length, 'Filtering:', !all, flowIds);
+      console.log('[ValidateScreenshots] Found flows:', flows.length, '(versions:', versionFlows?.length, ', screenshots:', uniqueScreenshotFlowIds.size, ')');
       
       // Filter flows based on validation mode
       let flowsToValidate = flows;
