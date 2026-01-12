@@ -13,6 +13,8 @@ import { HeroGradient } from "@/components/common/HeroGradient";
 import { GridPattern } from "@/components/common/GridPattern";
 import { MagneticButton } from "@/components/common/MagneticButton";
 import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
+import { useSmartAutofocus, useIsDesktop } from "@/hooks/useSmartAutofocus";
+import { useABTest } from "@/hooks/use-ab-test";
 
 // Animated Counter Component
 const AnimatedCounter = ({ 
@@ -84,6 +86,25 @@ export const PremiumHeroSection = () => {
   const [toPostal, setToPostal] = useState("");
   const prefersReducedMotion = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
+  
+  // Smart autofocus - only on desktop (>768px)
+  const fromInputRef = useSmartAutofocus<HTMLInputElement>({ enabled: true });
+  const isDesktop = useIsDesktop();
+  
+  // A/B Test for CTA button text
+  const { variant: ctaVariant, trackConversion } = useABTest('hero_cta');
+  
+  // CTA button text based on A/B test variant
+  const getCtaText = () => {
+    switch (ctaVariant) {
+      case 'variant_b':
+        return 'Preise jetzt vergleichen';
+      case 'variant_c':
+        return 'Gratis Umzugs-Check starten';
+      default:
+        return 'Kostenlos Offerten erhalten';
+    }
+  };
 
   // Parallax scroll effect
   const { scrollYProgress } = useScroll({
@@ -102,6 +123,9 @@ export const PremiumHeroSection = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Track A/B test conversion
+    trackConversion('form_submit', 1);
     
     // Store prefill data in localStorage for funnel prefill
     const prefillData = {
@@ -417,13 +441,16 @@ export const PremiumHeroSection = () => {
                     <Label htmlFor="from" className="text-foreground font-medium text-xs sm:text-sm">Von (PLZ oder Ort)</Label>
                     <Input
                       id="from"
+                      ref={fromInputRef}
                       list="from-options"
                       placeholder="z.B. 8001 oder Zürich"
                       value={fromPostal}
                       onChange={(e) => setFromPostal(e.target.value)}
-                      className="h-10 sm:h-11 md:h-12 text-sm sm:text-base bg-background border-2 border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20"
-                      autoComplete="off"
-                      autoFocus
+                      inputMode="text"
+                      pattern="[0-9]*|[a-zA-ZäöüÄÖÜ\s-]+"
+                      enterKeyHint="next"
+                      className="h-10 sm:h-11 md:h-12 text-base bg-background border-2 border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                      autoComplete="address-level2"
                       required
                     />
                     <datalist id="from-options">
@@ -441,8 +468,11 @@ export const PremiumHeroSection = () => {
                       placeholder="z.B. 3011 oder Bern"
                       value={toPostal}
                       onChange={(e) => setToPostal(e.target.value)}
-                      className="h-10 sm:h-11 md:h-12 text-sm sm:text-base bg-background border-2 border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20"
-                      autoComplete="off"
+                      inputMode="text"
+                      pattern="[0-9]*|[a-zA-ZäöüÄÖÜ\s-]+"
+                      enterKeyHint="done"
+                      className="h-10 sm:h-11 md:h-12 text-base bg-background border-2 border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                      autoComplete="address-level2"
                       required
                     />
                     <datalist id="to-options">
@@ -458,7 +488,7 @@ export const PremiumHeroSection = () => {
                     className="w-full h-11 sm:h-12 md:h-14 text-sm sm:text-base md:text-lg font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all group"
                   >
                     <CheckCircle2 className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                    Kostenlos Offerten erhalten
+                    {getCtaText()}
                     <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </form>

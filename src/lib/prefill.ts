@@ -6,8 +6,13 @@
  * - to: PLZ oder "PLZ Ort"
  * - size: Wohnungsgrösse (optional)
  * - service: Service-Typ (optional)
- * - source: Herkunft ("home-hero", "landing", "canton-xxx")
+ * - source: Herkunft ("home-hero", "landing", "canton-xxx", "service-xxx")
  * - createdAt: Timestamp
+ * 
+ * Context-Aware Features:
+ * - Detects service pages (reinigung, entsorgung, etc.)
+ * - Detects canton pages (zurich, bern, etc.)
+ * - Auto-applies relevant defaults based on source
  */
 
 export interface PrefillData {
@@ -19,6 +24,9 @@ export interface PrefillData {
   source: string;
   createdAt: number;
   timestamp?: number; // Legacy support
+  // Context-aware fields
+  autoSelectServices?: string[];
+  cantonCode?: string;
 }
 
 export interface ParsedPrefill {
@@ -33,11 +41,54 @@ export interface ParsedPrefill {
   isValid: boolean;
   isComplete: boolean;
   age: number;
+  // Context-aware fields
+  autoSelectServices: string[];
+  cantonCode?: string;
+  isServicePage: boolean;
+  isCantonPage: boolean;
 }
 
 const PREFILL_KEY = 'uc_prefill';
 const MAX_AGE_DAYS = 7;
 const MAX_AGE_MS = MAX_AGE_DAYS * 24 * 60 * 60 * 1000;
+
+// Service mappings for auto-selection
+const SERVICE_MAPPINGS: Record<string, string[]> = {
+  'reinigung': ['reinigung'],
+  'cleaning': ['reinigung'],
+  'entsorgung': ['entsorgung'],
+  'disposal': ['entsorgung'],
+  'lagerung': ['lagerung'],
+  'storage': ['lagerung'],
+  'montage': ['montage'],
+  'klavier': ['klavier'],
+  'piano': ['klavier'],
+  'firmenumzug': ['firmenumzug'],
+  'business': ['firmenumzug'],
+};
+
+// Canton mappings for geo-targeting
+const CANTON_MAPPINGS: Record<string, string> = {
+  'zurich': 'ZH',
+  'zuerich': 'ZH',
+  'zh': 'ZH',
+  'bern': 'BE',
+  'be': 'BE',
+  'basel': 'BS',
+  'bs': 'BS',
+  'aargau': 'AG',
+  'ag': 'AG',
+  'luzern': 'LU',
+  'lu': 'LU',
+  'stgallen': 'SG',
+  'sg': 'SG',
+  'genf': 'GE',
+  'geneva': 'GE',
+  'ge': 'GE',
+  'waadt': 'VD',
+  'vaud': 'VD',
+  'vd': 'VD',
+};
 
 /**
  * Parse PLZ/Ort String
@@ -59,7 +110,38 @@ function parsePLZOrt(value: string): { plz: string; city: string } {
 }
 
 /**
- * Get prefill data from localStorage
+ * Detect auto-select services from source
+ */
+function detectAutoServices(source: string): string[] {
+  const services: string[] = [];
+  const sourceLower = source.toLowerCase();
+  
+  for (const [key, values] of Object.entries(SERVICE_MAPPINGS)) {
+    if (sourceLower.includes(key)) {
+      services.push(...values);
+    }
+  }
+  
+  return [...new Set(services)]; // Remove duplicates
+}
+
+/**
+ * Detect canton code from source
+ */
+function detectCantonCode(source: string): string | undefined {
+  const sourceLower = source.toLowerCase();
+  
+  for (const [key, code] of Object.entries(CANTON_MAPPINGS)) {
+    if (sourceLower.includes(key)) {
+      return code;
+    }
+  }
+  
+  return undefined;
+}
+
+/**
+ * Get prefill data from localStorage (context-aware)
  */
 export function getPrefill(): ParsedPrefill | null {
   try {
@@ -84,6 +166,11 @@ export function getPrefill(): ParsedPrefill | null {
     const isValid = !!(fromParsed.plz || fromParsed.city || toParsed.plz || toParsed.city);
     const isComplete = !!(fromParsed.plz && toParsed.plz);
     
+    // Context-aware detection
+    const source = data.source || 'unknown';
+    const autoSelectServices = data.autoSelectServices || detectAutoServices(source);
+    const cantonCode = data.cantonCode || detectCantonCode(source);
+    
     return {
       fromPLZ: fromParsed.plz,
       fromCity: fromParsed.city,
@@ -92,10 +179,14 @@ export function getPrefill(): ParsedPrefill | null {
       size: data.size,
       service: data.service,
       services: data.services,
-      source: data.source || 'unknown',
+      source,
       isValid,
       isComplete,
       age,
+      autoSelectServices,
+      cantonCode,
+      isServicePage: autoSelectServices.length > 0,
+      isCantonPage: !!cantonCode,
     };
   } catch {
     return null;
@@ -103,7 +194,7 @@ export function getPrefill(): ParsedPrefill | null {
 }
 
 /**
- * Set prefill data to localStorage
+ * Set prefill data to localStorage (with context)
  */
 export function setPrefill(data: Omit<PrefillData, 'createdAt'>): void {
   try {
@@ -111,6 +202,9 @@ export function setPrefill(data: Omit<PrefillData, 'createdAt'>): void {
       ...data,
       createdAt: Date.now(),
       timestamp: Date.now(), // Legacy support
+      // Auto-detect context from source
+      autoSelectServices: data.autoSelectServices || detectAutoServices(data.source),
+      cantonCode: data.cantonCode || detectCantonCode(data.source),
     };
     localStorage.setItem(PREFILL_KEY, JSON.stringify(prefill));
   } catch {
@@ -141,8 +235,11 @@ export function hasPrefill(): boolean {
  * Get human-readable source name
  */
 export function getSourceLabel(source: string): string {
-  if (source === 'home-hero') return 'Startseite';
+  if (source === 'home-hero' || source === 'homepage') return 'Startseite';
   if (source.includes('landing')) return 'Landingpage';
+  if (source.includes('reinigung')) return 'Reinigungsseite';
+  if (source.includes('entsorgung')) return 'Entsorgungsseite';
+  if (source.includes('firmenumzug')) return 'Firmenumzug';
   if (source.includes('canton') || source.includes('bern') || source.includes('zurich')) {
     return 'Regionale Seite';
   }
