@@ -252,6 +252,19 @@ export default function FlowCommandCenter() {
   const loadRequestIdRef = useRef(0);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
+  // Sync state when URL changes (IMPORTANT: allows links like ?view=studio&flow=... to work)
+  useEffect(() => {
+    const nextView = viewParam || 'dashboard';
+    if (nextView !== activeView) setActiveView(nextView);
+
+    const nextMode = modeParam || 'tabs';
+    if (nextMode !== interfaceMode) setInterfaceMode(nextMode);
+
+    const nextFlow = flowParam ? mapToEdgeFunctionFlowId(flowParam) : null;
+    if (nextFlow !== selectedFlowId) setSelectedFlowId(nextFlow);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [viewParam, flowParam, modeParam]);
+
   // Keyboard shortcuts
   useKeyboardShortcuts({
     onNavigateDashboard: () => setActiveView('dashboard'),
