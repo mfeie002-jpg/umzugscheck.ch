@@ -92,6 +92,7 @@ export const AnalysisView: React.FC<AnalysisViewProps> = ({
   const [archetypeScores, setArchetypeScores] = useState<ArchetypeScore[]>([]);
   const [flowVersion, setFlowVersion] = useState<FlowVersionData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showResolvedIssues, setShowResolvedIssues] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
 
   useEffect(() => {
@@ -99,7 +100,7 @@ export const AnalysisView: React.FC<AnalysisViewProps> = ({
       fetchAnalysis(flowId);
       fetchFlowVersion(flowId);
     }
-  }, [flowId]);
+  }, [flowId, showResolvedIssues]);
   
   const fetchFlowVersion = async (id: string) => {
     try {
@@ -213,16 +214,19 @@ export const AnalysisView: React.FC<AnalysisViewProps> = ({
         setPreviousRun(null);
       }
       
-      // Fetch issues (scope to latest completed run to avoid showing stale issues)
+      // Fetch issues - show unresolved issues (optionally also resolved)
+      // Don't filter by run_id to show all relevant issues for this flow
       let issuesQuery = supabase
         .from('flow_ux_issues')
         .select('*')
         .in('flow_id', flowIds)
-        .eq('is_resolved', false)
-        .order('severity', { ascending: true });
-
-      if (latestRunId) {
-        issuesQuery = issuesQuery.eq('run_id', latestRunId);
+        .order('severity', { ascending: true })
+        .order('created_at', { ascending: false })
+        .limit(100);
+      
+      // Only filter by is_resolved if not showing resolved
+      if (!showResolvedIssues) {
+        issuesQuery = issuesQuery.eq('is_resolved', false);
       }
 
       const { data: issuesData, error: issuesError } = await issuesQuery;
@@ -544,6 +548,20 @@ Bitte gib mir konkrete Code-Fixes für die kritischsten Probleme.`;
             </TabsContent>
 
             <TabsContent value="issues" className="mt-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">
+                    {issues.length} Issues {showResolvedIssues ? '(inkl. gelöst)' : '(offen)'}
+                  </span>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowResolvedIssues(!showResolvedIssues)}
+                >
+                  {showResolvedIssues ? 'Nur offene' : 'Auch gelöste zeigen'}
+                </Button>
+              </div>
               <IssuesPanel
                 issues={issues}
                 flowId={flowId}

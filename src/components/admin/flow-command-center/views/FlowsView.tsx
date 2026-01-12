@@ -3,7 +3,7 @@
  * Shows all flow families and variants with testing capabilities
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -21,6 +21,7 @@ import { FlowZipExport } from '@/components/flow-tester/FlowZipExport';
 import { FlowExportDialog } from '@/components/flow-tester/FlowExportDialog';
 import { TopTenFlowSelector } from '@/components/flow-tester/TopTenFlowSelector';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
 
 // ============================================================================
 // FLOW FAMILIES
@@ -208,6 +209,27 @@ export const FlowsView: React.FC<FlowsViewProps> = ({ onSelectFlow }) => {
   const [expandedCategories, setExpandedCategories] = useState<Set<CategoryKey>>(
     new Set(['gemini-top', 'top-10-upgrades', 'swiss-premium', 'chatgpt-flows'])
   );
+  const [dbFlowCount, setDbFlowCount] = useState<number>(0);
+
+  // Fetch actual flow count from database
+  useEffect(() => {
+    const fetchDbFlowCount = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('flow_step_metrics')
+          .select('flow_id');
+        
+        if (!error && data) {
+          const uniqueFlowIds = new Set(data.map(d => d.flow_id));
+          setDbFlowCount(uniqueFlowIds.size);
+        }
+      } catch (err) {
+        console.error('Error fetching DB flow count:', err);
+      }
+    };
+    
+    fetchDbFlowCount();
+  }, []);
 
   const allFlows = useMemo(() => buildAllFlowsList(), []);
 
@@ -262,7 +284,9 @@ export const FlowsView: React.FC<FlowsViewProps> = ({ onSelectFlow }) => {
     setExpandedCategories(newExpanded);
   };
 
-  const totalFlowCount = FLOW_FAMILIES.reduce((acc, f) => acc + 1 + f.subVariants.length, 0);
+  // Use the larger of config-based count or database count
+  const configFlowCount = FLOW_FAMILIES.reduce((acc, f) => acc + 1 + f.subVariants.length, 0);
+  const totalFlowCount = Math.max(configFlowCount, dbFlowCount, allFlows.length);
   const premiumFlowCount = allFlows.filter(f => f.isPremium).length;
 
   return (
