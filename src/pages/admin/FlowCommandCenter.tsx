@@ -76,7 +76,8 @@ import {
   LandingPagesView,
   FlowTesterResultsView,
   FlowsView,
-  FlowStudioView
+  FlowStudioView,
+  AIFixView
 } from '@/components/admin/flow-command-center/views';
 import { 
   ScoreRing, 
@@ -123,6 +124,7 @@ const VIEW_CONFIG: Record<ViewMode, { label: string; icon: React.ElementType; de
   flows: { label: 'Flows', icon: Layers, description: 'Alle Flow-Familien & Varianten' },
   'landing-pages': { label: 'Landing Pages', icon: MapPin, description: 'City/Canton Pages' },
   'tester-results': { label: 'Tester-Ergebnisse', icon: ClipboardCheck, description: 'Flow-Tester Feedback' },
+  'ai-fix': { label: 'AI Fixes', icon: Wand2, description: 'AI-generierte Fix-Varianten vergleichen' },
   settings: { label: 'Einstellungen', icon: Settings, description: 'Konfiguration' },
 };
 
@@ -599,7 +601,7 @@ export default function FlowCommandCenter() {
     <Tabs value={activeView} onValueChange={(v) => handleViewChange(v as ViewMode)}>
       <div className="flex items-center justify-between flex-wrap gap-4 mb-6">
         <TabsList className="h-auto flex-wrap">
-          {(['dashboard', 'ranking', 'analysis', 'history', 'comparison', 'studio', 'flows', 'landing-pages'] as ViewMode[]).map((view) => {
+          {(['dashboard', 'ranking', 'analysis', 'history', 'comparison', 'studio', 'ai-fix', 'flows', 'landing-pages'] as ViewMode[]).map((view) => {
             const config = VIEW_CONFIG[view];
             const Icon = config.icon;
             return (
@@ -748,6 +750,13 @@ export default function FlowCommandCenter() {
 
       <TabsContent value="tester-results" className="mt-0">
         <FlowTesterResultsView />
+      </TabsContent>
+
+      <TabsContent value="ai-fix" className="mt-0">
+        <AIFixView 
+          initialFlowId={selectedFlowId || undefined}
+          onSelectFlow={handleSelectFlow}
+        />
       </TabsContent>
     </Tabs>
   );
@@ -972,9 +981,9 @@ export default function FlowCommandCenter() {
         />
         <QuickActionCard
           icon={<Wand2 className="h-6 w-6" />}
-          label="Auto-Fix"
-          description="AI-generierte Fixes"
-          onClick={() => toast.info('Auto-Fix kommt bald...')}
+          label="AI Fixes"
+          description="AI-generierte Fix-Varianten vergleichen"
+          onClick={() => { setActiveView('ai-fix'); setInterfaceMode('tabs'); }}
         />
       </div>
     </div>

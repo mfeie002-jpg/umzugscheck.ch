@@ -669,7 +669,7 @@ export const RankingView: React.FC<RankingViewProps> = ({
                         </Button>
                       </Link>
                     )}
-                    <Link to={`/flow-command-center?view=studio&flow=${variant.flow_id}`}>
+                    <Link to={`/flow-command-center?view=ai-fix`}>
                       <Button 
                         variant="ghost" 
                         size="sm" 

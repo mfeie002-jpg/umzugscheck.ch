@@ -11,3 +11,4 @@ export { LandingPagesView } from './LandingPagesView';
 export { FlowTesterResultsView } from './FlowTesterResultsView';
 export { FlowsView } from './FlowsView';
 export { FlowStudioView } from './FlowStudioView';
+export { AIFixView } from './AIFixView';
