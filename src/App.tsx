@@ -305,6 +305,9 @@ const ChatGPTFlow2 = lazy(() => import("./pages/ChatGPTFlow2"));
 const ChatGPTFlow3 = lazy(() => import("./pages/ChatGPTFlow3"));
 const ChatGPTExport = lazy(() => import("./pages/ChatGPTExport"));
 
+// Dashboard (After Booking)
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+
 // Swiss Premium Flows (ChatGPT optimized)
 const SwissLightning = lazy(() => import("./pages/SwissLightning"));
 const SwissPremiumChoice = lazy(() => import("./pages/SwissPremiumChoice"));
@@ -663,6 +666,9 @@ const AppRouterContent = () => {
           <Route path="/chatgpt-flow-2" element={<ChatGPTFlow2 />} />
           <Route path="/chatgpt-flow-3" element={<ChatGPTFlow3 />} />
           <Route path="/chatgpt-export" element={<ChatGPTExport />} />
+          
+          {/* Dashboard (After Booking) */}
+          <Route path="/dashboard" element={<Dashboard />} />
           
           {/* Swiss Premium Flows */}
           <Route path="/swiss-lightning" element={<SwissLightning />} />
