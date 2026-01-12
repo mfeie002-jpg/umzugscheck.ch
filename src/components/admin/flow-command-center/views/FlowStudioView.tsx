@@ -718,7 +718,7 @@ Bitte gib mir konkrete Code-Fixes für:
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium">
-                    Step {currentIndex + 1} / {maxSteps}
+                    Step {currentStep} / {maxSteps}
                   </span>
                   {currentScreenshot?.stepName && (
                     <Badge variant="outline">{currentScreenshot.stepName}</Badge>
@@ -994,7 +994,7 @@ const FlowStepSlider: React.FC<{
               <CardTitle className="text-base flex items-center gap-2">
                 {flowId}
                 <Badge variant="outline" className="text-xs">
-                  Step {currentStepIndex + 1} / {totalSteps}
+                  Step {currentStep?.stepNumber || currentStepIndex + 1} / {totalSteps}
                 </Badge>
               </CardTitle>
               {currentStep?.stepName && (

@@ -718,7 +718,10 @@ export default function FlowCommandCenter() {
       <TabsContent value="studio" className="mt-0">
         <FlowStudioView 
           initialFlowId={selectedFlowId || undefined}
-          onSelectFlow={handleSelectFlow}
+          onSelectFlow={(flowId) => {
+            handleSelectFlow(flowId);
+            setActiveView('studio');
+          }}
         />
       </TabsContent>
 
