@@ -31,14 +31,55 @@ export function FlowScreenshotViewer({ flowId, viewMode, className }: FlowScreen
       setError(null);
       
       try {
-        const { data, error } = await supabase
-          .from('flow_step_metrics')
-          .select('step_number, mobile_screenshot_url, desktop_screenshot_url')
+        // Find latest completed run for this flow
+        const { data: latestRun } = await supabase
+          .from('flow_analysis_runs')
+          .select('id')
           .eq('flow_id', flowId)
-          .order('step_number');
+          .eq('status', 'completed')
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
         
-        if (error) throw error;
-        setScreenshots(data || []);
+        let data: any[] = [];
+        
+        // Try to fetch by run_id first (ensures consistency)
+        if (latestRun?.id) {
+          const { data: runData, error: runError } = await supabase
+            .from('flow_step_metrics')
+            .select('step_number, mobile_screenshot_url, desktop_screenshot_url, created_at')
+            .eq('run_id', latestRun.id)
+            .order('step_number');
+          if (!runError && runData && runData.length > 0) {
+            data = runData;
+          }
+        }
+        
+        // Fallback to flow_id (deduplicate by keeping newest per step)
+        if (data.length === 0) {
+          const { data: flowData, error: flowError } = await supabase
+            .from('flow_step_metrics')
+            .select('step_number, mobile_screenshot_url, desktop_screenshot_url, created_at')
+            .eq('flow_id', flowId)
+            .or('mobile_screenshot_url.not.is.null,desktop_screenshot_url.not.is.null')
+            .order('created_at', { ascending: false });
+          
+          if (flowError) throw flowError;
+          
+          // Deduplicate
+          const sorted = (flowData || []).sort((a, b) => 
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+          );
+          const deduped = new Map<number, any>();
+          for (const row of sorted) {
+            if (!deduped.has(row.step_number)) {
+              deduped.set(row.step_number, row);
+            }
+          }
+          data = Array.from(deduped.values()).sort((a, b) => a.step_number - b.step_number);
+        }
+        
+        setScreenshots(data);
       } catch (err) {
         console.error('Failed to fetch screenshots:', err);
         setError('Screenshots konnten nicht geladen werden');

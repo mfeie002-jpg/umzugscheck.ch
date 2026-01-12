@@ -246,26 +246,61 @@ export const FlowStudioView: React.FC<FlowStudioViewProps> = ({
   const fetchFlowData = useCallback(async (flowId: string): Promise<FlowData> => {
     const flowIds = getFlowIdCandidates(flowId);
     
-    // Fetch screenshots
-    const { data: screenshots } = await supabase
-      .from('flow_step_metrics')
-      .select('step_number, step_name, mobile_screenshot_url, desktop_screenshot_url, created_at')
+    // STEP 1: Find the SINGLE latest completed run for this flow
+    // This ensures all screenshots come from the same analysis
+    const { data: latestRun } = await supabase
+      .from('flow_analysis_runs')
+      .select('id, flow_id')
       .in('flow_id', flowIds)
-      .order('step_number');
+      .eq('status', 'completed')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
     
-    // Deduplicate by step number, keep newest
-    const stepMap = new Map<number, StepScreenshot>();
-    screenshots?.forEach(s => {
-      const existing = stepMap.get(s.step_number);
-      if (!existing || new Date(s.created_at) > new Date(existing.createdAt)) {
-        stepMap.set(s.step_number, {
-          stepNumber: s.step_number,
-          stepName: s.step_name,
-          mobileUrl: s.mobile_screenshot_url,
-          desktopUrl: s.desktop_screenshot_url,
-          createdAt: s.created_at
-        });
+    let screenshots: any[] = [];
+    
+    // STEP 2a: If we found a run, fetch screenshots by run_id (guaranteed consistent)
+    if (latestRun?.id) {
+      const { data } = await supabase
+        .from('flow_step_metrics')
+        .select('step_number, step_name, mobile_screenshot_url, desktop_screenshot_url, created_at, run_id')
+        .eq('run_id', latestRun.id)
+        .order('step_number');
+      screenshots = data || [];
+    }
+    
+    // STEP 2b: Fallback to flow_id query (bulk captures without run_id)
+    if (screenshots.length === 0) {
+      const { data } = await supabase
+        .from('flow_step_metrics')
+        .select('step_number, step_name, mobile_screenshot_url, desktop_screenshot_url, created_at, run_id')
+        .in('flow_id', flowIds)
+        .or('mobile_screenshot_url.not.is.null,desktop_screenshot_url.not.is.null')
+        .order('created_at', { ascending: false });
+      
+      // Deduplicate: keep newest per step
+      const sorted = (data || []).sort((a, b) => 
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+      const deduped = new Map<number, any>();
+      for (const row of sorted) {
+        if (!deduped.has(row.step_number)) {
+          deduped.set(row.step_number, row);
+        }
       }
+      screenshots = Array.from(deduped.values()).sort((a, b) => a.step_number - b.step_number);
+    }
+    
+    // Convert to StepScreenshot format
+    const stepMap = new Map<number, StepScreenshot>();
+    screenshots.forEach(s => {
+      stepMap.set(s.step_number, {
+        stepNumber: s.step_number,
+        stepName: s.step_name,
+        mobileUrl: s.mobile_screenshot_url,
+        desktopUrl: s.desktop_screenshot_url,
+        createdAt: s.created_at
+      });
     });
     
     // Fetch latest analysis
