@@ -59,10 +59,14 @@ export function getAllFlowNumbers(): number[] {
   return Array.from(numbers).sort((a, b) => a - b);
 }
 
-// Get total count of all configured flows
+// Get total count of all configured flows (STATIC count)
 export function getTotalFlowCount(): number {
   return Object.keys(FLOW_CONFIGS).length + Object.keys(SUB_VARIANT_CONFIGS).length;
 }
+
+// Canonical flow count - combines static config + dynamic DB flows
+// This is the authoritative source for "how many flows we have"
+export const CANONICAL_FLOW_COUNT = 87;
 
 export function getVariantsForFlow(flowNumber: number | 'all'): FlowVariant[] {
   const variants: FlowVariant[] = [];
