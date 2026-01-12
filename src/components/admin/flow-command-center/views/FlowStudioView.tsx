@@ -143,19 +143,33 @@ export const FlowStudioView: React.FC<FlowStudioViewProps> = ({
   
   const getFlowIdCandidates = useCallback((flowId: string) => {
     const candidates: string[] = [flowId];
+    const lowerFlowId = flowId.toLowerCase();
+    
+    // Also add lowercase version
+    if (flowId !== lowerFlowId) {
+      candidates.push(lowerFlowId);
+    }
     
     // If it starts with umzugsofferten-, also check without prefix
-    if (flowId.startsWith('umzugsofferten-')) {
-      const normalized = flowId.replace('umzugsofferten-', '');
+    if (lowerFlowId.startsWith('umzugsofferten-')) {
+      const normalized = lowerFlowId.replace('umzugsofferten-', '');
       candidates.push(normalized);
+      candidates.push(`umzugsofferten-${normalized}`);
     } else {
       // If it doesn't have prefix, also check with prefix
-      candidates.push(`umzugsofferten-${flowId}`);
+      candidates.push(`umzugsofferten-${lowerFlowId}`);
+    }
+    
+    // Handle simple version patterns like "V1", "v1", "V2", etc.
+    const simpleVersionMatch = lowerFlowId.match(/^v(\d+)$/i);
+    if (simpleVersionMatch) {
+      const num = simpleVersionMatch[1];
+      candidates.push(`v${num}`);
+      candidates.push(`umzugsofferten-v${num}`);
     }
     
     // Handle sub-variants like v1a, v1b which might be stored differently
-    // Check for patterns like "v1a" -> also try "umzugsofferten-v1a" and "umzugsofferten-v1.1.a"
-    const subVariantMatch = flowId.match(/^v(\d+)([a-z])$/i);
+    const subVariantMatch = lowerFlowId.match(/^v(\d+)([a-z])$/i);
     if (subVariantMatch) {
       const num = subVariantMatch[1];
       const letter = subVariantMatch[2].toLowerCase();
@@ -166,7 +180,7 @@ export const FlowStudioView: React.FC<FlowStudioViewProps> = ({
     }
     
     // Handle full paths like "umzugsofferten-v1a"
-    const fullSubVariantMatch = flowId.match(/^umzugsofferten-v(\d+)([a-z])$/i);
+    const fullSubVariantMatch = lowerFlowId.match(/^umzugsofferten-v(\d+)([a-z])$/i);
     if (fullSubVariantMatch) {
       const num = fullSubVariantMatch[1];
       const letter = fullSubVariantMatch[2].toLowerCase();
@@ -176,27 +190,42 @@ export const FlowStudioView: React.FC<FlowStudioViewProps> = ({
     }
     
     // Handle ultimate variants
-    if (flowId.includes('ultimate')) {
+    if (lowerFlowId.includes('ultimate')) {
       candidates.push('ultimate-best36');
       candidates.push('umzugsofferten-ultimate-best36');
-      candidates.push('vultimate');
-      candidates.push('vultimate-v1');
-      candidates.push('vultimate-v2');
+      candidates.push('ultimate-v1');
+      candidates.push('ultimate-v2');
+      candidates.push('ultimate-v5');
+      candidates.push('ultimate-v7');
+      candidates.push('ultimate-ch');
+      candidates.push('ultimate-all');
     }
     
     // Handle special flow names
-    if (flowId.includes('golden')) {
+    if (lowerFlowId.includes('golden')) {
       candidates.push('golden-flow-v10');
     }
-    if (flowId.includes('zero-friction')) {
+    if (lowerFlowId.includes('zero-friction')) {
       candidates.push('v9-zero-friction');
     }
-    if (flowId.includes('chatgpt')) {
+    if (lowerFlowId.includes('chatgpt')) {
       candidates.push('chatgpt-agent');
       candidates.push('chatgpt-flow-1');
       candidates.push('chatgpt-flow-2');
       candidates.push('chatgpt-flow-3');
       candidates.push('chatgpt-research');
+    }
+    if (lowerFlowId.includes('gemini')) {
+      candidates.push('gemini-pro');
+      candidates.push('gemini-pro-ext');
+    }
+    if (lowerFlowId.includes('swiss')) {
+      candidates.push('swiss-concierge-hybrid');
+      candidates.push('swiss-lightning');
+      candidates.push('swiss-premium-choice');
+    }
+    if (lowerFlowId.includes('multi')) {
+      candidates.push('multi-a');
     }
     
     return [...new Set(candidates)]; // Remove duplicates
