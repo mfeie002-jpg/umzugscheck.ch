@@ -35,7 +35,11 @@ import {
   RefreshCw,
   ArrowUpDown,
   ArrowUp,
-  ArrowDown
+  ArrowDown,
+  Sparkles,
+  ChevronDown,
+  ChevronUp,
+  Wand2
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
@@ -73,7 +77,17 @@ export const RankingView: React.FC<RankingViewProps> = ({
   const [runningCount, setRunningCount] = useState(0);
   const [sortField, setSortField] = useState<'overall' | 'conversion' | 'ux' | 'mobile' | 'rank'>('overall');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
-
+  const [feedbackVariants, setFeedbackVariants] = useState<Array<{
+    id: string;
+    flow_id: string;
+    variant_name: string;
+    variant_label: string;
+    status: string;
+    output_flow_id: string | null;
+    created_at: string;
+    prompt: string;
+  }>>([]);
+  const [showFeedbackPanel, setShowFeedbackPanel] = useState(false);
   // Helper to normalize flow IDs for matching
   const normalizeFlowId = (flowId: string): string => {
     // Remove 'umzugsofferten-' prefix if present
@@ -83,12 +97,23 @@ export const RankingView: React.FC<RankingViewProps> = ({
   const fetchScores = useCallback(async () => {
     try {
       // Fetch scores from analysis runs (completed ones only for scores)
-      const { data: runsData, error: runsError } = await supabase
-        .from('flow_analysis_runs')
-        .select('*')
-        .order('created_at', { ascending: false });
+      const [runsResult, feedbackResult] = await Promise.all([
+        supabase
+          .from('flow_analysis_runs')
+          .select('*')
+          .order('created_at', { ascending: false }),
+        supabase
+          .from('flow_feedback_variants')
+          .select('id, flow_id, variant_name, variant_label, status, output_flow_id, created_at, prompt')
+          .order('created_at', { ascending: false }),
+      ]);
       
-      if (runsError) throw runsError;
+      if (runsResult.error) throw runsResult.error;
+      const runsData = runsResult.data;
+      const feedbackVariants = feedbackResult.data || [];
+      
+      // Store feedback variants for display
+      setFeedbackVariants(feedbackVariants);
       
       const scoreMap: Record<string, FlowScore> = {};
       const statusMap: Record<string, AnalysisStatus> = {};
@@ -253,9 +278,41 @@ export const RankingView: React.FC<RankingViewProps> = ({
     return () => clearInterval(interval);
   }, [runningCount, fetchScores]);
 
-  // Get all variants and map scores
+  // Get all variants and map scores - combine static + dynamic from DB
   const allVariants = getVariantsForFlow('all');
-  const mappedVariants = [...allVariants]
+  
+  // Add dynamic flows from scores that aren't in static config
+  const staticIds = new Set(allVariants.map(v => normalizeFlowId(v.id)));
+  const dynamicVariants: typeof allVariants = [];
+  
+  Object.keys(scores).forEach(flowId => {
+    const normalized = normalizeFlowId(flowId);
+    if (!staticIds.has(normalized) && !staticIds.has(flowId)) {
+      // This is a dynamic flow from DB not in static config
+      dynamicVariants.push({
+        id: normalized,
+        label: normalized.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+        description: 'Dynamischer Flow aus DB',
+        color: 'bg-blue-500',
+        path: `/${normalized}`,
+        stepCount: 4,
+        isMain: false,
+        flowNumber: 99, // Put at end
+      });
+    }
+  });
+  
+  const combinedVariants = [...allVariants, ...dynamicVariants];
+  
+  // Deduplicate by normalized ID
+  const seenIds = new Set<string>();
+  const mappedVariants = combinedVariants
+    .filter(v => {
+      const normalizedId = normalizeFlowId(v.id);
+      if (seenIds.has(normalizedId)) return false;
+      seenIds.add(normalizedId);
+      return true;
+    })
     .map(v => {
       // Match using normalized ID (handles both 'umzugsofferten-v1' -> 'v1' and 'v1a' -> 'v1a')
       const normalizedId = normalizeFlowId(v.id);
@@ -519,6 +576,18 @@ export const RankingView: React.FC<RankingViewProps> = ({
             <RefreshCw className={cn('h-4 w-4 mr-1', loading && 'animate-spin')} />
             Aktualisieren
           </Button>
+          
+          {feedbackVariants.length > 0 && (
+            <Button
+              variant={showFeedbackPanel ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setShowFeedbackPanel(!showFeedbackPanel)}
+            >
+              <Wand2 className="h-4 w-4 mr-1" />
+              AI Fixes ({feedbackVariants.length})
+              {showFeedbackPanel ? <ChevronUp className="h-3 w-3 ml-1" /> : <ChevronDown className="h-3 w-3 ml-1" />}
+            </Button>
+          )}
         </div>
         
         {/* Refresh indicator when polling */}
@@ -529,6 +598,77 @@ export const RankingView: React.FC<RankingViewProps> = ({
           </div>
         )}
       </div>
+
+      {/* Feedback Variants Panel */}
+      {showFeedbackPanel && feedbackVariants.length > 0 && (
+        <Card className="border-primary/30 bg-gradient-to-br from-purple-50/50 to-blue-50/50 dark:from-purple-950/20 dark:to-blue-950/20">
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Sparkles className="h-5 w-5 text-purple-600" />
+              AI Auto-Fix Varianten
+            </CardTitle>
+            <CardDescription>
+              Diese Varianten wurden via AI-Feedback erstellt. Du kannst sie mit dem Original vergleichen.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+              {feedbackVariants.slice(0, 9).map((variant) => (
+                <div 
+                  key={variant.id} 
+                  className="p-3 rounded-lg border bg-background hover:border-primary/50 transition-colors"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <div className="font-medium text-sm truncate">{variant.variant_name}</div>
+                      <div className="text-xs text-muted-foreground truncate">
+                        Original: {variant.flow_id}
+                      </div>
+                    </div>
+                    <Badge 
+                      variant={variant.status === 'done' ? 'default' : 'secondary'}
+                      className={cn(
+                        'text-xs shrink-0',
+                        variant.status === 'done' && 'bg-green-600'
+                      )}
+                    >
+                      {variant.status === 'done' ? 'Fertig' : variant.status}
+                    </Badge>
+                  </div>
+                  <div className="text-xs text-muted-foreground mt-2 line-clamp-2">
+                    {variant.prompt}
+                  </div>
+                  <div className="flex items-center gap-2 mt-2">
+                    <Link 
+                      to={`/${variant.output_flow_id || variant.variant_label}`}
+                      target="_blank"
+                    >
+                      <Button variant="ghost" size="sm" className="h-7 text-xs">
+                        <ExternalLink className="h-3 w-3 mr-1" />
+                        Ansehen
+                      </Button>
+                    </Link>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="h-7 text-xs"
+                      onClick={() => onViewFlowDetails(variant.flow_id)}
+                    >
+                      <BarChart3 className="h-3 w-3 mr-1" />
+                      Vergleichen
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {feedbackVariants.length > 9 && (
+              <div className="text-center mt-3">
+                <Badge variant="outline">+{feedbackVariants.length - 9} weitere</Badge>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       {/* Podium - Top 3 */}
       <div className="grid grid-cols-3 gap-4">
@@ -676,7 +816,7 @@ export const RankingView: React.FC<RankingViewProps> = ({
             <TableBody>
               {sortedVariants.map((variant, index) => (
                 <TableRow 
-                  key={variant.id} 
+                  key={`${variant.id}-${index}`} 
                   className={cn(
                     "hover:bg-muted/50",
                     variant.status.status === 'running' && "bg-blue-50/50 dark:bg-blue-950/20",
