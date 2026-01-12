@@ -135,6 +135,18 @@ export const FlowStudioView: React.FC<FlowStudioViewProps> = ({
   // Compare mode
   const [isCompareMode, setIsCompareMode] = useState(false);
   
+  // AI Feedback variants
+  const [aiVariants, setAiVariants] = useState<Array<{
+    id: string;
+    flow_id: string;
+    output_flow_id: string | null;
+    variant_name: string;
+    variant_label: string;
+    status: string;
+  }>>([]);
+  const [showAiVersion, setShowAiVersion] = useState(false);
+  const [selectedAiVariant, setSelectedAiVariant] = useState<string | null>(null);
+  
   const allFlows = useMemo(() => getVariantsForFlow('all'), []);
   
   // ─────────────────────────────────────────────────────────────
@@ -301,6 +313,23 @@ export const FlowStudioView: React.FC<FlowStudioViewProps> = ({
         })
         .catch(console.error)
         .finally(() => setLoading(false));
+      
+      // Also fetch AI variants for this flow
+      const normalizedFlowId = selectedFlow.startsWith('umzugsofferten-')
+        ? selectedFlow.replace('umzugsofferten-', '')
+        : selectedFlow;
+      const flowIdVariants = [selectedFlow, normalizedFlowId, `umzugsofferten-${normalizedFlowId}`];
+      
+      supabase
+        .from('flow_feedback_variants')
+        .select('id, flow_id, output_flow_id, variant_name, variant_label, status')
+        .in('flow_id', flowIdVariants)
+        .order('created_at', { ascending: false })
+        .then(({ data }) => {
+          setAiVariants(data || []);
+          setSelectedAiVariant(null);
+          setShowAiVersion(false);
+        });
     }
   }, [selectedFlow, fetchFlowData]);
   
@@ -457,13 +486,29 @@ Bitte gib mir konkrete Code-Fixes für:
     return viewMode === 'mobile' ? screenshot?.mobileUrl : screenshot?.desktopUrl;
   };
   
-  const getLiveUrl = (flowId: string) => {
+  const getLiveUrl = useCallback((flowId: string) => {
     const baseUrl = getAnalysisBaseUrl();
+    
+    // If AI toggle is on and we have a selected variant, use the AI variant's output flow
+    if (showAiVersion && selectedAiVariant) {
+      const variant = aiVariants.find(v => v.id === selectedAiVariant);
+      if (variant?.output_flow_id) {
+        const aiNormalizedId = variant.output_flow_id.startsWith('umzugsofferten-')
+          ? variant.output_flow_id.replace('umzugsofferten-', '')
+          : variant.output_flow_id;
+        return `${baseUrl}/umzugsofferten-${aiNormalizedId}`;
+      }
+      // If no output_flow_id, use the variant_label as fallback
+      if (variant?.variant_label) {
+        return `${baseUrl}/umzugsofferten-${variant.variant_label}`;
+      }
+    }
+    
     const normalizedId = flowId.startsWith('umzugsofferten-')
       ? flowId.replace('umzugsofferten-', '')
       : flowId;
     return `${baseUrl}/umzugsofferten-${normalizedId}`;
-  };
+  }, [showAiVersion, selectedAiVariant, aiVariants]);
   
   // ─────────────────────────────────────────────────────────────
   // Render
@@ -627,6 +672,46 @@ Bitte gib mir konkrete Code-Fixes für:
                 <span className="hidden lg:inline">Alle Steps</span>
               </Button>
             </div>
+            
+            {/* AI Feedback Toggle - Show when variants exist */}
+            {aiVariants.length > 0 && (
+              <div className="flex items-center gap-2 rounded-lg border bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950/20 dark:to-blue-950/20 p-2">
+                <Sparkles className="h-4 w-4 text-purple-600" />
+                <Label htmlFor="ai-toggle" className="text-sm font-medium cursor-pointer">
+                  AI Fix
+                </Label>
+                <Switch
+                  id="ai-toggle"
+                  checked={showAiVersion}
+                  onCheckedChange={(checked) => {
+                    setShowAiVersion(checked);
+                    if (checked && aiVariants.length > 0 && !selectedAiVariant) {
+                      setSelectedAiVariant(aiVariants[0].id);
+                    }
+                  }}
+                />
+                {showAiVersion && aiVariants.length > 1 && (
+                  <Select
+                    value={selectedAiVariant || aiVariants[0]?.id}
+                    onValueChange={setSelectedAiVariant}
+                  >
+                    <SelectTrigger className="w-[140px] h-8 text-xs">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {aiVariants.map((v) => (
+                        <SelectItem key={v.id} value={v.id} className="text-xs">
+                          {v.variant_label.split('-').slice(-1)[0].substring(0, 10)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+                <Badge variant={showAiVersion ? "default" : "outline"} className="text-[10px]">
+                  {aiVariants.length}
+                </Badge>
+              </div>
+            )}
             
             <div className="flex-1" />
             
@@ -792,6 +877,7 @@ Bitte gib mir konkrete Code-Fixes für:
             flowData={flowData}
             viewMode={viewMode}
             getLiveUrl={getLiveUrl}
+            showAiVersion={showAiVersion}
           />
           
           {/* Compare Flow if active */}
@@ -801,6 +887,7 @@ Bitte gib mir konkrete Code-Fixes für:
               flowData={compareData}
               viewMode={viewMode}
               getLiveUrl={getLiveUrl}
+              showAiVersion={false}
             />
           )}
         </div>
@@ -819,6 +906,7 @@ Bitte gib mir konkrete Code-Fixes für:
             showOverlay={showOverlay && displayMode === 'split'}
             sliderPosition={sliderPosition}
             onSliderChange={setSliderPosition}
+            showAiVersion={showAiVersion}
           />
           
           {/* Compare Flow */}
@@ -831,6 +919,7 @@ Bitte gib mir konkrete Code-Fixes für:
               liveUrl={getLiveUrl(compareFlow)}
               showOverlay={false}
               sliderPosition={50}
+              showAiVersion={false}
             />
           )}
         </div>
@@ -911,7 +1000,8 @@ const FlowStepSlider: React.FC<{
   flowData: FlowData | null;
   viewMode: 'mobile' | 'desktop';
   getLiveUrl: (flowId: string) => string;
-}> = ({ flowId, flowData, viewMode, getLiveUrl }) => {
+  showAiVersion?: boolean;
+}> = ({ flowId, flowData, viewMode, getLiveUrl, showAiVersion = false }) => {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStartX, setDragStartX] = useState(0);
@@ -1096,26 +1186,57 @@ const FlowStepSlider: React.FC<{
             )}
           </div>
           
-          {/* Live Side (Rechts) - FULLY INTERACTIVE */}
+          {/* Live Side (Rechts) - FULLY INTERACTIVE with proper mobile scaling */}
           <div className="relative">
-            <div className="absolute top-3 left-3 z-10 pointer-events-none">
-              <Badge className="bg-green-600 text-white shadow-md">▶ Live</Badge>
+            <div className="absolute top-3 left-3 z-10 pointer-events-none flex items-center gap-1">
+              <Badge className={cn(
+                "shadow-md",
+                showAiVersion 
+                  ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white" 
+                  : "bg-green-600 text-white"
+              )}>
+                {showAiVersion ? '✨ AI Live' : '▶ Live'}
+              </Badge>
             </div>
             <div className={cn(
-              "bg-white flex items-center justify-center p-6",
+              "bg-white flex items-center justify-center p-6 overflow-hidden",
               viewMode === 'mobile' ? "min-h-[550px]" : "min-h-[450px]"
             )}>
-              <div className={cn(
-                "relative rounded-lg shadow-lg border bg-white",
-                viewMode === 'mobile' ? "w-[300px] h-[550px]" : "w-full h-[450px]"
-              )}>
-                <iframe
-                  src={`${stepLiveUrl}?step=${currentStep?.stepNumber || 1}`}
-                  className="w-full h-full border-0"
-                  title={`Step ${currentStep?.stepNumber} live`}
-                  style={{ overflow: 'auto' }}
-                />
-              </div>
+              {viewMode === 'mobile' ? (
+                /* Mobile: Use scaling to fit full 375px width into container */
+                <div className="relative w-[300px] h-[550px] rounded-lg shadow-lg border bg-white overflow-hidden">
+                  <div 
+                    className="origin-top-left"
+                    style={{
+                      width: '375px',
+                      height: '812px',
+                      transform: 'scale(0.8)',
+                      transformOrigin: 'top left'
+                    }}
+                  >
+                    <iframe
+                      src={`${stepLiveUrl}?step=${currentStep?.stepNumber || 1}`}
+                      className="w-full h-full border-0"
+                      title={`Step ${currentStep?.stepNumber} live`}
+                      style={{ 
+                        overflow: 'auto',
+                        width: '375px',
+                        height: '812px'
+                      }}
+                    />
+                  </div>
+                </div>
+              ) : (
+                /* Desktop: Full width */
+                <div className="relative rounded-lg shadow-lg border bg-white w-full h-[450px] overflow-hidden">
+                  <iframe
+                    src={`${stepLiveUrl}?step=${currentStep?.stepNumber || 1}`}
+                    className="w-full h-full border-0"
+                    title={`Step ${currentStep?.stepNumber} live`}
+                    style={{ overflow: 'auto' }}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -1177,7 +1298,8 @@ const FlowPreviewCard: React.FC<{
   showOverlay: boolean;
   sliderPosition: number;
   onSliderChange?: (value: number) => void;
-}> = ({ flowId, screenshot, viewMode, displayMode, liveUrl, showOverlay, sliderPosition }) => {
+  showAiVersion?: boolean;
+}> = ({ flowId, screenshot, viewMode, displayMode, liveUrl, showOverlay, sliderPosition, showAiVersion = false }) => {
   const screenshotUrl = viewMode === 'mobile' ? screenshot?.mobileUrl : screenshot?.desktopUrl;
   
   return (
@@ -1212,16 +1334,53 @@ const FlowPreviewCard: React.FC<{
         )}
         
         {displayMode === 'live' && (
-          <div className={cn(
-            "relative bg-white",
-            viewMode === 'mobile' ? "max-w-[375px] mx-auto h-[667px]" : "w-full h-[600px]"
-          )}>
-            <iframe
-              src={liveUrl}
-              className="w-full h-full border-0"
-              title={`${flowId} live preview`}
-              style={{ overflow: 'auto' }}
-            />
+          <div className="relative">
+            {/* Live/AI Badge */}
+            <div className="absolute top-2 left-2 z-10 pointer-events-none">
+              <Badge className={cn(
+                "shadow-md",
+                showAiVersion 
+                  ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white" 
+                  : "bg-green-600 text-white"
+              )}>
+                {showAiVersion ? '✨ AI Live' : '▶ Live'}
+              </Badge>
+            </div>
+            {viewMode === 'mobile' ? (
+              /* Mobile: Use scaling to fit full 375px width into visible container */
+              <div className="relative bg-white mx-auto overflow-hidden" style={{ width: '300px', height: '650px' }}>
+                <div 
+                  className="origin-top-left"
+                  style={{
+                    width: '375px',
+                    height: '812px',
+                    transform: 'scale(0.8)',
+                    transformOrigin: 'top left'
+                  }}
+                >
+                  <iframe
+                    src={liveUrl}
+                    className="border-0"
+                    title={`${flowId} live preview`}
+                    style={{ 
+                      overflow: 'auto',
+                      width: '375px',
+                      height: '812px'
+                    }}
+                  />
+                </div>
+              </div>
+            ) : (
+              /* Desktop: Full width */
+              <div className="relative bg-white w-full h-[600px]">
+                <iframe
+                  src={liveUrl}
+                  className="w-full h-full border-0"
+                  title={`${flowId} live preview`}
+                  style={{ overflow: 'auto' }}
+                />
+              </div>
+            )}
           </div>
         )}
         
