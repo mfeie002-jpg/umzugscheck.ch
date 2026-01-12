@@ -75,7 +75,8 @@ import {
   ComparisonView,
   LandingPagesView,
   FlowTesterResultsView,
-  FlowsView
+  FlowsView,
+  FlowStudioView
 } from '@/components/admin/flow-command-center/views';
 import { 
   ScoreRing, 
@@ -585,7 +586,7 @@ export default function FlowCommandCenter() {
     <Tabs value={activeView} onValueChange={(v) => handleViewChange(v as ViewMode)}>
       <div className="flex items-center justify-between flex-wrap gap-4 mb-6">
         <TabsList className="h-auto flex-wrap">
-          {(['dashboard', 'ranking', 'analysis', 'history', 'comparison', 'flows', 'landing-pages'] as ViewMode[]).map((view) => {
+          {(['dashboard', 'ranking', 'analysis', 'history', 'comparison', 'studio', 'flows', 'landing-pages'] as ViewMode[]).map((view) => {
             const config = VIEW_CONFIG[view];
             const Icon = config.icon;
             return (
@@ -710,6 +711,13 @@ export default function FlowCommandCenter() {
       <TabsContent value="comparison" className="mt-0">
         <ComparisonView
           initialFlowA={selectedFlowId}
+          onSelectFlow={handleSelectFlow}
+        />
+      </TabsContent>
+
+      <TabsContent value="studio" className="mt-0">
+        <FlowStudioView 
+          initialFlowId={selectedFlowId || undefined}
           onSelectFlow={handleSelectFlow}
         />
       </TabsContent>
