@@ -282,12 +282,30 @@ export const RankingView: React.FC<RankingViewProps> = ({
   const allVariants = getVariantsForFlow('all');
   
   // Add dynamic flows from scores that aren't in static config
-  const staticIds = new Set(allVariants.map(v => normalizeFlowId(v.id)));
+  // Use a more precise matching logic to avoid missing flows
+  const staticIds = new Set<string>();
+  allVariants.forEach(v => {
+    staticIds.add(v.id.toLowerCase());
+    staticIds.add(normalizeFlowId(v.id).toLowerCase());
+    // Also add variants with umzugsofferten- prefix
+    if (!v.id.startsWith('umzugsofferten-')) {
+      staticIds.add(`umzugsofferten-${v.id}`.toLowerCase());
+    }
+  });
+  
   const dynamicVariants: typeof allVariants = [];
   
   Object.keys(scores).forEach(flowId => {
     const normalized = normalizeFlowId(flowId);
-    if (!staticIds.has(normalized) && !staticIds.has(flowId)) {
+    const lowerId = flowId.toLowerCase();
+    const normalizedLower = normalized.toLowerCase();
+    
+    // Check if this flow is already covered by static config
+    const isInStatic = staticIds.has(lowerId) || 
+                       staticIds.has(normalizedLower) ||
+                       staticIds.has(`umzugsofferten-${normalizedLower}`);
+    
+    if (!isInStatic) {
       // This is a dynamic flow from DB not in static config
       dynamicVariants.push({
         id: normalized,
@@ -304,11 +322,11 @@ export const RankingView: React.FC<RankingViewProps> = ({
   
   const combinedVariants = [...allVariants, ...dynamicVariants];
   
-  // Deduplicate by normalized ID
+  // Deduplicate by normalized ID (case-insensitive)
   const seenIds = new Set<string>();
   const mappedVariants = combinedVariants
     .filter(v => {
-      const normalizedId = normalizeFlowId(v.id);
+      const normalizedId = normalizeFlowId(v.id).toLowerCase();
       if (seenIds.has(normalizedId)) return false;
       seenIds.add(normalizedId);
       return true;
@@ -318,8 +336,8 @@ export const RankingView: React.FC<RankingViewProps> = ({
       const normalizedId = normalizeFlowId(v.id);
       return { 
         ...v, 
-        score: scores[normalizedId] || scores[v.id],
-        status: analysisStatus[normalizedId] || analysisStatus[v.id] || { 
+        score: scores[normalizedId] || scores[v.id] || scores[normalizedId.toLowerCase()],
+        status: analysisStatus[normalizedId] || analysisStatus[v.id] || analysisStatus[normalizedId.toLowerCase()] || { 
           status: 'none' as const, 
           stepsCaptures: 0, 
           totalSteps: 1, 

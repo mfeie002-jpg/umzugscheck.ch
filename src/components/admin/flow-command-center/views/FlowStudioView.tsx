@@ -486,8 +486,10 @@ Bitte gib mir konkrete Code-Fixes für:
     return viewMode === 'mobile' ? screenshot?.mobileUrl : screenshot?.desktopUrl;
   };
   
-  const getLiveUrl = useCallback((flowId: string) => {
+  // Build a Live URL with step navigation support
+  const getLiveUrl = useCallback((flowId: string, stepNumber?: number) => {
     const baseUrl = getAnalysisBaseUrl();
+    let flowPath: string;
     
     // If AI toggle is on and we have a selected variant, use the AI variant's output flow
     if (showAiVersion && selectedAiVariant) {
@@ -496,18 +498,26 @@ Bitte gib mir konkrete Code-Fixes für:
         const aiNormalizedId = variant.output_flow_id.startsWith('umzugsofferten-')
           ? variant.output_flow_id.replace('umzugsofferten-', '')
           : variant.output_flow_id;
-        return `${baseUrl}/umzugsofferten-${aiNormalizedId}`;
+        flowPath = `/umzugsofferten-${aiNormalizedId}`;
+      } else if (variant?.variant_label) {
+        // If no output_flow_id, use the variant_label as fallback
+        flowPath = `/umzugsofferten-${variant.variant_label}`;
+      } else {
+        const normalizedId = flowId.startsWith('umzugsofferten-')
+          ? flowId.replace('umzugsofferten-', '')
+          : flowId;
+        flowPath = `/umzugsofferten-${normalizedId}`;
       }
-      // If no output_flow_id, use the variant_label as fallback
-      if (variant?.variant_label) {
-        return `${baseUrl}/umzugsofferten-${variant.variant_label}`;
-      }
+    } else {
+      const normalizedId = flowId.startsWith('umzugsofferten-')
+        ? flowId.replace('umzugsofferten-', '')
+        : flowId;
+      flowPath = `/umzugsofferten-${normalizedId}`;
     }
     
-    const normalizedId = flowId.startsWith('umzugsofferten-')
-      ? flowId.replace('umzugsofferten-', '')
-      : flowId;
-    return `${baseUrl}/umzugsofferten-${normalizedId}`;
+    // Add capture mode params for step navigation
+    const step = stepNumber ?? 1;
+    return `${baseUrl}${flowPath}?uc_capture=1&uc_step=${step}`;
   }, [showAiVersion, selectedAiVariant, aiVariants]);
   
   // ─────────────────────────────────────────────────────────────
@@ -902,7 +912,7 @@ Bitte gib mir konkrete Code-Fixes für:
             screenshot={currentScreenshot}
             viewMode={viewMode}
             displayMode={displayMode}
-            liveUrl={getLiveUrl(selectedFlow)}
+            liveUrl={getLiveUrl(selectedFlow, currentScreenshot?.stepNumber)}
             showOverlay={showOverlay && displayMode === 'split'}
             sliderPosition={sliderPosition}
             onSliderChange={setSliderPosition}
@@ -916,7 +926,7 @@ Bitte gib mir konkrete Code-Fixes für:
               screenshot={compareScreenshot}
               viewMode={viewMode}
               displayMode={displayMode}
-              liveUrl={getLiveUrl(compareFlow)}
+              liveUrl={getLiveUrl(compareFlow, compareScreenshot?.stepNumber)}
               showOverlay={false}
               sliderPosition={50}
               showAiVersion={false}
@@ -999,7 +1009,7 @@ const FlowStepSlider: React.FC<{
   flowId: string;
   flowData: FlowData | null;
   viewMode: 'mobile' | 'desktop';
-  getLiveUrl: (flowId: string) => string;
+  getLiveUrl: (flowId: string, stepNumber?: number) => string;
   showAiVersion?: boolean;
 }> = ({ flowId, flowData, viewMode, getLiveUrl, showAiVersion = false }) => {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
@@ -1010,7 +1020,8 @@ const FlowStepSlider: React.FC<{
   const screenshots = flowData?.screenshots || [];
   const currentStep = screenshots[currentStepIndex];
   const totalSteps = screenshots.length;
-  const stepLiveUrl = getLiveUrl(flowId);
+  // Get the Live URL with the correct step number
+  const stepLiveUrl = getLiveUrl(flowId, currentStep?.stepNumber || 1);
   
   const goToStep = useCallback((index: number) => {
     if (index >= 0 && index < totalSteps) {
@@ -1215,7 +1226,7 @@ const FlowStepSlider: React.FC<{
                     }}
                   >
                     <iframe
-                      src={`${stepLiveUrl}?step=${currentStep?.stepNumber || 1}`}
+                      src={stepLiveUrl}
                       className="w-full h-full border-0"
                       title={`Step ${currentStep?.stepNumber} live`}
                       style={{ 
@@ -1230,7 +1241,7 @@ const FlowStepSlider: React.FC<{
                 /* Desktop: Full width */
                 <div className="relative rounded-lg shadow-lg border bg-white w-full h-[450px] overflow-hidden">
                   <iframe
-                    src={`${stepLiveUrl}?step=${currentStep?.stepNumber || 1}`}
+                    src={stepLiveUrl}
                     className="w-full h-full border-0"
                     title={`Step ${currentStep?.stepNumber} live`}
                     style={{ overflow: 'auto' }}
