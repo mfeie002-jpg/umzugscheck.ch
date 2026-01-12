@@ -3,7 +3,7 @@
  * The Archetype Reference for A/B comparison
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -94,7 +94,14 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
   // Slider position for comparison (0-100, 50 = middle)
   const [sliderPosition, setSliderPosition] = useState(50);
 
-  const allVariants = getVariantsForFlow('all');
+  const allVariants = useMemo(() => getVariantsForFlow('all'), []);
+  const flowOptions = useMemo(() => {
+    const map = new Map<string, (typeof allVariants)[number]>();
+    for (const v of allVariants) {
+      if (!map.has(v.id)) map.set(v.id, v);
+    }
+    return Array.from(map.values());
+  }, [allVariants]);
 
   useEffect(() => {
     if (flowA) {
@@ -145,63 +152,64 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
     try {
       const flowIds = getFlowIdCandidates(flowId);
 
-      // First get only completed runs for this flow (any of its normalized IDs)
-      const { data: completedRuns } = await supabase
+      // Choose ONE coherent run per side (otherwise step N might come from an older run)
+      // Prefer the latest completed run for the exact selected flowId; fallback to other candidates.
+      const { data: completedRuns, error: runsError } = await supabase
         .from('flow_analysis_runs')
-        .select('id')
+        .select('id, flow_id, created_at, completed_at, status')
         .in('flow_id', flowIds)
         .eq('status', 'completed')
+        .not('completed_at', 'is', null)
         .order('created_at', { ascending: false })
-        .limit(5);
+        .limit(10);
 
-      const completedRunIds = completedRuns?.map(r => r.id) || [];
+      if (runsError) throw runsError;
 
-      // Fetch step metrics only from completed runs
-      let query = supabase
-        .from('flow_step_metrics')
-        .select('step_number, desktop_screenshot_url, mobile_screenshot_url, created_at, run_id')
-        .in('flow_id', flowIds)
-        .order('created_at', { ascending: false });
+      const preferredRun =
+        completedRuns?.find((r) => r.flow_id === flowId) ??
+        completedRuns?.[0];
 
-      if (completedRunIds.length > 0) {
-        query = query.in('run_id', completedRunIds);
+      if (!preferredRun) {
+        if (side === 'A') setScreenshotsA({ flowId, steps: [] });
+        else setScreenshotsB({ flowId, steps: [] });
+        return;
       }
 
-      const { data: stepMetrics } = await query;
+      const { data: stepMetrics, error: metricsError } = await supabase
+        .from('flow_step_metrics')
+        .select('step_number, desktop_screenshot_url, mobile_screenshot_url, created_at')
+        .eq('run_id', preferredRun.id)
+        .order('step_number', { ascending: true });
+
+      if (metricsError) throw metricsError;
 
       if (stepMetrics && stepMetrics.length > 0) {
-        // Deduplicate by step_number, keeping newest entry that HAS screenshots from completed runs
-        const newestByStep = new Map<number, { 
-          step_number: number; 
-          mobileUrl: string | null; 
-          desktopUrl: string | null;
-        }>();
-        
-        for (const s of stepMetrics) {
-          const existing = newestByStep.get(s.step_number);
-          
+        // In case there are duplicates for a step, merge while keeping one coherent run.
+        const byStep = new Map<number, StepScreenshot>();
+
+        for (const row of stepMetrics) {
+          const existing = byStep.get(row.step_number);
+          const next: StepScreenshot = {
+            stepNumber: row.step_number,
+            desktopUrl: row.desktop_screenshot_url,
+            mobileUrl: row.mobile_screenshot_url,
+          };
+
           if (!existing) {
-            newestByStep.set(s.step_number, {
-              step_number: s.step_number,
-              mobileUrl: s.mobile_screenshot_url,
-              desktopUrl: s.desktop_screenshot_url,
-            });
-          } else {
-            newestByStep.set(s.step_number, {
-              step_number: s.step_number,
-              mobileUrl: existing.mobileUrl || s.mobile_screenshot_url,
-              desktopUrl: existing.desktopUrl || s.desktop_screenshot_url,
-            });
+            byStep.set(row.step_number, next);
+            continue;
           }
+
+          byStep.set(row.step_number, {
+            stepNumber: row.step_number,
+            mobileUrl: existing.mobileUrl ?? next.mobileUrl,
+            desktopUrl: existing.desktopUrl ?? next.desktopUrl,
+          });
         }
 
-        const steps: StepScreenshot[] = Array.from(newestByStep.values())
-          .sort((a, b) => a.step_number - b.step_number)
-          .map(s => ({
-            stepNumber: s.step_number,
-            desktopUrl: s.desktopUrl,
-            mobileUrl: s.mobileUrl,
-          }));
+        const steps: StepScreenshot[] = Array.from(byStep.values()).sort(
+          (a, b) => a.stepNumber - b.stepNumber
+        );
 
         const screenshots: FlowScreenshots = { flowId, steps };
         if (side === 'A') setScreenshotsA(screenshots);
@@ -306,11 +314,18 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
 
   const overallWinner = getWinner('overallScore');
 
-  // Get max steps between both flows
-  const maxSteps = Math.max(
-    screenshotsA?.steps.length || 0,
-    screenshotsB?.steps.length || 0
-  );
+  // Step numbers union across both flows (don't assume 1..N)
+  const stepNumbers = useMemo(() => {
+    const set = new Set<number>();
+    screenshotsA?.steps.forEach((s) => set.add(s.stepNumber));
+    screenshotsB?.steps.forEach((s) => set.add(s.stepNumber));
+    return Array.from(set).sort((a, b) => a - b);
+  }, [screenshotsA, screenshotsB]);
+
+  const totalSteps = stepNumbers.length;
+
+  const zoomStepIndex = zoomComparison ? stepNumbers.indexOf(zoomComparison.stepNum) : -1;
+  const zoomStepPosition = zoomStepIndex >= 0 ? zoomStepIndex + 1 : 1;
 
   const openComparisonZoom = (stepNum: number, type: 'mobile' | 'desktop') => {
     const stepA = screenshotsA?.steps.find(s => s.stepNumber === stepNum);
@@ -345,7 +360,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                   <SelectValue placeholder="Flow wählen" />
                 </SelectTrigger>
                 <SelectContent>
-                  {allVariants.map(v => (
+                  {flowOptions.map((v) => (
                     <SelectItem key={v.id} value={v.id}>
                       {v.label}
                     </SelectItem>
@@ -353,7 +368,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                 </SelectContent>
               </Select>
             </div>
-            
+
             <Button
               variant="outline"
               size="icon"
@@ -363,7 +378,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
             >
               <ArrowLeftRight className="h-4 w-4" />
             </Button>
-            
+
             <div className="flex-1">
               <label className="text-sm font-medium mb-2 block">Flow B</label>
               <Select value={flowB} onValueChange={setFlowB}>
@@ -373,11 +388,13 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                   <SelectValue placeholder="Flow wählen" />
                 </SelectTrigger>
                 <SelectContent>
-                  {allVariants.filter(v => v.id !== flowA).map(v => (
-                    <SelectItem key={v.id} value={v.id}>
-                      {v.label}
-                    </SelectItem>
-                  ))}
+                  {flowOptions
+                    .filter((v) => v.id !== flowA)
+                    .map((v) => (
+                      <SelectItem key={v.id} value={v.id}>
+                        {v.label}
+                      </SelectItem>
+                    ))}
                 </SelectContent>
               </Select>
             </div>
@@ -621,7 +638,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
       )}
 
       {/* Screenshot Comparison Section */}
-      {flowA && flowB && maxSteps > 0 && (
+      {flowA && flowB && totalSteps > 0 && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -642,15 +659,21 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                 {/* Horizontal Slider */}
                 <div className="overflow-x-auto pb-4 -mx-6 px-6" style={{ scrollbarWidth: 'thin' }}>
                   <div className="inline-flex gap-4" style={{ whiteSpace: 'nowrap' }}>
-                    {Array.from({ length: maxSteps }, (_, i) => i + 1).map(stepNum => {
-                      const stepA = screenshotsA?.steps.find(s => s.stepNumber === stepNum);
-                      const stepB = screenshotsB?.steps.find(s => s.stepNumber === stepNum);
-                      
+                    {stepNumbers.map((stepNum) => {
+                      const stepA = screenshotsA?.steps.find((s) => s.stepNumber === stepNum);
+                      const stepB = screenshotsB?.steps.find((s) => s.stepNumber === stepNum);
+
                       return (
-                        <div key={stepNum} className="inline-block w-[220px] space-y-2 p-2 bg-muted/30 rounded-lg border align-top" style={{ whiteSpace: 'normal' }}>
-                          <Badge variant="outline" className="text-xs">Schritt {stepNum}</Badge>
-                          
-                          {/* Mobile Screenshots Side-by-Side - Click opens slider comparison */}
+                        <div
+                          key={stepNum}
+                          className="inline-block w-[220px] space-y-2 p-2 bg-muted/30 rounded-lg border align-top"
+                          style={{ whiteSpace: 'normal' }}
+                        >
+                          <Badge variant="outline" className="text-xs">
+                            Schritt {stepNum}
+                          </Badge>
+
+                          {/* Mobile Screenshots Side-by-Side */}
                           <div className="grid grid-cols-2 gap-2">
                             <div className="space-y-1">
                               <p className="text-[10px] text-muted-foreground truncate">{flowA}</p>
@@ -671,7 +694,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                                 </div>
                               )}
                             </div>
-                            
+
                             <div className="space-y-1">
                               <p className="text-[10px] text-muted-foreground truncate">{flowB}</p>
                               {stepB?.mobileUrl ? (
@@ -692,7 +715,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                               )}
                             </div>
                           </div>
-                          
+
                           {/* Desktop Screenshots Side-by-Side */}
                           <div className="grid grid-cols-2 gap-2">
                             <div>
@@ -713,7 +736,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                                 </div>
                               )}
                             </div>
-                            
+
                             <div>
                               {stepB?.desktopUrl ? (
                                 <button
@@ -738,7 +761,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                     })}
                   </div>
                 </div>
-                
+
                 {/* Scroll hint */}
                 <div className="absolute right-0 top-0 bottom-4 w-8 bg-gradient-to-l from-background to-transparent pointer-events-none" />
               </div>
@@ -764,9 +787,10 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
       <Dialog open={!!zoomComparison} onOpenChange={() => setZoomComparison(null)}>
         <DialogContent className="max-w-4xl p-4">
           <DialogTitle className="text-center text-sm mb-3">
-            Schritt {zoomComparison?.stepNum} / {maxSteps} - {zoomComparison?.type === 'mobile' ? 'Mobile' : 'Desktop'} Vergleich
+            Schritt {zoomStepPosition} / {totalSteps} -{' '}
+            {zoomComparison?.type === 'mobile' ? 'Mobile' : 'Desktop'} Vergleich
           </DialogTitle>
-          
+
           {zoomComparison && (
             <>
               <div className="grid grid-cols-2 gap-3 max-h-[60vh]">
@@ -790,7 +814,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                     )}
                   </div>
                 </div>
-                
+
                 {/* Flow B (Right) */}
                 <div className="flex flex-col">
                   <div className="p-1.5 bg-green-600 text-white text-xs rounded-t text-center font-medium">
@@ -812,28 +836,36 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                   </div>
                 </div>
               </div>
-              
+
               {/* Navigation */}
               <div className="flex items-center justify-between mt-4 pt-3 border-t">
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => openComparisonZoom(zoomComparison.stepNum - 1, zoomComparison.type)}
-                  disabled={zoomComparison.stepNum <= 1}
+                  onClick={() => {
+                    const idx = stepNumbers.indexOf(zoomComparison.stepNum);
+                    const prev = idx > 0 ? stepNumbers[idx - 1] : undefined;
+                    if (typeof prev === 'number') openComparisonZoom(prev, zoomComparison.type);
+                  }}
+                  disabled={zoomStepIndex <= 0}
                 >
                   <ChevronLeft className="h-4 w-4 mr-1" />
                   Zurück
                 </Button>
-                
+
                 <span className="text-sm text-muted-foreground">
-                  {zoomComparison.stepNum} von {maxSteps}
+                  {zoomStepPosition} von {totalSteps}
                 </span>
-                
+
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => openComparisonZoom(zoomComparison.stepNum + 1, zoomComparison.type)}
-                  disabled={zoomComparison.stepNum >= maxSteps}
+                  onClick={() => {
+                    const idx = stepNumbers.indexOf(zoomComparison.stepNum);
+                    const next = idx >= 0 ? stepNumbers[idx + 1] : undefined;
+                    if (typeof next === 'number') openComparisonZoom(next, zoomComparison.type);
+                  }}
+                  disabled={zoomStepIndex >= totalSteps - 1}
                 >
                   Weiter
                   <ChevronRight className="h-4 w-4 ml-1" />
