@@ -48,6 +48,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   isAnalyzing,
 }) => {
   const [scores, setScores] = useState<Record<string, FlowScore>>({});
+  const [dbFlowIds, setDbFlowIds] = useState<string[]>([]); // All flows from database
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState<'score' | 'name' | 'date'>('score');
   const [filterFlowNum, setFilterFlowNum] = useState<number | 'all'>('all');
@@ -74,6 +75,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         .order('created_at', { ascending: false });
       
       if (error) throw error;
+      
+      // Collect all unique flow IDs from database
+      const uniqueDbFlowIds = [...new Set(data?.map(r => r.flow_id) || [])];
+      setDbFlowIds(uniqueDbFlowIds);
       
       // Group by NORMALIZED flow_id and get latest 5 for delta calculation
       const flowRuns: Record<string, typeof data> = {};
@@ -148,10 +153,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     return a.label.localeCompare(b.label);
   });
 
-  // Calculate stats - count flows that have scores (using normalized IDs)
-  const analyzedCount = allVariants.filter(v => getScoreForVariant(v.id)?.overallScore !== undefined).length;
-  const totalFlows = allVariants.length;
-  const relevantScores = allVariants.map(v => getScoreForVariant(v.id)).filter((s): s is FlowScore => s?.overallScore !== undefined);
+  // Calculate stats - use BOTH config flows AND database flows for complete picture
+  // Count flows with completed analysis from DB (more accurate)
+  const analyzedFromDb = Object.values(scores).filter(s => s.overallScore !== undefined).length;
+  const totalFromDb = dbFlowIds.length;
+  
+  // Still use config-based stats for UI variants, but show DB counts for totals
+  const analyzedCount = analyzedFromDb;
+  const totalFlows = Math.max(allVariants.length, totalFromDb); // Show the larger count
+  const relevantScores = Object.values(scores).filter((s): s is FlowScore => s?.overallScore !== undefined);
   const avgScore = relevantScores.length > 0
     ? Math.round(relevantScores.reduce((sum, s) => sum + (s.overallScore || 0), 0) / relevantScores.length)
     : 0;
