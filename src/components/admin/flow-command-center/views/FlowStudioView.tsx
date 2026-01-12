@@ -121,7 +121,7 @@ export const FlowStudioView: React.FC<FlowStudioViewProps> = ({
   
   // View controls
   const [viewMode, setViewMode] = useState<'mobile' | 'desktop'>('mobile');
-  const [displayMode, setDisplayMode] = useState<'screenshot' | 'live' | 'split'>('screenshot');
+  const [displayMode, setDisplayMode] = useState<'screenshot' | 'live' | 'split' | 'side-by-side-all'>('screenshot');
   const [currentStep, setCurrentStep] = useState(1);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showOverlay, setShowOverlay] = useState(false);
@@ -512,6 +512,15 @@ Bitte gib mir konkrete Code-Fixes für:
                 <SplitSquareHorizontal className="h-4 w-4" />
                 <span className="hidden sm:inline">Split</span>
               </Button>
+              <Button
+                variant={displayMode === 'side-by-side-all' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setDisplayMode('side-by-side-all')}
+                className="gap-1 bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:from-blue-600 hover:to-purple-600"
+              >
+                <Layers className="h-4 w-4" />
+                <span className="hidden lg:inline">Alle Steps</span>
+              </Button>
             </div>
             
             <div className="flex-1" />
@@ -669,6 +678,109 @@ Bitte gib mir konkrete Code-Fixes für:
             <p>Wähle einen Flow aus um zu starten</p>
           </div>
         </Card>
+      ) : displayMode === 'side-by-side-all' ? (
+        /* Side-by-Side All Steps View - Screenshot links, Live rechts */
+        <div className="space-y-6">
+          <Card className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 border-blue-200 dark:border-blue-800">
+            <CardContent className="py-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Layers className="h-5 w-5 text-blue-600" />
+                  <span className="font-medium text-blue-800 dark:text-blue-200">
+                    Alle {flowData?.screenshots.length || 0} Steps - Screenshot ↔ Live Vergleich
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline" className="bg-white/50">{viewMode === 'mobile' ? 'Mobile' : 'Desktop'}</Badge>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          {flowData?.screenshots.map((step, index) => {
+            const stepLiveUrl = getLiveUrl(selectedFlow);
+            const screenshotUrl = viewMode === 'mobile' ? step.mobileUrl : step.desktopUrl;
+            
+            return (
+              <Card key={step.stepNumber} className="overflow-hidden">
+                <CardHeader className="py-2 px-4 bg-muted/50 border-b">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">
+                        {step.stepNumber}
+                      </div>
+                      <div>
+                        <CardTitle className="text-base">Step {step.stepNumber}</CardTitle>
+                        {step.stepName && (
+                          <p className="text-xs text-muted-foreground">{step.stepName}</p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Badge variant={screenshotUrl ? 'default' : 'destructive'} className="text-xs">
+                        {screenshotUrl ? 'Screenshot ✓' : 'Kein Screenshot'}
+                      </Badge>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <div className="grid grid-cols-2 divide-x">
+                    {/* Screenshot Side */}
+                    <div className="relative">
+                      <div className="absolute top-2 left-2 z-10">
+                        <Badge className="bg-blue-600 text-white">📸 Screenshot</Badge>
+                      </div>
+                      {screenshotUrl ? (
+                        <div className={cn(
+                          "bg-muted/30 flex items-center justify-center p-4",
+                          viewMode === 'mobile' ? "min-h-[500px]" : "min-h-[400px]"
+                        )}>
+                          <img
+                            src={screenshotUrl}
+                            alt={`Step ${step.stepNumber} screenshot`}
+                            className={cn(
+                              "max-h-[600px] object-contain rounded shadow-lg border",
+                              viewMode === 'mobile' && "max-w-[280px]"
+                            )}
+                          />
+                        </div>
+                      ) : (
+                        <div className="h-[400px] flex items-center justify-center bg-muted/30">
+                          <div className="text-center text-muted-foreground">
+                            <ImageOff className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                            <p className="text-sm">Kein Screenshot</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Live Side */}
+                    <div className="relative">
+                      <div className="absolute top-2 left-2 z-10">
+                        <Badge className="bg-green-600 text-white">▶ Live</Badge>
+                      </div>
+                      <div className={cn(
+                        "bg-white flex items-center justify-center",
+                        viewMode === 'mobile' ? "min-h-[500px]" : "min-h-[400px]"
+                      )}>
+                        <div className={cn(
+                          "relative overflow-hidden rounded shadow-lg border bg-white",
+                          viewMode === 'mobile' ? "w-[280px] h-[500px]" : "w-full h-[400px]"
+                        )}>
+                          <iframe
+                            src={`${stepLiveUrl}?step=${step.stepNumber}`}
+                            className="w-full h-full border-0"
+                            title={`Step ${step.stepNumber} live`}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
       ) : (
         <div className={cn(
           "grid gap-4",
@@ -772,7 +884,7 @@ const FlowPreviewCard: React.FC<{
   flowId: string;
   screenshot: StepScreenshot | undefined;
   viewMode: 'mobile' | 'desktop';
-  displayMode: 'screenshot' | 'live' | 'split';
+  displayMode: 'screenshot' | 'live' | 'split' | 'side-by-side-all';
   liveUrl: string;
   showOverlay: boolean;
   sliderPosition: number;
