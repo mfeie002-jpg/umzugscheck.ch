@@ -1000,23 +1000,23 @@ const FlowStepSlider: React.FC<{
           <ChevronRight className="h-6 w-6" />
         </Button>
         
-        {/* Swipeable content area */}
-        <div
-          className="grid grid-cols-2 divide-x select-none cursor-grab active:cursor-grabbing touch-pan-y"
-          onMouseDown={(e) => handleDragStart(e.clientX)}
-          onMouseMove={(e) => handleDragMove(e.clientX)}
-          onMouseUp={handleDragEnd}
-          onMouseLeave={handleDragEnd}
-          onTouchStart={(e) => handleDragStart(e.touches[0].clientX)}
-          onTouchMove={(e) => handleDragMove(e.touches[0].clientX)}
-          onTouchEnd={handleDragEnd}
-          style={{
-            transform: isDragging ? `translateX(${dragOffset * 0.3}px)` : undefined,
-            transition: isDragging ? 'none' : 'transform 0.3s ease-out'
-          }}
-        >
-          {/* Screenshot Side (Links) */}
-          <div className="relative">
+        {/* Content area - Screenshot links, Live rechts */}
+        <div className="grid grid-cols-2 divide-x">
+          {/* Screenshot Side (Links) - swipeable */}
+          <div 
+            className="relative select-none cursor-grab active:cursor-grabbing touch-pan-y"
+            onMouseDown={(e) => handleDragStart(e.clientX)}
+            onMouseMove={(e) => handleDragMove(e.clientX)}
+            onMouseUp={handleDragEnd}
+            onMouseLeave={handleDragEnd}
+            onTouchStart={(e) => handleDragStart(e.touches[0].clientX)}
+            onTouchMove={(e) => handleDragMove(e.touches[0].clientX)}
+            onTouchEnd={handleDragEnd}
+            style={{
+              transform: isDragging ? `translateX(${dragOffset * 0.3}px)` : undefined,
+              transition: isDragging ? 'none' : 'transform 0.3s ease-out'
+            }}
+          >
             <div className="absolute top-3 left-3 z-10">
               <Badge className="bg-blue-600 text-white shadow-md">📸 Screenshot</Badge>
             </div>
@@ -1045,9 +1045,9 @@ const FlowStepSlider: React.FC<{
             )}
           </div>
           
-          {/* Live Side (Rechts) */}
+          {/* Live Side (Rechts) - FULLY INTERACTIVE */}
           <div className="relative">
-            <div className="absolute top-3 left-3 z-10">
+            <div className="absolute top-3 left-3 z-10 pointer-events-none">
               <Badge className="bg-green-600 text-white shadow-md">▶ Live</Badge>
             </div>
             <div className={cn(
@@ -1055,13 +1055,14 @@ const FlowStepSlider: React.FC<{
               viewMode === 'mobile' ? "min-h-[550px]" : "min-h-[450px]"
             )}>
               <div className={cn(
-                "relative overflow-hidden rounded-lg shadow-lg border bg-white pointer-events-none",
+                "relative rounded-lg shadow-lg border bg-white",
                 viewMode === 'mobile' ? "w-[300px] h-[550px]" : "w-full h-[450px]"
               )}>
                 <iframe
                   src={`${stepLiveUrl}?step=${currentStep?.stepNumber || 1}`}
                   className="w-full h-full border-0"
                   title={`Step ${currentStep?.stepNumber} live`}
+                  style={{ overflow: 'auto' }}
                 />
               </div>
             </div>
@@ -1168,6 +1169,7 @@ const FlowPreviewCard: React.FC<{
               src={liveUrl}
               className="w-full h-full border-0"
               title={`${flowId} live preview`}
+              style={{ overflow: 'auto' }}
             />
           </div>
         )}
@@ -1201,6 +1203,7 @@ const FlowPreviewCard: React.FC<{
                 src={liveUrl}
                 className="w-full h-full border-0"
                 title={`${flowId} live preview`}
+                style={{ overflow: 'auto' }}
               />
             </div>
             
