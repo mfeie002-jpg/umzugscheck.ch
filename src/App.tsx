@@ -303,6 +303,7 @@ const AllFlowsScreenshotReview = lazy(() => import("./pages/admin/AllFlowsScreen
 const ChatGPTFlow1 = lazy(() => import("./pages/ChatGPTFlow1"));
 const ChatGPTFlow2 = lazy(() => import("./pages/ChatGPTFlow2"));
 const ChatGPTFlow3 = lazy(() => import("./pages/ChatGPTFlow3"));
+const ChatGPTExport = lazy(() => import("./pages/ChatGPTExport"));
 
 // Swiss Premium Flows (ChatGPT optimized)
 const SwissLightning = lazy(() => import("./pages/SwissLightning"));
@@ -661,6 +662,7 @@ const AppRouterContent = () => {
           <Route path="/chatgpt-flow-1" element={<ChatGPTFlow1 />} />
           <Route path="/chatgpt-flow-2" element={<ChatGPTFlow2 />} />
           <Route path="/chatgpt-flow-3" element={<ChatGPTFlow3 />} />
+          <Route path="/chatgpt-export" element={<ChatGPTExport />} />
           
           {/* Swiss Premium Flows */}
           <Route path="/swiss-lightning" element={<SwissLightning />} />
