@@ -305,6 +305,9 @@ const ChatGPTFlow2 = lazy(() => import("./pages/ChatGPTFlow2"));
 const ChatGPTFlow3 = lazy(() => import("./pages/ChatGPTFlow3"));
 const ChatGPTExport = lazy(() => import("./pages/ChatGPTExport"));
 
+// Canonical Funnel (Best-of all variants)
+const CanonicalOffertenFlow = lazy(() => import("./components/funnel/CanonicalOffertenFlow"));
+
 // Dashboard (After Booking)
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 
@@ -666,6 +669,9 @@ const AppRouterContent = () => {
           <Route path="/chatgpt-flow-2" element={<ChatGPTFlow2 />} />
           <Route path="/chatgpt-flow-3" element={<ChatGPTFlow3 />} />
           <Route path="/chatgpt-export" element={<ChatGPTExport />} />
+          
+          {/* Canonical 3-Step Flow (Best-of V6a/V8a/V9) */}
+          <Route path="/umzugsofferten-canonical" element={<CanonicalOffertenFlow />} />
           
           {/* Dashboard (After Booking) */}
           <Route path="/dashboard" element={<Dashboard />} />
