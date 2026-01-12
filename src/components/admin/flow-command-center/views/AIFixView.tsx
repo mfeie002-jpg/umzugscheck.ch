@@ -193,13 +193,38 @@ export const AIFixView: React.FC<AIFixViewProps> = ({
     }
   };
 
+  /**
+   * Get live URL for a flow - handles various flow ID formats
+   * Supports: v1, v1.d, v1d, umzugsofferten-v1, ultimate-ch, etc.
+   */
   const getLiveUrl = (flowId: string | null): string => {
     if (!flowId) return '#';
-    const normalized = flowId.replace('umzugsofferten-', '').toLowerCase();
+    
+    // Normalize: remove prefix, lowercase, convert dots/underscores to nothing
+    const normalized = flowId
+      .replace('umzugsofferten-', '')
+      .replace(/[._]/g, '')
+      .toLowerCase();
+    
+    // Check FLOW_CONFIGS for known flows
     const config = FLOW_CONFIGS[normalized] || FLOW_CONFIGS[flowId];
     if (config?.path) {
       return config.path;
     }
+    
+    // Handle ultimate flows specially
+    if (normalized.includes('ultimate') || normalized.includes('vultimate')) {
+      return `/umzugsofferten-ultimate-ch`;
+    }
+    
+    // Handle AI-fix output flows (they contain "-fix-")
+    if (flowId.includes('-fix-')) {
+      // Extract the base flow from the fix ID
+      const baseFlow = flowId.split('-fix-')[0];
+      return `/umzugsofferten?v=${baseFlow}`;
+    }
+    
+    // Default: route to umzugsofferten with version parameter
     return `/umzugsofferten?v=${normalized}`;
   };
 
