@@ -487,9 +487,17 @@ Bitte gib mir konkrete Code-Fixes für:
   };
   
   // Build a Live URL with step navigation support
+  // IMPORTANT: Respect the flow's configured path (e.g. vultimate uses ?v=vultimate, not /umzugsofferten-vultimate)
   const getLiveUrl = useCallback((flowId: string, stepNumber?: number) => {
     const baseUrl = getAnalysisBaseUrl();
     let flowPath: string;
+    
+    // First, try to find the flow's configured path from FLOW_CONFIGS or allFlows
+    const configuredFlow = allFlows.find(f => 
+      f.id === flowId || 
+      f.id === `umzugsofferten-${flowId}` ||
+      flowId === `umzugsofferten-${f.id}`
+    );
     
     // If AI toggle is on and we have a selected variant, use the AI variant's output flow
     if (showAiVersion && selectedAiVariant) {
@@ -500,14 +508,18 @@ Bitte gib mir konkrete Code-Fixes für:
           : variant.output_flow_id;
         flowPath = `/umzugsofferten-${aiNormalizedId}`;
       } else if (variant?.variant_label) {
-        // If no output_flow_id, use the variant_label as fallback
         flowPath = `/umzugsofferten-${variant.variant_label}`;
+      } else if (configuredFlow?.path) {
+        flowPath = configuredFlow.path;
       } else {
         const normalizedId = flowId.startsWith('umzugsofferten-')
           ? flowId.replace('umzugsofferten-', '')
           : flowId;
         flowPath = `/umzugsofferten-${normalizedId}`;
       }
+    } else if (configuredFlow?.path) {
+      // Use the configured path from flow config (handles vultimate, special flows)
+      flowPath = configuredFlow.path;
     } else {
       const normalizedId = flowId.startsWith('umzugsofferten-')
         ? flowId.replace('umzugsofferten-', '')
@@ -516,9 +528,11 @@ Bitte gib mir konkrete Code-Fixes für:
     }
     
     // Add capture mode params for step navigation
+    // If path already has query params (?v=xxx), append with &, otherwise use ?
     const step = stepNumber ?? 1;
-    return `${baseUrl}${flowPath}?uc_capture=1&uc_step=${step}`;
-  }, [showAiVersion, selectedAiVariant, aiVariants]);
+    const separator = flowPath.includes('?') ? '&' : '?';
+    return `${baseUrl}${flowPath}${separator}uc_capture=1&uc_step=${step}`;
+  }, [showAiVersion, selectedAiVariant, aiVariants, allFlows]);
   
   // ─────────────────────────────────────────────────────────────
   // Render

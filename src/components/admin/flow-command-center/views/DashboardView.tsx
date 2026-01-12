@@ -33,7 +33,8 @@ import {
   getVariantsForFlow, 
   getAllFlowNumbers, 
   getScoreColor,
-  formatRelativeTime 
+  formatRelativeTime,
+  CANONICAL_FLOW_COUNT 
 } from '../utils';
 
 interface DashboardViewProps {
@@ -153,14 +154,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     return a.label.localeCompare(b.label);
   });
 
-  // Calculate stats - use BOTH config flows AND database flows for complete picture
-  // Count flows with completed analysis from DB (more accurate)
+  // Calculate stats - use CANONICAL_FLOW_COUNT as authoritative total
   const analyzedFromDb = Object.values(scores).filter(s => s.overallScore !== undefined).length;
-  const totalFromDb = dbFlowIds.length;
   
-  // Still use config-based stats for UI variants, but show DB counts for totals
+  // Use canonical count (87) as the authoritative total
   const analyzedCount = analyzedFromDb;
-  const totalFlows = Math.max(allVariants.length, totalFromDb); // Show the larger count
+  const totalFlows = CANONICAL_FLOW_COUNT;
   const relevantScores = Object.values(scores).filter((s): s is FlowScore => s?.overallScore !== undefined);
   const avgScore = relevantScores.length > 0
     ? Math.round(relevantScores.reduce((sum, s) => sum + (s.overallScore || 0), 0) / relevantScores.length)

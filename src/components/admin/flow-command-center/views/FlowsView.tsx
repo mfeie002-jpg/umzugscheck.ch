@@ -16,6 +16,7 @@ import {
   Grid3X3, List, Play, ExternalLink, Crown, Medal, Flame, Filter, Star
 } from 'lucide-react';
 import { FLOW_CONFIGS, SUB_VARIANT_CONFIGS } from '@/data/flowConfigs';
+import { CANONICAL_FLOW_COUNT } from '../utils';
 import { FlowRatingsDisplay } from '@/components/flow-tester/FlowRatingsDisplay';
 import { FlowZipExport } from '@/components/flow-tester/FlowZipExport';
 import { FlowExportDialog } from '@/components/flow-tester/FlowExportDialog';
@@ -209,27 +210,7 @@ export const FlowsView: React.FC<FlowsViewProps> = ({ onSelectFlow }) => {
   const [expandedCategories, setExpandedCategories] = useState<Set<CategoryKey>>(
     new Set(['gemini-top', 'top-10-upgrades', 'swiss-premium', 'chatgpt-flows'])
   );
-  const [dbFlowCount, setDbFlowCount] = useState<number>(0);
-
-  // Fetch actual flow count from database
-  useEffect(() => {
-    const fetchDbFlowCount = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('flow_step_metrics')
-          .select('flow_id');
-        
-        if (!error && data) {
-          const uniqueFlowIds = new Set(data.map(d => d.flow_id));
-          setDbFlowCount(uniqueFlowIds.size);
-        }
-      } catch (err) {
-        console.error('Error fetching DB flow count:', err);
-      }
-    };
-    
-    fetchDbFlowCount();
-  }, []);
+  // No need to fetch from DB - we use CANONICAL_FLOW_COUNT
 
   const allFlows = useMemo(() => buildAllFlowsList(), []);
 
@@ -284,9 +265,8 @@ export const FlowsView: React.FC<FlowsViewProps> = ({ onSelectFlow }) => {
     setExpandedCategories(newExpanded);
   };
 
-  // Use the larger of config-based count or database count
-  const configFlowCount = FLOW_FAMILIES.reduce((acc, f) => acc + 1 + f.subVariants.length, 0);
-  const totalFlowCount = Math.max(configFlowCount, dbFlowCount, allFlows.length);
+  // Use canonical flow count (87) as authoritative
+  const totalFlowCount = CANONICAL_FLOW_COUNT;
   const premiumFlowCount = allFlows.filter(f => f.isPremium).length;
 
   return (

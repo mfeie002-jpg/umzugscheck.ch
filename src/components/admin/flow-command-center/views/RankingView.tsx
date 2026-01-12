@@ -48,7 +48,8 @@ import type { FlowScore, FlowVariant } from '../types';
 import { 
   getVariantsForFlow, 
   getScoreColor,
-  formatRelativeTime 
+  formatRelativeTime,
+  CANONICAL_FLOW_COUNT 
 } from '../utils';
 
 interface AnalysisStatus {

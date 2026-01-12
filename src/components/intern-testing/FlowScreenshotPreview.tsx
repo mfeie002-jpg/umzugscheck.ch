@@ -49,10 +49,11 @@ export function FlowScreenshotPreview({ flowId, flowName, totalSteps, className 
     try {
       const flowIds = getFlowIdCandidates(flowId);
 
-      // Prefer the latest *completed* run, but if none exists, fall back to the latest run that has screenshots.
+      // First, find the SINGLE latest completed run for this flow
+      // This ensures all screenshots come from the same analysis run
       const { data: latestCompletedRun } = await supabase
         .from('flow_analysis_runs')
-        .select('id')
+        .select('id, flow_id')
         .in('flow_id', flowIds)
         .eq('status', 'completed')
         .order('created_at', { ascending: false })
@@ -60,28 +61,27 @@ export function FlowScreenshotPreview({ flowId, flowName, totalSteps, className 
         .maybeSingle();
 
       let runId = latestCompletedRun?.id || null;
+      let targetFlowId = latestCompletedRun?.flow_id || null;
 
-      // Fetch step metrics - either via run_id or directly by flow_id
       let data: any[] | null = null;
       let queryError: any = null;
 
+      // Strategy 1: Fetch by run_id (ensures all steps from same run)
       if (runId) {
-        // We have a valid run_id, fetch by run
         const result = await supabase
           .from('flow_step_metrics')
-          .select('step_number, desktop_screenshot_url, mobile_screenshot_url, created_at')
+          .select('step_number, desktop_screenshot_url, mobile_screenshot_url, created_at, run_id')
           .eq('run_id', runId)
-          .order('created_at', { ascending: false });
+          .order('step_number', { ascending: true });
         data = result.data;
         queryError = result.error;
       }
 
-      // Fallback: if no run_id or no data found, query directly by flow_id
-      // This handles bulk capture rows that have run_id = NULL
+      // Strategy 2: Fallback to flow_id query (for bulk captures without run_id)
       if (!data || data.length === 0) {
         const result = await supabase
           .from('flow_step_metrics')
-          .select('step_number, desktop_screenshot_url, mobile_screenshot_url, created_at')
+          .select('step_number, desktop_screenshot_url, mobile_screenshot_url, created_at, run_id')
           .in('flow_id', flowIds)
           .or('desktop_screenshot_url.not.is.null,mobile_screenshot_url.not.is.null')
           .order('created_at', { ascending: false });
@@ -97,9 +97,15 @@ export function FlowScreenshotPreview({ flowId, flowName, totalSteps, className 
         return;
       }
 
-      // Deduplicate: keep newest per step_number (fixes cases where multiple rows exist per step)
+      // Deduplicate: keep NEWEST screenshot per step_number
+      // Sort by created_at desc first, then iterate
+      const sortedData = [...data].sort((a, b) => 
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+
       const newestByStep = new Map<number, StepScreenshot>();
-      for (const row of data) {
+      for (const row of sortedData) {
+        // Only keep the first (newest) entry for each step
         if (!newestByStep.has(row.step_number)) {
           newestByStep.set(row.step_number, {
             stepNumber: row.step_number,
@@ -109,6 +115,7 @@ export function FlowScreenshotPreview({ flowId, flowName, totalSteps, className 
         }
       }
 
+      // Sort by step number for display
       const steps = Array.from(newestByStep.values()).sort((a, b) => a.stepNumber - b.stepNumber);
       setScreenshots(steps);
     } catch (err) {
