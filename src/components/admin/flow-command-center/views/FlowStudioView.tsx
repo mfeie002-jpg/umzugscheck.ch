@@ -142,10 +142,64 @@ export const FlowStudioView: React.FC<FlowStudioViewProps> = ({
   // ─────────────────────────────────────────────────────────────
   
   const getFlowIdCandidates = useCallback((flowId: string) => {
-    const normalized = flowId.startsWith('umzugsofferten-')
-      ? flowId.replace('umzugsofferten-', '')
-      : flowId;
-    return [flowId, normalized, `umzugsofferten-${normalized}`];
+    const candidates: string[] = [flowId];
+    
+    // If it starts with umzugsofferten-, also check without prefix
+    if (flowId.startsWith('umzugsofferten-')) {
+      const normalized = flowId.replace('umzugsofferten-', '');
+      candidates.push(normalized);
+    } else {
+      // If it doesn't have prefix, also check with prefix
+      candidates.push(`umzugsofferten-${flowId}`);
+    }
+    
+    // Handle sub-variants like v1a, v1b which might be stored differently
+    // Check for patterns like "v1a" -> also try "umzugsofferten-v1a" and "umzugsofferten-v1.1.a"
+    const subVariantMatch = flowId.match(/^v(\d+)([a-z])$/i);
+    if (subVariantMatch) {
+      const num = subVariantMatch[1];
+      const letter = subVariantMatch[2].toLowerCase();
+      candidates.push(`v${num}${letter}`);
+      candidates.push(`umzugsofferten-v${num}${letter}`);
+      candidates.push(`umzugsofferten-v${num}.1.${letter}`);
+      candidates.push(`v${num}.1.${letter}`);
+    }
+    
+    // Handle full paths like "umzugsofferten-v1a"
+    const fullSubVariantMatch = flowId.match(/^umzugsofferten-v(\d+)([a-z])$/i);
+    if (fullSubVariantMatch) {
+      const num = fullSubVariantMatch[1];
+      const letter = fullSubVariantMatch[2].toLowerCase();
+      candidates.push(`v${num}${letter}`);
+      candidates.push(`umzugsofferten-v${num}.1.${letter}`);
+      candidates.push(`v${num}.1.${letter}`);
+    }
+    
+    // Handle ultimate variants
+    if (flowId.includes('ultimate')) {
+      candidates.push('ultimate-best36');
+      candidates.push('umzugsofferten-ultimate-best36');
+      candidates.push('vultimate');
+      candidates.push('vultimate-v1');
+      candidates.push('vultimate-v2');
+    }
+    
+    // Handle special flow names
+    if (flowId.includes('golden')) {
+      candidates.push('golden-flow-v10');
+    }
+    if (flowId.includes('zero-friction')) {
+      candidates.push('v9-zero-friction');
+    }
+    if (flowId.includes('chatgpt')) {
+      candidates.push('chatgpt-agent');
+      candidates.push('chatgpt-flow-1');
+      candidates.push('chatgpt-flow-2');
+      candidates.push('chatgpt-flow-3');
+      candidates.push('chatgpt-research');
+    }
+    
+    return [...new Set(candidates)]; // Remove duplicates
   }, []);
   
   const fetchFlowData = useCallback(async (flowId: string): Promise<FlowData> => {
