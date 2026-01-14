@@ -84,13 +84,23 @@ export function ContextPanel({ asset, onAssetUpdate }: ContextPanelProps) {
     }
   };
 
+  // PREVIEW URL - this is the public URL without auth
+  const PREVIEW_BASE_URL = 'https://id-preview--824c7aee-f292-46d7-b83b-be95fbdc3489.lovable.app';
+
   const handleCapture = async () => {
     if (!asset || asset.type !== 'landing-page') return;
     
     setIsCapturing(true);
     try {
+      // Use Preview URL (public, no auth required)
+      const captureUrl = `${PREVIEW_BASE_URL}${asset.path}`;
+      console.log('Capturing screenshot from Preview URL:', captureUrl);
+      
       const { data, error } = await supabase.functions.invoke('capture-landing-page', {
-        body: { landingPageId: asset.id },
+        body: { 
+          pageId: asset.id,  // Fixed: was 'landingPageId'
+          url: captureUrl    // Added: the actual URL to capture
+        },
       });
       
       if (error) throw error;
