@@ -103,9 +103,21 @@ interface LandingPageVersion {
   markdown_content: string | null;
   meta_data: any;
   seo_issues: any;
+  ai_feedback: string | null;
+  ai_feedback_source: string | null;
+  ai_feedback_date: string | null;
   created_at: string;
   created_by: string | null;
 }
+
+type AIFeedbackSource = 'chatgpt' | 'gemini' | 'claude' | 'other';
+
+const AI_SOURCES: { value: AIFeedbackSource; label: string; icon: string }[] = [
+  { value: 'chatgpt', label: 'ChatGPT', icon: '🤖' },
+  { value: 'gemini', label: 'Gemini', icon: '✨' },
+  { value: 'claude', label: 'Claude', icon: '🧠' },
+  { value: 'other', label: 'Anderer', icon: '💬' },
+];
 
 interface LandingPageAnalysis {
   id: string;
@@ -424,6 +436,108 @@ function AddPageDialog({
   );
 }
 
+function VersionFeedbackDialog({
+  open,
+  onOpenChange,
+  version,
+  onSave
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  version: LandingPageVersion | null;
+  onSave: (versionId: string, feedback: string, source: AIFeedbackSource) => void;
+}) {
+  const [feedback, setFeedback] = useState('');
+  const [source, setSource] = useState<AIFeedbackSource>('chatgpt');
+  
+  useEffect(() => {
+    if (version) {
+      setFeedback(version.ai_feedback || '');
+      setSource((version.ai_feedback_source as AIFeedbackSource) || 'chatgpt');
+    }
+  }, [version]);
+  
+  if (!version) return null;
+  
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <MessageSquare className="h-5 w-5" />
+            AI Feedback für Version {version.version_number}
+          </DialogTitle>
+          <DialogDescription>
+            Füge das Feedback von ChatGPT, Gemini oder Claude ein
+          </DialogDescription>
+        </DialogHeader>
+        
+        <div className="space-y-4 py-4 flex-1 overflow-y-auto">
+          {/* AI Source Selection */}
+          <div className="space-y-2">
+            <Label>AI Quelle</Label>
+            <div className="flex gap-2 flex-wrap">
+              {AI_SOURCES.map((s) => (
+                <Button
+                  key={s.value}
+                  variant={source === s.value ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSource(s.value)}
+                  className="gap-1"
+                >
+                  <span>{s.icon}</span>
+                  {s.label}
+                </Button>
+              ))}
+            </div>
+          </div>
+          
+          {/* Feedback Text */}
+          <div className="space-y-2">
+            <Label>AI Analyse / Feedback</Label>
+            <Textarea 
+              value={feedback}
+              onChange={(e) => setFeedback(e.target.value)}
+              placeholder={`Füge hier das Feedback von ${AI_SOURCES.find(s => s.value === source)?.label} ein...`}
+              rows={12}
+              className="font-mono text-sm"
+            />
+          </div>
+          
+          <div className="p-3 bg-muted/50 rounded-lg text-sm">
+            <p className="font-medium mb-1">💡 Workflow</p>
+            <ol className="text-muted-foreground space-y-1 list-decimal list-inside">
+              <li>Screenshot hier als Baseline speichern</li>
+              <li>Screenshot/HTML an AI senden für Analyse</li>
+              <li>AI Feedback hier einfügen</li>
+              <li>Änderungen umsetzen</li>
+              <li>Neuer Screenshot = neue Version</li>
+              <li>Versionen vergleichen</li>
+            </ol>
+          </div>
+        </div>
+        
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            Abbrechen
+          </Button>
+          <Button 
+            onClick={() => {
+              if (feedback.trim()) {
+                onSave(version.id, feedback, source);
+                onOpenChange(false);
+              }
+            }}
+            disabled={!feedback.trim()}
+          >
+            Feedback speichern
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 function FeedbackDialog({
   open,
   onOpenChange,
@@ -433,12 +547,14 @@ function FeedbackDialog({
   open: boolean;
   onOpenChange: (open: boolean) => void;
   page: LandingPage | null;
-  onSave: (pageId: string, feedback: string) => void;
+  onSave: (pageId: string, feedback: string, source: AIFeedbackSource) => void;
 }) {
   const [feedback, setFeedback] = useState('');
+  const [source, setSource] = useState<AIFeedbackSource>('chatgpt');
   
   useEffect(() => {
     setFeedback('');
+    setSource('chatgpt');
   }, [page]);
   
   if (!page) return null;
@@ -447,19 +563,38 @@ function FeedbackDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>ChatGPT Feedback hinzufügen</DialogTitle>
+          <DialogTitle>AI Feedback hinzufügen</DialogTitle>
           <DialogDescription>
-            Füge das Feedback von ChatGPT für "{page.display_name}" ein
+            Füge das Feedback für "{page.display_name}" ein
           </DialogDescription>
         </DialogHeader>
         
         <div className="space-y-4 py-4">
+          {/* AI Source Selection */}
           <div className="space-y-2">
-            <Label>ChatGPT Analyse / Feedback</Label>
+            <Label>AI Quelle</Label>
+            <div className="flex gap-2 flex-wrap">
+              {AI_SOURCES.map((s) => (
+                <Button
+                  key={s.value}
+                  variant={source === s.value ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSource(s.value)}
+                  className="gap-1"
+                >
+                  <span>{s.icon}</span>
+                  {s.label}
+                </Button>
+              ))}
+            </div>
+          </div>
+          
+          <div className="space-y-2">
+            <Label>AI Analyse / Feedback</Label>
             <Textarea 
               value={feedback}
               onChange={(e) => setFeedback(e.target.value)}
-              placeholder="Füge hier das Feedback von ChatGPT ein..."
+              placeholder={`Füge hier das Feedback von ${AI_SOURCES.find(s => s.value === source)?.label} ein...`}
               rows={12}
               className="font-mono text-sm"
             />
@@ -468,7 +603,7 @@ function FeedbackDialog({
           <div className="p-3 bg-muted/50 rounded-lg text-sm">
             <p className="font-medium mb-1">💡 Tipp</p>
             <p className="text-muted-foreground">
-              Kopiere den HTML/Markdown Export dieser Seite, füge ihn in ChatGPT ein mit dem Prompt 
+              Kopiere den HTML/Markdown Export dieser Seite, füge ihn in ChatGPT/Gemini ein mit dem Prompt 
               "Analysiere diese Seite für UX, SEO und Conversion", und paste das Ergebnis hier.
             </p>
           </div>
@@ -479,7 +614,7 @@ function FeedbackDialog({
             Abbrechen
           </Button>
           <Button onClick={() => {
-            onSave(page.id, feedback);
+            onSave(page.id, feedback, source);
             onOpenChange(false);
           }}>
             Speichern
@@ -496,7 +631,8 @@ function PageDetailPanel({
   onCapture,
   onAnalyze,
   isCapturing,
-  isAnalyzing
+  isAnalyzing,
+  onVersionFeedbackSave
 }: {
   page: LandingPageWithData | null;
   onClose: () => void;
@@ -504,10 +640,13 @@ function PageDetailPanel({
   onAnalyze: (page: LandingPage) => void;
   isCapturing: boolean;
   isAnalyzing: boolean;
+  onVersionFeedbackSave: (versionId: string, feedback: string, source: AIFeedbackSource) => void;
 }) {
   const [versions, setVersions] = useState<LandingPageVersion[]>([]);
   const [analyses, setAnalyses] = useState<LandingPageAnalysis[]>([]);
   const [activeTab, setActiveTab] = useState('overview');
+  const [feedbackVersion, setFeedbackVersion] = useState<LandingPageVersion | null>(null);
+  const [expandedVersionId, setExpandedVersionId] = useState<string | null>(null);
   
   useEffect(() => {
     if (page) {
@@ -534,6 +673,11 @@ function PageDetailPanel({
       .eq('landing_page_id', page.id)
       .order('created_at', { ascending: false });
     if (data) setAnalyses(data as LandingPageAnalysis[]);
+  };
+
+  const handleVersionFeedbackSave = async (versionId: string, feedback: string, source: AIFeedbackSource) => {
+    await onVersionFeedbackSave(versionId, feedback, source);
+    await loadVersions();
   };
   
   if (!page) {
@@ -772,7 +916,7 @@ function PageDetailPanel({
             
             <TabsContent value="versions" className="h-full m-0">
               <ScrollArea className="h-full">
-                <div className="space-y-2 pr-4">
+                <div className="space-y-3 pr-4">
                   {versions.length === 0 ? (
                     <div className="text-center py-12 text-muted-foreground">
                       <History className="h-12 w-12 mx-auto mb-4 opacity-50" />
@@ -780,31 +924,145 @@ function PageDetailPanel({
                     </div>
                   ) : (
                     versions.map((version) => (
-                      <Card key={version.id} className="p-3">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <div className="font-medium">
-                              Version {version.version_number}
-                              {version.version_name && ` - ${version.version_name}`}
+                      <Card key={version.id} className="overflow-hidden">
+                        <div 
+                          className="p-3 cursor-pointer hover:bg-muted/50 transition-colors"
+                          onClick={() => setExpandedVersionId(
+                            expandedVersionId === version.id ? null : version.id
+                          )}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <ChevronRight 
+                                className={cn(
+                                  "h-4 w-4 transition-transform",
+                                  expandedVersionId === version.id && "rotate-90"
+                                )} 
+                              />
+                              <div>
+                                <div className="font-medium flex items-center gap-2">
+                                  Version {version.version_number}
+                                  {version.ai_feedback_source && (
+                                    <Badge variant="secondary" className="text-xs">
+                                      {AI_SOURCES.find(s => s.value === version.ai_feedback_source)?.icon || '💬'}{' '}
+                                      {AI_SOURCES.find(s => s.value === version.ai_feedback_source)?.label || version.ai_feedback_source}
+                                    </Badge>
+                                  )}
+                                </div>
+                                <div className="text-xs text-muted-foreground">
+                                  {new Date(version.created_at).toLocaleString('de-CH')}
+                                </div>
+                              </div>
                             </div>
-                            <div className="text-xs text-muted-foreground">
-                              {new Date(version.created_at).toLocaleString('de-CH')}
+                            <div className="flex items-center gap-2">
+                              {version.desktop_screenshot_url && (
+                                <Badge variant="outline" className="text-xs">Desktop</Badge>
+                              )}
+                              {version.mobile_screenshot_url && (
+                                <Badge variant="outline" className="text-xs">Mobile</Badge>
+                              )}
+                              {version.ai_feedback && (
+                                <Badge variant="default" className="text-xs gap-1">
+                                  <MessageSquare className="h-3 w-3" />
+                                  Feedback
+                                </Badge>
+                              )}
                             </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            {version.desktop_screenshot_url && (
-                              <Badge variant="outline" className="text-xs">Screenshot</Badge>
-                            )}
-                            {version.html_snapshot && (
-                              <Badge variant="outline" className="text-xs">HTML</Badge>
-                            )}
                           </div>
                         </div>
+                        
+                        {/* Expanded Content */}
+                        <AnimatePresence>
+                          {expandedVersionId === version.id && (
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: 'auto', opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.2 }}
+                              className="border-t bg-muted/30"
+                            >
+                              <div className="p-4 space-y-4">
+                                {/* Screenshots */}
+                                <div className="grid grid-cols-2 gap-4">
+                                  {version.desktop_screenshot_url && (
+                                    <div>
+                                      <Label className="text-xs mb-1 block">Desktop</Label>
+                                      <img 
+                                        src={version.desktop_screenshot_url}
+                                        alt="Desktop"
+                                        className="w-full rounded border cursor-pointer hover:opacity-80"
+                                        onClick={() => window.open(version.desktop_screenshot_url!, '_blank')}
+                                      />
+                                    </div>
+                                  )}
+                                  {version.mobile_screenshot_url && (
+                                    <div>
+                                      <Label className="text-xs mb-1 block">Mobile</Label>
+                                      <img 
+                                        src={version.mobile_screenshot_url}
+                                        alt="Mobile"
+                                        className="w-full rounded border cursor-pointer hover:opacity-80"
+                                        onClick={() => window.open(version.mobile_screenshot_url!, '_blank')}
+                                      />
+                                    </div>
+                                  )}
+                                </div>
+                                
+                                {/* AI Feedback */}
+                                {version.ai_feedback ? (
+                                  <div className="space-y-2">
+                                    <div className="flex items-center justify-between">
+                                      <Label className="text-xs flex items-center gap-1">
+                                        {AI_SOURCES.find(s => s.value === version.ai_feedback_source)?.icon}{' '}
+                                        {AI_SOURCES.find(s => s.value === version.ai_feedback_source)?.label || 'AI'} Feedback
+                                      </Label>
+                                      {version.ai_feedback_date && (
+                                        <span className="text-xs text-muted-foreground">
+                                          {new Date(version.ai_feedback_date).toLocaleString('de-CH')}
+                                        </span>
+                                      )}
+                                    </div>
+                                    <div className="p-3 bg-muted rounded-lg max-h-[300px] overflow-y-auto">
+                                      <pre className="whitespace-pre-wrap text-xs font-mono">
+                                        {version.ai_feedback}
+                                      </pre>
+                                    </div>
+                                    <Button 
+                                      variant="outline" 
+                                      size="sm"
+                                      onClick={() => setFeedbackVersion(version)}
+                                    >
+                                      <Edit className="h-3 w-3 mr-1" />
+                                      Bearbeiten
+                                    </Button>
+                                  </div>
+                                ) : (
+                                  <Button 
+                                    variant="outline" 
+                                    className="w-full"
+                                    onClick={() => setFeedbackVersion(version)}
+                                  >
+                                    <MessageSquare className="h-4 w-4 mr-2" />
+                                    AI Feedback hinzufügen
+                                  </Button>
+                                )}
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
                       </Card>
                     ))
                   )}
                 </div>
               </ScrollArea>
+              
+              {/* Version Feedback Dialog */}
+              <VersionFeedbackDialog
+                open={!!feedbackVersion}
+                onOpenChange={(open) => !open && setFeedbackVersion(null)}
+                version={feedbackVersion}
+                onSave={handleVersionFeedbackSave}
+              />
             </TabsContent>
             
             <TabsContent value="feedback" className="h-full m-0">
@@ -994,8 +1252,8 @@ export function LandingPagesView() {
     }
   };
 
-  // Save feedback
-  const handleSaveFeedback = async (pageId: string, feedback: string) => {
+  // Save feedback to analysis (legacy)
+  const handleSaveFeedback = async (pageId: string, feedback: string, source: AIFeedbackSource) => {
     try {
       // Get or create analysis record
       const { data: existingAnalysis } = await supabase
@@ -1029,6 +1287,28 @@ export function LandingPagesView() {
       await loadPages();
     } catch (error) {
       console.error('Save feedback error:', error);
+      toast.error('Fehler beim Speichern');
+    }
+  };
+
+  // Save feedback to version (new approach)
+  const handleSaveVersionFeedback = async (versionId: string, feedback: string, source: AIFeedbackSource) => {
+    try {
+      const { error } = await supabase
+        .from('landing_page_versions')
+        .update({
+          ai_feedback: feedback,
+          ai_feedback_source: source,
+          ai_feedback_date: new Date().toISOString()
+        })
+        .eq('id', versionId);
+
+      if (error) throw error;
+
+      toast.success(`${AI_SOURCES.find(s => s.value === source)?.label} Feedback gespeichert`);
+      await loadPages();
+    } catch (error) {
+      console.error('Save version feedback error:', error);
       toast.error('Fehler beim Speichern');
     }
   };
@@ -1174,6 +1454,7 @@ export function LandingPagesView() {
           onAnalyze={handleAnalyze}
           isCapturing={capturingPageId === selectedPage?.id}
           isAnalyzing={analyzingPageId === selectedPage?.id}
+          onVersionFeedbackSave={handleSaveVersionFeedback}
         />
       </div>
 
