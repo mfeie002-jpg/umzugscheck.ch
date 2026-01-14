@@ -74,7 +74,8 @@ export function getTotalFlowCount(): number {
 export const CANONICAL_FLOW_COUNT = getTotalFlowCount();
 
 export function getVariantsForFlow(flowNumber: number | 'all'): FlowVariant[] {
-  const variants: FlowVariant[] = [];
+  // Use Map to prevent duplicates (same ID in both configs)
+  const variantMap = new Map<string, FlowVariant>();
   
   // Helper to extract flow number from various ID formats
   const extractFlowNumber = (id: string): number | null => {
@@ -103,11 +104,11 @@ export function getVariantsForFlow(flowNumber: number | 'all'): FlowVariant[] {
     return null;
   };
 
-  // Get all main flows from FLOW_CONFIGS
+  // Get all main flows from FLOW_CONFIGS first (they take priority)
   Object.entries(FLOW_CONFIGS).forEach(([id, config]) => {
     const flowNum = extractFlowNumber(id);
     if (flowNumber === 'all' || flowNum === flowNumber) {
-      variants.push({
+      variantMap.set(id, {
         id,
         label: config.label,
         description: config.description,
@@ -120,11 +121,14 @@ export function getVariantsForFlow(flowNumber: number | 'all'): FlowVariant[] {
     }
   });
   
-  // Get all sub-variants from SUB_VARIANT_CONFIGS
+  // Get all sub-variants from SUB_VARIANT_CONFIGS (skip if already exists)
   Object.entries(SUB_VARIANT_CONFIGS).forEach(([id, config]) => {
+    // Skip if already added from FLOW_CONFIGS
+    if (variantMap.has(id)) return;
+    
     const flowNum = extractFlowNumber(id);
     if (flowNumber === 'all' || flowNum === flowNumber) {
-      variants.push({
+      variantMap.set(id, {
         id,
         label: config.label,
         description: config.description,
@@ -137,8 +141,8 @@ export function getVariantsForFlow(flowNumber: number | 'all'): FlowVariant[] {
     }
   });
   
-  // Sort by flowNumber then by label
-  return variants.sort((a, b) => {
+  // Convert to array and sort by flowNumber then by label
+  return Array.from(variantMap.values()).sort((a, b) => {
     if (a.flowNumber !== b.flowNumber) return a.flowNumber - b.flowNumber;
     // Main flows first within same number
     if (a.isMain && !b.isMain) return -1;
