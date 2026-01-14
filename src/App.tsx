@@ -164,6 +164,7 @@ const CityPage = lazy(() => import("./pages/CityPage").then(m => ({ default: m.C
 const ZurichMovers = lazy(() => import("./pages/ZurichMovers"));
 const CantonCompanies = lazy(() => import("./pages/CantonCompanies"));
 const RegionalOfferten = lazy(() => import("./pages/RegionalOfferten"));
+const RegionArchetypPage = lazy(() => import("./pages/region/RegionArchetypPage"));
 
 // Canton pages - lazy loaded bundle
 const Luzern = lazy(() => import("./pages/cantons/Luzern"));
@@ -599,6 +600,7 @@ const AppRouterContent = () => {
           <Route path="/ratgeber/umzug-mit-kindern" element={<BlogPost />} />
           <Route path="/umzugskosten-guide" element={<UmzugskostenGuide />} />
           <Route path="/region/:region" element={<RegionalTemplate />} />
+          <Route path="/region-archetyp/:slug" element={<RegionArchetypPage />} />
           <Route path="/beste-umzugsfirma" element={<BesteFirmen />} />
           <Route path="/beste-umzugsfirma/:region" element={<BesteFirmen />} />
           <Route path="/guenstige-umzugsfirma" element={<GuenstigeFirmen />} />
