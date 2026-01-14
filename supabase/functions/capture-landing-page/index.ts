@@ -221,9 +221,9 @@ serve(async (req) => {
     let desktopScreenshotUrl: string | null = null;
     let mobileScreenshotUrl: string | null = null;
 
-    // Capture desktop screenshot
+    // Capture desktop screenshot - FULL PAGE
     if (captureDesktop) {
-      console.log('Capturing desktop screenshot...');
+      console.log('Capturing desktop FULL PAGE screenshot...');
       
       // Generate hash if secret phrase is configured
       let hashParam = '';
@@ -237,7 +237,7 @@ serve(async (req) => {
       const desktopParams = new URLSearchParams({
         key: screenshotApiKey,
         url: url,
-        dimension: '1920x1080',
+        dimension: '1920xfull', // Full page height
         device: 'desktop',
         format: 'png',
         cacheLimit: '0',
@@ -282,9 +282,9 @@ serve(async (req) => {
       }
     }
 
-    // Capture mobile screenshot
+    // Capture mobile screenshot - FULL PAGE
     if (captureMobile) {
-      console.log('Capturing mobile screenshot...');
+      console.log('Capturing mobile FULL PAGE screenshot...');
       
       // Generate hash if secret phrase is configured
       let hashParam = '';
@@ -298,7 +298,7 @@ serve(async (req) => {
       const mobileParams = new URLSearchParams({
         key: screenshotApiKey,
         url: url,
-        dimension: '375x812',
+        dimension: '375xfull', // Full page height
         device: 'phone',
         format: 'png',
         cacheLimit: '0',
