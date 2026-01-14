@@ -10,12 +10,13 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import {
   Download, FileJson, FileText, Image, Loader2, CheckCircle2, 
   FileCode, AlertCircle, ChevronDown, RefreshCw, Camera, Filter,
   Smartphone, Monitor, ChevronRight, CheckCheck, XCircle, AlertTriangle,
   HardDrive, MapPin, Building2, Globe, Search, Eye, ExternalLink,
-  FileImage, Code, Hash, Calendar, Copy, Zap, LayoutGrid
+  FileImage, Code, Hash, Calendar, Copy, Zap, LayoutGrid, RotateCcw, X
 } from "lucide-react";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
@@ -60,11 +61,16 @@ const LandingPageExport = ({ onClose }: LandingPageExportProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSyncing, setIsSyncing] = useState(false);
   const [isCapturing, setIsCapturing] = useState(false);
+  const [capturingPageId, setCapturingPageId] = useState<string | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [lastSynced, setLastSynced] = useState<Date | null>(null);
+  
+  // Screenshot preview modal
+  const [previewPage, setPreviewPage] = useState<LandingPageInfo | null>(null);
+  const [previewDevice, setPreviewDevice] = useState<'desktop' | 'mobile'>('desktop');
   
   // Filters
   const [pageTypeFilter, setPageTypeFilter] = useState<PageType>("all");
@@ -278,6 +284,38 @@ const LandingPageExport = ({ onClose }: LandingPageExportProps) => {
       setIsCapturing(false);
       setProgress(0);
       setStatus("");
+    }
+  };
+
+  // Capture single page screenshot
+  const captureSinglePage = async (page: LandingPageInfo) => {
+    setCapturingPageId(page.id);
+    
+    try {
+      const fullUrl = `https://www.umzugscheck.ch${page.urlPath}`;
+      
+      const { error } = await supabase.functions.invoke('capture-landing-page', {
+        body: {
+          pageId: page.id,
+          url: fullUrl,
+          captureDesktop: true,
+          captureMobile: true,
+        },
+      });
+      
+      if (error) {
+        console.error(`Failed to capture ${page.urlPath}:`, error);
+        toast.error(`Fehler beim Erfassen von ${page.displayName}`);
+      } else {
+        toast.success(`${page.displayName} erfolgreich erfasst!`);
+        // Refresh data
+        await fetchLandingPages(true);
+      }
+    } catch (err) {
+      console.error(`Error capturing ${page.urlPath}:`, err);
+      toast.error(`Fehler beim Erfassen von ${page.displayName}`);
+    } finally {
+      setCapturingPageId(null);
     }
   };
 
@@ -692,35 +730,135 @@ const LandingPageExport = ({ onClose }: LandingPageExportProps) => {
               URLs kopieren
             </Button>
           </div>
-          <ScrollArea className="h-64 border rounded-md p-2">
-            <div className="space-y-1">
+          <ScrollArea className="h-80 border rounded-md p-2">
+            <div className="space-y-2">
               {filteredPages.map(page => (
                 <div 
                   key={page.id}
-                  className="flex items-center gap-2 p-2 hover:bg-muted/50 rounded cursor-pointer group"
-                  onClick={() => togglePageSelection(page.id)}
+                  className="flex items-start gap-3 p-3 hover:bg-muted/50 rounded-lg border border-transparent hover:border-border transition-colors"
                 >
                   <Checkbox 
                     checked={selectedPageIds.size === 0 || selectedPageIds.has(page.id)}
                     onCheckedChange={() => togglePageSelection(page.id)}
+                    className="mt-1"
                   />
-                  {getPageTypeIcon(page.pageType)}
-                  <div className="flex-1 min-w-0">
-                    <span className="text-sm truncate block">{page.displayName}</span>
-                    <span className="text-xs text-muted-foreground truncate block">{page.urlPath}</span>
+                  
+                  {/* Screenshot Thumbnails */}
+                  <div className="flex gap-1 shrink-0">
+                    {page.latestVersion?.mobileUrl ? (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setPreviewPage(page);
+                          setPreviewDevice('mobile');
+                        }}
+                        className="w-8 h-14 rounded border border-border overflow-hidden hover:ring-2 ring-primary transition-all bg-muted"
+                        title="Mobile Screenshot anzeigen"
+                      >
+                        <img 
+                          src={page.latestVersion.mobileUrl} 
+                          alt="Mobile" 
+                          className="w-full h-full object-cover object-top"
+                        />
+                      </button>
+                    ) : (
+                      <div className="w-8 h-14 rounded border border-dashed border-muted-foreground/30 flex items-center justify-center bg-muted/50">
+                        <Smartphone className="h-3 w-3 text-muted-foreground/50" />
+                      </div>
+                    )}
+                    {page.latestVersion?.desktopUrl ? (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setPreviewPage(page);
+                          setPreviewDevice('desktop');
+                        }}
+                        className="w-16 h-14 rounded border border-border overflow-hidden hover:ring-2 ring-primary transition-all bg-muted"
+                        title="Desktop Screenshot anzeigen"
+                      >
+                        <img 
+                          src={page.latestVersion.desktopUrl} 
+                          alt="Desktop" 
+                          className="w-full h-full object-cover object-top"
+                        />
+                      </button>
+                    ) : (
+                      <div className="w-16 h-14 rounded border border-dashed border-muted-foreground/30 flex items-center justify-center bg-muted/50">
+                        <Monitor className="h-3 w-3 text-muted-foreground/50" />
+                      </div>
+                    )}
                   </div>
-                  <div className="flex items-center gap-1">
-                    {page.latestVersion?.desktopUrl && (
-                      <Monitor className="h-3.5 w-3.5 text-green-500" />
-                    )}
-                    {page.latestVersion?.mobileUrl && (
-                      <Smartphone className="h-3.5 w-3.5 text-blue-500" />
-                    )}
-                    {!page.hasVersions && (
-                      <span title="Keine Version">
-                        <AlertTriangle className="h-3.5 w-3.5 text-amber-500" />
-                      </span>
-                    )}
+                  
+                  {/* Page Info */}
+                  <div className="flex-1 min-w-0" onClick={() => togglePageSelection(page.id)}>
+                    <div className="flex items-center gap-2">
+                      {getPageTypeIcon(page.pageType)}
+                      <span className="text-sm font-medium truncate">{page.displayName}</span>
+                    </div>
+                    <span className="text-xs text-muted-foreground truncate block">{page.urlPath}</span>
+                    <div className="flex items-center gap-2 mt-1">
+                      {page.latestVersion?.htmlSnapshot && (
+                        <Badge variant="outline" className="text-[10px] h-4 px-1">HTML</Badge>
+                      )}
+                      {page.latestVersion?.markdownContent && (
+                        <Badge variant="outline" className="text-[10px] h-4 px-1">MD</Badge>
+                      )}
+                      {page.latestVersion && (
+                        <span className="text-[10px] text-muted-foreground">
+                          v{page.latestVersion.versionNumber}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  
+                  {/* Actions */}
+                  <div className="flex items-center gap-1 shrink-0">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              captureSinglePage(page);
+                            }}
+                            disabled={capturingPageId === page.id || isCapturing}
+                          >
+                            {capturingPageId === page.id ? (
+                              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                            ) : (
+                              <RotateCcw className="h-3.5 w-3.5" />
+                            )}
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Screenshot neu erfassen</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              window.open(`https://www.umzugscheck.ch${page.urlPath}`, '_blank');
+                            }}
+                          >
+                            <ExternalLink className="h-3.5 w-3.5" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Seite öffnen</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
                 </div>
               ))}
@@ -934,6 +1072,101 @@ const LandingPageExport = ({ onClose }: LandingPageExportProps) => {
           </>
         )}
       </Button>
+
+      {/* Screenshot Preview Modal */}
+      <Dialog open={!!previewPage} onOpenChange={() => setPreviewPage(null)}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              {previewPage && getPageTypeIcon(previewPage.pageType)}
+              {previewPage?.displayName}
+            </DialogTitle>
+            <DialogDescription>
+              {previewPage?.urlPath}
+            </DialogDescription>
+          </DialogHeader>
+          
+          {/* Device Toggle */}
+          <div className="flex items-center justify-center gap-2 py-2">
+            <Button
+              variant={previewDevice === 'mobile' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setPreviewDevice('mobile')}
+              disabled={!previewPage?.latestVersion?.mobileUrl}
+            >
+              <Smartphone className="h-4 w-4 mr-1" />
+              Mobile
+            </Button>
+            <Button
+              variant={previewDevice === 'desktop' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setPreviewDevice('desktop')}
+              disabled={!previewPage?.latestVersion?.desktopUrl}
+            >
+              <Monitor className="h-4 w-4 mr-1" />
+              Desktop
+            </Button>
+          </div>
+          
+          {/* Screenshot Display */}
+          <div className="flex-1 overflow-auto bg-muted/30 rounded-lg p-4 flex items-start justify-center">
+            {previewPage?.latestVersion && (
+              previewDevice === 'mobile' && previewPage.latestVersion.mobileUrl ? (
+                <img 
+                  src={previewPage.latestVersion.mobileUrl}
+                  alt={`Mobile Screenshot: ${previewPage.displayName}`}
+                  className="max-w-full max-h-[60vh] rounded-lg shadow-lg border"
+                />
+              ) : previewDevice === 'desktop' && previewPage.latestVersion.desktopUrl ? (
+                <img 
+                  src={previewPage.latestVersion.desktopUrl}
+                  alt={`Desktop Screenshot: ${previewPage.displayName}`}
+                  className="max-w-full max-h-[60vh] rounded-lg shadow-lg border"
+                />
+              ) : (
+                <div className="text-center text-muted-foreground py-8">
+                  <AlertTriangle className="h-8 w-8 mx-auto mb-2" />
+                  <p>Kein {previewDevice === 'mobile' ? 'Mobile' : 'Desktop'} Screenshot verfügbar</p>
+                </div>
+              )
+            )}
+          </div>
+          
+          {/* Actions */}
+          <div className="flex items-center justify-between pt-4 border-t">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Calendar className="h-4 w-4" />
+              {previewPage?.latestVersion?.createdAt && (
+                <span>Erstellt: {new Date(previewPage.latestVersion.createdAt).toLocaleDateString('de-CH')}</span>
+              )}
+              <Badge variant="outline">v{previewPage?.latestVersion?.versionNumber}</Badge>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => previewPage && captureSinglePage(previewPage)}
+                disabled={capturingPageId === previewPage?.id}
+              >
+                {capturingPageId === previewPage?.id ? (
+                  <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+                ) : (
+                  <RotateCcw className="h-4 w-4 mr-1" />
+                )}
+                Neu erfassen
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => previewPage && window.open(`https://www.umzugscheck.ch${previewPage.urlPath}`, '_blank')}
+              >
+                <ExternalLink className="h-4 w-4 mr-1" />
+                Seite öffnen
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
