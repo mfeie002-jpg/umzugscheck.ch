@@ -12,12 +12,13 @@ import {
   Download, FileJson, FileText, Image, Loader2, CheckCircle2, Package,
   FileCode, AlertCircle, ChevronDown, RefreshCw, Camera, Filter,
   Smartphone, Monitor, RotateCcw, Zap, ChevronRight, CheckCheck,
-  XCircle, AlertTriangle, HardDrive
+  XCircle, AlertTriangle, HardDrive, MapPin, Workflow
 } from "lucide-react";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import LandingPageExport from "@/components/export/LandingPageExport";
 
 // Top 10 Flow IDs - hardcoded for quick access (normalized ids = analysis tables)
 const TOP_10_FLOW_IDS = [
@@ -33,10 +34,28 @@ const TOP_10_FLOW_IDS = [
   { rank: 10, id: "v2e", name: "V2e" },
 ];
 
+// Normalize flow ID for edge function - extract the actual variant ID
+// Examples: 
+// - "umzugsofferten-v2" -> "v2"
+// - "chatgpt-flow-1" -> "chatgpt-flow-1" (keep as-is)
+// - "ultimate-best36" -> "ultimate-best36" (keep as-is)
 const normalizeFlowId = (id: string) => {
-  // Keep export tool consistent with analysis/screenshot tables.
-  // flow_versions often uses prefix (umzugsofferten-...), analysis tables use normalized ids (v1, v2, ultimate-best36, ...)
-  return id.startsWith("umzugsofferten-") ? id.replace("umzugsofferten-", "") : id;
+  // Remove umzugsofferten- prefix if present
+  if (id.startsWith("umzugsofferten-")) {
+    return id.replace("umzugsofferten-", "");
+  }
+  // Keep other IDs as-is (chatgpt-flow-*, ultimate-*, etc.)
+  return id;
+};
+
+// Map from flow_versions table flow_id to the actual edge function flowId
+const mapFlowIdForEdgeFunction = (flowId: string, flowCode: string | null): string => {
+  // If we have a flow_code, use it (it's the actual variant like "v2a", "ultimate-best36")
+  if (flowCode) {
+    return flowCode.toLowerCase().replace(/[._]/g, '-');
+  }
+  // Otherwise normalize the flow_id
+  return normalizeFlowId(flowId);
 };
 
 interface StepScreenshot {
@@ -55,6 +74,7 @@ interface FlowInfo {
   stepCount?: number;
   hasScreenshots?: boolean;
   screenshotStatus?: 'complete' | 'partial' | 'none';
+  flowCode?: string | null; // The actual variant code (v2a, ultimate-best36, etc.)
 }
 
 interface FailedDownload {
@@ -157,6 +177,7 @@ const ExportDownload = () => {
               stepCount,
               hasScreenshots: !!ssStatus && (ssStatus.mobile > 0 || ssStatus.desktop > 0),
               screenshotStatus,
+              flowCode: row.flow_code || null,
             });
           }
         });
@@ -350,26 +371,28 @@ const ExportDownload = () => {
         const flow = flowsWithoutScreenshots[i];
         setCaptureProgress({ current: i + 1, total: flowsWithoutScreenshots.length });
         
-        // Normalize flow ID for edge function (remove umzugsofferten- prefix)
-        const normalizedId = normalizeFlowId(flow.id);
-        setStatus(`Erfasse Screenshots für ${flow.name} (${normalizedId})...`);
+        // Use flow_code if available, otherwise normalize flow_id
+        // This ensures we send the correct ID to the edge function
+        const edgeFunctionFlowId = mapFlowIdForEdgeFunction(flow.id, flow.flowCode || null);
+        setStatus(`Erfasse Screenshots für ${flow.name} (${edgeFunctionFlowId})...`);
+        console.log(`[AutoCapture] Flow: ${flow.id} -> Edge Function ID: ${edgeFunctionFlowId}`);
         
         try {
           const { error } = await supabase.functions.invoke('auto-analyze-flow', {
             body: {
-              flowId: normalizedId,
+              flowId: edgeFunctionFlowId,
               runType: 'manual',
             },
           });
           
           if (error) {
-            console.error(`Failed to capture ${normalizedId}:`, error);
+            console.error(`Failed to capture ${edgeFunctionFlowId}:`, error);
             errorCount++;
           } else {
             successCount++;
           }
         } catch (err) {
-          console.error(`Error capturing ${normalizedId}:`, err);
+          console.error(`Error capturing ${edgeFunctionFlowId}:`, err);
           errorCount++;
         }
         
