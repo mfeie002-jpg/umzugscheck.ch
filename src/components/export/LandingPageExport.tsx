@@ -77,7 +77,7 @@ const LandingPageExport = ({ onClose }: LandingPageExportProps) => {
   const [deviceFilter, setDeviceFilter] = useState<DeviceFilter>("both");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPageIds, setSelectedPageIds] = useState<Set<string>>(new Set());
-  const [showPageSelector, setShowPageSelector] = useState(false);
+  const [showPageSelector, setShowPageSelector] = useState(true);
   
   // Export options
   const [exportFormat, setExportFormat] = useState<ExportFormat>("zip");
