@@ -916,7 +916,7 @@ export function LandingPagesView() {
   const handleCapture = async (page: LandingPage) => {
     setCapturingPageId(page.id);
     try {
-      const fullUrl = `https://www.umzugscheck.ch${page.url_path}`;
+      const fullUrl = `${window.location.origin}${page.url_path}`;
       
       // Use screenshotmachine API
       const { data, error } = await supabase.functions.invoke('capture-landing-page', {
@@ -944,7 +944,7 @@ export function LandingPagesView() {
   const handleAnalyze = async (page: LandingPage) => {
     setAnalyzingPageId(page.id);
     try {
-      const fullUrl = `https://www.umzugscheck.ch${page.url_path}`;
+      const fullUrl = `${window.location.origin}${page.url_path}`;
       
       const { data, error } = await supabase.functions.invoke('analyze-landing-page', {
         body: {

@@ -243,7 +243,7 @@ const LandingPageExport = ({ onClose }: LandingPageExportProps) => {
         setStatus(`Erfasse: ${page.displayName}...`);
         
         try {
-          const fullUrl = `https://www.umzugscheck.ch${page.urlPath}`;
+          const fullUrl = `${window.location.origin}${page.urlPath}`;
           
           const { error } = await supabase.functions.invoke('capture-landing-page', {
             body: {
@@ -292,7 +292,7 @@ const LandingPageExport = ({ onClose }: LandingPageExportProps) => {
     setCapturingPageId(page.id);
     
     try {
-      const fullUrl = `https://www.umzugscheck.ch${page.urlPath}`;
+      const fullUrl = `${window.location.origin}${page.urlPath}`;
       
       const { error } = await supabase.functions.invoke('capture-landing-page', {
         body: {
