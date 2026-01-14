@@ -293,7 +293,7 @@ export const FlowsView: React.FC<FlowsViewProps> = ({ onSelectFlow }) => {
             </TabsTrigger>
             <TabsTrigger value="all" className="gap-2">
               <List className="h-4 w-4" />
-              Alle ({allFlows.length})
+              Alle ({totalFlowCount})
             </TabsTrigger>
           </TabsList>
 

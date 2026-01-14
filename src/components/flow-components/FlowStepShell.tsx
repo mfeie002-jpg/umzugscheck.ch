@@ -60,7 +60,11 @@ export const FlowStepShell = memo(function FlowStepShell({
   const slideDirection = direction === 'forward' ? 1 : -1;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 flex flex-col">
+    <div 
+      key={`uc-step-${currentStep}`}
+      data-uc-step={currentStep}
+      className="min-h-screen bg-gradient-to-b from-background to-muted/30 flex flex-col"
+    >
       {/* Sticky Header */}
       <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-md border-b border-border">
         <div className="container max-w-2xl mx-auto px-4 py-3">
