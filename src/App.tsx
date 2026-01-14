@@ -295,6 +295,7 @@ const AICommandCenter = lazy(() => import("./pages/admin/AICommandCenter"));
 const AdminCapabilities = lazy(() => import("./pages/admin/Capabilities"));
 const VariantTestHub = lazy(() => import("./pages/admin/VariantTestHub"));
 const FlowCommandCenter = lazy(() => import("./pages/admin/FlowCommandCenter"));
+const CommandCenter = lazy(() => import("./pages/admin/CommandCenter"));
 const AnalysisFramework = lazy(() => import("./pages/admin/AnalysisFramework"));
 const FlowFeedbackVariants = lazy(() => import("./pages/admin/FlowFeedbackVariants"));
 const AllFlowsScreenshotReview = lazy(() => import("./pages/admin/AllFlowsScreenshotReview"));
@@ -707,6 +708,10 @@ const AppRouterContent = () => {
           {/* Flow Command Center - Public (no admin auth required) */}
           <Route path="/flow-command-center" element={<FlowCommandCenter />} />
           <Route path="/flow-command-center/*" element={<FlowCommandCenter />} />
+          
+          {/* NEW: Archetyp Command Center - Unified Asset Management */}
+          <Route path="/command-center" element={<CommandCenter />} />
+          <Route path="/command-center/*" element={<CommandCenter />} />
           <Route path="/flow-review" element={<FlowReview />} />
           {/* Flow tester already defined at top, only redirects here */}
           <Route path="/flow/:flowId" element={<FlowShowcase />} />

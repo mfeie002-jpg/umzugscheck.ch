@@ -129,20 +129,26 @@ const navStructure: NavItem[] = [
     icon: GitCompare
   },
   
-  // ========== FUNNELS & UX ==========
-  { type: "divider", title: "🎯 Funnels & UX" },
+  // ========== COMMAND CENTER (NEW ARCHETYP) ==========
+  { type: "divider", title: "🎯 Command Center" },
   { 
-    title: "Flow Command Center", 
-    href: "/admin/flow-command-center", 
+    title: "Command Center", 
+    href: "/command-center", 
     icon: Target,
     highlight: true,
-    badge: "⭐"
+    badge: "NEU",
+    external: true
+  },
+  { 
+    title: "Flow Command Center", 
+    href: "/flow-command-center", 
+    icon: Layers,
+    external: true
   },
   { 
     title: "Varianten Testen", 
     href: "/admin/varianten-testen", 
-    icon: Layers,
-    badge: "HUB"
+    icon: Layers
   },
   { 
     title: "Flow Tester", 
