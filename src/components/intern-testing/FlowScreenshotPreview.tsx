@@ -210,11 +210,18 @@ export function FlowScreenshotPreview({ flowId, flowName, totalSteps, className 
                     Desktop
                   </button>
                   
+                  {/* Steps counter */}
+                  {screenshots.length > 0 && (
+                    <span className="ml-auto text-xs text-white/50">
+                      {screenshots.length} Steps
+                    </span>
+                  )}
+                  
                   {screenshots.length > 0 && (
                     <button
                       onClick={fetchScreenshots}
                       disabled={loading}
-                      className="ml-auto p-1.5 bg-white/5 hover:bg-white/10 rounded-lg text-white/40 hover:text-white/70 transition-colors"
+                      className="p-1.5 bg-white/5 hover:bg-white/10 rounded-lg text-white/40 hover:text-white/70 transition-colors"
                       title="Neu laden"
                     >
                       <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
