@@ -1154,13 +1154,35 @@ const createDefaultRegion = (canton: Canton): RegionData => ({
 // ==================== HELPER FUNCTIONS ====================
 
 export const getRegionBySlug = (slug: string): RegionData | null => {
+  // Slug aliases for common variants
+  const slugAliases: Record<string, string> = {
+    'basel': 'basel-stadt',
+    'stgallen': 'st-gallen',
+    'st.gallen': 'st-gallen',
+    'graubuenden': 'graubuenden',
+    'geneve': 'genf',
+    'geneva': 'genf',
+    'wallis': 'wallis',
+    'valais': 'wallis',
+    'waadt': 'waadt',
+    'vaud': 'waadt',
+    'tessin': 'tessin',
+    'ticino': 'tessin',
+    'fribourg': 'freiburg',
+    'neuchatel': 'neuenburg',
+    'appenzell': 'appenzell-ausserrhoden',
+  };
+  
+  // Normalize slug
+  const normalizedSlug = slugAliases[slug.toLowerCase()] || slug.toLowerCase();
+  
   // Check if we have detailed data
-  if (REGIONS_DATA[slug]) {
-    return REGIONS_DATA[slug];
+  if (REGIONS_DATA[normalizedSlug]) {
+    return REGIONS_DATA[normalizedSlug];
   }
   
   // Find canton and create default
-  const canton = CANTONS.find(c => c.slug === slug);
+  const canton = CANTONS.find(c => c.slug === normalizedSlug);
   if (canton) {
     return createDefaultRegion(canton);
   }
