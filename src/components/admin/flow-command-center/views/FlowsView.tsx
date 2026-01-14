@@ -166,10 +166,11 @@ function categorizeFlow(id: string): CategoryKey {
 }
 
 function buildAllFlowsList(): FlowItem[] {
-  const flows: FlowItem[] = [];
+  const flowMap = new Map<string, FlowItem>();
   
+  // Add main flows first
   Object.entries(FLOW_CONFIGS).forEach(([id, config]) => {
-    flows.push({
+    flowMap.set(id, {
       id,
       label: config.label,
       description: config.description,
@@ -179,18 +180,22 @@ function buildAllFlowsList(): FlowItem[] {
     });
   });
   
+  // Add sub-variants (overwrites duplicates from FLOW_CONFIGS)
   Object.entries(SUB_VARIANT_CONFIGS).forEach(([id, config]) => {
-    flows.push({
-      id,
-      label: config.label,
-      description: config.description,
-      path: config.path,
-      category: categorizeFlow(id),
-      isPremium: config.label.includes('⭐'),
-    });
+    // Only add if not already in map (avoid duplicates)
+    if (!flowMap.has(id)) {
+      flowMap.set(id, {
+        id,
+        label: config.label,
+        description: config.description,
+        path: config.path,
+        category: categorizeFlow(id),
+        isPremium: config.label.includes('⭐'),
+      });
+    }
   });
   
-  return flows;
+  return Array.from(flowMap.values());
 }
 
 const STANDALONE_FLOWS = [
