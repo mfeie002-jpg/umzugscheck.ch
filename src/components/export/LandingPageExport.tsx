@@ -308,6 +308,8 @@ const LandingPageExport = ({ onClose }: LandingPageExportProps) => {
         toast.error(`Fehler beim Erfassen von ${page.displayName}`);
       } else {
         toast.success(`${page.displayName} erfolgreich erfasst!`);
+        // Close preview modal to force refresh
+        setPreviewPage(null);
         // Refresh data
         await fetchLandingPages(true);
       }
