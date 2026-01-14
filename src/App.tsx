@@ -125,6 +125,7 @@ const CompanyProfile = lazy(() => import("./pages/CompanyProfile"));
 const Compare = lazy(() => import("./pages/Compare"));
 const CompanyComparison = lazy(() => import("./pages/CompanyComparison"));
 const UmzugsfirmenPage = lazy(() => import("./pages/UmzugsfirmenPage"));
+const UmzugsfirmenSchweizPillar = lazy(() => import("./pages/UmzugsfirmenSchweizPillar"));
 
 // Canton/Region pages - Consolidated to RegionArchetypPage
 // Canton and Zug pages removed - now handled by RegionArchetypPage
@@ -484,7 +485,7 @@ const AppRouterContent = () => {
           <Route path="/:canton/vergleich" element={<CantonComparison />} />
           <Route path="/firmen" element={<Companies />} />
           <Route path="/umzugsfirmen" element={<Companies />} />
-          <Route path="/umzugsfirmen-schweiz" element={<Companies />} />
+          <Route path="/umzugsfirmen-schweiz" element={<UmzugsfirmenSchweizPillar />} />
           <Route path="/umzugsfirmen-suche" element={<UmzugsfirmenPage />} />
           {/* All canton/region pages now use the unified RegionArchetypPage */}
           {/* Legacy V1 variant for Zürich testing */}
