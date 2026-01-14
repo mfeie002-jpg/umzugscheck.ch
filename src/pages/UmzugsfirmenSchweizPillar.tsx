@@ -5,7 +5,7 @@
  * Starke interne Verlinkung für SEO-Cluster
  */
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, lazy } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { motion } from "framer-motion";
@@ -21,6 +21,7 @@ import {
 import { Footer } from "@/components/Footer";
 import { CANTONS, getRegionBySlug, type Canton } from "@/data/regions-database";
 import { FAQAccordion } from "@/components/FAQAccordion";
+import { LazySection } from "@/components/region-archetyp/LazySection";
 
 // Group cantons by region for better UX
 const REGION_GROUPS = [
@@ -245,90 +246,96 @@ const UmzugsfirmenSchweizPillar = () => {
         </div>
       </section>
 
-      {/* Services Section */}
-      <section className="py-12 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="max-w-5xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">
-              Alle Umzugsservices im Überblick
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {[
-                { title: "Privatumzug", icon: Home, link: "/privatumzug", desc: "Wohnungsumzüge" },
-                { title: "Firmenumzug", icon: Building2, link: "/firmenumzug", desc: "Büro & Gewerbe" },
-                { title: "Reinigung", icon: CheckCircle, link: "/umzugsreinigung", desc: "Mit Abgabegarantie" },
-                { title: "Entsorgung", icon: Truck, link: "/entsorgung", desc: "Räumung & Mulden" },
-                { title: "Lagerung", icon: Building2, link: "/lagerung", desc: "Kurz- & Langzeit" },
-                { title: "Spezialtransporte", icon: Truck, link: "/spezialtransporte", desc: "Klavier, Kunst, etc." },
-              ].map((service, i) => (
-                <Link key={i} to={service.link}>
-                  <Card className="h-full hover:border-primary/50 hover:shadow-md transition-all group">
-                    <CardContent className="p-4 flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
-                        <service.icon className="h-5 w-5 text-primary" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold group-hover:text-primary transition-colors">{service.title}</h3>
-                        <p className="text-xs text-muted-foreground">{service.desc}</p>
-                      </div>
-                      <ChevronRight className="h-4 w-4 ml-auto text-muted-foreground group-hover:text-primary transition-colors" />
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
+      {/* Services Section - Lazy Loaded */}
+      <LazySection minHeight="280px">
+        <section className="py-12 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <div className="max-w-5xl mx-auto">
+              <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">
+                Alle Umzugsservices im Überblick
+              </h2>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {[
+                  { title: "Privatumzug", icon: Home, link: "/privatumzug", desc: "Wohnungsumzüge" },
+                  { title: "Firmenumzug", icon: Building2, link: "/firmenumzug", desc: "Büro & Gewerbe" },
+                  { title: "Reinigung", icon: CheckCircle, link: "/umzugsreinigung", desc: "Mit Abgabegarantie" },
+                  { title: "Entsorgung", icon: Truck, link: "/entsorgung", desc: "Räumung & Mulden" },
+                  { title: "Lagerung", icon: Building2, link: "/lagerung", desc: "Kurz- & Langzeit" },
+                  { title: "Spezialtransporte", icon: Truck, link: "/spezialtransporte", desc: "Klavier, Kunst, etc." },
+                ].map((service, i) => (
+                  <Link key={i} to={service.link}>
+                    <Card className="h-full hover:border-primary/50 hover:shadow-md transition-all group">
+                      <CardContent className="p-4 flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
+                          <service.icon className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold group-hover:text-primary transition-colors">{service.title}</h3>
+                          <p className="text-xs text-muted-foreground">{service.desc}</p>
+                        </div>
+                        <ChevronRight className="h-4 w-4 ml-auto text-muted-foreground group-hover:text-primary transition-colors" />
+                      </CardContent>
+                    </Card>
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </LazySection>
 
-      {/* How It Works */}
-      <section className="py-12 md:py-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">
-              So einfach funktioniert's
-            </h2>
-            <div className="grid md:grid-cols-3 gap-6">
-              {[
-                { step: 1, title: "Anfrage stellen", desc: "Umzugsdaten eingeben – dauert nur 2 Minuten", time: "2 Min." },
-                { step: 2, title: "Offerten erhalten", desc: "3-5 kostenlose Angebote von geprüften Firmen", time: "24-48h" },
-                { step: 3, title: "Firma wählen", desc: "Vergleichen, auswählen und bis zu 40% sparen", time: "Ihr Tempo" },
-              ].map((item, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                >
-                  <Card className="h-full text-center">
-                    <CardContent className="p-6">
-                      <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xl font-bold mx-auto mb-4">
-                        {item.step}
-                      </div>
-                      <h3 className="font-semibold mb-2">{item.title}</h3>
-                      <p className="text-sm text-muted-foreground mb-3">{item.desc}</p>
-                      <Badge variant="secondary">{item.time}</Badge>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
+      {/* How It Works - Lazy Loaded */}
+      <LazySection minHeight="350px">
+        <section className="py-12 md:py-16">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">
+                So einfach funktioniert's
+              </h2>
+              <div className="grid md:grid-cols-3 gap-6">
+                {[
+                  { step: 1, title: "Anfrage stellen", desc: "Umzugsdaten eingeben – dauert nur 2 Minuten", time: "2 Min." },
+                  { step: 2, title: "Offerten erhalten", desc: "3-5 kostenlose Angebote von geprüften Firmen", time: "24-48h" },
+                  { step: 3, title: "Firma wählen", desc: "Vergleichen, auswählen und bis zu 40% sparen", time: "Ihr Tempo" },
+                ].map((item, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 }}
+                  >
+                    <Card className="h-full text-center">
+                      <CardContent className="p-6">
+                        <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xl font-bold mx-auto mb-4">
+                          {item.step}
+                        </div>
+                        <h3 className="font-semibold mb-2">{item.title}</h3>
+                        <p className="text-sm text-muted-foreground mb-3">{item.desc}</p>
+                        <Badge variant="secondary">{item.time}</Badge>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </LazySection>
 
-      {/* FAQ Section */}
-      <section className="py-12 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">
-              Häufige Fragen zu Umzugsfirmen in der Schweiz
-            </h2>
-            <FAQAccordion items={PILLAR_FAQS} />
+      {/* FAQ Section - Lazy Loaded */}
+      <LazySection minHeight="400px">
+        <section className="py-12 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl mx-auto">
+              <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">
+                Häufige Fragen zu Umzugsfirmen in der Schweiz
+              </h2>
+              <FAQAccordion items={PILLAR_FAQS} />
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </LazySection>
 
       {/* Final CTA */}
       <section className="py-12 md:py-16 bg-primary text-primary-foreground">

@@ -34,3 +34,6 @@ export { MicroTrustRow } from './shared/MicroTrustRow';
 // Mobile-optimized Components
 export { MobileCantonSheet } from './MobileCantonSheet';
 export { MobileCompanyCard } from './MobileCompanyCard';
+
+// Performance Components
+export { LazySection } from './LazySection';
