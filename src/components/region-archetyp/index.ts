@@ -30,3 +30,7 @@ export { RegionSearch } from './shared/RegionSearch';
 export { PopularRegionsGrid } from './shared/PopularRegionsGrid';
 export { CantonGrid } from './shared/CantonGrid';
 export { MicroTrustRow } from './shared/MicroTrustRow';
+
+// Mobile-optimized Components
+export { MobileCantonSheet } from './MobileCantonSheet';
+export { MobileCompanyCard } from './MobileCompanyCard';
