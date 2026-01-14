@@ -27,6 +27,24 @@ a[href*="lovable.dev"]:not([href*="docs.lovable.dev"]):is([style*="position: fix
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Mobile touch targets - min 48px for accessibility */
+.touch-target {
+  min-height: 48px;
+  min-width: 48px;
+}
+
+/* Smooth momentum scrolling on mobile */
+.scroll-smooth {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* Disable text selection on interactive elements for mobile */
+.no-select {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 /* Prevent horizontal scroll on mobile - fixes AI analysis issues */
 html, body {
   overflow-x: hidden !important;

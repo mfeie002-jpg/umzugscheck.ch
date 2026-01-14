@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { MapPin, ArrowRight, Shield, Star, Users, CheckCircle } from "lucide-react";
+import { MapPin, ArrowRight, Shield, Star, Users, CheckCircle, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { RegionData, CANTONS, searchPlaces } from "@/data/regions-database";
 import { setPrefill } from "@/lib/prefill";
 import { RegionLiveCounter } from "./RegionLiveCounter";
 import { MicroTrustRow } from "./shared/MicroTrustRow";
+import { MobileCantonSheet } from "./MobileCantonSheet";
 
 interface RegionHeroProps {
   region: RegionData;
@@ -21,6 +22,7 @@ export const RegionHero = ({ region, onRegionChange }: RegionHeroProps) => {
   const [toSuggestions, setToSuggestions] = useState<Array<{ label: string; slug: string }>>([]);
   const [showToSuggestions, setShowToSuggestions] = useState(false);
   const [showCantonSelector, setShowCantonSelector] = useState(false);
+  const [showMobileSheet, setShowMobileSheet] = useState(false);
 
   // Prefill from location with region name
   useEffect(() => {
@@ -63,16 +65,17 @@ export const RegionHero = ({ region, onRegionChange }: RegionHeroProps) => {
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        {/* Canton Selector (Top-Left) */}
+        {/* Canton Selector - Desktop Dropdown / Mobile Bottom Sheet */}
         <div className="mb-4 md:mb-6">
-          <div className="relative inline-block">
+          {/* Desktop: Dropdown */}
+          <div className="relative hidden md:inline-block">
             <button
               onClick={() => setShowCantonSelector(!showCantonSelector)}
               className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
             >
               <MapPin className="w-4 h-4" />
               <span>{region.name} ({region.short})</span>
-              <span className="text-xs">▼</span>
+              <ChevronDown className={`w-4 h-4 transition-transform ${showCantonSelector ? 'rotate-180' : ''}`} />
             </button>
             
             {showCantonSelector && (
@@ -98,6 +101,24 @@ export const RegionHero = ({ region, onRegionChange }: RegionHeroProps) => {
               </motion.div>
             )}
           </div>
+
+          {/* Mobile: Opens Bottom Sheet */}
+          <button
+            onClick={() => setShowMobileSheet(true)}
+            className="md:hidden flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors touch-manipulation py-2"
+          >
+            <MapPin className="w-4 h-4" />
+            <span>{region.name} ({region.short})</span>
+            <ChevronDown className="w-4 h-4" />
+          </button>
+
+          {/* Mobile Bottom Sheet */}
+          <MobileCantonSheet
+            isOpen={showMobileSheet}
+            onClose={() => setShowMobileSheet(false)}
+            currentSlug={region.slug}
+            onSelect={(slug) => onRegionChange?.(slug)}
+          />
         </div>
 
         {/* Live Counter */}

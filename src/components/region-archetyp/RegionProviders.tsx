@@ -3,7 +3,9 @@ import { motion } from "framer-motion";
 import { Star, Clock, Shield, CheckCircle, ArrowRight, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { MobileCompanyCard } from "./MobileCompanyCard";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface Provider {
   id: string;
@@ -36,6 +38,12 @@ const PRICE_COLORS: Record<string, string> = {
 
 export const RegionProviders = memo(({ companies, regionName, maxItems = 3 }: RegionProvidersProps) => {
   const displayCompanies = companies.slice(0, maxItems);
+  const isMobile = useIsMobile();
+  const navigate = useNavigate();
+
+  const handleRequestQuote = () => {
+    navigate("/umzugsofferten");
+  };
 
   return (
     <section className="py-10 md:py-16">
@@ -54,70 +62,91 @@ export const RegionProviders = memo(({ companies, regionName, maxItems = 3 }: Re
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-4 md:gap-6 max-w-5xl mx-auto">
-          {displayCompanies.map((company, index) => (
-            <motion.div
-              key={company.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className="bg-card border border-border rounded-xl p-5 hover:shadow-lg hover:border-primary/30 transition-all"
-            >
-              {/* Header */}
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="font-bold text-lg">{company.name}</h3>
-                  <div className="flex items-center gap-2 mt-1">
-                    <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                    <span className="font-semibold">{company.rating}</span>
-                    <span className="text-sm text-muted-foreground">
-                      ({company.reviewCount} Bewertungen)
-                    </span>
-                  </div>
-                </div>
-                <Badge className={PRICE_COLORS[company.priceLevel]}>
-                  {company.priceLevel}
-                </Badge>
-              </div>
-
-              {/* Response Time */}
-              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
-                <Clock className="w-4 h-4" />
-                <span>Antwortzeit: {company.responseTime}</span>
-              </div>
-
-              {/* Badges */}
-              <div className="flex flex-wrap gap-2 mb-4">
-                {company.badges.slice(0, 3).map((badge) => {
-                  const config = BADGE_CONFIG[badge] || { icon: CheckCircle, color: 'text-gray-600' };
-                  const Icon = config.icon;
-                  return (
-                    <span
-                      key={badge}
-                      className={`inline-flex items-center gap-1 text-xs ${config.color} bg-muted px-2 py-1 rounded-full`}
-                    >
-                      <Icon className="w-3 h-3" />
-                      {badge}
-                    </span>
-                  );
-                })}
-              </div>
-
-              {/* CTA */}
-              <Button
-                variant="outline"
-                className="w-full hover:bg-primary hover:text-primary-foreground transition-colors"
-                asChild
+        {/* Mobile: Use MobileCompanyCard with larger touch targets */}
+        {isMobile ? (
+          <div className="space-y-4 max-w-lg mx-auto">
+            {displayCompanies.map((company, index) => (
+              <motion.div
+                key={company.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
               >
-                <Link to={`/firma/${company.id}`}>
-                  Offerte ansehen
-                  <ArrowRight className="ml-2 w-4 h-4" />
-                </Link>
-              </Button>
-            </motion.div>
-          ))}
-        </div>
+                <MobileCompanyCard
+                  company={company}
+                  onRequestQuote={handleRequestQuote}
+                />
+              </motion.div>
+            ))}
+          </div>
+        ) : (
+          /* Desktop: Grid layout */
+          <div className="grid md:grid-cols-3 gap-4 md:gap-6 max-w-5xl mx-auto">
+            {displayCompanies.map((company, index) => (
+              <motion.div
+                key={company.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-card border border-border rounded-xl p-5 hover:shadow-lg hover:border-primary/30 transition-all"
+              >
+                {/* Header */}
+                <div className="flex items-start justify-between mb-4">
+                  <div>
+                    <h3 className="font-bold text-lg">{company.name}</h3>
+                    <div className="flex items-center gap-2 mt-1">
+                      <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                      <span className="font-semibold">{company.rating}</span>
+                      <span className="text-sm text-muted-foreground">
+                        ({company.reviewCount} Bewertungen)
+                      </span>
+                    </div>
+                  </div>
+                  <Badge className={PRICE_COLORS[company.priceLevel]}>
+                    {company.priceLevel}
+                  </Badge>
+                </div>
+
+                {/* Response Time */}
+                <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
+                  <Clock className="w-4 h-4" />
+                  <span>Antwortzeit: {company.responseTime}</span>
+                </div>
+
+                {/* Badges */}
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {company.badges.slice(0, 3).map((badge) => {
+                    const config = BADGE_CONFIG[badge] || { icon: CheckCircle, color: 'text-gray-600' };
+                    const Icon = config.icon;
+                    return (
+                      <span
+                        key={badge}
+                        className={`inline-flex items-center gap-1 text-xs ${config.color} bg-muted px-2 py-1 rounded-full`}
+                      >
+                        <Icon className="w-3 h-3" />
+                        {badge}
+                      </span>
+                    );
+                  })}
+                </div>
+
+                {/* CTA */}
+                <Button
+                  variant="outline"
+                  className="w-full hover:bg-primary hover:text-primary-foreground transition-colors"
+                  asChild
+                >
+                  <Link to={`/firma/${company.id}`}>
+                    Offerte ansehen
+                    <ArrowRight className="ml-2 w-4 h-4" />
+                  </Link>
+                </Button>
+              </motion.div>
+            ))}
+          </div>
+        )}
 
         {/* View All CTA */}
         <motion.div
@@ -126,7 +155,12 @@ export const RegionProviders = memo(({ companies, regionName, maxItems = 3 }: Re
           viewport={{ once: true }}
           className="text-center mt-8"
         >
-          <Button variant="outline" size="lg" asChild>
+          <Button 
+            variant="outline" 
+            size="lg" 
+            className="h-14 px-8 text-base touch-manipulation"
+            asChild
+          >
             <Link to="/umzugsfirmen">
               Alle {companies.length}+ Firmen in {regionName} ansehen
               <ArrowRight className="ml-2 w-5 h-5" />
