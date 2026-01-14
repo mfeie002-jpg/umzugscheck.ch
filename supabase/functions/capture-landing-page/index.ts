@@ -228,7 +228,8 @@ serve(async (req) => {
       // Generate hash if secret phrase is configured
       let hashParam = '';
       if (secretPhrase) {
-        const hashInput = url + screenshotApiKey + secretPhrase;
+        // ScreenshotMachine hash = md5(url + secret_phrase)
+        const hashInput = url + secretPhrase;
         hashParam = await md5(hashInput);
         console.log('Using hash authentication for desktop');
       }
@@ -288,7 +289,8 @@ serve(async (req) => {
       // Generate hash if secret phrase is configured
       let hashParam = '';
       if (secretPhrase) {
-        const hashInput = url + screenshotApiKey + secretPhrase;
+        // ScreenshotMachine hash = md5(url + secret_phrase)
+        const hashInput = url + secretPhrase;
         hashParam = await md5(hashInput);
         console.log('Using hash authentication for mobile');
       }
