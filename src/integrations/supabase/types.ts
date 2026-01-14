@@ -1651,6 +1651,9 @@ export type Database = {
       }
       landing_page_versions: {
         Row: {
+          ai_feedback: string | null
+          ai_feedback_date: string | null
+          ai_feedback_source: string | null
           created_at: string
           created_by: string | null
           desktop_screenshot_url: string | null
@@ -1666,6 +1669,9 @@ export type Database = {
           version_number: number
         }
         Insert: {
+          ai_feedback?: string | null
+          ai_feedback_date?: string | null
+          ai_feedback_source?: string | null
           created_at?: string
           created_by?: string | null
           desktop_screenshot_url?: string | null
@@ -1681,6 +1687,9 @@ export type Database = {
           version_number?: number
         }
         Update: {
+          ai_feedback?: string | null
+          ai_feedback_date?: string | null
+          ai_feedback_source?: string | null
           created_at?: string
           created_by?: string | null
           desktop_screenshot_url?: string | null
