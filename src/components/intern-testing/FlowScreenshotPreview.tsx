@@ -30,6 +30,19 @@ export function FlowScreenshotPreview({ flowId, flowName, totalSteps, className 
   const [viewMode, setViewMode] = useState<'desktop' | 'mobile'>('mobile');
   const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
   const [lightboxStep, setLightboxStep] = useState<number>(0);
+  
+  // Track last fetched flowId to detect changes
+  const [lastFetchedFlowId, setLastFetchedFlowId] = useState<string | null>(null);
+  
+  // Reset state when flowId changes
+  useEffect(() => {
+    if (flowId !== lastFetchedFlowId) {
+      setScreenshots([]);
+      setError(null);
+      setLoading(false);
+      // Don't reset isOpen - keep panel open if user had it open
+    }
+  }, [flowId, lastFetchedFlowId]);
 
   const fetchScreenshots = useCallback(async () => {
     setLoading(true);
@@ -118,6 +131,7 @@ export function FlowScreenshotPreview({ flowId, flowName, totalSteps, className 
       // Sort by step number for display
       const steps = Array.from(newestByStep.values()).sort((a, b) => a.stepNumber - b.stepNumber);
       setScreenshots(steps);
+      setLastFetchedFlowId(flowId); // Track which flowId we fetched for
     } catch (err) {
       console.error('Failed to fetch screenshots:', err);
       setError('Fehler beim Laden');
@@ -126,12 +140,13 @@ export function FlowScreenshotPreview({ flowId, flowName, totalSteps, className 
     }
   }, [flowId]);
 
-  // Fetch on open
+  // Fetch on open or when flowId changes (and panel is open)
   useEffect(() => {
-    if (isOpen && screenshots.length === 0 && !loading && !error) {
+    const shouldFetch = isOpen && (screenshots.length === 0 || flowId !== lastFetchedFlowId) && !loading;
+    if (shouldFetch) {
       fetchScreenshots();
     }
-  }, [isOpen, screenshots.length, loading, error, fetchScreenshots]);
+  }, [isOpen, screenshots.length, loading, fetchScreenshots, flowId, lastFetchedFlowId]);
 
   const hasScreenshots = screenshots.some(s => s.desktopUrl || s.mobileUrl);
 

@@ -6,9 +6,11 @@
  * ✅ Back/forward without data loss
  * ✅ Analytics event tracking
  * ✅ Error state handling
+ * ✅ Forced Render Mode support (for screenshot automation)
  */
 
-import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
+import { getForcedRenderMode } from '@/hooks/use-forced-render-mode';
 
 export interface FlowState<T> {
   currentStep: number;
@@ -56,7 +58,17 @@ export function useFlowState<T extends Record<string, unknown>>({
   totalSteps,
   trackEvents = true,
 }: UseFlowStateOptions<T>): [FlowState<T>, FlowActions<T>] {
+  // Check for forced render mode (screenshot automation)
+  // This is evaluated once on mount and cached
+  const forcedRenderRef = useRef<ReturnType<typeof getForcedRenderMode> | null>(null);
+  if (forcedRenderRef.current === null && typeof window !== 'undefined') {
+    forcedRenderRef.current = getForcedRenderMode(window.location.search);
+  }
+  const forcedRender = forcedRenderRef.current;
+  const isForcedRender = forcedRender?.isForcedRender ?? false;
+  
   // Initialize state from sessionStorage or defaults
+  // In FORCED RENDER MODE: NEVER restore from storage, use forced step
   const [state, setState] = useState<FlowState<T>>(() => {
     if (typeof window === 'undefined') {
       return {
@@ -68,6 +80,22 @@ export function useFlowState<T extends Record<string, unknown>>({
       };
     }
 
+    // FORCED RENDER MODE: Skip storage restore, use forced step
+    if (isForcedRender) {
+      const forcedStep = forcedRender?.forcedStepIndex !== null
+        ? Math.min(Math.max(1, (forcedRender.forcedStepIndex ?? 0) + 1), totalSteps)
+        : 1;
+      
+      return {
+        currentStep: forcedStep,
+        formData: initialData,
+        isSubmitting: false,
+        submitError: null,
+        isComplete: false,
+      };
+    }
+
+    // Normal mode: Try to restore from sessionStorage
     try {
       const stored = sessionStorage.getItem(storageKey);
       if (stored) {
@@ -92,7 +120,10 @@ export function useFlowState<T extends Record<string, unknown>>({
   });
 
   // Persist to sessionStorage on changes
+  // SKIP in forced render mode to prevent captures from affecting each other
   useEffect(() => {
+    if (isForcedRender) return; // Don't persist in forced mode
+    
     try {
       sessionStorage.setItem(storageKey, JSON.stringify({
         currentStep: state.currentStep,
@@ -102,10 +133,13 @@ export function useFlowState<T extends Record<string, unknown>>({
     } catch (e) {
       console.warn('Failed to persist flow state:', e);
     }
-  }, [storageKey, state.currentStep, state.formData, state.isComplete]);
+  }, [storageKey, state.currentStep, state.formData, state.isComplete, isForcedRender]);
 
   // Track step views
+  // SKIP analytics in forced render mode
   useEffect(() => {
+    if (isForcedRender) return; // No tracking in forced mode
+    
     if (trackEvents) {
       trackEvent('step_view', { 
         step: state.currentStep, 
@@ -113,7 +147,7 @@ export function useFlowState<T extends Record<string, unknown>>({
         flowId: storageKey 
       });
     }
-  }, [state.currentStep, totalSteps, storageKey, trackEvents]);
+  }, [state.currentStep, totalSteps, storageKey, trackEvents, isForcedRender]);
 
   // Actions
   const actions = useMemo<FlowActions<T>>(() => ({

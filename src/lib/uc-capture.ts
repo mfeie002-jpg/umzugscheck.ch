@@ -11,13 +11,18 @@ export interface UcCaptureParams {
 export function getUcCaptureParams(search: string): UcCaptureParams {
   try {
     const params = new URLSearchParams(search);
-    const enabled = params.get("uc_capture") === "1";
+    const ucCapture = params.get("uc_capture") === "1";
+    const ucRender = params.get("uc_render") === "1";
     const stepRaw = params.get("uc_step");
     const step = stepRaw ? Number(stepRaw) : null;
     const focusRaw = params.get("uc_focus");
     const focus = focusRaw === "options" || focusRaw === "contact" ? focusRaw : null;
     const flow = params.get("uc_flow");
-    const render = params.get("uc_render") === "1";
+    const render = ucRender;
+
+    // IMPORTANT: enabled should be true if ANY forced render param is present
+    // This ensures flows behave correctly for screenshot automation
+    const enabled = ucCapture || ucRender || stepRaw !== null;
 
     return {
       enabled,
