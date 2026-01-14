@@ -89,6 +89,9 @@ type ScreenshotFilter = "all" | "complete" | "partial" | "none";
 type DeviceFilter = "both" | "mobile" | "desktop";
 
 const ExportDownload = () => {
+  // Tab state
+  const [activeTab, setActiveTab] = useState<"flows" | "landing-pages">("flows");
+  
   const [mode, setMode] = useState<ExportMode>("top10");
   const [isDownloading, setIsDownloading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -102,7 +105,6 @@ const ExportDownload = () => {
   const [captureProgress, setCaptureProgress] = useState({ current: 0, total: 0 });
   const [error, setError] = useState<string | null>(null);
   const [lastSynced, setLastSynced] = useState<Date | null>(null);
-  
   // New features state
   const [screenshotFilter, setScreenshotFilter] = useState<ScreenshotFilter>("all");
   const [deviceFilter, setDeviceFilter] = useState<DeviceFilter>("both");
@@ -744,9 +746,9 @@ const ExportDownload = () => {
     );
   }
 
-  return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <Card className="w-full max-w-2xl">
+  // Flows tab content
+  const flowsContent = (
+    <Card className="w-full max-w-2xl mx-auto">
         <CardHeader className="text-center">
           <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
             <Package className="h-8 w-8 text-primary" />
@@ -1095,6 +1097,38 @@ const ExportDownload = () => {
           )}
         </CardContent>
       </Card>
+  );
+
+  // Main render with tabs
+  return (
+    <div className="container mx-auto py-8 px-4 max-w-6xl">
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold mb-2">Export & Download Center</h1>
+        <p className="text-muted-foreground">
+          Exportiere Flows und Landing Pages für ChatGPT-Analyse, Dokumentation oder Backup
+        </p>
+      </div>
+
+      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "flows" | "landing-pages")} className="w-full">
+        <TabsList className="grid w-full grid-cols-2 mb-6">
+          <TabsTrigger value="flows" className="flex items-center gap-2">
+            <Workflow className="h-4 w-4" />
+            Flows ({allFlows.length})
+          </TabsTrigger>
+          <TabsTrigger value="landing-pages" className="flex items-center gap-2">
+            <MapPin className="h-4 w-4" />
+            Landing Pages
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="flows">
+          {flowsContent}
+        </TabsContent>
+
+        <TabsContent value="landing-pages">
+          <LandingPageExport />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
