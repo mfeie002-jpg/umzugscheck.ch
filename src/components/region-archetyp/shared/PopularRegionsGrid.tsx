@@ -1,16 +1,26 @@
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { MapPin } from "lucide-react";
-import { POPULAR_REGIONS } from "@/data/regions-database";
+import { POPULAR_REGIONS, CANTONS } from "@/data/regions-database";
 
 interface PopularRegionsGridProps {
   onSelect?: (slug: string) => void;
 }
 
+// Get full canton data for popular regions
+const getPopularRegionData = () => {
+  return POPULAR_REGIONS.map(slug => {
+    const canton = CANTONS.find(c => c.slug === slug);
+    return canton || { slug, name: slug, short: slug.toUpperCase().slice(0, 2) };
+  });
+};
+
 export const PopularRegionsGrid = memo(({ onSelect }: PopularRegionsGridProps) => {
+  const regions = getPopularRegionData();
+  
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-      {POPULAR_REGIONS.map(region => (
+      {regions.map(region => (
         <Link
           key={region.slug}
           to={`/umzugsfirmen/${region.slug}`}
