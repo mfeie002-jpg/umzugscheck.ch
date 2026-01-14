@@ -142,33 +142,8 @@ const RegionalOfferten = lazy(() => import("./pages/RegionalOfferten"));
 // NEW: Unified region page replacing 24+ individual canton pages
 const RegionArchetypPage = lazy(() => import("./pages/region/RegionArchetypPage"));
 
-// Canton pages - lazy loaded bundle
-const Luzern = lazy(() => import("./pages/cantons/Luzern"));
-const Zuerich = lazy(() => import("./pages/cantons/Zuerich"));
-const Bern = lazy(() => import("./pages/cantons/Bern"));
-const StGallen = lazy(() => import("./pages/cantons/StGallen"));
-const Aargau = lazy(() => import("./pages/cantons/Aargau"));
-const Basel = lazy(() => import("./pages/cantons/Basel"));
-const Thurgau = lazy(() => import("./pages/cantons/Thurgau"));
-const Solothurn = lazy(() => import("./pages/cantons/Solothurn"));
-const Graubuenden = lazy(() => import("./pages/cantons/Graubuenden"));
-const Wallis = lazy(() => import("./pages/cantons/Wallis"));
-const Tessin = lazy(() => import("./pages/cantons/Tessin"));
-const Fribourg = lazy(() => import("./pages/cantons/Fribourg"));
-const Schwyz = lazy(() => import("./pages/cantons/Schwyz"));
-const Geneve = lazy(() => import("./pages/cantons/Geneve"));
-const Uri = lazy(() => import("./pages/cantons/Uri"));
-const Obwalden = lazy(() => import("./pages/cantons/Obwalden"));
-const Nidwalden = lazy(() => import("./pages/cantons/Nidwalden"));
-const Glarus = lazy(() => import("./pages/cantons/Glarus"));
-const Schaffhausen = lazy(() => import("./pages/cantons/Schaffhausen"));
-const Appenzell = lazy(() => import("./pages/cantons/Appenzell"));
-const Neuchatel = lazy(() => import("./pages/cantons/Neuchatel"));
-const Jura = lazy(() => import("./pages/cantons/Jura"));
-const BaselNew = lazy(() => import("./pages/cantons/BaselNew"));
-const AargauNew = lazy(() => import("./pages/cantons/AargauNew"));
-const LuzernNew = lazy(() => import("./pages/cantons/LuzernNew"));
-const StGallenNew = lazy(() => import("./pages/cantons/StGallenNew"));
+// Canton pages - REMOVED: Now handled by RegionArchetypPage
+// All 26 canton pages consolidated into single dynamic route
 
 // Blog/Content pages
 const Blog = lazy(() => import("./pages/Blog"));

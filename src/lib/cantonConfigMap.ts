@@ -1,81 +1,106 @@
-import { CantonConfig } from '@/components/canton/CantonTemplate';
-import { aargauConfig } from '@/config/cantonConfigs/aargauConfig';
-import { appenzellConfig } from '@/config/cantonConfigs/appenzellConfig';
-import { baselConfig } from '@/config/cantonConfigs/baselConfig';
-import { bernConfig } from '@/config/cantonConfigs/bernConfig';
-import { fribourgConfig } from '@/config/cantonConfigs/fribourgConfig';
-import { geneveConfig } from '@/config/cantonConfigs/geneveConfig';
-import { glarusConfig } from '@/config/cantonConfigs/glarusConfig';
-import { graubuendenConfig } from '@/config/cantonConfigs/graubuendenConfig';
-import { juraConfig } from '@/config/cantonConfigs/juraConfig';
-import { luzernConfig } from '@/config/cantonConfigs/luzernConfig';
-import { neuchatelConfig } from '@/config/cantonConfigs/neuchatelConfig';
-import { nidwaldenConfig } from '@/config/cantonConfigs/nidwaldenConfig';
-import { obwaldenConfig } from '@/config/cantonConfigs/obwaldenConfig';
-import { schaffhausenConfig } from '@/config/cantonConfigs/schaffhausenConfig';
-import { schwyzConfig } from '@/config/cantonConfigs/schwyzConfig';
-import { solothurnConfig } from '@/config/cantonConfigs/solothurnConfig';
-import { stgallenConfig } from '@/config/cantonConfigs/stgallenConfig';
-import { tessinConfig } from '@/config/cantonConfigs/tessinConfig';
-import { thurgauConfig } from '@/config/cantonConfigs/thurgauConfig';
-import { uriConfig } from '@/config/cantonConfigs/uriConfig';
-import { waadtConfig } from '@/config/cantonConfigs/waadtConfig';
-import { wallisConfig } from '@/config/cantonConfigs/wallisConfig';
-import { zuerichConfig } from '@/config/cantonConfigs/zuerichConfig';
-import { zugConfig } from '@/config/cantonConfigs/zugConfig';
+/**
+ * Canton Config Map - Compatibility Bridge
+ * 
+ * This file provides compatibility for components that expect the old CantonTemplate format.
+ * It adapts data from cantonConfig.ts to the format expected by funnels and other components.
+ */
 
-// Map of canton slugs to their configs for easy lookup
-export const cantonConfigMap: Record<string, CantonConfig> = {
-  aargau: aargauConfig,
-  appenzell: appenzellConfig,
-  basel: baselConfig,
-  bern: bernConfig,
-  fribourg: fribourgConfig,
-  geneve: geneveConfig,
-  glarus: glarusConfig,
-  graubuenden: graubuendenConfig,
-  jura: juraConfig,
-  luzern: luzernConfig,
-  neuchatel: neuchatelConfig,
-  nidwalden: nidwaldenConfig,
-  obwalden: obwaldenConfig,
-  schaffhausen: schaffhausenConfig,
-  schwyz: schwyzConfig,
-  solothurn: solothurnConfig,
-  stgallen: stgallenConfig,
-  tessin: tessinConfig,
-  thurgau: thurgauConfig,
-  uri: uriConfig,
-  waadt: waadtConfig,
-  wallis: wallisConfig,
-  zuerich: zuerichConfig,
+import { 
+  getCantonConfig as getConfigNew, 
+  zugConfig as zugConfigNew, 
+  zuerichConfig as zuerichConfigNew, 
+  bernConfig as bernConfigNew,
+  allCantons,
+  CantonConfig as NewCantonConfig,
+  CantonCompany as NewCantonCompany
+} from '@/config/cantonConfig';
+import { CantonConfig as TemplateConfig, CantonCompany as TemplateCompany } from '@/components/canton/CantonTemplate';
+import { Truck, Sparkles, Trash2, Package, Building2, Shield, Clock, TrendingUp, CheckCircle, MapPin } from 'lucide-react';
+
+// Re-export the TemplateConfig type for components expecting old format
+export type { CantonConfig } from '@/components/canton/CantonTemplate';
+
+// Convert new company format to old template format
+const convertCompany = (c: NewCantonCompany): TemplateCompany => ({
+  name: c.name,
+  rating: c.rating,
+  reviews: c.reviewCount,
+  priceLevel: c.priceLevel === 'Mittel–Premium' ? 'premium' : c.priceLevel.toLowerCase(),
+  sponsored: c.isPremium || c.isPopular || false,
+  available: true,
+  badge: c.highlight || null,
+});
+
+// Convert new config format to old template format
+const convertConfig = (config: NewCantonConfig): TemplateConfig => ({
+  name: config.name,
+  slug: config.slug,
+  tagline: `Umzugsfirmen im ${config.name} vergleichen`,
+  icon: Truck,
+  iconColor: 'text-primary',
+  cities: config.locations,
+  companies: config.companies.map(convertCompany),
+  priceExamples: config.priceExamples.map(p => ({
+    size: p.title,
+    range: p.priceRange,
+    avg: p.avgSavings,
+  })),
+  services: config.services.map(s => ({
+    name: s.title,
+    icon: s.icon,
+    link: s.link,
+  })),
+  usps: config.usps.map(u => ({
+    title: u.title,
+    desc: u.description,
+    icon: u.icon,
+  })),
+  faqs: config.faqs.map(f => ({
+    question: f.question,
+    answer: f.answer,
+  })),
+  seo: {
+    title: config.seo.title,
+    description: config.seo.description,
+    keywords: config.seo.keywords,
+  },
+  localInfo: {
+    title: `Umziehen im ${config.name}`,
+    paragraphs: config.seoContent.cityInfo.map(c => ({
+      title: c.title,
+      text: c.content,
+    })),
+  },
+  notificationCity: config.mainCity,
+  activeUsersBase: 15,
+});
+
+// Cached converted configs
+const zugConfig = convertConfig(zugConfigNew);
+const zuerichConfig = convertConfig(zuerichConfigNew);
+const bernConfig = convertConfig(bernConfigNew);
+
+// Map of available configs
+const configMap: Record<string, TemplateConfig> = {
   zug: zugConfig,
+  zuerich: zuerichConfig,
+  bern: bernConfig,
 };
 
-// Get config by slug
-export const getCantonConfig = (slug: string): CantonConfig | undefined => {
-  return cantonConfigMap[slug.toLowerCase()];
+// Get canton config by slug (returns template format)
+export const getCantonConfig = (slug: string): TemplateConfig | undefined => {
+  return configMap[slug.toLowerCase()];
 };
 
-// Get all canton configs as array
-export const getAllCantonConfigs = (): CantonConfig[] => {
-  return Object.values(cantonConfigMap);
-};
-
-// Get all canton slugs
-export const getAllCantonSlugs = (): string[] => {
-  return Object.keys(cantonConfigMap);
-};
-
-// Check if a slug is a valid canton
+// Check if a canton slug is valid
 export const isValidCanton = (slug: string): boolean => {
-  return slug.toLowerCase() in cantonConfigMap;
+  return slug.toLowerCase() in configMap || allCantons.some(c => c.slug === slug.toLowerCase());
 };
 
-// Get canton by name (fuzzy match)
-export const getCantonByName = (name: string): CantonConfig | undefined => {
-  const normalized = name.toLowerCase().trim();
-  return Object.values(cantonConfigMap).find(
-    config => config.name.toLowerCase() === normalized || config.slug === normalized
-  );
+// Get all canton configs (returns template format)
+export const getAllCantonConfigs = (): TemplateConfig[] => {
+  return Object.values(configMap);
 };
+
+// Re-export allCantons for reference
+export { allCantons };
