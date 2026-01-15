@@ -1,6 +1,6 @@
 /**
  * Enhanced Dropdown Section
- * Warm, structured section headers with better visual hierarchy
+ * Warm, lively section headers with gradient accents
  */
 
 import { ReactNode } from "react";
@@ -19,28 +19,41 @@ export const DropdownSection = ({ title, subtitle, children, className, icon: Ic
   return (
     <motion.div 
       className={className}
-      initial={{ opacity: 0, y: 5 }}
+      initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
     >
       {(title || subtitle) && (
-        <div className="mb-4 px-1">
-          <div className="flex items-center gap-2">
+        <div className="mb-5 px-1">
+          <div className="flex items-center gap-3">
             {Icon && (
-              <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
-                <Icon className="w-3.5 h-3.5 text-primary" />
-              </div>
+              <motion.div 
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
+                className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary/25 to-primary/15 flex items-center justify-center shadow-sm"
+              >
+                <Icon className="w-4 h-4 text-primary" />
+              </motion.div>
             )}
             {title && (
-              <h3 className="text-xs font-bold text-primary uppercase tracking-wider">
-                {title}
-              </h3>
+              <div className="flex items-center gap-2">
+                <h3 className="text-xs font-bold text-primary uppercase tracking-wider">
+                  {title}
+                </h3>
+                <div className="h-px flex-1 bg-gradient-to-r from-primary/20 to-transparent min-w-[40px]" />
+              </div>
             )}
           </div>
           {subtitle && (
-            <p className="text-sm text-muted-foreground mt-1.5 font-medium leading-relaxed">
+            <motion.p 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.15 }}
+              className="text-sm text-muted-foreground mt-2 font-medium leading-relaxed"
+            >
               {subtitle}
-            </p>
+            </motion.p>
           )}
         </div>
       )}
