@@ -46,10 +46,10 @@ export const DropdownWrapper = ({ isOpen, onClose, children, className }: Dropdo
             transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
             className={cn(
               "hidden lg:block absolute left-0 right-0 top-full",
-              "bg-gradient-to-b from-background via-background to-primary/[0.02]",
+              "bg-white dark:bg-gray-900",
               "border-b border-primary/10",
               "shadow-[0_25px_80px_-15px_rgba(0,0,0,0.2),0_0_50px_-25px_hsl(var(--primary)/0.25)]",
-              "z-50 overflow-hidden",
+              "z-[100] overflow-hidden",
               className
             )}
           >
