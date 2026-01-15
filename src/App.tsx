@@ -107,11 +107,9 @@ import { ReloadDiagnostics } from "@/components/debug/ReloadDiagnostics";
 // Lazy load non-critical UI components
 const AIMovingAssistant = lazy(() => import("./components/AIMovingAssistant").then(m => ({ default: m.AIMovingAssistant })));
 const OfflineIndicator = lazy(() => import("./components/OfflineIndicator").then(m => ({ default: m.OfflineIndicator })));
-const QuickActionBar = lazy(() => import("./components/QuickActionBar").then(m => ({ default: m.QuickActionBar })));
 const StickyContactBar = lazy(() => import("./components/StickyContactBar").then(m => ({ default: m.StickyContactBar })));
 const CustomerOnboarding = lazy(() => import("./components/CustomerOnboarding").then(m => ({ default: m.CustomerOnboarding })));
 const ProviderOnboarding = lazy(() => import("./components/ProviderOnboarding").then(m => ({ default: m.ProviderOnboarding })));
-const FloatingActionButton = lazy(() => import("./components/mobile/FloatingActionButton").then(m => ({ default: m.FloatingActionButton })));
 // Mobile wrappers imported directly to avoid lazy loading issues
 import { MobilePullToRefresh } from "./components/MobilePullToRefresh";
 import { MobileBottomSheetNav } from "./components/mobile/MobileBottomSheetNav";
@@ -351,9 +349,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => (
       <AIMovingAssistant />
       <ProviderOnboarding />
       <OfflineIndicator />
-      <QuickActionBar />
       <StickyContactBar />
-      <FloatingActionButton />
       <MobileSearchButton />
     </Suspense>
     
