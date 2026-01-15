@@ -75,19 +75,44 @@ export const FloatingActionButton = () => {
         )}
       </AnimatePresence>
 
+      {/* Pulsing ring effect to draw attention */}
+      <motion.div
+        className="absolute inset-0 w-14 h-14 rounded-full bg-secondary/50"
+        animate={{
+          scale: [1, 1.4, 1],
+          opacity: [0.5, 0, 0.5],
+        }}
+        transition={{
+          duration: 2,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
       <motion.button
         onClick={toggleOpen}
         whileTap={{ scale: 0.9 }}
-        className="w-14 h-14 bg-primary rounded-full flex items-center justify-center shadow-xl"
+        className="relative w-14 h-14 bg-secondary rounded-full flex items-center justify-center shadow-xl shadow-secondary/40"
+        animate={{
+          boxShadow: [
+            "0 10px 15px -3px hsl(var(--secondary) / 0.4)",
+            "0 10px 25px -3px hsl(var(--secondary) / 0.6)",
+            "0 10px 15px -3px hsl(var(--secondary) / 0.4)",
+          ]
+        }}
+        transition={{
+          duration: 2,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
       >
         <motion.div
           animate={{ rotate: isOpen ? 45 : 0 }}
           transition={{ duration: 0.2 }}
         >
           {isOpen ? (
-            <X className="w-6 h-6 text-primary-foreground" />
+            <X className="w-6 h-6 text-secondary-foreground" />
           ) : (
-            <Plus className="w-6 h-6 text-primary-foreground" />
+            <Plus className="w-6 h-6 text-secondary-foreground" />
           )}
         </motion.div>
       </motion.button>

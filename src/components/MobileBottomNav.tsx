@@ -93,7 +93,7 @@ export const MobileBottomNav = () => {
             (item.href !== "/" && location.pathname.startsWith(item.href))
           );
           
-          // Center item (Offerten) - prominent styling
+          // Center item (Offerten) - prominent styling with highlight animation
           if (item.isCenter) {
             return (
               <Link
@@ -106,11 +106,38 @@ export const MobileBottomNav = () => {
                   whileTap={{ scale: 0.9 }}
                   className="flex flex-col items-center gap-0.5"
                 >
+                  {/* Pulsing glow effect behind the button */}
+                  <motion.div
+                    className="absolute -mt-4 w-14 h-14 rounded-full bg-primary/40"
+                    animate={{
+                      scale: [1, 1.25, 1],
+                      opacity: [0.6, 0, 0.6],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  />
                   {/* Prominent center button */}
-                  <div className="relative -mt-4 flex items-center justify-center w-14 h-14 rounded-full bg-primary shadow-lg shadow-primary/30">
+                  <motion.div 
+                    className="relative -mt-4 flex items-center justify-center w-14 h-14 rounded-full bg-primary shadow-lg shadow-primary/40"
+                    animate={{
+                      boxShadow: [
+                        "0 10px 15px -3px hsl(var(--primary) / 0.4), 0 4px 6px -4px hsl(var(--primary) / 0.4)",
+                        "0 10px 25px -3px hsl(var(--primary) / 0.6), 0 4px 10px -4px hsl(var(--primary) / 0.5)",
+                        "0 10px 15px -3px hsl(var(--primary) / 0.4), 0 4px 6px -4px hsl(var(--primary) / 0.4)",
+                      ]
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  >
                     <item.icon className="h-6 w-6 text-primary-foreground" />
-                  </div>
-                  <span className="text-[10px] font-semibold text-primary leading-none whitespace-nowrap -mt-1">
+                  </motion.div>
+                  <span className="text-[10px] font-bold text-primary leading-none whitespace-nowrap -mt-1">
                     {item.label}
                   </span>
                 </motion.div>
