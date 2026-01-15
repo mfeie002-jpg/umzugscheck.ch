@@ -59,13 +59,13 @@ const zusatzservices = [
     icon: Sparkles, 
     title: "Endreinigung", 
     description: "Mit Abnahmegarantie", 
-    href: "/dienstleistungen/endreinigung" 
+    href: "/dienstleistungen/reinigung" 
   },
   { 
     icon: Wrench, 
     title: "Möbelmontage", 
     description: "Auf- und Abbau Service", 
-    href: "/dienstleistungen/moebelmontage" 
+    href: "/moebelmontage" 
   },
   { 
     icon: Package, 
@@ -83,13 +83,13 @@ const zusatzservices = [
     icon: Box, 
     title: "Umzugskartons", 
     description: "Boxen & Verpackung", 
-    href: "/dienstleistungen/umzugskartons" 
+    href: "/services/packservice" 
   },
   { 
     icon: ParkingCircle, 
     title: "Halteverbotszone", 
     description: "Parkplatz reservieren", 
-    href: "/dienstleistungen/halteverbot" 
+    href: "/ratgeber/halteverbot" 
   },
   { 
     icon: Truck, 

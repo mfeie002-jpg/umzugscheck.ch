@@ -38,7 +38,7 @@ const mainGuides = [
     icon: CheckSquare,
     title: "Umzug Checkliste (PDF)",
     description: "Kompletter Leitfaden mit Download",
-    href: "/ratgeber/checkliste",
+    href: "/ratgeber/umzugscheckliste-download",
     featured: true,
     badge: "Top",
   },
@@ -59,7 +59,7 @@ const mainGuides = [
     icon: DollarSign,
     title: "Spartipps & Preisvergleich",
     description: "Umzugskosten sparen",
-    href: "/ratgeber/kosten-sparen",
+    href: "/ratgeber/kosten",
   },
 ];
 
@@ -71,9 +71,9 @@ const additionalTopics = [
 ];
 
 const downloads = [
-  { title: "Checkliste PDF", href: "/ratgeber/checkliste#download", icon: FileDown },
-  { title: "Kündigungsvorlage", href: "/ratgeber/kuendigung#vorlage", icon: FileDown },
-  { title: "Übergabeprotokoll", href: "/ratgeber/wohnungsabgabe#protokoll", icon: FileDown },
+  { title: "Checkliste PDF", href: "/ratgeber/umzugscheckliste-download", icon: FileDown },
+  { title: "Kündigungsvorlage", href: "/ratgeber/kuendigung", icon: FileDown },
+  { title: "Übergabeprotokoll", href: "/ratgeber/wohnungsabgabe", icon: FileDown },
 ];
 
 export const RatgeberDropdown = ({ isOpen, onClose }: RatgeberDropdownProps) => {
