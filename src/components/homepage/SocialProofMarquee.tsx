@@ -22,50 +22,68 @@ export const SocialProofMarquee = memo(function SocialProofMarquee() {
   const doubled = [...testimonials, ...testimonials];
 
   return (
-    <section className="py-8 md:py-10 bg-gradient-to-b from-muted/40 to-muted/20 overflow-hidden border-y border-border/30">
+    <section className="py-10 md:py-12 bg-gradient-to-b from-primary/5 via-muted/30 to-secondary/5 overflow-hidden border-y-2 border-primary/20">
       {/* Consolidated stats row - Enhanced visual impact */}
-      <div className="container mb-8">
+      <div className="container mb-10">
         <motion.div 
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="flex items-center justify-center gap-2 mb-5"
+          className="flex items-center justify-center gap-2 mb-6"
         >
-          <ShieldCheck className="w-5 h-5 text-primary" />
-          <span className="text-sm font-semibold text-foreground">Geprüft & Verifiziert</span>
+          <motion.div 
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/15 border-2 border-primary/30 shadow-md"
+            whileHover={{ scale: 1.02 }}
+          >
+            <ShieldCheck className="w-5 h-5 text-primary" />
+            <span className="text-sm font-bold text-primary">Geprüft & Verifiziert</span>
+          </motion.div>
         </motion.div>
         
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-6 max-w-2xl mx-auto">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-6 max-w-3xl mx-auto">
           {stats.map((stat, index) => (
             <motion.div 
               key={stat.label}
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 15, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="flex flex-col items-center gap-1 bg-card px-4 py-4 rounded-xl border border-border shadow-soft hover:shadow-medium transition-shadow"
+              whileHover={{ scale: 1.03, y: -2 }}
+              className="flex flex-col items-center gap-2 bg-gradient-to-br from-card to-primary/5 px-5 py-5 rounded-2xl border-2 border-primary/20 shadow-lg hover:shadow-xl hover:border-primary/40 transition-all"
             >
-              <stat.icon className="w-5 h-5 text-primary mb-1" />
-              <span className="font-bold text-xl text-foreground">{stat.value}</span>
-              <span className="text-xs text-muted-foreground">{stat.label}</span>
+              <div className="p-2 rounded-full bg-primary/10">
+                <stat.icon className="w-6 h-6 text-primary" />
+              </div>
+              <span className="font-extrabold text-2xl text-foreground">{stat.value}</span>
+              <span className="text-sm font-medium text-muted-foreground">{stat.label}</span>
             </motion.div>
           ))}
         </div>
       </div>
       
-      {/* Testimonials marquee */}
-      <div className="container mb-3">
-        <p className="text-center text-sm text-muted-foreground">
-          Das sagen unsere Kunden
-        </p>
+      {/* Testimonials marquee - Enhanced header */}
+      <div className="container mb-4">
+        <motion.div 
+          className="flex items-center justify-center gap-3"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+        >
+          <div className="flex gap-1">
+            {[...Array(5)].map((_, i) => (
+              <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400 drop-shadow-sm" />
+            ))}
+          </div>
+          <span className="text-base font-bold text-foreground">Das sagen unsere Kunden</span>
+        </motion.div>
       </div>
       
       <div className="relative">
-        <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-muted/30 to-transparent z-10" />
-        <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-muted/30 to-transparent z-10" />
+        <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-background/80 to-transparent z-10" />
+        <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-background/80 to-transparent z-10" />
         
         <motion.div
-          className="flex gap-4"
+          className="flex gap-5"
           animate={{ x: [0, -50 * testimonials.length] }}
           transition={{
             duration: 30,
@@ -76,23 +94,63 @@ export const SocialProofMarquee = memo(function SocialProofMarquee() {
           {doubled.map((item, idx) => (
             <div
               key={idx}
-              className="flex-shrink-0 bg-card rounded-xl border border-border p-4 w-[280px]"
+              className="flex-shrink-0 bg-gradient-to-br from-card to-primary/5 rounded-2xl border-2 border-primary/15 hover:border-primary/30 p-5 w-[300px] shadow-md hover:shadow-lg transition-all"
             >
-              <div className="flex items-center gap-1 mb-2">
+              <div className="flex items-center gap-1 mb-3">
                 {Array.from({ length: item.rating }).map((_, i) => (
-                  <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                  <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400 drop-shadow-sm" />
                 ))}
               </div>
-              <p className="text-sm mb-3 flex items-start gap-2">
-                <Quote className="w-4 h-4 text-muted-foreground flex-shrink-0 mt-0.5" />
-                {item.text}
+              <p className="text-sm font-medium mb-4 flex items-start gap-2">
+                <Quote className="w-5 h-5 text-primary/40 flex-shrink-0 mt-0.5" />
+                <span className="text-foreground">{item.text}</span>
               </p>
-              <div className="text-xs text-muted-foreground">
-                {item.name} • {item.city}
+              <div className="flex items-center gap-2 text-sm">
+                <div className="w-8 h-8 rounded-full bg-primary/15 flex items-center justify-center text-primary font-bold text-xs">
+                  {item.name.charAt(0)}
+                </div>
+                <span className="text-muted-foreground font-medium">{item.name} • {item.city}</span>
               </div>
             </div>
           ))}
         </motion.div>
+      </div>
+      
+      {/* Media logos section integrated */}
+      <div className="container mt-10 pt-8 border-t-2 border-primary/10">
+        <motion.div 
+          className="text-center mb-6"
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          <motion.div
+            className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-primary/15 to-secondary/15 border-2 border-primary/25 shadow-lg"
+            whileHover={{ scale: 1.02 }}
+          >
+            <span className="text-lg">🏆</span>
+            <span className="text-sm font-bold text-primary uppercase tracking-wide">
+              Bekannt aus & Geprüft von
+            </span>
+            <span className="text-lg">✓</span>
+          </motion.div>
+        </motion.div>
+        
+        <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10">
+          {["20min", "Blick", "Watson", "TCS", "SRF", "NZZ"].map((name, index) => (
+            <motion.div
+              key={name}
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.05 }}
+              whileHover={{ scale: 1.1 }}
+              className="px-5 py-3 rounded-xl bg-card shadow-md border-2 border-border/50 hover:border-primary/30 hover:shadow-lg transition-all cursor-pointer"
+            >
+              <span className="font-bold text-foreground">{name}</span>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   );
