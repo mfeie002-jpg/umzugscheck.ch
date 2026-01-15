@@ -43,19 +43,14 @@ export const StickyMobileCTA = memo(({
           <div className="absolute inset-x-0 -top-6 h-6 bg-gradient-to-t from-white to-transparent pointer-events-none" aria-hidden="true" />
           
           <div className="bg-white border-t border-slate-200 shadow-2xl">
-            <div className="px-4 py-3 flex items-center gap-3">
-              <Link to={link} className="flex-1">
+            <div className="px-4 py-3">
+              <Link to={link} className="block">
                 <Button 
                   className="w-full h-12 text-sm font-bold bg-primary hover:bg-primary/90 text-white shadow-lg active:scale-[0.98] transition-transform rounded-xl"
                 >
                   <CheckCircle2 className="mr-2 w-4 h-4" aria-hidden="true" />
                   {text}
                   <ArrowRight className="ml-2 w-4 h-4" aria-hidden="true" />
-                </Button>
-              </Link>
-              <Link to="/umzugsrechner">
-                <Button variant="outline" size="icon" className="h-12 w-12 border-slate-200 hover:border-primary/50 active:scale-[0.95] transition-all rounded-xl">
-                  <Sparkles className="h-5 w-5 text-primary" />
                 </Button>
               </Link>
             </div>
