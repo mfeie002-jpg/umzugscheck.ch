@@ -1,4 +1,5 @@
 // Sitemap generator for SEO optimization
+// Now with dynamic company URLs from database
 
 interface SitemapUrl {
   loc: string;
@@ -28,12 +29,20 @@ const services = [
   'entsorgung', 'lagerung', 'transport', 'umzug-mit-reinigung'
 ];
 
-export const generateSitemapUrls = (): SitemapUrl[] => {
+// Store for dynamic company slugs (populated async)
+let companySlugCache: string[] = [];
+
+export const setCompanySlugs = (slugs: string[]) => {
+  companySlugCache = slugs;
+};
+
+export const generateSitemapUrls = (companySlugs?: string[]): SitemapUrl[] => {
   const urls: SitemapUrl[] = [];
   const today = new Date().toISOString().split('T')[0];
+  const slugsToUse = companySlugs || companySlugCache;
 
   // Core pages
-const corePages: SitemapUrl[] = [
+  const corePages: SitemapUrl[] = [
     { loc: `${BASE_URL}/`, changefreq: 'daily', priority: 1.0, lastmod: today },
     { loc: `${BASE_URL}/umzugsfirmen-schweiz/`, changefreq: 'daily', priority: 0.95, lastmod: today },
     { loc: `${BASE_URL}/offerten/`, changefreq: 'daily', priority: 0.9, lastmod: today },
@@ -48,6 +57,9 @@ const corePages: SitemapUrl[] = [
     { loc: `${BASE_URL}/kontakt/`, changefreq: 'monthly', priority: 0.5, lastmod: today },
     { loc: `${BASE_URL}/impressum/`, changefreq: 'yearly', priority: 0.3, lastmod: today },
     { loc: `${BASE_URL}/datenschutz/`, changefreq: 'yearly', priority: 0.3, lastmod: today },
+    { loc: `${BASE_URL}/preisrechner/`, changefreq: 'weekly', priority: 0.85, lastmod: today },
+    { loc: `${BASE_URL}/reinigungsrechner/`, changefreq: 'weekly', priority: 0.8, lastmod: today },
+    { loc: `${BASE_URL}/entsorgungsrechner/`, changefreq: 'weekly', priority: 0.8, lastmod: today },
   ];
 
   urls.push(...corePages);
@@ -55,17 +67,17 @@ const corePages: SitemapUrl[] = [
   // Canton region pages (new archetyp structure)
   cantons.forEach(canton => {
     urls.push({
-      loc: `${BASE_URL}/umzugsfirmen/${canton}/`,
+      loc: `${BASE_URL}/umzugsfirmen/kanton-${canton}/`,
       changefreq: 'daily',
       priority: 0.9,
       lastmod: today
     });
   });
 
-  // City pages (legacy)
+  // City pages
   cities.forEach(city => {
     urls.push({
-      loc: `${BASE_URL}/${city}/umzugsfirmen/`,
+      loc: `${BASE_URL}/umzugsfirmen/${city}/`,
       changefreq: 'daily',
       priority: 0.85,
       lastmod: today
@@ -94,11 +106,23 @@ const corePages: SitemapUrl[] = [
     });
   });
 
+  // Company profile pages (dynamic from DB)
+  slugsToUse.forEach(slug => {
+    if (slug) {
+      urls.push({
+        loc: `${BASE_URL}/firma/${slug}/`,
+        changefreq: 'weekly',
+        priority: 0.7,
+        lastmod: today
+      });
+    }
+  });
+
   return urls;
 };
 
-export const generateSitemapXML = (): string => {
-  const urls = generateSitemapUrls();
+export const generateSitemapXML = (companySlugs?: string[]): string => {
+  const urls = generateSitemapUrls(companySlugs);
   
   const urlsXML = urls.map(url => `
   <url>
@@ -114,6 +138,6 @@ ${urlsXML}
 </urlset>`;
 };
 
-export const getTotalUrls = (): number => {
-  return generateSitemapUrls().length;
+export const getTotalUrls = (companySlugs?: string[]): number => {
+  return generateSitemapUrls(companySlugs).length;
 };
