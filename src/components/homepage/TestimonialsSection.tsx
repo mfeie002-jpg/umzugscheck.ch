@@ -55,18 +55,34 @@ export const TestimonialsSection = () => {
   };
 
   return (
-    <section className="py-16 md:py-24 relative overflow-hidden">
-      {/* Background Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-r from-secondary/5 via-transparent to-primary/5 pointer-events-none" />
+    <section className="py-16 md:py-24 relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-secondary/10">
+      {/* Decorative Elements */}
+      <div className="absolute top-0 left-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+      <div className="absolute bottom-0 right-0 w-80 h-80 bg-secondary/10 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
+      
+      {/* Floating Stars Decoration */}
+      <div className="absolute top-20 right-[20%] text-4xl opacity-20 animate-pulse">⭐</div>
+      <div className="absolute top-40 left-[15%] text-3xl opacity-15 animate-pulse" style={{ animationDelay: '0.5s' }}>⭐</div>
+      <div className="absolute bottom-32 right-[30%] text-2xl opacity-10 animate-pulse" style={{ animationDelay: '1s' }}>⭐</div>
       
       <div className="container relative">
         {/* Header */}
         <RevealOnScroll direction="up" className="text-center mb-12">
+          <motion.div
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-yellow-100 dark:bg-yellow-900/30 mb-4"
+            initial={{ scale: 0.9, opacity: 0 }}
+            whileInView={{ scale: 1, opacity: 1 }}
+            viewport={{ once: true }}
+          >
+            <Star className="w-5 h-5 text-yellow-500 fill-yellow-500" />
+            <span className="text-sm font-semibold text-yellow-700 dark:text-yellow-400">4.8/5 Kundenzufriedenheit</span>
+            <Star className="w-5 h-5 text-yellow-500 fill-yellow-500" />
+          </motion.div>
           <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
             Das sagen unsere Kunden
           </h2>
           <p className="text-muted-foreground text-lg">
-            Echte Bewertungen von echten Kunden.
+            Echte Bewertungen von echten Kunden
           </p>
         </RevealOnScroll>
 
@@ -143,44 +159,48 @@ const TestimonialCard = ({ testimonial, index }: TestimonialCardProps) => (
     viewport={{ once: true }}
     transition={{ delay: index * 0.1, duration: 0.4 }}
   >
-    <InteractiveCard className="p-6 h-full flex flex-col group">
-      {/* Quote Icon */}
-      <motion.div
-        initial={{ scale: 0, rotate: -45 }}
-        whileInView={{ scale: 1, rotate: 0 }}
-        viewport={{ once: true }}
-        transition={{ delay: index * 0.1 + 0.2, type: "spring", stiffness: 200 }}
-      >
-        <Quote className="w-8 h-8 text-secondary/20 mb-4 group-hover:text-secondary/40 transition-colors" />
-      </motion.div>
+    <InteractiveCard className="p-6 h-full flex flex-col group bg-gradient-to-br from-card to-primary/5 border-primary/10 hover:border-primary/30 transition-all duration-300">
+      {/* Large Stars Row */}
+      <div className="flex items-center gap-1 mb-4">
+        {[...Array(5)].map((_, i) => (
+          <motion.div
+            key={i}
+            initial={{ scale: 0, rotate: -180 }}
+            whileInView={{ scale: 1, rotate: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: index * 0.1 + i * 0.05, type: "spring", stiffness: 200 }}
+          >
+            <Star 
+              className="w-6 h-6 text-yellow-400 fill-yellow-400 drop-shadow-sm" 
+            />
+          </motion.div>
+        ))}
+      </div>
       
-      {/* Animated Stars */}
-      <RatingStars rating={testimonial.rating} size="sm" animate className="mb-3" />
-      
-      {/* Text */}
-      <p className="text-foreground line-clamp-4 flex-1 mb-4">
+      {/* Quote with larger text */}
+      <p className="text-foreground text-base leading-relaxed line-clamp-4 flex-1 mb-4 font-medium">
         "{testimonial.text}"
       </p>
       
       {/* Footer */}
-      <div className="flex items-center justify-between pt-4 border-t border-border">
+      <div className="flex items-center justify-between pt-4 border-t border-primary/10">
         <div>
-          <p className="font-semibold text-sm">{testimonial.name}</p>
+          <p className="font-bold text-sm text-foreground">{testimonial.name}</p>
           {testimonial.verified && (
             <motion.span 
-              className="inline-flex items-center gap-1 text-xs text-green-600 bg-green-50 dark:bg-green-950/30 px-2 py-0.5 rounded-full mt-1"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-green-600 bg-green-100 dark:bg-green-900/40 px-2.5 py-1 rounded-full mt-1.5 shadow-sm"
               initial={{ opacity: 0, x: -10 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 + 0.3 }}
             >
-              <CheckCircle className="w-3 h-3" />
+              <CheckCircle className="w-3.5 h-3.5" />
               Verifiziert
             </motion.span>
           )}
         </div>
         <div className="text-right text-xs text-muted-foreground">
-          <p>{testimonial.location}</p>
+          <p className="font-medium">{testimonial.location}</p>
           <p>{testimonial.type}</p>
         </div>
       </div>

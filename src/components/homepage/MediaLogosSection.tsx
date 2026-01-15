@@ -68,22 +68,35 @@ export const MediaLogosSection = memo(function MediaLogosSection() {
   const y = useTransform(scrollYProgress, [0, 0.3], [30, 0]);
 
   return (
-    <section ref={sectionRef} className="py-10 md:py-12 bg-muted/20 border-y border-border/30 overflow-hidden">
+    <section ref={sectionRef} className="py-12 md:py-16 bg-gradient-to-r from-primary/10 via-primary/5 to-secondary/10 border-y-2 border-primary/20 overflow-hidden relative">
+      {/* Decorative background elements */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent" />
+      
       <motion.div 
-        className="container"
+        className="container relative"
         style={{ opacity, y }}
       >
-        <motion.p 
-          className="text-xs text-muted-foreground uppercase tracking-widest mb-8 text-center"
+        {/* Highlighted Header */}
+        <motion.div 
+          className="text-center mb-8"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          Bekannt aus & geprüft von
-        </motion.p>
+          <motion.div
+            className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-primary/15 border-2 border-primary/30 shadow-lg mb-4"
+            whileHover={{ scale: 1.02 }}
+          >
+            <span className="text-xl">🏆</span>
+            <span className="text-sm md:text-base font-bold text-primary uppercase tracking-wide">
+              Bekannt aus & geprüft von
+            </span>
+            <span className="text-xl">✓</span>
+          </motion.div>
+        </motion.div>
         
-        {/* Media Logos with stagger animation */}
-        <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12 mb-8">
+        {/* Media Logos - More prominent */}
+        <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10 mb-8">
           {mediaLogos.map((logo, index) => (
             <motion.div
               key={logo.name}
@@ -96,10 +109,10 @@ export const MediaLogosSection = memo(function MediaLogosSection() {
                 ease: [0.22, 1, 0.36, 1]
               }}
               whileHover={{ 
-                scale: 1.1,
+                scale: 1.15,
                 transition: { duration: 0.2 }
               }}
-              className="opacity-60 hover:opacity-100 transition-opacity duration-300 cursor-pointer grayscale hover:grayscale-0"
+              className="p-3 md:p-4 rounded-xl bg-card/80 shadow-md border border-border/50 hover:border-primary/30 hover:shadow-lg transition-all duration-300 cursor-pointer"
               title={logo.name}
             >
               <logo.Logo />
@@ -107,9 +120,9 @@ export const MediaLogosSection = memo(function MediaLogosSection() {
           ))}
         </div>
 
-        {/* Trust Badges with spring animation */}
+        {/* Trust Badges - More colorful */}
         <motion.div 
-          className="flex flex-wrap items-center justify-center gap-4 md:gap-6"
+          className="flex flex-wrap items-center justify-center gap-3 md:gap-5"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
@@ -128,13 +141,13 @@ export const MediaLogosSection = memo(function MediaLogosSection() {
                 damping: 15
               }}
               whileHover={{ 
-                scale: 1.05,
-                y: -2
+                scale: 1.08,
+                y: -3
               }}
-              className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/5 border border-primary/20 shadow-sm hover:shadow-md transition-shadow"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-primary/20 to-secondary/20 border-2 border-primary/30 shadow-md hover:shadow-lg transition-all"
             >
-              <span className="text-base">{badge.icon}</span>
-              <span className="text-xs font-semibold text-primary">{badge.name}</span>
+              <span className="text-lg">{badge.icon}</span>
+              <span className="text-sm font-bold text-primary">{badge.name}</span>
             </motion.div>
           ))}
         </motion.div>
