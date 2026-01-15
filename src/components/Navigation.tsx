@@ -3,7 +3,7 @@ import { Menu, X, ChevronDown, ArrowRight } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { MobileMenu } from "@/components/MobileMenu";
-import { CompaniesDropdown } from "@/components/CompaniesDropdown";
+import { CompaniesDropdownArchetype } from "@/components/CompaniesDropdownArchetype";
 import { ServicesDropdown } from "@/components/ServicesDropdown";
 import { RegionsDropdown } from "@/components/RegionsDropdown";
 import { RatgeberDropdown } from "@/components/RatgeberDropdown";
@@ -189,7 +189,7 @@ export const Navigation = () => {
           }}
           onMouseLeave={handleMouseLeave}
         >
-          <CompaniesDropdown 
+          <CompaniesDropdownArchetype 
             isOpen={activeDropdown === 'companies'} 
             onClose={closeAllDropdowns} 
           />
