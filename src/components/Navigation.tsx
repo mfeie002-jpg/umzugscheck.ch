@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown, ArrowRight } from "lucide-react";
+import { Menu, X, ChevronDown, ArrowRight, Phone } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { MobileMenuNew } from "@/components/MobileMenuNew";
@@ -11,6 +11,7 @@ import { FuerFirmenDropdown } from "@/components/dropdowns/FuerFirmenDropdown";
 import { Logo } from "@/components/Logo";
 import { cn } from "@/lib/utils";
 import { useNavigationVariant } from "@/hooks/useNavigationVariant";
+import { HeaderCallButton, MobileHeaderCallButton, COMPANY_PHONE } from "@/components/CallButton";
 
 // 5 Hauptkategorien gemäß Navigationskonzept 2026
 type DropdownType = 'umzug-planen' | 'umzugsfirma-finden' | 'services' | 'ratgeber' | 'fuer-firmen' | null;
@@ -155,8 +156,11 @@ export const Navigation = () => {
             {/* Spacer */}
             <div className="hidden lg:flex flex-1" />
 
-            {/* Mobile: Menu button + mini CTA */}
-            <div className="flex lg:hidden items-center gap-2 xs:gap-3 ml-auto flex-shrink-0">
+            {/* Mobile: Menu button + Call + mini CTA */}
+            <div className="flex lg:hidden items-center gap-2 xs:gap-2.5 ml-auto flex-shrink-0">
+              {/* Call Button for mobile - prominent green */}
+              <MobileHeaderCallButton />
+              
               {/* Mini CTA for mobile header with pulse animation */}
               <Link 
                 to="/umzugsofferten" 
@@ -171,7 +175,7 @@ export const Navigation = () => {
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 className={cn(
                   "relative z-50 flex items-center justify-center",
-                  "w-12 h-12 xs:w-14 xs:h-14 rounded-xl",
+                  "w-11 h-11 xs:w-12 xs:h-12 rounded-xl",
                   "bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-primary/20",
                   "hover:from-primary/15 hover:to-primary/10 hover:border-primary/30",
                   "active:scale-95 transition-all touch-manipulation",
@@ -182,15 +186,18 @@ export const Navigation = () => {
                 aria-controls="mobile-menu"
               >
                 {isMobileMenuOpen ? (
-                  <X className="w-6 h-6 xs:w-7 xs:h-7 text-primary" aria-hidden="true" />
+                  <X className="w-5 h-5 xs:w-6 xs:h-6 text-primary" aria-hidden="true" />
                 ) : (
-                  <Menu className="w-6 h-6 xs:w-7 xs:h-7 text-primary" aria-hidden="true" />
+                  <Menu className="w-5 h-5 xs:w-6 xs:h-6 text-primary" aria-hidden="true" />
                 )}
               </button>
             </div>
 
             {/* CTA Button - Desktop with enhanced styling */}
             <div className="hidden lg:flex items-center flex-shrink-0 gap-3">
+              {/* Call Button for Desktop */}
+              <HeaderCallButton />
+              
               {/* Micro trust hint */}
               <div className="hidden xl:flex items-center gap-1.5 text-xs text-muted-foreground">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
