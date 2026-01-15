@@ -1,27 +1,41 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
+import { Helmet } from "react-helmet";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Home, RefreshCw, HelpCircle, AlertCircle, MessageSquare, Loader2, Search, ArrowRight, Calculator, Building2, MapPin } from "lucide-react";
+import { Home, RefreshCw, HelpCircle, AlertCircle, MessageSquare, Loader2, Search, ArrowRight, Calculator, Building2, MapPin, Sparkles, FileText, Phone } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Header } from "@/components/homepage/Header";
+import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
 
 /**
- * Improved 404 Page with Search & Popular Links
+ * Optimized 404 Page with Enhanced SEO & Conversion
  * 
  * Features:
+ * - Full SEO meta tags
  * - Context-aware messaging for flows
  * - Search functionality
- * - Popular links for navigation
+ * - Popular links for navigation & internal linking
  * - Problem reporting
+ * - Related services suggestions
  * - Mobile optimized
  */
 
-// Popular pages for quick navigation
+// Popular pages for quick navigation - enhanced for SEO & conversion
 const POPULAR_LINKS = [
-  { label: "Umzugsrechner", href: "/umzugsrechner", icon: Calculator },
-  { label: "Umzugsfirmen", href: "/umzugsfirmen", icon: Building2 },
-  { label: "Offerten erhalten", href: "/umzugsofferten", icon: ArrowRight },
-  { label: "Zürich", href: "/umzugsfirmen/zuerich", icon: MapPin },
+  { label: "Umzugsrechner", href: "/umzugsrechner", icon: Calculator, description: "Kosten berechnen" },
+  { label: "Umzugsfirmen", href: "/umzugsfirmen", icon: Building2, description: "Firmen vergleichen" },
+  { label: "Offerten erhalten", href: "/umzugsofferten", icon: ArrowRight, description: "Kostenlos & unverbindlich" },
+  { label: "Zürich", href: "/zuerich", icon: MapPin, description: "Firmen in Zürich" },
+  { label: "Bern", href: "/bern", icon: MapPin, description: "Firmen in Bern" },
+  { label: "Basel", href: "/basel", icon: MapPin, description: "Firmen in Basel" },
+];
+
+const QUICK_SERVICES = [
+  { label: "Privatumzug", href: "/privatumzug", icon: Home },
+  { label: "Firmenumzug", href: "/firmenumzug", icon: Building2 },
+  { label: "Reinigung", href: "/reinigung", icon: Sparkles },
+  { label: "Ratgeber", href: "/ratgeber", icon: FileText },
 ];
 
 const NotFound = () => {
@@ -41,7 +55,6 @@ const NotFound = () => {
       pathname.startsWith("/rechner") ||
       pathname.includes("offerte");
 
-    // Determine best flow home based on path
     let flowHome = "/umzugsofferten";
     let flowName = "Offerten-Prozess";
     if (pathname.startsWith("/umzugsofferten-v2e")) {
@@ -55,7 +68,6 @@ const NotFound = () => {
       flowName = "Rechner";
     }
 
-    // Check if this is a capture mode URL (internal tooling)
     const isCaptureMode = searchQuery.includes("uc_capture=1") || searchQuery.includes("uc_step=");
 
     return {
@@ -66,7 +78,6 @@ const NotFound = () => {
     };
   }, [pathname, searchQuery]);
 
-  // Simulate problem reporting
   const handleReportProblem = async () => {
     setIsReporting(true);
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -77,163 +88,221 @@ const NotFound = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchTerm.trim()) {
-      // Redirect to a search or relevant page
       navigate(`/umzugsfirmen?q=${encodeURIComponent(searchTerm)}`);
     }
   };
 
+  // Schema.org for 404 page
+  const schemaOrg = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Seite nicht gefunden",
+    "description": "Die gesuchte Seite existiert nicht. Finden Sie stattdessen Umzugsfirmen, Preisrechner und Services.",
+    "url": `https://umzugscheck.ch${pathname}`,
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "Umzugscheck.ch",
+      "url": "https://umzugscheck.ch"
+    }
+  };
+
   return (
-    <main className="min-h-screen bg-gradient-to-b from-muted/40 to-background flex items-center justify-center p-4 pb-24 md:pb-4">
-      <Card className="mx-auto max-w-lg w-full shadow-lg border-border/50">
-        <CardContent className="pt-8 pb-6 px-6 space-y-6">
-          {/* Icon */}
-          <div className="text-center">
-            <div className="mx-auto w-20 h-20 rounded-2xl bg-destructive/10 flex items-center justify-center mb-4">
-              <AlertCircle className="w-10 h-10 text-destructive" />
-            </div>
+    <>
+      <Helmet>
+        <title>Seite nicht gefunden – Umzugscheck.ch</title>
+        <meta name="description" content="Die gesuchte Seite existiert nicht. Entdecken Sie stattdessen unseren Umzugsvergleich, Preisrechner und 200+ geprüfte Schweizer Umzugsfirmen." />
+        <meta name="robots" content="noindex, follow" />
+        <link rel="canonical" href="https://umzugscheck.ch/" />
+        <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
+      </Helmet>
 
-            {/* Title */}
-            <h1 className="text-2xl font-bold text-foreground mb-2">
-              {ctx.isCaptureMode 
-                ? "Flow nicht gefunden" 
-                : ctx.isOffertenFlow 
-                  ? "Prozess unterbrochen"
-                  : "Seite nicht gefunden"
-              }
-            </h1>
-            <p className="text-muted-foreground text-sm leading-relaxed">
-              {ctx.isCaptureMode ? (
-                <>
-                  Der Screenshot-Capture konnte diesen Flow-Schritt nicht laden.
-                  Bitte prüfen Sie die Flow-Konfiguration.
-                </>
-              ) : ctx.isOffertenFlow ? (
-                <>
-                  Der {ctx.flowName} wurde unterbrochen – möglicherweise ist Ihre Sitzung 
-                  abgelaufen oder der Link nicht mehr gültig.
-                </>
-              ) : (
-                <>
-                  Diese Seite existiert nicht oder wurde verschoben. 
-                  Nutzen Sie die Suche oder wählen Sie eine beliebte Seite.
-                </>
-              )}
-            </p>
-          </div>
+      <div className="min-h-screen flex flex-col bg-background">
+        <Header />
+        
+        <main className="flex-1 flex items-center justify-center p-4 pb-24 md:pb-8">
+          <div className="w-full max-w-2xl space-y-6">
+            <Card className="shadow-lg border-border/50">
+              <CardContent className="pt-8 pb-6 px-6 space-y-6">
+                {/* Icon & Title */}
+                <div className="text-center">
+                  <div className="mx-auto w-20 h-20 rounded-2xl bg-destructive/10 flex items-center justify-center mb-4">
+                    <AlertCircle className="w-10 h-10 text-destructive" />
+                  </div>
 
-          {/* Search */}
-          <form onSubmit={handleSearch} className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input
-              type="text"
-              placeholder="Suchen Sie nach Umzugsfirmen, Regionen..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 h-12"
-            />
-          </form>
+                  <h1 className="text-2xl font-bold text-foreground mb-2">
+                    {ctx.isCaptureMode 
+                      ? "Flow nicht gefunden" 
+                      : ctx.isOffertenFlow 
+                        ? "Prozess unterbrochen"
+                        : "Seite nicht gefunden"
+                    }
+                  </h1>
+                  <p className="text-muted-foreground text-sm leading-relaxed">
+                    {ctx.isCaptureMode ? (
+                      <>Der Screenshot-Capture konnte diesen Flow-Schritt nicht laden.</>
+                    ) : ctx.isOffertenFlow ? (
+                      <>Der {ctx.flowName} wurde unterbrochen – möglicherweise ist Ihre Sitzung abgelaufen.</>
+                    ) : (
+                      <>Diese Seite existiert nicht oder wurde verschoben. Nutzen Sie die Suche oder wählen Sie eine beliebte Seite.</>
+                    )}
+                  </p>
+                </div>
 
-          {/* Popular Links */}
-          <div className="space-y-2">
-            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-              Beliebte Seiten
-            </p>
-            <div className="grid grid-cols-2 gap-2">
-              {POPULAR_LINKS.map((link) => (
-                <Link
-                  key={link.href}
-                  to={link.href}
-                  className="flex items-center gap-2 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors text-sm font-medium"
-                >
-                  <link.icon className="w-4 h-4 text-primary" />
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-          </div>
+                {/* Search */}
+                <form onSubmit={handleSearch} className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input
+                    type="text"
+                    placeholder="Suchen Sie nach Umzugsfirmen, Regionen..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10 pr-4 h-12"
+                  />
+                </form>
 
-          {/* Primary CTA */}
-          <div className="space-y-3 pt-2">
-            <Button
-              type="button"
-              variant="default"
-              size="lg"
-              className="w-full min-h-[52px] text-base font-semibold"
-              onClick={() => navigate(ctx.isOffertenFlow ? ctx.flowHome : "/")}
-            >
-              <RefreshCw className="w-5 h-5 mr-2" />
-              {ctx.isOffertenFlow ? "Prozess neu starten" : "Zur Startseite"}
-            </Button>
+                {/* Popular Links */}
+                <div className="space-y-3">
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                    Beliebte Seiten
+                  </p>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    {POPULAR_LINKS.map((link) => (
+                      <Link
+                        key={link.href}
+                        to={link.href}
+                        className="flex flex-col gap-1 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors group"
+                      >
+                        <span className="flex items-center gap-2 text-sm font-medium text-foreground group-hover:text-primary">
+                          <link.icon className="w-4 h-4 text-primary" />
+                          {link.label}
+                        </span>
+                        <span className="text-xs text-muted-foreground">{link.description}</span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
 
-            {ctx.isOffertenFlow && (
-              <Button
-                asChild
-                variant="ghost"
-                size="lg"
-                className="w-full min-h-[48px] text-muted-foreground hover:text-foreground"
-              >
-                <Link to="/">
-                  <Home className="w-4 h-4 mr-2" />
-                  Zur Startseite
-                </Link>
-              </Button>
-            )}
-          </div>
+                {/* Quick Services */}
+                <div className="flex flex-wrap gap-2 justify-center pt-2 border-t border-border/50">
+                  {QUICK_SERVICES.map((service) => (
+                    <Link
+                      key={service.href}
+                      to={service.href}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-primary bg-muted/30 hover:bg-muted/50 rounded-full transition-colors"
+                    >
+                      <service.icon className="w-3.5 h-3.5" />
+                      {service.label}
+                    </Link>
+                  ))}
+                </div>
 
-          {/* Problem melden */}
-          <div className="pt-2 border-t border-border/50 space-y-3">
-            {!reportSent ? (
-              <Button
-                variant="outline"
-                size="sm"
-                className="w-full min-h-[44px] text-sm"
-                onClick={handleReportProblem}
-                disabled={isReporting}
-              >
-                {isReporting ? (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                ) : (
-                  <MessageSquare className="w-4 h-4 mr-2" />
-                )}
-                {isReporting ? "Wird gemeldet..." : "Problem melden"}
-              </Button>
-            ) : (
-              <p className="text-sm text-green-600 font-medium text-center">
-                ✓ Danke für Ihre Meldung!
-              </p>
-            )}
+                {/* Primary CTA */}
+                <div className="space-y-3 pt-2">
+                  <Button
+                    type="button"
+                    variant="default"
+                    size="lg"
+                    className="w-full min-h-[52px] text-base font-semibold bg-secondary hover:bg-secondary/90"
+                    onClick={() => navigate(ctx.isOffertenFlow ? ctx.flowHome : "/umzugsofferten")}
+                  >
+                    {ctx.isOffertenFlow ? (
+                      <>
+                        <RefreshCw className="w-5 h-5 mr-2" />
+                        Prozess neu starten
+                      </>
+                    ) : (
+                      <>
+                        <ArrowRight className="w-5 h-5 mr-2" />
+                        Kostenlose Offerten erhalten
+                      </>
+                    )}
+                  </Button>
 
-            <p className="text-xs text-muted-foreground flex items-center justify-center gap-1.5">
-              <HelpCircle className="w-3.5 h-3.5" />
-              <span>Oder</span>
-              <Link 
-                to="/kontakt" 
-                className="text-primary hover:underline font-medium"
-              >
-                kontaktieren Sie uns direkt
-              </Link>
-            </p>
-          </div>
+                  <Button
+                    asChild
+                    variant="outline"
+                    size="lg"
+                    className="w-full min-h-[48px]"
+                  >
+                    <Link to="/">
+                      <Home className="w-4 h-4 mr-2" />
+                      Zur Startseite
+                    </Link>
+                  </Button>
+                </div>
 
-          {/* Debug info - dev only */}
-          {import.meta.env.DEV && (
-            <details className="text-left">
-              <summary className="text-xs text-muted-foreground cursor-pointer hover:text-foreground">
-                Debug Info
-              </summary>
-              <pre className="mt-2 rounded-lg bg-muted p-3 text-[10px] font-mono overflow-auto">
+                {/* Problem melden */}
+                <div className="pt-3 border-t border-border/50 space-y-3">
+                  <div className="flex gap-2">
+                    {!reportSent ? (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="flex-1 min-h-[44px] text-sm"
+                        onClick={handleReportProblem}
+                        disabled={isReporting}
+                      >
+                        {isReporting ? (
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        ) : (
+                          <MessageSquare className="w-4 h-4 mr-2" />
+                        )}
+                        {isReporting ? "Wird gemeldet..." : "Problem melden"}
+                      </Button>
+                    ) : (
+                      <p className="flex-1 text-sm text-green-600 font-medium text-center py-2">
+                        ✓ Danke für Ihre Meldung!
+                      </p>
+                    )}
+                    <Button
+                      asChild
+                      variant="ghost"
+                      size="sm"
+                      className="min-h-[44px]"
+                    >
+                      <a href="tel:+41780980000">
+                        <Phone className="w-4 h-4 mr-2" />
+                        Anrufen
+                      </a>
+                    </Button>
+                  </div>
+
+                  <p className="text-xs text-muted-foreground flex items-center justify-center gap-1.5">
+                    <HelpCircle className="w-3.5 h-3.5" />
+                    <span>Oder</span>
+                    <Link 
+                      to="/kontakt" 
+                      className="text-primary hover:underline font-medium"
+                    >
+                      kontaktieren Sie uns direkt
+                    </Link>
+                  </p>
+                </div>
+
+                {/* Debug info - dev only */}
+                {import.meta.env.DEV && (
+                  <details className="text-left">
+                    <summary className="text-xs text-muted-foreground cursor-pointer hover:text-foreground">
+                      Debug Info
+                    </summary>
+                    <pre className="mt-2 rounded-lg bg-muted p-3 text-[10px] font-mono overflow-auto">
 {`pathname: ${pathname}
 search:   ${searchQuery}
 hash:     ${hash}
 flow:     ${ctx.isOffertenFlow ? "yes" : "no"}
 capture:  ${ctx.isCaptureMode ? "yes" : "no"}
 flowHome: ${ctx.flowHome}`}
-              </pre>
-            </details>
-          )}
-        </CardContent>
-      </Card>
-    </main>
+                    </pre>
+                  </details>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </main>
+
+        <SimplifiedFooter />
+      </div>
+    </>
   );
 };
 
