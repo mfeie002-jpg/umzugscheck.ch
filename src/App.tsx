@@ -144,6 +144,10 @@ const RegionalOfferten = lazy(() => import("./pages/RegionalOfferten"));
 const RegionArchetypPage = lazy(() => import("./pages/region/RegionArchetypPage"));
 // NEW: Slug resolver for city vs canton separation
 const SlugResolverPage = lazy(() => import("./pages/SlugResolverPage"));
+// NEW: Gold Standard Archetype Pages (Canton, City, Service+Location)
+const CantonArchetypePage = lazy(() => import("./pages/region/CantonArchetypePage"));
+const CityArchetypePage = lazy(() => import("./pages/region/CityArchetypePage"));
+const ServiceLocationPage = lazy(() => import("./pages/services/ServiceLocationPage"));
 
 // Canton pages - REMOVED: Now handled by RegionArchetypPage via /umzugsfirmen/kanton-:slug
 // City pages handled by SlugResolverPage -> CityMovers at /umzugsfirmen/:citySlug
@@ -715,6 +719,13 @@ const AppRouterContent = () => {
           <Route path="/dienstleistungen/umzug-reinigung" element={<MovingWithCleaning />} />
           <Route path="/dienstleistungen/einlagerung" element={<StorageService />} />
           <Route path="/dienstleistungen/:service" element={<ServiceOptimized />} />
+          
+          {/* NEW: Gold Standard Service+Location Routes (Archetype System) */}
+          {/* Service + Canton: /dienstleistungen/[serviceSlug]/kanton-[cantonSlug] */}
+          <Route path="/dienstleistungen/:serviceSlug/kanton-:cantonSlug" element={<ServiceLocationPage />} />
+          {/* Service + City: /dienstleistungen/[serviceSlug]/[citySlug] */}
+          <Route path="/dienstleistungen/:serviceSlug/:citySlug" element={<ServiceLocationPage />} />
+          
           {/* Service route aliases for shorter URLs */}
           <Route path="/privatumzug" element={<PrivateMoving />} />
           <Route path="/firmenumzug" element={<BusinessMoving />} />
