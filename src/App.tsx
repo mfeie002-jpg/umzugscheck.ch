@@ -721,6 +721,12 @@ const AppRouterContent = () => {
           <Route path="/services/seniorenumzug" element={<SeniorenumzugV2 />} />
           <Route path="/services/studenten" element={<StudentenV2 />} />
           <Route path="/services/spezialtransporte" element={<SpezialtransporteV2 />} />
+          <Route path="/services/klaviertransport" element={<KlaviertransportV2 />} />
+          <Route path="/services/auslandsumzug" element={<AuslandsumzugV2 />} />
+          <Route path="/services/bueroumzug" element={<BueroumzugV2 />} />
+          <Route path="/shop" element={<ShopPage />} />
+          <Route path="/umzugskartons" element={<ShopPage />} />
+          <Route path="/ratgeber/umzugskosten-berechnen" element={<UmzugskostenBerechnenPage />} />
           <Route path="/dienstleistungen" element={<ServicesOverview />} />
           <Route path="/dienstleistungen/privatumzug" element={<PrivateMoving />} />
           <Route path="/dienstleistungen/firmenumzug" element={<BusinessMoving />} />
