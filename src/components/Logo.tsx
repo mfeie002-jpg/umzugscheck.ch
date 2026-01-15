@@ -67,7 +67,7 @@ export const Logo = ({ className = "", size = "lg", iconOnly = false }: LogoProp
   return (
     <Link 
       to="/" 
-      className={`flex items-center hover:opacity-90 hover:scale-[1.02] transition-all duration-200 flex-shrink-0 ${className}`}
+      className={`flex flex-col hover:opacity-90 hover:scale-[1.02] transition-all duration-200 flex-shrink-0 ${className}`}
       aria-label="Zur Startseite von Umzugscheck.ch"
     >
       <svg 
@@ -112,8 +112,11 @@ export const Logo = ({ className = "", size = "lg", iconOnly = false }: LogoProp
         >
           <tspan fill="#0050A8">Umzugs</tspan><tspan fill="#dc2626">check.ch</tspan>
         </text>
-        
       </svg>
+      {/* Slogan under logo - responsive, no CH */}
+      <span className="text-[9px] sm:text-[10px] text-muted-foreground/70 font-medium leading-tight pl-0.5 -mt-0.5">
+        Der Schweizer Umzugsvergleich
+      </span>
     </Link>
   );
 };
