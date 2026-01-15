@@ -392,9 +392,9 @@ const REGIONS_DATA: Record<string, RegionData> = {
     short: 'ZG',
     type: 'kanton',
     seo: {
-      title: 'Umzugsfirmen Kanton Zug vergleichen | Offerten gratis | Umzugscheck',
-      description: 'Vergleichen Sie geprüfte Umzugsfirmen im Kanton Zug. Kostenlose Offerten in 24–48h, transparente Leistungen und auf Wunsch Komplettpaket mit Endreinigung & Wohnungsabgabe. Bis zu 40% sparen.',
-      h1: 'Umzugsfirmen Kanton Zug – Jetzt gratis vergleichen',
+      title: 'Umzugsfirmen im Kanton Zug vergleichen | Offerten gratis | Umzugscheck',
+      description: 'Vergleichen Sie geprüfte Umzugsfirmen im Kanton Zug. Kostenlose Offerten in 24–48h für alle Gemeinden: Zug, Baar, Cham, Steinhausen, Hünenberg, Risch-Rotkreuz, Oberägeri, Unterägeri. Bis zu 40% sparen.',
+      h1: 'Umzugsfirmen im Kanton Zug vergleichen',
       canonicalUrl: '/umzugsfirmen/kanton-zug',
     },
     stats: {
@@ -410,20 +410,19 @@ const REGIONS_DATA: Record<string, RegionData> = {
     },
     priceCoefficient: 1.0,
     localTips: [
-      'Historische Altstadt & Seepromenade: enge Zufahrten, Zeitfenster früh planen',
+      'Orte im Kanton Zug: Zug, Baar, Cham, Steinhausen, Hünenberg, Risch-Rotkreuz, Oberägeri, Unterägeri – kurze Distanzen, faire Preise',
       'Halteverbotszonen früh beantragen (v. a. Zentrum / Altstadt)',
       'Monatsende ist stark nachgefragt: Termine 2–4 Wochen im Voraus sichern',
       'Expat- & Firmenumzüge: mehrsprachige Teams (DE/EN) sind in Zug häufig verfügbar',
-      'Möbellift lohnt sich in Altbauten (Treppenhaus eng, Schonung der Möbel)',
       'Kurzstrecken im Kanton: Baar, Cham, Steinhausen oft günstiger als erwartet',
-      'Parkhäuser & Baustellen prüfen: Zufahrt/Tragewege beeinflussen Zeit & Preis',
+      'Kostenfaktoren: Distanz, Volumen, Etagen, Lift, Halteverbot, Zusatzservices',
       'Wohnungsabgabe: Komplettpaket mit Endreinigung reduziert Stress massiv',
     ],
     localBlurb: `
-      Zug ist klein, hochwertig und logistisch anspruchsvoll: Altstadtgassen, Seeufer-Zufahrten und stark nachgefragte Termine am Monatsende.
+      Der Kanton Zug ist kompakt, aber vielfältig: Von den urbanen Gemeinden Zug, Baar und Cham bis zu den ländlicheren Orten wie Oberägeri und Unterägeri am Ägerisee.
+      Die kurzen Distanzen innerhalb des Kantons halten die Umzugskosten überschaubar.
       Wer früh plant, spart Zeit und Geld: Halteverbotszonen reservieren, Tragewege prüfen und bei Altbauten einen Möbellift einplanen.
-      Für die internationale Community sind mehrsprachige Teams (DE/EN) in Zug üblich.
-      Besonders beliebt ist das Komplettpaket aus Umzug, Endreinigung und Unterstützung bei der Wohnungsabgabe.
+      Umzugscheck.ch ist ein Vergleichs- und Vermittlungsservice – die Durchführung erfolgt durch geprüfte Partnerfirmen.
     `,
     nearbyRegions: [
       { name: 'Zürich', slug: 'zuerich' },
@@ -469,24 +468,28 @@ const REGIONS_DATA: Record<string, RegionData> = {
     ],
     faqs: [
       {
-        question: 'Wie erhalte ich kostenlose Offerten?',
-        answer: 'Füllen Sie unser Online-Formular aus (dauert nur 2 Minuten). Innerhalb von 24-48 Stunden erhalten Sie 3-5 unverbindliche Angebote von geprüften Umzugsfirmen in Zug direkt per E-Mail.',
+        question: 'Welche Orte im Kanton Zug werden abgedeckt?',
+        answer: 'Unsere Partnerfirmen bedienen alle Gemeinden im Kanton Zug: Zug, Baar, Cham, Steinhausen, Hünenberg, Risch-Rotkreuz, Oberägeri und Unterägeri. Auch Umzüge in benachbarte Kantone sind möglich.',
       },
       {
         question: 'Was kostet ein Umzug im Kanton Zug?',
-        answer: 'Die Kosten variieren je nach Wohnungsgrösse, Etage und Distanz. Ein 2-Zimmer-Umzug innerhalb Zug kostet ca. CHF 550-900, ein 4-Zimmer-Umzug ca. CHF 770-1\'200. Mit unserem Vergleich sparen Sie bis zu 40%.',
+        answer: 'Die Kosten variieren je nach Wohnungsgrösse, Distanz und Stockwerk. Ein 2-Zimmer-Umzug innerhalb des Kantons kostet ca. CHF 550–900, ein 4-Zimmer-Umzug ca. CHF 770–1200. Mit unserem Vergleich sparen Sie bis zu 40%.',
       },
       {
-        question: 'Sind die Angebote wirklich gratis und unverbindlich?',
-        answer: 'Ja, absolut! Das Einholen der Offerten ist 100% kostenlos und unverbindlich. Sie entscheiden selbst, ob und welches Angebot Sie annehmen möchten.',
+        question: 'Welche Kostenfaktoren beeinflussen den Preis?',
+        answer: 'Die wichtigsten Faktoren sind: Distanz, Volumen (Anzahl Zimmer), Etage, Lift vorhanden?, Halteverbotszone nötig?, gewünschte Zusatzservices (Endreinigung, Möbelmontage, Entsorgung). Am Monatsende sind die Preise oft höher.',
       },
       {
-        question: 'Wie früh sollte ich buchen?',
-        answer: 'Wir empfehlen 4-8 Wochen Vorlauf. Zur Hochsaison (April-September) oder bei Monatsende-Umzügen sind 8-12 Wochen ratsam.',
+        question: 'Wie funktioniert der Vergleich?',
+        answer: 'In 3 Schritten: 1) Umzugsdaten eingeben (2 Min.) 2) 3–5 Offerten von geprüften Firmen erhalten (24–48h) 3) Angebote vergleichen und das beste wählen. 100% kostenlos und unverbindlich.',
       },
       {
         question: 'Sind die Umzugsfirmen versichert?',
-        answer: 'Ja! Alle unsere Partnerfirmen sind vollständig versichert (Haftpflicht & Transportversicherung). Bei Schäden sind Sie abgesichert.',
+        answer: 'Ja! Alle Partnerfirmen auf Umzugscheck.ch sind versichert (Haftpflicht & Transportversicherung). Bei Schäden sind Sie abgesichert.',
+      },
+      {
+        question: 'Wer führt den Umzug durch?',
+        answer: 'Umzugscheck.ch ist ein Vergleichs- und Vermittlungsservice. Die Durchführung des Umzugs erfolgt durch geprüfte Partnerfirmen, die Sie aus den Offerten auswählen.',
       },
     ],
     testimonials: [

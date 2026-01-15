@@ -24,6 +24,9 @@ import { RegionGlossar } from '@/components/region-archetyp/RegionGlossar';
 import { RegionContentCluster } from '@/components/region-archetyp/RegionContentCluster';
 import { RegionMidCTA } from '@/components/region-archetyp/RegionMidCTA';
 
+// City-specific unique content
+import { ZugCityContent } from '@/components/city/ZugCityContent';
+
 interface CityData {
   name: string;
   displayName: string;
@@ -221,23 +224,29 @@ const cityDatabase: Record<string, CityData> = {
   zug: {
     name: 'zug',
     displayName: 'Zug',
-    heroTitle: 'Die besten Umzugsfirmen in Zug im Vergleich',
-    heroSubtitle: 'Kostenlose Offerten von geprüften Partnerfirmen in Zug. 100% unverbindlich, transparent und auf Wunsch als Komplettpaket mit Endreinigung & Wohnungsabgabe.',
-    liveSignal: '4 Personen aus Zug vergleichen gerade Umzüge',
-    liveCount: 4,
-    backgroundImage: 'https://images.unsplash.com/photo-1527576539890-dfa815648363?w=1920&q=80',
+    heroTitle: 'Umzugsfirmen in Zug vergleichen',
+    heroSubtitle: 'Vergleichen Sie jetzt geprüfte Umzugsfirmen in der Stadt Zug. Gratis Offerten in 24–48h, transparente Preise und auf Wunsch Komplettpaket inkl. Endreinigung & Wohnungsabgabe.',
+    liveSignal: '5 Personen aus Zug vergleichen gerade Umzüge',
+    liveCount: 5,
+    backgroundImage: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=1920&q=80',
     advantages: [
-      { title: 'Erfahrung Altstadt Zug', description: 'Ortskenntnis für Altstadt & Seepromenade', icon: Shield },
-      { title: 'Hochwertige Haushalte', description: 'Partner mit Erfahrung bei hochwertigen Haushalten', icon: Star },
-      { title: 'Diskrete Umzugsservices', description: 'Diskrete Abwicklung durch geprüfte Partner', icon: Clock }
+      { title: 'Altstadt & Seepromenade', description: 'Ortskenntnis für enge Gassen, Zugersee-Zufahrten & Tragewege', icon: MapPin },
+      { title: 'Halteverbotszone inkl.', description: 'Partner organisieren Parkfläche / Zeitfenster für Sie', icon: Clock },
+      { title: 'Möbellift bei Altbauten', description: 'Enge Treppenhäuser? Möbellift schont Mobiliar & Gebäude', icon: Shield }
     ],
-    districts: ['Baar', 'Cham', 'Neuheim'],
+    districts: ['Altstadt', 'Seestrasse', 'Herti', 'Guthirt'],
     priceExamples: [
-      { route: '3 Zimmer Zug → Cham', price: 'CHF 1100–1700' }
+      { route: '2 Zimmer Zug Altstadt → Zug Herti', price: 'CHF 690–1050' },
+      { route: '3.5 Zimmer Zug → Baar', price: 'CHF 1100–1700' },
+      { route: '4.5 Zimmer Zug → Cham', price: 'CHF 1400–2200' }
     ],
     faq: [
-      { question: 'Was kostet ein Umzug in Zug?', answer: 'Ein 3-Zimmer-Umzug kostet in Zug je nach Aufwand meist CHF 1100–1700. Umzugscheck.ch ist ein Vergleichsportal und vermittelt passende Partnerfirmen.' },
-      { question: 'Bieten Umzugsfirmen in Zug Premium-Service?', answer: 'Ja, viele Anbieter sind auf hochwertige Haushalte und diskrete Umzüge spezialisiert.' }
+      { question: 'Was kostet ein Umzug in der Stadt Zug?', answer: 'Die Kosten variieren je nach Wohnungsgrösse, Stockwerk und Zufahrt. Ein 2-Zimmer-Umzug innerhalb Zug liegt bei ca. CHF 690–1050, ein 3.5-Zimmer-Umzug bei CHF 1100–1700. Umzugscheck.ch vermittelt geprüfte Partnerfirmen – der Umzug wird durch diese durchgeführt.' },
+      { question: 'Brauche ich in Zug eine Halteverbotszone?', answer: 'In der Altstadt und am Seeufer fast immer nötig. Viele Partnerfirmen übernehmen die Beantragung für Sie. Kosten: ca. CHF 80–150 je nach Zone.' },
+      { question: 'Was ist beim Umzug in der Zuger Altstadt zu beachten?', answer: 'Enge Gassen, Fussgängerzonen und zeitliche Einschränkungen erfordern Planung. Ein Möbellift oder Tragen über längere Wege kann nötig sein. Unsere Partner kennen die lokalen Gegebenheiten.' },
+      { question: 'Gibt es ein Komplettpaket mit Endreinigung?', answer: 'Ja. Viele Partner bieten Umzug + Endreinigung + Wohnungsabgabe-Vorbereitung als Paket an. Das spart Koordination und gibt Sicherheit bei der Abnahme.' },
+      { question: 'Wie schnell erhalte ich Offerten?', answer: 'In der Regel erhalten Sie innerhalb von 24–48 Stunden 3–5 unverbindliche Offerten von geprüften Firmen per E-Mail.' },
+      { question: 'Wer führt den Umzug durch?', answer: 'Umzugscheck.ch ist ein Vergleichs- und Vermittlungsservice. Die Durchführung des Umzugs erfolgt durch geprüfte Partnerfirmen, die Sie aus den Offerten auswählen.' }
     ]
   },
   lugano: {
@@ -683,6 +692,9 @@ export default function CityMovers() {
 
       {/* NEW: Anchor Navigation for Sitelinks */}
       <RegionAnchorNav />
+
+      {/* Zug-specific unique content sections */}
+      {isZug && <ZugCityContent onCTAClick={() => navigate('/umzugsofferten')} />}
 
       {/* Local Calculator */}
       <section id="offerten" className="py-16 bg-muted/30 scroll-mt-20">
