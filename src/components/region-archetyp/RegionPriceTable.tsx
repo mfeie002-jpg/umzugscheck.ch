@@ -102,6 +102,29 @@ export const RegionPriceTable = memo(({ prices, regionName, priceCoefficient }: 
             </span>
           </div>
         </motion.div>
+
+        {/* NEW: Price Factors Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="max-w-2xl mx-auto mt-6"
+        >
+          <h3 className="text-lg font-semibold mb-4 text-center">Wovon hängt der Preis ab?</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {[
+              { factor: "Stockwerk", detail: "EG vs. 4. OG" },
+              { factor: "Lift vorhanden", detail: "+/- 20%" },
+              { factor: "Distanz", detail: "km-Pauschale" },
+              { factor: "Halteverbot", detail: "CHF 50-150" }
+            ].map((item) => (
+              <div key={item.factor} className="bg-card rounded-lg border border-border/50 p-3 text-center">
+                <div className="font-medium text-sm text-foreground">{item.factor}</div>
+                <div className="text-xs text-muted-foreground">{item.detail}</div>
+              </div>
+            ))}
+          </div>
+        </motion.div>
       </div>
     </section>
   );
