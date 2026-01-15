@@ -5,7 +5,7 @@
  * Starke interne Verlinkung für SEO-Cluster
  */
 
-import { useState, useMemo, lazy } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { motion } from "framer-motion";
@@ -22,6 +22,7 @@ import { Footer } from "@/components/Footer";
 import { CANTONS, getRegionBySlug, type Canton } from "@/data/regions-database";
 import { FAQAccordion } from "@/components/FAQAccordion";
 import { LazySection } from "@/components/region-archetyp/LazySection";
+import { usePillarPageTracking } from "@/hooks/useRegionTracking";
 
 // Group cantons by region for better UX
 const REGION_GROUPS = [
@@ -64,6 +65,7 @@ const PILLAR_FAQS = [
 
 const UmzugsfirmenSchweizPillar = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const { trackRegionCardClick, trackCTAClick } = usePillarPageTracking();
   
   // Filter cantons by search
   const filteredCantons = useMemo(() => {
@@ -79,6 +81,11 @@ const UmzugsfirmenSchweizPillar = () => {
   const totalCompanies = 200;
   const totalReviews = 15000;
   const avgRating = 4.8;
+
+  // Handle CTA clicks with tracking
+  const handleCTAClick = useCallback((ctaType: string) => {
+    trackCTAClick(ctaType);
+  }, [trackCTAClick]);
 
   const schemaOrg = {
     "@context": "https://schema.org",
@@ -164,7 +171,7 @@ const UmzugsfirmenSchweizPillar = () => {
             </div>
 
             {/* Quick CTA */}
-            <Link to="/umzugsofferten">
+            <Link to="/umzugsofferten" onClick={() => handleCTAClick('hero')}>
               <Button size="lg" className="h-12 md:h-14 px-8 text-base md:text-lg font-semibold">
                 Jetzt kostenlos Offerten erhalten
                 <ArrowRight className="ml-2 h-5 w-5" />
@@ -216,8 +223,8 @@ const UmzugsfirmenSchweizPillar = () => {
                 {filteredCantons.length} Kantone gefunden
               </h2>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-                {filteredCantons.map((canton) => (
-                  <CantonCard key={canton.slug} canton={canton} />
+                {filteredCantons.map((canton, i) => (
+                  <CantonCard key={canton.slug} canton={canton} position={i} onTrack={trackRegionCardClick} />
                 ))}
               </div>
             </div>
@@ -234,8 +241,8 @@ const UmzugsfirmenSchweizPillar = () => {
                       <Badge variant="secondary" className="ml-2">{groupCantons.length} Kantone</Badge>
                     </h2>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-                      {groupCantons.map((canton) => (
-                        <CantonCard key={canton.slug} canton={canton} />
+                      {groupCantons.map((canton, i) => (
+                        <CantonCard key={canton.slug} canton={canton} position={i} onTrack={trackRegionCardClick} />
                       ))}
                     </div>
                   </div>
@@ -347,13 +354,13 @@ const UmzugsfirmenSchweizPillar = () => {
             Erhalten Sie jetzt kostenlose Offerten von geprüften Umzugsfirmen in Ihrem Kanton.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/umzugsofferten">
+            <Link to="/umzugsofferten" onClick={() => handleCTAClick('footer_offerten')}>
               <Button size="lg" variant="secondary" className="h-12 px-8 font-semibold">
                 Offerten anfordern
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
-            <Link to="/preisrechner">
+            <Link to="/preisrechner" onClick={() => handleCTAClick('footer_calculator')}>
               <Button size="lg" variant="outline" className="h-12 px-8 font-semibold border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
                 Kosten berechnen
               </Button>
@@ -367,14 +374,24 @@ const UmzugsfirmenSchweizPillar = () => {
   );
 };
 
-// Canton Card Component
-const CantonCard = ({ canton }: { canton: Canton }) => {
+// Canton Card Component with tracking
+interface CantonCardProps {
+  canton: Canton;
+  position?: number;
+  onTrack?: (slug: string, position: number) => void;
+}
+
+const CantonCard = ({ canton, position = 0, onTrack }: CantonCardProps) => {
   const regionData = getRegionBySlug(canton.slug);
   const companyCount = regionData?.topCompanies?.length || 10;
   const avgRating = regionData?.stats?.avgRating || 4.7;
 
+  const handleClick = () => {
+    onTrack?.(canton.slug, position);
+  };
+
   return (
-    <Link to={`/umzugsfirmen/${canton.slug}`}>
+    <Link to={`/umzugsfirmen/${canton.slug}`} onClick={handleClick}>
       <Card className="h-full hover:border-primary/50 hover:shadow-md transition-all group cursor-pointer">
         <CardContent className="p-4">
           <div className="flex items-start justify-between mb-2">
