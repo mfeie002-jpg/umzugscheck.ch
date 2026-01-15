@@ -6,7 +6,7 @@
  * Switch via URL: ?nav=ultimate | ?nav=variant-b | ?nav=variant-c | ?nav=variant-d | ?nav=variant-e
  */
 
-export type NavVariant = 'ultimate' | 'variant-b' | 'variant-c' | 'variant-d' | 'variant-e' | 'variant-f' | 'variant-g' | 'variant-h' | 'variant-i' | 'variant-j' | 'variant-k' | 'variant-l';
+export type NavVariant = 'ultimate' | 'variant-b' | 'variant-c' | 'variant-d' | 'variant-e' | 'variant-f' | 'variant-g' | 'variant-h' | 'variant-i' | 'variant-j' | 'variant-k' | 'variant-l' | 'variant-m';
 
 export interface NavConfig {
   id: NavVariant;
@@ -510,6 +510,45 @@ export const VARIANT_L: NavConfig = {
   },
 };
 
+// ============================================
+// VARIANTE 13: Mobile-First Optimiert
+// Komplett überarbeitete Struktur nach UX-Feedback
+// ============================================
+export const VARIANT_M: NavConfig = {
+  id: 'variant-m',
+  name: '13. Mobile-First Optimiert',
+  description: '4 Hauptpunkte: Planen, Offerten, Funktioniert, Hilfe – Du-Form',
+  labels: {
+    preisrechner: 'Plane deinen Umzug',
+    firmen: 'Offerten vergleichen',
+    services: 'So funktioniert\'s',
+    ratgeber: 'Hilfe & Kontakt',
+    fuerFirmen: 'Für Anbieter',
+    cta: 'Gratis Offerten',
+  },
+  microcopy: {
+    preisrechner: 'Tools, Checklisten & Tipps, damit du stressfrei an alles denkst.',
+    firmen: 'Hol dir gratis Offerten von geprüften Umzugsfirmen & finde das beste Angebot.',
+    services: 'In 3 Schritten zu deinem stressfreien Umzug – transparent, sicher und einfach.',
+    ratgeber: 'Wir sind für dich da – FAQ, Tipps und persönlicher Support.',
+    fuerFirmen: 'Partner werden, Leads erhalten, Dashboard nutzen.',
+  },
+  dropdownTitles: {
+    preisrechner: 'PLANE DEINEN UMZUG',
+    firmen: 'OFFERTEN VERGLEICHEN',
+    services: 'SO FUNKTIONIERT\'S',
+    ratgeber: 'HILFE & KONTAKT',
+    fuerFirmen: 'FÜR ANBIETER',
+  },
+  ctaCard: {
+    preisrechner: { title: 'Bereit für den nächsten Schritt?', buttonText: 'Gratis Offerten holen' },
+    firmen: { title: 'Gratis & unverbindlich', buttonText: 'Jetzt Offerten holen' },
+    services: { title: 'In 3 Schritten zum Umzug', buttonText: 'Jetzt starten' },
+    ratgeber: { title: 'Lieber telefonieren?', buttonText: 'Anrufen' },
+    fuerFirmen: { title: 'Mehr Anfragen. Weniger Leerstand.', buttonText: 'Partner werden' },
+  },
+};
+
 // Alle Varianten
 export const NAV_VARIANTS: NavConfig[] = [
   VARIANT_ULTIMATE,
@@ -524,6 +563,7 @@ export const NAV_VARIANTS: NavConfig[] = [
   VARIANT_J,
   VARIANT_K,
   VARIANT_L,
+  VARIANT_M,
 ];
 
 // Aktive Variante aus localStorage oder URL
