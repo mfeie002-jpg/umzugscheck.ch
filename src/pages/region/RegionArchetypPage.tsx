@@ -29,6 +29,9 @@ import { motion } from "framer-motion";
 import { useMemo, useCallback } from "react";
 import { ArrowRight, MapPin } from "lucide-react";
 
+// Lead Tracking
+import { useLeadTracking } from "@/hooks/useLeadTracking";
+
 // Unified Hero Component (matches homepage style)
 import { UnifiedHero } from "@/components/shared/UnifiedHero";
 
@@ -103,6 +106,13 @@ const RegionArchetypPage = () => {
     if (!effectiveSlug) return null;
     return getRegionBySlug(effectiveSlug);
   }, [effectiveSlug]);
+
+  // Lead Tracking - tracks page views, form interactions, conversions
+  const { trackCTAClick, trackFormStart, trackExitIntent } = useLeadTracking({
+    pagePath: `/umzugsfirmen/kanton-${effectiveSlug}`,
+    pageType: 'canton',
+    regionName: region?.name || 'unknown',
+  });
 
   // Handle region change - now uses canonical kanton- URLs
   const handleRegionChange = useCallback((newSlug: string) => {

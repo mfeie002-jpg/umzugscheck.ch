@@ -1146,6 +1146,331 @@ const REGIONS_DATA: Record<string, RegionData> = {
       },
     ],
   },
+  
+  thurgau: {
+    slug: 'thurgau',
+    name: 'Thurgau',
+    short: 'TG',
+    type: 'kanton',
+    seo: {
+      title: 'Umzugsfirmen Thurgau vergleichen | Bodensee-Region | Umzugscheck',
+      description: 'Vergleichen Sie 30+ geprüfte Umzugsfirmen im Kanton Thurgau. Frauenfeld, Kreuzlingen, Arbon. Gratis Offerten, bis 40% sparen.',
+      h1: 'Umzugsfirmen im Kanton Thurgau vergleichen',
+      canonicalUrl: '/umzugsfirmen/kanton-thurgau',
+    },
+    stats: {
+      providerCount: 30,
+      reviewCount: 1876,
+      avgRating: 4.8,
+      activeUsersBase: 22,
+    },
+    priceMatrix: {
+      small: { min: 500, max: 820, label: '1.5 - 2.5 Zimmer', icon: 'Home', savings: 'bis CHF 320' },
+      medium: { min: 700, max: 1100, label: '3.5 - 4.5 Zimmer', icon: 'Building2', savings: 'bis CHF 440' },
+      large: { min: 1350, max: 2200, label: '5+ Zimmer / Haus', icon: 'Home', savings: 'bis CHF 530' },
+    },
+    priceCoefficient: 0.92,
+    localTips: [
+      'Bodensee-Region: Kreuzlingen, Arbon, Romanshorn mit Seenähe',
+      'Frauenfeld: Kantonaler Hauptort mit guter Verfügbarkeit',
+      'Grenzregion Deutschland: Konstanz-Umzüge möglich',
+      'Landwirtschaftsgebiet: Viele Einfamilienhäuser – Gartengeräte beachten',
+    ],
+    localBlurb: `
+      Der Thurgau ist bekannt für seine idyllische Bodensee-Landschaft und moderate Preise. 
+      Die Nähe zu Konstanz ermöglicht einfache Grenzumzüge. Viele Einfamilienhäuser bedeuten 
+      oft umfangreichere Umzüge mit Gartengeräten und Kellerinventar. Unsere Partner kennen 
+      die Region bestens.
+    `,
+    nearbyRegions: [
+      { name: 'St. Gallen', slug: 'st-gallen' },
+      { name: 'Zürich', slug: 'zuerich' },
+      { name: 'Schaffhausen', slug: 'schaffhausen' },
+    ],
+    topCompanies: [
+      {
+        id: 'thurgau-umzuege',
+        name: 'Thurgau Umzüge',
+        rating: 4.9,
+        reviewCount: 145,
+        badges: ['Top Bewertung', 'Regional'],
+        services: ['Privatumzug', 'Reinigung', 'Entsorgung'],
+        priceLevel: 'Günstig',
+        responseTime: '< 2h',
+        isPopular: true,
+        isBestPrice: true,
+      },
+    ],
+    faqs: [
+      {
+        question: 'Was kostet ein Umzug im Thurgau?',
+        answer: 'Der Thurgau ist einer der günstigeren Kantone: Ein 3-Zimmer-Umzug kostet ca. CHF 700-1100.',
+      },
+      {
+        question: 'Gibt es Umzugsfirmen für Umzüge nach Konstanz?',
+        answer: 'Ja! Die Bodensee-Region hat viele Partner mit Erfahrung für Grenzumzüge.',
+      },
+    ],
+    testimonials: [
+      {
+        name: 'Sandra M.',
+        location: 'Kreuzlingen → Frauenfeld',
+        rating: 5,
+        text: 'Super günstig und trotzdem top Qualität. Klare Empfehlung!',
+        date: 'vor 5 Tagen',
+        verified: true,
+        savedAmount: 320,
+      },
+    ],
+  },
+  
+  schwyz: {
+    slug: 'schwyz',
+    name: 'Schwyz',
+    short: 'SZ',
+    type: 'kanton',
+    seo: {
+      title: 'Umzugsfirmen Schwyz vergleichen | Innerschweiz | Umzugscheck',
+      description: 'Vergleichen Sie 25+ geprüfte Umzugsfirmen im Kanton Schwyz. Einsiedeln, Küssnacht, Freienbach. Gratis Offerten, bis 40% sparen.',
+      h1: 'Umzugsfirmen im Kanton Schwyz vergleichen',
+      canonicalUrl: '/umzugsfirmen/kanton-schwyz',
+    },
+    stats: {
+      providerCount: 25,
+      reviewCount: 1654,
+      avgRating: 4.8,
+      activeUsersBase: 18,
+    },
+    priceMatrix: {
+      small: { min: 530, max: 870, label: '1.5 - 2.5 Zimmer', icon: 'Home', savings: 'bis CHF 340' },
+      medium: { min: 740, max: 1180, label: '3.5 - 4.5 Zimmer', icon: 'Building2', savings: 'bis CHF 470' },
+      large: { min: 1450, max: 2400, label: '5+ Zimmer / Haus', icon: 'Home', savings: 'bis CHF 580' },
+    },
+    priceCoefficient: 0.98,
+    localTips: [
+      'Einsiedeln: Klosterregion mit historischen Gebäuden',
+      'Küssnacht am Rigi: Seenähe und Premium-Immobilien',
+      'Freienbach/Pfäffikon: Expat-Hotspot nahe Zürich',
+      'March (Lachen, Altendorf): Gute Anbindung, moderate Preise',
+    ],
+    localBlurb: `
+      Der Kanton Schwyz verbindet Innerschweizer Charme mit Nähe zu Zürich. Besonders 
+      Freienbach und Küssnacht sind bei Expats beliebt. Die Region bietet moderate Preise 
+      bei hoher Lebensqualität. Bergregionen wie Einsiedeln erfordern erfahrene Teams.
+    `,
+    nearbyRegions: [
+      { name: 'Zürich', slug: 'zuerich' },
+      { name: 'Zug', slug: 'zug' },
+      { name: 'Luzern', slug: 'luzern' },
+      { name: 'Uri', slug: 'uri' },
+    ],
+    topCompanies: [
+      {
+        id: 'schwyz-moving',
+        name: 'Schwyz Moving GmbH',
+        rating: 4.8,
+        reviewCount: 123,
+        badges: ['Top Bewertung', 'Lokal'],
+        services: ['Privatumzug', 'Reinigung', 'Möbellift'],
+        priceLevel: 'Mittel',
+        responseTime: '< 3h',
+        isPopular: true,
+      },
+    ],
+    faqs: [
+      {
+        question: 'Was kostet ein Umzug im Kanton Schwyz?',
+        answer: 'Ein 3-Zimmer-Umzug kostet ca. CHF 740-1180. Seegemeinden können etwas teurer sein.',
+      },
+      {
+        question: 'Gibt es Umzugsfirmen für Umzüge Schwyz ↔ Zürich?',
+        answer: 'Ja! Viele Partner bedienen die Route Pfäffikon/Freienbach ↔ Zürich regelmässig.',
+      },
+    ],
+    testimonials: [
+      {
+        name: 'Martin B.',
+        location: 'Pfäffikon SZ → Zürich',
+        rating: 5,
+        text: 'Reibungsloser Umzug, faire Preise. Sehr empfehlenswert!',
+        date: 'vor 1 Woche',
+        verified: true,
+        savedAmount: 420,
+      },
+    ],
+  },
+  
+  waadt: {
+    slug: 'waadt',
+    name: 'Waadt',
+    short: 'VD',
+    type: 'kanton',
+    seo: {
+      title: 'Umzugsfirmen Waadt vergleichen | Lausanne & Genfersee | Umzugscheck',
+      description: 'Vergleichen Sie 55+ geprüfte Umzugsfirmen im Kanton Waadt. Lausanne, Montreux, Nyon, Vevey. Gratis Offerten, bis 40% sparen.',
+      h1: 'Umzugsfirmen im Kanton Waadt vergleichen',
+      canonicalUrl: '/umzugsfirmen/kanton-waadt',
+    },
+    stats: {
+      providerCount: 55,
+      reviewCount: 3234,
+      avgRating: 4.7,
+      activeUsersBase: 36,
+    },
+    priceMatrix: {
+      small: { min: 600, max: 1000, label: '1.5 - 2.5 Zimmer', icon: 'Home', savings: 'bis CHF 400' },
+      medium: { min: 850, max: 1350, label: '3.5 - 4.5 Zimmer', icon: 'Building2', savings: 'bis CHF 540' },
+      large: { min: 1600, max: 2700, label: '5+ Zimmer / Haus', icon: 'Home', savings: 'bis CHF 660' },
+    },
+    priceCoefficient: 1.1,
+    localTips: [
+      'Lausanne: Steile Hanglagen erfordern Spezialausrüstung',
+      'Riviera (Montreux, Vevey): Premium-Markt mit internationaler Kundschaft',
+      'La Côte (Nyon, Morges): Pendlerregion Genf mit hoher Nachfrage',
+      'Yverdon & Norden: Günstiger als Genfersee-Region',
+    ],
+    localBlurb: `
+      Der Kanton Waadt erstreckt sich entlang des Genfersees und bietet eine der schönsten 
+      Wohnlagen der Schweiz. Lausanne als Hauptstadt hat extreme Hanglagen, die Spezialwissen 
+      erfordern. Die Riviera (Montreux, Vevey) ist international geprägt, während La Côte 
+      von Genfer Pendlern begehrt ist.
+    `,
+    nearbyRegions: [
+      { name: 'Genf', slug: 'genf' },
+      { name: 'Wallis', slug: 'wallis' },
+      { name: 'Freiburg', slug: 'freiburg' },
+      { name: 'Neuenburg', slug: 'neuenburg' },
+    ],
+    topCompanies: [
+      {
+        id: 'vaud-demenagement',
+        name: 'Vaud Déménagement',
+        rating: 4.8,
+        reviewCount: 267,
+        badges: ['Top Bewertung', 'Regional'],
+        services: ['Privatumzug', 'Reinigung', 'Möbellift'],
+        priceLevel: 'Mittel',
+        responseTime: '< 2h',
+        isPopular: true,
+      },
+      {
+        id: 'leman-transports',
+        name: 'Léman Transports SA',
+        rating: 4.7,
+        reviewCount: 189,
+        badges: ['Preis-Sieger'],
+        services: ['Privatumzug', 'Entsorgung'],
+        priceLevel: 'Günstig',
+        responseTime: '< 1h',
+        isBestPrice: true,
+      },
+    ],
+    faqs: [
+      {
+        question: 'Was kostet ein Umzug im Kanton Waadt?',
+        answer: 'Ein 3-Zimmer-Umzug kostet ca. CHF 850-1350. Lausanne-Hanglagen und Riviera sind etwas teurer.',
+      },
+      {
+        question: 'Gibt es französischsprachige Umzugsteams?',
+        answer: 'Ja! Alle unsere Waadtländer Partner sprechen fliessend Französisch.',
+      },
+      {
+        question: 'Wie gehen Firmen mit Lausannes Hanglagen um?',
+        answer: 'Unsere Partner haben Spezialausrüstung für steile Strassen und verwenden bei Bedarf Möbellifte.',
+      },
+    ],
+    testimonials: [
+      {
+        name: 'Marie D.',
+        location: 'Lausanne → Morges',
+        rating: 5,
+        text: 'Très professionnel! L\'équipe a géré les escaliers sans problème.',
+        date: 'vor 4 Tagen',
+        verified: true,
+        savedAmount: 480,
+      },
+    ],
+  },
+  
+  wallis: {
+    slug: 'wallis',
+    name: 'Wallis',
+    short: 'VS',
+    type: 'kanton',
+    seo: {
+      title: 'Umzugsfirmen Wallis vergleichen | Alpenregion | Umzugscheck',
+      description: 'Vergleichen Sie 30+ geprüfte Umzugsfirmen im Kanton Wallis. Sion, Brig, Visp, Zermatt-Region. Gratis Offerten, bis 40% sparen.',
+      h1: 'Umzugsfirmen im Kanton Wallis vergleichen',
+      canonicalUrl: '/umzugsfirmen/kanton-wallis',
+    },
+    stats: {
+      providerCount: 30,
+      reviewCount: 1987,
+      avgRating: 4.7,
+      activeUsersBase: 20,
+    },
+    priceMatrix: {
+      small: { min: 520, max: 850, label: '1.5 - 2.5 Zimmer', icon: 'Home', savings: 'bis CHF 330' },
+      medium: { min: 720, max: 1150, label: '3.5 - 4.5 Zimmer', icon: 'Building2', savings: 'bis CHF 460' },
+      large: { min: 1400, max: 2350, label: '5+ Zimmer / Haus', icon: 'Home', savings: 'bis CHF 570' },
+    },
+    priceCoefficient: 0.95,
+    localTips: [
+      'Sion: Kantonaler Hauptort mit zweisprachigem Service',
+      'Oberwallis (Brig, Visp): Deutschsprachig, Bergregion',
+      'Zermatt-Region: Autofrei – Speziallogistik nötig',
+      'Unterwallis: Französischsprachig, Nähe Genfersee',
+    ],
+    localBlurb: `
+      Das Wallis ist der drittgrösste Kanton und erstreckt sich durch das gesamte Rhonetal. 
+      Die zweisprachige Region (Deutsch im Oberwallis, Französisch im Unterwallis) erfordert 
+      flexible Teams. Bergdörfer wie Zermatt oder Saas-Fee haben besondere Anforderungen 
+      (autofrei, schmale Strassen).
+    `,
+    nearbyRegions: [
+      { name: 'Waadt', slug: 'waadt' },
+      { name: 'Bern', slug: 'bern' },
+      { name: 'Uri', slug: 'uri' },
+    ],
+    topCompanies: [
+      {
+        id: 'valais-umzuege',
+        name: 'Valais Umzüge',
+        rating: 4.8,
+        reviewCount: 156,
+        badges: ['Top Bewertung', 'Alpen-Spezialist'],
+        services: ['Privatumzug', 'Reinigung', 'Bergumzüge'],
+        priceLevel: 'Mittel',
+        responseTime: '< 3h',
+        isPopular: true,
+      },
+    ],
+    faqs: [
+      {
+        question: 'Gibt es Umzugsfirmen für Bergdörfer wie Zermatt?',
+        answer: 'Ja! Unsere Partner haben Erfahrung mit autofreien Orten und organisieren Spezialtransporte.',
+      },
+      {
+        question: 'Was kostet ein Umzug im Wallis?',
+        answer: 'Ein 3-Zimmer-Umzug kostet ca. CHF 720-1150. Bergdörfer können Aufpreise haben.',
+      },
+      {
+        question: 'Gibt es französisch- und deutschsprachige Teams?',
+        answer: 'Ja! Im Unterwallis Französisch, im Oberwallis Deutsch – oder zweisprachig.',
+      },
+    ],
+    testimonials: [
+      {
+        name: 'Hans P.',
+        location: 'Brig → Sion',
+        rating: 5,
+        text: 'Trotz Bergstrecke alles perfekt gelaufen. Super Team!',
+        date: 'vor 6 Tagen',
+        verified: true,
+        savedAmount: 390,
+      },
+    ],
+  },
 };
 
 // ==================== DEFAULT REGION DATA ====================
