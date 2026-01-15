@@ -9,9 +9,9 @@ interface LogoProps {
 export const Logo = ({ className = "", size = "lg", iconOnly = false }: LogoProps) => {
   const sizeClasses = {
     sm: "h-6",
-    md: "h-7",
-    lg: "h-8 sm:h-9",
-    xl: "h-9 sm:h-10 lg:h-11"
+    md: "h-7 sm:h-8",
+    lg: "h-8 sm:h-10 md:h-11",
+    xl: "h-9 sm:h-11 md:h-12 lg:h-14"
   };
 
   const iconSizeClasses = {
@@ -113,8 +113,8 @@ export const Logo = ({ className = "", size = "lg", iconOnly = false }: LogoProp
           <tspan fill="#0050A8">Umzugs</tspan><tspan fill="#dc2626">check.ch</tspan>
         </text>
       </svg>
-      {/* Slogan under logo (hidden on mobile for header height) */}
-      <span className="hidden lg:block text-[9px] xl:text-[10px] text-muted-foreground/70 font-medium leading-tight pl-0.5 -mt-1">
+      {/* Slogan under logo - visible from sm breakpoint */}
+      <span className="hidden sm:block text-[8px] md:text-[9px] lg:text-[10px] xl:text-[11px] text-muted-foreground/70 font-medium leading-tight pl-0.5 -mt-0.5">
         Der Schweizer Umzugsvergleich
       </span>
     </Link>
