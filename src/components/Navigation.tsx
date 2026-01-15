@@ -119,16 +119,16 @@ export const Navigation = () => {
 
             {/* Desktop Navigation - alle 5 Kategorien nebeneinander */}
             <div className="hidden lg:flex items-center gap-0.5">
-              <NavButton dropdown="umzug-planen">
-                Umzug planen
+            <NavButton dropdown="umzug-planen">
+                Preise berechnen
               </NavButton>
 
               <NavButton dropdown="umzugsfirma-finden">
-                Umzugsfirma finden
+                Firmen vergleichen
               </NavButton>
 
               <NavButton dropdown="services">
-                Services
+                Umzugs-Services
               </NavButton>
 
               <NavButton dropdown="ratgeber">
@@ -171,7 +171,7 @@ export const Navigation = () => {
                   size="lg"
                   className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold shadow-[0_4px_20px_rgba(220,38,38,0.4)] hover:shadow-[0_6px_25px_rgba(220,38,38,0.5)] transition-all animate-[pulseGlow_2s_ease-in-out_infinite] hover:animate-none"
                 >
-                  Offerten erhalten
+                  Gratis Offerten
                 </Button>
               </Link>
             </div>

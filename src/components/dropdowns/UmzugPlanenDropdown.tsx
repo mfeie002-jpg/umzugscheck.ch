@@ -1,7 +1,7 @@
 /**
- * Dropdown: Umzug planen
+ * Dropdown: Preise berechnen
  * 
- * Hilft Privatkunden bei der Vorbereitung des Umzugs
+ * Action-First Navigation: "In 60 Sekunden wissen, was dein Umzug kostet"
  * - Umzugskosten berechnen (interaktiver KI-Preisrechner)
  * - Umzugscheckliste (Download + interaktive Liste)
  * - Zeitplan & Ablauf (Timeline)
@@ -74,7 +74,7 @@ export const UmzugPlanenDropdown = ({ isOpen, onClose }: UmzugPlanenDropdownProp
           
           {/* Column 1: Hauptnavigation */}
           <div>
-            <DropdownSection title="Umzug planen">
+            <DropdownSection title="Preise berechnen" subtitle="In 60 Sekunden wissen, was dein Umzug kostet">
               <div className="space-y-1">
                 {mainItems.map((item) => (
                   <DropdownLink

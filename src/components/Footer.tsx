@@ -75,9 +75,9 @@ export const Footer = () => {
             </p>
           </div>
 
-          {/* Umzug planen */}
+          {/* Preise berechnen */}
           <div>
-            <h4 className="font-bold mb-4 text-primary-foreground">Umzug planen</h4>
+            <h4 className="font-bold mb-4 text-primary-foreground">Preise berechnen</h4>
             <ul className="space-y-2.5 text-sm">
               <li>
               <Link to="/umzugsofferten" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
@@ -102,9 +102,9 @@ export const Footer = () => {
             </ul>
           </div>
 
-          {/* Quick Links */}
+          {/* Umzugs-Services */}
           <div>
-            <h4 className="font-bold mb-4 text-primary-foreground">Services</h4>
+            <h4 className="font-bold mb-4 text-primary-foreground">Umzugs-Services</h4>
             <ul className="space-y-2.5 text-sm">
               <li>
                 <Link to="/privatumzug" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">

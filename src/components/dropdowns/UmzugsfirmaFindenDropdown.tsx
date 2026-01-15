@@ -1,7 +1,7 @@
 /**
- * Dropdown: Umzugsfirma finden
+ * Dropdown: Firmen vergleichen
  * 
- * Ermöglicht die Auswahl von Umzugsunternehmen nach Region
+ * Action-First Navigation: "Top-bewertete Firmen in deiner Region"
  * - Nach Standort suchen (Suchfeld mit Autocomplete)
  * - Beliebte Städte (Zürich, Bern, Basel, Genf, Lausanne)
  * - Kantone A–Z (alle 26 Kantone gruppiert)
@@ -79,7 +79,7 @@ export const UmzugsfirmaFindenDropdown = ({ isOpen, onClose }: UmzugsfirmaFinden
           
           {/* Column 1: Suche + Beliebte Städte */}
           <div>
-            <DropdownSection title="Nach Standort suchen">
+            <DropdownSection title="Firmen vergleichen" subtitle="Top-bewertete Firmen in deiner Region">
               {/* Suchfeld */}
               <div className="relative mb-4">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
