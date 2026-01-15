@@ -114,15 +114,13 @@ export const Navigation = () => {
       >
         <div className="container mx-auto px-2 xs:px-3 sm:px-4 lg:px-6">
           <div className="flex items-center h-14 xs:h-16 sm:h-16 lg:h-20 gap-4 lg:gap-6">
-            {/* Logo with Domain - Always visible */}
-            <Link to="/" className="flex items-center min-w-0 flex-shrink-0 group transition-all duration-300 hover:scale-105">
-              <div className="transition-all duration-300 group-hover:drop-shadow-[0_0_12px_hsl(var(--primary)/0.4)]">
-                <Logo size="xl" className="hidden xl:flex" />
-                <Logo size="lg" className="hidden lg:flex xl:hidden" />
-                {/* Mobile: Show logo with domain text */}
-                <Logo size="md" className="flex lg:hidden" />
-              </div>
-            </Link>
+            {/* Logo - Always visible (no nested links) */}
+            <div className="min-w-0 flex-shrink-0">
+              <Logo size="xl" className="hidden xl:flex" />
+              <Logo size="lg" className="hidden lg:flex xl:hidden" />
+              {/* Mobile */}
+              <Logo size="md" className="flex lg:hidden" />
+            </div>
 
             {/* Desktop Navigation - Dynamic Labels from Variant */}
             <nav className="hidden lg:flex items-center gap-1 xl:gap-2" role="navigation">
