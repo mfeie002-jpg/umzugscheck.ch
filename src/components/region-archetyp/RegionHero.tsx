@@ -9,6 +9,7 @@ import { setPrefill } from "@/lib/prefill";
 import { RegionLiveCounter } from "./RegionLiveCounter";
 import { MicroTrustRow } from "./shared/MicroTrustRow";
 import { MobileCantonSheet } from "./MobileCantonSheet";
+import { getRegionImage } from "@/data/region-images";
 
 interface RegionHeroProps {
   region: RegionData;
@@ -61,8 +62,8 @@ export const RegionHero = ({ region, onRegionChange }: RegionHeroProps) => {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img 
-          src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1920&q=80&auto=format&fit=crop"
-          alt={`Umzugsfirmen in ${region.name} - Professionelle Hilfe beim Umziehen`}
+          src={getRegionImage(region.slug)}
+          alt={`${region.name} - Umzugsfirmen und Landschaft`}
           className="w-full h-full object-cover"
           loading="eager"
           fetchPriority="high"
