@@ -1,17 +1,21 @@
 /**
- * Mobile Menu V15 - ChatGPT Feedback v15
+ * Mobile Menu V15 - Premium Mobile-First UX/UI
  * 
- * Mobile-first accordion menu with:
- * - 4 main sections (Du-Form)
- * - Emotional microcopy
- * - 5-item submenu for Offerten
- * - Sticky CTA footer
- * - Smooth animations
+ * Enhanced with:
+ * - 48-52px touch targets throughout
+ * - Premium gradients & visual hierarchy
+ * - Emotional Swiss-quality design
+ * - Smooth staggered animations
+ * - Trust signals & microcopy
  */
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { X, ChevronDown, ArrowRight, CheckCircle, Shield, Zap, Star, Search } from "lucide-react";
+import { 
+  X, ChevronDown, ArrowRight, CheckCircle, Shield, Zap, Star, Search,
+  ClipboardList, FileSearch, HelpCircle, Truck, Building2, Sparkles, 
+  Globe, Package, Heart, BadgeCheck, Clock
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -51,11 +55,28 @@ const menuVariants = {
   }
 } as const;
 
+const itemVariants = {
+  hidden: { opacity: 0, x: 20 },
+  visible: (i: number) => ({
+    opacity: 1,
+    x: 0,
+    transition: { delay: i * 0.05, duration: 0.3 }
+  })
+} as const;
+
 const TRUST_SIGNALS = [
-  { icon: Shield, label: "Geprüft", color: "text-emerald-600" },
+  { icon: BadgeCheck, label: "Geprüft", color: "text-emerald-600" },
   { icon: Star, label: "4.8★", color: "text-amber-500" },
   { icon: Zap, label: "Gratis", color: "text-primary" },
 ];
+
+// Map section labels to gradient colors
+const SECTION_GRADIENTS: Record<string, { from: string; to: string; icon: React.ElementType }> = {
+  "Plane deinen Umzug": { from: "from-blue-500", to: "to-indigo-600", icon: ClipboardList },
+  "Offerten vergleichen": { from: "from-primary", to: "to-emerald-600", icon: FileSearch },
+  "So funktioniert's": { from: "from-amber-500", to: "to-orange-600", icon: Sparkles },
+  "Hilfe & Kontakt": { from: "from-purple-500", to: "to-pink-600", icon: HelpCircle },
+};
 
 export const MobileMenuV15 = ({ isOpen, onClose, navStructure }: MobileMenuV15Props) => {
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
@@ -69,13 +90,13 @@ export const MobileMenuV15 = ({ isOpen, onClose, navStructure }: MobileMenuV15Pr
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
+          {/* Backdrop with blur */}
           <motion.div
             variants={overlayVariants}
             initial="hidden"
             animate="visible"
             exit="hidden"
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 lg:hidden"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 lg:hidden"
             onClick={onClose}
           />
 
@@ -85,183 +106,274 @@ export const MobileMenuV15 = ({ isOpen, onClose, navStructure }: MobileMenuV15Pr
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="fixed inset-y-0 right-0 w-full max-w-sm bg-background z-50 lg:hidden flex flex-col shadow-2xl"
+            className="fixed inset-y-0 right-0 w-full max-w-[360px] bg-background z-50 lg:hidden flex flex-col shadow-2xl"
           >
             {/* Header with Trust Micro-Bar */}
-            <div className="border-b border-border">
-              {/* Trust Bar */}
-              <div className="flex items-center justify-center gap-4 py-2 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5">
-                {TRUST_SIGNALS.map((signal) => {
+            <div className="border-b border-border/50">
+              {/* Trust Bar - Premium Gradient */}
+              <div className="flex items-center justify-center gap-5 py-2.5 bg-gradient-to-r from-primary/10 via-emerald-500/10 to-primary/10">
+                {TRUST_SIGNALS.map((signal, idx) => {
                   const Icon = signal.icon;
                   return (
-                    <div key={signal.label} className="flex items-center gap-1">
-                      <Icon className={cn("w-3.5 h-3.5", signal.color)} />
-                      <span className="text-xs font-medium text-muted-foreground">{signal.label}</span>
-                    </div>
+                    <motion.div 
+                      key={signal.label} 
+                      className="flex items-center gap-1.5"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.1 + idx * 0.05 }}
+                    >
+                      <Icon className={cn("w-4 h-4", signal.color)} />
+                      <span className="text-xs font-semibold text-foreground">{signal.label}</span>
+                    </motion.div>
                   );
                 })}
               </div>
 
-              {/* Logo & Close */}
+              {/* Logo & Close - Enhanced */}
               <div className="flex items-center justify-between p-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 bg-primary rounded-lg flex items-center justify-center">
-                    <CheckCircle className="w-4 h-4 text-primary-foreground" />
+                <motion.div 
+                  className="flex items-center gap-2.5"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.15 }}
+                >
+                  <div className="w-9 h-9 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center shadow-lg shadow-primary/25">
+                    <CheckCircle className="w-5 h-5 text-primary-foreground" />
                   </div>
-                  <span className="font-bold">
-                    <span className="text-foreground">Umzugs</span>
-                    <span className="text-primary">check</span>
-                    <span className="text-muted-foreground text-sm">.ch</span>
-                  </span>
-                </div>
-                <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full">
+                  <div className="flex flex-col">
+                    <span className="font-bold text-lg leading-tight">
+                      <span className="text-foreground">Umzugs</span>
+                      <span className="text-primary">check</span>
+                      <span className="text-muted-foreground text-sm">.ch</span>
+                    </span>
+                    <span className="text-[10px] text-muted-foreground font-medium">🇨🇭 Schweizer Umzugsvergleich</span>
+                  </div>
+                </motion.div>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={onClose} 
+                  className="rounded-full h-11 w-11 hover:bg-destructive/10 hover:text-destructive transition-all"
+                >
                   <X className="h-5 w-5" />
                   <span className="sr-only">Menü schliessen</span>
                 </Button>
               </div>
 
-              {/* Search Bar */}
+              {/* Search Bar - Enhanced with larger touch target */}
               <div className="px-4 pb-4">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <motion.div 
+                  className="relative"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <input
                     type="text"
                     placeholder="Stadt oder Kanton suchen..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full h-11 pl-10 pr-4 rounded-xl border border-border bg-muted/30 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                    className="w-full h-13 min-h-[52px] pl-12 pr-4 rounded-2xl border-2 border-border/50 bg-muted/40 text-base focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all placeholder:text-muted-foreground/70"
                   />
-                </div>
+                </motion.div>
               </div>
             </div>
 
-            {/* Navigation Accordion */}
-            <div className="flex-1 overflow-y-auto">
-              <nav className="p-4 space-y-2">
-                {navStructure.map((section) => (
-                  <div key={section.label} className="border border-border rounded-xl overflow-hidden bg-card">
-                    {/* Section Header */}
-                    <button
-                      onClick={() => toggleSection(section.label)}
+            {/* Navigation Accordion - Scrollable */}
+            <div className="flex-1 overflow-y-auto overscroll-contain">
+              <nav className="p-4 space-y-3">
+                {navStructure.map((section, idx) => {
+                  const sectionConfig = SECTION_GRADIENTS[section.label] || { 
+                    from: "from-primary", 
+                    to: "to-primary/80",
+                    icon: Package
+                  };
+                  const SectionIcon = sectionConfig.icon;
+
+                  return (
+                    <motion.div 
+                      key={section.label} 
+                      custom={idx}
+                      variants={itemVariants}
+                      initial="hidden"
+                      animate="visible"
                       className={cn(
-                        "w-full flex items-center justify-between p-4 text-left transition-colors",
-                        "hover:bg-accent active:bg-accent",
-                        expandedSection === section.label && "bg-accent"
+                        "rounded-2xl overflow-hidden transition-all duration-300",
+                        expandedSection === section.label 
+                          ? "ring-2 ring-primary/30 shadow-lg shadow-primary/10" 
+                          : "border border-border/50 hover:border-primary/30"
                       )}
                     >
-                      <div className="flex items-center gap-3">
-                        <span className="text-xl">{section.emoji}</span>
-                        <div>
-                          <span className="font-semibold text-foreground block">{section.label}</span>
-                          <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1 max-w-[200px]">
+                      {/* Section Header - 52px touch target */}
+                      <button
+                        onClick={() => toggleSection(section.label)}
+                        className={cn(
+                          "w-full flex items-center gap-4 p-4 min-h-[68px] text-left transition-all",
+                          "active:scale-[0.99] touch-manipulation",
+                          expandedSection === section.label 
+                            ? "bg-gradient-to-r from-primary/10 to-transparent" 
+                            : "hover:bg-muted/50"
+                        )}
+                      >
+                        {/* Gradient Icon Container */}
+                        <div className={cn(
+                          "w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0",
+                          "bg-gradient-to-br shadow-lg",
+                          sectionConfig.from,
+                          sectionConfig.to
+                        )}>
+                          <SectionIcon className="w-6 h-6 text-white" />
+                        </div>
+
+                        <div className="flex-1 min-w-0">
+                          <span className="font-bold text-foreground block text-base">
+                            {section.emoji} {section.label}
+                          </span>
+                          <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2 leading-relaxed">
                             {section.tagline}
                           </p>
                         </div>
-                      </div>
-                      <ChevronDown
-                        className={cn(
-                          "h-5 w-5 text-muted-foreground transition-transform duration-200 flex-shrink-0",
-                          expandedSection === section.label && "rotate-180"
-                        )}
-                      />
-                    </button>
 
-                    {/* Expanded Content */}
-                    <AnimatePresence>
-                      {expandedSection === section.label && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: "auto", opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.2 }}
-                          className="overflow-hidden"
-                        >
-                          <div className="px-4 pb-4 space-y-1 bg-muted/20">
-                            {section.items.map((item) => {
-                              const Icon = item.icon;
-                              return (
-                                <Link
-                                  key={item.href}
-                                  to={item.href}
-                                  onClick={onClose}
-                                  className="flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-accent transition-colors group"
+                        <div className={cn(
+                          "w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-all",
+                          expandedSection === section.label 
+                            ? "bg-primary text-primary-foreground rotate-180" 
+                            : "bg-muted/50 text-muted-foreground"
+                        )}>
+                          <ChevronDown className="h-5 w-5" />
+                        </div>
+                      </button>
+
+                      {/* Expanded Content with Staggered Animation */}
+                      <AnimatePresence>
+                        {expandedSection === section.label && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.3, ease: "easeInOut" }}
+                            className="overflow-hidden"
+                          >
+                            <div className="px-4 pb-4 pt-2 space-y-2 bg-gradient-to-b from-primary/5 to-transparent">
+                              {section.items.map((item, itemIdx) => {
+                                const Icon = item.icon;
+                                return (
+                                  <motion.div
+                                    key={item.href}
+                                    initial={{ opacity: 0, x: -10 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: itemIdx * 0.05 }}
+                                  >
+                                    <Link
+                                      to={item.href}
+                                      onClick={onClose}
+                                      className="flex items-start gap-4 px-4 py-4 min-h-[64px] rounded-xl hover:bg-background/80 active:bg-accent transition-all group touch-manipulation border border-transparent hover:border-border/50 hover:shadow-sm"
+                                    >
+                                      <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center flex-shrink-0 group-hover:from-primary/30 group-hover:to-primary/10 transition-all">
+                                        <Icon className="h-5 w-5 text-primary" />
+                                      </div>
+                                      <div className="flex-1 min-w-0 pt-0.5">
+                                        <span className="text-sm font-semibold text-foreground block group-hover:text-primary transition-colors">
+                                          {item.title}
+                                        </span>
+                                        <span className="text-xs text-muted-foreground line-clamp-2 mt-0.5 leading-relaxed">
+                                          {item.description}
+                                        </span>
+                                      </div>
+                                      <ArrowRight className="w-4 h-4 text-muted-foreground/50 group-hover:text-primary group-hover:translate-x-1 transition-all mt-1 flex-shrink-0" />
+                                    </Link>
+                                  </motion.div>
+                                );
+                              })}
+
+                              {/* Section-specific CTA for Offerten */}
+                              {section.label === "Offerten vergleichen" && (
+                                <motion.div 
+                                  className="pt-3 mt-2 border-t border-border/50"
+                                  initial={{ opacity: 0 }}
+                                  animate={{ opacity: 1 }}
+                                  transition={{ delay: 0.3 }}
                                 >
-                                  <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                                    <Icon className="h-4 w-4 text-primary" />
-                                  </div>
-                                  <div className="flex-1 min-w-0">
-                                    <span className="text-sm font-medium text-foreground block">{item.title}</span>
-                                    <span className="text-xs text-muted-foreground line-clamp-2">{item.description}</span>
-                                  </div>
-                                </Link>
-                              );
-                            })}
+                                  <Button asChild className="w-full h-13 min-h-[52px] font-bold gap-2 text-base rounded-xl bg-gradient-to-r from-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-600/90 shadow-lg shadow-primary/25">
+                                    <Link to="/umzugsofferten" onClick={onClose}>
+                                      <Zap className="w-5 h-5" />
+                                      Gratis Offerten holen
+                                      <ArrowRight className="w-5 h-5" />
+                                    </Link>
+                                  </Button>
+                                  <p className="text-xs text-center text-muted-foreground mt-2">
+                                    ✅ Kostenlos & unverbindlich
+                                  </p>
+                                </motion.div>
+                              )}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </motion.div>
+                  );
+                })}
 
-                            {/* Section-specific CTA */}
-                            {section.label === "Offerten vergleichen" && (
-                              <div className="pt-3 mt-2 border-t border-border">
-                                <Button asChild className="w-full h-11 font-semibold gap-2">
-                                  <Link to="/umzugsofferten" onClick={onClose}>
-                                    Gratis Offerten holen
-                                    <ArrowRight className="w-4 h-4" />
-                                  </Link>
-                                </Button>
-                              </div>
-                            )}
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                ))}
-
-                {/* Für Anbieter Link */}
-                <Link
-                  to="/anbieter"
-                  onClick={onClose}
-                  className="flex items-center justify-between p-4 border border-border rounded-xl bg-card hover:bg-accent transition-colors"
+                {/* Für Anbieter Link - Enhanced */}
+                <motion.div
+                  custom={navStructure.length}
+                  variants={itemVariants}
+                  initial="hidden"
+                  animate="visible"
                 >
-                  <div className="flex items-center gap-3">
-                    <span className="text-xl">💼</span>
-                    <div>
-                      <span className="font-semibold text-foreground block">Für Anbieter</span>
+                  <Link
+                    to="/anbieter"
+                    onClick={onClose}
+                    className="flex items-center gap-4 p-4 min-h-[68px] border border-dashed border-primary/30 rounded-2xl bg-primary/5 hover:bg-primary/10 transition-all group touch-manipulation"
+                  >
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-600 to-slate-800 flex items-center justify-center flex-shrink-0 shadow-lg">
+                      <Building2 className="w-6 h-6 text-white" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <span className="font-bold text-foreground block text-base">💼 Für Anbieter</span>
                       <p className="text-xs text-muted-foreground">Partner werden & Leads erhalten</p>
                     </div>
-                  </div>
-                  <ArrowRight className="w-5 h-5 text-muted-foreground" />
-                </Link>
+                    <ArrowRight className="w-5 h-5 text-primary group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </motion.div>
               </nav>
             </div>
 
-            {/* Sticky CTA Footer */}
-            <div className="p-4 border-t border-border bg-background safe-area-inset-bottom">
-              {/* Trust Pills */}
-              <div className="flex items-center justify-center gap-3 mb-3">
-                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <Shield className="w-3.5 h-3.5 text-emerald-600" />
+            {/* Sticky CTA Footer - Premium Design */}
+            <div className="border-t border-border/50 bg-gradient-to-t from-background via-background to-transparent safe-area-inset-bottom">
+              {/* Trust Pills Row */}
+              <div className="flex items-center justify-center gap-4 py-3 px-4">
+                <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                  <Shield className="w-4 h-4 text-emerald-600" />
                   <span>Gratis</span>
                 </div>
-                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <Zap className="w-3.5 h-3.5 text-primary" />
+                <div className="w-px h-4 bg-border" />
+                <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                  <Clock className="w-4 h-4 text-primary" />
                   <span>In 2 Min</span>
                 </div>
-                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <CheckCircle className="w-3.5 h-3.5 text-emerald-600" />
+                <div className="w-px h-4 bg-border" />
+                <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                  <Heart className="w-4 h-4 text-rose-500" />
                   <span>Swiss Made</span>
                 </div>
               </div>
 
-              {/* Main CTA */}
-              <Button asChild className="w-full h-14 text-base font-bold gap-2 shadow-lg">
-                <Link to="/umzugsofferten" onClick={onClose}>
-                  Kostenlos Offerten erhalten
-                  <ArrowRight className="w-5 h-5" />
-                </Link>
-              </Button>
+              {/* Main CTA Button */}
+              <div className="px-4 pb-4">
+                <Button asChild className="w-full h-14 min-h-[56px] text-base font-bold gap-3 rounded-2xl bg-gradient-to-r from-primary via-primary to-emerald-600 hover:opacity-95 shadow-xl shadow-primary/30 transition-all active:scale-[0.98]">
+                  <Link to="/umzugsofferten" onClick={onClose}>
+                    <CheckCircle className="w-5 h-5" />
+                    Kostenlos Offerten erhalten
+                    <ArrowRight className="w-5 h-5" />
+                  </Link>
+                </Button>
 
-              <p className="text-xs text-center text-muted-foreground mt-2">
-                Unverbindlich • 3–5 Offerten in 24h
-              </p>
+                <p className="text-xs text-center text-muted-foreground mt-3 font-medium">
+                  Unverbindlich • 3–5 Offerten in 24h
+                </p>
+              </div>
             </div>
           </motion.div>
         </>
