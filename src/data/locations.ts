@@ -128,6 +128,14 @@ export const CITIES_MAP: Record<string, CityData> = {
   // === ZG (Zug) ===
   baar: { slug: 'baar', name: 'Baar', cantonSlug: 'zug', cantonName: 'Zug', cantonShort: 'ZG' },
   cham: { slug: 'cham', name: 'Cham', cantonSlug: 'zug', cantonName: 'Zug', cantonShort: 'ZG' },
+  steinhausen: { slug: 'steinhausen', name: 'Steinhausen', cantonSlug: 'zug', cantonName: 'Zug', cantonShort: 'ZG' },
+  huenenberg: { slug: 'huenenberg', name: 'Hünenberg', cantonSlug: 'zug', cantonName: 'Zug', cantonShort: 'ZG' },
+  'risch-rotkreuz': { slug: 'risch-rotkreuz', name: 'Risch-Rotkreuz', cantonSlug: 'zug', cantonName: 'Zug', cantonShort: 'ZG' },
+  oberaegeri: { slug: 'oberaegeri', name: 'Oberägeri', cantonSlug: 'zug', cantonName: 'Zug', cantonShort: 'ZG' },
+  unteraegeri: { slug: 'unteraegeri', name: 'Unterägeri', cantonSlug: 'zug', cantonName: 'Zug', cantonShort: 'ZG' },
+  menzingen: { slug: 'menzingen', name: 'Menzingen', cantonSlug: 'zug', cantonName: 'Zug', cantonShort: 'ZG' },
+  walchwil: { slug: 'walchwil', name: 'Walchwil', cantonSlug: 'zug', cantonName: 'Zug', cantonShort: 'ZG' },
+  neuheim: { slug: 'neuheim', name: 'Neuheim', cantonSlug: 'zug', cantonName: 'Zug', cantonShort: 'ZG' },
 
   // === SG (St. Gallen) ===
   wil: { slug: 'wil', name: 'Wil', cantonSlug: 'st-gallen', cantonName: 'St. Gallen', cantonShort: 'SG' },
