@@ -115,20 +115,18 @@ export const Navigation = () => {
         <div className="container mx-auto px-2 xs:px-3 sm:px-4 lg:px-6">
           <div className="flex items-center h-14 xs:h-16 sm:h-16 lg:h-20 gap-4 lg:gap-6">
             {/* Logo with Domain - Always visible */}
-            <Link to="/" className="flex items-center min-w-0 flex-shrink-0">
-              <div className="group flex items-center gap-2 transition-all duration-300 hover:scale-105">
-                <div className="transition-all duration-300 group-hover:drop-shadow-[0_0_12px_hsl(var(--primary)/0.4)] flex items-center">
-                  <Logo size="xl" className="hidden xl:flex" />
-                  <Logo size="lg" className="hidden lg:flex xl:hidden" />
-                  {/* Mobile: Show logo with domain text */}
-                  <Logo size="md" className="flex lg:hidden" />
-                </div>
-
-                {/* Slogan below logo (Desktop only) with emoji */}
-                <span className="hidden lg:flex items-center gap-1 text-[9px] xl:text-xs text-muted-foreground/80 font-medium transition-colors duration-300 group-hover:text-primary leading-tight">
-                  🇨🇭 Der Schweizer Umzugsvergleich
-                </span>
+            <Link to="/" className="flex flex-col min-w-0 flex-shrink-0 group transition-all duration-300 hover:scale-105">
+              <div className="transition-all duration-300 group-hover:drop-shadow-[0_0_12px_hsl(var(--primary)/0.4)] flex items-center">
+                <Logo size="xl" className="hidden xl:flex" />
+                <Logo size="lg" className="hidden lg:flex xl:hidden" />
+                {/* Mobile: Show logo with domain text */}
+                <Logo size="md" className="flex lg:hidden" />
               </div>
+
+              {/* Slogan below logo (Desktop only) - no CH */}
+              <span className="hidden lg:block text-[9px] xl:text-[10px] text-muted-foreground/70 font-medium leading-tight pl-0.5 -mt-0.5">
+                Der Schweizer Umzugsvergleich
+              </span>
             </Link>
 
             {/* Desktop Navigation - Dynamic Labels from Variant */}
