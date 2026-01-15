@@ -3,16 +3,16 @@ import { Menu, X, ChevronDown, ArrowRight } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { MobileMenu } from "@/components/MobileMenu";
-import { CompaniesDropdownArchetype } from "@/components/CompaniesDropdownArchetype";
-import { ServicesDropdownArchetype } from "@/components/ServicesDropdownArchetype";
-import { RegionsDropdownArchetype } from "@/components/RegionsDropdownArchetype";
-import { RatgeberDropdownArchetype } from "@/components/RatgeberDropdownArchetype";
-import { ProviderDropdownArchetype } from "@/components/ProviderDropdownArchetype";
+import { UmzugPlanenDropdown } from "@/components/dropdowns/UmzugPlanenDropdown";
+import { UmzugsfirmaFindenDropdown } from "@/components/dropdowns/UmzugsfirmaFindenDropdown";
+import { ServicesDropdown } from "@/components/dropdowns/ServicesDropdown";
+import { RatgeberDropdown } from "@/components/dropdowns/RatgeberDropdown";
+import { FuerFirmenDropdown } from "@/components/dropdowns/FuerFirmenDropdown";
 import { Logo } from "@/components/Logo";
 import { cn } from "@/lib/utils";
 
-// Removed 'calculator' - CTA button serves this purpose (#1)
-type DropdownType = 'companies' | 'services' | 'regions' | 'ratgeber' | 'provider' | null;
+// 5 Hauptkategorien gemäß Navigationskonzept 2026
+type DropdownType = 'umzug-planen' | 'umzugsfirma-finden' | 'services' | 'ratgeber' | 'fuer-firmen' | null;
 
 export const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -20,7 +20,7 @@ export const Navigation = () => {
   const [scrolled, setScrolled] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Track scroll for enhanced shadow (#3)
+  // Track scroll for enhanced shadow
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
@@ -41,7 +41,6 @@ export const Navigation = () => {
     setActiveDropdown(dropdown);
   };
 
-  // Increased delay from 150ms to 200ms (#5)
   const handleMouseLeave = () => {
     timeoutRef.current = setTimeout(() => {
       setActiveDropdown(null);
@@ -76,7 +75,7 @@ export const Navigation = () => {
         }
       }}
       className={cn(
-        "group/nav relative flex items-center gap-1 px-3 py-2 text-foreground hover:text-primary transition-colors font-medium rounded-lg hover:bg-accent",
+        "group/nav relative flex items-center gap-1 px-3 py-2 text-foreground hover:text-primary transition-colors font-medium rounded-lg hover:bg-accent whitespace-nowrap",
         "after:absolute after:bottom-1 after:left-3 after:right-3 after:h-0.5 after:bg-primary after:origin-left after:scale-x-0 after:transition-transform after:duration-300 hover:after:scale-x-100",
         activeDropdown === dropdown && "text-primary bg-accent after:scale-x-100"
       )}
@@ -118,25 +117,25 @@ export const Navigation = () => {
               </div>
             </div>
 
-            {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center gap-1">
-              <NavButton dropdown="companies">
-                Umzugsfirmen
+            {/* Desktop Navigation - alle 5 Kategorien nebeneinander */}
+            <div className="hidden lg:flex items-center gap-0.5">
+              <NavButton dropdown="umzug-planen">
+                Umzug planen
+              </NavButton>
+
+              <NavButton dropdown="umzugsfirma-finden">
+                Umzugsfirma finden
               </NavButton>
 
               <NavButton dropdown="services">
                 Services
               </NavButton>
 
-              <NavButton dropdown="regions">
-                Kantone & Städte
-              </NavButton>
-
               <NavButton dropdown="ratgeber">
                 Ratgeber
               </NavButton>
 
-              <NavButton dropdown="provider">
+              <NavButton dropdown="fuer-firmen">
                 Für Firmen
               </NavButton>
             </div>
@@ -172,7 +171,7 @@ export const Navigation = () => {
                   size="lg"
                   className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold shadow-[0_4px_20px_rgba(220,38,38,0.4)] hover:shadow-[0_6px_25px_rgba(220,38,38,0.5)] transition-all animate-[pulseGlow_2s_ease-in-out_infinite] hover:animate-none"
                 >
-                  Kostenlos Offerten erhalten
+                  Offerten erhalten
                 </Button>
               </Link>
             </div>
@@ -189,24 +188,24 @@ export const Navigation = () => {
           }}
           onMouseLeave={handleMouseLeave}
         >
-          <CompaniesDropdownArchetype 
-            isOpen={activeDropdown === 'companies'} 
+          <UmzugPlanenDropdown 
+            isOpen={activeDropdown === 'umzug-planen'} 
             onClose={closeAllDropdowns} 
           />
-          <ServicesDropdownArchetype 
+          <UmzugsfirmaFindenDropdown 
+            isOpen={activeDropdown === 'umzugsfirma-finden'} 
+            onClose={closeAllDropdowns} 
+          />
+          <ServicesDropdown 
             isOpen={activeDropdown === 'services'} 
             onClose={closeAllDropdowns} 
           />
-          <RegionsDropdownArchetype 
-            isOpen={activeDropdown === 'regions'} 
-            onClose={closeAllDropdowns} 
-          />
-          <RatgeberDropdownArchetype
+          <RatgeberDropdown
             isOpen={activeDropdown === 'ratgeber'} 
             onClose={closeAllDropdowns} 
           />
-          <ProviderDropdownArchetype 
-            isOpen={activeDropdown === 'provider'} 
+          <FuerFirmenDropdown 
+            isOpen={activeDropdown === 'fuer-firmen'} 
             onClose={closeAllDropdowns} 
           />
         </div>
