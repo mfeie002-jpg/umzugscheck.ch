@@ -1,11 +1,10 @@
 /**
- * Dropdown: Preise berechnen
+ * Dropdown: Kosten berechnen (Ultimate Variant)
  * 
- * Action-First Navigation: "In 60 Sekunden wissen, was dein Umzug kostet"
- * - Umzugskosten berechnen (interaktiver KI-Preisrechner)
- * - Umzugscheckliste (Download + interaktive Liste)
- * - Zeitplan & Ablauf (Timeline)
- * - Umzugstipps (Einstieg in Ratgeber)
+ * ULTIMATE DESIGN - Action-First mit klarer User Journey
+ * - Primär: Preisrechner / Kostenübersicht
+ * - Sekundär: Checkliste, Zeitplan, Tipps
+ * - CTA: Offerten erhalten
  */
 
 import { Link } from "react-router-dom";
@@ -17,13 +16,14 @@ import {
   FileDown,
   ArrowRight,
   Sparkles,
-  Star
+  Zap
 } from "lucide-react";
 import { DropdownWrapper } from "@/components/navigation/DropdownWrapper";
 import { DropdownSection } from "@/components/navigation/DropdownSection";
 import { DropdownLink } from "@/components/navigation/DropdownLink";
 import { DropdownCTACard } from "@/components/navigation/DropdownCTACard";
 import { Button } from "@/components/ui/button";
+import { useNavigationVariant } from "@/hooks/useNavigationVariant";
 
 interface UmzugPlanenDropdownProps {
   isOpen: boolean;
@@ -34,7 +34,7 @@ const mainItems = [
   {
     icon: Calculator,
     title: "Umzugskosten berechnen",
-    description: "KI-Preisrechner: Was kostet mein Umzug?",
+    description: "KI-Preisrechner – in 60 Sek. deine Kosten",
     href: "/vergleich",
     featured: true,
     badge: "Beliebt",
@@ -42,7 +42,7 @@ const mainItems = [
   {
     icon: CheckSquare,
     title: "Umzugscheckliste",
-    description: "Kompletter Leitfaden für deinen Umzug",
+    description: "Der komplette Leitfaden für deinen Umzug",
     href: "/ratgeber/umzugscheckliste-download",
     featured: true,
   },
@@ -54,27 +54,32 @@ const mainItems = [
   },
   {
     icon: Lightbulb,
-    title: "Umzugstipps",
-    description: "Packtipps, Entrümpeln, Umzug mit Kindern",
-    href: "/ratgeber/tipps",
+    title: "Spartipps & Tricks",
+    description: "So sparst du bis zu 40% bei deinem Umzug",
+    href: "/ratgeber/kosten",
   },
 ];
 
 const quickTools = [
   { title: "Checkliste PDF", href: "/ratgeber/umzugscheckliste-download", icon: FileDown },
   { title: "Kündigungsvorlage", href: "/ratgeber/kuendigung", icon: FileDown },
-  { title: "Spartipps", href: "/ratgeber/kosten", icon: ArrowRight },
+  { title: "Übergabeprotokoll", href: "/ratgeber/wohnungsabgabe", icon: FileDown },
 ];
 
 export const UmzugPlanenDropdown = ({ isOpen, onClose }: UmzugPlanenDropdownProps) => {
+  const navVariant = useNavigationVariant();
+  
   return (
     <DropdownWrapper isOpen={isOpen} onClose={onClose}>
       <div className="container mx-auto px-4 lg:px-6 py-6">
-        <div className="grid lg:grid-cols-[1fr_220px_280px] gap-6 lg:gap-8">
+        <div className="grid lg:grid-cols-[1fr_200px_280px] gap-6 lg:gap-8">
           
           {/* Column 1: Hauptnavigation */}
           <div>
-            <DropdownSection title="Preise berechnen" subtitle="In 60 Sekunden wissen, was dein Umzug kostet">
+            <DropdownSection 
+              title={navVariant.labels.preisrechner.toUpperCase()} 
+              subtitle={navVariant.microcopy.preisrechner}
+            >
               <div className="space-y-1">
                 {mainItems.map((item) => (
                   <DropdownLink
@@ -92,10 +97,10 @@ export const UmzugPlanenDropdown = ({ isOpen, onClose }: UmzugPlanenDropdownProp
             </DropdownSection>
           </div>
 
-          {/* Column 2: Quick Tools */}
+          {/* Column 2: Downloads & Schnellstart */}
           <div className="lg:border-l lg:border-border lg:pl-6">
-            <DropdownSection title="Downloads & Tools">
-              <div className="space-y-2">
+            <DropdownSection title="Downloads">
+              <div className="space-y-1">
                 {quickTools.map((tool) => (
                   <Link
                     key={tool.href}
@@ -110,10 +115,10 @@ export const UmzugPlanenDropdown = ({ isOpen, onClose }: UmzugPlanenDropdownProp
               </div>
 
               {/* Quick Start Button */}
-              <div className="mt-6 pt-4 border-t border-border">
+              <div className="mt-5 pt-4 border-t border-border">
                 <div className="flex items-center gap-2 mb-3">
-                  <Sparkles className="w-4 h-4 text-primary" />
-                  <span className="text-sm font-semibold">Schnellstart</span>
+                  <Zap className="w-4 h-4 text-primary" />
+                  <span className="text-xs font-bold text-muted-foreground uppercase tracking-wide">Schnellstart</span>
                 </div>
                 <Button 
                   asChild 
@@ -121,7 +126,7 @@ export const UmzugPlanenDropdown = ({ isOpen, onClose }: UmzugPlanenDropdownProp
                   className="w-full bg-primary hover:bg-primary/90"
                 >
                   <Link to="/umzugsofferten" onClick={onClose}>
-                    Jetzt Offerten anfragen
+                    Jetzt Offerten
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Link>
                 </Button>
@@ -133,12 +138,12 @@ export const UmzugPlanenDropdown = ({ isOpen, onClose }: UmzugPlanenDropdownProp
           <div className="lg:border-l lg:border-border lg:pl-6">
             <DropdownCTACard
               title="Kostenlose Offerten"
-              description="Starte mit dem Preisrechner und erhalte unverbindliche Angebote."
-              icon={Star}
+              description="Starte mit dem Preisrechner und erhalte unverbindliche Angebote von geprüften Firmen."
+              icon={Sparkles}
               bullets={[
                 "Preisvorschau in 2 Min",
                 "3–5 Angebote in 24–48h",
-                "100% kostenlos"
+                "100% kostenlos & unverbindlich"
               ]}
               buttonText="Preisrechner starten"
               buttonHref="/vergleich"

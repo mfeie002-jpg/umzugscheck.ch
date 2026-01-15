@@ -1,10 +1,11 @@
 /**
- * Dropdown: Firmen vergleichen
+ * Dropdown: Firmen vergleichen (Ultimate Variant)
  * 
- * Action-First Navigation: "Top-bewertete Firmen in deiner Region"
- * - Nach Standort suchen (Suchfeld mit Autocomplete)
- * - Beliebte Städte (Zürich, Bern, Basel, Genf, Lausanne)
- * - Kantone A–Z (alle 26 Kantone gruppiert)
+ * ULTIMATE DESIGN - Lokale Suche mit Kanton-Directory
+ * - Suchfeld mit Autocomplete
+ * - Top 5 Städte prominent
+ * - Alle 26 Kantone A-Z
+ * - CTA: Offerten in deiner Region
  */
 
 import { useState, useMemo } from "react";
@@ -14,22 +15,25 @@ import {
   MapPin, 
   Building2,
   ArrowRight,
-  Navigation
+  Navigation,
+  Star,
+  TrendingUp
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { DropdownWrapper } from "@/components/navigation/DropdownWrapper";
 import { DropdownSection } from "@/components/navigation/DropdownSection";
 import { DropdownCTACard } from "@/components/navigation/DropdownCTACard";
-import { CANTONS_MAP, CITIES_MAP, type CantonData, type CityData } from "@/data/locations";
+import { CANTONS_MAP, CITIES_MAP, type CityData } from "@/data/locations";
 import { cn } from "@/lib/utils";
+import { useNavigationVariant } from "@/hooks/useNavigationVariant";
 
 interface UmzugsfirmaFindenDropdownProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-// Beliebte Städte (Top 5 gemäß Konzept)
+// Top 5 Städte (höchste Conversion)
 const POPULAR_CITIES = ['zuerich', 'bern', 'basel', 'genf', 'lausanne'];
 
 // Alle Kantone für die A-Z Liste
@@ -44,6 +48,7 @@ const CANTON_GROUPS = {
 
 export const UmzugsfirmaFindenDropdown = ({ isOpen, onClose }: UmzugsfirmaFindenDropdownProps) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const navVariant = useNavigationVariant();
 
   // Popular cities data
   const popularCities = useMemo(() => 
@@ -75,11 +80,14 @@ export const UmzugsfirmaFindenDropdown = ({ isOpen, onClose }: UmzugsfirmaFinden
   return (
     <DropdownWrapper isOpen={isOpen} onClose={onClose}>
       <div className="container mx-auto px-4 lg:px-6 py-6">
-        <div className="grid lg:grid-cols-[280px_1fr_280px] gap-6 lg:gap-8">
+        <div className="grid lg:grid-cols-[260px_1fr_280px] gap-6 lg:gap-8">
           
           {/* Column 1: Suche + Beliebte Städte */}
           <div>
-            <DropdownSection title="Firmen vergleichen" subtitle="Top-bewertete Firmen in deiner Region">
+            <DropdownSection 
+              title={navVariant.labels.firmen.toUpperCase()} 
+              subtitle={navVariant.microcopy.firmen}
+            >
               {/* Suchfeld */}
               <div className="relative mb-4">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -88,7 +96,7 @@ export const UmzugsfirmaFindenDropdown = ({ isOpen, onClose }: UmzugsfirmaFinden
                   placeholder="Ort oder PLZ eingeben..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 h-10"
+                  className="pl-10 h-11 border-2 focus:border-primary"
                 />
               </div>
 
@@ -97,17 +105,17 @@ export const UmzugsfirmaFindenDropdown = ({ isOpen, onClose }: UmzugsfirmaFinden
                 <div className="space-y-3 mb-4 max-h-[280px] overflow-y-auto">
                   {searchResults.cantons.length > 0 && (
                     <div>
-                      <p className="text-xs font-medium text-muted-foreground mb-2">Kantone</p>
+                      <p className="text-xs font-bold text-muted-foreground mb-2 uppercase tracking-wide">Kantone</p>
                       <div className="space-y-1">
                         {searchResults.cantons.map((canton) => (
                           <Link
                             key={canton.slug}
                             to={`/umzugsfirmen/kanton-${canton.slug}`}
                             onClick={onClose}
-                            className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-accent transition-colors text-sm"
+                            className="flex items-center gap-2 px-3 py-2.5 rounded-lg hover:bg-accent transition-colors text-sm"
                           >
                             <MapPin className="w-3.5 h-3.5 text-primary" />
-                            <span>Kanton {canton.name}</span>
+                            <span className="font-medium">Kanton {canton.name}</span>
                             <Badge variant="secondary" className="ml-auto text-[10px]">{canton.short}</Badge>
                           </Link>
                         ))}
@@ -117,17 +125,17 @@ export const UmzugsfirmaFindenDropdown = ({ isOpen, onClose }: UmzugsfirmaFinden
                   
                   {searchResults.cities.length > 0 && (
                     <div>
-                      <p className="text-xs font-medium text-muted-foreground mb-2">Städte</p>
+                      <p className="text-xs font-bold text-muted-foreground mb-2 uppercase tracking-wide">Städte</p>
                       <div className="space-y-1">
                         {searchResults.cities.map((city) => (
                           <Link
                             key={city.slug}
                             to={`/umzugsfirmen/${city.slug}`}
                             onClick={onClose}
-                            className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-accent transition-colors text-sm"
+                            className="flex items-center gap-2 px-3 py-2.5 rounded-lg hover:bg-accent transition-colors text-sm"
                           >
                             <Building2 className="w-3.5 h-3.5 text-muted-foreground" />
-                            <span>{city.name}</span>
+                            <span className="font-medium">{city.name}</span>
                             <span className="text-xs text-muted-foreground ml-auto">{city.cantonShort}</span>
                           </Link>
                         ))}
@@ -138,16 +146,16 @@ export const UmzugsfirmaFindenDropdown = ({ isOpen, onClose }: UmzugsfirmaFinden
               )}
 
               {noResults && (
-                <p className="text-sm text-muted-foreground text-center py-3">
+                <p className="text-sm text-muted-foreground text-center py-3 bg-muted rounded-lg">
                   Keine Ergebnisse für "{searchTerm}"
                 </p>
               )}
 
               {/* Beliebte Städte (wenn nicht gesucht wird) */}
               {!searchTerm.trim() && (
-                <div className="mt-4">
-                  <p className="text-xs font-medium text-muted-foreground mb-2">Beliebte Städte</p>
-                  <div className="space-y-1">
+                <div className="mt-3">
+                  <p className="text-xs font-bold text-muted-foreground mb-2 uppercase tracking-wide">Beliebte Städte</p>
+                  <div className="space-y-0.5">
                     {popularCities.map((city) => (
                       <Link
                         key={city.slug}
@@ -169,11 +177,11 @@ export const UmzugsfirmaFindenDropdown = ({ isOpen, onClose }: UmzugsfirmaFinden
 
           {/* Column 2: Kantone A–Z */}
           <div className="lg:border-l lg:border-border lg:pl-6">
-            <DropdownSection title="Kantone A–Z">
+            <DropdownSection title="Alle Kantone A–Z">
               <div className="grid grid-cols-3 gap-4">
                 {Object.entries(CANTON_GROUPS).map(([groupName, cantons]) => (
                   <div key={groupName}>
-                    <p className="text-xs font-bold text-muted-foreground mb-2">{groupName}</p>
+                    <p className="text-xs font-bold text-primary mb-2">{groupName}</p>
                     <div className="space-y-0.5">
                       {cantons.map((canton) => (
                         <Link
@@ -181,7 +189,7 @@ export const UmzugsfirmaFindenDropdown = ({ isOpen, onClose }: UmzugsfirmaFinden
                           to={`/umzugsfirmen/kanton-${canton.slug}`}
                           onClick={onClose}
                           className={cn(
-                            "block text-sm py-1 px-2 rounded hover:bg-accent hover:text-primary transition-colors truncate",
+                            "block text-sm py-1.5 px-2 rounded hover:bg-accent hover:text-primary transition-colors truncate",
                             "text-muted-foreground hover:text-foreground"
                           )}
                           title={`Umzugsfirmen im Kanton ${canton.name}`}
@@ -212,7 +220,7 @@ export const UmzugsfirmaFindenDropdown = ({ isOpen, onClose }: UmzugsfirmaFinden
               description="Finde geprüfte Umzugsfirmen in wenigen Minuten."
               icon={Navigation}
               bullets={[
-                "Lokale Umzugsfirmen",
+                "Lokale Top-Firmen",
                 "Bewertungen & Vergleich",
                 "Kostenlos & unverbindlich"
               ]}

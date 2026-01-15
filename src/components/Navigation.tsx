@@ -10,6 +10,7 @@ import { RatgeberDropdown } from "@/components/dropdowns/RatgeberDropdown";
 import { FuerFirmenDropdown } from "@/components/dropdowns/FuerFirmenDropdown";
 import { Logo } from "@/components/Logo";
 import { cn } from "@/lib/utils";
+import { useNavigationVariant } from "@/hooks/useNavigationVariant";
 
 // 5 Hauptkategorien gemäß Navigationskonzept 2026
 type DropdownType = 'umzug-planen' | 'umzugsfirma-finden' | 'services' | 'ratgeber' | 'fuer-firmen' | null;
@@ -19,6 +20,9 @@ export const Navigation = () => {
   const [activeDropdown, setActiveDropdown] = useState<DropdownType>(null);
   const [scrolled, setScrolled] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  
+  // Get active navigation variant
+  const navVariant = useNavigationVariant();
 
   // Track scroll for enhanced shadow
   useEffect(() => {
@@ -117,26 +121,26 @@ export const Navigation = () => {
               </div>
             </div>
 
-            {/* Desktop Navigation - alle 5 Kategorien nebeneinander */}
+            {/* Desktop Navigation - Dynamic Labels from Variant */}
             <div className="hidden lg:flex items-center gap-0.5">
-            <NavButton dropdown="umzug-planen">
-                Preise berechnen
+              <NavButton dropdown="umzug-planen">
+                {navVariant.labels.preisrechner}
               </NavButton>
 
               <NavButton dropdown="umzugsfirma-finden">
-                Firmen vergleichen
+                {navVariant.labels.firmen}
               </NavButton>
 
               <NavButton dropdown="services">
-                Umzugs-Services
+                {navVariant.labels.services}
               </NavButton>
 
               <NavButton dropdown="ratgeber">
-                Ratgeber
+                {navVariant.labels.ratgeber}
               </NavButton>
 
               <NavButton dropdown="fuer-firmen">
-                Für Firmen
+                {navVariant.labels.fuerFirmen}
               </NavButton>
             </div>
 
@@ -171,7 +175,7 @@ export const Navigation = () => {
                   size="lg"
                   className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold shadow-[0_4px_20px_rgba(220,38,38,0.4)] hover:shadow-[0_6px_25px_rgba(220,38,38,0.5)] transition-all animate-[pulseGlow_2s_ease-in-out_infinite] hover:animate-none"
                 >
-                  Gratis Offerten
+                  {navVariant.labels.cta}
                 </Button>
               </Link>
             </div>

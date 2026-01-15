@@ -1,12 +1,11 @@
 /**
- * Dropdown: Ratgeber
+ * Dropdown: Tipps & Hilfe (Ultimate Variant)
  * 
- * Wissensbereich mit Tipps, Checklisten und hilfreichen Artikeln
- * - Umzug Checkliste (PDF)
- * - Wohnungsübergabe & Reinigung
- * - Kündigung & Ummeldung
- * - Spartipps & Preisvergleich
- * - Weitere Umzugstipps
+ * ULTIMATE DESIGN - Wissensbereich mit klarem Mehrwert
+ * - Top Ratgeber: Checkliste, Wohnungsübergabe, Kündigung, Spartipps
+ * - Weitere Themen: Zeitplan, Halteverbot, Mit Kindern, Packtipps
+ * - Downloads: PDFs und Vorlagen
+ * - CTA: Umzug jetzt planen
  */
 
 import { Link } from "react-router-dom";
@@ -15,18 +14,20 @@ import {
   Home,
   FileText,
   DollarSign,
-  Lightbulb,
   FileDown,
   Calendar,
   MapPin,
   Baby,
+  Box,
   ArrowRight,
-  Rocket
+  Rocket,
+  BookOpen
 } from "lucide-react";
 import { DropdownWrapper } from "@/components/navigation/DropdownWrapper";
 import { DropdownSection } from "@/components/navigation/DropdownSection";
 import { DropdownLink } from "@/components/navigation/DropdownLink";
 import { DropdownCTACard } from "@/components/navigation/DropdownCTACard";
+import { useNavigationVariant } from "@/hooks/useNavigationVariant";
 
 interface RatgeberDropdownProps {
   isOpen: boolean;
@@ -58,7 +59,7 @@ const mainGuides = [
   {
     icon: DollarSign,
     title: "Spartipps & Preisvergleich",
-    description: "Umzugskosten sparen",
+    description: "Bis zu 40% bei Umzugskosten sparen",
     href: "/ratgeber/kosten",
   },
 ];
@@ -67,7 +68,7 @@ const additionalTopics = [
   { icon: Calendar, title: "Zeitplan erstellen", href: "/ratgeber/zeitplan" },
   { icon: MapPin, title: "Halteverbot beantragen", href: "/ratgeber/halteverbot" },
   { icon: Baby, title: "Umzug mit Kindern", href: "/ratgeber/umzug-mit-kindern" },
-  { icon: Lightbulb, title: "Packtipps", href: "/ratgeber/packtipps" },
+  { icon: Box, title: "Packtipps", href: "/ratgeber/packtipps" },
 ];
 
 const downloads = [
@@ -77,6 +78,8 @@ const downloads = [
 ];
 
 export const RatgeberDropdown = ({ isOpen, onClose }: RatgeberDropdownProps) => {
+  const navVariant = useNavigationVariant();
+  
   return (
     <DropdownWrapper isOpen={isOpen} onClose={onClose}>
       <div className="container mx-auto px-4 lg:px-6 py-6">
@@ -84,7 +87,10 @@ export const RatgeberDropdown = ({ isOpen, onClose }: RatgeberDropdownProps) => 
           
           {/* Column 1: Hauptratgeber */}
           <div>
-            <DropdownSection title="Ratgeber" subtitle="Checklisten, Tipps & Kostensparen">
+            <DropdownSection 
+              title={navVariant.labels.ratgeber.toUpperCase()} 
+              subtitle={navVariant.microcopy.ratgeber}
+            >
               <div className="space-y-1">
                 {mainGuides.map((guide) => (
                   <DropdownLink
@@ -123,7 +129,7 @@ export const RatgeberDropdown = ({ isOpen, onClose }: RatgeberDropdownProps) => 
 
               {/* Downloads Section */}
               <div className="mt-5 pt-4 border-t border-border">
-                <p className="text-xs font-medium text-muted-foreground mb-2">Downloads & Vorlagen</p>
+                <p className="text-xs font-bold text-muted-foreground mb-2 uppercase tracking-wide">Downloads & Vorlagen</p>
                 <div className="space-y-1">
                   {downloads.map((download) => (
                     <Link
@@ -159,7 +165,7 @@ export const RatgeberDropdown = ({ isOpen, onClose }: RatgeberDropdownProps) => 
               bullets={[
                 "Kostenloser Preisrechner",
                 "Unverbindliche Offerten",
-                "Geprüfte Anbieter"
+                "Geprüfte Schweizer Anbieter"
               ]}
               buttonText="Jetzt Offerten erhalten"
               buttonHref="/umzugsofferten"
