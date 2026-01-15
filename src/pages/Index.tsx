@@ -25,7 +25,7 @@ const EnhancedRegionsGrid = lazy(() => import("@/components/homepage/EnhancedReg
 
 const EnhancedFAQ = lazy(() => import("@/components/homepage/EnhancedFAQ").then(m => ({ default: m.EnhancedFAQ })));
 const EnhancedFinalCTA = lazy(() => import("@/components/homepage/EnhancedFinalCTA").then(m => ({ default: m.EnhancedFinalCTA })));
-const CookieConsent = lazy(() => import("@/components/homepage/CookieConsent").then(m => ({ default: m.CookieConsent })));
+const CookieConsentBanner = lazy(() => import("@/components/CookieConsentBanner").then(m => ({ default: m.CookieConsentBanner })));
 const AlternativeContactSection = lazy(() => import("@/components/homepage/AlternativeContactSection").then(m => ({ default: m.AlternativeContactSection })));
 
 
@@ -174,7 +174,7 @@ const Index = () => {
         <HotjarScript />
         
         <Suspense fallback={null}>
-          <CookieConsent />
+          <CookieConsentBanner />
         </Suspense>
       </div>
     </ErrorBoundary>

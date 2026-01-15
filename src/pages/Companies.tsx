@@ -5,6 +5,7 @@ import { de } from "date-fns/locale";
 import { OptimizedSEO } from "@/components/OptimizedSEO";
 import { OnboardingHint } from "@/components/OnboardingHint";
 import { OffertenCTA } from "@/components/OffertenCTA";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -553,6 +554,17 @@ const Companies = () => {
       />
       
       <main className="flex-1">
+        {/* Breadcrumbs */}
+        <div className="container mx-auto px-4 pt-4">
+          <Breadcrumbs 
+            items={[
+              { label: "Umzugsfirmen", href: "/umzugsfirmen" },
+              { label: "Alle Firmen" }
+            ]}
+            variant="minimal"
+          />
+        </div>
+        
         {/* Header */}
         <section className="py-12 sm:py-16 md:py-20 lg:py-28 gradient-hero text-white relative overflow-hidden">
           {/* Background decoration */}
