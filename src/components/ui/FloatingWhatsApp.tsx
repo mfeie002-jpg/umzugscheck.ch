@@ -11,7 +11,7 @@ interface FloatingWhatsAppProps {
 
 export const FloatingWhatsApp = memo(function FloatingWhatsApp({
   phoneNumber = "41780980000", // Default Swiss number format without +
-  message = "Hallo! Ich interessiere mich für einen Umzug und hätte gerne mehr Informationen.",
+  message = "Hallo! Ich möchte gerne einen Umzug buchen oder eine Offerte anfragen. Können Sie mir helfen?",
   delayMs = 30000, // 30 seconds default
 }: FloatingWhatsAppProps) {
   const [isVisible, setIsVisible] = useState(false);
@@ -57,7 +57,7 @@ export const FloatingWhatsApp = memo(function FloatingWhatsApp({
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -10 }}
-                className="absolute bottom-16 left-0 w-52 p-3 bg-card rounded-xl shadow-lg border border-border mb-2"
+                className="absolute bottom-16 left-0 w-56 p-3 bg-card rounded-xl shadow-lg border border-border mb-2"
               >
                 <button
                   onClick={() => setIsTooltipOpen(false)}
@@ -66,11 +66,11 @@ export const FloatingWhatsApp = memo(function FloatingWhatsApp({
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
-                <p className="text-sm font-medium text-foreground pr-4">
-                  Fragen? Schreiben Sie uns auf WhatsApp!
+                <p className="text-sm font-bold text-foreground pr-4">
+                  📞 Jetzt per WhatsApp buchen!
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Schnelle Antwort garantiert
+                  Offerte anfragen • Umzug buchen • Schnelle Antwort
                 </p>
               </motion.div>
             )}

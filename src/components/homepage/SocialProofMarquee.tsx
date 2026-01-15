@@ -3,12 +3,12 @@ import { motion } from "framer-motion";
 import { Star, Quote, Users, Award, TrendingUp, ShieldCheck } from "lucide-react";
 
 const testimonials = [
-  { name: "M. Keller", city: "Zürich", text: "Super schnell und unkompliziert!", rating: 5, avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&h=60&fit=crop&crop=face" },
-  { name: "A. Müller", city: "Basel", text: "40% günstiger als erwartet.", rating: 5, avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=60&h=60&fit=crop&crop=face" },
-  { name: "S. Weber", city: "Bern", text: "Sehr professionelle Abwicklung.", rating: 5, avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=60&h=60&fit=crop&crop=face" },
-  { name: "L. Fischer", city: "Luzern", text: "Kann ich nur empfehlen!", rating: 5, avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=60&h=60&fit=crop&crop=face" },
-  { name: "R. Schmid", city: "Winterthur", text: "Toller Service, faire Preise.", rating: 5, avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=60&h=60&fit=crop&crop=face" },
-  { name: "E. Brunner", city: "St. Gallen", text: "Alles perfekt organisiert.", rating: 5, avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=60&h=60&fit=crop&crop=face" },
+  { name: "M. Keller", city: "Zürich", text: "Super schnell und unkompliziert!", rating: 5, avatar: "https://randomuser.me/api/portraits/men/32.jpg" },
+  { name: "A. Müller", city: "Basel", text: "40% günstiger als erwartet.", rating: 5, avatar: "https://randomuser.me/api/portraits/women/44.jpg" },
+  { name: "S. Weber", city: "Bern", text: "Sehr professionelle Abwicklung.", rating: 5, avatar: "https://randomuser.me/api/portraits/women/68.jpg" },
+  { name: "L. Fischer", city: "Luzern", text: "Kann ich nur empfehlen!", rating: 5, avatar: "https://randomuser.me/api/portraits/men/75.jpg" },
+  { name: "R. Schmid", city: "Winterthur", text: "Toller Service, faire Preise.", rating: 5, avatar: "https://randomuser.me/api/portraits/women/90.jpg" },
+  { name: "E. Brunner", city: "St. Gallen", text: "Alles perfekt organisiert.", rating: 5, avatar: "https://randomuser.me/api/portraits/men/46.jpg" },
 ];
 
 const stats = [
