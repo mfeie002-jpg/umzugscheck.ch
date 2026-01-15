@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Menu, X, ChevronDown, ArrowRight } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { MobileMenu } from "@/components/MobileMenu";
+import { MobileMenuNew } from "@/components/MobileMenuNew";
 import { UmzugPlanenDropdown } from "@/components/dropdowns/UmzugPlanenDropdown";
 import { UmzugsfirmaFindenDropdown } from "@/components/dropdowns/UmzugsfirmaFindenDropdown";
 import { ServicesDropdown } from "@/components/dropdowns/ServicesDropdown";
@@ -211,8 +211,8 @@ export const Navigation = () => {
         </div>
       </nav>
 
-      {/* Mobile Menu */}
-      <MobileMenu 
+      {/* Mobile Menu - Neues Accordion-basiertes Menü */}
+      <MobileMenuNew 
         isOpen={isMobileMenuOpen} 
         onClose={() => setIsMobileMenuOpen(false)} 
       />
