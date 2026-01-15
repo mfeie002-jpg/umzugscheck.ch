@@ -10,9 +10,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Star, MapPin, Phone, Award, TrendingUp, Clock, 
   CheckCircle, Mail, Globe, Shield, Percent, ChevronRight,
-  Users, Truck, MessageSquare, HelpCircle, Building2
+  Users, Truck, MessageSquare, HelpCircle, Building2, Loader2
 } from "lucide-react";
-import { ENHANCED_COMPANIES } from "@/data/enhanced-companies";
+import { useCompanyBySlug } from "@/hooks/useCompanies";
 import { ReviewList } from "@/components/reviews/ReviewList";
 import { trackPageView } from "@/lib/tracking";
 
@@ -37,9 +37,17 @@ export default function CompanyProfile() {
   const { slug } = useParams();
   const [activeTab, setActiveTab] = useState<string>("overview");
   
-  const company = ENHANCED_COMPANIES.find(c => c.slug === slug);
+  const { data: company, isLoading, error } = useCompanyBySlug(slug || "");
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
   
-  if (!company) {
+  if (!company || error) {
     return (
       <div className="min-h-screen flex flex-col">
         <main className="flex-1 flex items-center justify-center">
@@ -59,9 +67,10 @@ export default function CompanyProfile() {
 
   const priceLevelColor = {
     günstig: "text-green-600 dark:text-green-400",
+    mittel: "text-blue-600 dark:text-blue-400",
     fair: "text-blue-600 dark:text-blue-400",
     premium: "text-purple-600 dark:text-purple-400"
-  }[company.price_level];
+  }[company.price_level || "mittel"] || "text-blue-600";
 
   return (
     <>
@@ -80,7 +89,7 @@ export default function CompanyProfile() {
             <div className="container mx-auto px-4">
               <div className="max-w-6xl mx-auto">
                 <ScrollReveal>
-                  {company.is_featured && (
+                  {company.featured && (
                     <Badge className="mb-3 sm:mb-4 bg-primary text-primary-foreground">
                       Empfohlener Partner
                     </Badge>
@@ -90,22 +99,25 @@ export default function CompanyProfile() {
                     {/* Left Column - Company Info */}
                     <div className="flex-1">
                       <div className="flex items-center gap-4 mb-4">
-                        <div className="w-20 h-20 bg-white dark:bg-muted rounded-lg shadow-md flex items-center justify-center text-4xl flex-shrink-0">
-                          {company.logo_url || "🏢"}
+                        <div className="w-20 h-20 bg-white dark:bg-muted rounded-lg shadow-md flex items-center justify-center text-4xl flex-shrink-0 overflow-hidden">
+                          {company.logo ? (
+                            <img src={company.logo} alt={company.name} className="w-full h-full object-cover" />
+                          ) : "🏢"}
                         </div>
                         <div className="flex-1 min-w-0">
                           <h1 className="text-2xl sm:text-3xl font-bold mb-2">{company.name}</h1>
                           <div className="flex flex-wrap items-center gap-3">
                             <div className="flex items-center">
                               <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-                              <span className="ml-1 font-bold text-lg">{company.rating.toFixed(1)}</span>
+                              <span className="ml-1 font-bold text-lg">{(company.rating || 0).toFixed(1)}</span>
                               <span className="ml-2 text-sm text-muted-foreground">
-                                ({company.review_count} Bewertungen)
+                                ({company.review_count || 0} Bewertungen)
                               </span>
                             </div>
                             <Badge variant="outline" className={`${priceLevelColor} border-current`}>
                               {company.price_level === "günstig" ? "Günstig" : 
-                               company.price_level === "fair" ? "Fair" : "Premium"}
+                               company.price_level === "mittel" ? "Fair" :
+                               company.price_level === "premium" ? "Premium" : "Fair"}
                             </Badge>
                           </div>
                         </div>
@@ -113,7 +125,7 @@ export default function CompanyProfile() {
 
                       <div className="flex items-start gap-2 text-sm text-muted-foreground mb-4">
                         <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                        <span>{company.service_areas.join(" • ")}</span>
+                        <span>{(company.service_areas || []).join(" • ")}</span>
                       </div>
 
                       {company.short_description && (
@@ -123,9 +135,9 @@ export default function CompanyProfile() {
                       {/* Certifications */}
                       <CompanyCertifications 
                         companyId={company.id}
-                        certifications={company.certifications}
-                        isVerified={true}
-                        yearsInBusiness={company.avg_completion_time_hours ? Math.floor(company.avg_completion_time_hours / 100) + 10 : 15}
+                        certifications={company.certifications || []}
+                        isVerified={company.verified || false}
+                        yearsInBusiness={15}
                       />
 
                       {/* Quick Actions */}
@@ -133,18 +145,9 @@ export default function CompanyProfile() {
                         <CompanyQuickActions
                           companyId={company.id}
                           companyName={company.name}
-                          phone={company.phone_tracking_number}
+                          phone={company.phone}
                         />
                       </div>
-
-                      {company.discount_offer && (
-                        <div className="mt-4 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg p-4">
-                          <p className="text-green-700 dark:text-green-300 font-semibold flex items-center gap-2">
-                            <Percent className="w-5 h-5" />
-                            {company.discount_offer}
-                          </p>
-                        </div>
-                      )}
                     </div>
 
                     {/* Right Column - Contact Form */}
@@ -152,7 +155,7 @@ export default function CompanyProfile() {
                       <CompanyContactForm
                         companyId={company.id}
                         companyName={company.name}
-                        responseTime={company.response_time_avg_hours ? `< ${company.response_time_avg_hours}h` : "< 2 Stunden"}
+                        responseTime={company.response_time_hours ? `< ${company.response_time_hours}h` : "< 2 Stunden"}
                       />
                     </div>
                   </div>
@@ -210,18 +213,11 @@ export default function CompanyProfile() {
                         <div className="lg:col-span-2 space-y-6">
                           {/* Key Metrics */}
                           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                            {company.response_time_avg_hours && (
+                            {company.response_time_hours && (
                               <Card className="p-4 text-center">
                                 <Clock className="w-6 h-6 mx-auto mb-2 text-primary" />
-                                <div className="font-bold text-xl">{company.response_time_avg_hours}h</div>
+                                <div className="font-bold text-xl">{company.response_time_hours}h</div>
                                 <div className="text-sm text-muted-foreground">Antwortzeit</div>
-                              </Card>
-                            )}
-                            {company.avg_completion_time_hours && (
-                              <Card className="p-4 text-center">
-                                <TrendingUp className="w-6 h-6 mx-auto mb-2 text-primary" />
-                                <div className="font-bold text-xl">{company.avg_completion_time_hours}h</div>
-                                <div className="text-sm text-muted-foreground">Durchführung</div>
                               </Card>
                             )}
                             {company.success_rate && (
@@ -233,7 +229,7 @@ export default function CompanyProfile() {
                             )}
                             <Card className="p-4 text-center">
                               <Award className="w-6 h-6 mx-auto mb-2 text-primary" />
-                              <div className="font-bold text-xl">{company.review_count}</div>
+                              <div className="font-bold text-xl">{company.review_count || 0}</div>
                               <div className="text-sm text-muted-foreground">Bewertungen</div>
                             </Card>
                           </div>
@@ -289,8 +285,8 @@ export default function CompanyProfile() {
                           {/* Similar Companies */}
                           <CompanySimilar
                             currentCompanyId={company.id}
-                            currentServiceAreas={company.service_areas}
-                            currentServices={company.services_offered}
+                            currentServiceAreas={company.service_areas || []}
+                            currentServices={company.services || []}
                           />
                         </div>
                       </div>
@@ -305,14 +301,14 @@ export default function CompanyProfile() {
                           {/* Service Pricing */}
                           <CompanyServicePricing
                             companyName={company.name}
-                            priceLevel={company.price_level as 'günstig' | 'fair' | 'premium'}
+                            priceLevel={(company.price_level as 'günstig' | 'fair' | 'premium') || 'fair'}
                           />
 
                           {/* Services List */}
                           <Card className="p-6">
                             <h2 className="text-2xl font-bold mb-4">Unsere Dienstleistungen</h2>
                             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                              {company.services_offered.map((service, idx) => (
+                              {(company.services || []).map((service, idx) => (
                                 <div key={idx} className="flex items-center gap-2 p-3 bg-muted rounded-lg">
                                   <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
                                   <span className="text-sm">{service}</span>
