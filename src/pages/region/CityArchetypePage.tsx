@@ -37,6 +37,7 @@ import {
   STADT_BAAR,
   STADT_CHAM,
   TRUST_GLOBALS,
+  CORE_SERVICES,
   type CityConfig,
 } from "@/data/archetypeConfig";
 import { getCity } from "@/data/locations";
@@ -100,12 +101,21 @@ const CityArchetypePage = () => {
   
   const heroImage = getRegionImage(cantonSlug || 'default');
   
-  // Breadcrumb items
-  const breadcrumbItems = [
-    { label: 'Home', href: '/' },
+  // Breadcrumb items - separate path items from current page
+  const breadcrumbPathItems = [
     { label: 'Umzugsfirmen Schweiz', href: '/umzugsfirmen-schweiz' },
     { label: `Kanton ${cantonName}`, href: `/umzugsfirmen/kanton-${cantonSlug}` },
-    { label: placeName },
+  ];
+  const currentPageLabel = placeName;
+  
+  // Section nav items
+  const sectionNavItems = [
+    { id: 'quartiere', label: 'Quartiere' },
+    { id: 'preise', label: 'Preise' },
+    { id: 'so-funktionierts', label: 'So gehts' },
+    { id: 'services', label: 'Services' },
+    { id: 'firmen', label: 'Top Firmen' },
+    { id: 'faq', label: 'FAQ' },
   ];
   
   // Get data from archetype or use defaults
@@ -120,7 +130,7 @@ const CityArchetypePage = () => {
   const faqs = cityData?.faqs || [];
   const testimonials = cityData?.testimonials || [];
   const localTips = cityData?.localTips || [];
-  const services = cityData?.services || [];
+  const services = cityData?.services || CORE_SERVICES;
   const internalLinks = cityData?.internalLinks || {
     parent: { label: `Kanton ${cantonName}`, href: `/umzugsfirmen/kanton-${cantonSlug}` },
     neighbors: [],
@@ -132,12 +142,12 @@ const CityArchetypePage = () => {
     "@graph": [
       {
         "@type": "BreadcrumbList",
-        "itemListElement": breadcrumbItems.map((item, i) => ({
-          "@type": "ListItem",
-          "position": i + 1,
-          "name": item.label,
-          "item": item.href ? `https://umzugscheck.ch${item.href}` : undefined
-        }))
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://umzugscheck.ch" },
+          { "@type": "ListItem", "position": 2, "name": "Umzugsfirmen Schweiz", "item": "https://umzugscheck.ch/umzugsfirmen-schweiz" },
+          { "@type": "ListItem", "position": 3, "name": `Kanton ${cantonName}`, "item": `https://umzugscheck.ch/umzugsfirmen/kanton-${cantonSlug}` },
+          { "@type": "ListItem", "position": 4, "name": placeName },
+        ]
       },
       {
         "@type": "Service",
@@ -181,7 +191,7 @@ const CityArchetypePage = () => {
 
       <main>
         {/* Breadcrumbs */}
-        <Breadcrumbs items={breadcrumbItems} />
+        <Breadcrumbs items={breadcrumbPathItems} currentPage={currentPageLabel} />
 
         {/* Hero */}
         <HeroWithPresets
@@ -197,7 +207,7 @@ const CityArchetypePage = () => {
         />
 
         {/* Sticky Navigation */}
-        <SectionNav />
+        <SectionNav items={sectionNavItems} />
 
         {/* Sticky Mobile CTA */}
         <StickyMobileCTA placeName={placeName} placeKind="city" />
@@ -235,8 +245,8 @@ const CityArchetypePage = () => {
           className="scroll-mt-20"
         >
           <PriceModule
-            priceAnchors={priceAnchors}
-            priceExamples={priceExamples}
+            anchors={priceAnchors}
+            examples={priceExamples}
             placeName={placeName}
             placeKind="city"
           />
@@ -313,6 +323,7 @@ const CityArchetypePage = () => {
           <TestimonialsArchetype
             testimonials={testimonials}
             placeName={placeName}
+            placeKind="city"
           />
         </motion.div>
 
@@ -327,6 +338,7 @@ const CityArchetypePage = () => {
           <FAQAccordionArchetype
             faqs={faqs}
             placeName={placeName}
+            placeKind="city"
           />
         </motion.div>
 
@@ -337,8 +349,11 @@ const CityArchetypePage = () => {
           viewport={{ once: true }}
         >
           <InternalLinkingBlock
-            links={internalLinks}
+            parent={internalLinks.parent}
+            neighbors={internalLinks.neighbors}
+            services={services}
             placeName={placeName}
+            placeSlug={slug!}
             placeKind="city"
           />
         </motion.div>

@@ -35,6 +35,7 @@ import {
 import { 
   KANTON_ZUG, 
   TRUST_GLOBALS,
+  CORE_SERVICES,
   type CantonConfig,
 } from "@/data/archetypeConfig";
 import { getRegionBySlug } from "@/data/regions-database";
@@ -72,6 +73,19 @@ const CantonArchetypePage = () => {
     avgRating: legacyRegion.stats.avgRating,
     activeUsersBase: legacyRegion.stats.activeUsersBase,
   } : { providerCount: 0, reviewCount: 0, avgRating: 0 });
+  
+  // Extract data from config
+  const citiesInCanton = cantonData?.citiesInCanton || [];
+  const topCompanies = cantonData?.topCompanies || [];
+  const priceAnchors = cantonData?.price.anchors || [];
+  const services = cantonData?.services || CORE_SERVICES;
+  const localTips = cantonData?.localTips || [];
+  const testimonials = cantonData?.testimonials || [];
+  const faqs = cantonData?.faqs || [];
+  const internalLinks = cantonData?.internalLinks || {
+    children: [],
+    neighbors: [],
+  };
   
   // 404 if not found
   if (!cantonData && !legacyRegion) {
@@ -117,7 +131,7 @@ const CantonArchetypePage = () => {
     { id: 'faq', label: 'FAQ' },
   ];
   
-  // ... rest of component
+  // Schema.org
   const schemaOrg = {
     "@context": "https://schema.org",
     "@graph": [
@@ -196,7 +210,7 @@ const CantonArchetypePage = () => {
           className="scroll-mt-20"
         >
           <PriceModule
-            priceAnchors={priceAnchors}
+            anchors={priceAnchors}
             placeName={placeName}
             placeKind="canton"
           />
@@ -272,6 +286,7 @@ const CantonArchetypePage = () => {
           <TestimonialsArchetype
             testimonials={testimonials}
             placeName={placeName}
+            placeKind="canton"
           />
         </motion.div>
 
@@ -286,6 +301,7 @@ const CantonArchetypePage = () => {
           <FAQAccordionArchetype
             faqs={faqs}
             placeName={placeName}
+            placeKind="canton"
           />
         </motion.div>
 
@@ -296,8 +312,11 @@ const CantonArchetypePage = () => {
           viewport={{ once: true }}
         >
           <InternalLinkingBlock
-            links={internalLinks}
+            parent={internalLinks.parent}
+            neighbors={internalLinks.neighbors}
+            services={services}
             placeName={placeName}
+            placeSlug={effectiveSlug!}
             placeKind="canton"
           />
         </motion.div>

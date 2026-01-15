@@ -19,7 +19,6 @@ import {
   TrustBar,
   HowItWorks3Steps,
   PriceModule,
-  ServicesGrid,
   TopCompaniesPreview,
   TestimonialsArchetype,
   LocalTipsSection,
@@ -193,12 +192,19 @@ const ServiceLocationPage = () => {
     : `/dienstleistungen/${serviceSlug}/${effectiveLocationSlug}`;
   const h1 = `${service.title} ${locationPrefix} ${placeName}`;
   
-  // Breadcrumb items
-  const breadcrumbItems = [
-    { label: 'Home', href: '/' },
+  // Breadcrumb items - separate path items from current page
+  const breadcrumbPathItems = [
     { label: 'Dienstleistungen', href: '/dienstleistungen' },
     { label: service.title, href: `/dienstleistungen/${serviceSlug}` },
-    { label: isCanton ? `Kanton ${placeName}` : placeName },
+  ];
+  const currentPageLabel = isCanton ? `Kanton ${placeName}` : placeName;
+  
+  // Section nav items
+  const sectionNavItems = [
+    { id: 'preise', label: 'Preise' },
+    { id: 'firmen', label: 'Top Firmen' },
+    { id: 'so-funktionierts', label: 'So gehts' },
+    { id: 'faq', label: 'FAQ' },
   ];
   
   // Schema.org
@@ -207,12 +213,12 @@ const ServiceLocationPage = () => {
     "@graph": [
       {
         "@type": "BreadcrumbList",
-        "itemListElement": breadcrumbItems.map((item, i) => ({
-          "@type": "ListItem",
-          "position": i + 1,
-          "name": item.label,
-          "item": item.href ? `https://umzugscheck.ch${item.href}` : undefined
-        }))
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://umzugscheck.ch" },
+          { "@type": "ListItem", "position": 2, "name": "Dienstleistungen", "item": "https://umzugscheck.ch/dienstleistungen" },
+          { "@type": "ListItem", "position": 3, "name": service.title, "item": `https://umzugscheck.ch/dienstleistungen/${serviceSlug}` },
+          { "@type": "ListItem", "position": 4, "name": currentPageLabel },
+        ]
       },
       {
         "@type": "Service",
@@ -241,17 +247,11 @@ const ServiceLocationPage = () => {
   };
   
   // Internal links for this service page
-  const internalLinks = {
+  const serviceInternalLinks = {
     parent: { 
       label: isCanton ? `Umzugsfirmen Kanton ${placeName}` : `Umzugsfirmen ${placeName}`,
       href: isCanton ? `/umzugsfirmen/kanton-${effectiveLocationSlug}` : `/umzugsfirmen/${effectiveLocationSlug}`
     },
-    children: isCanton && (locationData as CantonConfig).citiesInCanton
-      ? (locationData as CantonConfig).citiesInCanton.slice(0, 6).map(city => ({
-          label: `${service.title} in ${city.name}`,
-          href: `/dienstleistungen/${serviceSlug}/${city.slug}`
-        }))
-      : [],
     neighbors: CORE_SERVICES.filter(s => s.slug !== serviceSlug).slice(0, 4).map(s => ({
       label: `${s.title} ${locationPrefix} ${placeName}`,
       href: isCanton 
@@ -286,7 +286,7 @@ const ServiceLocationPage = () => {
 
       <main>
         {/* Breadcrumbs */}
-        <Breadcrumbs items={breadcrumbItems} />
+        <Breadcrumbs items={breadcrumbPathItems} currentPage={currentPageLabel} />
 
         {/* Hero */}
         <HeroWithPresets
@@ -303,7 +303,7 @@ const ServiceLocationPage = () => {
         />
 
         {/* Sticky Navigation */}
-        <SectionNav />
+        <SectionNav items={sectionNavItems} />
 
         {/* Sticky Mobile CTA */}
         <StickyMobileCTA placeName={placeName} placeKind={isCanton ? 'canton' : 'city'} />
@@ -325,8 +325,8 @@ const ServiceLocationPage = () => {
           className="scroll-mt-20"
         >
           <PriceModule
-            priceAnchors={locationData.price.anchors}
-            priceExamples={locationData.price.examples}
+            anchors={locationData.price.anchors}
+            examples={locationData.price.examples}
             placeName={placeName}
             placeKind={isCanton ? 'canton' : 'city'}
           />
@@ -390,6 +390,7 @@ const ServiceLocationPage = () => {
           <TestimonialsArchetype
             testimonials={locationData.testimonials}
             placeName={placeName}
+            placeKind={isCanton ? 'canton' : 'city'}
           />
         </motion.div>
 
@@ -404,6 +405,7 @@ const ServiceLocationPage = () => {
           <FAQAccordionArchetype
             faqs={locationData.faqs}
             placeName={placeName}
+            placeKind={isCanton ? 'canton' : 'city'}
           />
         </motion.div>
 
@@ -414,8 +416,11 @@ const ServiceLocationPage = () => {
           viewport={{ once: true }}
         >
           <InternalLinkingBlock
-            links={internalLinks}
+            parent={serviceInternalLinks.parent}
+            neighbors={serviceInternalLinks.neighbors}
+            services={CORE_SERVICES}
             placeName={placeName}
+            placeSlug={effectiveLocationSlug!}
             placeKind={isCanton ? 'canton' : 'city'}
           />
         </motion.div>
