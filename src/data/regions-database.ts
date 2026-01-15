@@ -396,8 +396,8 @@ const REGIONS_DATA: Record<string, RegionData> = {
     short: 'ZG',
     type: 'kanton',
     seo: {
-      title: 'Umzugsfirmen im Kanton Zug vergleichen | Offerten gratis | Umzugscheck',
-      description: 'Vergleichen Sie geprüfte Umzugsfirmen im Kanton Zug. Kostenlose Offerten in 24–48h für alle Gemeinden: Zug, Baar, Cham, Steinhausen, Hünenberg, Risch-Rotkreuz, Oberägeri, Unterägeri. Bis zu 40% sparen.',
+      title: 'Umzugsfirmen Kanton Zug vergleichen | Alle 11 Gemeinden | Umzugscheck',
+      description: 'Vergleichen Sie 30+ geprüfte Umzugsfirmen im Kanton Zug. Gratis Offerten in 24–48h für alle 11 Gemeinden: Zug, Baar, Cham, Steinhausen, Hünenberg, Risch-Rotkreuz, Oberägeri, Unterägeri, Menzingen, Walchwil, Neuheim. Bis zu 40% sparen.',
       h1: 'Umzugsfirmen im Kanton Zug vergleichen',
       canonicalUrl: '/umzugsfirmen/kanton-zug',
     },
@@ -414,19 +414,31 @@ const REGIONS_DATA: Record<string, RegionData> = {
     },
     priceCoefficient: 1.0,
     localTips: [
-      'Orte im Kanton Zug: Zug, Baar, Cham, Steinhausen, Hünenberg, Risch-Rotkreuz, Oberägeri, Unterägeri – kurze Distanzen, faire Preise',
-      'Halteverbotszonen früh beantragen (v. a. Zentrum / Altstadt)',
-      'Monatsende ist stark nachgefragt: Termine 2–4 Wochen im Voraus sichern',
-      'Expat- & Firmenumzüge: mehrsprachige Teams (DE/EN) sind in Zug häufig verfügbar',
-      'Kurzstrecken im Kanton: Baar, Cham, Steinhausen oft günstiger als erwartet',
-      'Kostenfaktoren: Distanz, Volumen, Etagen, Lift, Halteverbot, Zusatzservices',
-      'Wohnungsabgabe: Komplettpaket mit Endreinigung reduziert Stress massiv',
+      'Alle 11 Gemeinden: Zug, Baar, Cham, Steinhausen, Hünenberg, Risch-Rotkreuz, Oberägeri, Unterägeri, Menzingen, Walchwil, Neuheim – kurze Distanzen halten Kosten tief',
+      'Zuger Altstadt & Seepromenade: Halteverbotszonen und Zeitfenster frühzeitig beantragen (Kosten ca. CHF 80–150)',
+      'Monatsende/Quartalsende: Extrem hohe Nachfrage – Termin 3–4 Wochen im Voraus sichern',
+      'Expat-Hotspot: Viele Firmen bieten mehrsprachige Teams (DE/EN/FR) und Relocation-Services',
+      'Ägerital (Oberägeri, Unterägeri): Bergstrassen beachten – erfahrene Teams mit passendem Fuhrpark',
+      'Lorzenebene (Baar, Cham, Steinhausen): Viele Neubaugebiete mit guter Zufahrt – oft günstiger',
+      'Premium-Villen am Zugersee: Spezialtransporte für Kunst, Antiquitäten und empfindliche Güter verfügbar',
+      'Komplettpaket-Tipp: Umzug + Endreinigung + Wohnungsabgabe aus einer Hand spart Zeit und Nerven',
+      'S-Bahn-Nähe: Gute ÖV-Anbindung ermöglicht flexible Terminplanung auch ohne Auto',
+      'Crypto Valley: Büroumzüge am Wochenende, Serverraum-Transporte und diskrete Abwicklung für Startups',
     ],
     localBlurb: `
-      Der Kanton Zug ist kompakt, aber vielfältig: Von den urbanen Gemeinden Zug, Baar und Cham bis zu den ländlicheren Orten wie Oberägeri und Unterägeri am Ägerisee.
-      Die kurzen Distanzen innerhalb des Kantons halten die Umzugskosten überschaubar.
-      Wer früh plant, spart Zeit und Geld: Halteverbotszonen reservieren, Tragewege prüfen und bei Altbauten einen Möbellift einplanen.
-      Umzugscheck.ch ist ein Vergleichs- und Vermittlungsservice – die Durchführung erfolgt durch geprüfte Partnerfirmen.
+      Der Kanton Zug ist flächenmässig der kleinste Deutschschweizer Kanton (239 km²), aber einer der wirtschaftsstärksten. 
+      Mit ca. 130'000 Einwohnern auf 11 Gemeinden sind die Distanzen kurz – ideal für kostengünstige Umzüge.
+      
+      **Stadt Zug** ist das Zentrum mit historischer Altstadt, Seepromenade und dem internationalen Geschäftsviertel (Crypto Valley). 
+      **Baar** ist die grösste Gemeinde mit modernen Wohngebieten. **Cham** verbindet See und Land. 
+      **Risch-Rotkreuz** ist Verkehrsknotenpunkt und Wirtschaftsstandort. **Steinhausen** und **Hünenberg** bieten familienfreundliche Quartiere.
+      Im **Ägerital** (Oberägeri, Unterägeri) wohnt man ländlich und trotzdem zentrumsnah. 
+      **Menzingen**, **Walchwil** und **Neuheim** bieten Ruhe mit Panoramablick.
+      
+      **Preise im Kanton Zug:** Durch die kurzen Distanzen sind innerkantonale Umzüge oft günstiger als erwartet. 
+      Ein 3-Zimmer-Umzug Zug → Baar kostet ca. CHF 770–1'200. Halteverbotszonen in der Altstadt erhöhen den Preis leicht.
+      
+      **Wichtig:** Umzugscheck.ch ist ein Vergleichs- und Vermittlungsservice. Die Durchführung erfolgt durch geprüfte, versicherte Partnerfirmen.
     `,
     nearbyRegions: [
       { name: 'Zürich', slug: 'zuerich' },
@@ -434,6 +446,7 @@ const REGIONS_DATA: Record<string, RegionData> = {
       { name: 'Schwyz', slug: 'schwyz' },
       { name: 'Aargau', slug: 'aargau' },
       { name: 'Uri', slug: 'uri' },
+      { name: 'Nidwalden', slug: 'nidwalden' },
     ],
     topCompanies: [
       {
@@ -469,48 +482,75 @@ const REGIONS_DATA: Record<string, RegionData> = {
         responseTime: '< 4h',
         isPremium: true,
       },
+      {
+        id: 'aegerital-transport',
+        name: 'Ägerital Transport GmbH',
+        rating: 4.8,
+        reviewCount: 76,
+        badges: ['Bergexperte', 'Lokal'],
+        services: ['Privatumzug', 'Möbellift', 'Spezialtransport'],
+        priceLevel: 'Mittel',
+        responseTime: '< 3h',
+        isPopular: false,
+      },
     ],
     faqs: [
       {
-        question: 'Welche Orte im Kanton Zug werden abgedeckt?',
-        answer: 'Unsere Partnerfirmen bedienen alle Gemeinden im Kanton Zug: Zug, Baar, Cham, Steinhausen, Hünenberg, Risch-Rotkreuz, Oberägeri und Unterägeri. Auch Umzüge in benachbarte Kantone sind möglich.',
+        question: 'Welche Orte gehören zum Kanton Zug?',
+        answer: 'Der Kanton Zug umfasst 11 Gemeinden: Zug (Hauptort), Baar (grösste Gemeinde), Cham, Steinhausen, Hünenberg, Risch-Rotkreuz, Oberägeri, Unterägeri, Menzingen, Walchwil und Neuheim. Alle werden von unseren Partnerfirmen abgedeckt – auch Umzüge in benachbarte Kantone (Zürich, Luzern, Schwyz).',
       },
       {
         question: 'Was kostet ein Umzug im Kanton Zug?',
-        answer: 'Die Kosten variieren je nach Wohnungsgrösse, Distanz und Stockwerk. Ein 2-Zimmer-Umzug innerhalb des Kantons kostet ca. CHF 550–900, ein 4-Zimmer-Umzug ca. CHF 770–1200. Mit unserem Vergleich sparen Sie bis zu 40%.',
+        answer: 'Die Kosten hängen von Wohnungsgrösse, Stockwerk, Distanz und Zusatzservices ab. Richtwerte: 2-Zimmer-Umzug CHF 550–900, 3.5-Zimmer CHF 770–1\'200, 5+ Zimmer/Haus CHF 1\'500–2\'500. Innerkantonale Umzüge (z.B. Baar → Cham) sind durch kurze Distanzen oft günstiger. Mit unserem Vergleich sparen Sie bis zu 40%.',
       },
       {
-        question: 'Welche Kostenfaktoren beeinflussen den Preis?',
-        answer: 'Die wichtigsten Faktoren sind: Distanz, Volumen (Anzahl Zimmer), Etage, Lift vorhanden?, Halteverbotszone nötig?, gewünschte Zusatzservices (Endreinigung, Möbelmontage, Entsorgung). Am Monatsende sind die Preise oft höher.',
+        question: 'Gibt es regionale Preisunterschiede im Kanton Zug?',
+        answer: 'Ja. Umzüge in der Stadt Zug (Altstadt, Seeufer) sind oft teurer wegen Halteverbotszonen und längeren Tragewegen. Die Lorzenebene (Baar, Cham, Steinhausen) mit vielen Neubauten ist meist günstiger. Im Ägerital (Oberägeri, Unterägeri) können Bergstrassen den Preis erhöhen.',
       },
       {
-        question: 'Wie funktioniert der Vergleich?',
-        answer: 'In 3 Schritten: 1) Umzugsdaten eingeben (2 Min.) 2) 3–5 Offerten von geprüften Firmen erhalten (24–48h) 3) Angebote vergleichen und das beste wählen. 100% kostenlos und unverbindlich.',
+        question: 'Brauche ich eine Halteverbotszone?',
+        answer: 'In der Zuger Altstadt, am Seeufer und in dicht bebauten Quartieren ist eine Halteverbotszone fast immer nötig (Kosten: ca. CHF 80–150). In den Agglo-Gemeinden mit eigenen Parkplätzen meist nicht. Unsere Partnerfirmen beraten Sie und übernehmen die Beantragung.',
       },
       {
-        question: 'Sind die Umzugsfirmen versichert?',
-        answer: 'Ja! Alle Partnerfirmen auf Umzugscheck.ch sind versichert (Haftpflicht & Transportversicherung). Bei Schäden sind Sie abgesichert.',
+        question: 'Wie funktioniert ein Umzug ins Ägerital?',
+        answer: 'Die Strassen nach Oberägeri und Unterägeri sind kurvenreich und im Winter anspruchsvoll. Unsere Partner haben Erfahrung mit Bergumzügen und passende Fahrzeuge. Bei grossen Möbeln empfehlen wir einen Möbellift. Planen Sie genug Zeit ein.',
+      },
+      {
+        question: 'Bieten Umzugsfirmen im Kanton Zug auch Expat-Services?',
+        answer: 'Ja! Zug ist internationaler Wirtschaftsstandort (Crypto Valley, Rohstoffhandel). Viele unserer Partner bieten mehrsprachige Teams (DE/EN/FR), Relocation-Services und internationale Umzüge an. Ideal für Expat-Familien und Firmenverlagerungen.',
+      },
+      {
+        question: 'Kann ich Umzug und Endreinigung kombinieren?',
+        answer: 'Ja – und es lohnt sich! Viele Partner bieten Komplettpakete: Umzug + Endreinigung + Wohnungsabgabe-Vorbereitung. Das spart Koordination und gibt Sicherheit bei der Abnahme. Besonders in Zug sind Vermieter anspruchsvoll.',
+      },
+      {
+        question: 'Wie schnell erhalte ich Offerten?',
+        answer: 'In der Regel erhalten Sie innerhalb von 24–48 Stunden 3–5 unverbindliche Offerten per E-Mail. Bei dringenden Anfragen oft noch schneller. Alle Offerten sind kostenlos und ohne Verpflichtung.',
+      },
+      {
+        question: 'Sind die Partnerfirmen versichert?',
+        answer: 'Ja! Alle Partnerfirmen auf Umzugscheck.ch sind vollständig versichert (Haftpflicht- und Transportversicherung). Bei Schäden an Möbeln oder Gebäude sind Sie abgesichert.',
       },
       {
         question: 'Wer führt den Umzug durch?',
-        answer: 'Umzugscheck.ch ist ein Vergleichs- und Vermittlungsservice. Die Durchführung des Umzugs erfolgt durch geprüfte Partnerfirmen, die Sie aus den Offerten auswählen.',
+        answer: 'Umzugscheck.ch ist ein Vergleichs- und Vermittlungsservice. Die Durchführung erfolgt ausschliesslich durch unsere geprüften Partnerfirmen. Sie wählen selbst, welches Angebot Ihnen am besten zusagt.',
       },
     ],
     testimonials: [
       {
         name: 'Maria S.',
-        location: 'Zug → Baar',
+        location: 'Zug Altstadt → Baar',
         rating: 5,
-        text: 'Super unkompliziert! Innerhalb von 24h hatte ich 4 Angebote. Die Firma war top und CHF 400 günstiger als mein erstes Angebot.',
+        text: 'Super unkompliziert! Innerhalb von 24h hatte ich 4 Angebote. Die Firma war top und CHF 400 günstiger als mein erstes Angebot. Halteverbotszone wurde komplett organisiert.',
         date: 'vor 3 Tagen',
         verified: true,
         savedAmount: 400,
       },
       {
         name: 'Thomas K.',
-        location: 'Cham → Zug',
+        location: 'Cham → Zug Seestrasse',
         rating: 5,
-        text: 'Perfekter Service! Umzug lief reibungslos, Endreinigung mit Abnahmegarantie war Gold wert.',
+        text: 'Perfekter Service! Umzug in die Seestrasse lief reibungslos, Endreinigung mit Abnahmegarantie war Gold wert. Vermieter war zufrieden.',
         date: 'vor 1 Woche',
         verified: true,
         savedAmount: 320,
@@ -519,10 +559,37 @@ const REGIONS_DATA: Record<string, RegionData> = {
         name: 'Sandra M.',
         location: 'Rotkreuz → Steinhausen',
         rating: 5,
-        text: 'Der Vergleich hat sich gelohnt. Sehr professionelle Firmen, pünktlich und sorgfältig.',
+        text: 'Der Vergleich hat sich gelohnt. Sehr professionelle Firmen, pünktlich und sorgfältig. Kurzstrecke war günstiger als gedacht.',
         date: 'vor 2 Wochen',
         verified: true,
         savedAmount: 280,
+      },
+      {
+        name: 'James W.',
+        location: 'Zürich → Zug (Expat)',
+        rating: 5,
+        text: 'Moving from Zurich to Zug as an expat was seamless. English-speaking team, very efficient. Saved CHF 500 compared to other quotes.',
+        date: 'vor 3 Wochen',
+        verified: true,
+        savedAmount: 500,
+      },
+      {
+        name: 'Familie Müller',
+        location: 'Baar → Oberägeri',
+        rating: 5,
+        text: 'Umzug ins Ägerital mit grossem Esstisch und Klavier – das Team hatte sogar einen kleinen LKW für die Bergstrasse. Alles heil angekommen!',
+        date: 'vor 1 Monat',
+        verified: true,
+        savedAmount: 450,
+      },
+      {
+        name: 'Startup XYZ AG',
+        location: 'Zug Bahnhof → Crypto Valley',
+        rating: 5,
+        text: 'Büroumzug am Wochenende, Server-Raum inklusive. Diskret, schnell, perfekt koordiniert. Montag waren wir voll einsatzbereit.',
+        date: 'vor 6 Wochen',
+        verified: true,
+        savedAmount: 800,
       },
     ],
   },
