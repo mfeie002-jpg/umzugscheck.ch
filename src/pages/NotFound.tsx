@@ -2,25 +2,34 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Home, RefreshCw, HelpCircle, AlertCircle, MessageSquare, Loader2 } from "lucide-react";
+import { Home, RefreshCw, HelpCircle, AlertCircle, MessageSquare, Loader2, Search, ArrowRight, Calculator, Building2, MapPin } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 /**
- * Improved 404 Page - Fixes for Issues #1-9, #14-19
+ * Improved 404 Page with Search & Popular Links
  * 
- * Key improvements:
- * - No step indicators on error pages (Issue #1-6)
- * - Context-aware messaging for flows (Issue #7-9)
- * - AlertCircle icon instead of AlertTriangle (Issue #2 - sharper, more appropriate)
- * - Proper mobile padding to avoid bottom nav overlap (Issue #19)
- * - Touch targets min 48px (Issue requirement)
- * - "Problem melden" button with context (Issue #14)
- * - Removed bottom nav on this page conceptually via padding (Issue #16)
+ * Features:
+ * - Context-aware messaging for flows
+ * - Search functionality
+ * - Popular links for navigation
+ * - Problem reporting
+ * - Mobile optimized
  */
+
+// Popular pages for quick navigation
+const POPULAR_LINKS = [
+  { label: "Umzugsrechner", href: "/umzugsrechner", icon: Calculator },
+  { label: "Umzugsfirmen", href: "/umzugsfirmen", icon: Building2 },
+  { label: "Offerten erhalten", href: "/umzugsofferten", icon: ArrowRight },
+  { label: "Zürich", href: "/umzugsfirmen/zuerich", icon: MapPin },
+];
+
 const NotFound = () => {
-  const { pathname, search, hash } = useLocation();
+  const { pathname, search: searchQuery, hash } = useLocation();
   const navigate = useNavigate();
   const [isReporting, setIsReporting] = useState(false);
   const [reportSent, setReportSent] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     console.error("404 Error: User attempted to access non-existent route:", pathname);
@@ -47,7 +56,7 @@ const NotFound = () => {
     }
 
     // Check if this is a capture mode URL (internal tooling)
-    const isCaptureMode = search.includes("uc_capture=1") || search.includes("uc_step=");
+    const isCaptureMode = searchQuery.includes("uc_capture=1") || searchQuery.includes("uc_step=");
 
     return {
       isOffertenFlow,
@@ -55,29 +64,36 @@ const NotFound = () => {
       flowHome,
       flowName,
     };
-  }, [pathname, search]);
+  }, [pathname, searchQuery]);
 
   // Simulate problem reporting
   const handleReportProblem = async () => {
     setIsReporting(true);
-    // In production, this would send to your error tracking service
     await new Promise(resolve => setTimeout(resolve, 1000));
     setIsReporting(false);
     setReportSent(true);
   };
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      // Redirect to a search or relevant page
+      navigate(`/umzugsfirmen?q=${encodeURIComponent(searchTerm)}`);
+    }
+  };
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-muted/40 to-background flex items-center justify-center p-4 pb-24 md:pb-4">
-      <Card className="mx-auto max-w-md w-full shadow-lg border-border/50">
-        <CardContent className="pt-8 pb-6 px-6 text-center space-y-6">
-          {/* Icon - AlertCircle for sharper, clearer warning (Issue #2) */}
-          <div className="mx-auto w-16 h-16 rounded-2xl bg-destructive/10 flex items-center justify-center">
-            <AlertCircle className="w-8 h-8 text-destructive" />
-          </div>
+      <Card className="mx-auto max-w-lg w-full shadow-lg border-border/50">
+        <CardContent className="pt-8 pb-6 px-6 space-y-6">
+          {/* Icon */}
+          <div className="text-center">
+            <div className="mx-auto w-20 h-20 rounded-2xl bg-destructive/10 flex items-center justify-center mb-4">
+              <AlertCircle className="w-10 h-10 text-destructive" />
+            </div>
 
-          {/* Title - No step indicators! (Issue #1, #5, #10) */}
-          <div className="space-y-3">
-            <h1 className="text-2xl font-bold text-foreground">
+            {/* Title */}
+            <h1 className="text-2xl font-bold text-foreground mb-2">
               {ctx.isCaptureMode 
                 ? "Flow nicht gefunden" 
                 : ctx.isOffertenFlow 
@@ -98,23 +114,46 @@ const NotFound = () => {
                 </>
               ) : (
                 <>
-                  Diese Seite existiert nicht oder wurde verschoben.
+                  Diese Seite existiert nicht oder wurde verschoben. 
+                  Nutzen Sie die Suche oder wählen Sie eine beliebte Seite.
                 </>
               )}
             </p>
           </div>
 
-          {/* Info box for flow context (Issue #7, #8) */}
-          {ctx.isOffertenFlow && !ctx.isCaptureMode && (
-            <div className="bg-muted/50 rounded-lg p-3 text-xs text-muted-foreground text-left space-y-1">
-              <p className="font-medium text-foreground">Hinweis:</p>
-              <p>Ihre bisherigen Eingaben konnten leider nicht gespeichert werden. 
-                 Ein Neustart dauert nur 2 Minuten.</p>
-            </div>
-          )}
+          {/* Search */}
+          <form onSubmit={handleSearch} className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Suchen Sie nach Umzugsfirmen, Regionen..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 pr-4 h-12"
+            />
+          </form>
 
-          {/* Primary CTA - Single, clear action (Issue #4, #6) */}
-          <div className="space-y-3">
+          {/* Popular Links */}
+          <div className="space-y-2">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+              Beliebte Seiten
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              {POPULAR_LINKS.map((link) => (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  className="flex items-center gap-2 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors text-sm font-medium"
+                >
+                  <link.icon className="w-4 h-4 text-primary" />
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Primary CTA */}
+          <div className="space-y-3 pt-2">
             <Button
               type="button"
               variant="default"
@@ -126,7 +165,6 @@ const NotFound = () => {
               {ctx.isOffertenFlow ? "Prozess neu starten" : "Zur Startseite"}
             </Button>
 
-            {/* Secondary - Only home link, no confusing "back" button */}
             {ctx.isOffertenFlow && (
               <Button
                 asChild
@@ -142,7 +180,7 @@ const NotFound = () => {
             )}
           </div>
 
-          {/* Problem melden - Prominent option (Issue #14) */}
+          {/* Problem melden */}
           <div className="pt-2 border-t border-border/50 space-y-3">
             {!reportSent ? (
               <Button
@@ -160,7 +198,7 @@ const NotFound = () => {
                 {isReporting ? "Wird gemeldet..." : "Problem melden"}
               </Button>
             ) : (
-              <p className="text-sm text-green-600 font-medium">
+              <p className="text-sm text-green-600 font-medium text-center">
                 ✓ Danke für Ihre Meldung!
               </p>
             )}
@@ -185,7 +223,7 @@ const NotFound = () => {
               </summary>
               <pre className="mt-2 rounded-lg bg-muted p-3 text-[10px] font-mono overflow-auto">
 {`pathname: ${pathname}
-search:   ${search}
+search:   ${searchQuery}
 hash:     ${hash}
 flow:     ${ctx.isOffertenFlow ? "yes" : "no"}
 capture:  ${ctx.isCaptureMode ? "yes" : "no"}
