@@ -6,7 +6,7 @@
  * Switch via URL: ?nav=ultimate | ?nav=variant-b | ?nav=variant-c | ?nav=variant-d | ?nav=variant-e
  */
 
-export type NavVariant = 'ultimate' | 'variant-b' | 'variant-c' | 'variant-d' | 'variant-e' | 'variant-f' | 'variant-g' | 'variant-h' | 'variant-i' | 'variant-j' | 'variant-k' | 'variant-l' | 'variant-m' | 'variant-n';
+export type NavVariant = 'ultimate' | 'variant-b' | 'variant-c' | 'variant-d' | 'variant-e' | 'variant-f' | 'variant-g' | 'variant-h' | 'variant-i' | 'variant-j' | 'variant-k' | 'variant-l' | 'variant-m' | 'variant-n' | 'variant-o';
 
 export interface NavConfig {
   id: NavVariant;
@@ -588,6 +588,45 @@ export const VARIANT_N: NavConfig = {
   },
 };
 
+// ============================================
+// VARIANTE 15: ChatGPT Feedback v15
+// 4 Hauptpunkte, Du-Form, Mobile-first, emotionale Microcopy
+// ============================================
+export const VARIANT_O: NavConfig = {
+  id: 'variant-o',
+  name: '15. ChatGPT Feedback v15',
+  description: '4 Hauptpunkte: Plane deinen Umzug, Offerten vergleichen, So funktioniert\'s, Hilfe & Kontakt – Du-Form',
+  labels: {
+    preisrechner: 'Plane deinen Umzug',
+    firmen: 'Offerten vergleichen',
+    services: 'So funktioniert\'s',
+    ratgeber: 'Hilfe & Kontakt',
+    fuerFirmen: 'Für Anbieter',
+    cta: 'Kostenlos Offerten erhalten',
+  },
+  microcopy: {
+    preisrechner: 'Tools, Checklisten & Tipps, damit du stressfrei an alles denkst.',
+    firmen: 'Hol dir gratis Offerten von geprüften Umzugsfirmen & finde das beste Angebot.',
+    services: 'In 3 Schritten zu deinem stressfreien Umzug – transparent, sicher und einfach.',
+    ratgeber: 'Wir sind für dich da – FAQ, Tipps und persönlicher Support bei allen Umzugsfragen.',
+    fuerFirmen: 'Partner werden, Leads erhalten, Dashboard nutzen.',
+  },
+  dropdownTitles: {
+    preisrechner: 'PLANE DEINEN UMZUG',
+    firmen: 'OFFERTEN VERGLEICHEN',
+    services: 'SO FUNKTIONIERT\'S',
+    ratgeber: 'HILFE & KONTAKT',
+    fuerFirmen: 'FÜR ANBIETER',
+  },
+  ctaCard: {
+    preisrechner: { title: 'Bereit für den nächsten Schritt?', buttonText: 'Gratis Offerten holen' },
+    firmen: { title: 'Gratis & unverbindlich', buttonText: 'Jetzt Offerten holen' },
+    services: { title: 'In 3 Schritten zum Umzug', buttonText: 'Jetzt starten' },
+    ratgeber: { title: 'Lieber telefonieren?', buttonText: 'Kontakt aufnehmen' },
+    fuerFirmen: { title: 'Mehr Anfragen. Weniger Leerstand.', buttonText: 'Partner werden' },
+  },
+};
+
 // Alle Varianten
 export const NAV_VARIANTS: NavConfig[] = [
   VARIANT_ULTIMATE,
@@ -604,6 +643,7 @@ export const NAV_VARIANTS: NavConfig[] = [
   VARIANT_L,
   VARIANT_M,
   VARIANT_N,
+  VARIANT_O,
 ];
 
 // Aktive Variante aus localStorage oder URL

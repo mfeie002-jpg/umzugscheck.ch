@@ -1,0 +1,236 @@
+/**
+ * Navigation V15 - ChatGPT Feedback v15
+ * 
+ * 4 main sections (Mobile-first, Du-Form):
+ * 1. Plane deinen Umzug - Tools, Checklisten & Tipps
+ * 2. Offerten vergleichen - Gratis Offerten von geprüften Firmen
+ * 3. So funktioniert's - In 3 Schritten zum Umzug
+ * 4. Hilfe & Kontakt - FAQ & Support
+ * + CTA: Kostenlos Offerten erhalten
+ * 
+ * Key Features:
+ * - Du-Form für Schweizer Markt
+ * - Emotionale, benefit-driven Microcopy
+ * - 5-item Submenu für Offerten vergleichen
+ */
+
+import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { 
+  ChevronDown, 
+  Menu, 
+  ClipboardList, 
+  Calculator, 
+  Box, 
+  Bot, 
+  Package,
+  Home,
+  Briefcase,
+  Sparkles,
+  Globe,
+  Warehouse,
+  HelpCircle,
+  Star,
+  Shield,
+  Users,
+  MessageCircle,
+  Phone,
+  CheckCircle,
+  ArrowRight
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { MobileMenuV15 } from "./MobileMenuV15";
+
+interface NavItem {
+  label: string;
+  tagline: string;
+  emoji?: string;
+  items: {
+    icon: React.ElementType;
+    title: string;
+    description: string;
+    href: string;
+  }[];
+}
+
+const navStructure: NavItem[] = [
+  {
+    label: "Plane deinen Umzug",
+    tagline: "Tools, Checklisten & Tipps, damit du stressfrei an alles denkst.",
+    emoji: "📋",
+    items: [
+      { icon: ClipboardList, title: "Umzugscheckliste", description: "Alles auf einen Blick", href: "/checkliste" },
+      { icon: Calculator, title: "Umzugskosten-Rechner", description: "In 2 Min zum Richtpreis", href: "/umzugsrechner" },
+      { icon: Box, title: "Volumenrechner", description: "Wie viel passt in den LKW?", href: "/volumenrechner" },
+      { icon: Bot, title: "Digitaler Assistent", description: "Persönliche Tipps (Beta)", href: "/assistent" },
+      { icon: Package, title: "Packtipps", description: "So packst du richtig", href: "/ratgeber/packtipps" },
+    ]
+  },
+  {
+    label: "Offerten vergleichen",
+    tagline: "Hol dir gratis Offerten von geprüften Umzugsfirmen & finde das beste Angebot.",
+    emoji: "🔍",
+    items: [
+      { icon: Home, title: "Privatumzug", description: "Zügle ohne Stress – Angebote für deinen Wohnungs- oder Hausumzug", href: "/privatumzug" },
+      { icon: Briefcase, title: "Büro & Firmenumzug", description: "Reibungsloser Geschäftsumzug – Offerten für Büro oder Firma", href: "/firmenumzug" },
+      { icon: Sparkles, title: "Umzug + Reinigung", description: "Komplett sorglos – inkl. Endreinigung durch Profis", href: "/umzug-mit-reinigung" },
+      { icon: Globe, title: "Internationaler Umzug", description: "Von der Schweiz in die Welt – erfahrene Partner", href: "/international" },
+      { icon: Warehouse, title: "Lagerung & Entsorgung", description: "Zwischenlagern oder Entsorgen leicht gemacht", href: "/lagerung-entsorgung" },
+    ]
+  },
+  {
+    label: "So funktioniert's",
+    tagline: "In 3 Schritten zu deinem stressfreien Umzug – transparent, sicher und einfach erklärt.",
+    emoji: "⭐",
+    items: [
+      { icon: HelpCircle, title: "Ablauf erklärt", description: "So funktioniert Umzugscheck", href: "/so-funktionierts" },
+      { icon: Star, title: "Kundenbewertungen", description: "Echte Erfahrungen lesen", href: "/bewertungen" },
+      { icon: Shield, title: "Geprüfte Partner", description: "Qualität die du vertrauen kannst", href: "/partner" },
+      { icon: Users, title: "Über uns", description: "Unser Team & unsere Mission", href: "/ueber-uns" },
+    ]
+  },
+  {
+    label: "Hilfe & Kontakt",
+    tagline: "Wir sind für dich da – FAQ, Tipps und persönlicher Support bei allen Umzugsfragen.",
+    emoji: "📞",
+    items: [
+      { icon: MessageCircle, title: "Häufige Fragen (FAQ)", description: "Schnelle Antworten", href: "/faq" },
+      { icon: Phone, title: "Kontakt", description: "Wir helfen dir gerne", href: "/kontakt" },
+      { icon: CheckCircle, title: "Support", description: "Bei Problemen & Reklamationen", href: "/support" },
+    ]
+  }
+];
+
+export const NavigationV15 = () => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+
+  return (
+    <>
+      <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-16 items-center justify-between">
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
+              <div className="w-7 h-7 bg-primary rounded-lg flex items-center justify-center">
+                <CheckCircle className="w-4 h-4 text-primary-foreground" />
+              </div>
+              <span className="text-xl font-bold">
+                <span className="text-foreground">Umzugs</span>
+                <span className="text-primary">check</span>
+                <span className="text-muted-foreground">.ch</span>
+              </span>
+            </div>
+          </Link>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex items-center gap-1">
+            {navStructure.map((section) => (
+              <div
+                key={section.label}
+                className="relative"
+                onMouseEnter={() => setActiveDropdown(section.label)}
+                onMouseLeave={() => setActiveDropdown(null)}
+              >
+                <button
+                  className={cn(
+                    "flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-md transition-colors",
+                    "hover:bg-accent hover:text-accent-foreground",
+                    activeDropdown === section.label && "bg-accent text-accent-foreground"
+                  )}
+                >
+                  <span className="text-base">{section.emoji}</span>
+                  {section.label}
+                  <ChevronDown className={cn(
+                    "h-4 w-4 transition-transform duration-200",
+                    activeDropdown === section.label && "rotate-180"
+                  )} />
+                </button>
+
+                {/* Dropdown */}
+                {activeDropdown === section.label && (
+                  <div className="absolute top-full left-0 pt-2 z-50">
+                    <div className="bg-background border border-border rounded-xl shadow-xl min-w-[380px] p-4 animate-in fade-in-0 slide-in-from-top-2 duration-200">
+                      {/* Tagline */}
+                      <p className="text-sm text-muted-foreground mb-4 pb-3 border-b border-border leading-relaxed">
+                        {section.tagline}
+                      </p>
+                      
+                      {/* Links */}
+                      <div className="space-y-1">
+                        {section.items.map((item) => {
+                          const Icon = item.icon;
+                          return (
+                            <Link
+                              key={item.href}
+                              to={item.href}
+                              className="flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-accent transition-colors group"
+                              onClick={() => setActiveDropdown(null)}
+                            >
+                              <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+                                <Icon className="h-4 w-4 text-primary" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <span className="text-sm font-semibold text-foreground block">{item.title}</span>
+                                <span className="text-xs text-muted-foreground line-clamp-1">{item.description}</span>
+                              </div>
+                              <ArrowRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity mt-1" />
+                            </Link>
+                          );
+                        })}
+                      </div>
+
+                      {/* CTA in Dropdown */}
+                      {section.label === "Offerten vergleichen" && (
+                        <div className="mt-4 pt-4 border-t border-border">
+                          <Button asChild className="w-full font-semibold gap-2">
+                            <Link to="/umzugsofferten">
+                              Gratis Offerten holen
+                              <ArrowRight className="w-4 h-4" />
+                            </Link>
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </nav>
+
+          {/* Desktop CTA */}
+          <div className="hidden lg:flex items-center gap-3">
+            <Link to="/anbieter" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              Für Anbieter
+            </Link>
+            <Button asChild className="font-semibold gap-2">
+              <Link to="/umzugsofferten">
+                Kostenlos Offerten erhalten
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </Button>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="lg:hidden"
+            onClick={() => setMobileMenuOpen(true)}
+          >
+            <Menu className="h-6 w-6" />
+            <span className="sr-only">Menü öffnen</span>
+          </Button>
+        </div>
+      </header>
+
+      {/* Mobile Menu */}
+      <MobileMenuV15
+        isOpen={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+        navStructure={navStructure}
+      />
+    </>
+  );
+};
