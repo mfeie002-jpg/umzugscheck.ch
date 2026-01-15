@@ -1,6 +1,13 @@
 # umzugscheck.ch - Production robots.txt
+# Swiss Moving Comparison Platform
+
 User-agent: *
 Allow: /
+
+# Core pages - high priority
+Allow: /umzugsofferten
+Allow: /umzugsfirmen
+Allow: /preisrechner
 
 # Disallow admin and auth pages
 Disallow: /admin/
@@ -10,19 +17,28 @@ Disallow: /firmen-dashboard
 Disallow: /anbieter/profil
 Disallow: /provider/
 
+# Disallow internal tools
+Disallow: /flows/
+Disallow: /intern/
+Disallow: /export/
+Disallow: /demo-result
+Disallow: /*?uc_render=
+
 # Disallow API endpoints
 Disallow: /api/
 
-# Allow important bots
+# Googlebot specific rules
 User-agent: Googlebot
 Allow: /
+Crawl-delay: 0
 
+# Bingbot specific rules
 User-agent: Bingbot
 Allow: /
+Crawl-delay: 1
 
-# Sitemap location
+# Sitemap locations
 Sitemap: https://umzugscheck.ch/sitemap.xml
 
-# Crawl delay for other bots
-User-agent: *
-Crawl-delay: 1
+# Host directive
+Host: https://umzugscheck.ch

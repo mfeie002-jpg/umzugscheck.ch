@@ -49,12 +49,15 @@ export default function Impressum() {
                       <p className="text-muted-foreground">Schweiz</p>
                     </div>
                     <div className="pt-4 space-y-2">
-                      <p className="text-muted-foreground">
-                        <span className="font-medium">UID:</span> CHE-123.456.789
-                      </p>
-                      <p className="text-muted-foreground">
-                        <span className="font-medium">Handelsregisternummer:</span> CH-020.1.234.567-8
-                      </p>
+                    <p className="text-muted-foreground">
+                      <span className="font-medium">UID:</span> CHE-XXX.XXX.XXX (bitte ergänzen)
+                    </p>
+                    <p className="text-muted-foreground">
+                      <span className="font-medium">Handelsregisternummer:</span> (bitte ergänzen)
+                    </p>
+                    <p className="text-muted-foreground">
+                      <span className="font-medium">MWST-Nr.:</span> (bitte ergänzen, falls vorhanden)
+                    </p>
                     </div>
                   </div>
                 </CardContent>

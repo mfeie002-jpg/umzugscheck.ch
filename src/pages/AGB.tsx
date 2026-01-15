@@ -43,6 +43,14 @@ export default function AGB() {
     {
       title: "10. Anwendbares Recht",
       content: "Für alle Rechtsbeziehungen zwischen Umzugscheck.ch und den Nutzern gilt ausschliesslich Schweizer Recht. Gerichtsstand ist Zürich."
+    },
+    {
+      title: "11. Streitbeilegung",
+      content: "Bei Streitigkeiten betreffend die Nutzung dieser Plattform bemühen wir uns zunächst um eine gütliche Einigung. Für Online-Streitbeilegung können Sie die EU-Plattform unter ec.europa.eu/consumers/odr nutzen."
+    },
+    {
+      title: "12. Salvatorische Klausel",
+      content: "Sollten einzelne Bestimmungen dieser AGB unwirksam sein oder werden, so bleibt die Wirksamkeit der übrigen Bestimmungen hiervon unberührt."
     }
   ];
 
