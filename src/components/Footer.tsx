@@ -136,6 +136,21 @@ export const Footer = () => {
                   Möbellift
                 </Link>
               </li>
+              <li>
+                <Link to="/haushaltsaufloesung" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
+                  Haushaltsauflösung
+                </Link>
+              </li>
+              <li>
+                <Link to="/tresortransport" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
+                  Tresortransport
+                </Link>
+              </li>
+              <li>
+                <Link to="/umzugshelfer" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
+                  Umzugshelfer
+                </Link>
+              </li>
             </ul>
           </div>
 
