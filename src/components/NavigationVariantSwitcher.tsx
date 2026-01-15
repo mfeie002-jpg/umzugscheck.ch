@@ -99,7 +99,7 @@ export const NavigationVariantSwitcher = ({ showOnlyOnHome = true }: NavigationV
                 <div>
                   <h3 className="font-bold text-lg">Navigation A/B Test</h3>
                   <p className="text-sm text-muted-foreground">
-                    5 Varianten vergleichen auf Desktop & Mobile
+                    8 Varianten vergleichen auf Desktop & Mobile
                   </p>
                 </div>
               </div>
