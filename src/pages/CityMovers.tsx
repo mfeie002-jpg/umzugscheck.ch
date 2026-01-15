@@ -28,6 +28,9 @@ import { RegionMidCTA } from '@/components/region-archetyp/RegionMidCTA';
 import { ZugCityContent } from '@/components/city/ZugCityContent';
 import { ZurichCityContent } from '@/components/city/ZurichCityContent';
 
+// Unified Hero Component (matches homepage style)
+import { UnifiedHero } from '@/components/shared/UnifiedHero';
+
 interface CityData {
   name: string;
   displayName: string;
@@ -659,74 +662,23 @@ export default function CityMovers() {
         cantonSlug={cityInfo?.cantonSlug}
       />
 
-      {/* Hero Section */}
-      <section 
-        className="relative overflow-hidden py-20 md:py-32 bg-cover bg-center"
-        style={{
-          backgroundImage: `linear-gradient(135deg, hsla(var(--primary-hsl) / 0.95), hsla(var(--primary-dark-hsl) / 0.95)), url('${ogImage}')`
+      {/* Unified Hero - Homepage Style */}
+      <UnifiedHero
+        title={cityData.heroTitle}
+        titleAccent="Jetzt gratis vergleichen"
+        subtitle={cityData.heroSubtitle}
+        locationName={cityData.displayName}
+        locationShort={cityInfo?.cantonShort}
+        stats={{
+          rating: 4.8,
+          reviewCount: 2847,
+          providerCount: 200,
+          activeUsers: cityData.liveCount
         }}
-      >
-        <div className="container mx-auto px-4 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center max-w-4xl mx-auto"
-          >
-            <div className="flex flex-wrap items-center justify-center gap-2 text-sm text-white/80 mb-4">
-              <Link to="/umzugsfirmen-schweiz" className="hover:text-white transition-colors">
-                Schweiz
-              </Link>
-              <span className="opacity-60">/</span>
-              {cityInfo ? (
-                <Link
-                  to={`/umzugsfirmen/kanton-${cityInfo.cantonSlug}`}
-                  className="hover:text-white transition-colors"
-                >
-                  Kanton {cityInfo.cantonName}
-                </Link>
-              ) : (
-                <span>Kanton</span>
-              )}
-              <span className="opacity-60">/</span>
-              <span className="text-white">{cityData.displayName}</span>
-            </div>
-            <h1 className="text-4xl md:text-6xl font-display font-bold text-white mb-6">
-              {cityData.heroTitle}
-            </h1>
-            <p className="text-xl md:text-2xl text-white/90 mb-8">
-              {cityData.heroSubtitle}
-            </p>
-
-            {/* Trust Badges */}
-            <div className="flex flex-wrap gap-6 justify-center mb-8 text-white">
-              <div className="flex items-center gap-2">
-                <span className="text-2xl">⭐</span>
-                <span className="font-semibold">4.8 / 5</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-6 w-6" />
-                <span className="font-semibold">15'000+ vermittelte Umzüge</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Shield className="h-6 w-6" />
-                <span className="font-semibold">100% kostenlos</span>
-              </div>
-            </div>
-
-            <Button 
-              size="lg" 
-              onClick={() => navigate('/umzugsofferten')}
-              className="bg-white text-primary hover:bg-white/90 shadow-strong text-lg h-14 px-8"
-            >
-              Offerten in {cityData.displayName} vergleichen
-            </Button>
-            <p className="mt-4 text-sm text-white/80">
-              Hinweis: Umzugscheck.ch ist ein Vergleichs- & Vermittlungsservice. Die Durchführung erfolgt durch geprüfte Partnerfirmen.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+        backgroundImage={ogImage}
+        prefillFrom={cityData.displayName}
+        variant="city"
+      />
 
       {/* NEW: Anchor Navigation for Sitelinks */}
       <RegionAnchorNav />
