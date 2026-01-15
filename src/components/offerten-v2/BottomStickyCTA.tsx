@@ -165,7 +165,7 @@ export default function BottomStickyCTA() {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
             onClick={scrollToTop}
-            className="fixed bottom-24 right-4 z-50 w-14 h-14 rounded-full bg-primary shadow-xl shadow-primary/30 flex items-center justify-center md:hidden"
+            className="fixed bottom-36 right-4 z-40 w-14 h-14 rounded-full bg-primary shadow-xl shadow-primary/30 flex items-center justify-center md:hidden"
           >
             <ArrowUp className="w-6 h-6 text-primary-foreground" />
           </motion.button>
@@ -179,7 +179,7 @@ export default function BottomStickyCTA() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={prefersReducedMotion ? { duration: 0 } : { type: "spring", damping: 25, stiffness: 300 }}
-            className="fixed bottom-0 left-0 right-0 z-50 md:hidden"
+            className="fixed bottom-14 left-0 right-0 z-40 md:hidden"
             style={{ opacity }}
             drag="y"
             dragConstraints={{ top: 0, bottom: 0 }}
