@@ -137,7 +137,8 @@ const RegionenOverview = lazy(() => import("./pages/Regionen"));
 const CityMovers = lazy(() => import("./pages/CityMovers"));
 const CityOptimized = lazy(() => import("./pages/CityOptimized"));
 const CityPage = lazy(() => import("./pages/CityPage").then(m => ({ default: m.CityPage })));
-const ZurichMovers = lazy(() => import("./pages/ZurichMovers"));
+// ZurichMovers REMOVED - Legacy route now redirects to /umzugsfirmen/zuerich
+const LegacyCityServiceRedirect = lazy(() => import("./pages/LegacyCityServiceRedirect"));
 const RegionalOfferten = lazy(() => import("./pages/RegionalOfferten"));
 // NEW: Unified region page replacing 24+ individual canton pages
 const RegionArchetypPage = lazy(() => import("./pages/region/RegionArchetypPage"));
@@ -674,10 +675,11 @@ const AppRouterContent = () => {
           <Route path="/invisible-4" element={<BlueprintV2 />} />
           <Route path="/raumplaner" element={<RoomPlannerDemo />} />
           <Route path="/sitemap" element={<Sitemap />} />
-          <Route path="/:city/umzugsfirmen" element={<CityMovers />} />
+          {/* LEGACY ROUTES - Redirect to canonical /umzugsfirmen/:city */}
+          <Route path="/:city/umzugsfirmen" element={<LegacyCityServiceRedirect />} />
           <Route path="/:city/umzug" element={<CityOptimized />} />
           <Route path="/city/:city" element={<CityPage />} />
-          <Route path="/zuerich/umzugsfirmen" element={<ZurichMovers />} />
+          {/* ZurichMovers REMOVED - /zuerich/umzugsfirmen now redirects via LegacyCityServiceRedirect */}
           <Route path="/zuerich-umzug" element={<ZurichMoving />} />
           <Route path="/bern-umzug" element={<BernMoving />} />
           <Route path="/basel-umzug" element={<BaselMoving />} />
