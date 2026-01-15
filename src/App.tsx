@@ -20,6 +20,11 @@ import { CriticalCSSLoader } from "@/components/performance/CriticalCSSLoader";
 import { PerformanceOptimizer, PerformanceDebugOverlay } from "@/components/performance/PerformanceOptimizer";
 import { WebVitalsReporter } from "@/hooks/useWebVitals";
 
+// Global optimization components
+const SocialProofTicker = lazy(() => import("./components/SocialProofTicker"));
+const CookieConsentBanner = lazy(() => import("./components/CookieConsentBanner").then(m => ({ default: m.CookieConsentBanner })));
+const ExitIntentPopup = lazy(() => import("./components/ExitIntentPopup").then(m => ({ default: m.ExitIntentPopup })));
+
 // ============================================
 // LAZY LOADED PAGES - Code Splitting
 // ============================================
@@ -776,6 +781,13 @@ const App = () => (
                 <PreloadResources />
                 <PerformanceDebugOverlay />
                 <AppRouterContent />
+                {/* Global Optimization Components */}
+                <Suspense fallback={null}>
+                  <SocialProofTicker position="bottom-left" />
+                </Suspense>
+                <Suspense fallback={null}>
+                  <ExitIntentPopup />
+                </Suspense>
               </BrowserRouter>
             </TooltipProvider>
           </PerformanceProvider>
