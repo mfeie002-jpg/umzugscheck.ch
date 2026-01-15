@@ -15,7 +15,7 @@ import { useMemo, lazy, Suspense } from "react";
 import { resolveSlug, isCanton, extractCantonFromKantonRoute } from "@/data/locations";
 
 // Lazy load pages for code splitting
-const CityMovers = lazy(() => import("./CityMovers"));
+const CityMovers = lazy(() => import("./CityMoversArchetyp"));
 const RegionArchetypPage = lazy(() => import("./region/RegionArchetypPage"));
 const NotFound = lazy(() => import("./NotFound"));
 
