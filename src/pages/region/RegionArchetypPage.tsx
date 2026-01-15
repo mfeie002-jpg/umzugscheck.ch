@@ -50,12 +50,18 @@ import {
   RegionHowWeRank,
   RegionSavingsProof,
   RegionCitiesGrid,
+  // NEW: Gold Standard Enhanced Components
+  RegionServicesEnhanced,
+  RegionWhyChooseUs,
+  RegionOfferComparison,
+  RegionCitiesInterlinking,
+  RegionFooterCTA,
+  RegionAnchorNavEnhanced,
 } from "@/components/region-archetyp";
 import { LocationAwareHowItWorks } from "@/components/shared/LocationAwareHowItWorks";
 
 // NEW SEO Components
 import { RegionBreadcrumb } from "@/components/region-archetyp/RegionBreadcrumb";
-import { RegionAnchorNav } from "@/components/region-archetyp/RegionAnchorNav";
 import { RegionTrustBox } from "@/components/region-archetyp/RegionTrustBox";
 import { RegionWhySave } from "@/components/region-archetyp/RegionWhySave";
 import { RegionKomplettpaket } from "@/components/region-archetyp/RegionKomplettpaket";
@@ -294,8 +300,8 @@ const RegionArchetypPage = () => {
           variant="canton"
         />
 
-        {/* NEW: Anchor Navigation for Sitelinks */}
-        <RegionAnchorNav />
+        {/* GOLD STANDARD: Enhanced Anchor Navigation (Sticky) */}
+        <RegionAnchorNavEnhanced />
 
         {/* GOLD STANDARD: Mini Navigation (Mobile) */}
         <RegionMiniNav />
@@ -428,16 +434,21 @@ const RegionArchetypPage = () => {
           />
         </motion.div>
 
+        {/* GOLD STANDARD: Enhanced Services with Dual CTAs */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <RegionServices
-            services={SERVICES_FOR_COMPONENT}
+          <RegionServicesEnhanced
             regionName={region.name}
+            regionSlug={region.slug}
+            variant="canton"
           />
         </motion.div>
+
+        {/* GOLD STANDARD: Offer Comparison Emphasis */}
+        <RegionOfferComparison regionName={region.name} variant="canton" />
 
         {/* NEW: E-E-A-T Trust Box */}
         <motion.div
