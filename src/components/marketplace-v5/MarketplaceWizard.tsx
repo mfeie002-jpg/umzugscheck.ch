@@ -48,7 +48,12 @@ import {
   Award,
   X,
   Plus,
-  Minus
+  Minus,
+  Heart,
+  ThumbsUp,
+  BadgeCheck,
+  Smile,
+  HeartHandshake
 } from "lucide-react";
 import { useCaptureMode } from "@/hooks/use-capture-mode";
 
@@ -75,6 +80,7 @@ interface ServiceLevel {
   price_multiplier: number;
   features: string[];
   popular?: boolean;
+  emoji?: string;
 }
 
 interface InventoryItem {
@@ -99,6 +105,21 @@ interface PartnerOffer {
   recommended?: boolean;
 }
 
+// Trust signals & testimonials for emotional connection
+const TRUST_SIGNALS = {
+  rating: "4.9",
+  reviews: "2'847",
+  companies: "380+",
+  savings: "40%",
+  customers: "12'500+",
+};
+
+const MINI_TESTIMONIALS = [
+  { text: "Super schnell und professionell!", name: "Sandra M.", city: "Zürich", rating: 5 },
+  { text: "Bester Preis, super Service!", name: "Marco T.", city: "Basel", rating: 5 },
+  { text: "Alles reibungslos geklappt.", name: "Anna K.", city: "Bern", rating: 5 },
+];
+
 const SERVICE_LEVELS: ServiceLevel[] = [
   {
     id: "diy",
@@ -106,6 +127,7 @@ const SERVICE_LEVELS: ServiceLevel[] = [
     tagline: "Sie packen, wir transportieren",
     icon: Package,
     price_multiplier: 1.0,
+    emoji: "💪",
     features: [
       "Transport + Träger",
       "Grundversicherung",
@@ -118,6 +140,7 @@ const SERVICE_LEVELS: ServiceLevel[] = [
     tagline: "Der beliebteste Umzug",
     icon: Truck,
     price_multiplier: 1.25,
+    emoji: "⭐",
     features: [
       "Transport + Träger",
       "Möbelmontage/-demontage",
@@ -132,6 +155,7 @@ const SERVICE_LEVELS: ServiceLevel[] = [
     tagline: "Wir machen alles",
     icon: Crown,
     price_multiplier: 1.6,
+    emoji: "👑",
     features: [
       "Kompletter Packservice",
       "Möbelmontage inkl.",
@@ -154,6 +178,46 @@ const DEFAULT_INVENTORY: InventoryItem[] = [
 ];
 
 const STEP_ORDER: WizardStep[] = ["location", "service", "inventory", "offers", "booking", "confirmation"];
+
+// Step Titles with Emotional Copy
+const STEP_CONTENT = {
+  location: {
+    badge: "Schritt 1",
+    emoji: "🏠",
+    title: "Wo geht die Reise hin?",
+    subtitle: "Ihr neues Zuhause wartet bereits auf Sie!",
+  },
+  service: {
+    badge: "Schritt 2",
+    emoji: "✨",
+    title: "Wie dürfen wir helfen?",
+    subtitle: "Wählen Sie Ihr Wohlfühl-Paket – Sie haben die Kontrolle.",
+  },
+  inventory: {
+    badge: "Schritt 3",
+    emoji: "📦",
+    title: "Was kommt alles mit?",
+    subtitle: "Schnell erfasst, präzise geschätzt – keine Überraschungen.",
+  },
+  offers: {
+    badge: "Ihre Angebote",
+    emoji: "🎉",
+    title: "Geschafft! Hier sind Ihre Angebote",
+    subtitle: "Handverlesene Partner, garantierte Fixpreise.",
+  },
+  booking: {
+    badge: "Fast geschafft!",
+    emoji: "📝",
+    title: "Nur noch ein paar Details",
+    subtitle: "Wir kümmern uns um den Rest – versprochen!",
+  },
+  confirmation: {
+    badge: "Erfolgreich!",
+    emoji: "🎊",
+    title: "Willkommen in der Umzugscheck-Familie!",
+    subtitle: "Lehnen Sie sich zurück – wir haben alles im Griff.",
+  },
+};
 
 export const MarketplaceWizard = () => {
   const { isCaptureMode, captureStep, demoData } = useCaptureMode();
@@ -295,59 +359,130 @@ export const MarketplaceWizard = () => {
   const offers = generateOffers();
   const selectedOfferData = offers.find(o => o.id === selectedOffer);
 
+  const stepContent = STEP_CONTENT[currentStep];
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
-      {/* Progress Header */}
-      <div className="sticky top-0 z-20 bg-background/95 backdrop-blur border-b">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+      {/* Enhanced Progress Header with Trust */}
+      <div className="sticky top-0 z-20 bg-background/95 backdrop-blur-md border-b shadow-sm">
         <div className="container mx-auto px-4 py-3">
           <div className="max-w-3xl mx-auto">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium">Schritt {currentStepIndex + 1} von {STEP_ORDER.length}</span>
-              <span className="text-sm text-muted-foreground">{Math.round(progress)}% abgeschlossen</span>
+            {/* Trust Micro-Bar (Mobile First) */}
+            <div className="flex items-center justify-center gap-4 mb-3 text-xs">
+              <span className="inline-flex items-center gap-1 text-emerald-600 font-medium">
+                <BadgeCheck className="w-3.5 h-3.5" /> Geprüft
+              </span>
+              <span className="inline-flex items-center gap-1 text-amber-600 font-medium">
+                <Star className="w-3.5 h-3.5 fill-current" /> {TRUST_SIGNALS.rating}
+              </span>
+              <span className="inline-flex items-center gap-1 text-primary font-medium">
+                <Shield className="w-3.5 h-3.5" /> Fixpreis
+              </span>
             </div>
-            <Progress value={progress} className="h-2" />
+            
+            {/* Progress Bar */}
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-semibold text-foreground">
+                {stepContent.emoji} {stepContent.badge}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {Math.round(progress)}% geschafft!
+              </span>
+            </div>
+            <Progress value={progress} className="h-2.5 bg-muted" />
           </div>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="container mx-auto px-4 py-6 md:py-8 max-w-4xl pb-24 md:pb-8">
         <AnimatePresence mode="wait">
           {/* STEP 1: Location */}
           {currentStep === "location" && (
             <motion.div
               key="location"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
               className="space-y-6"
             >
-              <div className="text-center space-y-2">
-                <Badge className="bg-primary/10 text-primary">Schritt 1</Badge>
-                <h1 className="text-2xl md:text-3xl font-bold">Wohin zügeln Sie?</h1>
-                <p className="text-muted-foreground">Geben Sie Start- und Zieladresse an.</p>
+              {/* Emotional Header */}
+              <div className="text-center space-y-3">
+                <motion.div 
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.1, type: "spring" }}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-primary/10 to-emerald-500/10 border border-primary/20"
+                >
+                  <span className="text-xl">{stepContent.emoji}</span>
+                  <span className="text-sm font-semibold text-primary">{stepContent.badge}</span>
+                </motion.div>
+                <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
+                  {stepContent.title}
+                </h1>
+                <p className="text-muted-foreground max-w-md mx-auto">
+                  {stepContent.subtitle}
+                </p>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-6">
+              {/* Mini Testimonial (Mobile) */}
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="md:hidden"
+              >
+                <div className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-r from-amber-50 to-emerald-50 dark:from-amber-500/10 dark:to-emerald-500/10 border border-amber-200/50 dark:border-amber-500/20">
+                  <div className="flex -space-x-2">
+                    {["👩", "👨", "👩‍🦱"].map((emoji, i) => (
+                      <div key={i} className="w-8 h-8 rounded-full bg-white dark:bg-muted border-2 border-white dark:border-background flex items-center justify-center text-sm">
+                        {emoji}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-medium text-foreground truncate">
+                      "{MINI_TESTIMONIALS[0].text}"
+                    </p>
+                    <p className="text-[10px] text-muted-foreground">
+                      {MINI_TESTIMONIALS[0].name} • {MINI_TESTIMONIALS[0].city}
+                    </p>
+                  </div>
+                  <div className="flex text-amber-400">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-3 h-3 fill-current" />
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+
+              <div className="grid md:grid-cols-2 gap-4 md:gap-6">
                 {/* From */}
-                <Card>
-                  <CardContent className="p-5 space-y-4">
+                <Card className="border-2 border-primary/20 shadow-lg shadow-primary/5 overflow-hidden">
+                  <div className="h-1 bg-gradient-to-r from-primary to-primary/50" />
+                  <CardContent className="p-4 md:p-5 space-y-4">
                     <div className="flex items-center gap-2 text-primary font-semibold">
-                      <MapPin className="w-5 h-5" />
-                      Auszug (Von)
+                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                        <MapPin className="w-4 h-4" />
+                      </div>
+                      <span>Von hier 📍</span>
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                       <div className="space-y-1.5">
-                        <Label className="text-xs">PLZ</Label>
+                        <Label className="text-xs font-medium">PLZ</Label>
                         <Input 
-                          placeholder="8000" 
+                          placeholder="8000"
+                          className="h-12 text-base"
+                          inputMode="numeric"
                           value={locationData.fromPlz}
                           onChange={(e) => setLocationData({...locationData, fromPlz: e.target.value})}
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <Label className="text-xs">Ort</Label>
+                        <Label className="text-xs font-medium">Ort</Label>
                         <Input 
                           placeholder="Zürich"
+                          className="h-12 text-base"
                           value={locationData.fromCity}
                           onChange={(e) => setLocationData({...locationData, fromCity: e.target.value})}
                         />
@@ -355,10 +490,12 @@ export const MarketplaceWizard = () => {
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                       <div className="space-y-1.5">
-                        <Label className="text-xs">Stockwerk</Label>
+                        <Label className="text-xs font-medium">Stockwerk</Label>
                         <Input 
                           type="number" 
                           min="0"
+                          className="h-12 text-base"
+                          inputMode="numeric"
                           value={locationData.fromFloor}
                           onChange={(e) => setLocationData({...locationData, fromFloor: parseInt(e.target.value) || 0})}
                         />
@@ -366,6 +503,7 @@ export const MarketplaceWizard = () => {
                       <div className="flex items-center gap-2 pt-6">
                         <Checkbox 
                           id="fromLift"
+                          className="h-5 w-5"
                           checked={locationData.fromElevator}
                           onCheckedChange={(checked) => setLocationData({...locationData, fromElevator: !!checked})}
                         />
@@ -376,25 +514,31 @@ export const MarketplaceWizard = () => {
                 </Card>
 
                 {/* To */}
-                <Card>
-                  <CardContent className="p-5 space-y-4">
-                    <div className="flex items-center gap-2 text-green-600 font-semibold">
-                      <Home className="w-5 h-5" />
-                      Einzug (Nach)
+                <Card className="border-2 border-emerald-500/20 shadow-lg shadow-emerald-500/5 overflow-hidden">
+                  <div className="h-1 bg-gradient-to-r from-emerald-500 to-emerald-500/50" />
+                  <CardContent className="p-4 md:p-5 space-y-4">
+                    <div className="flex items-center gap-2 text-emerald-600 font-semibold">
+                      <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center">
+                        <Home className="w-4 h-4" />
+                      </div>
+                      <span>Nach hier 🏡</span>
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                       <div className="space-y-1.5">
-                        <Label className="text-xs">PLZ</Label>
+                        <Label className="text-xs font-medium">PLZ</Label>
                         <Input 
                           placeholder="3000"
+                          className="h-12 text-base"
+                          inputMode="numeric"
                           value={locationData.toPlz}
                           onChange={(e) => setLocationData({...locationData, toPlz: e.target.value})}
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <Label className="text-xs">Ort</Label>
+                        <Label className="text-xs font-medium">Ort</Label>
                         <Input 
                           placeholder="Bern"
+                          className="h-12 text-base"
                           value={locationData.toCity}
                           onChange={(e) => setLocationData({...locationData, toCity: e.target.value})}
                         />
@@ -402,10 +546,12 @@ export const MarketplaceWizard = () => {
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                       <div className="space-y-1.5">
-                        <Label className="text-xs">Stockwerk</Label>
+                        <Label className="text-xs font-medium">Stockwerk</Label>
                         <Input 
                           type="number"
                           min="0"
+                          className="h-12 text-base"
+                          inputMode="numeric"
                           value={locationData.toFloor}
                           onChange={(e) => setLocationData({...locationData, toFloor: parseInt(e.target.value) || 0})}
                         />
@@ -413,6 +559,7 @@ export const MarketplaceWizard = () => {
                       <div className="flex items-center gap-2 pt-6">
                         <Checkbox 
                           id="toLift"
+                          className="h-5 w-5"
                           checked={locationData.toElevator}
                           onCheckedChange={(checked) => setLocationData({...locationData, toElevator: !!checked})}
                         />
@@ -424,33 +571,40 @@ export const MarketplaceWizard = () => {
               </div>
 
               {/* Date & Rooms */}
-              <Card>
-                <CardContent className="p-5">
+              <Card className="border shadow-sm">
+                <CardContent className="p-4 md:p-5">
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <Label>Wunschtermin</Label>
+                      <Label className="font-medium flex items-center gap-2">
+                        <Calendar className="w-4 h-4 text-primary" />
+                        Wunschtermin
+                      </Label>
                       <Input 
                         type="date"
+                        className="h-12 text-base"
                         value={locationData.moveDate}
                         onChange={(e) => setLocationData({...locationData, moveDate: e.target.value})}
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <Label>Anzahl Zimmer</Label>
+                      <Label className="font-medium flex items-center gap-2">
+                        <Home className="w-4 h-4 text-primary" />
+                        Anzahl Zimmer
+                      </Label>
                       <RadioGroup 
                         value={locationData.rooms} 
                         onValueChange={(val) => setLocationData({...locationData, rooms: val})}
-                        className="flex gap-2"
+                        className="flex flex-wrap gap-2"
                       >
                         {["1", "2", "3", "4", "5+"].map((r) => (
                           <div key={r} className="flex items-center">
                             <RadioGroupItem value={r} id={`room-${r}`} className="sr-only" />
                             <Label 
                               htmlFor={`room-${r}`}
-                              className={`px-4 py-2 rounded-lg border cursor-pointer transition-all ${
+                              className={`min-w-[48px] h-12 flex items-center justify-center rounded-xl border-2 cursor-pointer transition-all text-base font-semibold touch-manipulation ${
                                 locationData.rooms === r 
-                                  ? 'bg-primary text-primary-foreground border-primary' 
-                                  : 'bg-muted/50 hover:bg-muted'
+                                  ? 'bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/25' 
+                                  : 'bg-muted/50 hover:bg-muted border-transparent'
                               }`}
                             >
                               {r}
@@ -463,7 +617,24 @@ export const MarketplaceWizard = () => {
                 </CardContent>
               </Card>
 
-              <div className="flex justify-end">
+              {/* Sticky CTA (Mobile) */}
+              <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/95 backdrop-blur-md border-t shadow-lg md:hidden z-30">
+                <Button 
+                  size="lg" 
+                  className="w-full h-14 text-base font-semibold shadow-lg shadow-primary/25"
+                  onClick={goNext} 
+                  disabled={!locationData.fromPlz || !locationData.toPlz}
+                >
+                  Weiter zur Service-Auswahl
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+                <p className="text-center text-xs text-muted-foreground mt-2">
+                  ✓ Kostenlos & unverbindlich
+                </p>
+              </div>
+
+              {/* Desktop CTA */}
+              <div className="hidden md:flex justify-end">
                 <Button size="lg" onClick={goNext} disabled={!locationData.fromPlz || !locationData.toPlz}>
                   Weiter
                   <ArrowRight className="w-4 h-4 ml-2" />
@@ -476,57 +647,123 @@ export const MarketplaceWizard = () => {
           {currentStep === "service" && (
             <motion.div
               key="service"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
               className="space-y-6"
             >
-              <div className="text-center space-y-2">
-                <Badge className="bg-primary/10 text-primary">Schritt 2</Badge>
-                <h1 className="text-2xl md:text-3xl font-bold">Wählen Sie Ihr Service-Level</h1>
-                <p className="text-muted-foreground">Von DIY bis Full-Service – Sie entscheiden.</p>
+              {/* Emotional Header */}
+              <div className="text-center space-y-3">
+                <motion.div 
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.1, type: "spring" }}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-primary/10 to-purple-500/10 border border-primary/20"
+                >
+                  <span className="text-xl">{stepContent.emoji}</span>
+                  <span className="text-sm font-semibold text-primary">{stepContent.badge}</span>
+                </motion.div>
+                <h1 className="text-2xl md:text-3xl font-bold">
+                  {stepContent.title}
+                </h1>
+                <p className="text-muted-foreground max-w-md mx-auto">
+                  {stepContent.subtitle}
+                </p>
               </div>
 
               <div className="grid md:grid-cols-3 gap-4">
-                {SERVICE_LEVELS.map((level) => (
-                  <Card 
+                {SERVICE_LEVELS.map((level, idx) => (
+                  <motion.div
                     key={level.id}
-                    className={`relative cursor-pointer transition-all ${
-                      selectedService === level.id 
-                        ? 'border-primary ring-2 ring-primary/20' 
-                        : 'hover:border-primary/50'
-                    }`}
-                    onClick={() => setSelectedService(level.id)}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.1 }}
                   >
-                    {level.popular && (
-                      <Badge className="absolute -top-2.5 right-4 bg-primary">Beliebt</Badge>
-                    )}
-                    <CardContent className="p-5 space-y-4">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                          selectedService === level.id ? 'bg-primary text-primary-foreground' : 'bg-muted'
-                        }`}>
-                          <level.icon className="w-6 h-6" />
+                    <Card 
+                      className={`relative cursor-pointer transition-all h-full touch-manipulation ${
+                        selectedService === level.id 
+                          ? 'border-2 border-primary ring-4 ring-primary/20 shadow-xl shadow-primary/10' 
+                          : 'hover:border-primary/50 hover:shadow-lg'
+                      }`}
+                      onClick={() => setSelectedService(level.id)}
+                    >
+                      {level.popular && (
+                        <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary to-purple-600 text-white shadow-lg">
+                          ⭐ Beliebt
+                        </Badge>
+                      )}
+                      <CardContent className="p-5 space-y-4">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl ${
+                            selectedService === level.id 
+                              ? 'bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-lg' 
+                              : 'bg-muted'
+                          }`}>
+                            {level.emoji}
+                          </div>
+                          <div>
+                            <h3 className="font-bold text-lg">{level.name}</h3>
+                            <p className="text-xs text-muted-foreground">{level.tagline}</p>
+                          </div>
                         </div>
-                        <div>
-                          <h3 className="font-bold">{level.name}</h3>
-                          <p className="text-xs text-muted-foreground">{level.tagline}</p>
-                        </div>
-                      </div>
-                      <ul className="space-y-2">
-                        {level.features.map((f, i) => (
-                          <li key={i} className="flex items-center gap-2 text-sm">
-                            <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0" />
-                            {f}
-                          </li>
-                        ))}
-                      </ul>
-                    </CardContent>
-                  </Card>
+                        <ul className="space-y-2.5">
+                          {level.features.map((f, i) => (
+                            <li key={i} className="flex items-start gap-2 text-sm">
+                              <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
+                              <span>{f}</span>
+                            </li>
+                          ))}
+                        </ul>
+                        {selectedService === level.id && (
+                          <motion.div 
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="flex items-center justify-center gap-2 pt-2 text-primary font-semibold"
+                          >
+                            <BadgeCheck className="w-5 h-5" />
+                            Ausgewählt
+                          </motion.div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </motion.div>
                 ))}
               </div>
 
-              <div className="flex justify-between">
+              {/* Social Proof */}
+              <div className="flex items-center justify-center gap-4 py-2">
+                <div className="flex -space-x-2">
+                  {["👩", "👨", "👩‍🦱", "👨‍🦳"].map((emoji, i) => (
+                    <div key={i} className="w-8 h-8 rounded-full bg-muted border-2 border-background flex items-center justify-center text-sm">
+                      {emoji}
+                    </div>
+                  ))}
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  <span className="font-semibold text-foreground">{TRUST_SIGNALS.customers}</span> zufriedene Kunden
+                </p>
+              </div>
+
+              {/* Sticky CTA (Mobile) */}
+              <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/95 backdrop-blur-md border-t shadow-lg md:hidden z-30">
+                <div className="flex gap-3">
+                  <Button variant="ghost" size="lg" onClick={goBack} className="h-14">
+                    <ArrowLeft className="w-5 h-5" />
+                  </Button>
+                  <Button 
+                    size="lg" 
+                    className="flex-1 h-14 text-base font-semibold shadow-lg shadow-primary/25"
+                    onClick={goNext}
+                  >
+                    Weiter zum Inventar
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </div>
+              </div>
+
+              {/* Desktop CTA */}
+              <div className="hidden md:flex justify-between">
                 <Button variant="ghost" onClick={goBack}>
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Zurück
@@ -543,76 +780,86 @@ export const MarketplaceWizard = () => {
           {currentStep === "inventory" && (
             <motion.div
               key="inventory"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
               className="space-y-6"
             >
-              <div className="text-center space-y-2">
-                <Badge className="bg-primary/10 text-primary">Schritt 3</Badge>
-                <h1 className="text-2xl md:text-3xl font-bold">Was wird gezügelt?</h1>
-                <p className="text-muted-foreground">Video hochladen oder Inventar angeben.</p>
+              {/* Emotional Header */}
+              <div className="text-center space-y-3">
+                <motion.div 
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.1, type: "spring" }}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-primary/10 to-amber-500/10 border border-primary/20"
+                >
+                  <span className="text-xl">{stepContent.emoji}</span>
+                  <span className="text-sm font-semibold text-primary">{stepContent.badge}</span>
+                </motion.div>
+                <h1 className="text-2xl md:text-3xl font-bold">{stepContent.title}</h1>
+                <p className="text-muted-foreground max-w-md mx-auto">{stepContent.subtitle}</p>
               </div>
 
               {/* Mode Toggle */}
               <div className="flex justify-center">
-                <div className="inline-flex rounded-lg bg-muted p-1">
+                <div className="inline-flex rounded-xl bg-muted p-1.5 shadow-inner">
                   <button
-                    className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                      inventoryMode === "video" ? 'bg-background shadow' : ''
+                    className={`px-5 py-3 rounded-lg text-sm font-semibold transition-all touch-manipulation ${
+                      inventoryMode === "video" ? 'bg-background shadow-lg text-primary' : 'text-muted-foreground'
                     }`}
                     onClick={() => setInventoryMode("video")}
                   >
-                    <Video className="w-4 h-4 inline mr-2" />
-                    Video-Upload
+                    <Camera className="w-4 h-4 inline mr-2" />
+                    Video 📹
                   </button>
                   <button
-                    className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                      inventoryMode === "checklist" ? 'bg-background shadow' : ''
+                    className={`px-5 py-3 rounded-lg text-sm font-semibold transition-all touch-manipulation ${
+                      inventoryMode === "checklist" ? 'bg-background shadow-lg text-primary' : 'text-muted-foreground'
                     }`}
                     onClick={() => setInventoryMode("checklist")}
                   >
                     <ClipboardCheck className="w-4 h-4 inline mr-2" />
-                    Checkliste
+                    Liste ✏️
                   </button>
                 </div>
               </div>
 
               {inventoryMode === "video" ? (
-                <Card className="border-2 border-dashed border-primary/30 bg-primary/5">
-                  <CardContent className="p-8 text-center space-y-4">
+                <Card className="border-2 border-dashed border-primary/30 bg-gradient-to-br from-primary/5 to-purple-500/5">
+                  <CardContent className="p-6 md:p-8 text-center space-y-4">
                     {!videoUploaded ? (
                       <>
-                        <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto">
+                        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/20 to-purple-500/20 flex items-center justify-center mx-auto">
                           <Camera className="w-10 h-10 text-primary" />
                         </div>
                         <div>
-                          <h3 className="font-semibold text-lg mb-1">Video-Rundgang hochladen</h3>
+                          <h3 className="font-bold text-lg mb-1">📹 Video-Rundgang hochladen</h3>
                           <p className="text-sm text-muted-foreground mb-4">
-                            Filmen Sie jeden Raum kurz ab (1-3 Min total). Unsere KI erkennt Möbel automatisch.
+                            Filmen Sie jeden Raum kurz ab – unsere KI erkennt alles automatisch!
                           </p>
                         </div>
                         {videoUploading ? (
                           <div className="space-y-2 max-w-xs mx-auto">
-                            <Progress value={videoProgress} className="h-2" />
-                            <p className="text-sm text-muted-foreground">Wird hochgeladen... {Math.round(videoProgress)}%</p>
+                            <Progress value={videoProgress} className="h-3" />
+                            <p className="text-sm text-muted-foreground">🔄 Wird analysiert... {Math.round(videoProgress)}%</p>
                           </div>
                         ) : (
-                          <Button onClick={handleVideoUpload}>
-                            <Upload className="w-4 h-4 mr-2" />
+                          <Button size="lg" className="h-14 px-8" onClick={handleVideoUpload}>
+                            <Upload className="w-5 h-5 mr-2" />
                             Video auswählen
                           </Button>
                         )}
                       </>
                     ) : (
                       <div className="space-y-4">
-                        <div className="w-16 h-16 rounded-full bg-green-500 flex items-center justify-center mx-auto">
-                          <CheckCircle2 className="w-8 h-8 text-white" />
+                        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center mx-auto shadow-lg">
+                          <CheckCircle2 className="w-10 h-10 text-white" />
                         </div>
                         <div>
-                          <h3 className="font-semibold text-lg">Video hochgeladen!</h3>
+                          <h3 className="font-bold text-lg">✅ Video hochgeladen!</h3>
                           <p className="text-sm text-muted-foreground">
-                            Geschätztes Volumen: ~{calculateVolume()}m³ (Konfidenz: 85%)
+                            Geschätztes Volumen: <span className="font-bold text-primary">~{calculateVolume()}m³</span>
                           </p>
                         </div>
                       </div>
@@ -620,44 +867,62 @@ export const MarketplaceWizard = () => {
                   </CardContent>
                 </Card>
               ) : (
-                <Card>
-                  <CardContent className="p-5">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <Card className="shadow-lg">
+                  <CardContent className="p-4 md:p-5">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                       {inventory.map((item) => (
-                        <div key={item.id} className="flex flex-col items-center p-3 rounded-lg bg-muted/50">
-                          <item.icon className="w-8 h-8 text-muted-foreground mb-2" />
-                          <span className="text-sm font-medium text-center mb-2">{item.name}</span>
-                          <div className="flex items-center gap-2">
+                        <div key={item.id} className="flex flex-col items-center p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors">
+                          <item.icon className="w-8 h-8 text-primary/70 mb-2" />
+                          <span className="text-sm font-medium text-center mb-3">{item.name}</span>
+                          <div className="flex items-center gap-1">
                             <Button 
                               size="icon" 
                               variant="outline" 
-                              className="h-7 w-7"
+                              className="h-10 w-10 rounded-full touch-manipulation"
                               onClick={() => updateInventoryCount(item.id, -1)}
                             >
-                              <Minus className="w-3 h-3" />
+                              <Minus className="w-4 h-4" />
                             </Button>
-                            <span className="w-6 text-center font-semibold">{item.count}</span>
+                            <span className="w-8 text-center font-bold text-lg">{item.count}</span>
                             <Button 
                               size="icon" 
                               variant="outline" 
-                              className="h-7 w-7"
+                              className="h-10 w-10 rounded-full touch-manipulation"
                               onClick={() => updateInventoryCount(item.id, 1)}
                             >
-                              <Plus className="w-3 h-3" />
+                              <Plus className="w-4 h-4" />
                             </Button>
                           </div>
                         </div>
                       ))}
                     </div>
-                    <div className="mt-4 p-3 bg-primary/5 rounded-lg text-center">
-                      <span className="text-sm text-muted-foreground">Geschätztes Volumen: </span>
-                      <span className="font-bold text-primary">~{calculateVolume()}m³</span>
+                    <div className="mt-4 p-4 bg-gradient-to-r from-primary/10 to-emerald-500/10 rounded-xl text-center border border-primary/20">
+                      <span className="text-sm text-muted-foreground">📦 Geschätztes Volumen: </span>
+                      <span className="font-bold text-lg text-primary">~{calculateVolume()}m³</span>
                     </div>
                   </CardContent>
                 </Card>
               )}
 
-              <div className="flex justify-between">
+              {/* Sticky CTA (Mobile) */}
+              <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/95 backdrop-blur-md border-t shadow-lg md:hidden z-30">
+                <div className="flex gap-3">
+                  <Button variant="ghost" size="lg" onClick={goBack} className="h-14">
+                    <ArrowLeft className="w-5 h-5" />
+                  </Button>
+                  <Button 
+                    size="lg" 
+                    className="flex-1 h-14 text-base font-semibold shadow-lg shadow-primary/25"
+                    onClick={goNext}
+                  >
+                    🎉 Offerten anzeigen
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </div>
+              </div>
+
+              {/* Desktop CTA */}
+              <div className="hidden md:flex justify-between">
                 <Button variant="ghost" onClick={goBack}>
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Zurück
