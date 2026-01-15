@@ -79,22 +79,29 @@ export const EnhancedTestimonials = memo(function EnhancedTestimonials() {
   };
 
   return (
-    <section className="py-16 md:py-20 bg-muted/30">
-      <div className="container">
+    <section className="py-16 md:py-20 bg-gradient-to-br from-primary/10 via-muted/30 to-secondary/10 relative overflow-hidden">
+      {/* Decorative background elements */}
+      <div className="absolute top-0 left-0 w-64 h-64 bg-primary/15 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+      <div className="absolute bottom-0 right-0 w-80 h-80 bg-secondary/15 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
+      <div className="absolute top-20 right-[15%] text-5xl opacity-20">⭐</div>
+      <div className="absolute bottom-32 left-[10%] text-4xl opacity-15">⭐</div>
+      
+      <div className="container relative">
         <div className="text-center mb-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 bg-swiss-gold/10 text-swiss-gold rounded-full px-4 py-2 mb-4"
+            className="inline-flex items-center gap-3 bg-yellow-100 dark:bg-yellow-900/40 rounded-full px-6 py-3 mb-5 shadow-md border-2 border-yellow-300/50"
           >
-            <Star className="w-4 h-4 fill-swiss-gold" />
-            <span className="text-sm font-medium">4.8 / 5 Bewertung</span>
+            <Star className="w-6 h-6 fill-yellow-500 text-yellow-500" />
+            <span className="text-base font-bold text-yellow-700 dark:text-yellow-400">4.8 / 5 Bewertung</span>
+            <Star className="w-6 h-6 fill-yellow-500 text-yellow-500" />
           </motion.div>
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Was unsere Kunden sagen
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
             Über 15'000 zufriedene Kunden vertrauen auf unseren Service
           </p>
         </div>
@@ -124,37 +131,37 @@ export const EnhancedTestimonials = memo(function EnhancedTestimonials() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -50 }}
               transition={{ duration: 0.3 }}
-              className="bg-card rounded-2xl border border-border shadow-premium p-8 md:p-10"
+              className="bg-gradient-to-br from-card to-primary/5 rounded-2xl border-2 border-primary/20 shadow-xl p-8 md:p-10"
             >
-              <Quote className="w-10 h-10 text-primary/20 mb-4" />
-              <p className="text-lg md:text-xl mb-6 leading-relaxed">
+              <Quote className="w-12 h-12 text-primary/30 mb-4" />
+              <p className="text-lg md:text-xl mb-6 leading-relaxed font-medium text-foreground">
                 "{testimonials[current].text}"
               </p>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg">
+              <div className="flex items-center justify-between flex-wrap gap-4">
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center text-primary font-bold text-xl shadow-md">
                     {testimonials[current].name.charAt(0)}
                   </div>
                   <div>
-                    <div className="font-semibold">{testimonials[current].name}</div>
+                    <div className="font-bold text-lg">{testimonials[current].name}</div>
                     <div className="text-sm text-muted-foreground">{testimonials[current].location}</div>
                   </div>
                 </div>
-                <div className="flex flex-col items-end gap-1">
-                  <div className="flex gap-0.5">
+                <div className="flex flex-col items-end gap-2">
+                  <div className="flex gap-1">
                     {Array.from({ length: 5 }).map((_, i) => (
                       <Star
                         key={i}
                         className={cn(
-                          "w-4 h-4",
+                          "w-6 h-6 drop-shadow-sm",
                           i < testimonials[current].rating
-                            ? "text-swiss-gold fill-swiss-gold"
+                            ? "text-yellow-400 fill-yellow-400"
                             : "text-muted-foreground/30"
                         )}
                       />
                     ))}
                   </div>
-                  <span className="text-xs text-muted-foreground">{testimonials[current].date}</span>
+                  <span className="text-sm text-muted-foreground font-medium">{testimonials[current].date}</span>
                 </div>
               </div>
             </motion.div>
