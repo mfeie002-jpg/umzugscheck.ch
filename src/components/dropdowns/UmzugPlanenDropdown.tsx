@@ -77,7 +77,7 @@ export const UmzugPlanenDropdown = ({ isOpen, onClose }: UmzugPlanenDropdownProp
           {/* Column 1: Hauptnavigation */}
           <div>
             <DropdownSection 
-              title={navVariant.labels.preisrechner.toUpperCase()} 
+              title={navVariant.dropdownTitles.preisrechner} 
               subtitle={navVariant.microcopy.preisrechner}
             >
               <div className="space-y-1">
@@ -137,7 +137,7 @@ export const UmzugPlanenDropdown = ({ isOpen, onClose }: UmzugPlanenDropdownProp
           {/* Column 3: CTA Card */}
           <div className="lg:border-l lg:border-border lg:pl-6">
             <DropdownCTACard
-              title="Kostenlose Offerten"
+              title={navVariant.ctaCard.preisrechner.title}
               description="Starte mit dem Preisrechner und erhalte unverbindliche Angebote von geprüften Firmen."
               icon={Sparkles}
               bullets={[
@@ -145,7 +145,7 @@ export const UmzugPlanenDropdown = ({ isOpen, onClose }: UmzugPlanenDropdownProp
                 "3–5 Angebote in 24–48h",
                 "100% kostenlos & unverbindlich"
               ]}
-              buttonText="Preisrechner starten"
+              buttonText={navVariant.ctaCard.preisrechner.buttonText}
               buttonHref="/vergleich"
               onClose={onClose}
             />

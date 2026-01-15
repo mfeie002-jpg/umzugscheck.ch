@@ -2,6 +2,8 @@
  * Navigation A/B Test System
  * 
  * 5 Varianten für Vergleich auf Mobile und Desktop
+ * 
+ * Switch via URL: ?nav=ultimate | ?nav=variant-b | ?nav=variant-c | ?nav=variant-d | ?nav=variant-e
  */
 
 export type NavVariant = 'ultimate' | 'variant-b' | 'variant-c' | 'variant-d' | 'variant-e';
@@ -25,14 +27,68 @@ export interface NavConfig {
     ratgeber: string;
     fuerFirmen: string;
   };
+  dropdownTitles: {
+    preisrechner: string;
+    firmen: string;
+    services: string;
+    ratgeber: string;
+    fuerFirmen: string;
+  };
+  ctaCard: {
+    preisrechner: { title: string; buttonText: string };
+    firmen: { title: string; buttonText: string };
+    services: { title: string; buttonText: string };
+    ratgeber: { title: string; buttonText: string };
+    fuerFirmen: { title: string; buttonText: string };
+  };
 }
 
-// VARIANTE A: ULTIMATE (Meine Empfehlung)
-// Begründung: Action-First mit Verben, Swiss-optimiert, conversion-fokussiert
+// ============================================
+// VARIANTE 1: ORIGINAL (Status Quo)
+// ============================================
 export const VARIANT_ULTIMATE: NavConfig = {
   id: 'ultimate',
-  name: 'Ultimate (Empfohlen)',
-  description: 'Action-First mit Verben, Swiss-optimiert, höchste Conversion',
+  name: '1. Original (Status Quo)',
+  description: 'Aktuelle Navigation wie sie jetzt ist',
+  labels: {
+    preisrechner: 'Preisrechner',
+    firmen: 'Umzugsfirmen',
+    services: 'Services',
+    ratgeber: 'Ratgeber',
+    fuerFirmen: 'Für Firmen',
+    cta: 'Offerten erhalten',
+  },
+  microcopy: {
+    preisrechner: 'Umzugskosten berechnen in 60 Sekunden',
+    firmen: 'Geprüfte Firmen in deiner Region',
+    services: 'Reinigung, Lagerung, Entsorgung & mehr',
+    ratgeber: 'Checklisten, Tipps & Anleitungen',
+    fuerFirmen: 'Für Umzugsfirmen: Partner werden',
+  },
+  dropdownTitles: {
+    preisrechner: 'KOSTEN BERECHNEN',
+    firmen: 'UMZUGSFIRMEN FINDEN',
+    services: 'ALLE SERVICES',
+    ratgeber: 'RATGEBER',
+    fuerFirmen: 'FÜR FIRMEN',
+  },
+  ctaCard: {
+    preisrechner: { title: 'Kostenlose Offerten', buttonText: 'Preisrechner starten' },
+    firmen: { title: 'Offerten in deiner Region', buttonText: 'Offerten anfordern' },
+    services: { title: 'Service auswählen', buttonText: 'Offerten erhalten' },
+    ratgeber: { title: 'Umzug jetzt starten', buttonText: 'Jetzt Offerten erhalten' },
+    fuerFirmen: { title: 'Jetzt Partner werden', buttonText: 'Kostenlos registrieren' },
+  },
+};
+
+// ============================================
+// VARIANTE 2: ULTIMATE (Lovable Empfehlung)
+// Action-First mit Verben, Swiss-optimiert
+// ============================================
+export const VARIANT_B: NavConfig = {
+  id: 'variant-b',
+  name: '2. Ultimate (Lovable)',
+  description: 'Action-First mit Verben, conversion-fokussiert',
   labels: {
     preisrechner: 'Kosten berechnen',
     firmen: 'Firmen vergleichen',
@@ -48,17 +104,73 @@ export const VARIANT_ULTIMATE: NavConfig = {
     ratgeber: 'Checklisten, Spartipps & Anleitungen',
     fuerFirmen: 'Für Umzugsfirmen: Partner werden & Leads erhalten',
   },
+  dropdownTitles: {
+    preisrechner: 'KOSTEN BERECHNEN',
+    firmen: 'FIRMEN VERGLEICHEN',
+    services: 'ALLE SERVICES',
+    ratgeber: 'TIPPS & HILFE',
+    fuerFirmen: 'FÜR ANBIETER',
+  },
+  ctaCard: {
+    preisrechner: { title: 'Kosten klar. Umzug entspannt.', buttonText: 'Preisrechner starten' },
+    firmen: { title: 'Offerten in deiner Region', buttonText: 'Offerten anfordern' },
+    services: { title: 'Ein Paket. Alles drin.', buttonText: 'Services wählen' },
+    ratgeber: { title: 'Kurz lesen. Dann Offerten.', buttonText: 'Jetzt Offerten erhalten' },
+    fuerFirmen: { title: 'Wachse mit qualifizierten Leads', buttonText: 'Kostenlos registrieren' },
+  },
 };
 
-// VARIANTE B: ChatGPT Option B (Premium/Concierge)
-export const VARIANT_B: NavConfig = {
-  id: 'variant-b',
-  name: 'Premium Concierge',
-  description: 'Weniger bloggy, mehr Service-Gefühl',
+// ============================================
+// VARIANTE 3: ChatGPT Concierge
+// Offerten zuerst, dann Planung
+// ============================================
+export const VARIANT_C: NavConfig = {
+  id: 'variant-c',
+  name: '3. ChatGPT Concierge',
+  description: 'Offerten vergleichen zuerst, Planung danach',
+  labels: {
+    preisrechner: 'Offerten vergleichen',
+    firmen: 'Kosten & Planung',
+    services: 'Services',
+    ratgeber: 'Ratgeber',
+    fuerFirmen: 'Für Firmen',
+    cta: 'Offerten erhalten',
+  },
+  microcopy: {
+    preisrechner: 'Region wählen → geprüfte Firmen → bis zu 40% sparen.',
+    firmen: 'Preisrechner, Checkliste & Zeitplan in 2 Minuten.',
+    services: 'Umzug, Reinigung, Montage & alles drumherum.',
+    ratgeber: 'Tipps + Vorlagen + Downloads – kurz & nützlich.',
+    fuerFirmen: 'Partner werden, Leads bekommen, Dashboard nutzen.',
+  },
+  dropdownTitles: {
+    preisrechner: 'OFFERTEN VERGLEICHEN',
+    firmen: 'KOSTEN & PLANUNG',
+    services: 'SERVICES',
+    ratgeber: 'RATGEBER',
+    fuerFirmen: 'FÜR FIRMEN',
+  },
+  ctaCard: {
+    preisrechner: { title: 'Offerten in deiner Region', buttonText: 'Offerten anfordern' },
+    firmen: { title: 'Starte mit dem Preisrechner', buttonText: 'Preisrechner starten' },
+    services: { title: 'Service auswählen & Offerten erhalten', buttonText: 'Offerten erhalten' },
+    ratgeber: { title: 'Umzug jetzt starten', buttonText: 'Jetzt Offerten erhalten' },
+    fuerFirmen: { title: 'Jetzt Partner werden', buttonText: 'Kostenlos registrieren' },
+  },
+};
+
+// ============================================
+// VARIANTE 4: Strategic Report (Premium-UX)
+// Kosten & Planung zuerst, dann Offerten
+// ============================================
+export const VARIANT_D: NavConfig = {
+  id: 'variant-d',
+  name: '4. Strategic Report',
+  description: 'Premium-UX: Kosten & Planung → Offerten vergleichen',
   labels: {
     preisrechner: 'Kosten & Planung',
-    firmen: 'Top-Firmen & Preise',
-    services: 'Umzugsservices',
+    firmen: 'Offerten vergleichen',
+    services: 'Services',
     ratgeber: 'Ratgeber',
     fuerFirmen: 'Für Firmen',
     cta: 'Offerten erhalten',
@@ -66,75 +178,62 @@ export const VARIANT_B: NavConfig = {
   microcopy: {
     preisrechner: 'Checkliste, Zeitplan, Kosten – in 2 Minuten Klarheit.',
     firmen: 'Region wählen, Firmen vergleichen, bis zu 40% sparen.',
-    services: 'Alles rund um Ihren Umzug aus einer Hand',
-    ratgeber: 'Hilfreiche Tipps für Ihren stressfreien Umzug',
-    fuerFirmen: 'Registrieren Sie sich und gewinnen Sie Kunden',
+    services: 'Reinigung, Lagerung & mehr für einen stressfreien Umzug.',
+    ratgeber: 'Kurz, praktisch, sofort nutzbar.',
+    fuerFirmen: 'Für Umzugsfirmen: Mehr qualifizierte Anfragen. Weniger Leerlauf.',
+  },
+  dropdownTitles: {
+    preisrechner: 'KOSTEN & PLANUNG',
+    firmen: 'OFFERTEN VERGLEICHEN',
+    services: 'SERVICES',
+    ratgeber: 'RATGEBER',
+    fuerFirmen: 'FÜR FIRMEN',
+  },
+  ctaCard: {
+    preisrechner: { title: 'Kosten klar. Umzug entspannt.', buttonText: 'Preisrechner starten' },
+    firmen: { title: 'Offerten in deiner Region', buttonText: 'Offerten anfordern' },
+    services: { title: 'Service auswählen & Offerten erhalten', buttonText: 'Offerten erhalten' },
+    ratgeber: { title: 'Umzug jetzt starten', buttonText: 'Jetzt Offerten erhalten' },
+    fuerFirmen: { title: 'Jetzt Partner werden', buttonText: 'Kostenlos registrieren' },
   },
 };
 
-// VARIANTE C: Movu-Inspired (Competitor Analysis)
-export const VARIANT_C: NavConfig = {
-  id: 'variant-c',
-  name: 'Movu-Style',
-  description: 'Inspiriert von Movu.ch - clean und direkt',
-  labels: {
-    preisrechner: 'Umzugsrechner',
-    firmen: 'Umzugsfirmen',
-    services: 'Services',
-    ratgeber: 'Ratgeber',
-    fuerFirmen: 'Für Firmen',
-    cta: 'Kostenlose Offerten',
-  },
-  microcopy: {
-    preisrechner: 'Berechne jetzt die Kosten für deinen Umzug',
-    firmen: 'Finde die beste Umzugsfirma in deiner Region',
-    services: 'Reinigung, Lagerung, Möbelmontage & mehr',
-    ratgeber: 'Nützliche Tipps & Checklisten',
-    fuerFirmen: 'Werden Sie Partner und erhalten Sie Leads',
-  },
-};
-
-// VARIANTE D: SEO-Heavy (Keyword-optimiert)
-export const VARIANT_D: NavConfig = {
-  id: 'variant-d',
-  name: 'SEO-Heavy',
-  description: 'Maximale Keyword-Dichte für organisches Ranking',
-  labels: {
-    preisrechner: 'Umzugskosten',
-    firmen: 'Umzugsfirma finden',
-    services: 'Umzugsservices',
-    ratgeber: 'Umzugstipps',
-    fuerFirmen: 'Für Umzugsfirmen',
-    cta: 'Umzugsofferten',
-  },
-  microcopy: {
-    preisrechner: 'Umzugskosten berechnen – Preise vergleichen',
-    firmen: 'Günstige Umzugsfirma in Zürich, Bern, Basel finden',
-    services: 'Umzugsreinigung, Möbellagerung, Entsorgung',
-    ratgeber: 'Umzugscheckliste, Tipps & Kostenrechner',
-    fuerFirmen: 'Umzugsfirma registrieren – Kunden gewinnen',
-  },
-};
-
-// VARIANTE E: Minimal (Ultra-Clean)
+// ============================================
+// VARIANTE 5: Mobile-First Archetyp
+// Kürzere Nomen, SEO-kompatibel
+// ============================================
 export const VARIANT_E: NavConfig = {
   id: 'variant-e',
-  name: 'Minimal Clean',
-  description: 'Ultra-sauber, nur das Wesentliche',
+  name: '5. Mobile-First Archetyp',
+  description: 'Kürzere Nomen, Mobile-first, SEO-kompatibel',
   labels: {
-    preisrechner: 'Preise',
-    firmen: 'Firmen',
+    preisrechner: 'Kosten & Planung',
+    firmen: 'Umzugsfirmen',
     services: 'Services',
-    ratgeber: 'Hilfe',
-    fuerFirmen: 'Partner',
-    cta: 'Anfragen',
+    ratgeber: 'Tipps & Vorlagen',
+    fuerFirmen: 'Für Firmen',
+    cta: 'Offerten erhalten',
   },
   microcopy: {
-    preisrechner: 'Kosten kalkulieren',
-    firmen: 'Anbieter vergleichen',
-    services: 'Alle Leistungen',
-    ratgeber: 'Tipps & Tools',
-    fuerFirmen: 'Partner werden',
+    preisrechner: 'Preisvorschau in 2 Minuten, gratis & unverbindlich.',
+    firmen: 'Zürich, Bern, Basel – Top Anbieter vergleichen.',
+    services: 'Privatumzug, Firmenumzug, Reinigung & mehr.',
+    ratgeber: 'Download, sofort nutzbar.',
+    fuerFirmen: 'Kostenlos registrieren & Kunden gewinnen.',
+  },
+  dropdownTitles: {
+    preisrechner: 'KOSTEN & PLANUNG',
+    firmen: 'UMZUGSFIRMEN',
+    services: 'SERVICES',
+    ratgeber: 'TIPPS & VORLAGEN',
+    fuerFirmen: 'FÜR FIRMEN',
+  },
+  ctaCard: {
+    preisrechner: { title: 'Kosten klar. Umzug entspannt.', buttonText: 'Preisrechner starten' },
+    firmen: { title: 'Offerten in deiner Region', buttonText: 'Offerten anfordern' },
+    services: { title: 'Ein Paket. Alles drin.', buttonText: 'Services wählen' },
+    ratgeber: { title: 'Kurz lesen. Dann Offerten.', buttonText: 'Jetzt Offerten erhalten' },
+    fuerFirmen: { title: 'Wachse mit qualifizierten Leads', buttonText: 'Kostenlos registrieren' },
   },
 };
 
