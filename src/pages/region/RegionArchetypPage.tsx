@@ -581,24 +581,12 @@ const RegionArchetypPage = () => {
           />
         </motion.div>
 
-        {/* Final CTA Section with ID for anchor */}
-        <section id="offerten" className="py-16 bg-primary text-primary-foreground scroll-mt-20">
-          <div className="container px-4 text-center">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4">
-              Bereit für Ihren Umzug in {region.name}?
-            </h2>
-            <p className="text-lg opacity-90 mb-8 max-w-2xl mx-auto">
-              Vergleichen Sie jetzt {region.stats.providerCount}+ geprüfte Umzugsfirmen
-              und sparen Sie bis zu 40%.
-            </p>
-            <button
-              onClick={() => navigate("/umzugsofferten")}
-              className="px-8 py-4 bg-secondary text-secondary-foreground rounded-xl font-semibold text-lg hover:bg-secondary/90 transition-colors shadow-lg"
-            >
-              Kostenlos Offerten erhalten
-            </button>
-          </div>
-        </section>
+        {/* GOLD STANDARD: Footer CTA Section */}
+        <RegionFooterCTA 
+          regionName={region.name}
+          providerCount={region.stats.providerCount}
+          variant="canton"
+        />
       </main>
 
       {/* Exit Intent Popup */}
