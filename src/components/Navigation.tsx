@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { MobileMenu } from "@/components/MobileMenu";
 import { CompaniesDropdownArchetype } from "@/components/CompaniesDropdownArchetype";
-import { ServicesDropdown } from "@/components/ServicesDropdown";
+import { ServicesDropdownArchetype } from "@/components/ServicesDropdownArchetype";
 import { RegionsDropdown } from "@/components/RegionsDropdown";
 import { RatgeberDropdown } from "@/components/RatgeberDropdown";
 import { ProviderDropdown } from "@/components/ProviderDropdown";
@@ -193,7 +193,7 @@ export const Navigation = () => {
             isOpen={activeDropdown === 'companies'} 
             onClose={closeAllDropdowns} 
           />
-          <ServicesDropdown 
+          <ServicesDropdownArchetype 
             isOpen={activeDropdown === 'services'} 
             onClose={closeAllDropdowns} 
           />
