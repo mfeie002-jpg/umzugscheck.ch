@@ -68,6 +68,9 @@ const SpezialtransporteV2 = lazy(() => import("./pages/services-v2/spezialtransp
 const KlaviertransportV2 = lazy(() => import("./pages/services-v2/klaviertransport"));
 const AuslandsumzugV2 = lazy(() => import("./pages/services-v2/auslandsumzug"));
 const BueroumzugV2 = lazy(() => import("./pages/services-v2/bueroumzug"));
+const TresortransportV2 = lazy(() => import("./pages/services-v2/tresortransport"));
+const HaushaltsaufloesungV2 = lazy(() => import("./pages/services-v2/haushaltsaufloesung"));
+const UmzugshelferV2 = lazy(() => import("./pages/services-v2/umzugshelfer"));
 const ShopPage = lazy(() => import("./pages/Shop"));
 const UmzugskostenBerechnenPage = lazy(() => import("./pages/ratgeber/UmzugskostenBerechnen"));
 const UmzugsfirmaVergleichen = lazy(() => import("./pages/UmzugsfirmaVergleichen"));
@@ -737,6 +740,13 @@ const AppRouterContent = () => {
           <Route path="/services/klaviertransport" element={<KlaviertransportV2 />} />
           <Route path="/services/auslandsumzug" element={<AuslandsumzugV2 />} />
           <Route path="/services/bueroumzug" element={<BueroumzugV2 />} />
+          <Route path="/services/tresortransport" element={<TresortransportV2 />} />
+          <Route path="/services/haushaltsaufloesung" element={<HaushaltsaufloesungV2 />} />
+          <Route path="/services/umzugshelfer" element={<UmzugshelferV2 />} />
+          {/* SEO-friendly aliases */}
+          <Route path="/tresortransport" element={<TresortransportV2 />} />
+          <Route path="/haushaltsaufloesung" element={<HaushaltsaufloesungV2 />} />
+          <Route path="/umzugshelfer" element={<UmzugshelferV2 />} />
           <Route path="/shop" element={<ShopPage />} />
           <Route path="/umzugskartons" element={<ShopPage />} />
           <Route path="/ratgeber/umzugskosten-berechnen" element={<UmzugskostenBerechnenPage />} />
