@@ -21,12 +21,26 @@ const cantons = [
 const cities = [
   'zuerich', 'basel', 'bern', 'genf', 'lausanne', 'luzern', 
   'winterthur', 'stgallen', 'zug', 'lugano', 'biel', 'aarau',
-  'schaffhausen', 'chur'
+  'schaffhausen', 'chur', 'thun', 'fribourg', 'neuenburg', 
+  'sion', 'bellinzona', 'olten', 'baden', 'wil', 'frauenfeld',
+  'rapperswil', 'uster', 'dietikon', 'horgen', 'wetzikon',
+  'dübendorf', 'kloten', 'köniz', 'emmen', 'kriens'
 ];
 
 const services = [
   'umzug', 'reinigung', 'raeumung', 'firmenumzug',
-  'entsorgung', 'lagerung', 'transport', 'umzug-mit-reinigung'
+  'entsorgung', 'lagerung', 'transport', 'umzug-mit-reinigung',
+  'privatumzug', 'seniorenumzug', 'studenten', 'bueroumzug',
+  'moebellift', 'montage', 'packservice', 'international',
+  'klaviertransport', 'spezialtransporte', 'auslandsumzug',
+  'tresortransport', 'haushaltsaufloesung', 'umzugshelfer'
+];
+
+// Additional high-value SEO pages
+const seoPages = [
+  'umzugskosten-berechnen', 'umzugsfirma-vergleichen',
+  'beste-umzugsfirma', 'guenstige-umzugsfirma',
+  'umzug-checkliste', 'umzugsplanung'
 ];
 
 // Store for dynamic company slugs (populated async)
