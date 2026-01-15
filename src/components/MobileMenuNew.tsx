@@ -46,6 +46,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { useNavigationVariant } from "@/hooks/useNavigationVariant";
 import { CANTONS_MAP, CITIES_MAP } from "@/data/locations";
 import {
   Accordion,
@@ -68,6 +69,7 @@ const POPULAR_CANTONS = ['zuerich', 'bern', 'aargau', 'st-gallen', 'luzern', 'ba
 
 export const MobileMenuNew = ({ isOpen, onClose }: MobileMenuNewProps) => {
   const location = useLocation();
+  const navVariant = useNavigationVariant();
   const [searchTerm, setSearchTerm] = useState("");
   const [openAccordion, setOpenAccordion] = useState<string | undefined>(undefined);
 
@@ -141,13 +143,13 @@ export const MobileMenuNew = ({ isOpen, onClose }: MobileMenuNewProps) => {
               {/* 1. Preise berechnen */}
               <AccordionItem value="umzug-planen" className="border rounded-xl overflow-hidden bg-accent/30">
                 <AccordionTrigger className="px-4 py-4 hover:no-underline hover:bg-accent/50 [&[data-state=open]]:bg-accent">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
                       <Calculator className="w-5 h-5 text-primary" />
                     </div>
-                    <div className="text-left">
-                      <span className="font-semibold text-base block">Preise berechnen</span>
-                      <span className="text-[10px] text-muted-foreground">In 60 Sek. Klarheit</span>
+                    <div className="text-left min-w-0">
+                      <span className="font-semibold text-base block truncate">{navVariant.labels.preisrechner}</span>
+                      <span className="text-[10px] text-muted-foreground block truncate">{navVariant.microcopy.preisrechner}</span>
                     </div>
                   </div>
                 </AccordionTrigger>
@@ -206,13 +208,13 @@ export const MobileMenuNew = ({ isOpen, onClose }: MobileMenuNewProps) => {
               {/* 2. Firmen vergleichen */}
               <AccordionItem value="umzugsfirma-finden" className="border rounded-xl overflow-hidden bg-accent/30">
                 <AccordionTrigger className="px-4 py-4 hover:no-underline hover:bg-accent/50 [&[data-state=open]]:bg-accent">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
                       <MapPin className="w-5 h-5 text-primary" />
                     </div>
-                    <div className="text-left">
-                      <span className="font-semibold text-base block">Firmen vergleichen</span>
-                      <span className="text-[10px] text-muted-foreground">Top-Firmen in deiner Region</span>
+                    <div className="text-left min-w-0">
+                      <span className="font-semibold text-base block truncate">{navVariant.labels.firmen}</span>
+                      <span className="text-[10px] text-muted-foreground block truncate">{navVariant.microcopy.firmen}</span>
                     </div>
                   </div>
                 </AccordionTrigger>
@@ -308,13 +310,13 @@ export const MobileMenuNew = ({ isOpen, onClose }: MobileMenuNewProps) => {
               {/* 3. Umzugs-Services */}
               <AccordionItem value="services" className="border rounded-xl overflow-hidden bg-accent/30">
                 <AccordionTrigger className="px-4 py-4 hover:no-underline hover:bg-accent/50 [&[data-state=open]]:bg-accent">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
                       <Package className="w-5 h-5 text-primary" />
                     </div>
-                    <div className="text-left">
-                      <span className="font-semibold text-base block">Umzugs-Services</span>
-                      <span className="text-[10px] text-muted-foreground">Reinigung, Lagerung & mehr</span>
+                    <div className="text-left min-w-0">
+                      <span className="font-semibold text-base block truncate">{navVariant.labels.services}</span>
+                      <span className="text-[10px] text-muted-foreground block truncate">{navVariant.microcopy.services}</span>
                     </div>
                   </div>
                 </AccordionTrigger>
@@ -351,13 +353,13 @@ export const MobileMenuNew = ({ isOpen, onClose }: MobileMenuNewProps) => {
               {/* 4. Ratgeber */}
               <AccordionItem value="ratgeber" className="border rounded-xl overflow-hidden bg-accent/30">
                 <AccordionTrigger className="px-4 py-4 hover:no-underline hover:bg-accent/50 [&[data-state=open]]:bg-accent">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
                       <Lightbulb className="w-5 h-5 text-primary" />
                     </div>
-                    <div className="text-left">
-                      <span className="font-semibold text-base block">Ratgeber</span>
-                      <span className="text-[10px] text-muted-foreground">Checklisten, Tipps & Sparen</span>
+                    <div className="text-left min-w-0">
+                      <span className="font-semibold text-base block truncate">{navVariant.labels.ratgeber}</span>
+                      <span className="text-[10px] text-muted-foreground block truncate">{navVariant.microcopy.ratgeber}</span>
                     </div>
                   </div>
                 </AccordionTrigger>
@@ -413,11 +415,14 @@ export const MobileMenuNew = ({ isOpen, onClose }: MobileMenuNewProps) => {
               {/* 5. Für Firmen */}
               <AccordionItem value="fuer-firmen" className="border rounded-xl overflow-hidden bg-accent/30">
                 <AccordionTrigger className="px-4 py-4 hover:no-underline hover:bg-accent/50 [&[data-state=open]]:bg-accent">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
                       <Briefcase className="w-5 h-5 text-primary" />
                     </div>
-                    <span className="font-semibold text-base">Für Firmen</span>
+                    <div className="text-left min-w-0">
+                      <span className="font-semibold text-base block truncate">{navVariant.labels.fuerFirmen}</span>
+                      <span className="text-[10px] text-muted-foreground block truncate">{navVariant.microcopy.fuerFirmen}</span>
+                    </div>
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="px-4 pb-4 pt-2">
@@ -474,7 +479,7 @@ export const MobileMenuNew = ({ isOpen, onClose }: MobileMenuNewProps) => {
               className="w-full h-14 text-base font-bold bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-lg"
               size="lg"
             >
-              Gratis Offerten
+              {navVariant.labels.cta}
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
           </Link>
