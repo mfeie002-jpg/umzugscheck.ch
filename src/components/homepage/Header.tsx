@@ -98,13 +98,44 @@ export const Header = () => {
   };
 
   return (
-    <header className={cn(
-      "sticky top-0 z-50 w-full transition-all duration-300",
-      scrolled 
-        ? "bg-card/98 backdrop-blur-lg border-b border-border shadow-lg" // Enhanced shadow (#3)
-        : "bg-card/95 backdrop-blur-sm border-b border-transparent"
-    )}>
-      <div className="container px-4 sm:px-6">
+    <>
+      {/* Trust Bar - above header */}
+      <div className="bg-primary text-primary-foreground py-1 px-4 hidden sm:block">
+        <div className="container flex items-center justify-center gap-6 text-xs">
+          <span className="flex items-center gap-1.5">
+            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <span className="font-medium">SSL Verschlüsselt</span>
+          </span>
+          <span className="flex items-center gap-1.5">
+            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+            <span className="font-medium">4.8/5 Bewertung</span>
+          </span>
+          <span className="flex items-center gap-1.5">
+            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+            </svg>
+            <span className="font-medium">Offerten in 24h</span>
+          </span>
+          <span className="flex items-center gap-1.5">
+            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            <span className="font-medium">200+ Partner</span>
+          </span>
+        </div>
+      </div>
+      
+      <header className={cn(
+        "sticky top-0 z-50 w-full transition-all duration-300",
+        scrolled 
+          ? "bg-card/98 backdrop-blur-lg border-b border-border shadow-lg"
+          : "bg-card/95 backdrop-blur-sm border-b border-transparent"
+      )}>
+        <div className="container px-4 sm:px-6">
         <div className="flex items-center justify-between h-14 sm:h-16 lg:h-[72px]">
           {/* Animated Logo */}
           <Link to="/" className="flex items-center gap-1.5 sm:gap-2 group">
@@ -298,6 +329,7 @@ export const Header = () => {
           </motion.div>
         )}
       </AnimatePresence>
-    </header>
+      </header>
+    </>
   );
 };
