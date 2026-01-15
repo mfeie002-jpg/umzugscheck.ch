@@ -1,10 +1,12 @@
 /**
- * Dropdown: Für Firmen
+ * Dropdown: Für Anbieter (Ultimate Variant)
  * 
- * Bereich für Partner-Umzugsfirmen (B2B)
- * - Partner werden (Registrierung)
- * - Anbieter-Login
- * - Bewertungen (optional)
+ * ULTIMATE DESIGN - B2B-Portal für Umzugsfirmen
+ * - Partner werden (Registration)
+ * - Anbieter Login
+ * - Preise & Konditionen
+ * - Bewertungssystem
+ * - FAQ
  */
 
 import { Link } from "react-router-dom";
@@ -17,12 +19,14 @@ import {
   TrendingUp,
   Award,
   ArrowRight,
-  Users
+  Users,
+  Zap
 } from "lucide-react";
 import { DropdownWrapper } from "@/components/navigation/DropdownWrapper";
 import { DropdownSection } from "@/components/navigation/DropdownSection";
 import { DropdownLink } from "@/components/navigation/DropdownLink";
 import { DropdownCTACard } from "@/components/navigation/DropdownCTACard";
+import { useNavigationVariant } from "@/hooks/useNavigationVariant";
 
 interface FuerFirmenDropdownProps {
   isOpen: boolean;
@@ -70,6 +74,8 @@ const benefits = [
 ];
 
 export const FuerFirmenDropdown = ({ isOpen, onClose }: FuerFirmenDropdownProps) => {
+  const navVariant = useNavigationVariant();
+  
   return (
     <DropdownWrapper isOpen={isOpen} onClose={onClose}>
       <div className="container mx-auto px-4 lg:px-6 py-6">
@@ -77,8 +83,11 @@ export const FuerFirmenDropdown = ({ isOpen, onClose }: FuerFirmenDropdownProps)
           
           {/* Column 1: Partner Links */}
           <div>
-            <DropdownSection title="Für Umzugsfirmen">
-              <div className="grid lg:grid-cols-2 gap-1">
+            <DropdownSection 
+              title={navVariant.labels.fuerFirmen.toUpperCase()}
+              subtitle={navVariant.microcopy.fuerFirmen}
+            >
+              <div className="grid lg:grid-cols-2 gap-1 mt-2">
                 {partnerLinks.map((link) => (
                   <DropdownLink
                     key={link.href}
@@ -94,10 +103,10 @@ export const FuerFirmenDropdown = ({ isOpen, onClose }: FuerFirmenDropdownProps)
 
               {/* Quick Stats */}
               <div className="mt-6 pt-4 border-t border-border">
-                <p className="text-xs font-medium text-muted-foreground mb-3">Warum Partner werden?</p>
+                <p className="text-xs font-bold text-muted-foreground mb-3 uppercase tracking-wide">Warum Partner werden?</p>
                 <div className="flex flex-wrap gap-4">
                   {benefits.map((benefit, idx) => (
-                    <div key={idx} className="flex items-center gap-2">
+                    <div key={idx} className="flex items-center gap-2 px-3 py-2 bg-accent rounded-lg">
                       <benefit.icon className="w-4 h-4 text-primary" />
                       <span className="text-sm font-medium">{benefit.label}</span>
                     </div>
@@ -121,7 +130,7 @@ export const FuerFirmenDropdown = ({ isOpen, onClose }: FuerFirmenDropdownProps)
             <DropdownCTACard
               title="Jetzt Partner werden"
               description="Erreichen Sie täglich hunderte potenzielle Kunden."
-              icon={Award}
+              icon={Zap}
               bullets={[
                 "Keine Grundgebühr",
                 "Qualifizierte Leads",

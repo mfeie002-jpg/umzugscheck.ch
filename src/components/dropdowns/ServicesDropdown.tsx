@@ -1,9 +1,10 @@
 /**
- * Dropdown: Umzugs-Services
+ * Dropdown: Alle Services (Ultimate Variant)
  * 
- * Action-First Navigation: "Reinigung, Entsorgung, Lagerung & mehr"
- * - Umzugsarten: Privatumzug, Geschäftsumzug, Internationaler Umzug
- * - Zusatzservices: Endreinigung, Möbelmontage, Lagerung, Entsorgung, etc.
+ * ULTIMATE DESIGN - Umfassende Service-Übersicht
+ * - Umzugsarten: Privat, Geschäft, International
+ * - Zusatzservices: Reinigung, Lagerung, Entsorgung, etc.
+ * - CTA: Service-Offerten erhalten
  */
 
 import { Link } from "react-router-dom";
@@ -19,12 +20,14 @@ import {
   Truck,
   ParkingCircle,
   ArrowRight,
-  Star
+  Boxes,
+  Shield
 } from "lucide-react";
 import { DropdownWrapper } from "@/components/navigation/DropdownWrapper";
 import { DropdownSection } from "@/components/navigation/DropdownSection";
 import { DropdownLink } from "@/components/navigation/DropdownLink";
 import { DropdownCTACard } from "@/components/navigation/DropdownCTACard";
+import { useNavigationVariant } from "@/hooks/useNavigationVariant";
 
 interface ServicesDropdownProps {
   isOpen: boolean;
@@ -35,21 +38,21 @@ const umzugsarten = [
   { 
     icon: Home, 
     title: "Privatumzug", 
-    description: "Kompletter Service für private Wohnungsumzüge", 
+    description: "Kompletter Service für Wohnungsumzüge", 
     href: "/dienstleistungen/privatumzug", 
     featured: true 
   },
   { 
     icon: Building2, 
     title: "Geschäftsumzug", 
-    description: "Büro- und Firmenumzüge professionell", 
+    description: "Büro- & Firmenumzüge professionell", 
     href: "/dienstleistungen/firmenumzug", 
     featured: true 
   },
   { 
     icon: Globe, 
     title: "Internationaler Umzug", 
-    description: "Umzüge ins Ausland (Schweiz ⇄ EU)", 
+    description: "Schweiz ⇄ EU & weltweit", 
     href: "/dienstleistungen/international" 
   },
 ];
@@ -64,19 +67,19 @@ const zusatzservices = [
   { 
     icon: Wrench, 
     title: "Möbelmontage", 
-    description: "Auf- und Abbau Service", 
+    description: "Auf- und Abbau", 
     href: "/moebelmontage" 
   },
   { 
     icon: Package, 
-    title: "Lagerung", 
-    description: "Einlagern & Lagerboxen", 
+    title: "Einlagerung", 
+    description: "Lagerboxen & Self-Storage", 
     href: "/dienstleistungen/einlagerung" 
   },
   { 
     icon: Trash2, 
-    title: "Entsorgung & Räumung", 
-    description: "Entrümpelung von Hausrat", 
+    title: "Entsorgung", 
+    description: "Entrümpelung & Räumung", 
     href: "/dienstleistungen/entsorgung" 
   },
   { 
@@ -93,13 +96,15 @@ const zusatzservices = [
   },
   { 
     icon: Truck, 
-    title: "Möbellift mieten", 
-    description: "Aussenaufzug für schwere Güter", 
+    title: "Möbellift", 
+    description: "Aussenaufzug mieten", 
     href: "/dienstleistungen/moebellift" 
   },
 ];
 
 export const ServicesDropdown = ({ isOpen, onClose }: ServicesDropdownProps) => {
+  const navVariant = useNavigationVariant();
+  
   return (
     <DropdownWrapper isOpen={isOpen} onClose={onClose}>
       <div className="container mx-auto px-4 lg:px-6 py-6">
@@ -107,7 +112,11 @@ export const ServicesDropdown = ({ isOpen, onClose }: ServicesDropdownProps) => 
           
           {/* Column 1: Umzugsarten */}
           <div>
-            <DropdownSection title="Umzugs-Services" subtitle="Reinigung, Entsorgung, Lagerung & mehr">
+            <DropdownSection 
+              title={navVariant.labels.services.toUpperCase()} 
+              subtitle={navVariant.microcopy.services}
+            >
+              <p className="text-xs font-bold text-muted-foreground mb-2 mt-2 uppercase tracking-wide">Umzugsarten</p>
               <div className="space-y-1">
                 {umzugsarten.map((service) => (
                   <DropdownLink
@@ -155,13 +164,13 @@ export const ServicesDropdown = ({ isOpen, onClose }: ServicesDropdownProps) => 
           {/* Column 3: CTA Card */}
           <div className="lg:border-l lg:border-border lg:pl-6">
             <DropdownCTACard
-              title="Service-Offerten erhalten"
-              description="Wähle Service + Ort – wir finden geprüfte Anbieter."
-              icon={Star}
+              title="Service-Offerten"
+              description="Wähle Service + Ort – wir finden passende Anbieter."
+              icon={Shield}
               bullets={[
                 "Alle Services aus einer Hand",
-                "Geprüfte Partner",
-                "Festpreis-Garantie"
+                "Geprüfte Schweizer Partner",
+                "Festpreis-Garantie möglich"
               ]}
               buttonText="Jetzt anfragen"
               buttonHref="/umzugsofferten"
