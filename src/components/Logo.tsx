@@ -113,8 +113,8 @@ export const Logo = ({ className = "", size = "lg", iconOnly = false }: LogoProp
           <tspan fill="#0050A8">Umzugs</tspan><tspan fill="#dc2626">check.ch</tspan>
         </text>
       </svg>
-      {/* Slogan under logo - responsive, no CH */}
-      <span className="text-[9px] sm:text-[10px] text-muted-foreground/70 font-medium leading-tight pl-0.5 -mt-0.5">
+      {/* Slogan under logo (hidden on mobile for header height) */}
+      <span className="hidden lg:block text-[9px] xl:text-[10px] text-muted-foreground/70 font-medium leading-tight pl-0.5 -mt-1">
         Der Schweizer Umzugsvergleich
       </span>
     </Link>

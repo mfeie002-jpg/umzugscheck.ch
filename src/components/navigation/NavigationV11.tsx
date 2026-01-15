@@ -143,17 +143,12 @@ export const NavigationV11 = () => {
         <div className="container mx-auto px-3 sm:px-4 lg:px-6">
           <div className="flex items-center h-14 sm:h-16 lg:h-20 gap-4">
             
-            {/* Logo */}
-            <Link to="/" className="flex items-center flex-shrink-0">
-              <div className="group flex flex-col items-start hover:scale-105 transition-transform">
-                <Logo size="xl" className="hidden xl:flex" />
-                <Logo size="lg" className="hidden lg:flex xl:hidden" />
-                <Logo size="sm" iconOnly className="flex lg:hidden" />
-                <span className="hidden lg:block text-[9px] xl:text-xs text-muted-foreground/80 font-medium mt-0.5">
-                  Der Schweizer Umzugsvergleich
-                </span>
-              </div>
-            </Link>
+            {/* Logo (no nested links) */}
+            <div className="flex-shrink-0 group hover:scale-105 transition-transform">
+              <Logo size="xl" className="hidden xl:flex" />
+              <Logo size="lg" className="hidden lg:flex xl:hidden" />
+              <Logo size="sm" iconOnly className="flex lg:hidden" />
+            </div>
 
             {/* Desktop Navigation - #11 Structure */}
             <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
