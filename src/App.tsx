@@ -260,6 +260,7 @@ const ConversionAnalytics = lazy(() => import("./pages/admin/ConversionAnalytics
 const EmailAutomation = lazy(() => import("./pages/admin/EmailAutomation"));
 const ABTesting = lazy(() => import("./pages/admin/ABTestingComplete"));
 const LocalizedUmzugsofferten = lazy(() => import("./pages/LocalizedUmzugsofferten"));
+const ImageDownload = lazy(() => import("./pages/ImageDownload"));
 const ProviderAvailability = lazy(() => import("./pages/admin/ProviderAvailability"));
 const CodeExport = lazy(() => import("./pages/admin/CodeExport"));
 const AdminLogin = lazy(() => import("./pages/admin/Login"));
@@ -475,6 +476,7 @@ const AppRouterContent = () => {
           <Route path="/bundle" element={<BundleEstimates />} />
           <Route path="/offerte-anfordern/:id" element={<LeadRequest />} />
           <Route path="/danke/:id" element={<ThankYou />} />
+          <Route path="/image-download" element={<ImageDownload />} />
           <Route path="/rechner/reinigung" element={<CleaningCalculator />} />
           <Route path="/rechner/entsorgung" element={<DisposalCalculator />} />
           <Route path="/rechner/lager" element={<StorageCalculator />} />
