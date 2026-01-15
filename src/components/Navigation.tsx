@@ -5,9 +5,9 @@ import { Link } from "react-router-dom";
 import { MobileMenu } from "@/components/MobileMenu";
 import { CompaniesDropdownArchetype } from "@/components/CompaniesDropdownArchetype";
 import { ServicesDropdownArchetype } from "@/components/ServicesDropdownArchetype";
-import { RegionsDropdown } from "@/components/RegionsDropdown";
-import { RatgeberDropdown } from "@/components/RatgeberDropdown";
-import { ProviderDropdown } from "@/components/ProviderDropdown";
+import { RegionsDropdownArchetype } from "@/components/RegionsDropdownArchetype";
+import { RatgeberDropdownArchetype } from "@/components/RatgeberDropdownArchetype";
+import { ProviderDropdownArchetype } from "@/components/ProviderDropdownArchetype";
 import { Logo } from "@/components/Logo";
 import { cn } from "@/lib/utils";
 
@@ -197,15 +197,15 @@ export const Navigation = () => {
             isOpen={activeDropdown === 'services'} 
             onClose={closeAllDropdowns} 
           />
-          <RegionsDropdown 
+          <RegionsDropdownArchetype 
             isOpen={activeDropdown === 'regions'} 
             onClose={closeAllDropdowns} 
           />
-          <RatgeberDropdown
+          <RatgeberDropdownArchetype
             isOpen={activeDropdown === 'ratgeber'} 
             onClose={closeAllDropdowns} 
           />
-          <ProviderDropdown 
+          <ProviderDropdownArchetype 
             isOpen={activeDropdown === 'provider'} 
             onClose={closeAllDropdowns} 
           />
