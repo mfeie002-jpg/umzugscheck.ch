@@ -45,7 +45,13 @@ import {
   RegionServices,
   RegionFAQ,
   RegionNearby,
+  RegionMiniNav,
+  RegionStickyMobileCTA,
+  RegionHowWeRank,
+  RegionSavingsProof,
+  RegionCitiesGrid,
 } from "@/components/region-archetyp";
+import { LocationAwareHowItWorks } from "@/components/shared/LocationAwareHowItWorks";
 
 // NEW SEO Components
 import { RegionBreadcrumb } from "@/components/region-archetyp/RegionBreadcrumb";
@@ -291,6 +297,12 @@ const RegionArchetypPage = () => {
         {/* NEW: Anchor Navigation for Sitelinks */}
         <RegionAnchorNav />
 
+        {/* GOLD STANDARD: Mini Navigation (Mobile) */}
+        <RegionMiniNav />
+
+        {/* GOLD STANDARD: Sticky Mobile CTA */}
+        <RegionStickyMobileCTA regionName={region.name} variant="canton" />
+
         {/* Sticky CTA Bar (mobile) */}
         <RegionStickyBar region={region} />
 
@@ -322,14 +334,36 @@ const RegionArchetypPage = () => {
             companies={region.topCompanies}
             regionName={region.name}
           />
+          {/* GOLD STANDARD: How We Rank Credibility Box */}
+          <div className="container mx-auto px-4 -mt-6 mb-8">
+            <div className="max-w-5xl mx-auto">
+              <RegionHowWeRank regionName={region.name} variant="canton" />
+            </div>
+          </div>
         </motion.div>
 
+        {/* GOLD STANDARD: Location-Aware How It Works */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          id="so-funktionierts"
+          className="scroll-mt-20"
+        >
+          <LocationAwareHowItWorks 
+            locationName={region.name} 
+            variant="canton"
+            exampleCities={cantonCities.slice(0, 4).map(c => c.name)}
+          />
+        </motion.div>
+
+        {/* GOLD STANDARD: Savings Proof Block */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <RegionHowItWorks />
+          <RegionSavingsProof regionName={region.name} variant="canton" />
         </motion.div>
 
         <motion.div
