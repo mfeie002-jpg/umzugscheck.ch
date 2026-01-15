@@ -37,7 +37,7 @@ export const FloatingActionButton = () => {
 
   return (
     // Position above bottom nav (64px nav + 16px gap = 80px min)
-    <div className="fixed right-4 bottom-24 z-40 lg:hidden">
+    <div className="fixed right-4 bottom-24 z-50 lg:hidden">
       <AnimatePresence>
         {isOpen && (
           <motion.div
