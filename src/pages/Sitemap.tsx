@@ -48,10 +48,14 @@ const Sitemap = () => {
                 <p className="text-3xl font-bold text-primary">{totalUrls}</p>
               </div>
               
-              <div className="grid md:grid-cols-3 gap-4 pt-4 border-t">
+              <div className="grid md:grid-cols-4 gap-4 pt-4 border-t">
                 <div>
                   <p className="text-sm font-medium mb-1">Hauptseiten</p>
-                  <p className="text-2xl font-bold">10</p>
+                  <p className="text-2xl font-bold">15</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium mb-1">Kanton-Seiten</p>
+                  <p className="text-2xl font-bold">26</p>
                 </div>
                 <div>
                   <p className="text-sm font-medium mb-1">Stadt-Seiten</p>
@@ -67,6 +71,11 @@ const Sitemap = () => {
                 <p className="text-sm font-medium mb-1">Stadt + Service Kombinationen</p>
                 <p className="text-2xl font-bold">112</p>
                 <p className="text-xs text-muted-foreground mt-1">14 Städte × 8 Services</p>
+              </div>
+
+              <div className="pt-4 border-t">
+                <p className="text-sm font-medium mb-1">Gesamt-Struktur</p>
+                <p className="text-xs text-muted-foreground">15 Hauptseiten + 26 Kantone + 14 Städte + 8 Services + 112 Kombinationen</p>
               </div>
 
               <Button onClick={downloadSitemap} className="w-full mt-6">
