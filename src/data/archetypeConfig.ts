@@ -456,32 +456,29 @@ export const STADT_ZUG: CityConfig = {
   citySpecificServices: [
     { key: 'multilingual', slug: 'international', title: 'Mehrsprachige Teams', shortDesc: 'DE/EN/FR für Expats', iconKey: 'Globe', uspBullets: ['Deutsch, Englisch, Französisch', 'Expat-Erfahrung', 'Internationale Standards'] },
     { key: 'international', slug: 'international', title: 'Internationale Umzüge', shortDesc: 'EU & weltweit', iconKey: 'Plane', uspBullets: ['Zollformalitäten', 'Container-Service', 'Länderexpertise'] },
-    { key: 'relocation', slug: 'relocation', title: 'Relocation', shortDesc: 'Kompletter Standortwechsel', iconKey: 'MapPin', uspBullets: ['Alles aus einer Hand', 'Behördengänge', 'Wohnungssuche Support'] },
-    { key: 'bueroumzug', slug: 'firmenumzug', title: 'Büro- & Firmenumzug', shortDesc: 'Crypto Valley Expertise', iconKey: 'Building2', uspBullets: ['IT-Equipment', 'Serverräume', 'Minimale Ausfallzeit'] },
-    { key: 'it-transport', slug: 'spezialtransport', title: 'Serverraum-/IT-Transport', shortDesc: 'Sichere IT-Verlegung', iconKey: 'Server', uspBullets: ['ESD-Schutz', 'Klimatransport', 'Datenträger-Handling'] },
-  ],
-  
-  localTips: [
-    'Altstadt: Halteverbotszone ist Pflicht – unsere Partner organisieren dies',
-    'Crypto Valley: Viele Expat-Umzüge, Teams mit Englisch wählen',
-    'Zugerberg: Vorabbesichtigung wegen steiler Zufahrt empfohlen',
-    'Monatsende-Termine: Mindestens 4 Wochen Vorlauf in Zug',
-    'Komplettpaket (Umzug + Reinigung) spart Zeit bei Wohnungsabgabe',
+    { key: 'zoll', slug: 'zollformalitaeten', title: 'Zollformalitäten', shortDesc: 'Import/Export Hilfe', iconKey: 'FileCheck', uspBullets: ['Dokumentation', 'Verzollung', 'Beratung'] },
+    { key: 'relocation', slug: 'relocation', title: 'Relocation', shortDesc: 'Rundum-Betreuung', iconKey: 'MapPin', uspBullets: ['Wohnungssuche', 'Behördengänge', 'Integration'] },
+    { key: 'firmenumzug-city', slug: 'firmenumzug', title: 'Büro- & Firmenumzug', shortDesc: 'Business-Spezialist', iconKey: 'Building2', uspBullets: ['IT-Handling', 'Minimal Downtime', 'Wochenend-Service'] },
+    { key: 'it-transport', slug: 'it-transport', title: 'Serverraum-/IT-Transport', shortDesc: 'Sensible Technik', iconKey: 'Server', uspBullets: ['Spezialverpackung', 'Klimatransport', 'Versicherung'] },
   ],
   
   faqs: [
-    { question: 'Was kostet ein Umzug in der Stadt Zug?', answer: 'Die Kosten hängen von Wohnungsgrösse, Etage und Quartier ab. Ein 2-Zimmer-Umzug innerhalb Zug kostet CHF 690-1\'100, ein 4-Zimmer-Umzug CHF 1\'300-1\'950.' },
-    { question: 'Brauche ich in der Altstadt Zug eine Halteverbotszone?', answer: 'Ja, in der Altstadt und vielen Quartieren ist eine Parkbewilligung nötig. Unsere Partner organisieren dies für CHF 80-120.' },
-    { question: 'Gibt es Umzugsfirmen mit Englisch-Service?', answer: 'Ja, viele unserer Partner im Crypto Valley bieten mehrsprachigen Service (DE/EN/FR) für Expats an.' },
-    { question: 'Was ist bei einem Umzug auf den Zugerberg zu beachten?', answer: 'Die steile Zufahrt erfordert oft kleinere Fahrzeuge. Wir empfehlen eine Vorabbesichtigung durch die Umzugsfirma.' },
-    { question: 'Bieten Zuger Firmen auch Büroumzüge an?', answer: 'Ja, viele Partner haben Erfahrung mit Firmenumzügen im Crypto Valley, inkl. IT-Equipment und Serverräumen.' },
-    { question: 'Führt Umzugscheck.ch selbst Umzüge durch?', answer: 'Nein, Umzugscheck.ch ist ein reiner Vergleichs- und Vermittlungsservice. Der Umzug wird durch geprüfte Partnerfirmen durchgeführt.' },
+    { question: 'Was kostet ein Umzug in der Stadt Zug?', answer: 'Die Kosten variieren je nach Wohnungsgrösse, Stockwerk und Quartier. Ein 2-Zimmer-Umzug innerhalb Zug liegt bei ca. CHF 690–1\'100, ein 3.5-Zimmer-Umzug bei CHF 950–1\'500.' },
+    { question: 'Brauche ich in Zug eine Halteverbotszone?', answer: 'In der Altstadt und am Seeufer fast immer nötig. Viele Partnerfirmen übernehmen die Beantragung. Kosten: ca. CHF 80–150 je nach Zone.' },
+    { question: 'Was ist beim Umzug in der Zuger Altstadt zu beachten?', answer: 'Enge Gassen, Fussgängerzonen und zeitliche Einschränkungen erfordern gute Planung. Ein Möbellift oder Tragen über längere Wege kann nötig sein.' },
+    { question: 'Gibt es ein Komplettpaket mit Endreinigung?', answer: 'Ja. Viele Partner bieten Umzug + Endreinigung + Wohnungsabgabe-Vorbereitung als Paket an.' },
+    { question: 'Wie schnell erhalte ich Offerten?', answer: 'In der Regel erhalten Sie innerhalb von 24–48 Stunden 3–5 unverbindliche Offerten.' },
+    { question: 'Wer führt den Umzug durch?', answer: 'Umzugscheck.ch ist ein Vergleichs- und Vermittlungsservice. Die Durchführung erfolgt durch geprüfte Partnerfirmen.' },
   ],
   
-  testimonials: [
-    { name: 'Michael R.', place: 'Altstadt → Herti', rating: 5, text: 'Umzug in der Altstadt perfekt gemeistert. Halteverbot war kein Problem.', savedAmount: 320, verified: true, date: '2024-11' },
-    { name: 'Emma T.', place: 'Zürich → Zug', rating: 5, text: 'Expat-Umzug super organisiert. Team sprach perfekt Englisch!', savedAmount: 450, verified: true, date: '2024-10' },
-    { name: 'David S.', place: 'Zugerberg', rating: 5, text: 'Trotz steiler Zufahrt alles reibungslos. Sehr professionell.', verified: true, date: '2024-09' },
+  testimonials: KANTON_ZUG.testimonials.filter(t => t.place.includes('Zug')),
+  
+  localTips: [
+    'Altstadt: Unbedingt Halteverbotszone organisieren, enge Gassen beachten',
+    'Zugerberg: Steile Strassen erfordern kleinere Fahrzeuge',
+    'Crypto Valley: Viele Expat-Umzüge, Teams mit Englisch wählen',
+    'Monatsende: Termine früh buchen, sehr beliebt',
+    'Komplettpaket: Umzug + Reinigung für stressfreie Abgabe',
   ],
   
   services: CORE_SERVICES,
@@ -489,13 +486,174 @@ export const STADT_ZUG: CityConfig = {
   internalLinks: {
     parent: { label: 'Kanton Zug', href: '/umzugsfirmen/kanton-zug' },
     neighbors: [
-      { label: 'Baar', href: '/umzugsfirmen/baar' },
-      { label: 'Cham', href: '/umzugsfirmen/cham' },
-      { label: 'Steinhausen', href: '/umzugsfirmen/steinhausen' },
-      { label: 'Hünenberg', href: '/umzugsfirmen/huenenberg' },
+      { label: 'Umzugsfirma Baar', href: '/umzugsfirmen/baar' },
+      { label: 'Umzugsfirma Cham', href: '/umzugsfirmen/cham' },
+      { label: 'Umzugsfirma Steinhausen', href: '/umzugsfirmen/steinhausen' },
+      { label: 'Umzugsfirma Hünenberg', href: '/umzugsfirmen/huenenberg' },
     ],
   },
 };
+
+// ==================== STADT BAAR CONFIG ====================
+
+export const STADT_BAAR: CityConfig = {
+  kind: 'city',
+  slug: 'baar',
+  name: 'Baar',
+  cantonSlug: 'zug',
+  cantonName: 'Zug',
+  cantonShort: 'ZG',
+  population: 25000,
+  
+  seo: {
+    title: 'Umzugsfirmen in Baar vergleichen | Umzugscheck',
+    description: 'Vergleichen Sie geprüfte Umzugsfirmen in Baar. Gratis Offerten in 24–48h. Bis zu 40% sparen.',
+    h1: 'Umzugsfirma in Baar finden: Offerten vergleichen & sparen',
+    canonicalUrl: '/umzugsfirmen/baar',
+  },
+  
+  stats: {
+    providerCount: 20,
+    reviewCount: 987,
+    avgRating: 4.7,
+    activeUsersBase: 8,
+  },
+  
+  trustGlobals: TRUST_GLOBALS,
+  
+  price: {
+    anchors: [
+      { label: '1.5 - 2.5 Zimmer', min: 600, max: 950, savingsText: 'bis CHF 280' },
+      { label: '3.5 - 4.5 Zimmer', min: 850, max: 1350, savingsText: 'bis CHF 400' },
+      { label: '5+ Zimmer / Haus', min: 1400, max: 2300, savingsText: 'bis CHF 520' },
+    ],
+    examples: [
+      { routeLabel: 'Baar Zentrum → Baar Nord', sizeLabel: '2 Zimmer', priceRange: 'CHF 600–950' },
+      { routeLabel: 'Baar → Zug', sizeLabel: '3.5 Zimmer', priceRange: 'CHF 850–1\'300' },
+      { routeLabel: 'Baar → Cham', sizeLabel: '4.5 Zimmer', priceRange: 'CHF 1\'100–1\'650' },
+    ],
+  },
+  
+  topCompanies: [
+    { id: 'happy-move', name: 'Happy Move Baar', rating: 4.7, reviewCount: 134, priceLevel: 'Günstig', badges: ['bestPrice', 'verified'], shortPitch: 'Bestes Preis-Leistungs-Verhältnis in Baar' },
+    { id: 'zuger-umzuege', name: 'Zuger Umzüge AG', rating: 4.9, reviewCount: 187, priceLevel: 'Mittel', badges: ['popular', 'verified'], shortPitch: 'Lokale Expertise' },
+    { id: 'baar-express', name: 'Baar Express Umzüge', rating: 4.6, reviewCount: 89, priceLevel: 'Günstig', badges: ['verified'], shortPitch: 'Schnell & zuverlässig' },
+  ],
+  
+  quartiere: [
+    { name: 'Baar Zentrum', challenges: ['Gute Erreichbarkeit', 'Parkplätze vorhanden', 'Keine Einschränkungen'], tip: 'Standard-Umzug problemlos' },
+    { name: 'Baar Nord', challenges: ['Neubaugebiet', 'Moderne Infrastruktur', 'Lifte verfügbar'], tip: 'Einfache Logistik' },
+    { name: 'Allenwinden', challenges: ['Ländlich', 'Grössere Grundstücke', 'Gute Zufahrt'], tip: 'Ideal für Einfamilienhäuser' },
+  ],
+  
+  citySpecificServices: [],
+  
+  faqs: [
+    { question: 'Was kostet ein Umzug in Baar?', answer: 'Ein 2-Zimmer-Umzug in Baar kostet ca. CHF 600–950, ein 3.5-Zimmer-Umzug CHF 850–1\'350.' },
+    { question: 'Wie weit im Voraus sollte ich buchen?', answer: 'Mindestens 2-3 Wochen im Voraus. Bei Monatsende-Terminen 4-6 Wochen.' },
+  ],
+  
+  testimonials: [
+    { name: 'Lisa M.', place: 'Baar → Zug', rating: 5, text: 'Schneller und unkomplizierter Umzug. Sehr empfehlenswert!', savedAmount: 290, verified: true },
+  ],
+  
+  localTips: [
+    'Baar hat gute Verkehrsanbindung - Umzüge oft unkompliziert',
+    'Grösste Gemeinde im Kanton Zug mit viel Erfahrung',
+    'Kombinieren Sie Umzug + Reinigung für Komplettpaket',
+  ],
+  
+  services: CORE_SERVICES,
+  
+  internalLinks: {
+    parent: { label: 'Kanton Zug', href: '/umzugsfirmen/kanton-zug' },
+    neighbors: [
+      { label: 'Umzugsfirma Zug', href: '/umzugsfirmen/zug' },
+      { label: 'Umzugsfirma Cham', href: '/umzugsfirmen/cham' },
+      { label: 'Umzugsfirma Steinhausen', href: '/umzugsfirmen/steinhausen' },
+    ],
+  },
+};
+
+// ==================== STADT CHAM CONFIG ====================
+
+export const STADT_CHAM: CityConfig = {
+  kind: 'city',
+  slug: 'cham',
+  name: 'Cham',
+  cantonSlug: 'zug',
+  cantonName: 'Zug',
+  cantonShort: 'ZG',
+  population: 17000,
+  
+  seo: {
+    title: 'Umzugsfirmen in Cham vergleichen | Umzugscheck',
+    description: 'Vergleichen Sie geprüfte Umzugsfirmen in Cham. Gratis Offerten in 24–48h. Bis zu 40% sparen.',
+    h1: 'Umzugsfirma in Cham finden: Offerten vergleichen & sparen',
+    canonicalUrl: '/umzugsfirmen/cham',
+  },
+  
+  stats: {
+    providerCount: 18,
+    reviewCount: 756,
+    avgRating: 4.8,
+    activeUsersBase: 6,
+  },
+  
+  trustGlobals: TRUST_GLOBALS,
+  
+  price: {
+    anchors: [
+      { label: '1.5 - 2.5 Zimmer', min: 580, max: 920, savingsText: 'bis CHF 260' },
+      { label: '3.5 - 4.5 Zimmer', min: 820, max: 1300, savingsText: 'bis CHF 380' },
+      { label: '5+ Zimmer / Haus', min: 1350, max: 2200, savingsText: 'bis CHF 500' },
+    ],
+    examples: [
+      { routeLabel: 'Cham → Steinhausen', sizeLabel: '2 Zimmer', priceRange: 'CHF 580–900' },
+      { routeLabel: 'Cham → Zug', sizeLabel: '3.5 Zimmer', priceRange: 'CHF 900–1\'400' },
+    ],
+  },
+  
+  topCompanies: [
+    { id: 'see-transporte', name: 'See-Transporte Cham', rating: 4.8, reviewCount: 98, priceLevel: 'Premium', badges: ['premium', 'topRated'], shortPitch: 'Premium-Service am See' },
+    { id: 'zuger-umzuege', name: 'Zuger Umzüge AG', rating: 4.9, reviewCount: 187, priceLevel: 'Mittel', badges: ['popular', 'verified'], shortPitch: 'Regionale Expertise' },
+  ],
+  
+  quartiere: [
+    { name: 'Cham Zentrum', challenges: ['Altbauten', 'Parkplatzsuche', 'Enge Strassen teils'], tip: 'Halteverbot prüfen' },
+    { name: 'Seeufer', challenges: ['Premium-Lagen', 'Schöne Aussicht', 'Manchmal enge Zufahrt'], tip: 'Frühzeitig planen' },
+    { name: 'Hagendorn', challenges: ['Ländlich', 'Einfamilienhäuser', 'Gute Zufahrt'], tip: 'Grössere Fahrzeuge möglich' },
+  ],
+  
+  citySpecificServices: [],
+  
+  faqs: [
+    { question: 'Was kostet ein Umzug in Cham?', answer: 'Ein 2-Zimmer-Umzug in Cham kostet ca. CHF 580–920, ein 3.5-Zimmer-Umzug CHF 820–1\'300.' },
+  ],
+  
+  testimonials: [
+    { name: 'Stefan K.', place: 'Cham → Zug', rating: 5, text: 'Perfekte Abwicklung, pünktlich und sorgfältig.', savedAmount: 320, verified: true },
+  ],
+  
+  localTips: [
+    'Cham liegt am Zugersee - schöne Familienquartiere',
+    'Seeufer: Premium-Lagen mit teils engen Zufahrten',
+    'Gute Anbindung nach Zug und Luzern',
+  ],
+  
+  services: CORE_SERVICES,
+  
+  internalLinks: {
+    parent: { label: 'Kanton Zug', href: '/umzugsfirmen/kanton-zug' },
+    neighbors: [
+      { label: 'Umzugsfirma Zug', href: '/umzugsfirmen/zug' },
+      { label: 'Umzugsfirma Baar', href: '/umzugsfirmen/baar' },
+      { label: 'Umzugsfirma Steinhausen', href: '/umzugsfirmen/steinhausen' },
+    ],
+  },
+};
+
+// Note: BAAR_CONFIG and CHAM_CONFIG are defined below as STADT_BAAR and STADT_CHAM
 
 // ==================== NEIGHBOR CITIES (Stub configs) ====================
 
