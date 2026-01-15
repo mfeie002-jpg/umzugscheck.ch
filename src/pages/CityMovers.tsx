@@ -26,6 +26,7 @@ import { RegionMidCTA } from '@/components/region-archetyp/RegionMidCTA';
 
 // City-specific unique content
 import { ZugCityContent } from '@/components/city/ZugCityContent';
+import { ZurichCityContent } from '@/components/city/ZurichCityContent';
 
 interface CityData {
   name: string;
@@ -45,25 +46,29 @@ const cityDatabase: Record<string, CityData> = {
   zuerich: {
     name: 'zuerich',
     displayName: 'Zürich',
-    heroTitle: 'Die besten Umzugsfirmen in Zürich im Vergleich',
-    heroSubtitle: 'Kostenlose Offerten von geprüften lokalen Umzugsprofis.',
-    liveSignal: '15 Personen aus Zürich vergleichen gerade Umzüge',
-    liveCount: 15,
-    backgroundImage: 'https://images.unsplash.com/photo-1559564484-e48bf5f64a75?w=1920&q=80',
+    heroTitle: 'Umzugsfirmen in Zürich vergleichen',
+    heroSubtitle: 'Gratis Offerten von geprüften lokalen Umzugsprofis – für alle 12 Stadtkreise.',
+    liveSignal: '18 Personen aus Zürich vergleichen gerade Umzüge',
+    liveCount: 18,
+    backgroundImage: 'https://images.unsplash.com/photo-1515488764276-beab7607c1e6?w=1920&q=80',
     advantages: [
-      { title: 'Regionale Preise im Grossraum Zürich', description: 'Transparente Preisgestaltung für Stadt und Agglomeration', icon: MapPin },
-      { title: 'Schnelle Verfügbarkeit', description: 'Express-Service in Stadt und Agglo verfügbar', icon: Clock },
-      { title: 'Erfahrene Zürcher Teams', description: 'Lokale Expertise für alle Stadtteile und Kreise', icon: Shield }
+      { title: 'Alle 12 Stadtkreise abgedeckt', description: 'Von Altstadt bis Seefeld, Oerlikon bis Altstetten', icon: MapPin },
+      { title: 'Halteverbot inklusive', description: 'Partnerfirmen organisieren Parkbewilligungen', icon: Clock },
+      { title: 'Möbellift für Altbauten', description: 'Für enge Treppenhäuser in Zürich unerlässlich', icon: Shield }
     ],
-    districts: ['Oerlikon', 'Altstetten', 'Wiedikon', 'Seefeld'],
+    districts: ['Kreis 1 Altstadt', 'Kreis 4 Langstrasse', 'Kreis 6 Oerlikon', 'Kreis 8 Seefeld', 'Kreis 9 Altstetten', 'Kreis 11 Affoltern'],
     priceExamples: [
-      { route: '2 Zimmer Zürich → Schlieren', price: 'CHF 690–1080' },
-      { route: '3 Zimmer Zürich Kreis 3 → Kreis 6', price: 'CHF 950–1550' }
+      { route: '2 Zimmer Kreis 4 → Kreis 6', price: 'CHF 690-1100' },
+      { route: '3.5 Zimmer Seefeld → Oerlikon', price: 'CHF 950-1500' },
+      { route: '4.5 Zimmer Wiedikon → Altstetten', price: 'CHF 1200-1800' }
     ],
     faq: [
-      { question: 'Was kostet ein Umzug in Zürich?', answer: 'Die Kosten variieren je nach Grösse und Distanz. Ein 2-Zimmer-Umzug kostet durchschnittlich CHF 690–1080.' },
-      { question: 'Wie lange dauert ein Umzug in Zürich?', answer: 'Ein typischer 3-Zimmer-Umzug dauert 4-6 Stunden, abhängig von Stockwerken und Distanz.' },
-      { question: 'Benötige ich eine Parkbewilligung?', answer: 'Ja, in den meisten Zürcher Quartieren wird eine Halteverbotszone empfohlen. Ihr Umzugspartner kann dies organisieren.' }
+      { question: 'Was kostet ein Umzug in der Stadt Zürich?', answer: 'Die Kosten hängen von Wohnungsgrösse, Etage und Stadtkreis ab. Ein 2-Zimmer-Umzug innerhalb Zürich kostet durchschnittlich CHF 690-1100, ein 4-Zimmer-Umzug CHF 1200-1800. Mit dem Vergleich sparen Sie bis zu 40%.' },
+      { question: 'Brauche ich in Zürich eine Halteverbotszone?', answer: 'Ja, in fast allen Zürcher Quartieren ist eine Parkbewilligung nötig – besonders in den Kreisen 1-6. Die Kosten liegen bei CHF 80-150. Unsere Partnerfirmen übernehmen die Organisation.' },
+      { question: 'Wie funktioniert ein Umzug in der Zürcher Altstadt (Kreis 1)?', answer: 'Die Altstadt hat enge Gassen und Fussgängerzonen ohne Einfahrt. Unsere Partner nutzen Spezialfahrzeuge, Möbellifte und organisieren Zeitfenster mit der Stadt für das Be- und Entladen.' },
+      { question: 'Wann sollte ich in Zürich einen Umzug buchen?', answer: 'Mindestens 4-8 Wochen im Voraus. Zürich ist sehr gefragt – bei Monatsende-Terminen oder in der Hauptsaison (April-September) empfehlen wir 8-12 Wochen Vorlauf.' },
+      { question: 'Bieten Zürcher Umzugsfirmen auch Komplettpaket mit Reinigung?', answer: 'Ja, viele unserer Partner bieten Umzug + Endreinigung + Wohnungsabgabe aus einer Hand. Gerade in Zürich sind Vermieter anspruchsvoll – ein Komplettpaket spart Zeit und Nerven.' },
+      { question: 'Führt Umzugscheck.ch selbst Umzüge durch?', answer: 'Nein, Umzugscheck.ch ist ein reiner Vergleichs- und Vermittlungsservice. Der Umzug wird durch unsere geprüften, versicherten Partnerfirmen durchgeführt.' }
     ]
   },
   bern: {
@@ -476,14 +481,31 @@ export default function CityMovers() {
   }
 
   const isZug = citySlug === 'zug';
+  const isZurich = citySlug === 'zuerich';
   const canonicalUrl = `https://umzugscheck.ch/umzugsfirmen/${citySlug}`;
-  const ogImage = isZug ? getRegionImage('zug') : cityData.backgroundImage;
+  
+  // City-specific OG images
+  const ogImage = isZug 
+    ? getRegionImage('zug') 
+    : isZurich 
+      ? 'https://images.unsplash.com/photo-1515488764276-beab7607c1e6?w=1200&q=80'
+      : cityData.backgroundImage;
+  
+  // City-specific SEO Titles
   const seoTitle = isZug
     ? 'Umzugsfirmen Zug (Stadt) vergleichen | Offerten gratis | Umzugscheck'
-    : `${cityData.heroTitle} | Umzugscheck.ch`;
+    : isZurich
+      ? 'Umzugsfirmen Zürich (Stadt) vergleichen | Alle 12 Kreise | Umzugscheck'
+      : `${cityData.heroTitle} | Umzugscheck.ch`;
+  
+  // City-specific SEO Descriptions
   const seoDescription = isZug
     ? 'Vergleichen Sie geprüfte Umzugsfirmen in der Stadt Zug. Gratis Offerten in 24–48h, transparente Preise und auf Wunsch Komplettpaket inkl. Endreinigung & Wohnungsabgabe. Bis zu 40% sparen.'
-    : cityData.heroSubtitle;
+    : isZurich
+      ? 'Vergleichen Sie 80+ geprüfte Umzugsfirmen in der Stadt Zürich. Alle 12 Stadtkreise abgedeckt – von Altstadt bis Oerlikon. Gratis Offerten in 24h, bis zu 40% sparen.'
+      : cityData.heroSubtitle;
+  
+  // City-specific Keywords
   const seoKeywords = isZug
     ? [
         'Umzugsfirma Zug',
@@ -499,13 +521,29 @@ export default function CityMovers() {
         'Wohnungsabgabe Zug',
         'Halteverbotszone Zug',
       ]
-    : [
-        `Umzugsfirma ${cityData.displayName}`,
-        `Umzugsfirmen ${cityData.displayName}`,
-        `Umzug ${cityData.displayName}`,
-        `Umzugskosten ${cityData.displayName}`,
-        `Umzugsunternehmen ${cityData.displayName}`,
-      ];
+    : isZurich
+      ? [
+          'Umzugsfirma Zürich',
+          'Umzugsfirmen Zürich',
+          'Umzug Zürich',
+          'Umzugskosten Zürich Stadt',
+          'Umzugsunternehmen Zürich',
+          'Umzug Kreis 1',
+          'Umzug Oerlikon',
+          'Umzug Seefeld',
+          'Umzug Altstetten',
+          'Firmenumzug Zürich',
+          'Expat Umzug Zürich',
+          'Halteverbotszone Zürich',
+          'Möbellift Zürich',
+        ]
+      : [
+          `Umzugsfirma ${cityData.displayName}`,
+          `Umzugsfirmen ${cityData.displayName}`,
+          `Umzug ${cityData.displayName}`,
+          `Umzugskosten ${cityData.displayName}`,
+          `Umzugsunternehmen ${cityData.displayName}`,
+        ];
 
   const howToSteps = [
     { name: 'Umzugsdetails erfassen', text: `Start- und Zieladresse, Datum und Wohnungsgrösse für ${cityData.displayName} angeben.` },
@@ -693,8 +731,9 @@ export default function CityMovers() {
       {/* NEW: Anchor Navigation for Sitelinks */}
       <RegionAnchorNav />
 
-      {/* Zug-specific unique content sections */}
+      {/* City-specific unique content sections */}
       {isZug && <ZugCityContent onCTAClick={() => navigate('/umzugsofferten')} />}
+      {isZurich && <ZurichCityContent onCTAClick={() => navigate('/umzugsofferten')} />}
 
       {/* Local Calculator */}
       <section id="offerten" className="py-16 bg-muted/30 scroll-mt-20">

@@ -260,10 +260,10 @@ const REGIONS_DATA: Record<string, RegionData> = {
     short: 'ZH',
     type: 'kanton',
     seo: {
-      title: 'Umzugsfirmen Zürich vergleichen | Bis 40% sparen | Umzugscheck',
-      description: 'Vergleichen Sie 80+ geprüfte Umzugsfirmen in Zürich. Kostenlose Offerten in 24h. Bis zu 40% sparen. Swiss Made, 4.8/5 Sterne.',
-      h1: 'Umzugsfirmen Zürich – Jetzt gratis vergleichen',
-      canonicalUrl: '/umzugsfirmen/zuerich',
+      title: 'Umzugsfirmen im Kanton Zürich vergleichen | 80+ Anbieter | Umzugscheck',
+      description: 'Vergleichen Sie 80+ geprüfte Umzugsfirmen im Kanton Zürich – von Winterthur bis Wädenswil, Uster bis Kloten. Gratis Offerten in 24h, bis zu 40% sparen.',
+      h1: 'Umzugsfirmen im Kanton Zürich vergleichen',
+      canonicalUrl: '/umzugsfirmen/kanton-zuerich',
     },
     stats: {
       providerCount: 80,
@@ -278,17 +278,17 @@ const REGIONS_DATA: Record<string, RegionData> = {
     },
     priceCoefficient: 1.18,
     localTips: [
-      'Parkbewilligung (Blaue Zone) rechtzeitig beantragen – ca. CHF 80-150',
-      'Möbellift für Altbauwohnungen empfohlen (enge Treppenhäuser)',
-      'Monatsende-Umzüge früh buchen – hohe Nachfrage in Zürich',
-      'Zufahrtsbeschränkungen in der Altstadt beachten',
+      'Innerkantonale Umzüge (z.B. Winterthur → Zürich) oft günstiger als gedacht',
+      'Agglomeration (Uster, Wetzikon, Bülach) 10-20% günstiger als Stadt Zürich',
+      'Parkbewilligung bei städtischen Gebieten nötig (CHF 80-150)',
+      'Monatsende-Umzüge im ganzen Kanton früh buchen',
     ],
     localBlurb: `
-      Als grösste Stadt der Schweiz bietet Zürich besondere Herausforderungen für Umzüge. 
-      Die historische Altstadt mit engen Gassen erfordert oft Spezialfahrzeuge oder Möbellifte. 
-      In beliebten Quartieren wie Seefeld, Wiedikon oder Oerlikon ist die Parkplatzsuche eine 
-      Herausforderung – eine Halteverbotszone ist fast immer nötig. Unsere geprüften Partner 
-      kennen alle Zürcher Besonderheiten und kümmern sich um die Bewilligungen.
+      Der Kanton Zürich ist der bevölkerungsreichste Kanton der Schweiz mit über 1.5 Mio. Einwohnern. 
+      Neben der Stadt Zürich gehören Winterthur, Uster, Dübendorf, Dietikon, Wetzikon und über 160 
+      weitere Gemeinden dazu. Die Preise variieren: In der Stadt Zürich sind Umzüge teurer (Parkdruck, 
+      Altbauten), während Agglomerationsgemeinden oft 10-20% günstiger sind. Unsere Partnerfirmen 
+      kennen den ganzen Kanton und bieten faire Preise für alle Regionen.
     `,
     nearbyRegions: [
       { name: 'Winterthur', slug: 'zuerich' },
@@ -335,24 +335,28 @@ const REGIONS_DATA: Record<string, RegionData> = {
     ],
     faqs: [
       {
-        question: 'Wie erhalte ich kostenlose Offerten in Zürich?',
-        answer: 'Füllen Sie unser Online-Formular aus (dauert nur 2 Minuten). Innerhalb von 24-48 Stunden erhalten Sie 3-5 unverbindliche Angebote von geprüften Umzugsfirmen in Zürich direkt per E-Mail.',
+        question: 'Welche Orte gehören zum Kanton Zürich?',
+        answer: 'Der Kanton Zürich umfasst die Stadt Zürich sowie Winterthur, Uster, Dübendorf, Dietikon, Wetzikon, Kloten, Bülach, Wädenswil, Horgen und über 160 weitere Gemeinden. Wir vermitteln Umzugsfirmen in allen Regionen des Kantons.',
       },
       {
         question: 'Was kostet ein Umzug im Kanton Zürich?',
-        answer: 'Die Kosten variieren je nach Wohnungsgrösse, Etage und Distanz. Ein 2-Zimmer-Umzug innerhalb Zürich kostet ca. CHF 650-1\'100, ein 4-Zimmer-Umzug ca. CHF 950-1\'500. Mit unserem Vergleich sparen Sie bis zu 40%.',
+        answer: 'Die Kosten variieren nach Distanz und Wohnungsgrösse. Innerkantonale Umzüge (z.B. Winterthur → Zürich) kosten für 3 Zimmer ca. CHF 950-1500. Kürzere Strecken (Uster → Dübendorf) sind günstiger. Mit unserem Vergleich sparen Sie bis zu 40%.',
       },
       {
-        question: 'Brauche ich eine Parkbewilligung in Zürich?',
-        answer: 'In den meisten Zürcher Quartieren ist eine Halteverbotszone nötig. Die Kosten liegen bei ca. CHF 80-150. Viele Umzugsfirmen kümmern sich für Sie darum.',
+        question: 'Gibt es regionale Preisunterschiede im Kanton Zürich?',
+        answer: 'Ja, Zürich-Stadt hat höhere Preise (Parkdruck, Altbauten, Halteverbot). Agglomerationsgemeinden wie Uster, Wetzikon oder Bülach sind oft 10-20% günstiger. Ein Vergleich lohnt sich besonders.',
       },
       {
-        question: 'Wie früh sollte ich in Zürich buchen?',
-        answer: 'Wir empfehlen 4-8 Wochen Vorlauf. Zur Hochsaison (April-September) oder bei Monatsende-Umzügen sind 8-12 Wochen ratsam. Zürich ist besonders gefragt!',
+        question: 'Wie funktioniert der Vergleich für den Kanton Zürich?',
+        answer: 'Geben Sie Start- und Zielort im Kanton Zürich ein, wählen Sie Wohnungsgrösse und gewünschte Services. Innerhalb von 24-48h erhalten Sie 3-5 unverbindliche Offerten von geprüften Anbietern per E-Mail.',
       },
       {
-        question: 'Sind die Umzugsfirmen versichert?',
-        answer: 'Ja! Alle unsere Partnerfirmen sind vollständig versichert (Haftpflicht & Transportversicherung). Bei Schäden sind Sie abgesichert.',
+        question: 'Bieten Umzugsfirmen im Kanton Zürich auch Komplettpaket?',
+        answer: 'Ja, viele unserer Partner bieten Umzug + Endreinigung + Wohnungsabgabe. Das spart Zeit und wird als Paket oft günstiger angeboten – besonders praktisch bei Monatsende-Umzügen.',
+      },
+      {
+        question: 'Ist Umzugscheck.ch selbst eine Umzugsfirma?',
+        answer: 'Nein, wir sind ein reiner Vergleichs- und Vermittlungsservice. Die Durchführung erfolgt ausschliesslich durch unsere geprüften, versicherten Partnerfirmen im Kanton Zürich.',
       },
     ],
     testimonials: [
