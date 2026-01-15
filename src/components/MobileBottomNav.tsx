@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Calculator, Building2, FileText, Home, Menu } from "lucide-react";
+import { Calculator, Building2, FileText, Home, Menu, Star, Shield, Clock, CheckCircle2, Phone, ArrowRight, Sparkles, Trash2, Box, Wrench, Truck, BookOpen, HelpCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -12,6 +12,15 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+
+// Trust Stats
+const TRUST_STATS = {
+  reviews: "4.8",
+  reviewCount: "2'847",
+  companies: "380+",
+  savings: "40%",
+};
 
 // Optimized 5-icon bottom nav based on #11 (Simpel & Clean)
 // Center = Offerten (Primary CTA, thumb zone)
@@ -23,17 +32,35 @@ const navItems = [
   { href: "menu", label: "Mehr", icon: Menu, isCenter: false }, // Opens sheet
 ];
 
-// "Mehr" menu items - everything else
-const moreMenuItems = [
-  { href: "/beste-umzugsfirma", label: "Beste Umzugsfirmen" },
-  { href: "/guenstige-umzugsfirma", label: "Günstigste Umzugsfirmen" },
-  { href: "/firmenumzug", label: "Firmenumzug" },
-  { href: "/umzugsreinigung", label: "Umzugsreinigung" },
-  { href: "/entsorgung", label: "Entsorgung & Räumung" },
-  { href: "/lagerung", label: "Lagerung" },
-  { href: "/ratgeber", label: "Ratgeber" },
-  { href: "/umzug-checkliste", label: "Checkliste (PDF)" },
-  { href: "/so-funktionierts", label: "So funktioniert's" },
+// Structured menu categories with icons
+const menuCategories = [
+  {
+    title: "Services",
+    items: [
+      { href: "/dienstleistungen/reinigung", label: "Umzugsreinigung", icon: Sparkles },
+      { href: "/dienstleistungen/entsorgung", label: "Entsorgung & Räumung", icon: Trash2 },
+      { href: "/dienstleistungen/einlagerung", label: "Lagerung", icon: Box },
+      { href: "/moebelmontage", label: "Möbelmontage", icon: Wrench },
+      { href: "/dienstleistungen/firmenumzug", label: "Firmenumzug", icon: Building2 },
+      { href: "/dienstleistungen/moebellift", label: "Möbellift", icon: Truck },
+    ]
+  },
+  {
+    title: "Firmen finden",
+    items: [
+      { href: "/beste-umzugsfirma", label: "Beste Umzugsfirmen", icon: Star },
+      { href: "/guenstige-umzugsfirma", label: "Günstigste Firmen", icon: Calculator },
+      { href: "/regionen", label: "Nach Region", icon: Building2 },
+    ]
+  },
+  {
+    title: "Ratgeber",
+    items: [
+      { href: "/ratgeber/umzugscheckliste-download", label: "Checkliste (PDF)", icon: FileText },
+      { href: "/ratgeber", label: "Alle Tipps", icon: BookOpen },
+      { href: "/so-funktionierts", label: "So funktioniert's", icon: HelpCircle },
+    ]
+  }
 ];
 
 // Paths where we hide the mobile bottom navigation to avoid overlap with funnels
@@ -116,49 +143,103 @@ export const MobileBottomNav = () => {
                     </motion.div>
                   </button>
                 </SheetTrigger>
-                <SheetContent side="bottom" className="h-auto max-h-[70vh] rounded-t-2xl pb-safe">
-                  <SheetHeader>
-                    <SheetTitle className="text-left">Mehr entdecken</SheetTitle>
+                <SheetContent side="bottom" className="h-auto max-h-[80vh] rounded-t-2xl pb-safe">
+                  <SheetHeader className="pb-3 border-b border-border">
+                    <div className="flex items-center justify-between">
+                      <SheetTitle className="text-left">Mehr entdecken</SheetTitle>
+                      {/* Trust Badge */}
+                      <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-accent/50">
+                        <Star className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500" />
+                        <span className="text-xs font-semibold">{TRUST_STATS.reviews}</span>
+                      </div>
+                    </div>
                   </SheetHeader>
-                  <div className="grid grid-cols-2 gap-2 mt-4 pb-4">
-                    {moreMenuItems.map((menuItem) => (
+
+                  {/* Trust Pills */}
+                  <div className="flex flex-wrap gap-1.5 py-3">
+                    <span className="inline-flex items-center gap-1 text-[10px] px-2 py-1 rounded-full bg-green-500/10 text-green-700 font-medium">
+                      <CheckCircle2 className="w-3 h-3" /> Kostenlos
+                    </span>
+                    <span className="inline-flex items-center gap-1 text-[10px] px-2 py-1 rounded-full bg-blue-500/10 text-blue-700 font-medium">
+                      <Clock className="w-3 h-3" /> 2 Min
+                    </span>
+                    <span className="inline-flex items-center gap-1 text-[10px] px-2 py-1 rounded-full bg-purple-500/10 text-purple-700 font-medium">
+                      <Shield className="w-3 h-3" /> Geprüft
+                    </span>
+                    <span className="inline-flex items-center gap-1 text-[10px] px-2 py-1 rounded-full bg-amber-500/10 text-amber-700 font-medium">
+                      Bis {TRUST_STATS.savings} sparen
+                    </span>
+                  </div>
+
+                  {/* Categorized Menu */}
+                  <div className="space-y-4 pb-4 max-h-[40vh] overflow-y-auto">
+                    {menuCategories.map((category) => (
+                      <div key={category.title}>
+                        <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-2">
+                          {category.title}
+                        </p>
+                        <div className="grid grid-cols-2 gap-1.5">
+                          {category.items.map((menuItem) => (
+                            <Link
+                              key={menuItem.href}
+                              to={menuItem.href}
+                              onClick={() => {
+                                lightTap();
+                                setMoreOpen(false);
+                              }}
+                              className={cn(
+                                "flex items-center gap-2 px-3 py-2.5 rounded-lg transition-colors",
+                                location.pathname === menuItem.href
+                                  ? "bg-primary/10 text-primary font-medium"
+                                  : "bg-muted/50 hover:bg-muted text-foreground"
+                              )}
+                            >
+                              <menuItem.icon className="w-4 h-4 text-primary flex-shrink-0" />
+                              <span className="text-sm truncate">{menuItem.label}</span>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Quick CTAs at bottom */}
+                  <div className="flex gap-2 pt-3 border-t">
+                    <Button asChild className="flex-1">
                       <Link
-                        key={menuItem.href}
-                        to={menuItem.href}
+                        to="/umzugsofferten"
                         onClick={() => {
                           lightTap();
                           setMoreOpen(false);
                         }}
-                        className={cn(
-                          "flex items-center gap-2 px-4 py-3 rounded-lg transition-colors",
-                          location.pathname === menuItem.href
-                            ? "bg-primary/10 text-primary font-medium"
-                            : "bg-muted/50 hover:bg-muted text-foreground"
-                        )}
                       >
-                        <span className="text-sm">{menuItem.label}</span>
+                        Gratis Offerten
+                        <ArrowRight className="w-4 h-4 ml-2" />
                       </Link>
-                    ))}
+                    </Button>
+                    <Button asChild variant="outline" className="flex-shrink-0">
+                      <a href="tel:+41445001234" onClick={() => lightTap()}>
+                        <Phone className="w-4 h-4" />
+                      </a>
+                    </Button>
                   </div>
-                  {/* Quick CTAs at bottom */}
-                  <div className="flex gap-2 pt-2 border-t">
-                    <Link
-                      to="/umzugsofferten"
-                      onClick={() => {
-                        lightTap();
-                        setMoreOpen(false);
-                      }}
-                      className="flex-1 bg-primary text-primary-foreground text-center py-3 rounded-lg font-medium text-sm"
-                    >
-                      Gratis Offerten
-                    </Link>
-                    <a
-                      href="tel:+41445001234"
-                      onClick={() => lightTap()}
-                      className="flex-1 bg-secondary text-secondary-foreground text-center py-3 rounded-lg font-medium text-sm"
-                    >
-                      Anrufen
-                    </a>
+
+                  {/* Footer Stats */}
+                  <div className="flex items-center justify-around text-center mt-3 pt-3 border-t">
+                    <div>
+                      <p className="text-sm font-bold text-primary">{TRUST_STATS.companies}</p>
+                      <p className="text-[10px] text-muted-foreground">Firmen</p>
+                    </div>
+                    <div className="h-6 w-px bg-border" />
+                    <div>
+                      <p className="text-sm font-bold text-primary">{TRUST_STATS.reviewCount}</p>
+                      <p className="text-[10px] text-muted-foreground">Bewertungen</p>
+                    </div>
+                    <div className="h-6 w-px bg-border" />
+                    <div>
+                      <p className="text-sm font-bold text-primary">24h</p>
+                      <p className="text-[10px] text-muted-foreground">Antwort</p>
+                    </div>
                   </div>
                 </SheetContent>
               </Sheet>
