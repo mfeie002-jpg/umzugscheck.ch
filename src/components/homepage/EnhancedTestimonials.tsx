@@ -20,7 +20,8 @@ const testimonials: Testimonial[] = [
     location: "Zürich-Oerlikon → Winterthur",
     rating: 5,
     text: "Innerhalb von 2 Tagen hatte ich 4 Offerten von Zürcher Firmen. Die günstigste war CHF 480 unter meiner ersten Anfrage direkt bei einer Firma. Der Umzug mit der Firma Blitz-Umzüge lief perfekt.",
-    date: "November 2024"
+    date: "November 2024",
+    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face"
   },
   {
     id: 2,
@@ -28,7 +29,8 @@ const testimonials: Testimonial[] = [
     location: "Basel-Stadt → Riehen",
     rating: 5,
     text: "Wir hatten ein Klavier und viele Antiquitäten – die Firma Basler Möbeltransport AG hat alles ohne einen Kratzer geliefert. Preis: CHF 1'850 statt der CHF 2'400, die ein anderer Anbieter wollte.",
-    date: "Oktober 2024"
+    date: "Oktober 2024",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face"
   },
   {
     id: 3,
@@ -36,7 +38,8 @@ const testimonials: Testimonial[] = [
     location: "3.5-Zimmer-Wohnung, Bern-Bümpliz",
     rating: 5,
     text: "Als Alleinerziehende mit zwei Kindern war ich skeptisch. Aber der Service war wirklich kostenlos, keine nervigen Anrufe. Ich habe CHF 650 gespart und die Firma war super flexibel mit dem Termin.",
-    date: "September 2024"
+    date: "September 2024",
+    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face"
   },
   {
     id: 4,
@@ -44,7 +47,8 @@ const testimonials: Testimonial[] = [
     location: "Firmenumzug, Luzern",
     rating: 5,
     text: "Wir haben unser Büro mit 12 Arbeitsplätzen über ein Wochenende gezügelt. Die Offerten kamen innerhalb von 24 Stunden – am Montag war alles aufgebaut. Absolut professionell.",
-    date: "Oktober 2024"
+    date: "Oktober 2024",
+    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face"
   },
   {
     id: 5,
@@ -52,7 +56,8 @@ const testimonials: Testimonial[] = [
     location: "St. Gallen → Frauenfeld",
     rating: 5,
     text: "Wir hatten nur 3 Wochen Zeit für den Umzug. Über Umzugscheck haben wir sofort eine Firma gefunden, die kurzfristig verfügbar war. CHF 1'350 für 4 Zimmer inkl. Einpackservice – top!",
-    date: "August 2024"
+    date: "August 2024",
+    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face"
   },
 ];
 
@@ -139,9 +144,17 @@ export const EnhancedTestimonials = memo(function EnhancedTestimonials() {
               </p>
               <div className="flex items-center justify-between flex-wrap gap-4">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center text-primary font-bold text-xl shadow-md">
-                    {testimonials[current].name.charAt(0)}
-                  </div>
+                  {testimonials[current].avatar ? (
+                    <img 
+                      src={testimonials[current].avatar} 
+                      alt={testimonials[current].name}
+                      className="w-14 h-14 rounded-full object-cover shadow-md border-2 border-primary/20"
+                    />
+                  ) : (
+                    <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center text-primary font-bold text-xl shadow-md">
+                      {testimonials[current].name.charAt(0)}
+                    </div>
+                  )}
                   <div>
                     <div className="font-bold text-lg">{testimonials[current].name}</div>
                     <div className="text-sm text-muted-foreground">{testimonials[current].location}</div>
