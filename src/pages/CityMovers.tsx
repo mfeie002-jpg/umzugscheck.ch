@@ -15,6 +15,15 @@ import { getRegionImage } from '@/data/region-images';
 // SEO helpers
 import { generateFAQSchema, generateHowToSchema } from '@/lib/seo-enhanced';
 
+// NEW: SEO Components (same as RegionArchetypPage)
+import { RegionBreadcrumb } from '@/components/region-archetyp/RegionBreadcrumb';
+import { RegionAnchorNav } from '@/components/region-archetyp/RegionAnchorNav';
+import { RegionTrustBox } from '@/components/region-archetyp/RegionTrustBox';
+import { RegionWhySave } from '@/components/region-archetyp/RegionWhySave';
+import { RegionGlossar } from '@/components/region-archetyp/RegionGlossar';
+import { RegionContentCluster } from '@/components/region-archetyp/RegionContentCluster';
+import { RegionMidCTA } from '@/components/region-archetyp/RegionMidCTA';
+
 interface CityData {
   name: string;
   displayName: string;
@@ -595,6 +604,14 @@ export default function CityMovers() {
         ))}
       </Helmet>
 
+      {/* NEW: Breadcrumb UI */}
+      <RegionBreadcrumb 
+        regionName={cityData.displayName} 
+        regionType="city"
+        cantonName={cityInfo?.cantonName}
+        cantonSlug={cityInfo?.cantonSlug}
+      />
+
       {/* Hero Section */}
       <section 
         className="relative overflow-hidden py-20 md:py-32 bg-cover bg-center"
@@ -664,8 +681,11 @@ export default function CityMovers() {
         </div>
       </section>
 
+      {/* NEW: Anchor Navigation for Sitelinks */}
+      <RegionAnchorNav />
+
       {/* Local Calculator */}
-      <section className="py-16 bg-muted/30">
+      <section id="offerten" className="py-16 bg-muted/30 scroll-mt-20">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -691,7 +711,7 @@ export default function CityMovers() {
       </section>
 
       {/* Top Companies */}
-      <section className="py-16">
+      <section id="firmen" className="py-16 scroll-mt-20">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -738,8 +758,8 @@ export default function CityMovers() {
         </div>
       </section>
 
-      {/* Local Advantages */}
-      <section className="py-16 bg-muted/30">
+      {/* Local Advantages (= Tipps) */}
+      <section id="tipps" className="py-16 bg-muted/30 scroll-mt-20">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -765,7 +785,7 @@ export default function CityMovers() {
       </section>
 
       {/* Komplettpaket / mehr Content */}
-      <section className="py-16">
+      <section id="komplettpaket" className="py-16 scroll-mt-20">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -866,7 +886,7 @@ export default function CityMovers() {
       </section>
 
       {/* Price Examples */}
-      <section className="py-16 bg-muted/30">
+      <section id="preise" className="py-16 bg-muted/30 scroll-mt-20">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -888,6 +908,15 @@ export default function CityMovers() {
           </motion.div>
         </div>
       </section>
+
+      {/* NEW: Why Save Block */}
+      <RegionWhySave regionName={cityData.displayName} />
+
+      {/* NEW: Mid-Page CTA */}
+      <RegionMidCTA regionName={cityData.displayName} />
+
+      {/* NEW: E-E-A-T Trust Box */}
+      <RegionTrustBox regionName={cityData.displayName} />
 
       {/* Interne Verlinkungen / Nearby */}
       <section className="py-16">
@@ -950,8 +979,14 @@ export default function CityMovers() {
         </div>
       </section>
 
+      {/* NEW: Glossar */}
+      <RegionGlossar />
+
+      {/* NEW: Content Cluster Links */}
+      <RegionContentCluster regionName={cityData.displayName} regionSlug={citySlug || ''} />
+
       {/* FAQ */}
-      <section className="py-16">
+      <section id="faq" className="py-16 scroll-mt-20">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
