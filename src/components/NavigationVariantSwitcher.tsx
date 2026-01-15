@@ -1,7 +1,7 @@
 /**
  * Navigation Variant Switcher
  * 
- * Floating UI to switch between 5 navigation variants for A/B testing
+ * Floating UI to switch between 8 navigation variants for A/B testing
  * Shows on homepage for easy comparison
  */
 
@@ -13,7 +13,8 @@ import {
   Monitor, 
   Smartphone,
   ChevronDown,
-  Beaker
+  Beaker,
+  LayoutGrid
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -25,7 +26,7 @@ import {
   type NavVariant 
 } from "@/lib/navigation-variants";
 import { cn } from "@/lib/utils";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 
 interface NavigationVariantSwitcherProps {
   showOnlyOnHome?: boolean;
@@ -53,23 +54,23 @@ export const NavigationVariantSwitcher = ({ showOnlyOnHome = true }: NavigationV
 
   return (
     <>
-      {/* Floating Toggle Button - Bottom Left */}
+      {/* Floating Toggle Button - Bottom Left - Always visible on all devices */}
       <button
         onClick={() => setIsOpen(true)}
         className={cn(
           "fixed bottom-20 left-4 z-[60]",
-          "flex items-center gap-2 px-4 py-3 rounded-full",
+          "flex items-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 rounded-full",
           "bg-gradient-to-r from-primary to-primary/80 text-primary-foreground",
           "shadow-lg hover:shadow-xl",
-          "transition-all hover:scale-105",
+          "transition-all hover:scale-105 active:scale-95",
           "border-2 border-primary-foreground/20"
         )}
         title="Navigation Varianten testen"
       >
-        <Beaker className="w-5 h-5" />
-        <span className="text-sm font-semibold hidden sm:inline">A/B Test</span>
-        <Badge variant="secondary" className="text-[10px] bg-secondary text-secondary-foreground">
-          {activeVariant.name.split('.')[0]}
+        <Beaker className="w-4 h-4 sm:w-5 sm:h-5" />
+        <span className="text-xs sm:text-sm font-semibold">A/B</span>
+        <Badge variant="secondary" className="text-[9px] sm:text-[10px] bg-secondary text-secondary-foreground px-1.5 sm:px-2">
+          V{activeVariant.name.split('.')[0]}
         </Badge>
       </button>
 
@@ -142,8 +143,18 @@ export const NavigationVariantSwitcher = ({ showOnlyOnHome = true }: NavigationV
               </div>
             </div>
 
+            {/* Full comparison link */}
+            <div className="px-4 pt-4">
+              <Link to="/navigation-vergleich" onClick={() => setIsOpen(false)}>
+                <Button className="w-full gap-2" variant="secondary" size="lg">
+                  <LayoutGrid className="w-4 h-4" />
+                  Alle Varianten auf einer Seite vergleichen
+                </Button>
+              </Link>
+            </div>
+
             {/* Variants List */}
-            <div className="p-4 overflow-y-auto max-h-[65vh]">
+            <div className="p-4 overflow-y-auto max-h-[55vh]">
               <div className="space-y-3">
                 {NAV_VARIANTS.map((variant) => (
                   <VariantCard
