@@ -3019,7 +3019,7 @@ export type Database = {
           service_ratings: Json | null
           title: string
           updated_at: string | null
-          user_id: string
+          user_id: string | null
           verified: boolean | null
         }
         Insert: {
@@ -3034,7 +3034,7 @@ export type Database = {
           service_ratings?: Json | null
           title: string
           updated_at?: string | null
-          user_id: string
+          user_id?: string | null
           verified?: boolean | null
         }
         Update: {
@@ -3049,7 +3049,7 @@ export type Database = {
           service_ratings?: Json | null
           title?: string
           updated_at?: string | null
-          user_id?: string
+          user_id?: string | null
           verified?: boolean | null
         }
         Relationships: [
