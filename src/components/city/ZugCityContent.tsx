@@ -1,6 +1,14 @@
 /**
- * Unique Content Sections für Stadt Zug
+ * GOLD STANDARD - Unique Content Sections für Stadt Zug
  * Anti-Duplicate: Diese Inhalte erscheinen NUR auf /umzugsfirmen/zug
+ * 
+ * Maximale Qualität:
+ * - 6 einzigartige Content-Sektionen
+ * - Lokale Quartierdetails (Altstadt, Herti, Guthirt, Lorzen, etc.)
+ * - Spezifische Preisbeispiele
+ * - Expat & Firmenumzug-Fokus
+ * - Komplettpaket-Hervorhebung
+ * - Interne Verlinkung zu Nachbarstädten & Kanton
  */
 
 import { memo } from "react";
@@ -15,9 +23,18 @@ import {
   Sparkles, 
   Home,
   ArrowRight,
-  AlertCircle
+  AlertCircle,
+  Clock,
+  Mountain,
+  Anchor,
+  Car,
+  Euro,
+  Check,
+  Users,
+  Shield
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
 interface ZugCityContentProps {
   onCTAClick: () => void;
@@ -39,7 +56,7 @@ export const ZugCityContent = memo(({ onCTAClick }: ZugCityContentProps) => {
         </div>
       </section>
 
-      {/* Section 1: Umzug in Zug - Altstadt, Seeufer & Logistik */}
+      {/* Section 1: Umzug in Zug - Stadtquartiere im Detail */}
       <section className="py-16 bg-muted/30">
         <div className="container mx-auto px-4">
           <motion.div
@@ -47,62 +64,132 @@ export const ZugCityContent = memo(({ onCTAClick }: ZugCityContentProps) => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="max-w-4xl mx-auto"
+            className="max-w-5xl mx-auto"
           >
             <div className="flex items-center gap-3 mb-6">
               <div className="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full">
                 <MapPin className="w-6 h-6 text-primary" />
               </div>
               <h2 className="text-2xl md:text-3xl font-bold">
-                Umzug in Zug: Altstadt, Seeufer & Logistik
+                Umzug in der Stadt Zug: Quartiere & Besonderheiten
               </h2>
             </div>
 
-            <div className="prose prose-lg max-w-none text-muted-foreground">
+            <div className="prose prose-lg max-w-none text-muted-foreground mb-8">
               <p>
-                Die Stadt Zug ist bekannt für ihre malerische Altstadt mit engen Gassen, die historische 
-                Seepromenade und das exklusive Wohnviertel entlang des Zugersees. Diese besonderen 
-                Gegebenheiten erfordern erfahrene Umzugsfirmen mit lokaler Ortskenntnis.
+                Die Stadt Zug (ca. 32'000 Einwohner) verbindet historische Altstadt, 
+                malerische Seepromenade und modernes Wirtschaftszentrum. Jedes Quartier 
+                stellt eigene Anforderungen an einen Umzug:
               </p>
-              <p>
-                <strong>Typische Herausforderungen bei einem Umzug in Zug:</strong>
-              </p>
-              <ul className="grid md:grid-cols-2 gap-3 list-none pl-0">
+            </div>
+
+            {/* Quartier-Cards Grid */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+              <Card className="p-5 border border-border/50">
+                <div className="flex items-center gap-2 mb-3">
+                  <Anchor className="w-5 h-5 text-primary" />
+                  <h3 className="font-semibold">Altstadt & Seepromenade</h3>
+                </div>
+                <ul className="text-sm text-muted-foreground space-y-1">
+                  <li>• Enge Gassen, Fussgängerzonen</li>
+                  <li>• Halteverbotszone Pflicht (CHF 80-150)</li>
+                  <li>• Zeitfenster für Anlieferung</li>
+                  <li>• Möbellift für Altbauten</li>
+                </ul>
+              </Card>
+
+              <Card className="p-5 border border-border/50">
+                <div className="flex items-center gap-2 mb-3">
+                  <Building2 className="w-5 h-5 text-primary" />
+                  <h3 className="font-semibold">Herti & Guthirt</h3>
+                </div>
+                <ul className="text-sm text-muted-foreground space-y-1">
+                  <li>• Moderne Wohnblöcke mit Lift</li>
+                  <li>• Gute Parkplatzsituation</li>
+                  <li>• Schnelle Zufahrt</li>
+                  <li>• Oft günstiger als Zentrum</li>
+                </ul>
+              </Card>
+
+              <Card className="p-5 border border-border/50">
+                <div className="flex items-center gap-2 mb-3">
+                  <Home className="w-5 h-5 text-primary" />
+                  <h3 className="font-semibold">Lorzen & Oberwil</h3>
+                </div>
+                <ul className="text-sm text-muted-foreground space-y-1">
+                  <li>• Familienquartiere, Einfamilienhäuser</li>
+                  <li>• Gartengeräte & Velos einplanen</li>
+                  <li>• Meist eigene Zufahrt</li>
+                  <li>• Grössere Umzugsvolumen</li>
+                </ul>
+              </Card>
+
+              <Card className="p-5 border border-border/50">
+                <div className="flex items-center gap-2 mb-3">
+                  <Euro className="w-5 h-5 text-primary" />
+                  <h3 className="font-semibold">Bahnhof & Crypto Valley</h3>
+                </div>
+                <ul className="text-sm text-muted-foreground space-y-1">
+                  <li>• Büros & Studios</li>
+                  <li>• Hohe Fluktuation</li>
+                  <li>• Express-Umzüge gefragt</li>
+                  <li>• Mehrsprachige Teams</li>
+                </ul>
+              </Card>
+
+              <Card className="p-5 border border-border/50">
+                <div className="flex items-center gap-2 mb-3">
+                  <Mountain className="w-5 h-5 text-primary" />
+                  <h3 className="font-semibold">Zugerberg</h3>
+                </div>
+                <ul className="text-sm text-muted-foreground space-y-1">
+                  <li>• Steile Zufahrt, enge Strassen</li>
+                  <li>• Kleinere Fahrzeuge nötig</li>
+                  <li>• Premium-Lagen</li>
+                  <li>• Spezialtransport für Villen</li>
+                </ul>
+              </Card>
+
+              <Card className="p-5 border border-border/50">
+                <div className="flex items-center gap-2 mb-3">
+                  <Car className="w-5 h-5 text-primary" />
+                  <h3 className="font-semibold">Letzi & Industrie</h3>
+                </div>
+                <ul className="text-sm text-muted-foreground space-y-1">
+                  <li>• Gute Anbindung A4</li>
+                  <li>• Lagerräume & Hallen</li>
+                  <li>• Firmenumzüge</li>
+                  <li>• Keine Parkprobleme</li>
+                </ul>
+              </Card>
+            </div>
+
+            <div className="bg-card p-6 rounded-xl border border-border/50">
+              <h3 className="font-semibold mb-3">Typische Herausforderungen in Zug</h3>
+              <ul className="grid md:grid-cols-2 gap-3 text-sm text-muted-foreground">
                 <li className="flex items-start gap-2">
-                  <span className="text-primary mt-1">✓</span>
-                  <span>Enge Zufahrten in der Altstadt (Fussgängerzonen)</span>
+                  <Check className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                  <span>Halteverbotszonen am Seeufer rechtzeitig beantragen</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-primary mt-1">✓</span>
-                  <span>Halteverbotszonen am Seeufer organisieren</span>
+                  <Check className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                  <span>Altbauten ohne Lift: Möbellift für 3.+ Etage empfohlen</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-primary mt-1">✓</span>
-                  <span>Möbellift für Altbauten ohne Lift</span>
+                  <Check className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                  <span>Monatsende: Termine 3-4 Wochen im Voraus sichern</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-primary mt-1">✓</span>
-                  <span>Zeitfenster für Anlieferung (Wochen-/Monatsende)</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-primary mt-1">✓</span>
-                  <span>Tragewege von Parkplatz zur Wohnung</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-primary mt-1">✓</span>
-                  <span>Höhere Etagen in Gebäuden ohne Lift</span>
+                  <Check className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                  <span>Zugerberg: Kleinere Fahrzeuge und erfahrene Fahrer</span>
                 </li>
               </ul>
-              <p>
-                Unsere Partnerfirmen kennen diese lokalen Besonderheiten und organisieren bei Bedarf 
-                Halteverbotszonen, Möbellifte und spezielle Zeitfenster für Sie.
-              </p>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Section 2: Firmenumzug & Expats in Zug */}
+      {/* Section 2: Preisbeispiele Stadt Zug */}
       <section className="py-16">
         <div className="container mx-auto px-4">
           <motion.div
@@ -114,51 +201,157 @@ export const ZugCityContent = memo(({ onCTAClick }: ZugCityContentProps) => {
           >
             <div className="flex items-center gap-3 mb-6">
               <div className="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full">
-                <Briefcase className="w-6 h-6 text-primary" />
+                <Euro className="w-6 h-6 text-primary" />
               </div>
               <h2 className="text-2xl md:text-3xl font-bold">
-                Firmenumzug & Expats in Zug (DE/EN)
+                Umzugspreise in der Stadt Zug – Richtwerte 2025
               </h2>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8">
-              <div className="prose prose-lg max-w-none text-muted-foreground">
-                <p>
-                  Zug ist ein internationaler Wirtschaftsstandort mit vielen Expat-Familien und 
-                  Unternehmen. Entsprechend hoch ist die Nachfrage nach mehrsprachigen Umzugsteams 
-                  und diskreten Business-Umzügen.
-                </p>
-                <p>
-                  <strong>Besondere Services für Expats & Firmen:</strong>
-                </p>
-                <ul className="space-y-2">
-                  <li>Mehrsprachige Teams (Deutsch/Englisch)</li>
-                  <li>Diskrete Abwicklung für Privathaushalte</li>
-                  <li>Büro- & Praxisumzüge am Wochenende</li>
-                  <li>Internationale Umzüge ins/aus dem Ausland</li>
-                  <li>Koordination mit Relocation-Agenturen</li>
-                </ul>
-              </div>
-              <div className="bg-card p-6 rounded-2xl border border-border/50 shadow-soft">
-                <div className="flex items-center gap-2 mb-4">
-                  <Globe className="w-5 h-5 text-primary" />
-                  <h3 className="font-semibold text-lg">International Relocation</h3>
-                </div>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Für internationale Haushalte bieten viele unserer Partner umfassende Relocation-Services 
-                  an – von der Wohnungssuche bis zur kompletten Umzugsabwicklung.
-                </p>
-                <Button variant="outline" onClick={onCTAClick} className="w-full">
-                  Offerte für Expat-Umzug
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </div>
+            <p className="text-muted-foreground mb-8">
+              Die Kosten variieren je nach Quartier, Stockwerk und Zusatzservices. 
+              Hier finden Sie aktuelle Richtwerte für typische Umzüge:
+            </p>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border">
+                    <th className="text-left py-3 font-semibold">Route</th>
+                    <th className="text-left py-3 font-semibold">Wohnung</th>
+                    <th className="text-right py-3 font-semibold">Preisspanne</th>
+                  </tr>
+                </thead>
+                <tbody className="text-muted-foreground">
+                  <tr className="border-b border-border/50">
+                    <td className="py-3">Altstadt → Herti</td>
+                    <td className="py-3">2 Zimmer</td>
+                    <td className="py-3 text-right font-medium text-foreground">CHF 690–1'100</td>
+                  </tr>
+                  <tr className="border-b border-border/50">
+                    <td className="py-3">Guthirt → Baar</td>
+                    <td className="py-3">3.5 Zimmer</td>
+                    <td className="py-3 text-right font-medium text-foreground">CHF 950–1'450</td>
+                  </tr>
+                  <tr className="border-b border-border/50">
+                    <td className="py-3">Seestrasse → Cham</td>
+                    <td className="py-3">4.5 Zimmer</td>
+                    <td className="py-3 text-right font-medium text-foreground">CHF 1'300–1'950</td>
+                  </tr>
+                  <tr className="border-b border-border/50">
+                    <td className="py-3">Oberwil → Steinhausen</td>
+                    <td className="py-3">5 Zimmer EFH</td>
+                    <td className="py-3 text-right font-medium text-foreground">CHF 1'800–2'600</td>
+                  </tr>
+                  <tr className="border-b border-border/50">
+                    <td className="py-3">Zürich → Zug (Expat)</td>
+                    <td className="py-3">3.5 Zimmer</td>
+                    <td className="py-3 text-right font-medium text-foreground">CHF 1'400–2'100</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div className="mt-6 p-4 bg-muted/50 rounded-lg">
+              <p className="text-sm text-muted-foreground">
+                <strong>Hinweis:</strong> Preise inkl. Team, Transport, Basis-Verpackung. 
+                Zusatzkosten möglich für: Halteverbotszone (+CHF 80-150), Möbellift (+CHF 200-400), 
+                Endreinigung, Möbelmontage, Einlagerung. Verbindliche Preise nur per Offerte.
+              </p>
+            </div>
+
+            <div className="mt-8 text-center">
+              <Button size="lg" onClick={onCTAClick}>
+                Jetzt unverbindliche Offerte erhalten
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Section 3: Komplettpaket Zug */}
+      {/* Section 3: Expat & Firmenumzug */}
+      <section className="py-16 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="max-w-4xl mx-auto"
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <div className="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full">
+                <Globe className="w-6 h-6 text-primary" />
+              </div>
+              <h2 className="text-2xl md:text-3xl font-bold">
+                Expat Moving & Firmenumzug in Zug
+              </h2>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8 mb-8">
+              <div>
+                <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
+                  <Users className="w-5 h-5 text-primary" />
+                  Expat Relocation
+                </h3>
+                <div className="prose prose-lg max-w-none text-muted-foreground">
+                  <p>
+                    Zug ist Sitz des "Crypto Valley" und internationaler Konzerne. 
+                    Entsprechend hoch ist die Nachfrage nach Umzügen für Expat-Familien.
+                  </p>
+                  <ul className="space-y-1 text-sm">
+                    <li>Mehrsprachige Teams (DE/EN/FR)</li>
+                    <li>Internationale Umzüge (EU & Übersee)</li>
+                    <li>Zollformalitäten & Einfuhrbewilligungen</li>
+                    <li>Relocation-Services auf Anfrage</li>
+                    <li>Diskreter Service für VIPs</li>
+                  </ul>
+                </div>
+              </div>
+              
+              <div>
+                <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
+                  <Briefcase className="w-5 h-5 text-primary" />
+                  Büro- & Firmenumzug
+                </h3>
+                <div className="prose prose-lg max-w-none text-muted-foreground">
+                  <p>
+                    Startups, Praxen und etablierte Unternehmen verlegen ihren Sitz nach Zug.
+                    Unsere Partner sind auf Business-Umzüge spezialisiert.
+                  </p>
+                  <ul className="space-y-1 text-sm">
+                    <li>Umzüge am Wochenende</li>
+                    <li>Serverraum- & IT-Equipment-Transport</li>
+                    <li>Praxis- und Kanzleiumzüge</li>
+                    <li>Archiv- & Aktentransport</li>
+                    <li>Montag-Morgen einsatzbereit</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-card p-6 rounded-2xl border border-border/50 shadow-soft">
+              <div className="flex items-center gap-2 mb-4">
+                <Globe className="w-5 h-5 text-primary" />
+                <h3 className="font-semibold text-lg">International Moving to Zug</h3>
+              </div>
+              <p className="text-sm text-muted-foreground mb-4">
+                Moving to Zug from abroad? Our partner companies offer English-speaking 
+                teams, customs handling, and full relocation packages. Whether you're 
+                joining a crypto startup or a multinational corporation – we connect 
+                you with experienced local movers.
+              </p>
+              <Button variant="outline" onClick={onCTAClick} className="w-full sm:w-auto">
+                Get quotes for Expat Move
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Section 4: Komplettpaket */}
       <section className="py-16 bg-gradient-to-br from-primary/5 to-secondary/5">
         <div className="container mx-auto px-4">
           <motion.div
@@ -179,9 +372,9 @@ export const ZugCityContent = memo(({ onCTAClick }: ZugCityContentProps) => {
 
             <div className="prose prose-lg max-w-none text-muted-foreground mb-8">
               <p>
-                Stress reduzieren und Zeit sparen: Mit dem Komplettpaket koordinieren unsere 
-                Partnerfirmen Umzug, professionelle Endreinigung und die Vorbereitung der 
-                Wohnungsabgabe aus einer Hand.
+                In Zug sind Vermieter besonders anspruchsvoll bei der Wohnungsabnahme. 
+                Mit einem <strong>Komplettpaket</strong> reduzieren Sie Stress und sparen Zeit – 
+                unsere Partnerfirmen koordinieren alles aus einer Hand.
               </p>
             </div>
 
@@ -192,10 +385,11 @@ export const ZugCityContent = memo(({ onCTAClick }: ZugCityContentProps) => {
                   <h3 className="font-semibold">Umzug</h3>
                 </div>
                 <ul className="text-sm text-muted-foreground space-y-1">
-                  <li>• Tragen & Transport</li>
-                  <li>• Verpackungsmaterial</li>
+                  <li>• Professionelles Tragen & Transport</li>
+                  <li>• Verpackungsmaterial inklusive</li>
                   <li>• Möbelmontage/-demontage</li>
-                  <li>• Optional: Einlagerung</li>
+                  <li>• Halteverbot-Organisation</li>
+                  <li>• Möbellift bei Bedarf</li>
                 </ul>
               </div>
 
@@ -205,10 +399,11 @@ export const ZugCityContent = memo(({ onCTAClick }: ZugCityContentProps) => {
                   <h3 className="font-semibold">Endreinigung</h3>
                 </div>
                 <ul className="text-sm text-muted-foreground space-y-1">
-                  <li>• Küche, Bad, Böden</li>
+                  <li>• Küche, Bad, alle Räume</li>
                   <li>• Fenster innen/aussen</li>
-                  <li>• Abnahmevorbereitung</li>
-                  <li>• Auf Wunsch: Garantie</li>
+                  <li>• Backofen & Kühlschrank</li>
+                  <li>• Abnahme-Garantie auf Wunsch</li>
+                  <li>• Zuger Standard erfüllt</li>
                 </ul>
               </div>
 
@@ -222,7 +417,23 @@ export const ZugCityContent = memo(({ onCTAClick }: ZugCityContentProps) => {
                   <li>• Protokollbegleitung</li>
                   <li>• Schlüsselübergabe</li>
                   <li>• Ein Ansprechpartner</li>
+                  <li>• Nachbesserung bei Mängeln</li>
                 </ul>
+              </div>
+            </div>
+
+            <div className="bg-primary/5 p-6 rounded-xl border border-primary/20 mb-8">
+              <div className="flex items-start gap-4">
+                <Shield className="w-8 h-8 text-primary shrink-0" />
+                <div>
+                  <h4 className="font-semibold mb-2">Abnahme-Garantie</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Viele unserer Partner bieten eine Abnahme-Garantie: Falls der Vermieter 
+                    bei der Abnahme Mängel an der Reinigung feststellt, wird kostenlos 
+                    nachgebessert. Das gibt Sicherheit – besonders in Zug, wo Vermieter 
+                    oft sehr genau hinschauen.
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -232,30 +443,113 @@ export const ZugCityContent = memo(({ onCTAClick }: ZugCityContentProps) => {
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
               <p className="mt-3 text-sm text-muted-foreground">
-                Die Durchführung erfolgt durch geprüfte Partnerfirmen.
+                Kostenlos vergleichen. Die Durchführung erfolgt durch geprüfte Partnerfirmen.
               </p>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Nearby Cities Links */}
-      <section className="py-12">
+      {/* Section 5: Tipps für den Umzug in Zug */}
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="max-w-4xl mx-auto"
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <div className="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full">
+                <Clock className="w-6 h-6 text-primary" />
+              </div>
+              <h2 className="text-2xl md:text-3xl font-bold">
+                5 Tipps für Ihren Umzug in Zug
+              </h2>
+            </div>
+
+            <div className="space-y-6">
+              <div className="flex gap-4">
+                <div className="flex items-center justify-center w-10 h-10 bg-primary text-primary-foreground rounded-full font-bold shrink-0">1</div>
+                <div>
+                  <h3 className="font-semibold mb-1">Früh buchen – besonders am Monatsende</h3>
+                  <p className="text-muted-foreground text-sm">
+                    Zug hat einen angespannten Wohnungsmarkt. Monatsende-Termine sind extrem 
+                    gefragt – buchen Sie 3-4 Wochen im Voraus. Mittwoch/Donnerstag sind oft günstiger.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                <div className="flex items-center justify-center w-10 h-10 bg-primary text-primary-foreground rounded-full font-bold shrink-0">2</div>
+                <div>
+                  <h3 className="font-semibold mb-1">Halteverbotszone rechtzeitig beantragen</h3>
+                  <p className="text-muted-foreground text-sm">
+                    In der Altstadt und am Seeufer ist eine Halteverbotszone Pflicht. Kosten: 
+                    CHF 80-150. Unsere Partnerfirmen übernehmen die Beantragung für Sie.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                <div className="flex items-center justify-center w-10 h-10 bg-primary text-primary-foreground rounded-full font-bold shrink-0">3</div>
+                <div>
+                  <h3 className="font-semibold mb-1">Möbellift prüfen</h3>
+                  <p className="text-muted-foreground text-sm">
+                    Viele Zuger Altbauten haben enge Treppenhäuser. Ein Möbellift schont 
+                    Möbel und Gebäude – und ist für Sofas und Schränke oft die einzige Option.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                <div className="flex items-center justify-center w-10 h-10 bg-primary text-primary-foreground rounded-full font-bold shrink-0">4</div>
+                <div>
+                  <h3 className="font-semibold mb-1">Mehrere Offerten vergleichen</h3>
+                  <p className="text-muted-foreground text-sm">
+                    Die Preisunterschiede in Zug können erheblich sein. Mit unserem Vergleich 
+                    erhalten Sie 3-5 Offerten und sparen bis zu 40%.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                <div className="flex items-center justify-center w-10 h-10 bg-primary text-primary-foreground rounded-full font-bold shrink-0">5</div>
+                <div>
+                  <h3 className="font-semibold mb-1">Komplettpaket nutzen</h3>
+                  <p className="text-muted-foreground text-sm">
+                    Umzug + Endreinigung + Wohnungsabgabe aus einer Hand spart Zeit und gibt 
+                    Sicherheit. In Zug sind Vermieter oft sehr anspruchsvoll – mit Abnahme-Garantie 
+                    sind Sie auf der sicheren Seite.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Section 6: Nearby Cities & Internal Links */}
+      <section className="py-12 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <h3 className="text-lg font-semibold mb-4">Umzugsfirmen in der Nähe</h3>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-3 mb-6">
               {[
-                { name: 'Baar', slug: 'baar' },
-                { name: 'Cham', slug: 'cham' },
-                { name: 'Steinhausen', slug: 'steinhausen' },
-                { name: 'Hünenberg', slug: 'huenenberg' },
-                { name: 'Risch-Rotkreuz', slug: 'risch-rotkreuz' },
+                { name: 'Baar', slug: 'baar', desc: 'Grösste Zuger Gemeinde' },
+                { name: 'Cham', slug: 'cham', desc: 'Am Zugersee' },
+                { name: 'Steinhausen', slug: 'steinhausen', desc: 'Familienfreundlich' },
+                { name: 'Hünenberg', slug: 'huenenberg', desc: 'See & Natur' },
+                { name: 'Risch-Rotkreuz', slug: 'risch-rotkreuz', desc: 'Verkehrsknoten' },
+                { name: 'Oberägeri', slug: 'oberaegeri', desc: 'Ägerital' },
+                { name: 'Unterägeri', slug: 'unteraegeri', desc: 'Ägerisee' },
               ].map((city) => (
                 <Link
                   key={city.slug}
                   to={`/umzugsfirmen/${city.slug}`}
-                  className="px-4 py-2 bg-muted rounded-full text-sm font-medium hover:bg-muted/80 transition-colors"
+                  className="px-4 py-2 bg-card rounded-full text-sm font-medium hover:bg-card/80 transition-colors border border-border/50"
+                  title={city.desc}
                 >
                   {city.name}
                 </Link>
@@ -264,8 +558,48 @@ export const ZugCityContent = memo(({ onCTAClick }: ZugCityContentProps) => {
                 to="/umzugsfirmen/kanton-zug"
                 className="px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium hover:bg-primary/20 transition-colors"
               >
-                Kanton Zug →
+                Kanton Zug (alle Gemeinden) →
               </Link>
+            </div>
+
+            <h3 className="text-lg font-semibold mb-4 mt-8">Nachbarkantone</h3>
+            <div className="flex flex-wrap gap-3 mb-6">
+              {[
+                { name: 'Zürich', slug: 'kanton-zuerich' },
+                { name: 'Luzern', slug: 'kanton-luzern' },
+                { name: 'Schwyz', slug: 'kanton-schwyz' },
+                { name: 'Aargau', slug: 'kanton-aargau' },
+              ].map((canton) => (
+                <Link
+                  key={canton.slug}
+                  to={`/umzugsfirmen/${canton.slug}`}
+                  className="px-4 py-2 bg-muted rounded-full text-sm font-medium hover:bg-muted/80 transition-colors"
+                >
+                  {canton.name}
+                </Link>
+              ))}
+            </div>
+
+            {/* Service Links */}
+            <div className="mt-8 pt-6 border-t border-border/50">
+              <h4 className="text-sm font-medium text-muted-foreground mb-3">Weitere Services in Zug</h4>
+              <div className="flex flex-wrap gap-3">
+                <Link to="/services/reinigung" className="text-sm text-primary hover:underline">
+                  Endreinigung Zug →
+                </Link>
+                <Link to="/services/moebellift" className="text-sm text-primary hover:underline">
+                  Möbellift Zug →
+                </Link>
+                <Link to="/services/lagerung" className="text-sm text-primary hover:underline">
+                  Einlagerung Zug →
+                </Link>
+                <Link to="/services/entsorgung" className="text-sm text-primary hover:underline">
+                  Entsorgung Zug →
+                </Link>
+                <Link to="/firmenumzug" className="text-sm text-primary hover:underline">
+                  Firmenumzug →
+                </Link>
+              </div>
             </div>
           </div>
         </div>
