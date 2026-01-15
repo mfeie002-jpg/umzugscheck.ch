@@ -17,6 +17,7 @@ import { ScrollReveal } from "@/components/ScrollReveal";
 import { motion } from "framer-motion";
 import { generatePageSchemas, generateSchemaScript } from "@/lib/schema-markup";
 import { Helmet } from "react-helmet";
+import { getRegionImage } from "@/data/region-images";
 
 interface Company {
   id: string;
@@ -149,7 +150,7 @@ const ZurichMovers = () => {
         }}
         badgeText={cityInfo.name}
         cityName={cityInfo.name}
-        backgroundImage="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80"
+        backgroundImage={getRegionImage(cityKey)}
       />
 
       <main>
