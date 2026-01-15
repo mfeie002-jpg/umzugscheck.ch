@@ -511,7 +511,7 @@ const UrlTrackingDashboard = () => {
 };
 
 // Add URL Form Component
-const AddUrlForm = ({ onSubmit }: { onSubmit: (data: Partial<UrlTracking>) => void }) => {
+const AddUrlForm = ({ onSubmit }: { onSubmit: (data: Partial<UrlTracking> & { url_path: string; page_type: string }) => void }) => {
   const [formData, setFormData] = useState({
     url_path: "",
     page_type: "service",
@@ -633,8 +633,8 @@ const AddUrlForm = ({ onSubmit }: { onSubmit: (data: Partial<UrlTracking>) => vo
           <Button variant="outline">Abbrechen</Button>
         </DialogClose>
         <Button 
-          onClick={() => onSubmit(formData)}
-          disabled={!formData.url_path}
+          onClick={() => onSubmit(formData as Partial<UrlTracking> & { url_path: string; page_type: string })}
+          disabled={!formData.url_path || !formData.page_type}
         >
           URL hinzufügen
         </Button>
