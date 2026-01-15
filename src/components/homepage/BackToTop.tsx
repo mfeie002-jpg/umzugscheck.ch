@@ -27,7 +27,7 @@ export const BackToTop = () => {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}
-          className="fixed bottom-24 right-4 md:bottom-6 md:right-20 z-40"
+          className="fixed bottom-6 right-4 md:bottom-6 md:right-6 z-30"
         >
           <Button
             size="icon"

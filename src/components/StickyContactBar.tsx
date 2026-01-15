@@ -39,9 +39,9 @@ export const StickyContactBar = ({ showAfter = 600 }: StickyContactBarProps) => 
         exit={{ x: -80, opacity: 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 25 }}
         className={cn(
-          "fixed z-40",
-          // Desktop: bottom-left, Mobile: above StickyMobileCTA on left
-          "bottom-24 md:bottom-6 left-4"
+          "fixed z-30",
+          // Desktop: bottom-left, Mobile: hidden to avoid button stacking
+          "hidden md:block md:bottom-6 md:left-4"
         )}
       >
         <AnimatePresence>
