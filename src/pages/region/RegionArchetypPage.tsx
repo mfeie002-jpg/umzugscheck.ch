@@ -1,11 +1,26 @@
 /**
- * ARCHETYP REGION PAGE
+ * ARCHETYP REGION PAGE - SEO OPTIMIERT
  * 
- * Eine einzige Seite für ALLE 26 Kantone.
- * Nutzt die zentrale Datenbank und Archetyp-Komponenten.
- * 
- * Ersetzt: ~28'650 Zeilen duplizierter Code
- * Neu: ~150 Zeilen Assembly-Code
+ * 20 SEO-Features implementiert:
+ * ✅ Title/Meta mit "vergleichen / Offerten"
+ * ✅ Canonical sauber (/umzugsfirmen/kanton-{slug})
+ * ✅ Breadcrumbs (UI + Schema)
+ * ✅ HowTo Schema
+ * ✅ FAQ Schema
+ * ✅ Interne Links Stadt ↔ Kanton
+ * ✅ Komplettpaket Block
+ * ✅ Preis-Range + Faktoren
+ * ✅ Local Tips
+ * ✅ Trust Layer / E-E-A-T Box
+ * ✅ Service Coverage
+ * ✅ "Warum sparen?" Block
+ * ✅ Conversion Module (Top + Mid + Bottom)
+ * ✅ Content Cluster Links
+ * ✅ Image Alt + LCP optimiert
+ * ✅ OpenGraph/Twitter
+ * ✅ Related Cities
+ * ✅ Glossar Mini-Abschnitt
+ * ✅ Anchor Navigation (Sitelinks-Potential)
  */
 
 import { useParams, useNavigate, Link } from "react-router-dom";
@@ -30,6 +45,16 @@ import {
   RegionNearby,
 } from "@/components/region-archetyp";
 
+// NEW SEO Components
+import { RegionBreadcrumb } from "@/components/region-archetyp/RegionBreadcrumb";
+import { RegionAnchorNav } from "@/components/region-archetyp/RegionAnchorNav";
+import { RegionTrustBox } from "@/components/region-archetyp/RegionTrustBox";
+import { RegionWhySave } from "@/components/region-archetyp/RegionWhySave";
+import { RegionKomplettpaket } from "@/components/region-archetyp/RegionKomplettpaket";
+import { RegionGlossar } from "@/components/region-archetyp/RegionGlossar";
+import { RegionContentCluster } from "@/components/region-archetyp/RegionContentCluster";
+import { RegionMidCTA } from "@/components/region-archetyp/RegionMidCTA";
+
 // Data Layer
 import { getRegionBySlug } from "@/data/regions-database";
 import { CITIES_MAP } from "@/data/locations";
@@ -46,7 +71,6 @@ const SERVICES_FOR_COMPONENT = [
 ];
 
 const RegionArchetypPage = () => {
-  // Support /umzugsfirmen/kanton-{slug} (via SlugResolver) and legacy /kanton/:slug routes
   const { slug } = useParams<{ slug?: string }>();
   const navigate = useNavigate();
   
@@ -116,7 +140,7 @@ const RegionArchetypPage = () => {
     `Entsorgung ${region.name}`,
   ];
 
-  // Schema.org structured data
+  // Schema.org structured data with HowTo Schema
   const schemaOrg = {
     "@context": "https://schema.org",
     "@graph": [
@@ -132,8 +156,8 @@ const RegionArchetypPage = () => {
       {
         "@type": "BreadcrumbList",
         "itemListElement": [
-          { "@type": "ListItem", "position": 1, "name": "Umzugsfirmen Schweiz", "item": "https://umzugscheck.ch/umzugsfirmen-schweiz" },
-          { "@type": "ListItem", "position": 2, "name": "Regionen", "item": "https://umzugscheck.ch/regionen" },
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://umzugscheck.ch" },
+          { "@type": "ListItem", "position": 2, "name": "Umzugsfirmen Schweiz", "item": "https://umzugscheck.ch/umzugsfirmen-schweiz" },
           { "@type": "ListItem", "position": 3, "name": `Kanton ${region.name}`, "item": canonicalUrl }
         ]
       },
@@ -153,13 +177,48 @@ const RegionArchetypPage = () => {
           "name": c.name
         }))
       },
-{
+      {
         "@type": "FAQPage",
         "mainEntity": region.faqs.map(faq => ({
           "@type": "Question",
           "name": faq.question,
           "acceptedAnswer": { "@type": "Answer", "text": faq.answer }
         }))
+      },
+      // NEW: HowTo Schema for "So bekommen Sie Offerten"
+      {
+        "@type": "HowTo",
+        "name": `So erhalten Sie Umzugsofferten in ${region.name}`,
+        "description": `Schritt-für-Schritt Anleitung für kostenlose Umzugsofferten im Kanton ${region.name}`,
+        "totalTime": "PT5M",
+        "estimatedCost": {
+          "@type": "MonetaryAmount",
+          "currency": "CHF",
+          "value": "0"
+        },
+        "step": [
+          {
+            "@type": "HowToStep",
+            "position": 1,
+            "name": "Umzugsdaten eingeben",
+            "text": "Geben Sie Ihre Umzugsdaten ein: Von wo nach wo, Wohnungsgrösse und gewünschtes Datum.",
+            "url": `${canonicalUrl}#offerten`
+          },
+          {
+            "@type": "HowToStep",
+            "position": 2,
+            "name": "Offerten vergleichen",
+            "text": "Erhalten Sie bis zu 5 unverbindliche Offerten von geprüften Umzugsfirmen in Ihrer Region.",
+            "url": `${canonicalUrl}#firmen`
+          },
+          {
+            "@type": "HowToStep",
+            "position": 3,
+            "name": "Beste Firma wählen",
+            "text": "Vergleichen Sie Preise, Leistungen und Bewertungen. Wählen Sie die beste Umzugsfirma für Ihren Umzug.",
+            "url": `${canonicalUrl}#firmen`
+          }
+        ]
       }
     ]
   };
@@ -203,11 +262,20 @@ const RegionArchetypPage = () => {
       </Helmet>
 
       <main>
+        {/* NEW: Breadcrumb UI */}
+        <RegionBreadcrumb 
+          regionName={region.name} 
+          regionType="canton" 
+        />
+
         {/* Zone 1: Above the Fold - Transaction Focus */}
         <RegionHero
           region={region}
           onRegionChange={handleRegionChange}
         />
+
+        {/* NEW: Anchor Navigation for Sitelinks */}
+        <RegionAnchorNav />
 
         {/* Sticky CTA Bar (mobile) */}
         <RegionStickyBar region={region} />
@@ -233,6 +301,8 @@ const RegionArchetypPage = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
+          id="firmen"
+          className="scroll-mt-20"
         >
           <RegionProviders
             companies={region.topCompanies}
@@ -259,19 +329,22 @@ const RegionArchetypPage = () => {
           />
         </motion.div>
 
+        {/* NEW: Komplettpaket Block */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <RegionGuarantees />
+          <RegionKomplettpaket regionName={region.name} />
         </motion.div>
 
-        {/* Zone 3: SEO Layer */}
+        {/* Zone 3: SEO Layer - Prices with ID for anchor */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
+          id="preise"
+          className="scroll-mt-20"
         >
           <RegionPriceTable
             prices={region.priceMatrix}
@@ -280,10 +353,25 @@ const RegionArchetypPage = () => {
           />
         </motion.div>
 
+        {/* NEW: Why Save Block */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
+        >
+          <RegionWhySave regionName={region.name} />
+        </motion.div>
+
+        {/* NEW: Mid-Page CTA */}
+        <RegionMidCTA regionName={region.name} />
+
+        {/* Local Tips with ID for anchor */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          id="tipps"
+          className="scroll-mt-20"
         >
           <RegionLocalTips
             tips={region.localTips}
@@ -303,6 +391,24 @@ const RegionArchetypPage = () => {
           />
         </motion.div>
 
+        {/* NEW: E-E-A-T Trust Box */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          <RegionTrustBox regionName={region.name} />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          <RegionGuarantees />
+        </motion.div>
+
+        {/* Cities & Internal Links Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -375,12 +481,33 @@ const RegionArchetypPage = () => {
           </section>
         </motion.div>
 
+        {/* NEW: Glossar */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
+          <RegionGlossar />
+        </motion.div>
+
+        {/* FAQ with ID for anchor */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          id="faq"
+          className="scroll-mt-20"
+        >
           <RegionFAQ faqs={region.faqs} regionName={region.name} />
+        </motion.div>
+
+        {/* NEW: Content Cluster Links */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          <RegionContentCluster regionName={region.name} regionSlug={region.slug} />
         </motion.div>
 
         <motion.div
@@ -394,8 +521,8 @@ const RegionArchetypPage = () => {
           />
         </motion.div>
 
-        {/* Final CTA Section */}
-        <section className="py-16 bg-primary text-primary-foreground">
+        {/* Final CTA Section with ID for anchor */}
+        <section id="offerten" className="py-16 bg-primary text-primary-foreground scroll-mt-20">
           <div className="container px-4 text-center">
             <h2 className="text-2xl md:text-3xl font-bold mb-4">
               Bereit für Ihren Umzug in {region.name}?
