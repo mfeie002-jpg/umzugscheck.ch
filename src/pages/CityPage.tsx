@@ -7,14 +7,15 @@ import { FAQAccordion } from "@/components/FAQAccordion";
 import { CTABlock } from "@/components/home/CTABlock";
 import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
-import { MiniCalculator } from "@/components/home/MiniCalculator";
 import { LiveSignal } from "@/components/common/LiveSignal";
 import { InternalLinkBlock } from "@/components/InternalLinkBlock";
 import { SEOHead } from "@/components/SEOHead";
 import { Navigation } from "@/components/Navigation";
 import { getCityData } from "@/data/cities-complete-fixed";
 import { useFullAnalytics } from "@/hooks/use-analytics";
-import { MapPin, Clock, Users } from "lucide-react";
+import { HeroQuickForm } from "@/components/common/HeroQuickForm";
+import { MapPin, Clock, Users, Star } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 /**
  * City Page Template
@@ -132,19 +133,66 @@ export const CityPage = () => {
         companies={topCompanies}
       />
 
-      {/* Hero */}
-      <StandardHero
-        h1={`Umzugsfirmen in ${cityData.name}`}
-        subtitle={`Vergleiche geprüfte lokale Umzugsfirmen in ${cityData.name} und erhalte kostenlose Offerten`}
-        ctaText={`Offerten in ${cityData.name} vergleichen`}
-        ctaLink="/umzugsofferten"
-        backgroundImage="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1920&q=80&auto=format&fit=crop"
-      >
-        <MiniCalculator />
-        <div className="mt-6">
-          <LiveSignal />
+      {/* Hero with Quick Form */}
+      <section className="relative py-12 sm:py-20 overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1920&q=80&auto=format&fit=crop"
+            alt={`Umzug in ${cityData.name}`}
+            className="w-full h-full object-cover"
+            loading="eager"
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/60 to-black/50" />
         </div>
-      </StandardHero>
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            {/* Left: Text Content */}
+            <div className="text-white text-center lg:text-left">
+              <Badge className="mb-4 bg-white/20 text-white border-white/30">
+                <MapPin className="w-3 h-3 mr-1" />
+                {cityData.name}, {cityData.canton}
+              </Badge>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
+                Umzugsfirmen in {cityData.name}
+              </h1>
+              <p className="text-lg text-white/90 mb-6 max-w-xl mx-auto lg:mx-0">
+                {cityData.description}
+              </p>
+              
+              {/* Stats */}
+              <div className="flex flex-wrap justify-center lg:justify-start gap-4 mb-6">
+                <div className="bg-white/10 backdrop-blur rounded-lg px-4 py-2 text-center">
+                  <div className="text-xl font-bold flex items-center gap-1">
+                    4.8 <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                  </div>
+                  <div className="text-xs text-white/70">Bewertung</div>
+                </div>
+                <div className="bg-white/10 backdrop-blur rounded-lg px-4 py-2 text-center">
+                  <div className="text-xl font-bold">25+</div>
+                  <div className="text-xs text-white/70">Firmen</div>
+                </div>
+                <div className="bg-white/10 backdrop-blur rounded-lg px-4 py-2 text-center">
+                  <div className="text-sm font-bold">{cityData.priceExamples[1]?.priceRange || "CHF 1'200–1'800"}</div>
+                  <div className="text-xs text-white/70">3-Zi. Umzug</div>
+                </div>
+              </div>
+              
+              <div className="mt-4">
+                <LiveSignal />
+              </div>
+            </div>
+            
+            {/* Right: Quick Form */}
+            <div className="lg:max-w-md lg:ml-auto">
+              <HeroQuickForm 
+                prefilledFrom={cityData.mainPostalCode}
+                placeName={cityData.name}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Top Companies */}
       <section className="py-16 md:py-20 bg-background">
