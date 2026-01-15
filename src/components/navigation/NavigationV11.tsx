@@ -3,6 +3,7 @@
  * 
  * 6 Hauptpunkte: Umzug, Umzugsreinigung, Weitere Services, Ratgeber, So funktioniert's + CTA
  * Mit verstärkten Trust Signals, Emotionen und menschlichem Touch
+ * Animierte Submenus mit framer-motion
  */
 
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,7 @@ import { Link } from "react-router-dom";
 import { Logo } from "@/components/Logo";
 import { cn } from "@/lib/utils";
 import { MobileMenuV11 } from "./MobileMenuV11";
+import { motion, AnimatePresence } from "framer-motion";
 
 type DropdownType = 'umzug' | 'reinigung' | 'services' | 'ratgeber' | 'wie-es-funktioniert' | null;
 
@@ -24,12 +26,36 @@ const TRUST_STATS = {
   happyCustomers: "15'000+",
 };
 
-// Real customer testimonials for social proof
-const MINI_TESTIMONIALS = [
-  { name: "Sarah M.", text: "Super schnell und unkompliziert!", city: "Zürich" },
-  { name: "Thomas B.", text: "Endlich stressfrei umgezogen!", city: "Bern" },
-  { name: "Lisa K.", text: "Sehr empfehlenswert!", city: "Basel" },
-];
+// Animation variants for dropdown
+const dropdownVariants = {
+  hidden: { 
+    opacity: 0, 
+    y: -8,
+    transition: { duration: 0.15 }
+  },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { 
+      duration: 0.2,
+      staggerChildren: 0.03
+    }
+  },
+  exit: { 
+    opacity: 0, 
+    y: -8,
+    transition: { duration: 0.15 }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, x: -10 },
+  visible: { 
+    opacity: 1, 
+    x: 0,
+    transition: { duration: 0.2 }
+  }
+};
 
 export const NavigationV11 = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -82,7 +108,7 @@ export const NavigationV11 = () => {
       )}
     >
       {children}
-      <ChevronDown className={cn("w-4 h-4 transition-transform", activeDropdown === dropdown && "rotate-180")} />
+      <ChevronDown className={cn("w-4 h-4 transition-transform duration-200", activeDropdown === dropdown && "rotate-180")} />
     </button>
   );
 
@@ -204,23 +230,25 @@ export const NavigationV11 = () => {
           </div>
         </div>
 
-        {/* Dropdowns */}
-        {activeDropdown === 'services' && (
-          <ServicesDropdownV11 
-            isOpen={true} 
-            onClose={closeAllDropdowns}
-            onMouseEnter={() => handleMouseEnter('services')}
-            onMouseLeave={handleMouseLeave}
-          />
-        )}
-        {activeDropdown === 'ratgeber' && (
-          <RatgeberDropdownV11 
-            isOpen={true} 
-            onClose={closeAllDropdowns}
-            onMouseEnter={() => handleMouseEnter('ratgeber')}
-            onMouseLeave={handleMouseLeave}
-          />
-        )}
+        {/* Animated Dropdowns */}
+        <AnimatePresence mode="wait">
+          {activeDropdown === 'services' && (
+            <ServicesDropdownV11 
+              isOpen={true} 
+              onClose={closeAllDropdowns}
+              onMouseEnter={() => handleMouseEnter('services')}
+              onMouseLeave={handleMouseLeave}
+            />
+          )}
+          {activeDropdown === 'ratgeber' && (
+            <RatgeberDropdownV11 
+              isOpen={true} 
+              onClose={closeAllDropdowns}
+              onMouseEnter={() => handleMouseEnter('ratgeber')}
+              onMouseLeave={handleMouseLeave}
+            />
+          )}
+        </AnimatePresence>
       </nav>
 
       {/* Mobile Menu */}
@@ -232,7 +260,7 @@ export const NavigationV11 = () => {
   );
 };
 
-// Enhanced Services Dropdown with more emotion and trust
+// Enhanced Services Dropdown with animation and emotion
 const ServicesDropdownV11 = ({ 
   isOpen, 
   onClose, 
@@ -247,58 +275,77 @@ const ServicesDropdownV11 = ({
   if (!isOpen) return null;
   
   const services = [
-    { title: "Entsorgung & Räumung", description: "Umweltgerechte Entsorgung Ihres Hausrats", href: "/dienstleistungen/entsorgung", emoji: "♻️" },
-    { title: "Lagerung", description: "Temporäre Einlagerung von Möbeln", href: "/dienstleistungen/einlagerung", emoji: "📦" },
-    { title: "Möbelmontage", description: "Ab- und Aufbau-Service für Möbel", href: "/moebelmontage", emoji: "🔧" },
-    { title: "Firmenumzug", description: "Professionelle Büro- & Geschäftsumzüge", href: "/dienstleistungen/firmenumzug", emoji: "🏢" },
-    { title: "Möbellift", description: "Aussenaufzug für schwere Möbel", href: "/dienstleistungen/moebellift", emoji: "🏗️" },
-    { title: "Packservice", description: "Professionelles Ein- und Auspacken", href: "/services/packservice", emoji: "📋" },
+    { title: "Entsorgung & Räumung", description: "Umweltgerechte Entsorgung deines Hausrats", href: "/dienstleistungen/entsorgung", emoji: "♻️", color: "from-emerald-500/20 to-emerald-500/5" },
+    { title: "Lagerung", description: "Temporäre Einlagerung von Möbeln", href: "/dienstleistungen/einlagerung", emoji: "📦", color: "from-blue-500/20 to-blue-500/5" },
+    { title: "Möbelmontage", description: "Ab- und Aufbau-Service für Möbel", href: "/moebelmontage", emoji: "🔧", color: "from-orange-500/20 to-orange-500/5" },
+    { title: "Firmenumzug", description: "Professionelle Büro- & Geschäftsumzüge", href: "/dienstleistungen/firmenumzug", emoji: "🏢", color: "from-purple-500/20 to-purple-500/5" },
+    { title: "Möbellift", description: "Aussenaufzug für schwere Möbel", href: "/dienstleistungen/moebellift", emoji: "🏗️", color: "from-amber-500/20 to-amber-500/5" },
+    { title: "Packservice", description: "Professionelles Ein- und Auspacken", href: "/services/packservice", emoji: "📋", color: "from-rose-500/20 to-rose-500/5" },
   ];
 
   return (
-    <div 
-      className="absolute left-0 right-0 bg-background border-b border-border shadow-xl"
+    <motion.div 
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+      variants={dropdownVariants}
+      className="absolute left-0 right-0 bg-background/98 backdrop-blur-sm border-b border-border shadow-2xl"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
       <div className="container mx-auto px-4 lg:px-6 py-6">
         <div className="grid lg:grid-cols-[1fr_320px] gap-8">
-          {/* Services List */}
+          {/* Services List with staggered animation */}
           <div>
-            <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-4 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-primary" />
+            <motion.h3 
+              variants={itemVariants}
+              className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-4 flex items-center gap-2"
+            >
+              <Sparkles className="w-4 h-4 text-primary animate-pulse" />
               Weitere Services
-            </h3>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2">
-              {services.map((service) => (
-                <Link
+              <span className="text-[10px] font-normal normal-case text-primary/80 ml-2">— Alles für deinen Umzug</span>
+            </motion.h3>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {services.map((service, index) => (
+                <motion.div
                   key={service.href}
-                  to={service.href}
-                  onClick={onClose}
-                  className="group p-3 rounded-xl hover:bg-gradient-to-br hover:from-accent hover:to-accent/50 transition-all duration-200 border border-transparent hover:border-border hover:shadow-sm"
+                  variants={itemVariants}
+                  custom={index}
                 >
-                  <div className="flex items-start gap-3">
-                    <span className="text-xl">{service.emoji}</span>
-                    <div>
-                      <p className="font-medium text-foreground group-hover:text-primary transition-colors">
-                        {service.title}
-                      </p>
-                      <p className="text-sm text-muted-foreground mt-0.5">
-                        {service.description}
-                      </p>
+                  <Link
+                    to={service.href}
+                    onClick={onClose}
+                    className={cn(
+                      "group p-4 rounded-xl transition-all duration-300 border border-transparent",
+                      "hover:border-border hover:shadow-lg hover:scale-[1.02]",
+                      `bg-gradient-to-br ${service.color} hover:from-accent hover:to-accent/50`
+                    )}
+                  >
+                    <div className="flex items-start gap-3">
+                      <span className="text-2xl group-hover:scale-110 transition-transform duration-300">{service.emoji}</span>
+                      <div>
+                        <p className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                          {service.title}
+                        </p>
+                        <p className="text-sm text-muted-foreground mt-0.5">
+                          {service.description}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </Link>
+                  </Link>
+                </motion.div>
               ))}
             </div>
-            <Link
-              to="/dienstleistungen"
-              onClick={onClose}
-              className="inline-flex items-center gap-2 mt-4 text-sm font-semibold text-primary hover:underline"
-            >
-              Alle Services anzeigen
-              <ArrowRight className="w-4 h-4" />
-            </Link>
+            <motion.div variants={itemVariants}>
+              <Link
+                to="/dienstleistungen"
+                onClick={onClose}
+                className="inline-flex items-center gap-2 mt-5 text-sm font-semibold text-primary hover:underline group"
+              >
+                Alle Services anzeigen
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </motion.div>
           </div>
 
           {/* CTA Card with Human Touch */}
@@ -363,11 +410,11 @@ const ServicesDropdownV11 = ({
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
-// Enhanced Ratgeber Dropdown with more emotion
+// Enhanced Ratgeber Dropdown with animation and emotion
 const RatgeberDropdownV11 = ({ 
   isOpen, 
   onClose,
@@ -382,68 +429,87 @@ const RatgeberDropdownV11 = ({
   if (!isOpen) return null;
   
   const guides = [
-    { title: "Umzugs-Checkliste (PDF)", description: "Alle To-dos zum Download", href: "/ratgeber/umzugscheckliste-download", featured: true, emoji: "📋" },
-    { title: "Tipps & Tricks", description: "Spartipps, Packhilfen & mehr", href: "/ratgeber/tipps", emoji: "💡" },
-    { title: "Kosten & Preise", description: "Was kostet ein Umzug wirklich?", href: "/ratgeber/kosten", emoji: "💰" },
-    { title: "Wohnungsübergabe", description: "Protokoll & Abnahme-Tipps", href: "/ratgeber/wohnungsabgabe", emoji: "🔑" },
+    { title: "Umzugs-Checkliste (PDF)", description: "Alle To-dos zum Download", href: "/ratgeber/umzugscheckliste-download", featured: true, emoji: "📋", color: "from-primary/20 to-primary/5" },
+    { title: "Tipps & Tricks", description: "Spartipps, Packhilfen & mehr", href: "/ratgeber/tipps", emoji: "💡", color: "from-yellow-500/20 to-yellow-500/5" },
+    { title: "Kosten & Preise", description: "Was kostet ein Umzug wirklich?", href: "/ratgeber/kosten", emoji: "💰", color: "from-emerald-500/20 to-emerald-500/5" },
+    { title: "Wohnungsübergabe", description: "Protokoll & Abnahme-Tipps", href: "/ratgeber/wohnungsabgabe", emoji: "🔑", color: "from-purple-500/20 to-purple-500/5" },
   ];
 
   return (
-    <div 
-      className="absolute left-0 right-0 bg-background border-b border-border shadow-xl"
+    <motion.div 
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+      variants={dropdownVariants}
+      className="absolute left-0 right-0 bg-background/98 backdrop-blur-sm border-b border-border shadow-2xl"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
       <div className="container mx-auto px-4 lg:px-6 py-6">
         <div className="grid lg:grid-cols-[1fr_320px] gap-8">
-          {/* Guides List */}
+          {/* Guides List with animation */}
           <div>
-            <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-4 flex items-center gap-2">
-              <Heart className="w-4 h-4 text-rose-500" />
+            <motion.h3 
+              variants={itemVariants}
+              className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-4 flex items-center gap-2"
+            >
+              <Heart className="w-4 h-4 text-rose-500 animate-pulse" />
               Ratgeber & Tipps
-            </h3>
-            <div className="grid sm:grid-cols-2 gap-2">
-              {guides.map((guide) => (
-                <Link
+              <span className="text-[10px] font-normal normal-case text-rose-500/80 ml-2">— Von Profis für dich</span>
+            </motion.h3>
+            <div className="grid sm:grid-cols-2 gap-3">
+              {guides.map((guide, index) => (
+                <motion.div
                   key={guide.href}
-                  to={guide.href}
-                  onClick={onClose}
-                  className={cn(
-                    "group p-4 rounded-xl transition-all duration-200 border",
-                    guide.featured 
-                      ? "bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20 hover:border-primary/40" 
-                      : "bg-accent/30 border-transparent hover:bg-accent hover:border-border"
-                  )}
+                  variants={itemVariants}
+                  custom={index}
                 >
-                  <div className="flex items-center gap-2">
-                    <span className="text-xl">{guide.emoji}</span>
-                    <p className="font-medium text-foreground group-hover:text-primary transition-colors">
-                      {guide.title}
-                    </p>
-                    {guide.featured && (
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary text-primary-foreground font-bold">
-                        TOP
-                      </span>
+                  <Link
+                    to={guide.href}
+                    onClick={onClose}
+                    className={cn(
+                      "group p-4 rounded-xl transition-all duration-300 border",
+                      "hover:shadow-lg hover:scale-[1.02]",
+                      guide.featured 
+                        ? `bg-gradient-to-br ${guide.color} border-primary/20 hover:border-primary/40` 
+                        : `bg-gradient-to-br ${guide.color} border-transparent hover:border-border`
                     )}
-                  </div>
-                  <p className="text-sm text-muted-foreground mt-1 ml-8">
-                    {guide.description}
-                  </p>
-                </Link>
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="text-2xl group-hover:scale-110 transition-transform duration-300">{guide.emoji}</span>
+                      <p className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                        {guide.title}
+                      </p>
+                      {guide.featured && (
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary text-primary-foreground font-bold animate-pulse">
+                          TOP
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-1 ml-9">
+                      {guide.description}
+                    </p>
+                  </Link>
+                </motion.div>
               ))}
             </div>
-            <Link
-              to="/ratgeber"
-              onClick={onClose}
-              className="inline-flex items-center gap-2 mt-4 text-sm font-semibold text-primary hover:underline"
-            >
-              Alle Ratgeber
-              <ArrowRight className="w-4 h-4" />
-            </Link>
+            <motion.div variants={itemVariants}>
+              <Link
+                to="/ratgeber"
+                onClick={onClose}
+                className="inline-flex items-center gap-2 mt-5 text-sm font-semibold text-primary hover:underline group"
+              >
+                Alle Ratgeber
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </motion.div>
           </div>
 
           {/* CTA Card with Social Proof */}
-          <div className="bg-gradient-to-br from-accent via-accent/80 to-background rounded-2xl p-6 border border-border relative overflow-hidden">
+          <motion.div 
+            variants={itemVariants}
+            className="bg-gradient-to-br from-accent via-accent/80 to-background rounded-2xl p-6 border border-border relative overflow-hidden"
+          >
             {/* Decorative elements */}
             <div className="absolute top-0 right-0 w-20 h-20 bg-yellow-500/10 rounded-full blur-2xl" />
             
@@ -488,16 +554,17 @@ const RatgeberDropdownV11 = ({
                 </p>
               </div>
 
-              <Button asChild variant="outline" className="w-full border-primary/30 hover:bg-primary/5">
+              <Button asChild variant="outline" className="w-full border-primary/30 hover:bg-primary/5 group">
                 <Link to="/ratgeber/umzugscheckliste-download" onClick={onClose}>
                   📋 Checkliste herunterladen
+                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </Button>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
