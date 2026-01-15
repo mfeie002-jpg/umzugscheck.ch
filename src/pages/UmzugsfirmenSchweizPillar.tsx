@@ -104,7 +104,7 @@ const UmzugsfirmenSchweizPillar = () => {
           "@type": "ListItem",
           "position": i + 1,
           "name": `Umzugsfirmen ${canton.name}`,
-          "url": `https://umzugscheck.ch/umzugsfirmen/${canton.slug}`
+          "url": `https://umzugscheck.ch/umzugsfirmen/kanton-${canton.slug}`
         }))
       },
       {
@@ -391,7 +391,7 @@ const CantonCard = ({ canton, position = 0, onTrack }: CantonCardProps) => {
   };
 
   return (
-    <Link to={`/umzugsfirmen/${canton.slug}`} onClick={handleClick}>
+    <Link to={`/umzugsfirmen/kanton-${canton.slug}`} onClick={handleClick}>
       <Card className="h-full hover:border-primary/50 hover:shadow-md transition-all group cursor-pointer">
         <CardContent className="p-4">
           <div className="flex items-start justify-between mb-2">

@@ -49,7 +49,7 @@ export const RegionNearby = memo(({ nearbyRegions, currentRegion }: RegionNearby
               transition={{ delay: index * 0.05 }}
             >
               <Link
-                to={`/umzugsfirmen/${region!.slug}`}
+                to={`/umzugsfirmen/kanton-${region!.slug}`}
                 className="inline-flex items-center gap-2 bg-card border border-border rounded-full px-4 py-2 text-sm font-medium hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all"
               >
                 <MapPin className="w-4 h-4" />

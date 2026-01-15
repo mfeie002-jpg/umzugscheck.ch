@@ -1081,7 +1081,7 @@ const createDefaultRegion = (canton: Canton): RegionData => ({
     title: `Umzugsfirmen ${canton.name} vergleichen | Bis 40% sparen | Umzugscheck`,
     description: `Vergleichen Sie geprüfte Umzugsfirmen in ${canton.name}. Kostenlose Offerten in 24h. Bis zu 40% sparen.`,
     h1: `Umzugsfirmen ${canton.name} – Jetzt gratis vergleichen`,
-    canonicalUrl: `/umzugsfirmen/${canton.slug}`,
+    canonicalUrl: `/umzugsfirmen/kanton-${canton.slug}`,
   },
   stats: {
     providerCount: 20,

@@ -100,10 +100,10 @@ export const EnhancedFooter = () => {
           <div>
             <h4 className="font-bold text-foreground mb-4">Regionen</h4>
             <ul className="space-y-3 text-sm">
-              <li><Link to="/zug" className="text-muted-foreground hover:text-primary transition-colors">Umzug Zug</Link></li>
-              <li><Link to="/zuerich/umzugsfirmen" className="text-muted-foreground hover:text-primary transition-colors">Umzug Zürich</Link></li>
-              <li><Link to="/bern/umzugsfirmen" className="text-muted-foreground hover:text-primary transition-colors">Umzug Bern</Link></li>
-              <li><Link to="/basel/umzugsfirmen" className="text-muted-foreground hover:text-primary transition-colors">Umzug Basel</Link></li>
+              <li><Link to="/umzugsfirmen/zug" className="text-muted-foreground hover:text-primary transition-colors">Umzug Zug</Link></li>
+              <li><Link to="/umzugsfirmen/zuerich" className="text-muted-foreground hover:text-primary transition-colors">Umzug Zürich</Link></li>
+              <li><Link to="/umzugsfirmen/bern" className="text-muted-foreground hover:text-primary transition-colors">Umzug Bern</Link></li>
+              <li><Link to="/umzugsfirmen/basel" className="text-muted-foreground hover:text-primary transition-colors">Umzug Basel</Link></li>
               <li><Link to="/regionen" className="text-muted-foreground hover:text-primary transition-colors">Alle Kantone</Link></li>
             </ul>
           </div>

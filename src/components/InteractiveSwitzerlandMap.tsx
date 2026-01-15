@@ -67,7 +67,7 @@ export const InteractiveSwitzerlandMap = () => {
 
   const handleNavigate = () => {
     if (selectedCanton) {
-      navigate(`/umzugsfirmen/${selectedCanton.slug}`);
+      navigate(`/umzugsfirmen/kanton-${selectedCanton.slug}`);
     }
   };
 

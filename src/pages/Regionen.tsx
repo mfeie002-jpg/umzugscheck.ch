@@ -213,7 +213,7 @@ const Regionen = () => {
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredCantons.map((canton, index) => (
                 <ScrollReveal key={canton.slug} delay={index * 0.02}>
-                  <Link to={`/umzugsfirmen/${canton.slug}`}>
+                  <Link to={`/umzugsfirmen/kanton-${canton.slug}`}>
                     <Card variant="elevated" className="p-6 hover-lift border-2 hover:border-primary/30 h-full">
                       <div className="flex items-start gap-4 mb-4">
                         <div className="w-12 h-12 rounded-xl gradient-hero flex items-center justify-center flex-shrink-0">

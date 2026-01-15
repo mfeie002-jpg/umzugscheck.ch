@@ -142,9 +142,11 @@ const LegacyCityServiceRedirect = lazy(() => import("./pages/LegacyCityServiceRe
 const RegionalOfferten = lazy(() => import("./pages/RegionalOfferten"));
 // NEW: Unified region page replacing 24+ individual canton pages
 const RegionArchetypPage = lazy(() => import("./pages/region/RegionArchetypPage"));
+// NEW: Slug resolver for city vs canton separation
+const SlugResolverPage = lazy(() => import("./pages/SlugResolverPage"));
 
-// Canton pages - REMOVED: Now handled by RegionArchetypPage
-// All 26 canton pages consolidated into single dynamic route
+// Canton pages - REMOVED: Now handled by RegionArchetypPage via /umzugsfirmen/kanton-:slug
+// City pages handled by SlugResolverPage -> CityMovers at /umzugsfirmen/:citySlug
 
 // Blog/Content pages
 const Blog = lazy(() => import("./pages/Blog"));
@@ -491,8 +493,10 @@ const AppRouterContent = () => {
           {/* All canton/region pages now use the unified RegionArchetypPage */}
           {/* Legacy V1 variant for Zürich testing */}
           <Route path="/umzugsfirmen/zuerich/v1" element={<ZuerichV1Landing />} />
-          {/* Dynamic region route - handles all 26 cantons + cities */}
-          <Route path="/umzugsfirmen/:slug" element={<RegionArchetypPage />} />
+          
+          {/* CANONICAL ROUTES - Stadt/Kanton Trennung */}
+          {/* SlugResolver handles: kanton-{slug} -> RegionArchetypPage, cities -> CityMovers, pure cantons -> redirect */}
+          <Route path="/umzugsfirmen/:slug" element={<SlugResolverPage />} />
           <Route path="/firmen/:id" element={<CompanyProfile />} />
           <Route path="/firma/:slug" element={<CompanyProfile />} />
           <Route path="/vergleichen" element={<Compare />} />
