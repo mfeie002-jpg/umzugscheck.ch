@@ -3603,6 +3603,116 @@ export type Database = {
         }
         Relationships: []
       }
+      url_change_history: {
+        Row: {
+          after_state: Json | null
+          before_state: Json | null
+          change_date: string
+          change_description: string
+          change_type: string
+          changed_by: string | null
+          id: string
+          impact_notes: string | null
+          url_id: string
+        }
+        Insert: {
+          after_state?: Json | null
+          before_state?: Json | null
+          change_date?: string
+          change_description: string
+          change_type: string
+          changed_by?: string | null
+          id?: string
+          impact_notes?: string | null
+          url_id: string
+        }
+        Update: {
+          after_state?: Json | null
+          before_state?: Json | null
+          change_date?: string
+          change_description?: string
+          change_type?: string
+          changed_by?: string | null
+          id?: string
+          impact_notes?: string | null
+          url_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "url_change_history_url_id_fkey"
+            columns: ["url_id"]
+            isOneToOne: false
+            referencedRelation: "url_tracking"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      url_tracking: {
+        Row: {
+          conversion_potential: string | null
+          created_at: string
+          estimated_search_volume: number | null
+          funnel_role: string | null
+          h1_tag: string | null
+          id: string
+          last_reviewed_at: string | null
+          meta_description: string | null
+          meta_title: string | null
+          notes: string | null
+          optimization_score: number | null
+          page_type: string
+          primary_keyword: string | null
+          reviewed_by: string | null
+          search_intent: string | null
+          secondary_keywords: string[] | null
+          status: string
+          updated_at: string
+          url_path: string
+        }
+        Insert: {
+          conversion_potential?: string | null
+          created_at?: string
+          estimated_search_volume?: number | null
+          funnel_role?: string | null
+          h1_tag?: string | null
+          id?: string
+          last_reviewed_at?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
+          notes?: string | null
+          optimization_score?: number | null
+          page_type: string
+          primary_keyword?: string | null
+          reviewed_by?: string | null
+          search_intent?: string | null
+          secondary_keywords?: string[] | null
+          status?: string
+          updated_at?: string
+          url_path: string
+        }
+        Update: {
+          conversion_potential?: string | null
+          created_at?: string
+          estimated_search_volume?: number | null
+          funnel_role?: string | null
+          h1_tag?: string | null
+          id?: string
+          last_reviewed_at?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
+          notes?: string | null
+          optimization_score?: number | null
+          page_type?: string
+          primary_keyword?: string | null
+          reviewed_by?: string | null
+          search_intent?: string | null
+          secondary_keywords?: string[] | null
+          status?: string
+          updated_at?: string
+          url_path?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string | null
