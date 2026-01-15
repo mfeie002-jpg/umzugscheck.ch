@@ -6,7 +6,7 @@
  * Switch via URL: ?nav=ultimate | ?nav=variant-b | ?nav=variant-c | ?nav=variant-d | ?nav=variant-e
  */
 
-export type NavVariant = 'ultimate' | 'variant-b' | 'variant-c' | 'variant-d' | 'variant-e' | 'variant-f' | 'variant-g' | 'variant-h' | 'variant-i' | 'variant-j' | 'variant-k' | 'variant-l' | 'variant-m' | 'variant-n' | 'variant-o';
+export type NavVariant = 'ultimate' | 'variant-b' | 'variant-c' | 'variant-d' | 'variant-e' | 'variant-f' | 'variant-g' | 'variant-h' | 'variant-i' | 'variant-j' | 'variant-k' | 'variant-l' | 'variant-m' | 'variant-n' | 'variant-o' | 'variant-p';
 
 export interface NavConfig {
   id: NavVariant;
@@ -627,6 +627,45 @@ export const VARIANT_O: NavConfig = {
   },
 };
 
+// ============================================
+// VARIANTE 16: SEO-Optimiert 2026
+// 5 Hauptsektionen mit detaillierten Submenüs, Context-Aware CTA
+// ============================================
+export const VARIANT_P: NavConfig = {
+  id: 'variant-p',
+  name: '16. SEO-Optimiert 2026',
+  description: '5 Sektionen: Umzug planen, Umzugsfirmen, Services, Ratgeber, So funktioniert\'s – SEO-fokussiert mit Microcopy',
+  labels: {
+    preisrechner: 'Umzug planen',
+    firmen: 'Umzugsfirmen',
+    services: 'Services',
+    ratgeber: 'Ratgeber',
+    fuerFirmen: 'So funktioniert\'s',
+    cta: 'Offerten erhalten',
+  },
+  microcopy: {
+    preisrechner: 'Tools, Tipps & Rechner für deinen Zügeltag',
+    firmen: '200+ geprüfte Partner – Umzugsfirma finden & sparen',
+    services: 'Rundum-Service: Reinigung, Lagerung, Entsorgung & mehr',
+    ratgeber: 'Tipps & Tricks für einen stressfreien Umzug',
+    fuerFirmen: 'Stressfrei in 3 Schritten – so funktioniert Umzugscheck',
+  },
+  dropdownTitles: {
+    preisrechner: 'UMZUG PLANEN',
+    firmen: 'UMZUGSFIRMEN',
+    services: 'SERVICES',
+    ratgeber: 'RATGEBER',
+    fuerFirmen: 'SO FUNKTIONIERT\'S',
+  },
+  ctaCard: {
+    preisrechner: { title: 'Bereit für den nächsten Schritt?', buttonText: 'Gratis Offerten holen' },
+    firmen: { title: '200+ geprüfte Partner', buttonText: 'Offerten anfordern' },
+    services: { title: 'Rundum sorglos', buttonText: 'Offerten erhalten' },
+    ratgeber: { title: 'Umzug jetzt starten', buttonText: 'Jetzt Offerten erhalten' },
+    fuerFirmen: { title: 'In 3 Schritten zum Umzug', buttonText: 'Jetzt starten' },
+  },
+};
+
 // Alle Varianten
 export const NAV_VARIANTS: NavConfig[] = [
   VARIANT_ULTIMATE,
@@ -644,6 +683,7 @@ export const NAV_VARIANTS: NavConfig[] = [
   VARIANT_M,
   VARIANT_N,
   VARIANT_O,
+  VARIANT_P,
 ];
 
 // Aktive Variante aus localStorage oder URL
