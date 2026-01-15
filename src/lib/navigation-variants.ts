@@ -6,7 +6,7 @@
  * Switch via URL: ?nav=ultimate | ?nav=variant-b | ?nav=variant-c | ?nav=variant-d | ?nav=variant-e
  */
 
-export type NavVariant = 'ultimate' | 'variant-b' | 'variant-c' | 'variant-d' | 'variant-e' | 'variant-f' | 'variant-g' | 'variant-h' | 'variant-i' | 'variant-j' | 'variant-k';
+export type NavVariant = 'ultimate' | 'variant-b' | 'variant-c' | 'variant-d' | 'variant-e' | 'variant-f' | 'variant-g' | 'variant-h' | 'variant-i' | 'variant-j' | 'variant-k' | 'variant-l';
 
 export interface NavConfig {
   id: NavVariant;
@@ -471,6 +471,45 @@ export const VARIANT_K: NavConfig = {
   },
 };
 
+// ============================================
+// VARIANTE 12: Optimiert (Best-of-Breed)
+// ChatGPT Empfehlung: V10 Basis + Verbesserungen
+// ============================================
+export const VARIANT_L: NavConfig = {
+  id: 'variant-l',
+  name: '12. Optimiert (Best-of-Breed)',
+  description: 'V10 Basis + Benefit-Sublines + visuelle Trennung',
+  labels: {
+    preisrechner: 'Preise berechnen',
+    firmen: 'Umzugsfirma finden',
+    services: 'Reinigung & Services',
+    ratgeber: 'Checklisten & Ratgeber',
+    fuerFirmen: 'Für Anbieter',
+    cta: 'Gratis Offerten',
+  },
+  microcopy: {
+    preisrechner: 'In 2 Minuten zum Richtpreis & Gratis-Offerten.',
+    firmen: 'Geprüfte Firmen in deiner Region. Bis zu 40% sparen.',
+    services: 'Mit Abnahmegarantie, Lagerung & Entsorgung.',
+    ratgeber: 'Zeitpläne, Spartipps und Vorlagen zum Download.',
+    fuerFirmen: 'Partner werden, Leads erhalten, Dashboard nutzen.',
+  },
+  dropdownTitles: {
+    preisrechner: 'PREISE BERECHNEN',
+    firmen: 'UMZUGSFIRMA FINDEN',
+    services: 'REINIGUNG & SERVICES',
+    ratgeber: 'CHECKLISTEN & RATGEBER',
+    fuerFirmen: 'FÜR ANBIETER',
+  },
+  ctaCard: {
+    preisrechner: { title: 'Kostenlos & unverbindlich', buttonText: 'Preisrechner starten' },
+    firmen: { title: '3–5 Offerten in 24–48h', buttonText: 'Gratis Offerten' },
+    services: { title: 'Mit Abnahmegarantie', buttonText: 'Offerten erhalten' },
+    ratgeber: { title: 'Kurz lesen. Dann Offerten.', buttonText: 'Checkliste herunterladen' },
+    fuerFirmen: { title: 'Mehr Anfragen. Weniger Leerstand.', buttonText: 'Kostenlos registrieren' },
+  },
+};
+
 // Alle Varianten
 export const NAV_VARIANTS: NavConfig[] = [
   VARIANT_ULTIMATE,
@@ -484,6 +523,7 @@ export const NAV_VARIANTS: NavConfig[] = [
   VARIANT_I,
   VARIANT_J,
   VARIANT_K,
+  VARIANT_L,
 ];
 
 // Aktive Variante aus localStorage oder URL
