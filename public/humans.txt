@@ -1,0 +1,16 @@
+/* TEAM */
+Company: Umzugscheck GmbH
+Site: https://umzugscheck.ch
+Location: Zürich, Switzerland
+
+/* THANKS */
+Framework: React + Vite + TypeScript
+UI: Tailwind CSS + shadcn/ui
+Backend: Supabase
+Built with: Lovable.dev
+
+/* SITE */
+Last update: 2026-01-15
+Language: German (de-CH)
+Standards: HTML5, CSS3, ES2020
+Platform: Swiss Moving Comparison

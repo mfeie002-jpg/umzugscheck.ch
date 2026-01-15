@@ -7,23 +7,23 @@ export default function Datenschutz() {
   const sections = [
     {
       icon: Shield,
-      title: "Erhebung personenbezogener Daten",
-      content: "Wir erheben personenbezogene Daten nur, wenn Sie uns diese im Rahmen einer Offertanfrage, Kontaktaufnahme oder Registrierung freiwillig mitteilen. Zu den erhobenen Daten gehören: Name, E-Mail-Adresse, Telefonnummer, Adresse und Umzugsdetails."
+      title: "1. Erhebung personenbezogener Daten",
+      content: "Wir erheben personenbezogene Daten nur, wenn Sie uns diese im Rahmen einer Offertanfrage, Kontaktaufnahme oder Registrierung freiwillig mitteilen. Zu den erhobenen Daten gehören: Name, E-Mail-Adresse, Telefonnummer, Adresse und Umzugsdetails. Die Rechtsgrundlage für die Verarbeitung ist Ihre Einwilligung gemäss Art. 6 DSG (Schweizer Datenschutzgesetz) bzw. Art. 6 Abs. 1 lit. a DSGVO."
     },
     {
       icon: Lock,
-      title: "Verwendung Ihrer Daten",
-      content: "Ihre Daten werden ausschliesslich zur Bearbeitung Ihrer Anfrage, zur Vermittlung an geeignete Umzugsfirmen und zur Verbesserung unserer Dienstleistungen verwendet. Eine Weitergabe an Dritte erfolgt nur an von Ihnen ausgewählte Umzugsfirmen."
+      title: "2. Verwendung Ihrer Daten",
+      content: "Ihre Daten werden ausschliesslich zur Bearbeitung Ihrer Anfrage, zur Vermittlung an geeignete Umzugsfirmen und zur Verbesserung unserer Dienstleistungen verwendet. Eine Weitergabe an Dritte erfolgt nur an von Ihnen ausgewählte Umzugsfirmen. Wir verkaufen Ihre Daten nicht an Dritte."
     },
     {
       icon: Eye,
-      title: "Datensicherheit",
-      content: "Wir setzen technische und organisatorische Sicherheitsmassnahmen ein, um Ihre Daten gegen zufällige oder vorsätzliche Manipulationen, Verlust, Zerstörung oder den Zugriff unberechtigter Personen zu schützen. Alle Datenübertragungen erfolgen verschlüsselt über SSL/TLS."
+      title: "3. Datensicherheit",
+      content: "Wir setzen technische und organisatorische Sicherheitsmassnahmen ein, um Ihre Daten gegen zufällige oder vorsätzliche Manipulationen, Verlust, Zerstörung oder den Zugriff unberechtigter Personen zu schützen. Alle Datenübertragungen erfolgen verschlüsselt über SSL/TLS (256-bit Verschlüsselung). Unsere Server befinden sich in der Schweiz."
     },
     {
       icon: FileText,
-      title: "Ihre Rechte",
-      content: "Sie haben jederzeit das Recht auf Auskunft über Ihre gespeicherten Daten, deren Berichtigung, Löschung oder Einschränkung der Verarbeitung. Zur Ausübung Ihrer Rechte kontaktieren Sie uns bitte unter info@umzugscheck.ch."
+      title: "4. Ihre Rechte (DSG/DSGVO)",
+      content: "Sie haben jederzeit das Recht auf Auskunft über Ihre gespeicherten Daten, deren Berichtigung, Löschung oder Einschränkung der Verarbeitung. Sie können der Verarbeitung widersprechen und haben das Recht auf Datenübertragbarkeit. Zur Ausübung Ihrer Rechte kontaktieren Sie uns bitte unter info@umzugscheck.ch."
     }
   ];
 

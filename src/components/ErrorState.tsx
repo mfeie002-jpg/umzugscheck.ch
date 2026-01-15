@@ -2,16 +2,18 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle, RefreshCw } from "lucide-react";
 
-interface ErrorStateProps {
+export interface ErrorStateProps {
   title?: string;
   message: string;
   onRetry?: () => void;
+  errorId?: string;
 }
 
 export const ErrorState = ({ 
   title = "Ein Fehler ist aufgetreten", 
   message,
-  onRetry 
+  onRetry,
+  errorId
 }: ErrorStateProps) => {
   const handleReload = () => {
     const url = new URL(window.location.href);
@@ -25,7 +27,12 @@ export const ErrorState = ({
         <AlertCircle className="h-4 w-4" />
         <AlertTitle>{title}</AlertTitle>
         <AlertDescription className="mt-2">
-          {message}
+          <p className="mb-2">{message}</p>
+          {errorId && (
+            <p className="text-xs text-muted-foreground mb-3">
+              Fehler-ID: {errorId}
+            </p>
+          )}
           <div className="flex gap-3 mt-4">
             {onRetry && (
               <Button

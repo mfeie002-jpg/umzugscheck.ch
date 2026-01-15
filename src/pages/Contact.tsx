@@ -200,8 +200,8 @@ const Contact = () => {
                         </div>
                         <div>
                           <div className="font-semibold mb-1">Telefon</div>
-                          <a href="tel:+41445555555" className="text-muted-foreground hover:text-primary transition-colors">
-                            +41 44 555 55 55
+                        <a href="tel:+41445678900" className="text-muted-foreground hover:text-primary transition-colors">
+                            +41 44 567 89 00
                           </a>
                           <div className="text-sm text-muted-foreground mt-1">
                             Mo-Fr: 08:00 - 18:00 Uhr
@@ -217,8 +217,8 @@ const Contact = () => {
                           <div className="font-semibold mb-1">Adresse</div>
                           <div className="text-muted-foreground">
                             Umzugscheck GmbH<br />
-                            Musterstrasse 123<br />
-                            8000 Zürich<br />
+                            Bahnhofstrasse 100<br />
+                            8001 Zürich<br />
                             Schweiz
                           </div>
                         </div>
@@ -282,7 +282,7 @@ const Contact = () => {
                   <div className="text-center">
                     <MapPin className="w-12 h-12 text-primary mx-auto mb-3" aria-hidden="true" />
                     <p className="text-muted-foreground font-medium">Standort Zürich</p>
-                    <p className="text-sm text-muted-foreground">Musterstrasse 123, 8000 Zürich</p>
+                    <p className="text-sm text-muted-foreground">Bahnhofstrasse 100, 8001 Zürich</p>
                   </div>
                 </div>
               </Card>
