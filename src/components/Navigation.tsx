@@ -106,9 +106,9 @@ export const Navigation = () => {
         aria-label="Hauptnavigation"
       >
         <div className="container mx-auto px-2 xs:px-3 sm:px-4 lg:px-6">
-          <div className="flex items-center justify-between h-14 xs:h-16 sm:h-16 lg:h-20 gap-2 lg:gap-4">
+          <div className="flex items-center h-14 xs:h-16 sm:h-16 lg:h-20 gap-4 lg:gap-6">
             {/* Logo with Slogan - Vertical Stack */}
-            <div className="flex items-center min-w-0 flex-shrink-0">
+            <Link to="/" className="flex items-center min-w-0 flex-shrink-0">
               <div className="group flex flex-col items-start transition-all duration-300 hover:scale-105">
                 <div className="transition-all duration-300 group-hover:drop-shadow-[0_0_8px_hsl(var(--primary)/0.5)] flex items-center">
                   <Logo size="xl" className="hidden xl:flex" />
@@ -121,10 +121,10 @@ export const Navigation = () => {
                   Der Schweizer Umzugsvergleich
                 </span>
               </div>
-            </div>
+            </Link>
 
             {/* Desktop Navigation - Dynamic Labels from Variant */}
-            <div className="hidden lg:flex items-center gap-0.5 xl:gap-1 flex-1 justify-center min-w-0">
+            <nav className="hidden lg:flex items-center gap-1 xl:gap-2" role="navigation">
               <NavButton dropdown="umzug-planen">
                 {navVariant.labels.preisrechner}
               </NavButton>
@@ -144,7 +144,10 @@ export const Navigation = () => {
               <NavButton dropdown="fuer-firmen">
                 {navVariant.labels.fuerFirmen}
               </NavButton>
-            </div>
+            </nav>
+
+            {/* Spacer */}
+            <div className="hidden lg:flex flex-1" />
 
             {/* Mobile: Menu button + mini CTA */}
             <div className="flex lg:hidden items-center gap-2 xs:gap-3 flex-shrink-0">

@@ -10,7 +10,7 @@ import {
   CarouselNext, 
   CarouselPrevious 
 } from "@/components/ui/carousel";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
 
 // Import AI-generated apartment images
@@ -225,7 +225,7 @@ const costExamples = [
 ];
 
 export const PremiumCostExamples = () => {
-  const [activeView, setActiveView] = useState<'photo' | 'plan'>('photo');
+  const [activeView, setActiveView] = useState<'photo' | 'plan'>('plan');
   const isScreenshot = isScreenshotRenderMode();
 
   return (
@@ -261,18 +261,8 @@ export const PremiumCostExamples = () => {
             Transparente Preisübersicht für alle Wohnungsgrössen
           </p>
           
-          {/* View Toggle */}
+          {/* View Toggle - Grundrisse first */}
           <div className="inline-flex items-center gap-1 p-1 bg-muted rounded-lg">
-            <button
-              onClick={() => setActiveView('photo')}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                activeView === 'photo' 
-                  ? 'bg-background text-foreground shadow-sm' 
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              📸 Fotos
-            </button>
             <button
               onClick={() => setActiveView('plan')}
               className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
@@ -282,6 +272,16 @@ export const PremiumCostExamples = () => {
               }`}
             >
               📐 Grundrisse
+            </button>
+            <button
+              onClick={() => setActiveView('photo')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                activeView === 'photo' 
+                  ? 'bg-background text-foreground shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              📸 Fotos
             </button>
           </div>
         </motion.div>
