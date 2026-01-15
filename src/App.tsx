@@ -65,6 +65,11 @@ const PackserviceV2 = lazy(() => import("./pages/services-v2/packservice"));
 const SeniorenumzugV2 = lazy(() => import("./pages/services-v2/seniorenumzug"));
 const StudentenV2 = lazy(() => import("./pages/services-v2/studenten"));
 const SpezialtransporteV2 = lazy(() => import("./pages/services-v2/spezialtransporte"));
+const KlaviertransportV2 = lazy(() => import("./pages/services-v2/klaviertransport"));
+const AuslandsumzugV2 = lazy(() => import("./pages/services-v2/auslandsumzug"));
+const BueroumzugV2 = lazy(() => import("./pages/services-v2/bueroumzug"));
+const ShopPage = lazy(() => import("./pages/Shop"));
+const UmzugskostenBerechnenPage = lazy(() => import("./pages/ratgeber/UmzugskostenBerechnen"));
 
 // City pages
 const ZurichMoving = lazy(() => import("./pages/city/ZurichMoving"));
