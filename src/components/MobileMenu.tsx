@@ -17,7 +17,8 @@ interface MobileMenuProps {
 const menuSections = [
   {
     id: "calculator",
-    title: "Preisrechner",
+    title: "Preise berechnen",
+    subtitle: "In 60 Sek. Klarheit",
     icon: Calculator,
     items: [
       { icon: Calculator, title: "Umzugsrechner", href: "/umzugsofferten" },
@@ -29,7 +30,8 @@ const menuSections = [
   },
   {
     id: "companies",
-    title: "Umzugsfirmen",
+    title: "Firmen vergleichen",
+    subtitle: "Top-Firmen in deiner Region",
     icon: Building2,
     items: [
       { icon: Trophy, title: "Beste Umzugsfirmen 2025", href: "/beste-umzugsfirma" },
@@ -39,7 +41,8 @@ const menuSections = [
   },
   {
     id: "services",
-    title: "Services",
+    title: "Umzugs-Services",
+    subtitle: "Reinigung, Lagerung & mehr",
     icon: Package,
     items: [
       { icon: Home, title: "Privatumzug", href: "/privatumzug" },
@@ -66,6 +69,7 @@ const menuSections = [
   {
     id: "ratgeber",
     title: "Ratgeber",
+    subtitle: "Checklisten, Tipps & Sparen",
     icon: BookOpen,
     items: [
       { icon: DollarSign, title: "Kosten & Preise", href: "/ratgeber/kosten" },
@@ -229,7 +233,7 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
               className="w-full h-14 text-base font-bold bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-lg"
               size="lg"
             >
-              Kostenlos Offerten erhalten
+              Gratis Offerten
             </Button>
           </Link>
         </div>

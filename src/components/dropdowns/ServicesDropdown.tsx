@@ -1,7 +1,7 @@
 /**
- * Dropdown: Services
+ * Dropdown: Umzugs-Services
  * 
- * Alle Umzugsdienstleistungen die Umzugscheck.ch abdeckt
+ * Action-First Navigation: "Reinigung, Entsorgung, Lagerung & mehr"
  * - Umzugsarten: Privatumzug, Geschäftsumzug, Internationaler Umzug
  * - Zusatzservices: Endreinigung, Möbelmontage, Lagerung, Entsorgung, etc.
  */
@@ -107,7 +107,7 @@ export const ServicesDropdown = ({ isOpen, onClose }: ServicesDropdownProps) => 
           
           {/* Column 1: Umzugsarten */}
           <div>
-            <DropdownSection title="Umzugsarten">
+            <DropdownSection title="Umzugs-Services" subtitle="Reinigung, Entsorgung, Lagerung & mehr">
               <div className="space-y-1">
                 {umzugsarten.map((service) => (
                   <DropdownLink

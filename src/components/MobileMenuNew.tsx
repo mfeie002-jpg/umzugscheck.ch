@@ -138,14 +138,17 @@ export const MobileMenuNew = ({ isOpen, onClose }: MobileMenuNewProps) => {
               onValueChange={setOpenAccordion}
               className="space-y-2"
             >
-              {/* 1. Umzug planen */}
+              {/* 1. Preise berechnen */}
               <AccordionItem value="umzug-planen" className="border rounded-xl overflow-hidden bg-accent/30">
                 <AccordionTrigger className="px-4 py-4 hover:no-underline hover:bg-accent/50 [&[data-state=open]]:bg-accent">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
                       <Calculator className="w-5 h-5 text-primary" />
                     </div>
-                    <span className="font-semibold text-base">Umzug planen</span>
+                    <div className="text-left">
+                      <span className="font-semibold text-base block">Preise berechnen</span>
+                      <span className="text-[10px] text-muted-foreground">In 60 Sek. Klarheit</span>
+                    </div>
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="px-4 pb-4 pt-2">
@@ -200,14 +203,17 @@ export const MobileMenuNew = ({ isOpen, onClose }: MobileMenuNewProps) => {
                 </AccordionContent>
               </AccordionItem>
 
-              {/* 2. Umzugsfirma finden */}
+              {/* 2. Firmen vergleichen */}
               <AccordionItem value="umzugsfirma-finden" className="border rounded-xl overflow-hidden bg-accent/30">
                 <AccordionTrigger className="px-4 py-4 hover:no-underline hover:bg-accent/50 [&[data-state=open]]:bg-accent">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
                       <MapPin className="w-5 h-5 text-primary" />
                     </div>
-                    <span className="font-semibold text-base">Umzugsfirma finden</span>
+                    <div className="text-left">
+                      <span className="font-semibold text-base block">Firmen vergleichen</span>
+                      <span className="text-[10px] text-muted-foreground">Top-Firmen in deiner Region</span>
+                    </div>
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="px-4 pb-4 pt-2">
@@ -299,14 +305,17 @@ export const MobileMenuNew = ({ isOpen, onClose }: MobileMenuNewProps) => {
                 </AccordionContent>
               </AccordionItem>
 
-              {/* 3. Services */}
+              {/* 3. Umzugs-Services */}
               <AccordionItem value="services" className="border rounded-xl overflow-hidden bg-accent/30">
                 <AccordionTrigger className="px-4 py-4 hover:no-underline hover:bg-accent/50 [&[data-state=open]]:bg-accent">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
                       <Package className="w-5 h-5 text-primary" />
                     </div>
-                    <span className="font-semibold text-base">Services</span>
+                    <div className="text-left">
+                      <span className="font-semibold text-base block">Umzugs-Services</span>
+                      <span className="text-[10px] text-muted-foreground">Reinigung, Lagerung & mehr</span>
+                    </div>
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="px-4 pb-4 pt-2">
@@ -346,7 +355,10 @@ export const MobileMenuNew = ({ isOpen, onClose }: MobileMenuNewProps) => {
                     <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
                       <Lightbulb className="w-5 h-5 text-primary" />
                     </div>
-                    <span className="font-semibold text-base">Ratgeber</span>
+                    <div className="text-left">
+                      <span className="font-semibold text-base block">Ratgeber</span>
+                      <span className="text-[10px] text-muted-foreground">Checklisten, Tipps & Sparen</span>
+                    </div>
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="px-4 pb-4 pt-2">
@@ -462,7 +474,7 @@ export const MobileMenuNew = ({ isOpen, onClose }: MobileMenuNewProps) => {
               className="w-full h-14 text-base font-bold bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-lg"
               size="lg"
             >
-              Kostenlos Offerten erhalten
+              Gratis Offerten
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
           </Link>

@@ -84,7 +84,7 @@ export const RatgeberDropdown = ({ isOpen, onClose }: RatgeberDropdownProps) => 
           
           {/* Column 1: Hauptratgeber */}
           <div>
-            <DropdownSection title="Top Ratgeber">
+            <DropdownSection title="Ratgeber" subtitle="Checklisten, Tipps & Kostensparen">
               <div className="space-y-1">
                 {mainGuides.map((guide) => (
                   <DropdownLink
