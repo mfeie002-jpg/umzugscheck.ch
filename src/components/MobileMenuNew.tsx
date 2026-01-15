@@ -151,14 +151,14 @@ export const MobileMenuNew = ({ isOpen, onClose }: MobileMenuNewProps) => {
                 <AccordionContent className="px-4 pb-4 pt-2">
                   <div className="space-y-1">
                     <MobileMenuItem
-                      to="/umzugsrechner"
+                      to="/vergleich"
                       icon={Calculator}
                       title="Umzugskosten berechnen"
                       badge="Beliebt"
                       onClick={onClose}
                     />
                     <MobileMenuItem
-                      to="/ratgeber/checkliste"
+                      to="/ratgeber/umzugscheckliste-download"
                       icon={CheckSquare}
                       title="Umzugscheckliste"
                       onClick={onClose}
@@ -180,7 +180,7 @@ export const MobileMenuNew = ({ isOpen, onClose }: MobileMenuNewProps) => {
                     <p className="text-xs font-medium text-muted-foreground mb-2">Downloads</p>
                     <div className="flex flex-wrap gap-2">
                       <Link 
-                        to="/ratgeber/checkliste#download" 
+                        to="/ratgeber/umzugscheckliste-download" 
                         onClick={onClose}
                         className="text-xs px-3 py-1.5 rounded-full bg-primary/10 text-primary font-medium hover:bg-primary/20 transition-colors"
                       >
@@ -188,7 +188,7 @@ export const MobileMenuNew = ({ isOpen, onClose }: MobileMenuNewProps) => {
                         Checkliste PDF
                       </Link>
                       <Link 
-                        to="/ratgeber/kuendigung#vorlage" 
+                        to="/ratgeber/kuendigung" 
                         onClick={onClose}
                         className="text-xs px-3 py-1.5 rounded-full bg-primary/10 text-primary font-medium hover:bg-primary/20 transition-colors"
                       >
@@ -319,12 +319,12 @@ export const MobileMenuNew = ({ isOpen, onClose }: MobileMenuNewProps) => {
 
                   <p className="text-xs font-medium text-muted-foreground mb-2">Zusatzservices</p>
                   <div className="grid grid-cols-2 gap-1">
-                    <MobileMenuItemCompact to="/dienstleistungen/endreinigung" icon={Sparkles} title="Endreinigung" onClick={onClose} />
-                    <MobileMenuItemCompact to="/dienstleistungen/moebelmontage" icon={Wrench} title="Möbelmontage" onClick={onClose} />
+                    <MobileMenuItemCompact to="/dienstleistungen/reinigung" icon={Sparkles} title="Endreinigung" onClick={onClose} />
+                    <MobileMenuItemCompact to="/moebelmontage" icon={Wrench} title="Möbelmontage" onClick={onClose} />
                     <MobileMenuItemCompact to="/dienstleistungen/einlagerung" icon={Package} title="Lagerung" onClick={onClose} />
                     <MobileMenuItemCompact to="/dienstleistungen/entsorgung" icon={Trash2} title="Entsorgung" onClick={onClose} />
-                    <MobileMenuItemCompact to="/dienstleistungen/umzugskartons" icon={Box} title="Umzugskartons" onClick={onClose} />
-                    <MobileMenuItemCompact to="/dienstleistungen/halteverbot" icon={ParkingCircle} title="Halteverbot" onClick={onClose} />
+                    <MobileMenuItemCompact to="/services/packservice" icon={Box} title="Umzugskartons" onClick={onClose} />
+                    <MobileMenuItemCompact to="/ratgeber/halteverbot" icon={ParkingCircle} title="Halteverbot" onClick={onClose} />
                     <MobileMenuItemCompact to="/dienstleistungen/moebellift" icon={Truck} title="Möbellift" onClick={onClose} />
                   </div>
 
@@ -353,7 +353,7 @@ export const MobileMenuNew = ({ isOpen, onClose }: MobileMenuNewProps) => {
                   <p className="text-xs font-medium text-muted-foreground mb-2">Top Ratgeber</p>
                   <div className="space-y-1 mb-3">
                     <MobileMenuItem
-                      to="/ratgeber/checkliste"
+                      to="/ratgeber/umzugscheckliste-download"
                       icon={CheckSquare}
                       title="Umzug Checkliste (PDF)"
                       badge="Top"
@@ -372,7 +372,7 @@ export const MobileMenuNew = ({ isOpen, onClose }: MobileMenuNewProps) => {
                       onClick={onClose}
                     />
                     <MobileMenuItem
-                      to="/ratgeber/kosten-sparen"
+                      to="/ratgeber/kosten"
                       icon={DollarSign}
                       title="Spartipps"
                       onClick={onClose}

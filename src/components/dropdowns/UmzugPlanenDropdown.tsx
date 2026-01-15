@@ -35,7 +35,7 @@ const mainItems = [
     icon: Calculator,
     title: "Umzugskosten berechnen",
     description: "KI-Preisrechner: Was kostet mein Umzug?",
-    href: "/umzugsrechner",
+    href: "/vergleich",
     featured: true,
     badge: "Beliebt",
   },
@@ -43,7 +43,7 @@ const mainItems = [
     icon: CheckSquare,
     title: "Umzugscheckliste",
     description: "Kompletter Leitfaden für deinen Umzug",
-    href: "/ratgeber/checkliste",
+    href: "/ratgeber/umzugscheckliste-download",
     featured: true,
   },
   {
@@ -61,9 +61,9 @@ const mainItems = [
 ];
 
 const quickTools = [
-  { title: "Checkliste PDF", href: "/ratgeber/checkliste#download", icon: FileDown },
-  { title: "Kündigungsvorlage", href: "/ratgeber/kuendigung#vorlage", icon: FileDown },
-  { title: "Adressänderung", href: "/ratgeber/adressaenderung", icon: ArrowRight },
+  { title: "Checkliste PDF", href: "/ratgeber/umzugscheckliste-download", icon: FileDown },
+  { title: "Kündigungsvorlage", href: "/ratgeber/kuendigung", icon: FileDown },
+  { title: "Spartipps", href: "/ratgeber/kosten", icon: ArrowRight },
 ];
 
 export const UmzugPlanenDropdown = ({ isOpen, onClose }: UmzugPlanenDropdownProps) => {
@@ -141,7 +141,7 @@ export const UmzugPlanenDropdown = ({ isOpen, onClose }: UmzugPlanenDropdownProp
                 "100% kostenlos"
               ]}
               buttonText="Preisrechner starten"
-              buttonHref="/umzugsrechner"
+              buttonHref="/vergleich"
               onClose={onClose}
             />
           </div>
