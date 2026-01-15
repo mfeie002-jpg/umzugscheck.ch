@@ -114,17 +114,18 @@ export const Navigation = () => {
       >
         <div className="container mx-auto px-2 xs:px-3 sm:px-4 lg:px-6">
           <div className="flex items-center h-14 xs:h-16 sm:h-16 lg:h-20 gap-4 lg:gap-6">
-            {/* Logo with Slogan - Vertical Stack */}
+            {/* Logo with Domain - Always visible */}
             <Link to="/" className="flex items-center min-w-0 flex-shrink-0">
-              <div className="group flex flex-col items-start transition-all duration-300 hover:scale-105">
+              <div className="group flex items-center gap-2 transition-all duration-300 hover:scale-105">
                 <div className="transition-all duration-300 group-hover:drop-shadow-[0_0_12px_hsl(var(--primary)/0.4)] flex items-center">
                   <Logo size="xl" className="hidden xl:flex" />
                   <Logo size="lg" className="hidden lg:flex xl:hidden" />
-                  <Logo size="sm" iconOnly className="flex lg:hidden" />
+                  {/* Mobile: Show logo with domain text */}
+                  <Logo size="md" className="flex lg:hidden" />
                 </div>
 
                 {/* Slogan below logo (Desktop only) with emoji */}
-                <span className="hidden lg:flex items-center gap-1 text-[9px] xl:text-xs text-muted-foreground/80 font-medium mt-0.5 transition-colors duration-300 group-hover:text-primary leading-tight">
+                <span className="hidden lg:flex items-center gap-1 text-[9px] xl:text-xs text-muted-foreground/80 font-medium transition-colors duration-300 group-hover:text-primary leading-tight">
                   🇨🇭 Der Schweizer Umzugsvergleich
                 </span>
               </div>
@@ -156,27 +157,26 @@ export const Navigation = () => {
             {/* Spacer */}
             <div className="hidden lg:flex flex-1" />
 
-            {/* Mobile: Menu button + Call + mini CTA */}
-            <div className="flex lg:hidden items-center gap-2 xs:gap-2.5 ml-auto flex-shrink-0">
-              {/* Call Button for mobile - prominent green */}
+            {/* Mobile: Menu button + Call + mini CTA - properly spaced */}
+            <div className="flex lg:hidden items-center gap-1.5 xs:gap-2 ml-auto flex-shrink-0">
+              {/* Call Button for mobile - compact */}
               <MobileHeaderCallButton />
               
-              {/* Mini CTA for mobile header with pulse animation */}
+              {/* Mini CTA for mobile header - compact to avoid overlap */}
               <Link 
                 to="/umzugsofferten" 
-                className="flex items-center gap-1.5 xs:gap-2 bg-secondary text-secondary-foreground text-xs xs:text-sm font-bold px-3 xs:px-4 py-2.5 xs:py-3 rounded-xl shadow-lg shadow-secondary/25 active:scale-95 transition-all min-h-[44px] touch-manipulation"
+                className="flex items-center gap-1 bg-secondary text-secondary-foreground text-xs font-bold px-2.5 xs:px-3 py-2 xs:py-2.5 rounded-lg shadow-md shadow-secondary/20 active:scale-95 transition-all min-h-[40px] touch-manipulation"
               >
-                <span className="hidden xs:inline">Offerten</span>
-                <ArrowRight className="w-4 h-4" />
+                <span>Offerten</span>
               </Link>
               
-              {/* Larger, better positioned burger menu */}
+              {/* Burger menu - compact */}
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 className={cn(
                   "relative z-50 flex items-center justify-center",
-                  "w-11 h-11 xs:w-12 xs:h-12 rounded-xl",
-                  "bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-primary/20",
+                  "w-10 h-10 rounded-lg",
+                  "bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20",
                   "hover:from-primary/15 hover:to-primary/10 hover:border-primary/30",
                   "active:scale-95 transition-all touch-manipulation",
                   isMobileMenuOpen && "bg-primary/15 border-primary/30"
@@ -186,9 +186,9 @@ export const Navigation = () => {
                 aria-controls="mobile-menu"
               >
                 {isMobileMenuOpen ? (
-                  <X className="w-5 h-5 xs:w-6 xs:h-6 text-primary" aria-hidden="true" />
+                  <X className="w-5 h-5 text-primary" aria-hidden="true" />
                 ) : (
-                  <Menu className="w-5 h-5 xs:w-6 xs:h-6 text-primary" aria-hidden="true" />
+                  <Menu className="w-5 h-5 text-primary" aria-hidden="true" />
                 )}
               </button>
             </div>
