@@ -6,7 +6,7 @@
  * Switch via URL: ?nav=ultimate | ?nav=variant-b | ?nav=variant-c | ?nav=variant-d | ?nav=variant-e
  */
 
-export type NavVariant = 'ultimate' | 'variant-b' | 'variant-c' | 'variant-d' | 'variant-e' | 'variant-f' | 'variant-g' | 'variant-h';
+export type NavVariant = 'ultimate' | 'variant-b' | 'variant-c' | 'variant-d' | 'variant-e' | 'variant-f' | 'variant-g' | 'variant-h' | 'variant-i' | 'variant-j' | 'variant-k';
 
 export interface NavConfig {
   id: NavVariant;
@@ -354,6 +354,123 @@ export const VARIANT_H: NavConfig = {
   },
 };
 
+// ============================================
+// VARIANTE 9: Allgemeines Menu-Konzept
+// Basierend auf Menu-Archetypen (UI, Kulinarik, Gaming)
+// ============================================
+export const VARIANT_I: NavConfig = {
+  id: 'variant-i',
+  name: '9. Allgemeines Menu-Konzept',
+  description: 'Sticky Top Nav + Mega Menu: Klarheit & Übersicht',
+  labels: {
+    preisrechner: 'Kosten berechnen',
+    firmen: 'Firmen finden',
+    services: 'Services',
+    ratgeber: 'Ratgeber',
+    fuerFirmen: 'Für Anbieter',
+    cta: 'Offerten vergleichen',
+  },
+  microcopy: {
+    preisrechner: 'Preisvorschau in 2 Min. Der Nutzer weiß immer, wo er ist.',
+    firmen: 'Region wählen → Firmen vergleichen → Übersicht auf einen Blick.',
+    services: 'Alle Optionen kategorisiert, kognitive Entlastung.',
+    ratgeber: 'Tipps, Vorlagen & Downloads. Keine verschachtelten Menüs.',
+    fuerFirmen: 'Partner werden. Tab Bar für Mobile (Daumen erreichbar).',
+  },
+  dropdownTitles: {
+    preisrechner: 'KOSTEN BERECHNEN',
+    firmen: 'FIRMEN FINDEN',
+    services: 'SERVICES',
+    ratgeber: 'RATGEBER',
+    fuerFirmen: 'FÜR ANBIETER',
+  },
+  ctaCard: {
+    preisrechner: { title: 'Mega Menu Übersicht', buttonText: 'Preisrechner starten' },
+    firmen: { title: 'Alle Optionen auf einen Blick', buttonText: 'Offerten anfordern' },
+    services: { title: 'Kategorisiert & Hierarchisch', buttonText: 'Service wählen' },
+    ratgeber: { title: 'Kein Kurzzeitgedächtnis-Problem', buttonText: 'Ratgeber lesen' },
+    fuerFirmen: { title: 'Mobile-first Tab Bar', buttonText: 'Partner werden' },
+  },
+};
+
+// ============================================
+// VARIANTE 10: Conversion-Killer Final
+// ChatGPT Empfehlung: Action-first, schärfste Wortwahl
+// ============================================
+export const VARIANT_J: NavConfig = {
+  id: 'variant-j',
+  name: '10. Conversion-Killer Final',
+  description: 'Action-first, schärfste Wortwahl, maximale Conversion',
+  labels: {
+    preisrechner: 'Kosten berechnen',
+    firmen: 'Offerten vergleichen',
+    services: 'Services',
+    ratgeber: 'Ratgeber',
+    fuerFirmen: 'Für Anbieter',
+    cta: 'Gratis Offerten',
+  },
+  microcopy: {
+    preisrechner: 'Preisvorschau in 2 Min. Kostenlos & unverbindlich.',
+    firmen: 'Geprüfte Umzugsfirmen in deiner Region. Bis zu 40% sparen.',
+    services: 'Umzug, Reinigung, Packen, Lift, Entsorgung. Alles aus einer Hand.',
+    ratgeber: 'Checklisten, Vorlagen & Tipps. Kurz, praktisch, sofort nutzbar.',
+    fuerFirmen: 'Partner werden, Leads erhalten, Dashboard nutzen.',
+  },
+  dropdownTitles: {
+    preisrechner: 'KOSTEN BERECHNEN',
+    firmen: 'OFFERTEN VERGLEICHEN',
+    services: 'SERVICES',
+    ratgeber: 'RATGEBER',
+    fuerFirmen: 'FÜR ANBIETER',
+  },
+  ctaCard: {
+    preisrechner: { title: 'In 2 Minuten Klarheit', buttonText: 'Preisrechner starten' },
+    firmen: { title: '3–5 Offerten in 24–48h', buttonText: 'Gratis Offerten' },
+    services: { title: 'Komplettpaket möglich', buttonText: 'Gratis Offerten' },
+    ratgeber: { title: 'Schnellstart in 5 Minuten', buttonText: 'Checkliste herunterladen' },
+    fuerFirmen: { title: 'Mehr Anfragen. Weniger Leerstand.', buttonText: 'Kostenlos registrieren' },
+  },
+};
+
+// ============================================
+// VARIANTE 11: Simpel & Clean
+// 6 Hauptpunkte, minimale Submenüs, klare Fokussierung
+// ============================================
+export const VARIANT_K: NavConfig = {
+  id: 'variant-k',
+  name: '11. Simpel & Clean',
+  description: '6 Punkte: Umzug, Reinigung, Services, Ratgeber, So funktioniert\'s + CTA',
+  labels: {
+    preisrechner: 'Umzug',
+    firmen: 'Umzugsreinigung',
+    services: 'Weitere Services',
+    ratgeber: 'Ratgeber',
+    fuerFirmen: 'So funktioniert\'s',
+    cta: 'Jetzt Offerten vergleichen',
+  },
+  microcopy: {
+    preisrechner: 'Privatumzug – alles für Ihren stressfreien Wohnungswechsel.',
+    firmen: 'Endreinigung mit Abgabegarantie.',
+    services: 'Entsorgung, Lagerung, Möbelmontage.',
+    ratgeber: 'Checklisten, Tipps & Tricks zum Download.',
+    fuerFirmen: 'Transparent: Von der Anfrage bis zur Offerte.',
+  },
+  dropdownTitles: {
+    preisrechner: 'UMZUG',
+    firmen: 'UMZUGSREINIGUNG',
+    services: 'WEITERE SERVICES',
+    ratgeber: 'RATGEBER',
+    fuerFirmen: 'SO FUNKTIONIERT\'S',
+  },
+  ctaCard: {
+    preisrechner: { title: 'Privatumzug starten', buttonText: 'Offerten erhalten' },
+    firmen: { title: 'Reinigung mit Garantie', buttonText: 'Offerten erhalten' },
+    services: { title: 'Alles aus einer Hand', buttonText: 'Offerten erhalten' },
+    ratgeber: { title: 'Kurz & praktisch', buttonText: 'Checkliste herunterladen' },
+    fuerFirmen: { title: 'So einfach geht\'s', buttonText: 'Mehr erfahren' },
+  },
+};
+
 // Alle Varianten
 export const NAV_VARIANTS: NavConfig[] = [
   VARIANT_ULTIMATE,
@@ -364,6 +481,9 @@ export const NAV_VARIANTS: NavConfig[] = [
   VARIANT_F,
   VARIANT_G,
   VARIANT_H,
+  VARIANT_I,
+  VARIANT_J,
+  VARIANT_K,
 ];
 
 // Aktive Variante aus localStorage oder URL
