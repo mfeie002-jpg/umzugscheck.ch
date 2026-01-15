@@ -485,7 +485,7 @@ export const PremiumHeroSection = () => {
                   <Button 
                     type="submit" 
                     size="lg" 
-                    className="w-full h-11 sm:h-12 md:h-14 text-sm sm:text-base md:text-lg font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all group"
+                    className="w-full h-11 sm:h-12 md:h-14 text-sm sm:text-base md:text-lg font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all group relative z-20 touch-manipulation"
                   >
                     <CheckCircle2 className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                     {getCtaText()}
