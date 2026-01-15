@@ -68,6 +68,7 @@ import { RegionKomplettpaket } from "@/components/region-archetyp/RegionKomplett
 import { RegionGlossar } from "@/components/region-archetyp/RegionGlossar";
 import { RegionContentCluster } from "@/components/region-archetyp/RegionContentCluster";
 import { RegionMidCTA } from "@/components/region-archetyp/RegionMidCTA";
+import { RegionExitIntent } from "@/components/region-archetyp/RegionExitIntent";
 
 // Data Layer
 import { getRegionBySlug } from "@/data/regions-database";
@@ -599,6 +600,13 @@ const RegionArchetypPage = () => {
           </div>
         </section>
       </main>
+
+      {/* Exit Intent Popup */}
+      <RegionExitIntent 
+        regionName={region.name}
+        providerCount={region.stats.providerCount}
+        avgRating={region.stats.avgRating}
+      />
     </div>
   );
 };
