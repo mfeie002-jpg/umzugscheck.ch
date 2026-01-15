@@ -124,10 +124,30 @@ const UmzugsfirmenSchweizPillar = () => {
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
+        <html lang="de-CH" />
         <title>Umzugsfirmen Schweiz: Alle 26 Kantone vergleichen | Umzugscheck.ch</title>
         <meta name="description" content="Vergleichen Sie 200+ geprüfte Umzugsfirmen in allen 26 Schweizer Kantonen. Kostenlose Offerten erhalten und bis zu 40% sparen. Zürich, Bern, Basel, Genf und mehr." />
-        <meta name="keywords" content="umzugsfirmen schweiz, umzugsunternehmen schweiz, umzugsfirma finden, umzug schweiz, umzugsfirmen vergleichen" />
+        <meta name="keywords" content="umzugsfirmen schweiz, umzugsunternehmen schweiz, umzugsfirma finden, umzug schweiz, umzugsfirmen vergleichen, zügelfirma schweiz" />
         <link rel="canonical" href="https://umzugscheck.ch/umzugsfirmen-schweiz" />
+        <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1" />
+        
+        {/* Open Graph */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://umzugscheck.ch/umzugsfirmen-schweiz" />
+        <meta property="og:title" content="Umzugsfirmen Schweiz: Alle 26 Kantone vergleichen" />
+        <meta property="og:description" content="Vergleichen Sie 200+ geprüfte Umzugsfirmen in allen 26 Schweizer Kantonen. Kostenlose Offerten erhalten und bis zu 40% sparen." />
+        <meta property="og:locale" content="de_CH" />
+        <meta property="og:site_name" content="Umzugscheck.ch" />
+        
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Umzugsfirmen Schweiz: Alle 26 Kantone vergleichen" />
+        <meta name="twitter:description" content="Vergleichen Sie 200+ geprüfte Umzugsfirmen in allen 26 Schweizer Kantonen." />
+        
+        {/* Geo */}
+        <meta name="geo.region" content="CH" />
+        <meta name="geo.placename" content="Schweiz" />
+        
         <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
       </Helmet>
 
