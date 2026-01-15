@@ -257,7 +257,8 @@ const Billing = lazy(() => import("./pages/admin/Billing"));
 const AdminRankings = lazy(() => import("./pages/admin/Rankings"));
 const ConversionAnalytics = lazy(() => import("./pages/admin/ConversionAnalytics"));
 const EmailAutomation = lazy(() => import("./pages/admin/EmailAutomation"));
-const ABTesting = lazy(() => import("./pages/admin/ABTesting"));
+const ABTesting = lazy(() => import("./pages/admin/ABTestingComplete"));
+const LocalizedUmzugsofferten = lazy(() => import("./pages/LocalizedUmzugsofferten"));
 const ProviderAvailability = lazy(() => import("./pages/admin/ProviderAvailability"));
 const CodeExport = lazy(() => import("./pages/admin/CodeExport"));
 const AdminLogin = lazy(() => import("./pages/admin/Login"));
@@ -694,7 +695,8 @@ const AppRouterContent = () => {
           <Route path="/flowtester" element={<RedirectWithQuery to="/flow-tester" />} />
           <Route path="/flow-tester/" element={<RedirectWithQuery to="/flow-tester" />} />
           <Route path="/umzugsofferten/bestaetigung" element={<UmzugsoffertenBestaetigung />} />
-          <Route path="/umzugsofferten/:region" element={<RegionalOfferten />} />
+          {/* Localized funnels - /umzugsofferten/zuerich, /umzugsofferten/bern, etc. */}
+          <Route path="/umzugsofferten/:city" element={<LocalizedUmzugsofferten />} />
           <Route path="/preise" element={<Pricing />} />
           <Route path="/offerte" element={<OffertenPage />} />
           <Route path="/offerten" element={<OffertenOptimized />} />
