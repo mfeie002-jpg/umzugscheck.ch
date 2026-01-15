@@ -213,6 +213,7 @@ const FlowsIndex = lazy(() => import("./pages/FlowsIndex"));
 const FlowFamilyLanding = lazy(() => import("./pages/FlowFamilyLanding"));
 const InternFlowTesting = lazy(() => import("./pages/InternFlowTesting"));
 const TopFlowsComparison = lazy(() => import("./pages/TopFlowsComparison"));
+const NavigationComparison = lazy(() => import("./pages/NavigationComparison"));
 const V3VariantComparison = lazy(() => import("./pages/V3VariantComparison"));
 // Note: RegionalOfferten is imported above with canton pages
 const FuerFirmen = lazy(() => import("./pages/FuerFirmen"));
@@ -693,6 +694,7 @@ const AppRouterContent = () => {
           <Route path="/invisible-3" element={<Blueprint />} />
           <Route path="/invisible-4" element={<BlueprintV2 />} />
           <Route path="/raumplaner" element={<RoomPlannerDemo />} />
+          <Route path="/navigation-vergleich" element={<NavigationComparison />} />
           <Route path="/sitemap" element={<Sitemap />} />
           {/* LEGACY ROUTES - Redirect to canonical /umzugsfirmen/:city */}
           <Route path="/:city/umzugsfirmen" element={<LegacyCityServiceRedirect />} />
