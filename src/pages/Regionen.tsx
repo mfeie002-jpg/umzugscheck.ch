@@ -4,7 +4,7 @@ import { ScrollReveal } from "@/components/ScrollReveal";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { MapPin, TrendingUp, Users, Calculator, Building2, Star, ArrowRight, CheckCircle, Phone, Search, Filter, Zap, Award } from "lucide-react";
+import { MapPin, TrendingUp, Users, Calculator, Building2, Star, ArrowRight, CheckCircle, Phone, Search, Zap, Award, ChevronRight } from "lucide-react";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { PageSection } from "@/components/ui/page-section";
@@ -16,36 +16,46 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { InteractiveSwitzerlandMap } from "@/components/InteractiveSwitzerlandMap";
-import { CITIES_MAP } from "@/data/locations";
+import { CITIES_MAP, CANTONS_MAP } from "@/data/locations";
+import { Badge } from "@/components/ui/badge";
 
-const cantons = [
-  { name: "Zürich", slug: "zuerich", companies: 42, moves: "1'200+", avgPrice: "CHF 1'200" },
-  { name: "Bern", slug: "bern", companies: 35, moves: "950+", avgPrice: "CHF 1'100" },
-  { name: "Luzern", slug: "luzern", companies: 28, moves: "680+", avgPrice: "CHF 1'050" },
-  { name: "Uri", slug: "uri", companies: 12, moves: "180+", avgPrice: "CHF 950" },
-  { name: "Schwyz", slug: "schwyz", companies: 18, moves: "420+", avgPrice: "CHF 1'000" },
-  { name: "Obwalden", slug: "obwalden", companies: 10, moves: "150+", avgPrice: "CHF 900" },
-  { name: "Nidwalden", slug: "nidwalden", companies: 11, moves: "160+", avgPrice: "CHF 920" },
-  { name: "Glarus", slug: "glarus", companies: 9, moves: "130+", avgPrice: "CHF 880" },
-  { name: "Zug", slug: "zug", companies: 22, moves: "510+", avgPrice: "CHF 1'300" },
-  { name: "Freiburg", slug: "freiburg", companies: 26, moves: "620+", avgPrice: "CHF 1'000" },
-  { name: "Solothurn", slug: "solothurn", companies: 24, moves: "560+", avgPrice: "CHF 980" },
-  { name: "Basel-Stadt", slug: "basel-stadt", companies: 30, moves: "720+", avgPrice: "CHF 1'150" },
-  { name: "Basel-Landschaft", slug: "basel-landschaft", companies: 28, moves: "650+", avgPrice: "CHF 1'080" },
-  { name: "Schaffhausen", slug: "schaffhausen", companies: 15, moves: "290+", avgPrice: "CHF 950" },
-  { name: "Appenzell Ausserrhoden", slug: "appenzell-ausserrhoden", companies: 12, moves: "200+", avgPrice: "CHF 900" },
-  { name: "Appenzell Innerrhoden", slug: "appenzell-innerrhoden", companies: 8, moves: "110+", avgPrice: "CHF 880" },
-  { name: "St. Gallen", slug: "st-gallen", companies: 32, moves: "780+", avgPrice: "CHF 1'050" },
-  { name: "Graubünden", slug: "graubuenden", companies: 20, moves: "410+", avgPrice: "CHF 1'100" },
-  { name: "Aargau", slug: "aargau", companies: 38, moves: "890+", avgPrice: "CHF 1'020" },
-  { name: "Thurgau", slug: "thurgau", companies: 25, moves: "570+", avgPrice: "CHF 980" },
-  { name: "Tessin", slug: "tessin", companies: 27, moves: "640+", avgPrice: "CHF 1'150" },
-  { name: "Waadt", slug: "waadt", companies: 36, moves: "850+", avgPrice: "CHF 1'180" },
-  { name: "Wallis", slug: "wallis", companies: 29, moves: "690+", avgPrice: "CHF 1'050" },
-  { name: "Neuenburg", slug: "neuenburg", companies: 19, moves: "430+", avgPrice: "CHF 1'000" },
-  { name: "Genf", slug: "genf", companies: 34, moves: "820+", avgPrice: "CHF 1'250" },
-  { name: "Jura", slug: "jura", companies: 13, moves: "240+", avgPrice: "CHF 920" }
-];
+// Canton data with stats
+const cantonData: Record<string, { companies: number; moves: string; avgPrice: string }> = {
+  zuerich: { companies: 42, moves: "1'200+", avgPrice: "CHF 1'200" },
+  bern: { companies: 35, moves: "950+", avgPrice: "CHF 1'100" },
+  luzern: { companies: 28, moves: "680+", avgPrice: "CHF 1'050" },
+  uri: { companies: 12, moves: "180+", avgPrice: "CHF 950" },
+  schwyz: { companies: 18, moves: "420+", avgPrice: "CHF 1'000" },
+  obwalden: { companies: 10, moves: "150+", avgPrice: "CHF 900" },
+  nidwalden: { companies: 11, moves: "160+", avgPrice: "CHF 920" },
+  glarus: { companies: 9, moves: "130+", avgPrice: "CHF 880" },
+  zug: { companies: 22, moves: "510+", avgPrice: "CHF 1'300" },
+  freiburg: { companies: 26, moves: "620+", avgPrice: "CHF 1'000" },
+  solothurn: { companies: 24, moves: "560+", avgPrice: "CHF 980" },
+  'basel-stadt': { companies: 30, moves: "720+", avgPrice: "CHF 1'150" },
+  'basel-landschaft': { companies: 28, moves: "650+", avgPrice: "CHF 1'080" },
+  schaffhausen: { companies: 15, moves: "290+", avgPrice: "CHF 950" },
+  'appenzell-ausserrhoden': { companies: 12, moves: "200+", avgPrice: "CHF 900" },
+  'appenzell-innerrhoden': { companies: 8, moves: "110+", avgPrice: "CHF 880" },
+  'st-gallen': { companies: 32, moves: "780+", avgPrice: "CHF 1'050" },
+  graubuenden: { companies: 20, moves: "410+", avgPrice: "CHF 1'100" },
+  aargau: { companies: 38, moves: "890+", avgPrice: "CHF 1'020" },
+  thurgau: { companies: 25, moves: "570+", avgPrice: "CHF 980" },
+  tessin: { companies: 27, moves: "640+", avgPrice: "CHF 1'150" },
+  waadt: { companies: 36, moves: "850+", avgPrice: "CHF 1'180" },
+  wallis: { companies: 29, moves: "690+", avgPrice: "CHF 1'050" },
+  neuenburg: { companies: 19, moves: "430+", avgPrice: "CHF 1'000" },
+  genf: { companies: 34, moves: "820+", avgPrice: "CHF 1'250" },
+  jura: { companies: 13, moves: "240+", avgPrice: "CHF 920" }
+};
+
+// Generate cantons array from CANTONS_MAP
+const cantons = Object.values(CANTONS_MAP).map(canton => ({
+  name: canton.name,
+  slug: canton.slug,
+  short: canton.short,
+  ...cantonData[canton.slug] || { companies: 10, moves: "100+", avgPrice: "CHF 1'000" }
+}));
 
 const popularRoutes = [
   { from: "Zürich", to: "Bern", distance: "125 km", price: "CHF 1'200–1'800" },
@@ -66,12 +76,19 @@ const Regionen = () => {
   const { ref: routesRef, isVisible: routesVisible } = useScrollAnimation();
   const [searchTerm, setSearchTerm] = useState("");
 
+  // Filter both cantons and cities
   const filteredCantons = cantons.filter(canton => 
-    canton.name.toLowerCase().includes(searchTerm.toLowerCase())
+    canton.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    canton.short.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredCities = Object.values(CITIES_MAP).filter(city =>
+    city.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const totalCompanies = cantons.reduce((sum, c) => sum + c.companies, 0);
   const totalMoves = "15'000+";
+  const totalCities = Object.keys(CITIES_MAP).length;
 
   return (
     <>
@@ -153,9 +170,9 @@ const Regionen = () => {
                 <div className="text-sm text-muted-foreground">Vermittelte Umzüge</div>
               </Card>
               <Card variant="elevated" className="p-6 text-center">
-                <Star className="h-8 w-8 text-primary mx-auto mb-3" />
-                <div className="text-3xl font-bold text-primary mb-1">4.8/5</div>
-                <div className="text-sm text-muted-foreground">Durchschnitt</div>
+                <Building2 className="h-8 w-8 text-primary mx-auto mb-3" />
+                <div className="text-3xl font-bold text-primary mb-1">{totalCities}+</div>
+                <div className="text-sm text-muted-foreground">Städte</div>
               </Card>
             </div>
           </div>
@@ -192,8 +209,8 @@ const Regionen = () => {
             <ScrollReveal>
               <div className="text-center mb-8">
                 <SectionHeading
-                  title="Wählen Sie Ihren Kanton"
-                  subtitle="Umzugsfirmen in Ihrer Region vergleichen – lokale Expertise, faire Preise"
+                  title="Alle 26 Kantone & Städte"
+                  subtitle="Wählen Sie Ihren Kanton oder suchen Sie direkt nach einer Stadt"
                   className="mb-8"
                 />
                 
@@ -202,7 +219,7 @@ const Regionen = () => {
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                   <Input
                     type="text"
-                    placeholder="Kanton suchen..."
+                    placeholder="Kanton oder Stadt suchen..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-10 h-12"
@@ -210,6 +227,44 @@ const Regionen = () => {
                 </div>
               </div>
             </ScrollReveal>
+
+            {/* City search results (when searching) */}
+            {searchTerm && filteredCities.length > 0 && (
+              <ScrollReveal>
+                <div className="mb-8">
+                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <Building2 className="w-5 h-5 text-primary" />
+                    Städte ({filteredCities.length})
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {filteredCities.slice(0, 20).map((city) => (
+                      <Link
+                        key={city.slug}
+                        to={`/umzugsfirmen/${city.slug}`}
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border hover:border-primary/30 hover:bg-accent transition-colors"
+                      >
+                        <Building2 className="w-4 h-4 text-muted-foreground" />
+                        <span className="font-medium">{city.name}</span>
+                        <Badge variant="secondary" className="text-xs">{city.cantonShort}</Badge>
+                      </Link>
+                    ))}
+                    {filteredCities.length > 20 && (
+                      <span className="text-sm text-muted-foreground px-3 py-2">
+                        +{filteredCities.length - 20} weitere
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </ScrollReveal>
+            )}
+
+            {/* Cantons section header */}
+            {searchTerm && filteredCantons.length > 0 && (
+              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <MapPin className="w-5 h-5 text-primary" />
+                Kantone ({filteredCantons.length})
+              </h3>
+            )}
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredCantons.map((canton, index) => (

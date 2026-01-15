@@ -129,7 +129,7 @@ export const Navigation = () => {
               </NavButton>
 
               <NavButton dropdown="regions">
-                Regionen
+                Kantone & Städte
               </NavButton>
 
               <NavButton dropdown="ratgeber">
