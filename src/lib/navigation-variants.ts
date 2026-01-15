@@ -6,7 +6,7 @@
  * Switch via URL: ?nav=ultimate | ?nav=variant-b | ?nav=variant-c | ?nav=variant-d | ?nav=variant-e
  */
 
-export type NavVariant = 'ultimate' | 'variant-b' | 'variant-c' | 'variant-d' | 'variant-e';
+export type NavVariant = 'ultimate' | 'variant-b' | 'variant-c' | 'variant-d' | 'variant-e' | 'variant-f' | 'variant-g' | 'variant-h';
 
 export interface NavConfig {
   id: NavVariant;
@@ -237,6 +237,123 @@ export const VARIANT_E: NavConfig = {
   },
 };
 
+// ============================================
+// VARIANTE 6: Conversion-Killer (Archetyp Final)
+// Aggressiv auf Conversion, aber mit Schweizer Sicherheit
+// ============================================
+export const VARIANT_F: NavConfig = {
+  id: 'variant-f',
+  name: '6. Conversion-Killer',
+  description: 'Aggressiv auf Conversion getrimmt, Schweizer Sicherheit',
+  labels: {
+    preisrechner: 'Kosten & Planung',
+    firmen: 'Offerten vergleichen',
+    services: 'Services',
+    ratgeber: 'Ratgeber',
+    fuerFirmen: 'Für Firmen',
+    cta: 'Offerten erhalten',
+  },
+  microcopy: {
+    preisrechner: 'Budget berechnen, Checklisten & Zeitplan.',
+    firmen: 'Top-Firmen in deiner Region, bis 40% sparen.',
+    services: 'Reinigung, Lagerung & Umzugskartons.',
+    ratgeber: 'Tipps, Vorlagen & Behördengänge.',
+    fuerFirmen: 'Partner werden & B2B Umzüge.',
+  },
+  dropdownTitles: {
+    preisrechner: 'KOSTEN & PLANUNG',
+    firmen: 'OFFERTEN VERGLEICHEN',
+    services: 'SERVICES',
+    ratgeber: 'RATGEBER',
+    fuerFirmen: 'FÜR FIRMEN',
+  },
+  ctaCard: {
+    preisrechner: { title: 'Budget geklärt?', buttonText: 'Jetzt Preise vergleichen' },
+    firmen: { title: 'Lokale Umzugsfirmen', buttonText: 'Offerten anfordern' },
+    services: { title: 'Service auswählen', buttonText: 'Offerten erhalten' },
+    ratgeber: { title: 'Keine Lust zu lesen?', buttonText: 'Anfrage starten' },
+    fuerFirmen: { title: 'Jetzt Partner werden', buttonText: 'Kostenlos registrieren' },
+  },
+};
+
+// ============================================
+// VARIANTE 7: User Journey Split
+// Umzug planen vs. Umzugsfirma finden
+// ============================================
+export const VARIANT_G: NavConfig = {
+  id: 'variant-g',
+  name: '7. User Journey Split',
+  description: 'Klassische Trennung: Planen vs. Finden',
+  labels: {
+    preisrechner: 'Umzug planen',
+    firmen: 'Umzugsfirma finden',
+    services: 'Services',
+    ratgeber: 'Ratgeber',
+    fuerFirmen: 'Für Firmen',
+    cta: 'Offerten erhalten',
+  },
+  microcopy: {
+    preisrechner: 'Tools & Tipps für deinen Umzug.',
+    firmen: 'Vergleiche Firmen & Preise.',
+    services: 'Alle Umzugs-Services & Zusatzleistungen.',
+    ratgeber: 'Guides, Checklisten & Spar-Tipps.',
+    fuerFirmen: 'Partner werden & Firmenumzüge.',
+  },
+  dropdownTitles: {
+    preisrechner: 'UMZUG PLANEN',
+    firmen: 'UMZUGSFIRMA FINDEN',
+    services: 'SERVICES',
+    ratgeber: 'RATGEBER',
+    fuerFirmen: 'FÜR FIRMEN',
+  },
+  ctaCard: {
+    preisrechner: { title: 'Bereit für Offerten?', buttonText: 'Preisrechner starten' },
+    firmen: { title: 'Offerten in deiner Region', buttonText: 'Offerten anfordern' },
+    services: { title: 'Service auswählen', buttonText: 'Offerten erhalten' },
+    ratgeber: { title: 'Umzug jetzt starten', buttonText: 'Jetzt Offerten erhalten' },
+    fuerFirmen: { title: 'Jetzt Partner werden', buttonText: 'Kostenlos registrieren' },
+  },
+};
+
+// ============================================
+// VARIANTE 8: Zielgruppen-Split (Privat/Firma)
+// Trennung nach Kundentyp: Privat vs. Business
+// ============================================
+export const VARIANT_H: NavConfig = {
+  id: 'variant-h',
+  name: '8. Zielgruppen-Split',
+  description: 'Trennung nach Kundentyp: Privatumzug vs. Firmenumzug',
+  labels: {
+    preisrechner: 'Privatumzug',
+    firmen: 'Firmenumzug',
+    services: 'Umzugsfirmen',
+    ratgeber: 'Planung & Checkliste',
+    fuerFirmen: 'Zusatzservices',
+    cta: 'Offerten erhalten',
+  },
+  microcopy: {
+    preisrechner: 'Alles für Ihren stressfreien Wohnungswechsel.',
+    firmen: 'Effiziente Büroumzüge für Unternehmen.',
+    services: 'Vergleichen Sie geprüfte Umzugsunternehmen.',
+    ratgeber: 'Checklisten, Zeitpläne und Kostenrechner.',
+    fuerFirmen: 'Packservice, Reinigung, Möbellifte & mehr.',
+  },
+  dropdownTitles: {
+    preisrechner: 'PRIVATUMZUG',
+    firmen: 'FIRMENUMZUG',
+    services: 'UMZUGSFIRMEN',
+    ratgeber: 'PLANUNG & CHECKLISTE',
+    fuerFirmen: 'ZUSATZSERVICES',
+  },
+  ctaCard: {
+    preisrechner: { title: 'Geprüfte Umzugspartner', buttonText: 'Offerten erhalten' },
+    firmen: { title: 'Firmenkunden-Spezialisten', buttonText: 'Offerten erhalten' },
+    services: { title: 'Alle Kantone abgedeckt', buttonText: 'Offerten anfordern' },
+    ratgeber: { title: 'Gratis Planungstool', buttonText: 'Offerten erhalten' },
+    fuerFirmen: { title: 'Alle Zusatzleistungen', buttonText: 'Offerten erhalten' },
+  },
+};
+
 // Alle Varianten
 export const NAV_VARIANTS: NavConfig[] = [
   VARIANT_ULTIMATE,
@@ -244,6 +361,9 @@ export const NAV_VARIANTS: NavConfig[] = [
   VARIANT_C,
   VARIANT_D,
   VARIANT_E,
+  VARIANT_F,
+  VARIANT_G,
+  VARIANT_H,
 ];
 
 // Aktive Variante aus localStorage oder URL
