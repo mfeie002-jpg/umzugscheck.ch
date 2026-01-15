@@ -70,6 +70,9 @@ const AuslandsumzugV2 = lazy(() => import("./pages/services-v2/auslandsumzug"));
 const BueroumzugV2 = lazy(() => import("./pages/services-v2/bueroumzug"));
 const ShopPage = lazy(() => import("./pages/Shop"));
 const UmzugskostenBerechnenPage = lazy(() => import("./pages/ratgeber/UmzugskostenBerechnen"));
+const UmzugsfirmaVergleichen = lazy(() => import("./pages/UmzugsfirmaVergleichen"));
+const WohnungsabgabeGuide = lazy(() => import("./pages/ratgeber/WohnungsabgabeGuide"));
+const UrlTrackingDashboard = lazy(() => import("./pages/admin/UrlTrackingDashboard"));
 
 // City pages
 const ZurichMoving = lazy(() => import("./pages/city/ZurichMoving"));
@@ -420,6 +423,7 @@ const AdminRoutes = () => (
       <Route path="/admin/funnel" element={<FunnelAnalytics />} />
       <Route path="/admin/conversions" element={<ConversionAnalytics />} />
       <Route path="/admin/dynamic-pricing" element={<DynamicPricing />} />
+      <Route path="/admin/url-tracking" element={<UrlTrackingDashboard />} />
     </AnimatedRoutes>
   </Suspense>
 );
@@ -554,6 +558,8 @@ const AppRouterContent = () => {
           <Route path="/ratgeber/umzugskosten-3-zimmer-wohnung" element={<UmzugskostenGuide />} />
           <Route path="/ratgeber/umzugscheckliste-download" element={<UmzugschecklisteDownload />} />
           <Route path="/ratgeber/umzug-mit-kindern" element={<BlogPost />} />
+          <Route path="/ratgeber/wohnungsabgabe" element={<WohnungsabgabeGuide />} />
+          <Route path="/umzugsfirma-vergleichen" element={<UmzugsfirmaVergleichen />} />
           <Route path="/umzugskosten-guide" element={<UmzugskostenGuide />} />
           <Route path="/region/:region" element={<RegionalTemplate />} />
           <Route path="/beste-umzugsfirma" element={<BesteFirmen />} />
