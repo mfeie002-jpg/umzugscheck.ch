@@ -26,8 +26,12 @@ import {
   Loader2,
   Package,
   ArrowRight,
-  MapPin
+  MapPin,
+  Smartphone,
+  Monitor,
+  Camera
 } from "lucide-react";
+import html2canvas from "html2canvas";
 
 // Page data for export
 const EXPORT_PAGES = [
@@ -36,7 +40,12 @@ const EXPORT_PAGES = [
     name: 'Kanton Zug',
     type: 'canton',
     url: '/umzugsfirmen/kanton-zug',
-    screenshotUrl: 'https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/dd489040-6682-4a68-a2a9-e35808072b50/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1768478751147.png',
+    screenshots: {
+      desktop: 'https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/dd489040-6682-4a68-a2a9-e35808072b50/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1768478751147.png',
+      desktopFull: '', // Will capture full page
+      mobile: '', // Will capture mobile view
+      mobileFull: '', // Will capture full mobile page
+    },
     description: 'Gold Standard Canton Page with 10 local tips, 10 FAQs, 6 testimonials, detailed price matrix',
   },
   {
@@ -44,7 +53,12 @@ const EXPORT_PAGES = [
     name: 'Stadt Zug',
     type: 'city',
     url: '/umzugsfirmen/zug',
-    screenshotUrl: 'https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/e4fd4c33-f302-4ada-bcb6-46aed8233420/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1768478716072.png',
+    screenshots: {
+      desktop: 'https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/e4fd4c33-f302-4ada-bcb6-46aed8233420/824c7aee-f292-46d7-b83b-be95fbdc3489.lovableproject.com-1768478716072.png',
+      desktopFull: '',
+      mobile: '',
+      mobileFull: '',
+    },
     description: 'Gold Standard City Page with 6 unique sections, quartier details, expat content, price table',
   }
 ];
@@ -271,6 +285,98 @@ ANALYSE-HINWEISE FÜR CHATGPT
 `;
 };
 
+// Screenshot capture helper function
+const captureScreenshot = async (
+  url: string, 
+  width: number, 
+  height: number,
+  fullPage: boolean = true
+): Promise<string | null> => {
+  return new Promise((resolve) => {
+    // Create hidden iframe
+    const iframe = document.createElement('iframe');
+    iframe.style.position = 'fixed';
+    iframe.style.left = '-9999px';
+    iframe.style.top = '0';
+    iframe.style.width = `${width}px`;
+    iframe.style.height = fullPage ? '8000px' : `${height}px`; // Long height for full page
+    iframe.style.border = 'none';
+    iframe.src = url;
+    
+    document.body.appendChild(iframe);
+    
+    // Wait for iframe to load
+    iframe.onload = async () => {
+      try {
+        // Wait a bit for content to render
+        await new Promise(r => setTimeout(r, 2000));
+        
+        // Capture with html2canvas
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+        if (iframeDoc && iframeDoc.body) {
+          const canvas = await html2canvas(iframeDoc.body, {
+            width: width,
+            height: fullPage ? iframeDoc.body.scrollHeight : height,
+            windowWidth: width,
+            windowHeight: height,
+            scale: 1,
+            useCORS: true,
+            allowTaint: true,
+            logging: false,
+          });
+          
+          // Convert to base64
+          const dataUrl = canvas.toDataURL('image/png');
+          const base64 = dataUrl.split(',')[1];
+          
+          document.body.removeChild(iframe);
+          resolve(base64);
+        } else {
+          document.body.removeChild(iframe);
+          resolve(null);
+        }
+      } catch (error) {
+        console.error('Screenshot capture failed:', error);
+        document.body.removeChild(iframe);
+        resolve(null);
+      }
+    };
+    
+    iframe.onerror = () => {
+      document.body.removeChild(iframe);
+      resolve(null);
+    };
+    
+    // Timeout fallback
+    setTimeout(() => {
+      if (document.body.contains(iframe)) {
+        document.body.removeChild(iframe);
+        resolve(null);
+      }
+    }, 15000);
+  });
+};
+
+// Capture all screenshots for export
+const captureAllScreenshots = async (): Promise<Record<string, string | null>> => {
+  const baseUrl = window.location.origin;
+  const results: Record<string, string | null> = {};
+  
+  // Capture Desktop screenshots (1920x1080)
+  for (const page of EXPORT_PAGES) {
+    const desktopUrl = `${baseUrl}${page.url}`;
+    results[`${page.id}-desktop`] = await captureScreenshot(desktopUrl, 1920, 1080, true);
+  }
+  
+  // Capture Mobile screenshots (375x812 - iPhone X)
+  for (const page of EXPORT_PAGES) {
+    const mobileUrl = `${baseUrl}${page.url}`;
+    results[`${page.id}-mobile`] = await captureScreenshot(mobileUrl, 375, 812, true);
+  }
+  
+  return results;
+};
+
 export default function LandingPageChatGPTExport() {
   const [isExporting, setIsExporting] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -328,19 +434,49 @@ Generated: ${new Date().toISOString()}
       };
       zip.file('combined-data.json', JSON.stringify(combinedData, null, 2));
       
-      // Step 4: Create folder structure for Kanton Zug
+      // Step 4: Capture screenshots with iframes
+      setCurrentStep('Capturing Desktop & Mobile Screenshots...');
+      setProgress(45);
+      
+      const screenshotData = await captureAllScreenshots();
+      
+      // Step 5: Create folder structure for Kanton Zug
       setCurrentStep('Adding Kanton Zug assets...');
-      setProgress(55);
+      setProgress(60);
       const kantonFolder = zip.folder('kanton-zug');
       kantonFolder?.file('data.json', JSON.stringify(KANTON_ZUG_DATA, null, 2));
-      kantonFolder?.file('screenshot-url.txt', EXPORT_PAGES[0].screenshotUrl);
+      
+      // Add screenshot URLs
+      kantonFolder?.file('screenshot-urls.md', `# Kanton Zug Screenshots
+
+## Desktop
+- Preview: ${EXPORT_PAGES[0].screenshots.desktop}
+
+## Mobile  
+- See mobile-screenshot.png in this folder
+
+## Notes
+- Desktop: 1920x1080 viewport
+- Mobile: 375x812 viewport (iPhone X dimensions)
+`);
+      
+      // Add captured screenshots if available
+      if (screenshotData['kanton-zug-desktop']) {
+        kantonFolder?.file('desktop-screenshot.png', screenshotData['kanton-zug-desktop'], { base64: true });
+      }
+      if (screenshotData['kanton-zug-mobile']) {
+        kantonFolder?.file('mobile-screenshot.png', screenshotData['kanton-zug-mobile'], { base64: true });
+      }
+      
       kantonFolder?.file('page-info.md', `# Kanton Zug Page
 
 **URL:** ${EXPORT_PAGES[0].url}
 **Type:** Canton Landing Page
 **Description:** ${EXPORT_PAGES[0].description}
 
-**Screenshot URL:** ${EXPORT_PAGES[0].screenshotUrl}
+## Screenshots Included
+- desktop-screenshot.png (1920x1080 full page)
+- mobile-screenshot.png (375x812 full page)
 
 ## Key Features
 - 10 unique local tips
@@ -351,19 +487,43 @@ Generated: ${new Date().toISOString()}
 - Schema.org structured data
 `);
       
-      // Step 5: Create folder structure for Stadt Zug
+      // Step 6: Create folder structure for Stadt Zug
       setCurrentStep('Adding Stadt Zug assets...');
-      setProgress(70);
+      setProgress(75);
       const stadtFolder = zip.folder('stadt-zug');
       stadtFolder?.file('data.json', JSON.stringify(STADT_ZUG_DATA, null, 2));
-      stadtFolder?.file('screenshot-url.txt', EXPORT_PAGES[1].screenshotUrl);
+      
+      // Add screenshot URLs
+      stadtFolder?.file('screenshot-urls.md', `# Stadt Zug Screenshots
+
+## Desktop
+- Preview: ${EXPORT_PAGES[1].screenshots.desktop}
+
+## Mobile
+- See mobile-screenshot.png in this folder
+
+## Notes
+- Desktop: 1920x1080 viewport
+- Mobile: 375x812 viewport (iPhone X dimensions)
+`);
+      
+      // Add captured screenshots if available
+      if (screenshotData['stadt-zug-desktop']) {
+        stadtFolder?.file('desktop-screenshot.png', screenshotData['stadt-zug-desktop'], { base64: true });
+      }
+      if (screenshotData['stadt-zug-mobile']) {
+        stadtFolder?.file('mobile-screenshot.png', screenshotData['stadt-zug-mobile'], { base64: true });
+      }
+      
       stadtFolder?.file('page-info.md', `# Stadt Zug Page
 
 **URL:** ${EXPORT_PAGES[1].url}
 **Type:** City Landing Page
 **Description:** ${EXPORT_PAGES[1].description}
 
-**Screenshot URL:** ${EXPORT_PAGES[1].screenshotUrl}
+## Screenshots Included
+- desktop-screenshot.png (1920x1080 full page)
+- mobile-screenshot.png (375x812 full page)
 
 ## Key Features
 - 6 unique content sections
@@ -473,7 +633,7 @@ Schätze Impact und Aufwand für jede Idee.
               <Card key={page.id} className="overflow-hidden">
                 <div className="aspect-video bg-muted relative">
                   <img 
-                    src={page.screenshotUrl} 
+                    src={page.screenshots.desktop} 
                     alt={page.name}
                     className="w-full h-full object-cover object-top"
                   />
@@ -483,6 +643,16 @@ Schätze Impact und Aufwand für jede Idee.
                   >
                     {page.type === 'canton' ? 'Kanton' : 'Stadt'}
                   </Badge>
+                  <div className="absolute top-3 right-3 flex gap-1">
+                    <Badge variant="outline" className="bg-background/80 backdrop-blur-sm">
+                      <Monitor className="h-3 w-3 mr-1" />
+                      Desktop
+                    </Badge>
+                    <Badge variant="outline" className="bg-background/80 backdrop-blur-sm">
+                      <Smartphone className="h-3 w-3 mr-1" />
+                      Mobile
+                    </Badge>
+                  </div>
                 </div>
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2 mb-2">
@@ -490,7 +660,13 @@ Schätze Impact und Aufwand für jede Idee.
                     <h3 className="font-semibold">{page.name}</h3>
                   </div>
                   <p className="text-sm text-muted-foreground mb-2">{page.description}</p>
-                  <code className="text-xs bg-muted px-2 py-1 rounded">{page.url}</code>
+                  <div className="flex items-center gap-2">
+                    <code className="text-xs bg-muted px-2 py-1 rounded">{page.url}</code>
+                    <Badge variant="secondary" className="text-xs">
+                      <Camera className="h-3 w-3 mr-1" />
+                      4 Screenshots
+                    </Badge>
+                  </div>
                 </CardContent>
               </Card>
             ))}
@@ -511,11 +687,20 @@ Schätze Impact und Aufwand für jede Idee.
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="flex items-start gap-3">
                   <div className="p-2 bg-primary/10 rounded-lg">
-                    <Image className="h-4 w-4 text-primary" />
+                    <Monitor className="h-4 w-4 text-primary" />
                   </div>
                   <div>
-                    <p className="font-medium">Screenshots</p>
-                    <p className="text-sm text-muted-foreground">Desktop Hero-Ansichten beider Pages</p>
+                    <p className="font-medium">Desktop Screenshots</p>
+                    <p className="text-sm text-muted-foreground">Full-page (1920x∞) für beide Pages</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <Smartphone className="h-4 w-4 text-primary" />
+                  </div>
+                  <div>
+                    <p className="font-medium">Mobile Screenshots</p>
+                    <p className="text-sm text-muted-foreground">Full-page (375x∞) iPhone X Viewport</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
