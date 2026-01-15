@@ -939,111 +939,219 @@ export const MarketplaceWizard = () => {
           {currentStep === "offers" && (
             <motion.div
               key="offers"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
               className="space-y-6"
             >
-              <div className="text-center space-y-2">
-                <Badge className="bg-green-500/10 text-green-600">
-                  <CheckCircle2 className="w-3.5 h-3.5 mr-1" />
-                  {offers.length} Angebote gefunden
-                </Badge>
-                <h1 className="text-2xl md:text-3xl font-bold">Ihre Fixpreis-Offerten</h1>
-                <p className="text-muted-foreground">
-                  {calculateVolume()}m³ • {SERVICE_LEVELS.find(s => s.id === selectedService)?.name} • {locationData.moveDate || "Flexibles Datum"}
+              {/* Emotional Header */}
+              <div className="text-center space-y-3">
+                <motion.div 
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.1, type: "spring" }}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500/10 to-primary/10 border border-emerald-500/20"
+                >
+                  <span className="text-xl">{stepContent.emoji}</span>
+                  <span className="text-sm font-semibold text-emerald-600">{offers.length} Angebote gefunden!</span>
+                </motion.div>
+                <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
+                  {stepContent.title}
+                </h1>
+                <p className="text-muted-foreground max-w-md mx-auto">
+                  {stepContent.subtitle}
                 </p>
+                
+                {/* Summary Pills */}
+                <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
+                  <span className="inline-flex items-center gap-1.5 text-xs bg-primary/10 text-primary px-3 py-1.5 rounded-full font-medium">
+                    📦 {calculateVolume()}m³
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 text-xs bg-purple-500/10 text-purple-600 px-3 py-1.5 rounded-full font-medium">
+                    {SERVICE_LEVELS.find(s => s.id === selectedService)?.emoji} {SERVICE_LEVELS.find(s => s.id === selectedService)?.name}
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 text-xs bg-emerald-500/10 text-emerald-600 px-3 py-1.5 rounded-full font-medium">
+                    📅 {locationData.moveDate || "Flexibel"}
+                  </span>
+                </div>
               </div>
 
+              {/* Celebration Mini-Banner */}
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="p-4 rounded-xl bg-gradient-to-r from-emerald-50 to-primary/5 dark:from-emerald-500/10 dark:to-primary/10 border border-emerald-200/50 dark:border-emerald-500/20"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white text-xl shadow-lg">
+                    🎉
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-semibold text-foreground">Super! Sie haben bis zu {TRUST_SIGNALS.savings} gespart</p>
+                    <p className="text-sm text-muted-foreground">Wählen Sie jetzt Ihren Favoriten aus</p>
+                  </div>
+                </div>
+              </motion.div>
+
               <div className="space-y-4">
-                {offers.map((offer) => (
-                  <Card 
+                {offers.map((offer, idx) => (
+                  <motion.div
                     key={offer.id}
-                    className={`cursor-pointer transition-all ${
-                      selectedOffer === offer.id 
-                        ? 'border-primary ring-2 ring-primary/20' 
-                        : offer.recommended 
-                          ? 'border-primary/50' 
-                          : 'hover:border-primary/30'
-                    }`}
-                    onClick={() => setSelectedOffer(offer.id)}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.1 }}
                   >
-                    <CardContent className="p-4 md:p-5">
-                      <div className="flex flex-col md:flex-row md:items-center gap-4">
-                        {/* Partner Info */}
-                        <div className="flex items-center gap-3 flex-1">
-                          <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary font-bold text-lg">
-                            {offer.logo}
-                          </div>
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <h3 className="font-semibold">{offer.partner}</h3>
-                              {offer.badge && (
-                                <Badge variant={offer.recommended ? "default" : "secondary"} className="text-xs">
-                                  {offer.badge}
-                                </Badge>
-                              )}
+                    <Card 
+                      className={`cursor-pointer transition-all touch-manipulation ${
+                        selectedOffer === offer.id 
+                          ? 'border-2 border-primary ring-4 ring-primary/20 shadow-xl shadow-primary/10' 
+                          : offer.recommended 
+                            ? 'border-2 border-emerald-500/50 shadow-lg hover:shadow-xl' 
+                            : 'hover:border-primary/30 hover:shadow-lg'
+                      }`}
+                      onClick={() => setSelectedOffer(offer.id)}
+                    >
+                      {offer.recommended && (
+                        <div className="h-1.5 bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-t-lg" />
+                      )}
+                      <CardContent className="p-4 md:p-5">
+                        <div className="flex flex-col md:flex-row md:items-center gap-4">
+                          {/* Partner Info */}
+                          <div className="flex items-center gap-3 flex-1">
+                            <div className={`w-14 h-14 rounded-xl flex items-center justify-center text-lg font-bold shadow-md ${
+                              offer.recommended 
+                                ? 'bg-gradient-to-br from-emerald-400 to-emerald-600 text-white' 
+                                : 'bg-gradient-to-br from-primary/10 to-primary/5 text-primary'
+                            }`}>
+                              {offer.logo}
                             </div>
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                              <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                              {offer.rating} ({offer.reviews})
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Price */}
-                        <div className="text-right">
-                          <div className="text-2xl font-bold">CHF {offer.price.toLocaleString()}</div>
-                          <p className="text-xs text-green-600 font-medium">Fixpreis inkl. MwSt.</p>
-                        </div>
-                      </div>
-
-                      {/* Breakdown (expandable) */}
-                      {selectedOffer === offer.id && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          className="mt-4 pt-4 border-t"
-                        >
-                          <div className="grid md:grid-cols-2 gap-4">
                             <div>
-                              <h4 className="text-sm font-semibold mb-2">Preisaufschlüsselung</h4>
-                              <div className="space-y-1 text-sm">
-                                {offer.breakdown.map((b, i) => (
-                                  <div key={i} className="flex justify-between">
-                                    <span className="text-muted-foreground">{b.label}</span>
-                                    <span className={b.amount < 0 ? 'text-green-600' : ''}>
-                                      {b.amount >= 0 ? '+' : ''}{b.amount} CHF
-                                    </span>
-                                  </div>
-                                ))}
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <h3 className="font-bold text-lg">{offer.partner}</h3>
+                                {offer.badge && (
+                                  <Badge className={`text-xs ${
+                                    offer.recommended 
+                                      ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-sm' 
+                                      : 'bg-muted'
+                                  }`}>
+                                    {offer.recommended ? '⭐ ' : ''}{offer.badge}
+                                  </Badge>
+                                )}
+                              </div>
+                              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <div className="flex text-amber-400">
+                                  {[...Array(5)].map((_, i) => (
+                                    <Star key={i} className={`w-3.5 h-3.5 ${i < Math.floor(offer.rating) ? 'fill-current' : 'opacity-30'}`} />
+                                  ))}
+                                </div>
+                                <span className="font-medium">{offer.rating}</span>
+                                <span className="text-muted-foreground">({offer.reviews} Bewertungen)</span>
                               </div>
                             </div>
-                            <div>
-                              <h4 className="text-sm font-semibold mb-2">Inklusive</h4>
-                              <ul className="space-y-1 text-sm">
-                                {offer.features.map((f, i) => (
-                                  <li key={i} className="flex items-center gap-2">
-                                    <CheckCircle2 className="w-4 h-4 text-green-500" />
-                                    {f}
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
                           </div>
-                        </motion.div>
-                      )}
-                    </CardContent>
-                  </Card>
+
+                          {/* Price */}
+                          <div className="flex items-center justify-between md:block md:text-right">
+                            <div>
+                              <div className="text-2xl md:text-3xl font-bold text-foreground">CHF {offer.price.toLocaleString()}</div>
+                              <p className="text-xs text-emerald-600 font-semibold flex items-center gap-1 md:justify-end">
+                                <Shield className="w-3 h-3" />
+                                Fixpreis inkl. MwSt.
+                              </p>
+                            </div>
+                            {selectedOffer === offer.id && (
+                              <motion.div 
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                className="md:hidden"
+                              >
+                                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+                                  <CheckCircle2 className="w-5 h-5 text-white" />
+                                </div>
+                              </motion.div>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Breakdown (expandable) */}
+                        {selectedOffer === offer.id && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            className="mt-4 pt-4 border-t"
+                          >
+                            <div className="grid md:grid-cols-2 gap-4">
+                              <div>
+                                <h4 className="text-sm font-semibold mb-2 flex items-center gap-2">
+                                  <FileText className="w-4 h-4 text-primary" />
+                                  Preisaufschlüsselung
+                                </h4>
+                                <div className="space-y-1.5 text-sm">
+                                  {offer.breakdown.map((b, i) => (
+                                    <div key={i} className="flex justify-between py-1 border-b border-dashed border-muted last:border-0">
+                                      <span className="text-muted-foreground">{b.label}</span>
+                                      <span className={`font-medium ${b.amount < 0 ? 'text-emerald-600' : ''}`}>
+                                        {b.amount >= 0 ? '+' : ''}{b.amount} CHF
+                                      </span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                              <div>
+                                <h4 className="text-sm font-semibold mb-2 flex items-center gap-2">
+                                  <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                                  Inklusive
+                                </h4>
+                                <ul className="space-y-1.5 text-sm">
+                                  {offer.features.map((f, i) => (
+                                    <li key={i} className="flex items-center gap-2">
+                                      <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                                      {f}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </div>
+                          </motion.div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </motion.div>
                 ))}
               </div>
 
-              <div className="flex justify-between">
+              {/* Sticky CTA (Mobile) */}
+              <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/95 backdrop-blur-md border-t shadow-lg md:hidden z-30">
+                <div className="flex gap-3">
+                  <Button variant="ghost" size="lg" onClick={goBack} className="h-14">
+                    <ArrowLeft className="w-5 h-5" />
+                  </Button>
+                  <Button 
+                    size="lg" 
+                    className="flex-1 h-14 text-base font-semibold shadow-lg shadow-primary/25"
+                    onClick={goNext}
+                    disabled={!selectedOffer}
+                  >
+                    <Heart className="w-5 h-5 mr-2" />
+                    Diese Offerte buchen
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </div>
+                <p className="text-center text-xs text-muted-foreground mt-2">
+                  ✓ Fixpreis-Garantie • ✓ Kostenlose Stornierung
+                </p>
+              </div>
+
+              {/* Desktop CTA */}
+              <div className="hidden md:flex justify-between">
                 <Button variant="ghost" onClick={goBack}>
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Zurück
                 </Button>
-                <Button size="lg" onClick={goNext} disabled={!selectedOffer}>
+                <Button size="lg" onClick={goNext} disabled={!selectedOffer} className="shadow-lg">
+                  <Heart className="w-4 h-4 mr-2" />
                   Diese Offerte buchen
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
@@ -1055,45 +1163,91 @@ export const MarketplaceWizard = () => {
           {currentStep === "booking" && selectedOfferData && (
             <motion.div
               key="booking"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
               className="space-y-6"
             >
-              <div className="text-center space-y-2">
-                <Badge className="bg-primary/10 text-primary">Schritt 5</Badge>
-                <h1 className="text-2xl md:text-3xl font-bold">Buchung abschliessen</h1>
-                <p className="text-muted-foreground">Fast geschafft! Noch ein paar Angaben.</p>
+              {/* Emotional Header */}
+              <div className="text-center space-y-3">
+                <motion.div 
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.1, type: "spring" }}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-primary/10 to-rose-500/10 border border-primary/20"
+                >
+                  <span className="text-xl">{stepContent.emoji}</span>
+                  <span className="text-sm font-semibold text-primary">{stepContent.badge}</span>
+                </motion.div>
+                <h1 className="text-2xl md:text-3xl font-bold">{stepContent.title}</h1>
+                <p className="text-muted-foreground max-w-md mx-auto">{stepContent.subtitle}</p>
               </div>
+
+              {/* Selected Partner Mini-Card */}
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.15 }}
+                className="p-4 rounded-xl bg-gradient-to-r from-primary/5 to-emerald-500/5 border border-primary/20"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center text-white text-lg font-bold shadow-lg">
+                    {selectedOfferData.logo}
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-bold">{selectedOfferData.partner}</h3>
+                      <div className="flex text-amber-400">
+                        {[...Array(5)].map((_, i) => (
+                          <Star key={i} className="w-3 h-3 fill-current" />
+                        ))}
+                      </div>
+                    </div>
+                    <p className="text-sm text-muted-foreground">{selectedOfferData.reviews} Bewertungen</p>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-xl font-bold text-primary">CHF {selectedOfferData.price.toLocaleString()}</div>
+                    <p className="text-xs text-emerald-600 font-medium">Fixpreis</p>
+                  </div>
+                </div>
+              </motion.div>
 
               <div className="grid md:grid-cols-2 gap-6">
                 {/* Contact Form */}
-                <Card>
+                <Card className="border-2 shadow-lg overflow-hidden">
+                  <div className="h-1 bg-gradient-to-r from-primary to-primary/50" />
                   <CardContent className="p-5 space-y-4">
-                    <h3 className="font-semibold">Ihre Kontaktdaten</h3>
-                    <div className="space-y-3">
+                    <h3 className="font-semibold flex items-center gap-2">
+                      <Users className="w-5 h-5 text-primary" />
+                      Ihre Kontaktdaten
+                    </h3>
+                    <div className="space-y-4">
                       <div className="space-y-1.5">
-                        <Label>Name</Label>
+                        <Label className="text-sm font-medium">Name *</Label>
                         <Input 
                           placeholder="Vor- und Nachname"
+                          className="h-12 text-base"
                           value={contactData.name}
                           onChange={(e) => setContactData({...contactData, name: e.target.value})}
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <Label>E-Mail</Label>
+                        <Label className="text-sm font-medium">E-Mail *</Label>
                         <Input 
                           type="email"
                           placeholder="ihre@email.ch"
+                          className="h-12 text-base"
                           value={contactData.email}
                           onChange={(e) => setContactData({...contactData, email: e.target.value})}
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <Label>Telefon</Label>
+                        <Label className="text-sm font-medium">Telefon (optional)</Label>
                         <Input 
                           type="tel"
                           placeholder="+41 79 123 45 67"
+                          className="h-12 text-base"
                           value={contactData.phone}
                           onChange={(e) => setContactData({...contactData, phone: e.target.value})}
                         />
@@ -1103,71 +1257,107 @@ export const MarketplaceWizard = () => {
                 </Card>
 
                 {/* Summary */}
-                <Card className="bg-muted/50">
+                <Card className="bg-gradient-to-br from-muted/50 to-muted/30 shadow-lg">
                   <CardContent className="p-5 space-y-4">
-                    <h3 className="font-semibold">Ihre Buchung</h3>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Partner</span>
-                        <span className="font-medium">{selectedOfferData.partner}</span>
+                    <h3 className="font-semibold flex items-center gap-2">
+                      <ClipboardCheck className="w-5 h-5 text-primary" />
+                      Ihre Buchungsübersicht
+                    </h3>
+                    <div className="space-y-3 text-sm">
+                      <div className="flex justify-between py-2 border-b border-dashed">
+                        <span className="text-muted-foreground flex items-center gap-2">
+                          <Building2 className="w-4 h-4" /> Partner
+                        </span>
+                        <span className="font-semibold">{selectedOfferData.partner}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Termin</span>
-                        <span className="font-medium">{locationData.moveDate || "Flexibel"}</span>
+                      <div className="flex justify-between py-2 border-b border-dashed">
+                        <span className="text-muted-foreground flex items-center gap-2">
+                          <Calendar className="w-4 h-4" /> Termin
+                        </span>
+                        <span className="font-semibold">{locationData.moveDate || "Flexibel"}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Service</span>
-                        <span className="font-medium">{SERVICE_LEVELS.find(s => s.id === selectedService)?.name}</span>
+                      <div className="flex justify-between py-2 border-b border-dashed">
+                        <span className="text-muted-foreground flex items-center gap-2">
+                          <Package className="w-4 h-4" /> Service
+                        </span>
+                        <span className="font-semibold">{SERVICE_LEVELS.find(s => s.id === selectedService)?.emoji} {SERVICE_LEVELS.find(s => s.id === selectedService)?.name}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Route</span>
-                        <span className="font-medium">{locationData.fromPlz} → {locationData.toPlz}</span>
+                      <div className="flex justify-between py-2 border-b border-dashed">
+                        <span className="text-muted-foreground flex items-center gap-2">
+                          <MapPin className="w-4 h-4" /> Route
+                        </span>
+                        <span className="font-semibold">{locationData.fromPlz} → {locationData.toPlz}</span>
                       </div>
-                      <hr />
-                      <div className="flex justify-between text-lg">
-                        <span className="font-semibold">Total</span>
-                        <span className="font-bold text-primary">CHF {selectedOfferData.price.toLocaleString()}</span>
+                      <div className="flex justify-between py-3 bg-primary/5 rounded-lg px-3 -mx-1">
+                        <span className="font-bold text-lg">Total</span>
+                        <span className="font-bold text-xl text-primary">CHF {selectedOfferData.price.toLocaleString()}</span>
                       </div>
                     </div>
 
-                    <div className="flex items-start gap-2 pt-2">
+                    <div className="flex items-start gap-3 pt-3 p-3 bg-background rounded-lg border">
                       <Checkbox 
                         id="terms"
+                        className="h-5 w-5 mt-0.5"
                         checked={termsAccepted}
                         onCheckedChange={(c) => setTermsAccepted(!!c)}
                       />
-                      <Label htmlFor="terms" className="text-xs text-muted-foreground leading-tight">
-                        Ich akzeptiere die AGB und Datenschutzbestimmungen und bestätige die Buchung.
+                      <Label htmlFor="terms" className="text-xs text-muted-foreground leading-relaxed cursor-pointer">
+                        Ich akzeptiere die <span className="text-primary underline">AGB</span> und <span className="text-primary underline">Datenschutzbestimmungen</span> und bestätige die Buchung.
                       </Label>
                     </div>
                   </CardContent>
                 </Card>
               </div>
 
-              <Card className="border-primary/20 bg-primary/5">
-                <CardContent className="p-4 flex flex-col md:flex-row items-center justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <CreditCard className="w-6 h-6 text-primary" />
+              {/* Payment CTA */}
+              <Card className="border-2 border-primary/30 bg-gradient-to-r from-primary/5 to-emerald-500/5 shadow-lg">
+                <CardContent className="p-5 flex flex-col md:flex-row items-center justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center text-white shadow-lg">
+                      <CreditCard className="w-6 h-6" />
+                    </div>
                     <div>
-                      <p className="font-semibold">Sichere Zahlung via Stripe</p>
-                      <p className="text-xs text-muted-foreground">Kredit-/Debitkarte • TWINT kommt bald</p>
+                      <p className="font-bold">Sichere Zahlung via Stripe</p>
+                      <p className="text-xs text-muted-foreground flex items-center gap-2">
+                        <Shield className="w-3 h-3" />
+                        Kredit-/Debitkarte • TWINT • Apple Pay
+                      </p>
                     </div>
                   </div>
-                  <Button 
-                    size="lg" 
-                    className="w-full md:w-auto"
-                    onClick={goNext}
-                    disabled={!termsAccepted || !contactData.name || !contactData.email}
-                  >
-                    Jetzt buchen – CHF {selectedOfferData.price.toLocaleString()}
-                  </Button>
                 </CardContent>
               </Card>
 
-              <div className="flex justify-start">
+              {/* Sticky CTA (Mobile) */}
+              <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/95 backdrop-blur-md border-t shadow-lg md:hidden z-30">
+                <Button 
+                  size="lg" 
+                  className="w-full h-14 text-base font-semibold shadow-lg shadow-primary/25"
+                  onClick={goNext}
+                  disabled={!termsAccepted || !contactData.name || !contactData.email}
+                >
+                  <CreditCard className="w-5 h-5 mr-2" />
+                  Jetzt buchen – CHF {selectedOfferData.price.toLocaleString()}
+                </Button>
+                <div className="flex items-center justify-center gap-3 mt-2 text-xs text-muted-foreground">
+                  <span className="flex items-center gap-1"><Shield className="w-3 h-3" /> Sicher</span>
+                  <span className="flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> Fixpreis</span>
+                </div>
+              </div>
+
+              {/* Desktop CTA */}
+              <div className="hidden md:flex justify-between items-center">
                 <Button variant="ghost" onClick={goBack}>
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Zurück
+                </Button>
+                <Button 
+                  size="lg" 
+                  className="h-14 px-8 text-lg shadow-lg"
+                  onClick={goNext}
+                  disabled={!termsAccepted || !contactData.name || !contactData.email}
+                >
+                  Jetzt buchen – CHF {selectedOfferData.price.toLocaleString()}
+                  <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </div>
             </motion.div>
@@ -1179,78 +1369,188 @@ export const MarketplaceWizard = () => {
               key="confirmation"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="text-center space-y-6 py-8"
+              className="text-center space-y-8 py-8"
             >
-              <div className="w-20 h-20 rounded-full bg-green-500 flex items-center justify-center mx-auto">
-                <CheckCircle2 className="w-10 h-10 text-white" />
-              </div>
+              {/* Success Animation */}
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", damping: 10, stiffness: 100 }}
+                className="relative"
+              >
+                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center mx-auto shadow-xl shadow-emerald-500/30">
+                  <CheckCircle2 className="w-12 h-12 text-white" />
+                </div>
+                {/* Celebration Particles */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                  className="absolute inset-0 flex items-center justify-center"
+                >
+                  {["🎉", "⭐", "🎊", "✨"].map((emoji, i) => (
+                    <motion.span
+                      key={i}
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ 
+                        opacity: [0, 1, 0], 
+                        scale: [0.5, 1.2, 0.8],
+                        x: [0, (i % 2 === 0 ? 40 : -40) * (i + 1) * 0.5],
+                        y: [0, -30 - i * 10],
+                      }}
+                      transition={{ delay: 0.5 + i * 0.1, duration: 1.5 }}
+                      className="absolute text-2xl"
+                    >
+                      {emoji}
+                    </motion.span>
+                  ))}
+                </motion.div>
+              </motion.div>
               
-              <div className="space-y-2">
-                <h1 className="text-2xl md:text-3xl font-bold">Buchung bestätigt!</h1>
+              {/* Emotional Success Message */}
+              <div className="space-y-3">
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500/10 to-primary/10 border border-emerald-500/20"
+                >
+                  <span className="text-xl">{stepContent.emoji}</span>
+                  <span className="text-sm font-semibold text-emerald-600">{stepContent.badge}</span>
+                </motion.div>
+                <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
+                  {stepContent.title}
+                </h1>
                 <p className="text-muted-foreground max-w-md mx-auto">
-                  Vielen Dank! Sie erhalten in Kürze eine Bestätigung per E-Mail. 
-                  Ihr Umzugspartner wird sich 2 Tage vor dem Termin melden.
+                  {stepContent.subtitle}
                 </p>
               </div>
 
-              <Card className="max-w-md mx-auto">
-                <CardContent className="p-5 space-y-3 text-left">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Buchungsnummer</span>
-                    <span className="font-mono font-bold">UCH-2024-{Math.floor(Math.random() * 9000 + 1000)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Umzugstermin</span>
-                    <span className="font-semibold">{locationData.moveDate || "Wird bestätigt"}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Partner</span>
-                    <span className="font-semibold">{selectedOfferData?.partner}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Total bezahlt</span>
-                    <span className="font-bold text-primary">CHF {selectedOfferData?.price.toLocaleString()}</span>
-                  </div>
-                </CardContent>
-              </Card>
+              {/* Booking Card */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+              >
+                <Card className="max-w-md mx-auto border-2 shadow-xl overflow-hidden">
+                  <div className="h-2 bg-gradient-to-r from-emerald-400 via-primary to-emerald-400" />
+                  <CardContent className="p-6 space-y-4 text-left">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Buchungsnummer</span>
+                      <span className="font-mono font-bold text-primary bg-primary/10 px-3 py-1 rounded-lg">
+                        UCH-2025-{Math.floor(Math.random() * 9000 + 1000)}
+                      </span>
+                    </div>
+                    <div className="space-y-3 pt-2">
+                      <div className="flex justify-between py-2 border-b border-dashed">
+                        <span className="text-muted-foreground flex items-center gap-2">
+                          <Calendar className="w-4 h-4" /> Umzugstermin
+                        </span>
+                        <span className="font-semibold">{locationData.moveDate || "Wird bestätigt"}</span>
+                      </div>
+                      <div className="flex justify-between py-2 border-b border-dashed">
+                        <span className="text-muted-foreground flex items-center gap-2">
+                          <Building2 className="w-4 h-4" /> Partner
+                        </span>
+                        <span className="font-semibold">{selectedOfferData?.partner}</span>
+                      </div>
+                      <div className="flex justify-between py-2 border-b border-dashed">
+                        <span className="text-muted-foreground flex items-center gap-2">
+                          <MapPin className="w-4 h-4" /> Route
+                        </span>
+                        <span className="font-semibold">{locationData.fromPlz} → {locationData.toPlz}</span>
+                      </div>
+                      <div className="flex justify-between items-center py-3 bg-emerald-500/10 rounded-xl px-4 -mx-2">
+                        <span className="font-bold text-lg flex items-center gap-2">
+                          <CheckCircle2 className="w-5 h-5 text-emerald-600" /> Bezahlt
+                        </span>
+                        <span className="font-bold text-xl text-emerald-600">CHF {selectedOfferData?.price.toLocaleString()}</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
 
-              <div className="grid md:grid-cols-3 gap-4 max-w-2xl mx-auto">
+              {/* Next Steps */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className="grid md:grid-cols-3 gap-4 max-w-2xl mx-auto"
+              >
                 {[
-                  { icon: Mail, title: "E-Mail Bestätigung", desc: "In wenigen Minuten" },
-                  { icon: MessageSquare, title: "Partner kontaktiert Sie", desc: "2 Tage vor Umzug" },
-                  { icon: ClipboardCheck, title: "Checkliste verfügbar", desc: "In Ihrem Dashboard" },
+                  { icon: Mail, emoji: "📧", title: "E-Mail Bestätigung", desc: "In wenigen Minuten", color: "from-primary/10 to-primary/5" },
+                  { icon: Phone, emoji: "📞", title: "Partner kontaktiert Sie", desc: "2 Tage vor Umzug", color: "from-purple-500/10 to-purple-500/5" },
+                  { icon: ClipboardCheck, emoji: "✅", title: "Checkliste verfügbar", desc: "In Ihrem Dashboard", color: "from-emerald-500/10 to-emerald-500/5" },
                 ].map((item, i) => (
-                  <div key={i} className="p-4 rounded-lg bg-muted/50 text-left">
-                    <item.icon className="w-6 h-6 text-primary mb-2" />
-                    <h4 className="font-semibold text-sm">{item.title}</h4>
+                  <motion.div 
+                    key={i} 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 + i * 0.1 }}
+                    className={`p-5 rounded-xl bg-gradient-to-br ${item.color} border text-left hover:shadow-md transition-shadow`}
+                  >
+                    <div className="text-2xl mb-2">{item.emoji}</div>
+                    <h4 className="font-bold text-sm">{item.title}</h4>
                     <p className="text-xs text-muted-foreground">{item.desc}</p>
-                  </div>
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
+
+              {/* Testimonial */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.7 }}
+                className="max-w-md mx-auto p-4 rounded-xl bg-gradient-to-r from-amber-50 to-amber-100/50 dark:from-amber-500/10 dark:to-amber-500/5 border border-amber-200/50 dark:border-amber-500/20"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="text-3xl">💬</div>
+                  <div>
+                    <p className="text-sm italic text-foreground">
+                      "Alles super geklappt! Der Umzug war stressfrei und das Team sehr professionell."
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">— Sandra M., Zürich</p>
+                    <div className="flex text-amber-400 mt-1">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="w-3 h-3 fill-current" />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
 
-      {/* Trust Footer */}
-      <div className="border-t bg-muted/30 py-6 mt-8">
+      {/* Enhanced Trust Footer */}
+      <div className="border-t bg-gradient-to-r from-muted/50 via-muted/30 to-muted/50 py-8 mt-8">
         <div className="container mx-auto px-4">
-          <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
-            <span className="flex items-center gap-2">
-              <Shield className="w-4 h-4" />
+          <div className="flex flex-wrap justify-center gap-x-8 gap-y-4 text-sm">
+            <span className="flex items-center gap-2 font-medium">
+              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                <Shield className="w-4 h-4 text-primary" />
+              </div>
               Fixpreis-Garantie
             </span>
-            <span className="flex items-center gap-2">
-              <Star className="w-4 h-4 text-yellow-500" />
-              4.9/5 (2,340+ Bewertungen)
+            <span className="flex items-center gap-2 font-medium">
+              <div className="w-8 h-8 rounded-full bg-amber-500/10 flex items-center justify-center">
+                <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+              </div>
+              {TRUST_SIGNALS.rating}/5 ({TRUST_SIGNALS.reviews}+ Bewertungen)
             </span>
-            <span className="flex items-center gap-2">
-              <Award className="w-4 h-4" />
-              Geprüfte Partner
+            <span className="flex items-center gap-2 font-medium">
+              <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center">
+                <BadgeCheck className="w-4 h-4 text-emerald-600" />
+              </div>
+              {TRUST_SIGNALS.companies} geprüfte Partner
             </span>
-            <span className="flex items-center gap-2">
-              <Handshake className="w-4 h-4" />
-              Swiss Made
+            <span className="flex items-center gap-2 font-medium">
+              <div className="w-8 h-8 rounded-full bg-rose-500/10 flex items-center justify-center">
+                <HeartHandshake className="w-4 h-4 text-rose-500" />
+              </div>
+              Swiss Made 🇨🇭
             </span>
           </div>
         </div>
