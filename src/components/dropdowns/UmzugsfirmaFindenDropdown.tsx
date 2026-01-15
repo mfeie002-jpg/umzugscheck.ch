@@ -85,7 +85,7 @@ export const UmzugsfirmaFindenDropdown = ({ isOpen, onClose }: UmzugsfirmaFinden
           {/* Column 1: Suche + Beliebte Städte */}
           <div>
             <DropdownSection 
-              title={navVariant.labels.firmen.toUpperCase()} 
+              title={navVariant.dropdownTitles.firmen} 
               subtitle={navVariant.microcopy.firmen}
             >
               {/* Suchfeld */}
@@ -216,7 +216,7 @@ export const UmzugsfirmaFindenDropdown = ({ isOpen, onClose }: UmzugsfirmaFinden
           {/* Column 3: CTA Card */}
           <div className="lg:border-l lg:border-border lg:pl-6">
             <DropdownCTACard
-              title="Offerten in deiner Region"
+              title={navVariant.ctaCard.firmen.title}
               description="Finde geprüfte Umzugsfirmen in wenigen Minuten."
               icon={Navigation}
               bullets={[
@@ -224,7 +224,7 @@ export const UmzugsfirmaFindenDropdown = ({ isOpen, onClose }: UmzugsfirmaFinden
                 "Bewertungen & Vergleich",
                 "Kostenlos & unverbindlich"
               ]}
-              buttonText="Offerten anfordern"
+              buttonText={navVariant.ctaCard.firmen.buttonText}
               buttonHref="/umzugsofferten"
               onClose={onClose}
             />
