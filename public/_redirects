@@ -1,3 +1,14 @@
+# SEO Redirects - Legacy URLs to Canonical Structure (301)
+# City legacy pattern: /:city/umzugsfirmen -> /umzugsfirmen/:city
+/:city/umzugsfirmen   /umzugsfirmen/:city   301
+
+# Specific legacy city redirects (explicit for safety)
+/zuerich/umzugsfirmen   /umzugsfirmen/zuerich   301
+/bern/umzugsfirmen      /umzugsfirmen/bern      301
+/basel/umzugsfirmen     /umzugsfirmen/basel     301
+/luzern/umzugsfirmen    /umzugsfirmen/luzern    301
+/genf/umzugsfirmen      /umzugsfirmen/genf      301
+
 # SPA Fallback - All routes serve index.html for React Router
 # Assets with hashes are served directly
 /assets/*  /assets/:splat  200
