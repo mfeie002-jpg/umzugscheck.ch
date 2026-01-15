@@ -75,6 +75,7 @@ const LuzernMoving = lazy(() => import("./pages/city/LuzernMoving"));
 // Regional landing pages
 const ZugV1Landing = lazy(() => import("./pages/umzugsfirmen/zug-v1"));
 const ZugV2Landing = lazy(() => import("./pages/umzugsfirmen/zug-v2"));
+const ZugV3Landing = lazy(() => import("./pages/umzugsfirmen/zug-v3"));
 
 // Provider pages
 const ProviderPricingPage = lazy(() => import("./pages/provider/ProviderPricing"));
@@ -569,6 +570,7 @@ const AppRouterContent = () => {
           <Route path="/anbieter/portal" element={<ProviderPortal />} />
           <Route path="/umzugsfirmen/zug-v1" element={<ZugV1Landing />} />
           <Route path="/umzugsfirmen/zug-v2" element={<ZugV2Landing />} />
+          <Route path="/umzugsfirmen/zug-v3" element={<ZugV3Landing />} />
           <Route path="/umzugsofferten" element={<Umzugsofferten />} />
           <Route path="/umzugsofferten-baseline" element={<UmzugsoffertenBaseline />} />
           <Route path="/umzugsofferten-v1" element={<UmzugsoffertenV1 />} />
