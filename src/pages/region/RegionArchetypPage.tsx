@@ -29,9 +29,11 @@ import { motion } from "framer-motion";
 import { useMemo, useCallback } from "react";
 import { ArrowRight, MapPin } from "lucide-react";
 
+// Unified Hero Component (matches homepage style)
+import { UnifiedHero } from "@/components/shared/UnifiedHero";
+
 // Archetyp Components
 import {
-  RegionHero,
   RegionStickyBar,
   RegionStats,
   RegionProviders,
@@ -268,10 +270,22 @@ const RegionArchetypPage = () => {
           regionType="canton" 
         />
 
-        {/* Zone 1: Above the Fold - Transaction Focus */}
-        <RegionHero
-          region={region}
-          onRegionChange={handleRegionChange}
+        {/* Zone 1: Above the Fold - Unified Hero (Homepage Style) */}
+        <UnifiedHero
+          title={`Umzugsfirmen Kanton ${region.name}`}
+          titleAccent="Jetzt gratis vergleichen"
+          subtitle={`Vergleichen Sie ${region.stats.providerCount}+ geprüfte Umzugsfirmen im Kanton ${region.name} und erhalten Sie kostenlose Offerten.`}
+          locationName={region.name}
+          locationShort={region.short}
+          stats={{
+            rating: region.stats.avgRating,
+            reviewCount: region.stats.reviewCount,
+            providerCount: region.stats.providerCount,
+            activeUsers: region.stats.activeUsersBase
+          }}
+          backgroundImage={heroImage}
+          prefillFrom={region.name}
+          variant="canton"
         />
 
         {/* NEW: Anchor Navigation for Sitelinks */}
