@@ -282,6 +282,10 @@ export const RegionHero = ({ region, onRegionChange }: RegionHeroProps) => {
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
 
+            <p className="mt-3 text-xs text-muted-foreground text-center">
+              Umzugscheck.ch ist ein Vergleichs- & Vermittlungsservice. Die Durchführung erfolgt durch geprüfte Partnerfirmen.
+            </p>
+
             {/* Trust Badges */}
             <div className="flex flex-wrap items-center justify-center gap-4 mt-4 text-xs text-muted-foreground">
               <span className="flex items-center gap-1">

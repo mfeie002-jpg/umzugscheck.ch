@@ -16,6 +16,7 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { InteractiveSwitzerlandMap } from "@/components/InteractiveSwitzerlandMap";
+import { CITIES_MAP } from "@/data/locations";
 
 const cantons = [
   { name: "Zürich", slug: "zuerich", companies: 42, moves: "1'200+", avgPrice: "CHF 1'200" },
@@ -213,8 +214,9 @@ const Regionen = () => {
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredCantons.map((canton, index) => (
                 <ScrollReveal key={canton.slug} delay={index * 0.02}>
-                  <Link to={`/umzugsfirmen/kanton-${canton.slug}`}>
-                    <Card variant="elevated" className="p-6 hover-lift border-2 hover:border-primary/30 h-full">
+                  <div className="h-full flex flex-col gap-3">
+                    <Link to={`/umzugsfirmen/kanton-${canton.slug}`}>
+                      <Card variant="elevated" className="p-6 hover-lift border-2 hover:border-primary/30 h-full">
                       <div className="flex items-start gap-4 mb-4">
                         <div className="w-12 h-12 rounded-xl gradient-hero flex items-center justify-center flex-shrink-0">
                           <MapPin className="w-6 h-6 text-white" />
@@ -238,7 +240,24 @@ const Regionen = () => {
                         </div>
                       </div>
                     </Card>
-                  </Link>
+                    </Link>
+
+                    {/* City links (internal linking) */}
+                    <div className="flex flex-wrap gap-2">
+                      {Object.values(CITIES_MAP)
+                        .filter((c) => c.cantonSlug === canton.slug)
+                        .slice(0, 6)
+                        .map((c) => (
+                          <Link
+                            key={c.slug}
+                            to={`/umzugsfirmen/${c.slug}`}
+                            className="text-xs px-3 py-1 rounded-full border border-border/70 hover:bg-muted/50 transition-colors"
+                          >
+                            {c.name}
+                          </Link>
+                        ))}
+                    </div>
+                  </div>
                 </ScrollReveal>
               ))}
             </div>

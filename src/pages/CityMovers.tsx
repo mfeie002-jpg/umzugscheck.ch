@@ -5,10 +5,15 @@ import { AirbnbCompanyCard } from '@/components/home/AirbnbCompanyCard';
 import { MiniCalculator } from '@/components/home/MiniCalculator';
 import { USPCard } from '@/components/home/USPCard';
 import { FAQAccordion } from '@/components/FAQAccordion';
-import { CheckCircle, MapPin, Clock, Shield, Star, Zap } from 'lucide-react';
+import { CheckCircle, MapPin, Clock, Shield, Star, Zap, ArrowRight, Building2, Sparkles } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Helmet } from 'react-helmet';
+import { CITIES_MAP, getCity } from '@/data/locations';
+import { getRegionImage } from '@/data/region-images';
+
+// SEO helpers
+import { generateFAQSchema, generateHowToSchema } from '@/lib/seo-enhanced';
 
 interface CityData {
   name: string;
@@ -208,21 +213,21 @@ const cityDatabase: Record<string, CityData> = {
     name: 'zug',
     displayName: 'Zug',
     heroTitle: 'Die besten Umzugsfirmen in Zug im Vergleich',
-    heroSubtitle: 'Kostenlose Offerten von Premium-Umzugsfirmen im Kanton Zug.',
+    heroSubtitle: 'Kostenlose Offerten von geprüften Partnerfirmen in Zug. 100% unverbindlich, transparent und auf Wunsch als Komplettpaket mit Endreinigung & Wohnungsabgabe.',
     liveSignal: '4 Personen aus Zug vergleichen gerade Umzüge',
     liveCount: 4,
     backgroundImage: 'https://images.unsplash.com/photo-1527576539890-dfa815648363?w=1920&q=80',
     advantages: [
-      { title: 'Erfahrung Altstadt Zug', description: 'Expertise für historisches Zentrum', icon: Shield },
-      { title: 'Hochwertige Haushalte', description: 'Spezialisiert auf gehobene Ansprüche', icon: Star },
-      { title: 'Diskrete Umzugsservices', description: 'Professionell und vertraulich', icon: Clock }
+      { title: 'Erfahrung Altstadt Zug', description: 'Ortskenntnis für Altstadt & Seepromenade', icon: Shield },
+      { title: 'Hochwertige Haushalte', description: 'Partner mit Erfahrung bei hochwertigen Haushalten', icon: Star },
+      { title: 'Diskrete Umzugsservices', description: 'Diskrete Abwicklung durch geprüfte Partner', icon: Clock }
     ],
     districts: ['Baar', 'Cham', 'Neuheim'],
     priceExamples: [
       { route: '3 Zimmer Zug → Cham', price: 'CHF 1100–1700' }
     ],
     faq: [
-      { question: 'Was kostet ein Umzug in Zug?', answer: 'Ein 3-Zimmer-Umzug kostet in Zug durchschnittlich CHF 1100–1700.' },
+      { question: 'Was kostet ein Umzug in Zug?', answer: 'Ein 3-Zimmer-Umzug kostet in Zug je nach Aufwand meist CHF 1100–1700. Umzugscheck.ch ist ein Vergleichsportal und vermittelt passende Partnerfirmen.' },
       { question: 'Bieten Umzugsfirmen in Zug Premium-Service?', answer: 'Ja, viele Anbieter sind auf hochwertige Haushalte und diskrete Umzüge spezialisiert.' }
     ]
   },
@@ -325,7 +330,7 @@ const cityDatabase: Record<string, CityData> = {
     advantages: [
       { title: 'Erfahrung Bergregion', description: 'Spezialisiert auf alpine Zufahrten', icon: Zap },
       { title: 'Regionale Preise Graubünden', description: 'Faire Konditionen für GR', icon: MapPin },
-      { title: 'Teams für enge Altstadt', description: 'Expertise für historisches Zentrum', icon: Shield }
+      { title: 'Teams für enge Altstadt', description: 'Ortskenntnis für Altstadt & Seepromenade', icon: Shield }
     ],
     districts: ['Masans', 'Sand', 'Lürlibad'],
     priceExamples: [
@@ -338,14 +343,70 @@ const cityDatabase: Record<string, CityData> = {
   }
 };
 
+type CityInfo = NonNullable<ReturnType<typeof getCity>>;
+
+const formatCHFRange = (min: number, max: number) => {
+  const fmt = (n: number) => n.toLocaleString('de-CH');
+  return `CHF ${fmt(min)}–${fmt(max)}`;
+};
+
+const buildGenericCityData = (info: CityInfo): CityData => {
+  const liveCount = Math.max(3, Math.min(18, (info.name.length * 2) % 19));
+
+  return {
+    name: info.slug,
+    displayName: info.name,
+    heroTitle: `Umzugsfirmen in ${info.name} vergleichen`,
+    heroSubtitle: `Vergleichen Sie geprüfte Umzugsfirmen in ${info.name} (${info.cantonShort}) und erhalten Sie kostenlose, unverbindliche Offerten.`,
+    liveSignal: `${liveCount} Personen aus ${info.name} vergleichen gerade Umzüge`,
+    liveCount,
+    // Für neue City-Pages nutzen wir immer das Kanton-Bild: konsistent, hochwertig, relevant.
+    backgroundImage: getRegionImage(info.cantonSlug),
+    advantages: [
+      { title: 'Lokale Partner', description: `Geprüfte Umzugsfirmen mit Ortskenntnis in ${info.name} und Umgebung`, icon: MapPin },
+      { title: 'Wohnungsabgabe möglich', description: 'Auf Wunsch: Umzug + Endreinigung mit Abnahmegarantie als Paket', icon: Shield },
+      { title: 'Schnelle Offerten', description: 'Mehrere Angebote vergleichen und das beste Preis-Leistungs-Paket wählen', icon: Zap }
+    ],
+    districts: ['Zentrum', 'Altstadt', 'Agglomeration', 'Umland'],
+    priceExamples: [
+      { route: `1.5–2.5 Zimmer ${info.name} (innerhalb Stadt)`, price: formatCHFRange(550, 1050) },
+      { route: `3.5–4.5 Zimmer ${info.name} → Region ${info.cantonName}`, price: formatCHFRange(1100, 2300) }
+    ],
+    faq: [
+      {
+        question: `Was kostet ein Umzug in ${info.name}?`,
+        answer: `Die Kosten hängen von Wohnungsgrösse, Stockwerken, Distanz und Zusatzservices ab. Als Richtwert liegen 2.5-Zimmer-Umzüge häufig bei ${formatCHFRange(650, 1250)}.`
+      },
+      {
+        question: 'Wie schnell erhalte ich Offerten?',
+        answer: 'In der Regel erhalten Sie mehrere Offerten innerhalb von 24–48 Stunden. Bei kurzfristigen Terminen helfen wir, verfügbare Teams schneller zu finden.'
+      },
+      {
+        question: 'Gibt es ein Komplettpaket mit Wohnungsabgabe?',
+        answer: 'Ja. Viele Partner bieten Umzug, Endreinigung und Abnahmevorbereitung als Paket an. Das reduziert Koordination und spart Zeit am Umzugstag.'
+      }
+    ]
+  };
+};
+
 export default function CityMovers() {
-  const { city } = useParams<{ city: string }>();
+  const params = useParams<{ city?: string; slug?: string }>();
+  const citySlug = decodeURIComponent((params.city || params.slug || '').trim()).toLowerCase();
   const navigate = useNavigate();
   const [companies, setCompanies] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [liveCount, setLiveCount] = useState(0);
 
-  const cityData = city ? cityDatabase[city.toLowerCase()] : null;
+  const cityInfo = citySlug ? getCity(citySlug) : null;
+  const cityData = cityInfo ? (cityDatabase[citySlug] ?? buildGenericCityData(cityInfo)) : null;
+
+  const relatedCities = cityInfo
+    ? Object.values(CITIES_MAP)
+        .filter((c) => c.cantonSlug === cityInfo.cantonSlug && c.slug !== cityInfo.slug)
+        .slice(0, 8)
+    : [];
+
+  const cantonUrl = cityInfo ? `/umzugsfirmen/kanton-${cityInfo.cantonSlug}` : '/regionen';
 
   useEffect(() => {
     if (!cityData) return;
@@ -396,18 +457,149 @@ export default function CityMovers() {
     );
   }
 
+  const isZug = citySlug === 'zug';
+  const canonicalUrl = `https://umzugscheck.ch/umzugsfirmen/${citySlug}`;
+  const ogImage = isZug ? getRegionImage('zug') : cityData.backgroundImage;
+  const seoTitle = isZug
+    ? 'Umzugsfirmen Zug (Stadt) vergleichen | Offerten gratis | Umzugscheck'
+    : `${cityData.heroTitle} | Umzugscheck.ch`;
+  const seoDescription = isZug
+    ? 'Vergleichen Sie geprüfte Umzugsfirmen in der Stadt Zug. Gratis Offerten in 24–48h, transparente Preise und auf Wunsch Komplettpaket inkl. Endreinigung & Wohnungsabgabe. Bis zu 40% sparen.'
+    : cityData.heroSubtitle;
+  const seoKeywords = isZug
+    ? [
+        'Umzugsfirma Zug',
+        'Umzugsfirmen Zug',
+        'Umzug Zug',
+        'Umzugskosten Zug',
+        'Umzugsunternehmen Zug',
+        'Umzug Zug Altstadt',
+        'Umzug Zug Seestrasse',
+        'Umzug Zug Expat',
+        'Firmenumzug Zug',
+        'Umzug + Endreinigung Zug',
+        'Wohnungsabgabe Zug',
+        'Halteverbotszone Zug',
+      ]
+    : [
+        `Umzugsfirma ${cityData.displayName}`,
+        `Umzugsfirmen ${cityData.displayName}`,
+        `Umzug ${cityData.displayName}`,
+        `Umzugskosten ${cityData.displayName}`,
+        `Umzugsunternehmen ${cityData.displayName}`,
+      ];
+
+  const howToSteps = [
+    { name: 'Umzugsdetails erfassen', text: `Start- und Zieladresse, Datum und Wohnungsgrösse für ${cityData.displayName} angeben.` },
+    { name: 'Offerten erhalten', text: 'Mehrere geprüfte Umzugsfirmen vergleichen (Preis, Bewertungen, Leistungen).' },
+    { name: 'Komplettpaket wählen', text: 'Optional: Endreinigung, Möbellift, Montage, Entsorgung oder Einlagerung hinzufügen.' },
+    { name: 'Buchen & entspannt umziehen', text: 'Anbieter auswählen und direkt bei der Partnerfirma buchen. Umzugscheck.ch vermittelt den Kontakt, die Durchführung erfolgt durch den Anbieter.' },
+  ];
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Umzugsfirmen Schweiz', item: 'https://umzugscheck.ch/umzugsfirmen-schweiz' },
+      ...(cityInfo
+        ? [{ '@type': 'ListItem', position: 2, name: `Kanton ${cityInfo.cantonName}`, item: `https://umzugscheck.ch/umzugsfirmen/kanton-${cityInfo.cantonSlug}` }]
+        : []),
+      { '@type': 'ListItem', position: cityInfo ? 3 : 2, name: cityData.displayName, item: canonicalUrl },
+    ],
+  };
+
+  const serviceSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: `Umzugsfirmen vergleichen in ${cityData.displayName}`,
+    serviceType: 'Umzugsfirmen-Vergleich',
+    areaServed: {
+      '@type': 'City',
+      name: cityData.displayName,
+      ...(cityInfo ? { containedInPlace: { '@type': 'AdministrativeArea', name: cityInfo.cantonName } } : {}),
+    },
+    provider: {
+      '@type': 'Organization',
+      name: 'Umzugscheck.ch',
+      url: 'https://umzugscheck.ch',
+    },
+  };
+
+  const webPageSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    url: canonicalUrl,
+    name: seoTitle,
+    description: seoDescription,
+    inLanguage: 'de-CH',
+    primaryImageOfPage: {
+      '@type': 'ImageObject',
+      url: ogImage,
+      caption: `Umzug in ${cityData.displayName}`,
+    },
+    isPartOf: {
+      '@type': 'WebSite',
+      name: 'Umzugscheck.ch',
+      url: 'https://umzugscheck.ch',
+    },
+  };
+
+  const structuredData = [
+    webPageSchema,
+    breadcrumbSchema,
+    serviceSchema,
+    generateHowToSchema(howToSteps),
+    generateFAQSchema(cityData.faq),
+  ];
+
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
-        <title>{cityData.heroTitle} | Umzugscheck.ch</title>
-        <meta name="description" content={cityData.heroSubtitle} />
+        <html lang="de-CH" />
+        <title>{seoTitle}</title>
+        <meta name="title" content={seoTitle} />
+        <meta name="description" content={seoDescription} />
+        <meta name="keywords" content={seoKeywords.join(', ')} />
+        <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1" />
+        <meta name="referrer" content="strict-origin-when-cross-origin" />
+        <link rel="canonical" href={canonicalUrl} />
+
+        {/* Social */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:locale" content="de_CH" />
+        <meta property="og:site_name" content="Umzugscheck.ch" />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seoTitle} />
+        <meta name="twitter:description" content={seoDescription} />
+        <meta name="twitter:image" content={ogImage} />
+
+        {/* Geo */}
+        <meta name="geo.region" content={cityInfo ? `CH-${cityInfo.cantonShort}` : 'CH'} />
+        <meta name="geo.placename" content={cityData.displayName} />
+
+        {/* Performance hint for hero */}
+        <link rel="preload" as="image" href={ogImage} />
+
+        {/* Structured Data */}
+        {structuredData.map((schema, index) => (
+          <script key={index} type="application/ld+json">
+            {JSON.stringify(schema)}
+          </script>
+        ))}
       </Helmet>
 
       {/* Hero Section */}
       <section 
         className="relative overflow-hidden py-20 md:py-32 bg-cover bg-center"
         style={{
-          backgroundImage: `linear-gradient(135deg, hsla(var(--primary-hsl) / 0.95), hsla(var(--primary-dark-hsl) / 0.95)), url('${cityData.backgroundImage}')`
+          backgroundImage: `linear-gradient(135deg, hsla(var(--primary-hsl) / 0.95), hsla(var(--primary-dark-hsl) / 0.95)), url('${ogImage}')`
         }}
       >
         <div className="container mx-auto px-4 relative z-10">
@@ -417,6 +609,24 @@ export default function CityMovers() {
             transition={{ duration: 0.6 }}
             className="text-center max-w-4xl mx-auto"
           >
+            <div className="flex flex-wrap items-center justify-center gap-2 text-sm text-white/80 mb-4">
+              <Link to="/umzugsfirmen-schweiz" className="hover:text-white transition-colors">
+                Schweiz
+              </Link>
+              <span className="opacity-60">/</span>
+              {cityInfo ? (
+                <Link
+                  to={`/umzugsfirmen/kanton-${cityInfo.cantonSlug}`}
+                  className="hover:text-white transition-colors"
+                >
+                  Kanton {cityInfo.cantonName}
+                </Link>
+              ) : (
+                <span>Kanton</span>
+              )}
+              <span className="opacity-60">/</span>
+              <span className="text-white">{cityData.displayName}</span>
+            </div>
             <h1 className="text-4xl md:text-6xl font-display font-bold text-white mb-6">
               {cityData.heroTitle}
             </h1>
@@ -432,7 +642,7 @@ export default function CityMovers() {
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle className="h-6 w-6" />
-                <span className="font-semibold">15'000+ Umzüge</span>
+                <span className="font-semibold">15'000+ vermittelte Umzüge</span>
               </div>
               <div className="flex items-center gap-2">
                 <Shield className="h-6 w-6" />
@@ -447,6 +657,9 @@ export default function CityMovers() {
             >
               Offerten in {cityData.displayName} vergleichen
             </Button>
+            <p className="mt-4 text-sm text-white/80">
+              Hinweis: Umzugscheck.ch ist ein Vergleichs- & Vermittlungsservice. Die Durchführung erfolgt durch geprüfte Partnerfirmen.
+            </p>
           </motion.div>
         </div>
       </section>
@@ -551,6 +764,78 @@ export default function CityMovers() {
         </div>
       </section>
 
+      {/* Komplettpaket / mehr Content */}
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="max-w-5xl mx-auto"
+          >
+            <div className="text-center mb-10">
+              <div className="inline-flex items-center justify-center w-14 h-14 bg-primary/10 rounded-full mb-4">
+                <Sparkles className="w-7 h-7 text-primary" />
+              </div>
+              <h2 className="text-3xl md:text-4xl font-display font-bold mb-3">
+                Komplettpaket in {cityData.displayName}
+              </h2>
+              <p className="text-muted-foreground max-w-3xl mx-auto">
+                Wenn Sie möchten, koordinieren wir Umzug, Endreinigung und Wohnungsabgabe als sauberes Gesamtpaket. Weniger Organisation,
+                weniger Risiken bei der Abnahme.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="bg-card p-6 rounded-2xl border border-border/50 shadow-soft">
+                <div className="flex items-center gap-2 mb-3">
+                  <Building2 className="w-5 h-5 text-primary" />
+                  <h3 className="font-semibold text-lg">Umzug</h3>
+                </div>
+                <ul className="text-sm text-muted-foreground space-y-2">
+                  <li>• Tragen, Transport, Schutzmaterial</li>
+                  <li>• Möbelmontage / Demontage</li>
+                  <li>• Optional: Einlagerung & Entsorgung</li>
+                </ul>
+              </div>
+
+              <div className="bg-card p-6 rounded-2xl border border-border/50 shadow-soft">
+                <div className="flex items-center gap-2 mb-3">
+                  <Shield className="w-5 h-5 text-primary" />
+                  <h3 className="font-semibold text-lg">Endreinigung</h3>
+                </div>
+                <ul className="text-sm text-muted-foreground space-y-2">
+                  <li>• Abnahmevorbereitung & Protokoll</li>
+                  <li>• Auf Wunsch mit Abnahmegarantie</li>
+                  <li>• Fenster, Küche, Bad, Böden</li>
+                </ul>
+              </div>
+
+              <div className="bg-card p-6 rounded-2xl border border-border/50 shadow-soft">
+                <div className="flex items-center gap-2 mb-3">
+                  <Zap className="w-5 h-5 text-primary" />
+                  <h3 className="font-semibold text-lg">Wohnungsabgabe</h3>
+                </div>
+                <ul className="text-sm text-muted-foreground space-y-2">
+                  <li>• Timing & Koordination (Schlüssel, Termine)</li>
+                  <li>• Halteverbotszone / Parkfläche (falls nötig)</li>
+                  <li>• Ein Ansprechpartner für alles</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="mt-10 flex flex-col items-center gap-3">
+              <Button size="lg" onClick={() => navigate('/umzugsofferten')} className="h-14 px-8 text-lg">
+                Komplettpaket anfragen
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+              <p className="text-sm text-muted-foreground">100% kostenlos & unverbindlich</p>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Reviews */}
       <section className="py-16">
         <div className="container mx-auto px-4">
@@ -599,6 +884,67 @@ export default function CityMovers() {
                   <p className="text-2xl font-bold text-primary">{example.price}</p>
                 </div>
               ))}
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Interne Verlinkungen / Nearby */}
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="max-w-5xl mx-auto"
+          >
+            <h2 className="text-3xl md:text-4xl font-display font-bold text-center mb-10">
+              Beliebte Seiten rund um {cityData.displayName}
+            </h2>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="bg-card p-6 rounded-2xl border border-border/50 shadow-soft">
+                <h3 className="font-semibold text-lg mb-3">Direkt zu den wichtigsten Seiten</h3>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <Link to={cantonUrl} className="group flex items-center justify-between rounded-xl border border-border/60 p-4 hover:bg-muted/50 transition-colors">
+                    <span className="font-medium">Kanton {cityInfo?.cantonName}</span>
+                    <ArrowRight className="w-4 h-4 opacity-60 group-hover:opacity-100" />
+                  </Link>
+                  <Link to="/regionen" className="group flex items-center justify-between rounded-xl border border-border/60 p-4 hover:bg-muted/50 transition-colors">
+                    <span className="font-medium">Alle Kantone</span>
+                    <ArrowRight className="w-4 h-4 opacity-60 group-hover:opacity-100" />
+                  </Link>
+                  <Link to="/umzugsfirmen-schweiz" className="group flex items-center justify-between rounded-xl border border-border/60 p-4 hover:bg-muted/50 transition-colors">
+                    <span className="font-medium">Umzugsfirmen Schweiz</span>
+                    <ArrowRight className="w-4 h-4 opacity-60 group-hover:opacity-100" />
+                  </Link>
+                  <Link to="/umzugsofferten" className="group flex items-center justify-between rounded-xl border border-border/60 p-4 hover:bg-muted/50 transition-colors">
+                    <span className="font-medium">Offerten erhalten</span>
+                    <ArrowRight className="w-4 h-4 opacity-60 group-hover:opacity-100" />
+                  </Link>
+                </div>
+              </div>
+
+              <div className="bg-card p-6 rounded-2xl border border-border/50 shadow-soft">
+                <h3 className="font-semibold text-lg mb-3">Weitere Städte in {cityInfo?.cantonShort}</h3>
+                {relatedCities.length > 0 ? (
+                  <div className="grid sm:grid-cols-2 gap-3">
+                    {relatedCities.map((c) => (
+                      <Link
+                        key={c.slug}
+                        to={`/umzugsfirmen/${c.slug}`}
+                        className="group flex items-center justify-between rounded-xl border border-border/60 p-4 hover:bg-muted/50 transition-colors"
+                      >
+                        <span className="font-medium">{c.name}</span>
+                        <ArrowRight className="w-4 h-4 opacity-60 group-hover:opacity-100" />
+                      </Link>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground">Mehr City-Pages werden laufend ergänzt.</p>
+                )}
+              </div>
             </div>
           </motion.div>
         </div>

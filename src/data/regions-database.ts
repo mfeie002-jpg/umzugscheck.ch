@@ -392,10 +392,10 @@ const REGIONS_DATA: Record<string, RegionData> = {
     short: 'ZG',
     type: 'kanton',
     seo: {
-      title: 'Umzugsfirmen Zug vergleichen | Bis 40% sparen | Umzugscheck',
-      description: 'Vergleichen Sie 30+ geprüfte Umzugsfirmen in Zug. Kostenlose Offerten in 24h. Bis zu 40% sparen. Swiss Made, 4.8/5 Sterne.',
-      h1: 'Umzugsfirmen Zug – Jetzt gratis vergleichen',
-      canonicalUrl: '/umzugsfirmen/zug',
+      title: 'Umzugsfirmen Kanton Zug vergleichen | Offerten gratis | Umzugscheck',
+      description: 'Vergleichen Sie geprüfte Umzugsfirmen im Kanton Zug. Kostenlose Offerten in 24–48h, transparente Leistungen und auf Wunsch Komplettpaket mit Endreinigung & Wohnungsabgabe. Bis zu 40% sparen.',
+      h1: 'Umzugsfirmen Kanton Zug – Jetzt gratis vergleichen',
+      canonicalUrl: '/umzugsfirmen/kanton-zug',
     },
     stats: {
       providerCount: 30,
@@ -410,16 +410,20 @@ const REGIONS_DATA: Record<string, RegionData> = {
     },
     priceCoefficient: 1.0,
     localTips: [
-      'Historische Altstadt mit engen Gassen – Spezialfahrzeuge nötig',
-      'Monatsende-Umzüge sind stark nachgefragt',
-      'Viele Expat-Familien – mehrsprachige Firmen verfügbar',
-      'Kurze Distanzen im Kanton – oft günstigere Preise',
+      'Historische Altstadt & Seepromenade: enge Zufahrten, Zeitfenster früh planen',
+      'Halteverbotszonen früh beantragen (v. a. Zentrum / Altstadt)',
+      'Monatsende ist stark nachgefragt: Termine 2–4 Wochen im Voraus sichern',
+      'Expat- & Firmenumzüge: mehrsprachige Teams (DE/EN) sind in Zug häufig verfügbar',
+      'Möbellift lohnt sich in Altbauten (Treppenhaus eng, Schonung der Möbel)',
+      'Kurzstrecken im Kanton: Baar, Cham, Steinhausen oft günstiger als erwartet',
+      'Parkhäuser & Baustellen prüfen: Zufahrt/Tragewege beeinflussen Zeit & Preis',
+      'Wohnungsabgabe: Komplettpaket mit Endreinigung reduziert Stress massiv',
     ],
     localBlurb: `
-      Der Kanton Zug ist bekannt für seine hohe Lebensqualität und internationale Bevölkerung. 
-      Die historische Altstadt erfordert bei Umzügen besondere Planung wegen enger Zufahrten. 
-      Viele unserer Partner bieten mehrsprachigen Service für die internationale Community. 
-      Die kompakte Grösse des Kantons ermöglicht oft kürzere Umzüge zu günstigen Konditionen.
+      Zug ist klein, hochwertig und logistisch anspruchsvoll: Altstadtgassen, Seeufer-Zufahrten und stark nachgefragte Termine am Monatsende.
+      Wer früh plant, spart Zeit und Geld: Halteverbotszonen reservieren, Tragewege prüfen und bei Altbauten einen Möbellift einplanen.
+      Für die internationale Community sind mehrsprachige Teams (DE/EN) in Zug üblich.
+      Besonders beliebt ist das Komplettpaket aus Umzug, Endreinigung und Unterstützung bei der Wohnungsabgabe.
     `,
     nearbyRegions: [
       { name: 'Zürich', slug: 'zuerich' },

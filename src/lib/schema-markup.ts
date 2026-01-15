@@ -90,7 +90,7 @@ export function generateHomepageSchema() {
       "@type": "WebPage",
       "name": "Umzugsvergleich Schweiz",
       "url": "https://www.umzugscheck.ch/",
-      "description": "Vergleiche geprüfte Umzugsfirmen in der Schweiz. Gratis Offerten, 4.8 Sterne, 15'000+ Umzüge.",
+      "description": "Vergleiche geprüfte Umzugsfirmen in der Schweiz. Gratis Offerten, 4.8 Sterne, 15'000+ vermittelte Umzüge.",
       "inLanguage": "de-CH",
       "about": {
         "@type": "Service",

@@ -14,6 +14,8 @@ export const REGION_IMAGES: Record<string, string> = {
   
   // Basel - Rhein & Münster
   basel: "https://images.unsplash.com/photo-1549471013-3472b417ea78?w=1920&q=80&auto=format&fit=crop",
+  // Basel-Stadt (Kanton-Slug)
+  "basel-stadt": "https://images.unsplash.com/photo-1549471013-3472b417ea78?w=1920&q=80&auto=format&fit=crop",
   
   // Luzern - Kapellbrücke & Pilatus
   luzern: "https://images.unsplash.com/photo-1527668752968-14dc70a27c95?w=1920&q=80&auto=format&fit=crop",
