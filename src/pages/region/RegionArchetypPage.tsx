@@ -43,21 +43,31 @@ const SERVICES_FOR_COMPONENT = [
 ];
 
 const RegionArchetypPage = () => {
-  const { slug } = useParams<{ slug: string }>();
+  // Support /umzugsfirmen/kanton-{slug} (via SlugResolver) and legacy /kanton/:slug routes
+  const { slug } = useParams<{ slug?: string }>();
   const navigate = useNavigate();
+  
+  // Extract canton slug from kanton- prefix if present
+  const effectiveSlug = useMemo(() => {
+    if (!slug) return null;
+    if (slug.startsWith('kanton-')) {
+      return slug.replace('kanton-', '');
+    }
+    return slug;
+  }, [slug]);
 
   // Get region data from central database
   const region = useMemo(() => {
-    if (!slug) return null;
-    return getRegionBySlug(slug);
-  }, [slug]);
+    if (!effectiveSlug) return null;
+    return getRegionBySlug(effectiveSlug);
+  }, [effectiveSlug]);
 
-  // Handle region change
+  // Handle region change - now uses canonical kanton- URLs
   const handleRegionChange = useCallback((newSlug: string) => {
-    if (newSlug !== slug) {
-      navigate(`/umzugsfirmen/${newSlug}`);
+    if (newSlug !== effectiveSlug) {
+      navigate(`/umzugsfirmen/kanton-${newSlug}`);
     }
-  }, [navigate, slug]);
+  }, [navigate, effectiveSlug]);
 
   // 404 fallback
   if (!region) {
@@ -113,7 +123,8 @@ const RegionArchetypPage = () => {
         <html lang="de-CH" />
         <title>{region.seo.title}</title>
         <meta name="description" content={region.seo.description} />
-        <link rel="canonical" href={`https://umzugscheck.ch${region.seo.canonicalUrl}`} />
+        {/* Canonical URL now uses /umzugsfirmen/kanton-{slug} format */}
+        <link rel="canonical" href={`https://umzugscheck.ch/umzugsfirmen/kanton-${effectiveSlug}`} />
         <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
       </Helmet>
 

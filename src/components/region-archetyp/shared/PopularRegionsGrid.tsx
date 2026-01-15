@@ -23,7 +23,7 @@ export const PopularRegionsGrid = memo(({ onSelect }: PopularRegionsGridProps) =
       {regions.map(region => (
         <Link
           key={region.slug}
-          to={`/umzugsfirmen/${region.slug}`}
+          to={`/umzugsfirmen/kanton-${region.slug}`}
           onClick={() => onSelect?.(region.slug)}
           className="bg-card border border-border rounded-xl p-4 hover:shadow-md hover:border-primary/30 transition-all text-center group"
         >

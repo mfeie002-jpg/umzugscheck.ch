@@ -18,7 +18,7 @@ export const CantonGrid = memo(({ initialVisible = 10 }: CantonGridProps) => {
         {visibleCantons.map(canton => (
           <Link
             key={canton.slug}
-            to={`/umzugsfirmen/${canton.slug}`}
+            to={`/umzugsfirmen/kanton-${canton.slug}`}
             className="bg-card border border-border rounded-lg px-3 py-2 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all text-sm text-center"
           >
             <span className="font-medium">{canton.short}</span>
