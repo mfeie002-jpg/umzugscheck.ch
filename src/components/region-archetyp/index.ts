@@ -37,3 +37,7 @@ export { MobileCompanyCard } from './MobileCompanyCard';
 
 // Performance Components
 export { LazySection } from './LazySection';
+
+// SEO Components
+export { RegionSEO } from './RegionSEO';
+export { PillarPageSEO } from './PillarPageSEO';

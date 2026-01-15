@@ -9,6 +9,14 @@ interface SitemapUrl {
 
 const BASE_URL = 'https://umzugscheck.ch';
 
+const cantons = [
+  'zuerich', 'bern', 'luzern', 'uri', 'schwyz', 'obwalden', 'nidwalden',
+  'glarus', 'zug', 'freiburg', 'solothurn', 'basel-stadt', 'basel-landschaft',
+  'schaffhausen', 'appenzell-ausserrhoden', 'appenzell-innerrhoden', 'st-gallen',
+  'graubuenden', 'aargau', 'thurgau', 'tessin', 'waadt', 'wallis', 'neuenburg',
+  'genf', 'jura'
+];
+
 const cities = [
   'zuerich', 'basel', 'bern', 'genf', 'lausanne', 'luzern', 
   'winterthur', 'stgallen', 'zug', 'lugano', 'biel', 'aarau',
@@ -36,11 +44,22 @@ export const generateSitemapUrls = (): SitemapUrl[] => {
     { loc: `${BASE_URL}/beste-umzugsfirma/`, changefreq: 'daily', priority: 0.9, lastmod: today },
     { loc: `${BASE_URL}/guenstige-umzugsfirma/`, changefreq: 'daily', priority: 0.9, lastmod: today },
     { loc: `${BASE_URL}/umzugsofferten/`, changefreq: 'daily', priority: 0.9, lastmod: today },
+    { loc: `${BASE_URL}/umzugsfirmen-schweiz/`, changefreq: 'daily', priority: 0.95, lastmod: today },
   ];
 
   urls.push(...corePages);
 
-  // City pages
+  // Canton region pages (new archetyp structure)
+  cantons.forEach(canton => {
+    urls.push({
+      loc: `${BASE_URL}/umzugsfirmen/${canton}/`,
+      changefreq: 'daily',
+      priority: 0.9,
+      lastmod: today
+    });
+  });
+
+  // City pages (legacy)
   cities.forEach(city => {
     urls.push({
       loc: `${BASE_URL}/${city}/umzugsfirmen/`,
