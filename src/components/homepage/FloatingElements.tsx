@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, X, Search, Plus } from "lucide-react";
+import { MessageCircle, X, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -19,19 +19,6 @@ export const FloatingElements = () => {
         >
           <Link to="/umzugsfirmen">
             <Search className="w-4 h-4" />
-          </Link>
-        </Button>
-      </div>
-
-      {/* Mobile Quick Action Button */}
-      <div className="fixed bottom-24 right-4 z-40 md:hidden">
-        <Button
-          size="icon"
-          className="rounded-full w-14 h-14 bg-primary text-primary-foreground shadow-medium"
-          asChild
-        >
-          <Link to="/umzugsofferten">
-            <Plus className="w-6 h-6" />
           </Link>
         </Button>
       </div>
