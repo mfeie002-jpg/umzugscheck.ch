@@ -138,55 +138,55 @@ export const Header = () => {
         <div className="container px-4 sm:px-6">
         <div className="flex items-center justify-between h-14 sm:h-16 lg:h-[72px]">
           {/* Animated Logo */}
-          <Link to="/" className="flex items-center gap-1.5 sm:gap-2 group">
-            <motion.div 
-              className="relative w-8 h-8 sm:w-10 sm:h-10 bg-secondary rounded-lg sm:rounded-xl flex items-center justify-center shadow-cta overflow-hidden"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              {/* Animated Check */}
-              <motion.svg 
-                width="20" 
-                height="20" 
-                viewBox="0 0 24 24" 
-                fill="none"
-                className="text-white relative z-10 w-5 h-5 sm:w-6 sm:h-6"
-              >
-                <motion.path
-                  d="M5 13l4 4L19 7"
-                  stroke="currentColor"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  initial={{ pathLength: 0 }}
-                  animate={{ pathLength: 1 }}
-                  transition={{ duration: 0.5, delay: 0.2 }}
-                />
-              </motion.svg>
-              {/* Moving Box Animation */}
+          <Link to="/" className="flex flex-col group">
+            <div className="flex items-center gap-1.5 sm:gap-2">
               <motion.div 
-                className="absolute -bottom-1 -right-1 w-3 h-3 sm:w-4 sm:h-4 bg-primary rounded-sm"
-                animate={{ 
-                  y: [0, -2, 0],
-                  rotate: [0, 5, 0]
-                }}
-                transition={{ 
-                  duration: 2, 
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-              />
-            </motion.div>
-            <div className="flex items-center gap-2">
+                className="relative w-8 h-8 sm:w-10 sm:h-10 bg-secondary rounded-lg sm:rounded-xl flex items-center justify-center shadow-cta overflow-hidden"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {/* Animated Check */}
+                <motion.svg 
+                  width="20" 
+                  height="20" 
+                  viewBox="0 0 24 24" 
+                  fill="none"
+                  className="text-white relative z-10 w-5 h-5 sm:w-6 sm:h-6"
+                >
+                  <motion.path
+                    d="M5 13l4 4L19 7"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                  />
+                </motion.svg>
+                {/* Moving Box Animation */}
+                <motion.div 
+                  className="absolute -bottom-1 -right-1 w-3 h-3 sm:w-4 sm:h-4 bg-primary rounded-sm"
+                  animate={{ 
+                    y: [0, -2, 0],
+                    rotate: [0, 5, 0]
+                  }}
+                  transition={{ 
+                    duration: 2, 
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                />
+              </motion.div>
               <div className="flex items-center">
                 <span className="text-lg sm:text-xl font-bold text-primary group-hover:text-primary/80 transition-colors">Umzugs</span>
                 <span className="text-lg sm:text-xl font-bold text-secondary group-hover:text-secondary/80 transition-colors">check</span>
                 <span className="text-lg sm:text-xl font-bold text-muted-foreground">.ch</span>
               </div>
-              <span className="hidden lg:flex items-center text-xs text-muted-foreground/60 font-normal border-l border-border/50 pl-2 ml-1">
-                Der Schweizer Umzugsvergleich
-              </span>
             </div>
+            <span className="hidden sm:block text-[10px] text-muted-foreground/70 font-medium pl-11 -mt-0.5">
+              Der Schweizer Umzugsvergleich
+            </span>
           </Link>
 
           {/* Desktop Navigation with Dropdowns */}
