@@ -79,18 +79,21 @@ export const Navigation = () => {
         }
       }}
       className={cn(
-        "group/nav relative flex items-center gap-1 px-2 xl:px-3 py-2 text-foreground hover:text-primary transition-colors font-medium rounded-lg hover:bg-accent",
+        "group/nav relative flex items-center gap-1.5 px-3 xl:px-4 py-2.5 font-semibold rounded-xl transition-all duration-200",
         "text-sm xl:text-base whitespace-nowrap",
-        "after:absolute after:bottom-1 after:left-2 after:right-2 after:h-0.5 after:bg-primary after:origin-left after:scale-x-0 after:transition-transform after:duration-300 hover:after:scale-x-100",
-        activeDropdown === dropdown && "text-primary bg-accent after:scale-x-100"
+        "hover:bg-gradient-to-r hover:from-primary/10 hover:to-primary/5 hover:text-primary",
+        "active:scale-[0.98]",
+        activeDropdown === dropdown 
+          ? "text-primary bg-gradient-to-r from-primary/15 to-primary/5 shadow-sm" 
+          : "text-foreground"
       )}
       aria-expanded={activeDropdown === dropdown}
       aria-haspopup="true"
     >
       <span className="truncate max-w-[120px] xl:max-w-none">{children}</span>
       <ChevronDown className={cn(
-        "w-4 h-4 transition-transform flex-shrink-0",
-        activeDropdown === dropdown ? "rotate-180" : ""
+        "w-4 h-4 transition-transform flex-shrink-0 text-muted-foreground group-hover/nav:text-primary",
+        activeDropdown === dropdown ? "rotate-180 text-primary" : ""
       )} 
       aria-hidden="true" />
     </button>
@@ -98,10 +101,13 @@ export const Navigation = () => {
 
   return (
     <header className="sticky top-0 z-50">
+      {/* Warm accent line at very top */}
+      <div className="h-1 bg-gradient-to-r from-primary via-emerald-500 to-secondary" />
+      
       <nav 
         className={cn(
-          "bg-background/95 backdrop-blur-md border-b border-border relative transition-shadow duration-300",
-          scrolled ? "shadow-lg" : "shadow-soft"
+          "bg-gradient-to-b from-background to-background/98 backdrop-blur-md border-b border-primary/10 relative transition-shadow duration-300",
+          scrolled ? "shadow-lg shadow-primary/5" : "shadow-soft"
         )} 
         aria-label="Hauptnavigation"
       >
@@ -110,15 +116,15 @@ export const Navigation = () => {
             {/* Logo with Slogan - Vertical Stack */}
             <Link to="/" className="flex items-center min-w-0 flex-shrink-0">
               <div className="group flex flex-col items-start transition-all duration-300 hover:scale-105">
-                <div className="transition-all duration-300 group-hover:drop-shadow-[0_0_8px_hsl(var(--primary)/0.5)] flex items-center">
+                <div className="transition-all duration-300 group-hover:drop-shadow-[0_0_12px_hsl(var(--primary)/0.4)] flex items-center">
                   <Logo size="xl" className="hidden xl:flex" />
                   <Logo size="lg" className="hidden lg:flex xl:hidden" />
                   <Logo size="sm" iconOnly className="flex lg:hidden" />
                 </div>
 
-                {/* Slogan below logo (Desktop only) with fade-in animation */}
-                <span className="hidden lg:block text-[9px] xl:text-xs text-muted-foreground/80 font-medium mt-0.5 transition-colors duration-300 group-hover:text-primary leading-tight animate-[fadeInSlogan_0.6s_ease-out_0.2s_both]">
-                  Der Schweizer Umzugsvergleich
+                {/* Slogan below logo (Desktop only) with emoji */}
+                <span className="hidden lg:flex items-center gap-1 text-[9px] xl:text-xs text-muted-foreground/80 font-medium mt-0.5 transition-colors duration-300 group-hover:text-primary leading-tight">
+                  🇨🇭 Der Schweizer Umzugsvergleich
                 </span>
               </div>
             </Link>
@@ -173,14 +179,21 @@ export const Navigation = () => {
               </Button>
             </div>
 
-            {/* CTA Button - Desktop with pulse animation */}
-            <div className="hidden lg:flex items-center flex-shrink-0">
+            {/* CTA Button - Desktop with enhanced styling */}
+            <div className="hidden lg:flex items-center flex-shrink-0 gap-3">
+              {/* Micro trust hint */}
+              <div className="hidden xl:flex items-center gap-1.5 text-xs text-muted-foreground">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="font-medium">Gratis & unverbindlich</span>
+              </div>
+              
               <Link to="/umzugsofferten" aria-label="Kostenlose Umzugsofferten vergleichen">
                 <Button 
                   size="lg"
-                  className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold shadow-[0_4px_20px_rgba(220,38,38,0.4)] hover:shadow-[0_6px_25px_rgba(220,38,38,0.5)] transition-all animate-[pulseGlow_2s_ease-in-out_infinite] hover:animate-none text-sm xl:text-base px-4 xl:px-6 whitespace-nowrap"
+                  className="group bg-gradient-to-r from-secondary via-secondary to-secondary/90 hover:from-secondary/90 hover:via-secondary hover:to-secondary text-secondary-foreground font-bold shadow-[0_4px_20px_rgba(220,38,38,0.35)] hover:shadow-[0_8px_30px_rgba(220,38,38,0.45)] transition-all text-sm xl:text-base px-5 xl:px-7 whitespace-nowrap"
                 >
                   {navVariant.labels.cta}
+                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
             </div>
