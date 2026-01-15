@@ -57,11 +57,17 @@ export const RegionHero = ({ region, onRegionChange }: RegionHeroProps) => {
   };
 
   return (
-    <section className="relative bg-gradient-to-br from-primary/5 via-background to-accent/10 py-8 md:py-16 overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-[0.03]">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-secondary rounded-full blur-3xl" />
+    <section className="relative min-h-[70vh] md:min-h-[75vh] flex items-center py-8 md:py-16 overflow-hidden">
+      {/* Background Image */}
+      <div className="absolute inset-0 z-0">
+        <img 
+          src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1920&q=80&auto=format&fit=crop"
+          alt={`Umzugsfirmen in ${region.name} - Professionelle Hilfe beim Umziehen`}
+          className="w-full h-full object-cover"
+          loading="eager"
+          fetchPriority="high"
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/60 to-black/50" />
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
@@ -71,7 +77,7 @@ export const RegionHero = ({ region, onRegionChange }: RegionHeroProps) => {
           <div className="relative hidden md:inline-block">
             <button
               onClick={() => setShowCantonSelector(!showCantonSelector)}
-              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+              className="flex items-center gap-2 text-sm text-white/90 hover:text-white transition-colors"
             >
               <MapPin className="w-4 h-4" />
               <span>{region.name} ({region.short})</span>
@@ -105,7 +111,7 @@ export const RegionHero = ({ region, onRegionChange }: RegionHeroProps) => {
           {/* Mobile: Opens Bottom Sheet */}
           <button
             onClick={() => setShowMobileSheet(true)}
-            className="md:hidden flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors touch-manipulation py-2"
+            className="md:hidden flex items-center gap-2 text-sm text-white/90 hover:text-white transition-colors touch-manipulation py-2"
           >
             <MapPin className="w-4 h-4" />
             <span>{region.name} ({region.short})</span>
@@ -133,7 +139,7 @@ export const RegionHero = ({ region, onRegionChange }: RegionHeroProps) => {
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-3xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4"
+            className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-4"
           >
             Umzugsfirmen {region.name}
             <span className="text-primary"> – Jetzt gratis vergleichen</span>
@@ -144,7 +150,7 @@ export const RegionHero = ({ region, onRegionChange }: RegionHeroProps) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-lg md:text-xl text-muted-foreground mb-6"
+            className="text-lg md:text-xl text-white/90 mb-6"
           >
             Vergleichen Sie {region.stats.providerCount}+ geprüfte Umzugsfirmen in {region.name} 
             und erhalten Sie kostenlose Offerten.
@@ -155,22 +161,22 @@ export const RegionHero = ({ region, onRegionChange }: RegionHeroProps) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
-            className="flex flex-wrap gap-4 md:gap-6 mb-8"
+            className="flex flex-wrap gap-4 md:gap-6 mb-8 text-white"
           >
             <div className="flex items-center gap-2">
-              <Star className="w-5 h-5 text-yellow-500 fill-yellow-500" />
+              <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
               <span className="font-semibold">{region.stats.avgRating}</span>
-              <span className="text-muted-foreground text-sm">Bewertung</span>
+              <span className="text-white/80 text-sm">Bewertung</span>
             </div>
             <div className="flex items-center gap-2">
-              <Users className="w-5 h-5 text-primary" />
+              <Users className="w-5 h-5 text-white" />
               <span className="font-semibold">{region.stats.reviewCount.toLocaleString('de-CH')}+</span>
-              <span className="text-muted-foreground text-sm">Bewertungen</span>
+              <span className="text-white/80 text-sm">Bewertungen</span>
             </div>
             <div className="flex items-center gap-2">
-              <CheckCircle className="w-5 h-5 text-green-600" />
+              <CheckCircle className="w-5 h-5 text-green-400" />
               <span className="font-semibold">{region.stats.providerCount}+</span>
-              <span className="text-muted-foreground text-sm">Firmen</span>
+              <span className="text-white/80 text-sm">Firmen</span>
             </div>
           </motion.div>
 
