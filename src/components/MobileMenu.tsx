@@ -332,10 +332,16 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
                                 </span>
                               )}
                             </div>
-                            <ArrowRight className={cn(
-                              "w-4 h-4 opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0",
-                              isActive(item.href) ? "text-primary-foreground" : "text-primary"
-                            )} />
+                            {/* Better visual indicator instead of confusing arrow */}
+                            <div className={cn(
+                              "flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold opacity-0 group-hover:opacity-100 transition-all",
+                              isActive(item.href) 
+                                ? "bg-white/20 text-primary-foreground" 
+                                : "bg-primary/10 text-primary"
+                            )}>
+                              <span>Öffnen</span>
+                              <ArrowRight className="w-3 h-3" />
+                            </div>
                           </Link>
                         </motion.div>
                       ))}

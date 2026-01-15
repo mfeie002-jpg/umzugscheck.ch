@@ -1,13 +1,12 @@
 /**
  * Navigation Variant Switcher
  * 
- * Floating UI to switch between 8 navigation variants for A/B testing
- * Shows on homepage for easy comparison
+ * Floating UI to switch between 16 navigation variants for A/B testing
+ * Uses URL navigation for seamless switching without page reload
  */
 
 import { useState, useEffect } from "react";
 import { 
-  Settings2, 
   X, 
   Check, 
   Monitor, 
@@ -26,7 +25,7 @@ import {
   type NavVariant 
 } from "@/lib/navigation-variants";
 import { cn } from "@/lib/utils";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 
 interface NavigationVariantSwitcherProps {
   showOnlyOnHome?: boolean;
@@ -37,11 +36,12 @@ export const NavigationVariantSwitcher = ({ showOnlyOnHome = true }: NavigationV
   const [previewMode, setPreviewMode] = useState<'desktop' | 'mobile'>('desktop');
   const [activeVariant, setActiveVariantState] = useState<NavConfig>(getActiveVariant());
   const location = useLocation();
+  const navigate = useNavigate();
 
-  // Update active variant when component mounts
+  // Update active variant when URL changes or on mount
   useEffect(() => {
     setActiveVariantState(getActiveVariant());
-  }, []);
+  }, [location.search]);
 
   // Only show on homepage if showOnlyOnHome is true
   if (showOnlyOnHome && location.pathname !== '/') {
@@ -50,6 +50,9 @@ export const NavigationVariantSwitcher = ({ showOnlyOnHome = true }: NavigationV
 
   const handleVariantChange = (variant: NavVariant) => {
     setActiveVariant(variant);
+    setActiveVariantState(getActiveVariant());
+    // Navigate using query param for instant update without reload
+    navigate(`/?nav=${variant}`, { replace: true });
   };
 
   return (
