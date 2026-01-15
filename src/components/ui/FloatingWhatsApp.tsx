@@ -48,7 +48,7 @@ export const FloatingWhatsApp = memo(function FloatingWhatsApp({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.8, y: 20 }}
           transition={{ type: "spring", stiffness: 260, damping: 20 }}
-          className="fixed bottom-20 right-20 z-40 md:bottom-6 md:right-24"
+          className="fixed bottom-24 left-4 z-40 md:bottom-6 md:left-auto md:right-24"
         >
           {/* Tooltip */}
           <AnimatePresence>
