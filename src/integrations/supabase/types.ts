@@ -277,6 +277,8 @@ export type Database = {
       }
       companies: {
         Row: {
+          certifications: string[] | null
+          cities_served: string[] | null
           created_at: string | null
           description: string | null
           email: string | null
@@ -284,19 +286,26 @@ export type Database = {
           gallery_images: string[] | null
           id: string
           logo: string | null
+          long_description: string | null
           name: string
           phone: string | null
           price_level: string | null
           rating: number | null
+          response_time_hours: number | null
           review_count: number | null
           service_areas: string[] | null
           service_types: string[] | null
           services: string[] | null
+          short_description: string | null
+          slug: string | null
+          success_rate: number | null
           updated_at: string | null
           verified: boolean | null
           website: string | null
         }
         Insert: {
+          certifications?: string[] | null
+          cities_served?: string[] | null
           created_at?: string | null
           description?: string | null
           email?: string | null
@@ -304,19 +313,26 @@ export type Database = {
           gallery_images?: string[] | null
           id?: string
           logo?: string | null
+          long_description?: string | null
           name: string
           phone?: string | null
           price_level?: string | null
           rating?: number | null
+          response_time_hours?: number | null
           review_count?: number | null
           service_areas?: string[] | null
           service_types?: string[] | null
           services?: string[] | null
+          short_description?: string | null
+          slug?: string | null
+          success_rate?: number | null
           updated_at?: string | null
           verified?: boolean | null
           website?: string | null
         }
         Update: {
+          certifications?: string[] | null
+          cities_served?: string[] | null
           created_at?: string | null
           description?: string | null
           email?: string | null
@@ -324,14 +340,19 @@ export type Database = {
           gallery_images?: string[] | null
           id?: string
           logo?: string | null
+          long_description?: string | null
           name?: string
           phone?: string | null
           price_level?: string | null
           rating?: number | null
+          response_time_hours?: number | null
           review_count?: number | null
           service_areas?: string[] | null
           service_types?: string[] | null
           services?: string[] | null
+          short_description?: string | null
+          slug?: string | null
+          success_rate?: number | null
           updated_at?: string | null
           verified?: boolean | null
           website?: string | null
