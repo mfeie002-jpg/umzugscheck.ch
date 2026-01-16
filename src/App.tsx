@@ -280,6 +280,7 @@ const FlowCommandCenter = lazy(() => import("./pages/admin/FlowCommandCenter"));
 const CommandCenter = lazy(() => import("./pages/admin/CommandCenter"));
 const AnalysisFramework = lazy(() => import("./pages/admin/AnalysisFramework"));
 const FlowFeedbackVariants = lazy(() => import("./pages/admin/FlowFeedbackVariants"));
+const WorldClassDashboard = lazy(() => import("./components/admin/WorldClassDashboard").then(m => ({ default: m.WorldClassDashboard })));
 const AllFlowsScreenshotReview = lazy(() => import("./pages/admin/AllFlowsScreenshotReview"));
 const LandingPageChatGPTExport = lazy(() => import("./pages/admin/LandingPageChatGPTExport"));
 
@@ -429,6 +430,7 @@ const AdminRoutes = () => (
       <Route path="/admin/conversions" element={<ConversionAnalytics />} />
       <Route path="/admin/dynamic-pricing" element={<DynamicPricing />} />
       <Route path="/admin/url-tracking" element={<UrlTrackingDashboard />} />
+      <Route path="/admin/world-class" element={<WorldClassDashboard />} />
     </AnimatedRoutes>
   </Suspense>
 );
