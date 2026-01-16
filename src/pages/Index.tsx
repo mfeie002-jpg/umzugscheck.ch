@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
 import IndexPremiumScreenshot from "@/pages/IndexPremiumScreenshot";
 import { SkipToContent } from "@/components/SkipToContent";
@@ -13,6 +13,11 @@ import { HotjarScript } from "@/components/analytics/HotjarScript";
 import { EnhancedConversionHero } from "@/components/homepage/EnhancedConversionHero";
 import { MobileStickyBar } from "@/components/homepage/MobileStickyBar";
 import { SocialProofMarquee } from "@/components/homepage/SocialProofMarquee";
+// NEW: World-class conversion components
+import { ExitIntentPopup } from "@/components/conversion/ExitIntentPopup";
+import { RealtimeSocialProof } from "@/components/conversion/RealtimeSocialProof";
+import { ScrollDepthTracker } from "@/components/conversion/ScrollDepthTracker";
+import { initMetrics } from "@/lib/realtime-metrics";
 
 // Lazy loaded components (below the fold)
 const EnhancedHowItWorks = lazy(() => import("@/components/homepage/EnhancedHowItWorks").then(m => ({ default: m.EnhancedHowItWorks })));
@@ -60,6 +65,11 @@ const Index = () => {
     ]
   };
 
+  // Initialize metrics tracking
+  useEffect(() => {
+    initMetrics();
+  }, []);
+
   return (
     <ErrorBoundary>
       <div className="min-h-screen bg-background">
@@ -88,6 +98,11 @@ const Index = () => {
 
         <ScrollProgress />
         <SkipToContent />
+        
+        {/* NEW: World-class conversion tools */}
+        <ScrollDepthTracker />
+        <ExitIntentPopup />
+        <RealtimeSocialProof position="bottom-left" />
 
         <main id="main-content" role="main">
           {/* 1. Hero with Multi-Step Form + Visual Element */}
