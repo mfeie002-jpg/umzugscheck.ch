@@ -13,7 +13,7 @@ import { EnhancedConversionHero } from "@/components/homepage/EnhancedConversion
 import { MobileStickyBar } from "@/components/homepage/MobileStickyBar";
 // A/B Testing for Social Proof sections
 import { SocialProofABProvider } from "@/contexts/SocialProofABContext";
-import { SocialProofABToggle } from "@/components/homepage/SocialProofABToggle";
+import { UnifiedABToggle } from "@/components/homepage/UnifiedABToggle";
 // Conversion & Analytics
 import { ExitIntentPopup } from "@/components/conversion/ExitIntentPopup";
 import { RealtimeSocialProof } from "@/components/conversion/RealtimeSocialProof";
@@ -198,8 +198,8 @@ const Index = () => {
           <CookieConsentBanner />
         </Suspense>
         
-        {/* A/B Toggle for Social Proof sections */}
-        <SocialProofABToggle />
+        {/* Unified A/B Toggle for Navigation + Social Proof */}
+        <UnifiedABToggle />
       </div>
     </ErrorBoundary>
     </SocialProofABProvider>
