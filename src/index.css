@@ -46,9 +46,15 @@ a[href*="lovable.dev"]:not([href*="docs.lovable.dev"]):is([style*="position: fix
 }
 
 /* Prevent horizontal scroll on mobile - fixes AI analysis issues */
-html, body {
-  overflow-x: hidden !important;
-  max-width: 100vw !important;
+/* NOTE: Using clip instead of hidden to prevent fixed elements from being cut off */
+html {
+  overflow-x: clip;
+}
+body {
+  overflow-x: clip;
+  max-width: 100vw;
+  /* Ensure fixed elements are not clipped */
+  position: relative;
 }
 
 @tailwind components;
@@ -590,7 +596,7 @@ html, body {
 
 @media (max-width: 768px) {
   html, body {
-    overflow-x: hidden;
+    overflow-x: clip;
     width: 100%;
   }
 
