@@ -93,7 +93,7 @@ const ProviderPricingPage = lazy(() => import("./pages/provider/ProviderPricing"
 const ProviderFAQPage = lazy(() => import("./pages/provider/ProviderFAQ"));
 
 // Core navigation components - keep synchronous for fast FCP
-import { DynamicNavigation } from "./components/DynamicNavigation";
+import { NavigationV17 } from "./components/navigation-v17";
 import { Footer } from "./components/Footer";
 import { ScrollToTop } from "./components/ScrollToTop";
 import { NavigationVariantSwitcher } from "./components/NavigationVariantSwitcher";
@@ -342,7 +342,7 @@ const queryClient = new QueryClient({
 // Helper component for main site layout with Navigation/Footer
 const MainLayout = ({ children }: { children: React.ReactNode }) => (
   <div className="flex flex-col min-h-screen bg-background">
-    <DynamicNavigation />
+    <NavigationV17 />
     <ScrollProgressBar />
     
     {/* Navigation A/B Test Switcher - shows on homepage */}
