@@ -8,9 +8,6 @@ import { PremiumHeroSection } from "@/components/premium/PremiumHeroSection";
 import { PremiumSocialProof } from "@/components/premium/PremiumSocialProof";
 import { PremiumHowItWorks } from "@/components/premium/PremiumHowItWorks";
 import { PremiumFAQ } from "@/components/premium/PremiumFAQ";
-import { TrustSignals } from "@/components/TrustSignals";
-import { SocialProofABProvider } from "@/contexts/SocialProofABContext";
-import { SocialProofABToggle } from "@/components/homepage/SocialProofABToggle";
 import { memo, useMemo, lazy, Suspense, useEffect, useRef } from "react";
 import { SectionSkeleton } from "@/components/ui/section-skeleton";
 import analytics from "@/lib/analytics";
@@ -186,9 +183,6 @@ const IndexPremium = () => {
             <LazyTrustRibbon variant="full" />
           </AnimatedSection>
         </Suspense>
-
-        {/* 3. Trust Signals */}
-        <TrustSignals />
 
         {/* 4. Social Proof */}
         <AnimatedSection animation="fade-up">
