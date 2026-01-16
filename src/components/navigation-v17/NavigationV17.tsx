@@ -150,7 +150,7 @@ export const NavigationV17 = () => {
   );
 
   return (
-    <header className="sticky top-0 z-50 w-full overflow-x-hidden">
+    <header className="sticky top-0 z-50 w-full">
       {/* Brand accent line at very top */}
       <div className="h-1 bg-gradient-to-r from-primary to-secondary" />
       
