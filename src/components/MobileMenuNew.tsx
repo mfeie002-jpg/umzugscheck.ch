@@ -9,7 +9,7 @@
  * - Gradients & micro-interactions
  */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -145,10 +145,18 @@ export const MobileMenuNew = ({ isOpen, onClose }: MobileMenuNewProps) => {
     }
   }, [isOpen]);
 
-  // Close on route change
+  // Close only when route actually changes while menu is open
+  const lastPathRef = useRef(location.pathname);
   useEffect(() => {
-    onClose();
-  }, [location.pathname]);
+    if (!isOpen) {
+      lastPathRef.current = location.pathname;
+      return;
+    }
+    if (lastPathRef.current !== location.pathname) {
+      lastPathRef.current = location.pathname;
+      onClose();
+    }
+  }, [isOpen, location.pathname, onClose]);
 
   // Search functionality for cities/cantons
   const searchResults = searchTerm.trim() ? {

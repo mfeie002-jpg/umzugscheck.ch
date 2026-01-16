@@ -110,7 +110,7 @@ export const NavigationV17 = () => {
   }: { 
     item: ReturnType<typeof buildNavItems>[number];
   }) => (
-    <div className="relative group/nav">
+    <div className="relative group/nav min-w-0">
       <button
         onMouseEnter={() => handleMouseEnter(item.id)}
         onMouseLeave={handleMouseLeave}
@@ -128,8 +128,8 @@ export const NavigationV17 = () => {
           }
         }}
         className={cn(
-          "relative flex items-center gap-1 px-3 xl:px-4 py-2.5 font-semibold rounded-xl transition-all duration-200",
-          "text-sm xl:text-base whitespace-nowrap",
+          "relative flex items-center gap-1 px-2.5 xl:px-4 py-2.5 font-semibold rounded-xl transition-all duration-200",
+          "text-sm xl:text-base whitespace-nowrap min-w-0",
           "hover:bg-gradient-to-r hover:from-primary/10 hover:to-primary/5 hover:text-primary",
           "active:scale-[0.98]",
           activeDropdown === item.id 
@@ -139,12 +139,14 @@ export const NavigationV17 = () => {
         aria-expanded={activeDropdown === item.id}
         aria-haspopup="true"
       >
-        <span className="truncate max-w-[140px] xl:max-w-none">{item.label}</span>
-        <ChevronDown className={cn(
-          "w-4 h-4 transition-transform flex-shrink-0 text-muted-foreground group-hover/nav:text-primary",
-          activeDropdown === item.id ? "rotate-180 text-primary" : ""
-        )} 
-        aria-hidden="true" />
+        <span className="truncate max-w-[110px] sm:max-w-[130px] xl:max-w-none">{item.label}</span>
+        <ChevronDown
+          className={cn(
+            "w-4 h-4 transition-transform flex-shrink-0 text-muted-foreground group-hover/nav:text-primary",
+            activeDropdown === item.id ? "rotate-180 text-primary" : ""
+          )}
+          aria-hidden="true"
+        />
       </button>
       
       {/* Microcopy Tooltip on Hover */}
@@ -170,7 +172,7 @@ export const NavigationV17 = () => {
           aria-label="Hauptnavigation"
         >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20 gap-4 lg:gap-6">
+          <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20 gap-3 lg:gap-4 min-w-0">
             {/* Logo - Always visible */}
             <div className="flex-shrink-0">
               <Logo size="xl" className="hidden xl:flex" />
@@ -179,14 +181,14 @@ export const NavigationV17 = () => {
             </div>
 
             {/* Desktop Navigation - "Conversion-Killer" Labels */}
-            <nav className="hidden 2xl:flex items-center justify-center gap-0.5 xl:gap-1" role="navigation">
+            <nav className="hidden lg:flex flex-1 min-w-0 items-center justify-center gap-0.5 xl:gap-1" role="navigation">
               {navItems.map((item) => (
                 <NavButton key={item.id} item={item} />
               ))}
             </nav>
 
             {/* Mobile/Tablet: Menu button + Call + mini CTA - 48px touch targets */}
-            <div className="flex 2xl:hidden items-center gap-2 flex-shrink-0">
+            <div className="flex lg:hidden items-center gap-2 flex-shrink-0">
               <MobileHeaderCallButton />
               
               <Link 
@@ -220,7 +222,7 @@ export const NavigationV17 = () => {
             </div>
 
             {/* CTA Button - Desktop */}
-            <div className="hidden 2xl:flex items-center flex-shrink-0 gap-2 xl:gap-3">
+            <div className="hidden lg:flex items-center flex-shrink-0 gap-2 xl:gap-3">
               <HeaderCallButton />
               
               {/* Micro trust hint */}
