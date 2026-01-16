@@ -6,7 +6,7 @@
  * Switch via URL: ?nav=ultimate | ?nav=variant-b | ?nav=variant-c | ?nav=variant-d | ?nav=variant-e
  */
 
-export type NavVariant = 'ultimate' | 'variant-b' | 'variant-c' | 'variant-d' | 'variant-e' | 'variant-f' | 'variant-g' | 'variant-h' | 'variant-i' | 'variant-j' | 'variant-k' | 'variant-l' | 'variant-m' | 'variant-n' | 'variant-o' | 'variant-p';
+export type NavVariant = 'ultimate' | 'variant-b' | 'variant-c' | 'variant-d' | 'variant-e' | 'variant-f' | 'variant-g' | 'variant-h' | 'variant-i' | 'variant-j' | 'variant-k' | 'variant-l' | 'variant-m' | 'variant-n' | 'variant-o' | 'variant-p' | 'variant-17';
 
 export interface NavConfig {
   id: NavVariant;
@@ -666,6 +666,45 @@ export const VARIANT_P: NavConfig = {
   },
 };
 
+// ============================================
+// VARIANTE 17: NavigationV17 (Conversion-Killer Architektur)
+// Komplett eigenständige Navigation-Komponente
+// ============================================
+export const VARIANT_17: NavConfig = {
+  id: 'variant-17',
+  name: '17. NavigationV17 (Neu)',
+  description: 'Conversion-Killer Architektur mit eigenem Design',
+  labels: {
+    preisrechner: 'Kosten & Planung',
+    firmen: 'Offerten vergleichen',
+    services: 'Services',
+    ratgeber: 'Ratgeber',
+    fuerFirmen: 'Für Firmen',
+    cta: 'Offerten erhalten',
+  },
+  microcopy: {
+    preisrechner: 'Eigenständige Navigation mit Premium-Design.',
+    firmen: 'Mega-Dropdowns mit Trust-Signalen.',
+    services: 'Reinigung, Lagerung, Entsorgung & mehr.',
+    ratgeber: 'Tipps, Vorlagen & Downloads.',
+    fuerFirmen: 'Partner werden, Dashboard nutzen.',
+  },
+  dropdownTitles: {
+    preisrechner: 'KOSTEN & PLANUNG',
+    firmen: 'OFFERTEN VERGLEICHEN',
+    services: 'SERVICES',
+    ratgeber: 'RATGEBER',
+    fuerFirmen: 'FÜR FIRMEN',
+  },
+  ctaCard: {
+    preisrechner: { title: 'Budget geklärt?', buttonText: 'Jetzt Preise vergleichen' },
+    firmen: { title: 'Lokale Umzugsfirmen', buttonText: 'Offerten anfordern' },
+    services: { title: 'Service auswählen', buttonText: 'Offerten erhalten' },
+    ratgeber: { title: 'Umzug starten', buttonText: 'Jetzt Offerten erhalten' },
+    fuerFirmen: { title: 'Partner werden', buttonText: 'Kostenlos registrieren' },
+  },
+};
+
 // Alle Varianten
 export const NAV_VARIANTS: NavConfig[] = [
   VARIANT_ULTIMATE,
@@ -684,7 +723,20 @@ export const NAV_VARIANTS: NavConfig[] = [
   VARIANT_N,
   VARIANT_O,
   VARIANT_P,
+  VARIANT_17,
 ];
+
+// Check if variant-17 is active (uses separate NavigationV17 component)
+export const isVariant17Active = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlVariant = urlParams.get('nav');
+  if (urlVariant === 'variant-17') return true;
+  
+  const stored = localStorage.getItem('nav-variant');
+  return stored === 'variant-17';
+};
 
 // Aktive Variante aus localStorage oder URL
 export const getActiveVariant = (): NavConfig => {
