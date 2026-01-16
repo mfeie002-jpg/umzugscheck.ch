@@ -3,7 +3,7 @@ import { lazy, Suspense } from "react";
 import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
 import IndexPremiumScreenshot from "@/pages/IndexPremiumScreenshot";
 import { SkipToContent } from "@/components/SkipToContent";
-import { NavigationV17 } from "@/components/navigation-v17";
+// Navigation is rendered by MainLayout in App.tsx
 import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
 import { ErrorBoundary } from "@/components/homepage/ErrorBoundary";
 import { ScrollProgress } from "@/components/ui/scroll-progress";
@@ -94,7 +94,6 @@ const Index = () => {
 
         <ScrollProgress />
         <SkipToContent />
-        <NavigationV17 />
 
         <main id="main-content" role="main">
           {/* 1. Hero with Multi-Step Form + Visual Element */}

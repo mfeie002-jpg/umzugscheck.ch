@@ -5,8 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Home, RefreshCw, HelpCircle, AlertCircle, MessageSquare, Loader2, Search, ArrowRight, Calculator, Building2, MapPin, Sparkles, FileText, Phone } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Header } from "@/components/homepage/Header";
-import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
+// Header & Footer removed - provided by MainLayout in App.tsx
 
 /**
  * Optimized 404 Page with Enhanced SEO & Conversion
@@ -116,9 +115,7 @@ const NotFound = () => {
         <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
       </Helmet>
 
-      <div className="min-h-screen flex flex-col bg-background">
-        <Header />
-        
+      <div className="min-h-[60vh] flex flex-col bg-background">
         <main className="flex-1 flex items-center justify-center p-4 pb-24 md:pb-8">
           <div className="w-full max-w-2xl space-y-6">
             <Card className="shadow-lg border-border/50">
@@ -299,8 +296,6 @@ flowHome: ${ctx.flowHome}`}
             </Card>
           </div>
         </main>
-
-        <SimplifiedFooter />
       </div>
     </>
   );
