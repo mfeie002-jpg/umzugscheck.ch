@@ -6,11 +6,12 @@
  */
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { FlaskConical, X, Check, Navigation, Sparkles, ChevronDown } from 'lucide-react';
-import { useState, memo, useEffect } from 'react';
+import { FlaskConical, X, Check, Navigation, Sparkles } from 'lucide-react';
+import { useState, memo } from 'react';
 import { useSocialProofAB } from '@/contexts/SocialProofABContext';
-import { NAV_VARIANTS, getActiveVariant, setActiveVariant, type NavConfig } from '@/lib/navigation-variants';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigationAB } from '@/contexts/NavigationABContext';
+import { NAV_VARIANTS } from '@/lib/navigation-variants';
+import { useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -25,31 +26,23 @@ const socialProofVariants = {
 
 export const UnifiedABToggle = memo(function UnifiedABToggle() {
   const { variant: spVariant, setVariant: setSPVariant } = useSocialProofAB();
+  const { variant: navVariant, setVariant: setNavVariant } = useNavigationAB();
   const [isExpanded, setIsExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState<'nav' | 'social'>('nav');
-  const [activeNavVariant, setActiveNavVariant] = useState<NavConfig>(getActiveVariant());
   
   const location = useLocation();
-  const navigate = useNavigate();
-
-  // Update nav variant when URL changes
-  useEffect(() => {
-    setActiveNavVariant(getActiveVariant());
-  }, [location.search]);
 
   // Only show on homepage
   if (location.pathname !== '/') {
     return null;
   }
 
-  const handleNavVariantChange = (variantId: NavConfig['id']) => {
-    setActiveVariant(variantId);
-    setActiveNavVariant(getActiveVariant());
-    navigate(`/?nav=${variantId}`, { replace: true });
+  const handleNavVariantChange = (variantId: string) => {
+    setNavVariant(variantId);
   };
 
   const currentSPInfo = socialProofVariants[spVariant];
-  const navVariantNumber = activeNavVariant.name.split('.')[0];
+  const navVariantNumber = navVariant.name.split('.')[0];
 
   return (
     <div 
@@ -98,7 +91,7 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
               </div>
 
               {/* Tabs */}
-              <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'nav' | 'social')} className="w-full">
+              <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as 'nav' | 'social')} className="w-full">
                 <TabsList className="w-full grid grid-cols-2 p-1 m-3 mb-0 bg-muted/50">
                   <TabsTrigger value="nav" className="gap-2 text-xs sm:text-sm">
                     <Navigation className="w-4 h-4" />
@@ -113,13 +106,13 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
                 {/* Navigation Variants */}
                 <TabsContent value="nav" className="p-3 pt-2 max-h-[50vh] overflow-y-auto">
                   <div className="space-y-2">
-                    {NAV_VARIANTS.slice(0, 8).map((variant) => {
-                      const isActive = activeNavVariant.id === variant.id;
-                      const variantNum = variant.name.split('.')[0];
+                    {NAV_VARIANTS.slice(0, 8).map((nv) => {
+                      const isActive = navVariant.id === nv.id;
+                      const variantNum = nv.name.split('.')[0];
                       return (
                         <button
-                          key={variant.id}
-                          onClick={() => handleNavVariantChange(variant.id)}
+                          key={nv.id}
+                          onClick={() => handleNavVariantChange(nv.id)}
                           className={cn(
                             "w-full py-2.5 px-3 rounded-lg font-medium text-sm transition-all flex items-center justify-between",
                             isActive 
@@ -134,7 +127,7 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
                             )}>
                               {variantNum}
                             </span>
-                            <span className="truncate max-w-[180px]">{variant.name.split('. ')[1] || variant.name}</span>
+                            <span className="truncate max-w-[180px]">{nv.name.split('. ')[1] || nv.name}</span>
                           </span>
                           {isActive && <Check className="w-4 h-4 flex-shrink-0" />}
                         </button>
@@ -153,13 +146,13 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
                 {/* Social Proof Variants */}
                 <TabsContent value="social" className="p-3 pt-2 max-h-[50vh] overflow-y-auto">
                   <div className="space-y-2">
-                    {(Object.keys(socialProofVariants) as Array<keyof typeof socialProofVariants>).map((v) => {
-                      const info = socialProofVariants[v];
-                      const isActive = spVariant === v;
+                    {(Object.keys(socialProofVariants) as Array<keyof typeof socialProofVariants>).map((sv) => {
+                      const info = socialProofVariants[sv];
+                      const isActive = spVariant === sv;
                       return (
                         <button
-                          key={v}
-                          onClick={() => { setSPVariant(v); }}
+                          key={sv}
+                          onClick={() => { setSPVariant(sv); }}
                           className={cn(
                             "w-full py-2.5 px-3 rounded-lg font-medium text-sm transition-all flex items-center justify-between",
                             isActive 
@@ -201,7 +194,7 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
       <motion.button
         onClick={() => setIsExpanded(!isExpanded)}
         className={cn(
-          "flex items-center gap-2 px-4 py-3 rounded-full shadow-2xl border-2 text-white font-bold transition-all",
+          "flex items-center gap-2 px-3 py-2.5 rounded-full shadow-2xl border-2 text-white font-bold transition-all",
           "bg-gradient-to-r from-primary to-primary/80 border-white/30 hover:scale-105"
         )}
         whileTap={{ scale: 0.95 }}
@@ -209,19 +202,14 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
           boxShadow: '0 4px 20px rgba(0,0,0,0.3), 0 0 0 2px rgba(255,255,255,0.2)'
         }}
       >
-        <FlaskConical className="w-5 h-5" />
-        <span className="text-sm">A/B</span>
-        <div className="flex gap-1">
-          <span className="text-[10px] bg-white/20 px-1.5 py-0.5 rounded">
-            N{navVariantNumber}
-          </span>
-          <span className={cn(
-            "text-[10px] px-1.5 py-0.5 rounded",
-            currentSPInfo.color.replace('bg-', 'bg-').replace('-600', '-500/50')
-          )}>
-            SP{currentSPInfo.label}
-          </span>
-        </div>
+        <FlaskConical className="w-4 h-4" />
+        <span className="text-xs">N{navVariantNumber}</span>
+        <span className={cn(
+          "text-xs px-1.5 py-0.5 rounded",
+          currentSPInfo.color.replace('-600', '-500/70')
+        )}>
+          {currentSPInfo.label}
+        </span>
       </motion.button>
     </div>
   );
