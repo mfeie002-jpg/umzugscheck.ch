@@ -41,7 +41,13 @@ export const EnhancedConversionHero = memo(function EnhancedConversionHero() {
 
   return (
     <>
-      <section className="relative min-h-[70vh] sm:min-h-[75vh] lg:min-h-[85vh] flex items-center overflow-hidden bg-gradient-to-br from-background via-muted/20 to-background">
+      <section 
+        className="relative min-h-[70vh] sm:min-h-[75vh] lg:min-h-[85vh] flex items-center overflow-hidden bg-gradient-to-br from-background via-muted/20 to-background"
+        style={{ 
+          // Fixed minimum height prevents CLS
+          minHeight: 'max(70vh, 500px)'
+        }}
+      >
         {/* Enhanced Background with Swiss-themed gradients */}
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--border))_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--border))_1px,transparent_1px)] bg-[size:3rem_3rem] opacity-15" />

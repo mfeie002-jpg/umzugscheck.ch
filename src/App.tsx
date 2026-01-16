@@ -19,6 +19,7 @@ import { PrefetchManager } from "@/components/performance/PrefetchManager";
 import { CriticalCSSLoader } from "@/components/performance/CriticalCSSLoader";
 import { PerformanceOptimizer, PerformanceDebugOverlay } from "@/components/performance/PerformanceOptimizer";
 import { WebVitalsReporter } from "@/hooks/useWebVitals";
+import { FontLoader } from "@/components/ui/font-loader";
 
 // Global optimization components
 const SocialProofTicker = lazy(() => import("./components/SocialProofTicker"));
@@ -814,6 +815,7 @@ const App = () => (
                 <ReloadDiagnostics />
                 <CriticalCSS />
                 <CriticalCSSLoader />
+                <FontLoader />
                 <ResourceHints />
                 <PrefetchManager />
                 <PerformanceMonitor />
