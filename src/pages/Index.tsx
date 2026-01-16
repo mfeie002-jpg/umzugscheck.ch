@@ -3,7 +3,6 @@ import { lazy, Suspense, useEffect } from "react";
 import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
 import IndexPremiumScreenshot from "@/pages/IndexPremiumScreenshot";
 import { SkipToContent } from "@/components/SkipToContent";
-// Navigation is rendered by MainLayout in App.tsx
 import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
 import { ErrorBoundary } from "@/components/homepage/ErrorBoundary";
 import { ScrollProgress } from "@/components/ui/scroll-progress";
@@ -13,11 +12,19 @@ import { HotjarScript } from "@/components/analytics/HotjarScript";
 import { EnhancedConversionHero } from "@/components/homepage/EnhancedConversionHero";
 import { MobileStickyBar } from "@/components/homepage/MobileStickyBar";
 import { SocialProofMarquee } from "@/components/homepage/SocialProofMarquee";
-// NEW: World-class conversion components
+// Conversion & Analytics
 import { ExitIntentPopup } from "@/components/conversion/ExitIntentPopup";
 import { RealtimeSocialProof } from "@/components/conversion/RealtimeSocialProof";
 import { ScrollDepthTracker } from "@/components/conversion/ScrollDepthTracker";
 import { initMetrics } from "@/lib/realtime-metrics";
+import { trackPageView } from "@/lib/conversion-events";
+
+// CLS-optimized skeletons for zero layout shift
+import { 
+  HeroSkeleton, 
+  CompanyCardsSkeleton, 
+  TrustSkeleton 
+} from "@/components/performance/CLSOptimizedSections";
 
 // Lazy loaded components (below the fold)
 const EnhancedHowItWorks = lazy(() => import("@/components/homepage/EnhancedHowItWorks").then(m => ({ default: m.EnhancedHowItWorks })));
@@ -28,14 +35,12 @@ const CostExamplesSection = lazy(() => import("@/components/homepage/CostExample
 const EnhancedTestimonials = lazy(() => import("@/components/homepage/EnhancedTestimonials").then(m => ({ default: m.EnhancedTestimonials })));
 const TrustRibbon = lazy(() => import("@/components/trust/TrustRibbon").then(m => ({ default: m.TrustRibbon })));
 const EnhancedRegionsGrid = lazy(() => import("@/components/homepage/EnhancedRegionsGrid").then(m => ({ default: m.EnhancedRegionsGrid })));
-
 const EnhancedFAQ = lazy(() => import("@/components/homepage/EnhancedFAQ").then(m => ({ default: m.EnhancedFAQ })));
 const EnhancedFinalCTA = lazy(() => import("@/components/homepage/EnhancedFinalCTA").then(m => ({ default: m.EnhancedFinalCTA })));
 const CookieConsentBanner = lazy(() => import("@/components/CookieConsentBanner").then(m => ({ default: m.CookieConsentBanner })));
 const AlternativeContactSection = lazy(() => import("@/components/homepage/AlternativeContactSection").then(m => ({ default: m.AlternativeContactSection })));
 
-
-// Import optimized skeleton with fixed heights for CLS prevention
+// Legacy skeleton import (for fallback)
 import { SectionSkeleton, TestimonialsSkeleton } from "@/components/ui/skeleton-section";
 
 const Index = () => {
@@ -65,9 +70,10 @@ const Index = () => {
     ]
   };
 
-  // Initialize metrics tracking
+  // Initialize metrics tracking & page view
   useEffect(() => {
     initMetrics();
+    trackPageView('homepage', { variant: 'index' });
   }, []);
 
   return (
@@ -109,7 +115,7 @@ const Index = () => {
           <EnhancedConversionHero />
           
           {/* 2. TRUST RIBBON - Moved ABOVE fold for maximum impact */}
-          <Suspense fallback={<SectionSkeleton height="200px" variant="default" />}>
+          <Suspense fallback={<TrustSkeleton />}>
             <TrustRibbon variant="compact" />
           </Suspense>
           
@@ -122,7 +128,7 @@ const Index = () => {
           </Suspense>
           
           {/* 5. Company comparison - core value */}
-          <Suspense fallback={<SectionSkeleton height="500px" variant="cards" />}>
+          <Suspense fallback={<CompanyCardsSkeleton count={3} />}>
             <CompanyComparisonSection />
           </Suspense>
           
