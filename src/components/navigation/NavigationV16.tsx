@@ -124,11 +124,11 @@ export const NavigationV16 = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-40 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 overflow-x-hidden">
         {/* Warm accent line */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-emerald-500 to-primary/60" />
         
-        <div className="container flex h-16 items-center justify-between px-4">
+        <div className="container max-w-full flex h-16 items-center justify-between px-4 xl:px-6">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5 group">
             <div className="w-9 h-9 bg-gradient-to-br from-primary to-emerald-600 rounded-xl flex items-center justify-center shadow-md shadow-primary/20 group-hover:shadow-lg group-hover:shadow-primary/30 transition-all group-hover:scale-105">
@@ -142,7 +142,7 @@ export const NavigationV16 = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-1">
+          <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1 flex-shrink min-w-0">
             {NAV_SECTIONS.map((section) => (
               <div
                 key={section.id}
@@ -152,7 +152,7 @@ export const NavigationV16 = () => {
               >
                 <button
                   className={cn(
-                    "flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-all",
+                    "flex items-center gap-1 px-2.5 xl:px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap",
                     "hover:bg-primary/10 hover:text-primary",
                     activeDropdown === section.id && "bg-primary/10 text-primary"
                   )}
@@ -285,9 +285,9 @@ export const NavigationV16 = () => {
           </nav>
 
           {/* Right Side: CTA + Mobile Menu */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 xl:gap-3 flex-shrink-0">
             {/* Desktop CTA - Context-Aware */}
-            <div className="hidden lg:flex flex-col items-end">
+            <div className="hidden lg:flex flex-col items-end flex-shrink-0">
               <Button asChild className="h-11 px-6 font-bold gap-2 rounded-xl bg-gradient-to-r from-primary via-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-600/90 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all hover:scale-105">
                 <Link to="/umzugsofferten">
                   <Zap className="w-4 h-4" />
