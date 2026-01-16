@@ -2,10 +2,11 @@
  * Navigation A/B Testing Context
  * 
  * Controls navigation variants via React context (no page reload needed)
+ * Default: Variant 1 (Original/Status Quo)
  */
 
 import { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react';
-import { NAV_VARIANTS, type NavConfig } from '@/lib/navigation-variants';
+import { NAV_VARIANTS, type NavConfig, VARIANT_ULTIMATE } from '@/lib/navigation-variants';
 
 interface NavigationABContextType {
   variant: NavConfig;
@@ -22,30 +23,34 @@ export const useNavigationAB = () => {
   return context;
 };
 
+// Get initial variant from URL or localStorage, default to VARIANT_ULTIMATE (Original)
+const getInitialVariant = (): NavConfig => {
+  if (typeof window === 'undefined') return VARIANT_ULTIMATE;
+  
+  // Check URL param first
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlVariant = urlParams.get('nav');
+  if (urlVariant) {
+    const found = NAV_VARIANTS.find(v => v.id === urlVariant);
+    if (found) {
+      localStorage.setItem('nav-variant', urlVariant);
+      return found;
+    }
+  }
+  
+  // Then check localStorage
+  const stored = localStorage.getItem('nav-variant');
+  if (stored) {
+    const found = NAV_VARIANTS.find(v => v.id === stored);
+    if (found) return found;
+  }
+  
+  // Default to Original (VARIANT_ULTIMATE)
+  return VARIANT_ULTIMATE;
+};
+
 export const NavigationABProvider = ({ children }: { children: ReactNode }) => {
-  const [variant, setVariantState] = useState<NavConfig>(() => {
-    if (typeof window === 'undefined') return NAV_VARIANTS[0]; // ultimate = original
-    
-    // Check URL param first
-    const urlParams = new URLSearchParams(window.location.search);
-    const urlVariant = urlParams.get('nav');
-    if (urlVariant) {
-      const found = NAV_VARIANTS.find(v => v.id === urlVariant);
-      if (found) {
-        localStorage.setItem('nav-variant', urlVariant);
-        return found;
-      }
-    }
-    
-    // Then check localStorage
-    const stored = localStorage.getItem('nav-variant');
-    if (stored) {
-      const found = NAV_VARIANTS.find(v => v.id === stored);
-      if (found) return found;
-    }
-    
-    return NAV_VARIANTS[0]; // Default to original (ultimate)
-  });
+  const [variant, setVariantState] = useState<NavConfig>(getInitialVariant);
 
   const setVariant = useCallback((id: string) => {
     const found = NAV_VARIANTS.find(v => v.id === id);
@@ -60,7 +65,7 @@ export const NavigationABProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
-  // Listen for URL changes
+  // Listen for URL changes (popstate)
   useEffect(() => {
     const handlePopState = () => {
       const urlParams = new URLSearchParams(window.location.search);
