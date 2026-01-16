@@ -128,8 +128,8 @@ export const NavigationV17 = () => {
           }
         }}
         className={cn(
-          "relative flex items-center gap-2 px-4 py-2.5 font-semibold rounded-xl transition-all duration-200",
-          "text-sm xl:text-base whitespace-nowrap",
+          "relative flex items-center gap-1 xl:gap-1.5 px-2 xl:px-3 2xl:px-4 py-2 font-semibold rounded-xl transition-all duration-200",
+          "text-xs xl:text-sm 2xl:text-base whitespace-nowrap",
           "hover:bg-gradient-to-r hover:from-primary/10 hover:to-primary/5 hover:text-primary",
           "active:scale-[0.98]",
           activeDropdown === item.id 
@@ -173,22 +173,21 @@ export const NavigationV17 = () => {
         >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20">
-            {/* Logo - Always visible, never hidden */}
+            {/* Logo - Always visible */}
             <Link to="/" className="flex-shrink-0 z-10">
-              <Logo size="xl" className="hidden 2xl:flex" />
-              <Logo size="lg" className="hidden lg:flex 2xl:hidden" />
+              <Logo size="lg" className="hidden lg:flex" />
               <Logo size="md" className="flex lg:hidden" />
             </Link>
 
-            {/* Desktop Navigation - show from 2xl breakpoint for safety */}
-            <nav className="hidden 2xl:flex items-center justify-center gap-2 mx-4" role="navigation">
+            {/* Desktop Navigation - show from lg breakpoint with compact styling */}
+            <nav className="hidden lg:flex items-center justify-center gap-0.5 xl:gap-1 2xl:gap-2 flex-1 mx-2 xl:mx-4" role="navigation">
               {navItems.map((item) => (
                 <NavButton key={item.id} item={item} />
               ))}
             </nav>
 
-            {/* Mobile/Tablet: Menu button + Call + mini CTA - 48px touch targets */}
-            <div className="flex 2xl:hidden items-center gap-2 flex-shrink-0">
+            {/* Mobile/Tablet: Menu button + Call + mini CTA */}
+            <div className="flex lg:hidden items-center gap-2 flex-shrink-0">
               <MobileHeaderCallButton />
               
               <Link 
@@ -203,7 +202,7 @@ export const NavigationV17 = () => {
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 className={cn(
                   "relative z-50 flex items-center justify-center",
-                  "w-12 h-12 rounded-lg", /* 48px touch target */
+                  "w-12 h-12 rounded-lg",
                   "bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20",
                   "hover:from-primary/15 hover:to-primary/10 hover:border-primary/30",
                   "active:scale-95 transition-all touch-manipulation",
@@ -222,10 +221,10 @@ export const NavigationV17 = () => {
             </div>
 
             {/* CTA Button - Desktop */}
-            <div className="hidden 2xl:flex items-center flex-shrink-0 gap-3">
-              <HeaderCallButton />
+            <div className="hidden lg:flex items-center flex-shrink-0 gap-2 xl:gap-3">
+              <HeaderCallButton className="hidden xl:flex" />
               
-              {/* Micro trust hint */}
+              {/* Micro trust hint - only on 2xl+ */}
               <div className="hidden 2xl:flex items-center gap-1.5 text-xs text-muted-foreground">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                 <span className="font-medium">Gratis & unverbindlich</span>
@@ -234,9 +233,10 @@ export const NavigationV17 = () => {
               <Link to="/umzugsofferten" aria-label="Kostenlose Umzugsofferten vergleichen">
                 <Button 
                   size="lg"
-                  className="group bg-gradient-to-r from-secondary via-secondary to-secondary/90 hover:from-secondary/90 hover:via-secondary hover:to-secondary text-secondary-foreground font-bold shadow-[0_4px_20px_rgba(220,38,38,0.35)] hover:shadow-[0_8px_30px_rgba(220,38,38,0.45)] transition-all text-sm 2xl:text-base px-4 2xl:px-6 whitespace-nowrap"
+                  className="group bg-gradient-to-r from-secondary via-secondary to-secondary/90 hover:from-secondary/90 hover:via-secondary hover:to-secondary text-secondary-foreground font-bold shadow-[0_4px_20px_rgba(220,38,38,0.35)] hover:shadow-[0_8px_30px_rgba(220,38,38,0.45)] transition-all text-sm px-3 xl:px-4 2xl:px-6 whitespace-nowrap"
                 >
-                  Offerten erhalten
+                  <span className="hidden xl:inline">Offerten erhalten</span>
+                  <span className="xl:hidden">Offerten</span>
                   <ArrowRight className="w-4 h-4 ml-1.5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
