@@ -25,9 +25,9 @@ export const SocialProofABToggle = memo(function SocialProofABToggle() {
 
   return (
     <div 
-      className="fixed z-[70] pointer-events-auto"
+      className="fixed z-[90] pointer-events-auto"
       style={{ 
-        bottom: '140px', 
+        bottom: 'calc(env(safe-area-inset-bottom, 0px) + 96px)',
         left: '16px'
       }}
     >
@@ -90,7 +90,7 @@ export const SocialProofABToggle = memo(function SocialProofABToggle() {
         }}
       >
         <FlaskConical className="w-5 h-5" />
-        <span>{currentInfo.label}</span>
+        <span>SP {currentInfo.label}</span>
       </motion.button>
     </div>
   );
