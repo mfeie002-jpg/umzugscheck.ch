@@ -33,7 +33,7 @@ export const DropdownWrapper = ({ isOpen, onClose, children, className }: Dropdo
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-black/20 backdrop-blur-[3px] z-40 hidden lg:block"
+            className="fixed inset-0 bg-black/20 backdrop-blur-[3px] z-[9998] hidden lg:block"
             onClick={onClose}
             aria-hidden="true"
           />
@@ -46,22 +46,22 @@ export const DropdownWrapper = ({ isOpen, onClose, children, className }: Dropdo
             transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
             className={cn(
               "hidden lg:block absolute left-0 right-0 top-full",
-              "bg-white dark:bg-gray-900",
+              "bg-background",
               "border-b border-primary/10",
               "shadow-[0_25px_80px_-15px_rgba(0,0,0,0.2),0_0_50px_-25px_hsl(var(--primary)/0.25)]",
-              "z-[100] overflow-hidden",
+              "z-[9999] overflow-hidden",
               className
             )}
           >
-            {/* Premium gradient accent line at top */}
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary/70 via-emerald-500/60 to-secondary/70" />
+            {/* Brand accent line at top */}
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-secondary" />
             
             {/* Trust micro-bar with icons */}
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.1 }}
-              className="border-b border-border/40 bg-gradient-to-r from-primary/[0.04] via-transparent to-emerald-500/[0.04]"
+              className="border-b border-border/40 bg-gradient-to-r from-primary/[0.04] via-transparent to-secondary/[0.04]"
             >
               <div className="container mx-auto px-4 lg:px-6">
                 <div className="flex items-center justify-center gap-8 py-3">
