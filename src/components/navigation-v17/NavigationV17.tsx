@@ -12,11 +12,12 @@
 import { Button } from "@/components/ui/button";
 import { Menu, X, ChevronDown, ArrowRight } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { MobileMenuNew } from "@/components/MobileMenuNew";
 import { Logo } from "@/components/Logo";
 import { cn } from "@/lib/utils";
 import { HeaderCallButton, MobileHeaderCallButton } from "@/components/CallButton";
+import { getActiveVariant, type NavConfig } from "@/lib/navigation-variants";
 
 // V17 Dropdowns
 import { KostenPlanungDropdown } from "./dropdowns/KostenPlanungDropdown";
@@ -25,43 +26,50 @@ import { ServicesV17Dropdown } from "./dropdowns/ServicesV17Dropdown";
 import { RatgeberV17Dropdown } from "./dropdowns/RatgeberV17Dropdown";
 import { FuerFirmenV17Dropdown } from "./dropdowns/FuerFirmenV17Dropdown";
 
-// Navigation Items mit Microcopy
-const NAV_ITEMS = [
+// Build navigation items from active variant
+const buildNavItems = (variant: NavConfig) => [
   {
     id: 'kosten-planung' as const,
-    label: 'Kosten & Planung',
-    microcopy: 'Budget berechnen, Checklisten & Zeitplan.'
+    label: variant.labels.preisrechner,
+    microcopy: variant.microcopy.preisrechner
   },
   {
     id: 'offerten-vergleichen' as const,
-    label: 'Offerten vergleichen',
-    microcopy: 'Top-Firmen in deiner Region, bis 40% sparen.'
+    label: variant.labels.firmen,
+    microcopy: variant.microcopy.firmen
   },
   {
     id: 'services' as const,
-    label: 'Services',
-    microcopy: 'Reinigung, Lagerung & Umzugskartons.'
+    label: variant.labels.services,
+    microcopy: variant.microcopy.services
   },
   {
     id: 'ratgeber' as const,
-    label: 'Ratgeber',
-    microcopy: 'Tipps, Vorlagen & Behördengänge.'
+    label: variant.labels.ratgeber,
+    microcopy: variant.microcopy.ratgeber
   },
   {
     id: 'fuer-firmen' as const,
-    label: 'Für Firmen',
-    microcopy: 'Partner werden & B2B Umzüge.'
+    label: variant.labels.fuerFirmen,
+    microcopy: variant.microcopy.fuerFirmen
   }
 ] as const;
 
-type DropdownType = typeof NAV_ITEMS[number]['id'] | null;
+type DropdownType = 'kosten-planung' | 'offerten-vergleichen' | 'services' | 'ratgeber' | 'fuer-firmen' | null;
 
 export const NavigationV17 = () => {
+  const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<DropdownType>(null);
   const [hoveredItem, setHoveredItem] = useState<DropdownType>(null);
   const [scrolled, setScrolled] = useState(false);
+  const [navItems, setNavItems] = useState(() => buildNavItems(getActiveVariant()));
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Update nav items when variant changes (via URL or localStorage)
+  useEffect(() => {
+    setNavItems(buildNavItems(getActiveVariant()));
+  }, [location.search]);
 
   // Track scroll for enhanced shadow
   useEffect(() => {
@@ -100,7 +108,7 @@ export const NavigationV17 = () => {
   const NavButton = ({ 
     item 
   }: { 
-    item: typeof NAV_ITEMS[number];
+    item: ReturnType<typeof buildNavItems>[number];
   }) => (
     <div className="relative group/nav">
       <button
@@ -172,7 +180,7 @@ export const NavigationV17 = () => {
 
             {/* Desktop Navigation - "Conversion-Killer" Labels */}
             <nav className="hidden lg:flex items-center justify-center gap-0.5 xl:gap-1" role="navigation">
-              {NAV_ITEMS.map((item) => (
+              {navItems.map((item) => (
                 <NavButton key={item.id} item={item} />
               ))}
             </nav>
