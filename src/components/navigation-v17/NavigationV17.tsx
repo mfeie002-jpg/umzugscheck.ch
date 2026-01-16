@@ -162,7 +162,7 @@ export const NavigationV17 = () => {
         aria-label="Hauptnavigation"
       >
         <div className="w-full max-w-[1440px] mx-auto px-3 sm:px-4 lg:px-6">
-          <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20 gap-2 lg:gap-4">
+          <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20 gap-4 lg:gap-6">
             {/* Logo - Always visible */}
             <div className="flex-shrink-0">
               <Logo size="xl" className="hidden xl:flex" />
@@ -171,7 +171,7 @@ export const NavigationV17 = () => {
             </div>
 
             {/* Desktop Navigation - "Conversion-Killer" Labels */}
-            <nav className="hidden lg:flex items-center flex-1 justify-center gap-0.5 xl:gap-1 min-w-0" role="navigation">
+            <nav className="hidden lg:flex items-center justify-center gap-0.5 xl:gap-1" role="navigation">
               {NAV_ITEMS.map((item) => (
                 <NavButton key={item.id} item={item} />
               ))}
