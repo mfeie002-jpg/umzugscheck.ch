@@ -1,12 +1,13 @@
 import { memo, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { Star, CheckCircle, Sparkles, ArrowRight, Clock, Award, SlidersHorizontal, Building2, Loader2 } from "lucide-react";
+import { Star, CheckCircle, Sparkles, ArrowRight, Clock, Award, SlidersHorizontal, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePublicProviders, getPriceRange, getResponseTimeString, getDisplayRating } from "@/hooks/usePublicProviders";
+import { CompanyCardSkeleton } from "@/components/company/CompanyCardOptimized";
 
 // Fallback data when no providers are loaded
 const fallbackOffers = [
@@ -163,10 +164,12 @@ export const CompanyComparisonSection = memo(function CompanyComparisonSection()
           </div>
         </motion.div>
 
-        {/* Loading State */}
+        {/* Loading State - CLS optimized skeleton */}
         {isLoading && (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          <div className="grid md:grid-cols-3 gap-6 mb-12">
+            {[1, 2, 3].map((i) => (
+              <CompanyCardSkeleton key={i} />
+            ))}
           </div>
         )}
 
