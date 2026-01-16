@@ -128,7 +128,7 @@ export const NavigationV17 = () => {
           }
         }}
         className={cn(
-          "relative flex items-center gap-1 px-2.5 xl:px-4 py-2.5 font-semibold rounded-xl transition-all duration-200",
+          "relative flex items-center gap-1.5 px-3 xl:px-4 py-2.5 font-semibold rounded-xl transition-all duration-200",
           "text-sm xl:text-base whitespace-nowrap min-w-0",
           "hover:bg-gradient-to-r hover:from-primary/10 hover:to-primary/5 hover:text-primary",
           "active:scale-[0.98]",
@@ -181,7 +181,7 @@ export const NavigationV17 = () => {
             </div>
 
             {/* Desktop Navigation - "Conversion-Killer" Labels */}
-            <nav className="hidden lg:flex flex-1 min-w-0 items-center justify-center gap-0.5 xl:gap-1" role="navigation">
+            <nav className="hidden lg:flex flex-1 min-w-0 items-center justify-center gap-1 xl:gap-2" role="navigation">
               {navItems.map((item) => (
                 <NavButton key={item.id} item={item} />
               ))}
