@@ -25,10 +25,10 @@ export const SocialProofABToggle = memo(function SocialProofABToggle() {
 
   return (
     <div 
-      className="fixed z-[99999] pointer-events-auto"
+      className="fixed z-[70] pointer-events-auto"
       style={{ 
-        bottom: '180px', 
-        right: '16px'
+        bottom: '140px', 
+        left: '16px'
       }}
     >
       <AnimatePresence>
@@ -37,7 +37,7 @@ export const SocialProofABToggle = memo(function SocialProofABToggle() {
             initial={{ opacity: 0, y: 10, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.9 }}
-            className="absolute bottom-16 right-0 bg-white dark:bg-card border-2 border-primary rounded-xl shadow-2xl p-4 w-72 pointer-events-auto"
+            className="absolute bottom-16 left-0 bg-white dark:bg-card border-2 border-primary rounded-xl shadow-2xl p-4 w-72 pointer-events-auto"
           >
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-bold text-sm text-foreground">🧪 A/B Test: Social Proof</h3>
