@@ -25,6 +25,9 @@ const LazyPremiumServicesGrid = lazy(() =>
 const LazyComparisonShowcase = lazy(() =>
   import("@/components/home/ComparisonShowcase").then((m) => ({ default: m.ComparisonShowcase }))
 );
+const LazyTrustRibbon = lazy(() =>
+  import("@/components/trust/TrustRibbon").then((m) => ({ default: m.TrustRibbon }))
+);
 
 // Optional sections - below main CTA (can be removed for less scroll)
 const LazyPremiumCostExamples = lazy(() =>
@@ -195,7 +198,14 @@ const IndexPremium = () => {
           </AnimatedSection>
         </Suspense>
         
-        {/* 6. Services Grid - Lazy */}
+        {/* 6. Trust Ribbon - HIGH IMPACT Trust Section */}
+        <Suspense fallback={<SectionSkeleton height="min-h-[300px]" />}>
+          <AnimatedSection animation="fade-in">
+            <LazyTrustRibbon variant="full" />
+          </AnimatedSection>
+        </Suspense>
+        
+        {/* 7. Services Grid - Lazy */}
         <Suspense fallback={<SectionSkeleton height="min-h-[400px]" variant="cards" />}>
           <AnimatedSection animation="fade-up">
             <LazyPremiumServicesGrid />

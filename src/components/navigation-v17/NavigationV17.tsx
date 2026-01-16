@@ -169,7 +169,7 @@ export const NavigationV17 = () => {
         )} 
         aria-label="Hauptnavigation"
       >
-        <div className="w-full max-w-[1440px] mx-auto px-3 sm:px-4 lg:px-6">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20 gap-4 lg:gap-6">
             {/* Logo - Always visible */}
             <div className="flex-shrink-0">

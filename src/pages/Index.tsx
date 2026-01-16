@@ -21,6 +21,7 @@ const AIVideoCalculatorSection = lazy(() => import("@/components/homepage/AIVide
 const EnhancedServicesGrid = lazy(() => import("@/components/homepage/EnhancedServicesGrid").then(m => ({ default: m.EnhancedServicesGrid })));
 const CostExamplesSection = lazy(() => import("@/components/homepage/CostExamplesSection").then(m => ({ default: m.CostExamplesSection })));
 const EnhancedTestimonials = lazy(() => import("@/components/homepage/EnhancedTestimonials").then(m => ({ default: m.EnhancedTestimonials })));
+const TrustRibbon = lazy(() => import("@/components/trust/TrustRibbon").then(m => ({ default: m.TrustRibbon })));
 const EnhancedRegionsGrid = lazy(() => import("@/components/homepage/EnhancedRegionsGrid").then(m => ({ default: m.EnhancedRegionsGrid })));
 
 const EnhancedFAQ = lazy(() => import("@/components/homepage/EnhancedFAQ").then(m => ({ default: m.EnhancedFAQ })));
@@ -131,6 +132,11 @@ const Index = () => {
           {/* 8. Testimonials */}
           <Suspense fallback={<SectionSkeleton height="350px" />}>
             <EnhancedTestimonials />
+          </Suspense>
+          
+          {/* 8.5 Trust Ribbon - HIGH IMPACT Trust Section */}
+          <Suspense fallback={<SectionSkeleton height="300px" />}>
+            <TrustRibbon variant="full" />
           </Suspense>
           
           {/* 9. Alternative Contact - Phone/WhatsApp/Email */}
