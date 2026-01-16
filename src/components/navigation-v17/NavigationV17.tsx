@@ -110,7 +110,7 @@ export const NavigationV17 = () => {
   }: { 
     item: ReturnType<typeof buildNavItems>[number];
   }) => (
-    <div className="relative group/nav min-w-0">
+    <div className="relative group/nav flex-shrink-0">
       <button
         onMouseEnter={() => handleMouseEnter(item.id)}
         onMouseLeave={handleMouseLeave}
@@ -128,8 +128,8 @@ export const NavigationV17 = () => {
           }
         }}
         className={cn(
-          "relative flex items-center gap-1.5 px-3 xl:px-4 py-2.5 font-semibold rounded-xl transition-all duration-200",
-          "text-sm xl:text-base whitespace-nowrap min-w-0",
+          "relative flex items-center gap-2 px-4 py-2.5 font-semibold rounded-xl transition-all duration-200",
+          "text-sm xl:text-base whitespace-nowrap",
           "hover:bg-gradient-to-r hover:from-primary/10 hover:to-primary/5 hover:text-primary",
           "active:scale-[0.98]",
           activeDropdown === item.id 
@@ -139,7 +139,7 @@ export const NavigationV17 = () => {
         aria-expanded={activeDropdown === item.id}
         aria-haspopup="true"
       >
-        <span className="truncate max-w-[110px] sm:max-w-[130px] xl:max-w-none">{item.label}</span>
+        <span>{item.label}</span>
         <ChevronDown
           className={cn(
             "w-4 h-4 transition-transform flex-shrink-0 text-muted-foreground group-hover/nav:text-primary",
@@ -181,7 +181,7 @@ export const NavigationV17 = () => {
             </div>
 
             {/* Desktop Navigation - "Conversion-Killer" Labels */}
-            <nav className="hidden lg:flex flex-1 min-w-0 items-center justify-center gap-1 xl:gap-2" role="navigation">
+            <nav className="hidden lg:flex items-center justify-center gap-1 xl:gap-2 flex-shrink-0" role="navigation">
               {navItems.map((item) => (
                 <NavButton key={item.id} item={item} />
               ))}
