@@ -166,7 +166,7 @@ export const NavigationV17 = () => {
       
         <nav 
           className={cn(
-            "bg-gradient-to-b from-background to-background/98 backdrop-blur-md border-b border-primary/10 relative transition-shadow duration-300 w-full overflow-x-hidden",
+            "bg-gradient-to-b from-background to-background/98 backdrop-blur-md border-b border-primary/10 relative transition-shadow duration-300 w-full",
             scrolled ? "shadow-lg shadow-primary/5" : "shadow-soft"
           )} 
           aria-label="Hauptnavigation"
