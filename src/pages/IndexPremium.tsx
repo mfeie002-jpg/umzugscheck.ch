@@ -177,31 +177,31 @@ const IndexPremium = () => {
       <main id="main-content" role="main">
         {/* 1. Hero - Critical: Commitment hook */}
         <PremiumHeroSection />
-        
-        {/* 2. Trust Signals */}
+
+        {/* 2. Trust Ribbon - HIGH IMPACT Trust Section */}
+        <Suspense fallback={<SectionSkeleton height="min-h-[300px]" />}>
+          <AnimatedSection animation="fade-in">
+            <LazyTrustRibbon variant="full" />
+          </AnimatedSection>
+        </Suspense>
+
+        {/* 3. Trust Signals */}
         <TrustSignals />
-        
-        {/* 3. Social Proof */}
+
+        {/* 4. Social Proof */}
         <AnimatedSection animation="fade-up">
           <PremiumSocialProof />
         </AnimatedSection>
-        
-        {/* 4. How It Works */}
+
+        {/* 5. How It Works */}
         <AnimatedSection animation="fade-up">
           <PremiumHowItWorks />
         </AnimatedSection>
 
-        {/* 5. Comparison Showcase - Lazy */}
+        {/* 6. Comparison Showcase - Lazy */}
         <Suspense fallback={<SectionSkeleton height="min-h-[400px]" variant="cards" />}>
           <AnimatedSection animation="fade-in">
             <LazyComparisonShowcase variant="premium" />
-          </AnimatedSection>
-        </Suspense>
-        
-        {/* 6. Trust Ribbon - HIGH IMPACT Trust Section */}
-        <Suspense fallback={<SectionSkeleton height="min-h-[300px]" />}>
-          <AnimatedSection animation="fade-in">
-            <LazyTrustRibbon variant="full" />
           </AnimatedSection>
         </Suspense>
         
