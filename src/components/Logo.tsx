@@ -72,7 +72,7 @@ export const Logo = ({ className = "", size = "lg", iconOnly = false }: LogoProp
     >
       <svg 
         viewBox="0 0 320 44" 
-        className={`${sizeClasses[size]} w-auto min-w-[140px] sm:min-w-[180px]`}
+        className={`${sizeClasses[size]} w-auto min-w-[100px] sm:min-w-[140px] md:min-w-[180px]`}
         aria-hidden="true"
       >
         {/* House/Box with Checkmark Icon */}

@@ -61,15 +61,15 @@ export const MobileHeaderCallButton = memo(({ className }: { className?: string 
   <a 
     href={`tel:${COMPANY_PHONE}`}
     className={cn(
-      "flex items-center justify-center w-11 h-11 rounded-xl",
+      "flex items-center justify-center rounded-xl",
       "bg-emerald-500 hover:bg-emerald-600 text-white",
       "shadow-lg shadow-emerald-500/25 active:scale-95 transition-all",
-      "touch-manipulation min-h-[44px]",
+      "touch-manipulation w-10 h-10 sm:w-11 sm:h-11",
       className
     )}
     aria-label="Jetzt anrufen"
   >
-    <Phone className="w-5 h-5" />
+    <Phone className="w-4 h-4 sm:w-5 sm:h-5" />
   </a>
 ));
 MobileHeaderCallButton.displayName = 'MobileHeaderCallButton';

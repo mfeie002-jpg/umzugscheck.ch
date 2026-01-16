@@ -186,13 +186,13 @@ export const NavigationV17 = () => {
               ))}
             </nav>
 
-            {/* Mobile/Tablet: Menu button + Call + mini CTA */}
-            <div className="flex lg:hidden items-center gap-2 flex-shrink-0">
-              <MobileHeaderCallButton />
+            {/* Mobile/Tablet: Menu button + Call + mini CTA - compact for small screens */}
+            <div className="flex lg:hidden items-center gap-1.5 sm:gap-2 flex-shrink-0">
+              <MobileHeaderCallButton className="w-10 h-10 sm:w-11 sm:h-11" />
               
               <Link 
                 to="/umzugsofferten" 
-                className="flex items-center justify-center gap-1 bg-secondary text-secondary-foreground text-xs font-bold px-3 py-2.5 rounded-lg shadow-md shadow-secondary/20 active:scale-95 transition-all min-h-[48px] min-w-[48px] touch-manipulation"
+                className="flex items-center justify-center gap-1 bg-secondary text-secondary-foreground text-[11px] sm:text-xs font-bold px-2 sm:px-3 py-2 sm:py-2.5 rounded-lg shadow-md shadow-secondary/20 active:scale-95 transition-all min-h-[40px] sm:min-h-[44px] touch-manipulation"
                 aria-label="Offerten erhalten"
               >
                 <span>Offerten</span>
@@ -202,7 +202,7 @@ export const NavigationV17 = () => {
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 className={cn(
                   "relative z-50 flex items-center justify-center",
-                  "w-12 h-12 rounded-lg",
+                  "w-10 h-10 sm:w-12 sm:h-12 rounded-lg",
                   "bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20",
                   "hover:from-primary/15 hover:to-primary/10 hover:border-primary/30",
                   "active:scale-95 transition-all touch-manipulation",
@@ -213,9 +213,9 @@ export const NavigationV17 = () => {
                 aria-controls="mobile-menu"
               >
                 {isMobileMenuOpen ? (
-                  <X className="w-6 h-6 text-primary" aria-hidden="true" />
+                  <X className="w-5 h-5 sm:w-6 sm:h-6 text-primary" aria-hidden="true" />
                 ) : (
-                  <Menu className="w-6 h-6 text-primary" aria-hidden="true" />
+                  <Menu className="w-5 h-5 sm:w-6 sm:h-6 text-primary" aria-hidden="true" />
                 )}
               </button>
             </div>
