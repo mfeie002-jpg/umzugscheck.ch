@@ -1,6 +1,6 @@
 /**
  * A/B Wrapper for TrustRibbon
- * Renders Variant A, B, C, or D based on context
+ * Renders Variant A, B, C, D, or E based on context
  */
 
 import { memo } from 'react';
@@ -9,6 +9,7 @@ import { TrustRibbon } from '@/components/trust/TrustRibbon';
 import { TrustRibbonVariantB } from '@/components/trust/TrustRibbonVariantB';
 import { TrustRibbonVariantC } from '@/components/trust/TrustRibbonVariantC';
 import { TrustRibbonVariantD } from '@/components/trust/TrustRibbonVariantD';
+import { TrustRibbonVariantE } from '@/components/trust/TrustRibbonVariantE';
 
 interface TrustRibbonABProps {
   variant?: "full" | "compact";
@@ -25,6 +26,8 @@ export const TrustRibbonAB = memo(function TrustRibbonAB(props: TrustRibbonABPro
       return <TrustRibbonVariantC {...props} />;
     case 'D':
       return <TrustRibbonVariantD {...props} />;
+    case 'E':
+      return <TrustRibbonVariantE {...props} />;
     default:
       return <TrustRibbon {...props} />;
   }
