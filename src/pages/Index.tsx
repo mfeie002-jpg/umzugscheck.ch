@@ -11,7 +11,9 @@ import { HotjarScript } from "@/components/analytics/HotjarScript";
 // Core Components (not lazy - above the fold)
 import { EnhancedConversionHero } from "@/components/homepage/EnhancedConversionHero";
 import { MobileStickyBar } from "@/components/homepage/MobileStickyBar";
-// SocialProofMarquee removed - consolidated into TrustRibbon
+// A/B Testing for Social Proof sections
+import { SocialProofABProvider } from "@/contexts/SocialProofABContext";
+import { SocialProofABToggle } from "@/components/homepage/SocialProofABToggle";
 // Conversion & Analytics
 import { ExitIntentPopup } from "@/components/conversion/ExitIntentPopup";
 import { RealtimeSocialProof } from "@/components/conversion/RealtimeSocialProof";
@@ -32,8 +34,9 @@ const CompanyComparisonSection = lazy(() => import("@/components/homepage/Compan
 const AIVideoCalculatorSection = lazy(() => import("@/components/homepage/AIVideoCalculatorSection").then(m => ({ default: m.AIVideoCalculatorSection })));
 const EnhancedServicesGrid = lazy(() => import("@/components/homepage/EnhancedServicesGrid").then(m => ({ default: m.EnhancedServicesGrid })));
 const CostExamplesSection = lazy(() => import("@/components/homepage/CostExamplesSection").then(m => ({ default: m.CostExamplesSection })));
-const EnhancedTestimonials = lazy(() => import("@/components/homepage/EnhancedTestimonials").then(m => ({ default: m.EnhancedTestimonials })));
-const TrustRibbon = lazy(() => import("@/components/trust/TrustRibbon").then(m => ({ default: m.TrustRibbon })));
+// A/B tested components
+const TrustRibbonAB = lazy(() => import("@/components/trust/TrustRibbonAB").then(m => ({ default: m.TrustRibbonAB })));
+const EnhancedTestimonialsAB = lazy(() => import("@/components/homepage/EnhancedTestimonialsAB").then(m => ({ default: m.EnhancedTestimonialsAB })));
 const EnhancedRegionsGrid = lazy(() => import("@/components/homepage/EnhancedRegionsGrid").then(m => ({ default: m.EnhancedRegionsGrid })));
 const EnhancedFAQ = lazy(() => import("@/components/homepage/EnhancedFAQ").then(m => ({ default: m.EnhancedFAQ })));
 const EnhancedFinalCTA = lazy(() => import("@/components/homepage/EnhancedFinalCTA").then(m => ({ default: m.EnhancedFinalCTA })));
@@ -77,6 +80,7 @@ const Index = () => {
   }, []);
 
   return (
+    <SocialProofABProvider>
     <ErrorBoundary>
       <div className="min-h-screen bg-background">
         <Helmet>
@@ -114,9 +118,9 @@ const Index = () => {
           {/* 1. Hero with Multi-Step Form + Visual Element */}
           <EnhancedConversionHero />
           
-          {/* 2. TRUST RIBBON - BEKANNT AUS + 15'000+ Stats */}
+          {/* 2. TRUST RIBBON - BEKANNT AUS + 15'000+ Stats (A/B TESTED) */}
           <Suspense fallback={<TrustSkeleton />}>
-            <TrustRibbon variant="full" />
+            <TrustRibbonAB variant="full" />
           </Suspense>
           
           {/* 4. How it works - simplified process */}
@@ -144,9 +148,9 @@ const Index = () => {
             <CostExamplesSection />
           </Suspense>
           
-          {/* 9. Testimonials - Video cards with concrete savings */}
+          {/* 9. Testimonials - Video cards with concrete savings (A/B TESTED) */}
           <Suspense fallback={<TestimonialsSkeleton />}>
-            <EnhancedTestimonials />
+            <EnhancedTestimonialsAB />
           </Suspense>
           
           {/* 10. Removed duplicate TrustRibbon - now only at top */}
@@ -193,8 +197,12 @@ const Index = () => {
         <Suspense fallback={null}>
           <CookieConsentBanner />
         </Suspense>
+        
+        {/* A/B Toggle for Social Proof sections */}
+        <SocialProofABToggle />
       </div>
     </ErrorBoundary>
+    </SocialProofABProvider>
   );
 };
 
