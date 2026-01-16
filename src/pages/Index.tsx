@@ -1,10 +1,8 @@
 import { Helmet } from "react-helmet";
 import { lazy, Suspense } from "react";
-import { useSearchParams } from "react-router-dom";
 import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
 import IndexPremiumScreenshot from "@/pages/IndexPremiumScreenshot";
 import { SkipToContent } from "@/components/SkipToContent";
-import { Header } from "@/components/homepage/Header";
 import { NavigationV17 } from "@/components/navigation-v17";
 import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
 import { ErrorBoundary } from "@/components/homepage/ErrorBoundary";
@@ -42,9 +40,6 @@ const SectionSkeleton = ({ height = "400px" }: { height?: string }) => (
 );
 
 const Index = () => {
-  const [searchParams] = useSearchParams();
-  const useV17 = searchParams.get('nav') === 'v17';
-  
   if (isScreenshotRenderMode()) {
     return <IndexPremiumScreenshot />;
   }
@@ -99,7 +94,7 @@ const Index = () => {
 
         <ScrollProgress />
         <SkipToContent />
-        {useV17 ? <NavigationV17 /> : <Header />}
+        <NavigationV17 />
 
         <main id="main-content" role="main">
           {/* 1. Hero with Multi-Step Form + Visual Element */}
