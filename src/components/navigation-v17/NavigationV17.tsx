@@ -172,23 +172,23 @@ export const NavigationV17 = () => {
           aria-label="Hauptnavigation"
         >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20 gap-3 lg:gap-4 min-w-0">
+          <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20 gap-4">
             {/* Logo - Always visible */}
             <div className="flex-shrink-0">
-              <Logo size="xl" className="hidden xl:flex" />
-              <Logo size="lg" className="hidden lg:flex xl:hidden" />
-              <Logo size="md" className="flex lg:hidden" />
+              <Logo size="xl" className="hidden 2xl:flex" />
+              <Logo size="lg" className="hidden xl:flex 2xl:hidden" />
+              <Logo size="md" className="flex xl:hidden" />
             </div>
 
-            {/* Desktop Navigation - "Conversion-Killer" Labels */}
-            <nav className="hidden lg:flex items-center justify-center gap-1 xl:gap-2 flex-shrink-0" role="navigation">
+            {/* Desktop Navigation - show from xl breakpoint */}
+            <nav className="hidden xl:flex items-center justify-center gap-1 2xl:gap-2" role="navigation">
               {navItems.map((item) => (
                 <NavButton key={item.id} item={item} />
               ))}
             </nav>
 
             {/* Mobile/Tablet: Menu button + Call + mini CTA - 48px touch targets */}
-            <div className="flex lg:hidden items-center gap-2 flex-shrink-0">
+            <div className="flex xl:hidden items-center gap-2 flex-shrink-0">
               <MobileHeaderCallButton />
               
               <Link 
@@ -222,7 +222,7 @@ export const NavigationV17 = () => {
             </div>
 
             {/* CTA Button - Desktop */}
-            <div className="hidden lg:flex items-center flex-shrink-0 gap-2 xl:gap-3">
+            <div className="hidden xl:flex items-center flex-shrink-0 gap-2 2xl:gap-3">
               <HeaderCallButton />
               
               {/* Micro trust hint */}
