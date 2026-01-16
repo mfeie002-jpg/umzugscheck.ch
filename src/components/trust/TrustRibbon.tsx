@@ -1,34 +1,50 @@
 /**
- * TrustRibbon - High-Impact Trust Section
+ * TrustRibbon - BEKANNT AUS & STATS
  * 
- * Designed to STAND OUT, not blend in:
- * ✅ Gradient background that creates visual "zone"
- * ✅ Shield icon with clear value prop
- * ✅ Colored logos (NOT greyscale/muted)
- * ✅ Bold typography with proper hierarchy
+ * Nach User-Feedback:
+ * ✅ BEKANNT AUS - Echte farbige Logos, PROMINENT
+ * ✅ 15'000+ RIESIG, Rest klein als Support
+ * ✅ Klare visuelle Hierarchie
  */
 
 import { memo } from "react";
-import { Shield, Star, CheckCircle2, BadgeCheck, Building2, FileCheck2 } from "lucide-react";
+import { Shield, Star, Users, Building2, TrendingUp } from "lucide-react";
 import { motion } from "framer-motion";
 
-// Trust criteria - what we actually verify
-const trustCriteria = [
-  { icon: FileCheck2, label: "Handelsregister", color: "text-blue-600" },
-  { icon: Shield, label: "Versicherung", color: "text-emerald-600" },
-  { icon: BadgeCheck, label: "Bewertungen", color: "text-amber-600" },
-  { icon: Building2, label: "Identität", color: "text-primary" },
-];
-
-// Media partners with brand colors
-const mediaLogos = [
-  { name: "TCS", color: "#0050A8" },
-  { name: "SRF", color: "#C8102E" },
-  { name: "NZZ", color: "#1a1a1a" },
-  { name: "20 Minuten", color: "#E3000F" },
-  { name: "Blick", color: "#E30613" },
-  { name: "Watson", color: "#1a1a1a" },
-];
+// Media logos with REAL brand colors - NOT greyed out
+const MediaLogo = ({ name }: { name: string }) => {
+  const logos: Record<string, JSX.Element> = {
+    "20 Minuten": (
+      <div className="flex items-center gap-1">
+        <span className="text-xl font-black text-[#E3000F]">20</span>
+        <span className="text-base font-bold text-foreground">Minuten</span>
+      </div>
+    ),
+    "SRF": (
+      <div className="bg-[#C8102E] text-white text-xs font-bold px-2.5 py-1 rounded">
+        SRF
+      </div>
+    ),
+    "Blick": (
+      <div className="bg-[#E30613] text-white text-xs font-bold px-2.5 py-1 rounded">
+        BLICK
+      </div>
+    ),
+    "NZZ": (
+      <span className="font-serif font-bold text-lg text-foreground tracking-tight">NZZ</span>
+    ),
+    "Watson": (
+      <span className="font-bold text-base text-[#00A4E4]">watson</span>
+    ),
+    "TCS": (
+      <div className="bg-[#FFD700] text-black text-xs font-bold px-2.5 py-1 rounded">
+        TCS
+      </div>
+    ),
+  };
+  
+  return logos[name] || <span className="font-bold text-lg">{name}</span>;
+};
 
 interface TrustRibbonProps {
   variant?: "full" | "compact";
@@ -40,27 +56,24 @@ export const TrustRibbon = memo(function TrustRibbon({
   className = ""
 }: TrustRibbonProps) {
   
+  // Compact version: Just the key stat strip
   if (variant === "compact") {
     return (
-      <div className={`py-6 bg-gradient-to-r from-primary/10 via-secondary/5 to-primary/10 border-y border-primary/20 ${className}`}>
+      <div className={`py-4 bg-gradient-to-r from-primary/10 via-primary/5 to-secondary/10 border-y border-primary/20 ${className}`}>
         <div className="container mx-auto px-4">
-          <div className="flex flex-wrap items-center justify-center gap-4 md:gap-8">
+          <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10">
             <div className="flex items-center gap-2">
-              <Shield className="w-5 h-5 text-primary" />
-              <span className="font-bold text-foreground">Geprüfte Firmen</span>
+              <Users className="w-5 h-5 text-primary" />
+              <span className="text-2xl font-black text-primary">15'000+</span>
+              <span className="text-sm text-muted-foreground">Umzüge</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="flex gap-0.5">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                ))}
-              </div>
-              <span className="font-bold text-foreground">4.7</span>
-              <span className="text-muted-foreground text-sm">von 5</span>
+              <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+              <span className="font-bold text-foreground">4.8</span>
             </div>
-            <div className="flex items-center gap-3 text-sm">
-              {["TCS", "SRF", "NZZ"].map((name) => (
-                <span key={name} className="font-semibold text-muted-foreground">{name}</span>
+            <div className="flex items-center gap-3">
+              {["SRF", "NZZ", "Blick"].map((name) => (
+                <MediaLogo key={name} name={name} />
               ))}
             </div>
           </div>
@@ -69,103 +82,92 @@ export const TrustRibbon = memo(function TrustRibbon({
     );
   }
 
+  // Full version with all elements
   return (
-    <section className={`relative py-10 md:py-14 overflow-hidden ${className}`}>
-      {/* Bold gradient background - creates visual "trust zone" */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/15 via-primary/8 to-secondary/10" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-white/50 via-transparent to-transparent" />
-      
-      <div className="container mx-auto px-4 relative">
-        {/* Main Trust Header */}
+    <section className={`py-10 md:py-14 ${className}`}>
+      <div className="container mx-auto px-4">
+        
+        {/* ============================================ */}
+        {/* 1. BEKANNT AUS - TOP POSITION, COLORED LOGOS */}
+        {/* ============================================ */}
         <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-8"
-        >
-          <div className="inline-flex items-center gap-3 bg-card/90 backdrop-blur-sm border-2 border-primary/30 rounded-full px-6 py-3 mb-4 shadow-lg shadow-primary/10">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-inner">
-              <Shield className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <div className="text-left">
-              <h3 className="font-bold text-foreground text-lg">Geprüfte Umzugsfirmen</h3>
-              <p className="text-sm text-muted-foreground">Jeder Partner wird manuell verifiziert</p>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Trust Criteria Badges */}
-        <div className="flex flex-wrap items-center justify-center gap-3 md:gap-4 mb-8">
-          {trustCriteria.map((item, index) => {
-            const Icon = item.icon;
-            return (
-              <motion.div
-                key={item.label}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="flex items-center gap-2 bg-card border border-border/80 rounded-full px-4 py-2 shadow-sm hover:shadow-md hover:border-primary/30 hover:-translate-y-0.5 transition-all"
-              >
-                <Icon className={`w-4 h-4 ${item.color}`} />
-                <span className="font-medium text-foreground text-sm">{item.label}</span>
-                <CheckCircle2 className="w-3.5 h-3.5 text-green-500" />
-              </motion.div>
-            );
-          })}
-        </div>
-
-        {/* Rating Highlight */}
-        <motion.div
+          className="bg-gradient-to-r from-primary/10 via-primary/5 to-secondary/10 border-2 border-primary/20 rounded-2xl py-6 px-4 mb-10"
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="flex items-center justify-center gap-4 mb-10"
         >
-          <div className="flex items-center gap-2 bg-card rounded-full px-5 py-2.5 shadow-md border border-yellow-300/50">
-            <div className="flex gap-0.5">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+          <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
+            {/* Label */}
+            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/15 border border-primary/30">
+              <Shield className="w-4 h-4 text-primary" />
+              <span className="text-sm font-bold text-primary uppercase tracking-wide">Bekannt aus</span>
+            </div>
+            
+            {/* Logos - COLORED, not grey */}
+            <div className="flex flex-wrap items-center justify-center gap-5 md:gap-6">
+              {["20 Minuten", "SRF", "Blick", "NZZ", "Watson", "TCS"].map((name) => (
+                <motion.div
+                  key={name}
+                  whileHover={{ scale: 1.1 }}
+                  className="cursor-pointer"
+                >
+                  <MediaLogo name={name} />
+                </motion.div>
               ))}
             </div>
-            <span className="font-bold text-xl text-foreground">4.7</span>
-            <span className="text-muted-foreground">von 5</span>
           </div>
-          <span className="text-sm text-muted-foreground hidden sm:block">
-            aus verifizierten Kundenbewertungen
-          </span>
         </motion.div>
 
-        {/* Media Logos - FULL COLOR, NOT MUTED */}
-        <div className="text-center">
-          <p className="text-xs font-bold uppercase tracking-wider text-foreground/70 mb-5">
-            Bekannt aus Schweizer Medien
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-3 md:gap-4">
-            {mediaLogos.map((logo, index) => (
-              <motion.div
-                key={logo.name}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.05 }}
-                whileHover={{ scale: 1.05, y: -2 }}
-                className="px-5 py-2.5 rounded-xl bg-card border-2 shadow-sm hover:shadow-lg transition-all cursor-default"
-                style={{ 
-                  borderColor: `${logo.color}40`,
-                  background: `linear-gradient(135deg, ${logo.color}08, white)`
-                }}
-              >
-                <span 
-                  className="font-bold text-base md:text-lg"
-                  style={{ color: logo.color }}
-                >
-                  {logo.name}
-                </span>
-              </motion.div>
-            ))}
+        {/* ============================================ */}
+        {/* 2. PROOF POINTS - 15'000+ DOMINATES */}
+        {/* ============================================ */}
+        <motion.div 
+          className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          {/* THE BIG NUMBER - 15'000+ */}
+          <div className="text-center">
+            <motion.div 
+              className="text-7xl md:text-8xl lg:text-9xl font-black text-primary leading-none"
+              initial={{ scale: 0.8, opacity: 0 }}
+              whileInView={{ scale: 1, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ type: "spring", stiffness: 200, damping: 15 }}
+            >
+              15'000+
+            </motion.div>
+            <p className="text-xl md:text-2xl font-semibold text-foreground mt-2">zufriedene Umzüge</p>
           </div>
-        </div>
+          
+          {/* Supporting stats - SMALLER */}
+          <div className="flex items-center gap-4 md:gap-6">
+            <div className="text-center px-5 py-3 rounded-xl bg-muted/50 border border-border">
+              <div className="flex items-center justify-center gap-1 mb-1">
+                <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                <span className="text-2xl font-bold text-foreground">4.8</span>
+              </div>
+              <span className="text-sm text-muted-foreground">Bewertung</span>
+            </div>
+            
+            <div className="text-center px-5 py-3 rounded-xl bg-muted/50 border border-border">
+              <div className="flex items-center justify-center gap-1 mb-1">
+                <Building2 className="w-5 h-5 text-primary" />
+                <span className="text-2xl font-bold text-foreground">200+</span>
+              </div>
+              <span className="text-sm text-muted-foreground">Partner</span>
+            </div>
+            
+            <div className="text-center px-5 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30">
+              <div className="flex items-center justify-center gap-1 mb-1">
+                <TrendingUp className="w-5 h-5 text-emerald-600" />
+                <span className="text-2xl font-bold text-emerald-600">40%</span>
+              </div>
+              <span className="text-sm text-emerald-600/80">Ersparnis</span>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );

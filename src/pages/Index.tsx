@@ -11,7 +11,7 @@ import { HotjarScript } from "@/components/analytics/HotjarScript";
 // Core Components (not lazy - above the fold)
 import { EnhancedConversionHero } from "@/components/homepage/EnhancedConversionHero";
 import { MobileStickyBar } from "@/components/homepage/MobileStickyBar";
-import { SocialProofMarquee } from "@/components/homepage/SocialProofMarquee";
+// SocialProofMarquee removed - consolidated into TrustRibbon
 // Conversion & Analytics
 import { ExitIntentPopup } from "@/components/conversion/ExitIntentPopup";
 import { RealtimeSocialProof } from "@/components/conversion/RealtimeSocialProof";
@@ -114,13 +114,10 @@ const Index = () => {
           {/* 1. Hero with Multi-Step Form + Visual Element */}
           <EnhancedConversionHero />
           
-          {/* 2. TRUST RIBBON - Moved ABOVE fold for maximum impact */}
+          {/* 2. TRUST RIBBON - BEKANNT AUS + 15'000+ Stats */}
           <Suspense fallback={<TrustSkeleton />}>
-            <TrustRibbon variant="compact" />
+            <TrustRibbon variant="full" />
           </Suspense>
-          
-          {/* 3. Social proof immediately after hero */}
-          <SocialProofMarquee />
           
           {/* 4. How it works - simplified process */}
           <Suspense fallback={<SectionSkeleton height="350px" />}>
@@ -147,15 +144,12 @@ const Index = () => {
             <CostExamplesSection />
           </Suspense>
           
-          {/* 9. Testimonials */}
+          {/* 9. Testimonials - Video cards with concrete savings */}
           <Suspense fallback={<TestimonialsSkeleton />}>
             <EnhancedTestimonials />
           </Suspense>
           
-          {/* 10. Full Trust Ribbon - detailed version */}
-          <Suspense fallback={<SectionSkeleton height="300px" />}>
-            <TrustRibbon variant="full" />
-          </Suspense>
+          {/* 10. Removed duplicate TrustRibbon - now only at top */}
           
           {/* 9. Alternative Contact - Phone/WhatsApp/Email */}
           <Suspense fallback={<SectionSkeleton height="200px" />}>
