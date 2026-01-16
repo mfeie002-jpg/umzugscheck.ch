@@ -97,7 +97,7 @@ const ProviderFAQPage = lazy(() => import("./pages/provider/ProviderFAQ"));
 import { NavigationV17 } from "./components/navigation-v17";
 import { Footer } from "./components/Footer";
 import { ScrollToTop } from "./components/ScrollToTop";
-import { NavigationVariantSwitcher } from "./components/NavigationVariantSwitcher";
+// NavigationVariantSwitcher removed - now using UnifiedABToggle in Index.tsx
 import { ScrollToTopOnRoute } from "./components/ScrollToTopOnRoute";
 import { ScrollProgressBar } from "./components/ScrollProgressBar";
 import { ScreenshotRenderModeRoot } from "@/components/ScreenshotRenderModeRoot";
@@ -348,9 +348,6 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => (
   <div className="flex flex-col min-h-screen bg-background">
     <NavigationV17 />
     <ScrollProgressBar />
-    
-    {/* Navigation A/B Test Switcher - shows on homepage */}
-    <NavigationVariantSwitcher showOnlyOnHome={true} />
     
     {/* Lazy loaded UI components with Suspense */}
     <Suspense fallback={null}>
