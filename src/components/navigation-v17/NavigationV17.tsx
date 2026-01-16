@@ -172,23 +172,23 @@ export const NavigationV17 = () => {
           aria-label="Hauptnavigation"
         >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20 gap-4">
-            {/* Logo - Always visible */}
-            <div className="flex-shrink-0">
+          <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20">
+            {/* Logo - Always visible, never hidden */}
+            <Link to="/" className="flex-shrink-0 z-10">
               <Logo size="xl" className="hidden 2xl:flex" />
-              <Logo size="lg" className="hidden xl:flex 2xl:hidden" />
-              <Logo size="md" className="flex xl:hidden" />
-            </div>
+              <Logo size="lg" className="hidden lg:flex 2xl:hidden" />
+              <Logo size="md" className="flex lg:hidden" />
+            </Link>
 
-            {/* Desktop Navigation - show from xl breakpoint */}
-            <nav className="hidden xl:flex items-center justify-center gap-1 2xl:gap-2" role="navigation">
+            {/* Desktop Navigation - show from 2xl breakpoint for safety */}
+            <nav className="hidden 2xl:flex items-center justify-center gap-2 mx-4" role="navigation">
               {navItems.map((item) => (
                 <NavButton key={item.id} item={item} />
               ))}
             </nav>
 
             {/* Mobile/Tablet: Menu button + Call + mini CTA - 48px touch targets */}
-            <div className="flex xl:hidden items-center gap-2 flex-shrink-0">
+            <div className="flex 2xl:hidden items-center gap-2 flex-shrink-0">
               <MobileHeaderCallButton />
               
               <Link 
@@ -222,7 +222,7 @@ export const NavigationV17 = () => {
             </div>
 
             {/* CTA Button - Desktop */}
-            <div className="hidden xl:flex items-center flex-shrink-0 gap-2 2xl:gap-3">
+            <div className="hidden 2xl:flex items-center flex-shrink-0 gap-3">
               <HeaderCallButton />
               
               {/* Micro trust hint */}
