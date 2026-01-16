@@ -24,14 +24,20 @@ export const SocialProofABToggle = memo(function SocialProofABToggle() {
   const currentInfo = variantInfo[variant];
 
   return (
-    <div className="fixed bottom-36 right-4 z-[99999]">
+    <div 
+      className="fixed z-[99999] pointer-events-auto"
+      style={{ 
+        bottom: '180px', 
+        right: '16px'
+      }}
+    >
       <AnimatePresence>
         {isExpanded && (
           <motion.div
             initial={{ opacity: 0, y: 10, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.9 }}
-            className="absolute bottom-16 right-0 bg-white dark:bg-card border-2 border-primary rounded-xl shadow-2xl p-4 w-72"
+            className="absolute bottom-16 right-0 bg-white dark:bg-card border-2 border-primary rounded-xl shadow-2xl p-4 w-72 pointer-events-auto"
           >
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-bold text-sm text-foreground">🧪 A/B Test: Social Proof</h3>
