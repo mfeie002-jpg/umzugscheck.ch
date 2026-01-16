@@ -1,12 +1,14 @@
 /**
  * A/B Wrapper for TrustRibbon
- * Renders either Variant A or B based on context
+ * Renders Variant A, B, C, or D based on context
  */
 
 import { memo } from 'react';
 import { useSocialProofAB } from '@/contexts/SocialProofABContext';
 import { TrustRibbon } from '@/components/trust/TrustRibbon';
 import { TrustRibbonVariantB } from '@/components/trust/TrustRibbonVariantB';
+import { TrustRibbonVariantC } from '@/components/trust/TrustRibbonVariantC';
+import { TrustRibbonVariantD } from '@/components/trust/TrustRibbonVariantD';
 
 interface TrustRibbonABProps {
   variant?: "full" | "compact";
@@ -16,9 +18,14 @@ interface TrustRibbonABProps {
 export const TrustRibbonAB = memo(function TrustRibbonAB(props: TrustRibbonABProps) {
   const { variant: abVariant } = useSocialProofAB();
   
-  if (abVariant === 'B') {
-    return <TrustRibbonVariantB {...props} />;
+  switch (abVariant) {
+    case 'B':
+      return <TrustRibbonVariantB {...props} />;
+    case 'C':
+      return <TrustRibbonVariantC {...props} />;
+    case 'D':
+      return <TrustRibbonVariantD {...props} />;
+    default:
+      return <TrustRibbon {...props} />;
   }
-  
-  return <TrustRibbon {...props} />;
 });
