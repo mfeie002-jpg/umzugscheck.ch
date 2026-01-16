@@ -149,8 +149,8 @@ export const NavigationV17 = () => {
         />
       </button>
       
-      {/* Microcopy Tooltip on Hover */}
-      {hoveredItem === item.id && (
+      {/* Microcopy Tooltip on Hover - only show when dropdown is NOT open */}
+      {hoveredItem === item.id && activeDropdown !== item.id && (
         <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1 px-3 py-1.5 bg-foreground/90 text-background text-xs font-medium rounded-lg whitespace-nowrap z-[200] pointer-events-none shadow-lg animate-in fade-in-0 zoom-in-95 duration-200">
           {item.microcopy}
           <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-foreground/90 rotate-45" />
