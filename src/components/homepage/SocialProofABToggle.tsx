@@ -24,7 +24,7 @@ export const SocialProofABToggle = memo(function SocialProofABToggle() {
   const currentInfo = variantInfo[variant];
 
   return (
-    <div className="fixed bottom-24 right-20 z-[99999]">
+    <div className="fixed bottom-36 right-4 z-[99999]">
       <AnimatePresence>
         {isExpanded && (
           <motion.div
