@@ -30,15 +30,8 @@ const CookieConsentBanner = lazy(() => import("@/components/CookieConsentBanner"
 const AlternativeContactSection = lazy(() => import("@/components/homepage/AlternativeContactSection").then(m => ({ default: m.AlternativeContactSection })));
 
 
-// Skeleton placeholders with fixed heights to prevent CLS
-const SectionSkeleton = ({ height = "400px" }: { height?: string }) => (
-  <div 
-    className="w-full flex items-center justify-center bg-muted/10"
-    style={{ minHeight: height }}
-  >
-    <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-  </div>
-);
+// Import optimized skeleton with fixed heights for CLS prevention
+import { SectionSkeleton, TestimonialsSkeleton } from "@/components/ui/skeleton-section";
 
 const Index = () => {
   if (isScreenshotRenderMode()) {
@@ -100,41 +93,45 @@ const Index = () => {
           {/* 1. Hero with Multi-Step Form + Visual Element */}
           <EnhancedConversionHero />
           
-          {/* 2. Social proof immediately after hero */}
+          {/* 2. TRUST RIBBON - Moved ABOVE fold for maximum impact */}
+          <Suspense fallback={<SectionSkeleton height="200px" variant="default" />}>
+            <TrustRibbon variant="compact" />
+          </Suspense>
+          
+          {/* 3. Social proof immediately after hero */}
           <SocialProofMarquee />
           
-          
-          {/* 3. How it works - simplified process */}
+          {/* 4. How it works - simplified process */}
           <Suspense fallback={<SectionSkeleton height="350px" />}>
             <EnhancedHowItWorks />
           </Suspense>
           
-          {/* 4. Company comparison - core value */}
-          <Suspense fallback={<SectionSkeleton height="500px" />}>
+          {/* 5. Company comparison - core value */}
+          <Suspense fallback={<SectionSkeleton height="500px" variant="cards" />}>
             <CompanyComparisonSection />
           </Suspense>
           
-          {/* 5. KI Video Calculator - Innovation highlight */}
+          {/* 6. KI Video Calculator - Innovation highlight */}
           <Suspense fallback={<SectionSkeleton height="500px" />}>
             <AIVideoCalculatorSection />
           </Suspense>
 
-          {/* 6. Services grid */}
-          <Suspense fallback={<SectionSkeleton height="400px" />}>
+          {/* 7. Services grid */}
+          <Suspense fallback={<SectionSkeleton height="400px" variant="cards" />}>
             <EnhancedServicesGrid />
           </Suspense>
           
-          {/* 7. Cost Examples - Preisbeispiele */}
+          {/* 8. Cost Examples - Preisbeispiele */}
           <Suspense fallback={<SectionSkeleton height="500px" />}>
             <CostExamplesSection />
           </Suspense>
           
-          {/* 8. Testimonials */}
-          <Suspense fallback={<SectionSkeleton height="350px" />}>
+          {/* 9. Testimonials */}
+          <Suspense fallback={<TestimonialsSkeleton />}>
             <EnhancedTestimonials />
           </Suspense>
           
-          {/* 8.5 Trust Ribbon - HIGH IMPACT Trust Section */}
+          {/* 10. Full Trust Ribbon - detailed version */}
           <Suspense fallback={<SectionSkeleton height="300px" />}>
             <TrustRibbon variant="full" />
           </Suspense>

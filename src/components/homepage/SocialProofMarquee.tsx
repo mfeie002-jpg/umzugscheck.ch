@@ -2,13 +2,16 @@ import { memo } from "react";
 import { motion } from "framer-motion";
 import { Star, Quote, Users, Award, TrendingUp, ShieldCheck } from "lucide-react";
 
+// Avatar initials for CLS prevention (no external image loading)
+const getInitials = (name: string) => name.split(' ').map(n => n[0]).join('');
+
 const testimonials = [
-  { name: "M. Keller", city: "Zürich", text: "Super schnell und unkompliziert!", rating: 5, avatar: "https://randomuser.me/api/portraits/men/32.jpg" },
-  { name: "A. Müller", city: "Basel", text: "40% günstiger als erwartet.", rating: 5, avatar: "https://randomuser.me/api/portraits/women/44.jpg" },
-  { name: "S. Weber", city: "Bern", text: "Sehr professionelle Abwicklung.", rating: 5, avatar: "https://randomuser.me/api/portraits/women/68.jpg" },
-  { name: "L. Fischer", city: "Luzern", text: "Kann ich nur empfehlen!", rating: 5, avatar: "https://randomuser.me/api/portraits/men/75.jpg" },
-  { name: "R. Schmid", city: "Winterthur", text: "Toller Service, faire Preise.", rating: 5, avatar: "https://randomuser.me/api/portraits/women/90.jpg" },
-  { name: "E. Brunner", city: "St. Gallen", text: "Alles perfekt organisiert.", rating: 5, avatar: "https://randomuser.me/api/portraits/men/46.jpg" },
+  { name: "M. Keller", city: "Zürich", text: "Super schnell und unkompliziert!", rating: 5 },
+  { name: "A. Müller", city: "Basel", text: "40% günstiger als erwartet.", rating: 5 },
+  { name: "S. Weber", city: "Bern", text: "Sehr professionelle Abwicklung.", rating: 5 },
+  { name: "L. Fischer", city: "Luzern", text: "Kann ich nur empfehlen!", rating: 5 },
+  { name: "R. Schmid", city: "Winterthur", text: "Toller Service, faire Preise.", rating: 5 },
+  { name: "E. Brunner", city: "St. Gallen", text: "Alles perfekt organisiert.", rating: 5 },
 ];
 
 const stats = [
@@ -106,11 +109,13 @@ export const SocialProofMarquee = memo(function SocialProofMarquee() {
                 <span className="text-foreground">{item.text}</span>
               </p>
               <div className="flex items-center gap-2 text-sm">
-                <img 
-                  src={item.avatar} 
-                  alt={item.name}
-                  className="w-9 h-9 rounded-full object-cover shadow-sm border-2 border-primary/20"
-                />
+                {/* CSS avatar with initials - no CLS from image loading */}
+                <div 
+                  className="w-9 h-9 rounded-full flex items-center justify-center bg-primary/10 text-primary font-semibold text-sm border-2 border-primary/20"
+                  aria-hidden="true"
+                >
+                  {getInitials(item.name)}
+                </div>
                 <span className="text-muted-foreground font-medium">{item.name} • {item.city}</span>
               </div>
             </div>
