@@ -283,6 +283,7 @@ const FlowFeedbackVariants = lazy(() => import("./pages/admin/FlowFeedbackVarian
 const WorldClassDashboard = lazy(() => import("./components/admin/WorldClassDashboard").then(m => ({ default: m.WorldClassDashboard })));
 const AllFlowsScreenshotReview = lazy(() => import("./pages/admin/AllFlowsScreenshotReview"));
 const LandingPageChatGPTExport = lazy(() => import("./pages/admin/LandingPageChatGPTExport"));
+const ZipExporter = lazy(() => import("./pages/admin/ZipExporter"));
 
 // ChatGPT Flow pages
 const ChatGPTFlow1 = lazy(() => import("./pages/ChatGPTFlow1"));
@@ -431,6 +432,7 @@ const AdminRoutes = () => (
       <Route path="/admin/dynamic-pricing" element={<DynamicPricing />} />
       <Route path="/admin/url-tracking" element={<UrlTrackingDashboard />} />
       <Route path="/admin/world-class" element={<WorldClassDashboard />} />
+      <Route path="/admin/zip-export" element={<ZipExporter />} />
     </AnimatedRoutes>
   </Suspense>
 );
