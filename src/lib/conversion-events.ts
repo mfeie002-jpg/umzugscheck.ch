@@ -177,9 +177,18 @@ export const trackTimeOnPage = (seconds: number, pagePath: string) => {
   });
 };
 
+export const trackPageView = (pageName: string, metadata?: Record<string, any>) => {
+  trackConversionEvent({
+    event_type: 'page_view',
+    page_path: window.location.pathname,
+    metadata: { page_name: pageName, ...metadata }
+  });
+};
+
 // React hook for tracking
 export const useConversionTracking = () => {
   return {
+    trackPageView,
     trackCTAClick,
     trackFormStart,
     trackFormStepComplete,
