@@ -101,21 +101,21 @@ export const Navigation = () => {
   );
 
   return (
-    <header className="sticky top-0 z-50">
+    <header className="sticky top-0 z-50 w-full overflow-x-hidden">
       {/* Warm accent line at very top */}
       <div className="h-1 bg-gradient-to-r from-primary via-emerald-500 to-secondary" />
       
       <nav 
         className={cn(
-          "bg-gradient-to-b from-background to-background/98 backdrop-blur-md border-b border-primary/10 relative transition-shadow duration-300",
+          "bg-gradient-to-b from-background to-background/98 backdrop-blur-md border-b border-primary/10 relative transition-shadow duration-300 w-full",
           scrolled ? "shadow-lg shadow-primary/5" : "shadow-soft"
         )} 
         aria-label="Hauptnavigation"
       >
-        <div className="container mx-auto px-2 xs:px-3 sm:px-4 lg:px-6 max-w-[1440px]">
-          <div className="flex items-center justify-between h-14 xs:h-16 sm:h-16 lg:h-20 gap-4 lg:gap-6">
+        <div className="w-full max-w-[1440px] mx-auto px-3 sm:px-4 lg:px-6">
+          <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20 gap-2 lg:gap-4">
             {/* Logo - Always visible (no nested links) */}
-            <div className="min-w-0 flex-shrink-0">
+            <div className="flex-shrink-0">
               <Logo size="xl" className="hidden xl:flex" />
               <Logo size="lg" className="hidden lg:flex xl:hidden" />
               {/* Mobile */}
@@ -123,7 +123,7 @@ export const Navigation = () => {
             </div>
 
             {/* Desktop Navigation - Dynamic Labels from Variant */}
-            <nav className="hidden lg:flex items-center gap-1 xl:gap-2" role="navigation">
+            <nav className="hidden lg:flex items-center flex-1 justify-center gap-0.5 xl:gap-1 min-w-0" role="navigation">
               <NavButton dropdown="umzug-planen">
                 {navVariant.labels.preisrechner}
               </NavButton>
@@ -146,14 +146,14 @@ export const Navigation = () => {
             </nav>
 
             {/* Mobile: Menu button + Call + mini CTA - properly spaced */}
-            <div className="flex lg:hidden items-center gap-1.5 xs:gap-2 ml-auto flex-shrink-0">
+            <div className="flex lg:hidden items-center gap-1.5 sm:gap-2 flex-shrink-0">
               {/* Call Button for mobile - compact */}
               <MobileHeaderCallButton />
               
               {/* Mini CTA for mobile header - compact to avoid overlap */}
               <Link 
                 to="/umzugsofferten" 
-                className="flex items-center gap-1 bg-secondary text-secondary-foreground text-xs font-bold px-2.5 xs:px-3 py-2 xs:py-2.5 rounded-lg shadow-md shadow-secondary/20 active:scale-95 transition-all min-h-[40px] touch-manipulation"
+                className="flex items-center gap-1 bg-secondary text-secondary-foreground text-xs font-bold px-2.5 sm:px-3 py-2 sm:py-2.5 rounded-lg shadow-md shadow-secondary/20 active:scale-95 transition-all min-h-[40px] touch-manipulation"
               >
                 <span>Offerten</span>
               </Link>
@@ -182,7 +182,7 @@ export const Navigation = () => {
             </div>
 
             {/* CTA Button - Desktop with enhanced styling */}
-            <div className="hidden lg:flex items-center flex-shrink-0 gap-3">
+            <div className="hidden lg:flex items-center flex-shrink-0 gap-2 xl:gap-3">
               {/* Call Button for Desktop */}
               <HeaderCallButton />
               
@@ -195,10 +195,10 @@ export const Navigation = () => {
               <Link to="/umzugsofferten" aria-label="Kostenlose Umzugsofferten vergleichen">
                 <Button 
                   size="lg"
-                  className="group bg-gradient-to-r from-secondary via-secondary to-secondary/90 hover:from-secondary/90 hover:via-secondary hover:to-secondary text-secondary-foreground font-bold shadow-[0_4px_20px_rgba(220,38,38,0.35)] hover:shadow-[0_8px_30px_rgba(220,38,38,0.45)] transition-all text-sm xl:text-base px-5 xl:px-7 whitespace-nowrap"
+                  className="group bg-gradient-to-r from-secondary via-secondary to-secondary/90 hover:from-secondary/90 hover:via-secondary hover:to-secondary text-secondary-foreground font-bold shadow-[0_4px_20px_rgba(220,38,38,0.35)] hover:shadow-[0_8px_30px_rgba(220,38,38,0.45)] transition-all text-sm xl:text-base px-4 xl:px-6 whitespace-nowrap"
                 >
                   {navVariant.labels.cta}
-                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-4 h-4 ml-1.5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
             </div>
