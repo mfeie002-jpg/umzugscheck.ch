@@ -7,7 +7,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { FlaskConical, X, Check, Navigation, Sparkles } from 'lucide-react';
-import { useState, memo } from 'react';
+import { useState, memo, useCallback } from 'react';
 import { useSocialProofAB } from '@/contexts/SocialProofABContext';
 import { useNavigationAB } from '@/contexts/NavigationABContext';
 import { NAV_VARIANTS } from '@/lib/navigation-variants';
@@ -37,12 +37,23 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
     return null;
   }
 
-  const handleNavVariantChange = (variantId: string) => {
-    setNavVariant(variantId);
+  // Extract navigation variant number (e.g., "1" from "1. Original (Status Quo)")
+  const getNavVariantNumber = () => {
+    if (!navVariant?.name) return '1';
+    const match = navVariant.name.match(/^(\d+)/);
+    return match ? match[1] : '1';
   };
 
-  const currentSPInfo = socialProofVariants[spVariant];
-  const navVariantNumber = navVariant.name.split('.')[0];
+  const handleNavVariantChange = useCallback((variantId: string) => {
+    setNavVariant(variantId);
+  }, [setNavVariant]);
+
+  const handleSPVariantChange = useCallback((sv: 'A' | 'B' | 'C' | 'D' | 'E') => {
+    setSPVariant(sv);
+  }, [setSPVariant]);
+
+  const currentSPInfo = socialProofVariants[spVariant] || socialProofVariants.A;
+  const navVariantNumber = getNavVariantNumber();
 
   return (
     <div 
@@ -107,8 +118,8 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
                 <TabsContent value="nav" className="p-3 pt-2 max-h-[50vh] overflow-y-auto">
                   <div className="space-y-2">
                     {NAV_VARIANTS.slice(0, 8).map((nv) => {
-                      const isActive = navVariant.id === nv.id;
-                      const variantNum = nv.name.split('.')[0];
+                      const isActive = navVariant?.id === nv.id;
+                      const variantNum = nv.name.match(/^(\d+)/)?.[1] || '?';
                       return (
                         <button
                           key={nv.id}
@@ -127,7 +138,7 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
                             )}>
                               {variantNum}
                             </span>
-                            <span className="truncate max-w-[180px]">{nv.name.split('. ')[1] || nv.name}</span>
+                            <span className="truncate max-w-[180px]">{nv.name.replace(/^\d+\.\s*/, '')}</span>
                           </span>
                           {isActive && <Check className="w-4 h-4 flex-shrink-0" />}
                         </button>
@@ -152,7 +163,7 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
                       return (
                         <button
                           key={sv}
-                          onClick={() => { setSPVariant(sv); }}
+                          onClick={() => handleSPVariantChange(sv)}
                           className={cn(
                             "w-full py-2.5 px-3 rounded-lg font-medium text-sm transition-all flex items-center justify-between",
                             isActive 
@@ -190,11 +201,11 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
         )}
       </AnimatePresence>
       
-      {/* Floating Toggle Button */}
+      {/* Floating Toggle Button - Shows both N (Nav) and SP (Social Proof) variants */}
       <motion.button
         onClick={() => setIsExpanded(!isExpanded)}
         className={cn(
-          "flex items-center gap-2 px-3 py-2.5 rounded-full shadow-2xl border-2 text-white font-bold transition-all",
+          "flex items-center gap-1.5 px-3 py-2.5 rounded-full shadow-2xl border-2 text-white font-bold transition-all",
           "bg-gradient-to-r from-primary to-primary/80 border-white/30 hover:scale-105"
         )}
         whileTap={{ scale: 0.95 }}
@@ -202,14 +213,10 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
           boxShadow: '0 4px 20px rgba(0,0,0,0.3), 0 0 0 2px rgba(255,255,255,0.2)'
         }}
       >
-        <FlaskConical className="w-4 h-4" />
-        <span className="text-xs">N{navVariantNumber}</span>
-        <span className={cn(
-          "text-xs px-1.5 py-0.5 rounded",
-          currentSPInfo.color.replace('-600', '-500/70')
-        )}>
-          {currentSPInfo.label}
-        </span>
+        <FlaskConical className="w-4 h-4 flex-shrink-0" />
+        <span className="text-xs whitespace-nowrap">N{navVariantNumber}</span>
+        <span className="text-white/50">|</span>
+        <span className="text-xs whitespace-nowrap">SP{currentSPInfo.label}</span>
       </motion.button>
     </div>
   );
