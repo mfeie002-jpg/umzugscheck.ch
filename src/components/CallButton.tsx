@@ -43,7 +43,7 @@ export const HeaderCallButton = memo(({ className }: { className?: string }) => 
       {/* Pulse indicator */}
       <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
     </div>
-    <span className="text-sm font-semibold text-emerald-700 hidden xl:inline">
+    <span className="text-sm font-semibold text-emerald-700 hidden 2xl:inline">
       {COMPANY_PHONE_DISPLAY}
     </span>
     <span className="text-xs text-emerald-600/80 hidden 2xl:inline">

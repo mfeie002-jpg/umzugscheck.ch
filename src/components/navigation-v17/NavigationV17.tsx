@@ -162,13 +162,13 @@ export const NavigationV17 = () => {
       {/* Brand accent line at very top */}
       <div className="h-1 bg-gradient-to-r from-primary to-secondary" />
       
-      <nav 
-        className={cn(
-          "bg-gradient-to-b from-background to-background/98 backdrop-blur-md border-b border-primary/10 relative transition-shadow duration-300 w-full",
-          scrolled ? "shadow-lg shadow-primary/5" : "shadow-soft"
-        )} 
-        aria-label="Hauptnavigation"
-      >
+        <nav 
+          className={cn(
+            "bg-gradient-to-b from-background to-background/98 backdrop-blur-md border-b border-primary/10 relative transition-shadow duration-300 w-full overflow-x-hidden",
+            scrolled ? "shadow-lg shadow-primary/5" : "shadow-soft"
+          )} 
+          aria-label="Hauptnavigation"
+        >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20 gap-4 lg:gap-6">
             {/* Logo - Always visible */}
@@ -179,14 +179,14 @@ export const NavigationV17 = () => {
             </div>
 
             {/* Desktop Navigation - "Conversion-Killer" Labels */}
-            <nav className="hidden lg:flex items-center justify-center gap-0.5 xl:gap-1" role="navigation">
+            <nav className="hidden 2xl:flex items-center justify-center gap-0.5 xl:gap-1" role="navigation">
               {navItems.map((item) => (
                 <NavButton key={item.id} item={item} />
               ))}
             </nav>
 
-            {/* Mobile: Menu button + Call + mini CTA - 48px touch targets */}
-            <div className="flex lg:hidden items-center gap-2 flex-shrink-0">
+            {/* Mobile/Tablet: Menu button + Call + mini CTA - 48px touch targets */}
+            <div className="flex 2xl:hidden items-center gap-2 flex-shrink-0">
               <MobileHeaderCallButton />
               
               <Link 
@@ -220,11 +220,11 @@ export const NavigationV17 = () => {
             </div>
 
             {/* CTA Button - Desktop */}
-            <div className="hidden lg:flex items-center flex-shrink-0 gap-2 xl:gap-3">
+            <div className="hidden 2xl:flex items-center flex-shrink-0 gap-2 xl:gap-3">
               <HeaderCallButton />
               
               {/* Micro trust hint */}
-              <div className="hidden xl:flex items-center gap-1.5 text-xs text-muted-foreground">
+              <div className="hidden 2xl:flex items-center gap-1.5 text-xs text-muted-foreground">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                 <span className="font-medium">Gratis & unverbindlich</span>
               </div>
@@ -232,7 +232,7 @@ export const NavigationV17 = () => {
               <Link to="/umzugsofferten" aria-label="Kostenlose Umzugsofferten vergleichen">
                 <Button 
                   size="lg"
-                  className="group bg-gradient-to-r from-secondary via-secondary to-secondary/90 hover:from-secondary/90 hover:via-secondary hover:to-secondary text-secondary-foreground font-bold shadow-[0_4px_20px_rgba(220,38,38,0.35)] hover:shadow-[0_8px_30px_rgba(220,38,38,0.45)] transition-all text-sm xl:text-base px-4 xl:px-6 whitespace-nowrap"
+                  className="group bg-gradient-to-r from-secondary via-secondary to-secondary/90 hover:from-secondary/90 hover:via-secondary hover:to-secondary text-secondary-foreground font-bold shadow-[0_4px_20px_rgba(220,38,38,0.35)] hover:shadow-[0_8px_30px_rgba(220,38,38,0.45)] transition-all text-sm 2xl:text-base px-4 2xl:px-6 whitespace-nowrap"
                 >
                   Offerten erhalten
                   <ArrowRight className="w-4 h-4 ml-1.5 group-hover:translate-x-1 transition-transform" />
