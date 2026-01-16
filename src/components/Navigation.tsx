@@ -112,8 +112,8 @@ export const Navigation = () => {
         )} 
         aria-label="Hauptnavigation"
       >
-        <div className="container mx-auto px-2 xs:px-3 sm:px-4 lg:px-6">
-          <div className="flex items-center h-14 xs:h-16 sm:h-16 lg:h-20 gap-4 lg:gap-6">
+        <div className="container mx-auto px-2 xs:px-3 sm:px-4 lg:px-6 max-w-[1440px]">
+          <div className="flex items-center justify-between h-14 xs:h-16 sm:h-16 lg:h-20 gap-4 lg:gap-6">
             {/* Logo - Always visible (no nested links) */}
             <div className="min-w-0 flex-shrink-0">
               <Logo size="xl" className="hidden xl:flex" />
@@ -144,9 +144,6 @@ export const Navigation = () => {
                 {navVariant.labels.fuerFirmen}
               </NavButton>
             </nav>
-
-            {/* Spacer */}
-            <div className="hidden lg:flex flex-1" />
 
             {/* Mobile: Menu button + Call + mini CTA - properly spaced */}
             <div className="flex lg:hidden items-center gap-1.5 xs:gap-2 ml-auto flex-shrink-0">
