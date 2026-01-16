@@ -75,6 +75,9 @@ const ShopPage = lazy(() => import("./pages/Shop"));
 const UmzugskostenBerechnenPage = lazy(() => import("./pages/ratgeber/UmzugskostenBerechnen"));
 const UmzugsfirmaVergleichen = lazy(() => import("./pages/UmzugsfirmaVergleichen"));
 const WohnungsabgabeGuide = lazy(() => import("./pages/ratgeber/WohnungsabgabeGuide"));
+const ZeitplanGuide = lazy(() => import("./pages/ratgeber/Zeitplan"));
+const KuendigungGuide = lazy(() => import("./pages/ratgeber/Kuendigung"));
+const SpartippsGuide = lazy(() => import("./pages/ratgeber/Spartipps"));
 const UrlTrackingDashboard = lazy(() => import("./pages/admin/UrlTrackingDashboard"));
 
 // City pages
@@ -555,7 +558,10 @@ const AppRouterContent = () => {
           <Route path="/ratgeber/umzugstipps" element={<UmzugstippsGuide />} />
           <Route path="/ratgeber/tipps" element={<UmzugstippsGuide />} />
           <Route path="/ratgeber/kosten" element={<UmzugskostenGuide />} />
+          <Route path="/ratgeber/spartipps" element={<SpartippsGuide />} />
           <Route path="/ratgeber/checklisten" element={<UmzugschecklisteDownload />} />
+          <Route path="/ratgeber/zeitplan" element={<ZeitplanGuide />} />
+          <Route path="/ratgeber/kuendigung" element={<KuendigungGuide />} />
           <Route path="/ratgeber/:category/:slug" element={<BlogPost />} />
           <Route path="/ratgeber/umzugskosten-3-zimmer-wohnung" element={<UmzugskostenGuide />} />
           <Route path="/ratgeber/umzugscheckliste-download" element={<UmzugschecklisteDownload />} />
