@@ -35,8 +35,10 @@ import {
   Brain,
   Wrench,
   Sparkles,
-  BookOpen
+  BookOpen,
+  Video
 } from "lucide-react";
+import { VideoAnalysisBadge } from "@/components/admin/VideoAnalysisBadge";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -308,7 +310,24 @@ const AdminDashboard = () => {
             </div>
 
             {/* Quick Links */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6 mb-12">
+            <div className="grid md:grid-cols-2 lg:grid-cols-6 gap-6 mb-12">
+              {/* Video Analyses - NEW */}
+              <Link to="/admin/video-analyses">
+                <Card className="shadow-medium hover:shadow-strong transition-shadow cursor-pointer h-full border-2 border-secondary/30 bg-gradient-to-br from-secondary/5 to-background">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 rounded-lg bg-secondary/20">
+                        <Video className="w-6 h-6 text-secondary" />
+                      </div>
+                      <VideoAnalysisBadge variant="badge" />
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2">Video-Analysen</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Kundenvideos prüfen & annotieren
+                    </p>
+                  </CardContent>
+                </Card>
+              </Link>
               <Link to="/admin/leads">
                 <Card className="shadow-medium hover:shadow-strong transition-shadow cursor-pointer h-full">
                   <CardContent className="p-6">
