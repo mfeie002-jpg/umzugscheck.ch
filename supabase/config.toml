@@ -83,3 +83,6 @@ verify_jwt = false
 
 [functions.bulk-screenshot-capture]
 verify_jwt = false
+
+[functions.analyze-video]
+verify_jwt = false

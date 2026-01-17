@@ -3737,6 +3737,9 @@ export type Database = {
       video_analyses: {
         Row: {
           ai_analyzed_at: string | null
+          ai_summary: string | null
+          analyzed_at: string | null
+          confidence_score: number | null
           consent_timestamp: string | null
           converted_to_lead: boolean | null
           created_at: string
@@ -3778,6 +3781,9 @@ export type Database = {
         }
         Insert: {
           ai_analyzed_at?: string | null
+          ai_summary?: string | null
+          analyzed_at?: string | null
+          confidence_score?: number | null
           consent_timestamp?: string | null
           converted_to_lead?: boolean | null
           created_at?: string
@@ -3819,6 +3825,9 @@ export type Database = {
         }
         Update: {
           ai_analyzed_at?: string | null
+          ai_summary?: string | null
+          analyzed_at?: string | null
+          confidence_score?: number | null
           consent_timestamp?: string | null
           converted_to_lead?: boolean | null
           created_at?: string
@@ -3871,8 +3880,10 @@ export type Database = {
       video_analysis_items: {
         Row: {
           ai_confidence: number | null
+          ai_detected: boolean | null
           analysis_id: string
           category: string
+          confidence_score: number | null
           created_at: string
           floor_number: number | null
           fragile: boolean | null
@@ -3894,8 +3905,10 @@ export type Database = {
         }
         Insert: {
           ai_confidence?: number | null
+          ai_detected?: boolean | null
           analysis_id: string
           category: string
+          confidence_score?: number | null
           created_at?: string
           floor_number?: number | null
           fragile?: boolean | null
@@ -3917,8 +3930,10 @@ export type Database = {
         }
         Update: {
           ai_confidence?: number | null
+          ai_detected?: boolean | null
           analysis_id?: string
           category?: string
+          confidence_score?: number | null
           created_at?: string
           floor_number?: number | null
           fragile?: boolean | null
