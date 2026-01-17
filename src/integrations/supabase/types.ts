@@ -3734,6 +3734,273 @@ export type Database = {
         }
         Relationships: []
       }
+      video_analyses: {
+        Row: {
+          ai_analyzed_at: string | null
+          consent_timestamp: string | null
+          converted_to_lead: boolean | null
+          created_at: string
+          customer_notes: string | null
+          data_usage_consent: boolean | null
+          duration_seconds: number | null
+          estimated_boxes: number | null
+          estimated_hours: number | null
+          file_size_bytes: number | null
+          from_address: string | null
+          from_city: string | null
+          from_postal: string | null
+          id: string
+          items: Json | null
+          lead_id: string | null
+          move_date: string | null
+          price_max: number | null
+          price_min: number | null
+          priority: number | null
+          privacy_consent: boolean | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          reviewer_notes: string | null
+          rooms: Json | null
+          special_items: string[] | null
+          status: string
+          thumbnail_url: string | null
+          to_address: string | null
+          to_city: string | null
+          to_postal: string | null
+          total_volume_m3: number | null
+          total_weight_kg: number | null
+          truck_size_recommended: string | null
+          updated_at: string
+          user_email: string
+          user_name: string | null
+          user_phone: string | null
+          video_url: string
+        }
+        Insert: {
+          ai_analyzed_at?: string | null
+          consent_timestamp?: string | null
+          converted_to_lead?: boolean | null
+          created_at?: string
+          customer_notes?: string | null
+          data_usage_consent?: boolean | null
+          duration_seconds?: number | null
+          estimated_boxes?: number | null
+          estimated_hours?: number | null
+          file_size_bytes?: number | null
+          from_address?: string | null
+          from_city?: string | null
+          from_postal?: string | null
+          id?: string
+          items?: Json | null
+          lead_id?: string | null
+          move_date?: string | null
+          price_max?: number | null
+          price_min?: number | null
+          priority?: number | null
+          privacy_consent?: boolean | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          reviewer_notes?: string | null
+          rooms?: Json | null
+          special_items?: string[] | null
+          status?: string
+          thumbnail_url?: string | null
+          to_address?: string | null
+          to_city?: string | null
+          to_postal?: string | null
+          total_volume_m3?: number | null
+          total_weight_kg?: number | null
+          truck_size_recommended?: string | null
+          updated_at?: string
+          user_email: string
+          user_name?: string | null
+          user_phone?: string | null
+          video_url: string
+        }
+        Update: {
+          ai_analyzed_at?: string | null
+          consent_timestamp?: string | null
+          converted_to_lead?: boolean | null
+          created_at?: string
+          customer_notes?: string | null
+          data_usage_consent?: boolean | null
+          duration_seconds?: number | null
+          estimated_boxes?: number | null
+          estimated_hours?: number | null
+          file_size_bytes?: number | null
+          from_address?: string | null
+          from_city?: string | null
+          from_postal?: string | null
+          id?: string
+          items?: Json | null
+          lead_id?: string | null
+          move_date?: string | null
+          price_max?: number | null
+          price_min?: number | null
+          priority?: number | null
+          privacy_consent?: boolean | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          reviewer_notes?: string | null
+          rooms?: Json | null
+          special_items?: string[] | null
+          status?: string
+          thumbnail_url?: string | null
+          to_address?: string | null
+          to_city?: string | null
+          to_postal?: string | null
+          total_volume_m3?: number | null
+          total_weight_kg?: number | null
+          truck_size_recommended?: string | null
+          updated_at?: string
+          user_email?: string
+          user_name?: string | null
+          user_phone?: string | null
+          video_url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "video_analyses_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      video_analysis_items: {
+        Row: {
+          ai_confidence: number | null
+          analysis_id: string
+          category: string
+          created_at: string
+          floor_number: number | null
+          fragile: boolean | null
+          height_cm: number | null
+          id: string
+          length_cm: number | null
+          manually_verified: boolean | null
+          name: string
+          notes: string | null
+          quantity: number | null
+          requires_disassembly: boolean | null
+          requires_packaging: boolean | null
+          requires_special_handling: boolean | null
+          room_name: string | null
+          subcategory: string | null
+          volume_m3: number | null
+          weight_kg: number | null
+          width_cm: number | null
+        }
+        Insert: {
+          ai_confidence?: number | null
+          analysis_id: string
+          category: string
+          created_at?: string
+          floor_number?: number | null
+          fragile?: boolean | null
+          height_cm?: number | null
+          id?: string
+          length_cm?: number | null
+          manually_verified?: boolean | null
+          name: string
+          notes?: string | null
+          quantity?: number | null
+          requires_disassembly?: boolean | null
+          requires_packaging?: boolean | null
+          requires_special_handling?: boolean | null
+          room_name?: string | null
+          subcategory?: string | null
+          volume_m3?: number | null
+          weight_kg?: number | null
+          width_cm?: number | null
+        }
+        Update: {
+          ai_confidence?: number | null
+          analysis_id?: string
+          category?: string
+          created_at?: string
+          floor_number?: number | null
+          fragile?: boolean | null
+          height_cm?: number | null
+          id?: string
+          length_cm?: number | null
+          manually_verified?: boolean | null
+          name?: string
+          notes?: string | null
+          quantity?: number | null
+          requires_disassembly?: boolean | null
+          requires_packaging?: boolean | null
+          requires_special_handling?: boolean | null
+          room_name?: string | null
+          subcategory?: string | null
+          volume_m3?: number | null
+          weight_kg?: number | null
+          width_cm?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "video_analysis_items_analysis_id_fkey"
+            columns: ["analysis_id"]
+            isOneToOne: false
+            referencedRelation: "video_analyses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      video_upload_sessions: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          expires_at: string
+          file_name: string | null
+          file_size_bytes: number | null
+          id: string
+          mime_type: string | null
+          session_token: string
+          status: string
+          upload_progress: number | null
+          user_email: string | null
+          video_analysis_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          expires_at?: string
+          file_name?: string | null
+          file_size_bytes?: number | null
+          id?: string
+          mime_type?: string | null
+          session_token: string
+          status?: string
+          upload_progress?: number | null
+          user_email?: string | null
+          video_analysis_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          expires_at?: string
+          file_name?: string | null
+          file_size_bytes?: number | null
+          id?: string
+          mime_type?: string | null
+          session_token?: string
+          status?: string
+          upload_progress?: number | null
+          user_email?: string | null
+          video_analysis_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "video_upload_sessions_video_analysis_id_fkey"
+            columns: ["video_analysis_id"]
+            isOneToOne: false
+            referencedRelation: "video_analyses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       provider_conversion_stats: {

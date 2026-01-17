@@ -285,6 +285,7 @@ const AllFlowsScreenshotReview = lazy(() => import("./pages/admin/AllFlowsScreen
 const LandingPageChatGPTExport = lazy(() => import("./pages/admin/LandingPageChatGPTExport"));
 const ZipExporter = lazy(() => import("./pages/admin/ZipExporter"));
 const PillButtonDemo = lazy(() => import("./pages/admin/PillButtonDemo"));
+const VideoAnalysesAdmin = lazy(() => import("./pages/admin/VideoAnalyses"));
 
 // ChatGPT Flow pages
 const ChatGPTFlow1 = lazy(() => import("./pages/ChatGPTFlow1"));
