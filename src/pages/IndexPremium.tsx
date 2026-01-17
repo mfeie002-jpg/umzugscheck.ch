@@ -29,6 +29,9 @@ const LazyComparisonShowcase = lazy(() =>
 const LazyTrustRibbon = lazy(() =>
   import("@/components/trust/TrustRibbon").then((m) => ({ default: m.TrustRibbon }))
 );
+const LazyPremiumMovingTimeline = lazy(() =>
+  import("@/components/premium/PremiumMovingTimeline").then((m) => ({ default: m.PremiumMovingTimeline }))
+);
 
 // Optional sections - below main CTA (can be removed for less scroll)
 const LazyPremiumCostExamples = lazy(() =>
@@ -196,6 +199,13 @@ const IndexPremium = () => {
           <AnimatedSection animation="fade-up">
             <PremiumHowItWorks />
           </AnimatedSection>
+
+          {/* 5b. Moving Timeline - Planning helper */}
+          <Suspense fallback={<SectionSkeleton height="min-h-[400px]" />}>
+            <AnimatedSection animation="fade-up">
+              <LazyPremiumMovingTimeline />
+            </AnimatedSection>
+          </Suspense>
 
           {/* 6. Comparison Showcase - Lazy */}
           <Suspense fallback={<SectionSkeleton height="min-h-[400px]" variant="cards" />}>
