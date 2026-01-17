@@ -256,6 +256,17 @@ WICHTIG: Sei konservativ bei deinen Schätzungen. Lieber etwas mehr als zu wenig
       throw updateError;
     }
 
+    // Send email notification
+    try {
+      await supabase.functions.invoke('send-analysis-notification', {
+        body: { analysis_id, type: 'completed' }
+      });
+      console.log("Notification email sent");
+    } catch (notifyError) {
+      console.error("Failed to send notification:", notifyError);
+      // Don't throw - analysis succeeded, just notification failed
+    }
+
     return new Response(
       JSON.stringify({
         success: true,
