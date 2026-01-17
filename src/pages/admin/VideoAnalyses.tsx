@@ -31,6 +31,8 @@ interface VideoAnalysis {
   user_phone: string | null;
   from_city: string | null;
   to_city: string | null;
+  from_postal: string | null;
+  to_postal: string | null;
   move_date: string | null;
   status: 'pending' | 'reviewing' | 'analyzed' | 'error';
   rooms: any[];
@@ -44,6 +46,11 @@ interface VideoAnalysis {
   reviewer_notes: string | null;
   created_at: string;
   reviewed_at: string | null;
+  ai_summary: string | null;
+  confidence_score: number | null;
+  ai_analyzed_at: string | null;
+  converted_to_lead: boolean | null;
+  lead_id: string | null;
 }
 
 interface AnalysisItem {
@@ -56,6 +63,9 @@ interface AnalysisItem {
   room_name: string;
   requires_special_handling: boolean;
   notes: string;
+  ai_detected?: boolean;
+  ai_confidence?: number;
+  manually_verified?: boolean;
 }
 
 const ITEM_CATEGORIES = [
@@ -151,7 +161,10 @@ export default function VideoAnalysesAdmin() {
         volume_m3: item.volume_m3 || 0,
         room_name: item.room_name || '',
         requires_special_handling: item.requires_special_handling || false,
-        notes: item.notes || ''
+        notes: item.notes || '',
+        ai_detected: item.ai_detected || false,
+        ai_confidence: item.ai_confidence || item.confidence_score || 0,
+        manually_verified: item.manually_verified || false
       })));
     }
   }, [analysisItems]);
@@ -254,6 +267,69 @@ export default function VideoAnalysesAdmin() {
       toast.error('KI-Analyse fehlgeschlagen: ' + error.message);
     }
   });
+  
+  // Convert to Lead mutation
+  const convertToLead = useMutation({
+    mutationFn: async (analysis: VideoAnalysis) => {
+      const totals = calculateTotals();
+      
+      // Create lead from video analysis
+      const leadData = {
+        email: analysis.user_email,
+        name: analysis.user_name || analysis.user_email.split('@')[0],
+        phone: analysis.user_phone,
+        from_city: analysis.from_city || '',
+        to_city: analysis.to_city || '',
+        from_postal: analysis.from_postal || '',
+        to_postal: analysis.to_postal || '',
+        move_date: analysis.move_date,
+        calculator_type: 'video_analysis',
+        calculator_input: { 
+          video_url: analysis.video_url,
+          items: items,
+          rooms: analysis.rooms 
+        } as any,
+        calculator_output: {
+          total_volume_m3: totals.totalVolume,
+          total_weight_kg: totals.totalWeight,
+          estimated_boxes: totals.estimatedBoxes,
+          price_min: totals.priceMin,
+          price_max: totals.priceMax,
+          ai_summary: analysis.ai_summary
+        } as any,
+        lead_source: 'video_upload'
+      };
+      
+      const { data: lead, error: leadError } = await supabase
+        .from('leads')
+        .insert(leadData)
+        .select('id')
+        .single();
+      
+      if (leadError) throw leadError;
+      
+      // Update video analysis to mark as converted
+      const { error: updateError } = await supabase
+        .from('video_analyses')
+        .update({
+          converted_to_lead: true,
+          lead_id: lead.id
+        })
+        .eq('id', analysis.id);
+      
+      if (updateError) throw updateError;
+      
+      return lead;
+    },
+    onSuccess: () => {
+      toast.success('Lead erfolgreich erstellt!');
+      queryClient.invalidateQueries({ queryKey: ['video-analyses'] });
+    },
+    onError: (error) => {
+      toast.error('Fehler beim Erstellen des Leads: ' + error.message);
+    }
+  });
+
   const calculateTotals = () => {
     const totalVolume = items.reduce((sum, item) => sum + (item.volume_m3 * item.quantity), 0);
     const totalWeight = items.reduce((sum, item) => sum + (item.weight_kg * item.quantity), 0);
@@ -461,6 +537,12 @@ export default function VideoAnalysesAdmin() {
                     <TabsList className="mb-6">
                       <TabsTrigger value="video">Video</TabsTrigger>
                       <TabsTrigger value="items">Inventar ({items.length})</TabsTrigger>
+                      {selectedAnalysis.ai_summary && (
+                        <TabsTrigger value="ai" className="gap-1">
+                          <Sparkles className="h-3 w-3" />
+                          KI-Analyse
+                        </TabsTrigger>
+                      )}
                       <TabsTrigger value="customer">Kunde</TabsTrigger>
                       <TabsTrigger value="result">Ergebnis</TabsTrigger>
                     </TabsList>
@@ -494,6 +576,21 @@ export default function VideoAnalysesAdmin() {
                           </Button>
                         </a>
                       </div>
+                      
+                      {/* AI Analysis Info */}
+                      {selectedAnalysis.ai_analyzed_at && (
+                        <div className="flex items-center gap-2 p-3 bg-primary/5 border border-primary/20 rounded-lg">
+                          <Sparkles className="h-4 w-4 text-primary" />
+                          <span className="text-sm">
+                            KI-analysiert am {format(new Date(selectedAnalysis.ai_analyzed_at), 'dd.MM.yyyy HH:mm', { locale: de })}
+                            {selectedAnalysis.confidence_score && (
+                              <Badge className="ml-2 bg-primary/20 text-primary">
+                                {Math.round(selectedAnalysis.confidence_score * 100)}% Konfidenz
+                              </Badge>
+                            )}
+                          </span>
+                        </div>
+                      )}
                     </TabsContent>
 
                     <TabsContent value="items" className="space-y-4">
@@ -532,9 +629,23 @@ export default function VideoAnalysesAdmin() {
                           </div>
                         ) : (
                           items.map((item, index) => (
-                            <div key={item.id || index} className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+                            <div key={item.id || index} className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg border border-border/50">
                               <div className="flex-1">
-                                <p className="font-medium">{item.name} {item.quantity > 1 && `(${item.quantity}x)`}</p>
+                                <div className="flex items-center gap-2">
+                                  <p className="font-medium">{item.name} {item.quantity > 1 && `(${item.quantity}x)`}</p>
+                                  {item.ai_detected && (
+                                    <Badge variant="secondary" className="text-xs bg-primary/10 text-primary">
+                                      <Sparkles className="h-2.5 w-2.5 mr-1" />
+                                      KI {item.ai_confidence ? `${Math.round(item.ai_confidence * 100)}%` : ''}
+                                    </Badge>
+                                  )}
+                                  {item.manually_verified && (
+                                    <Badge variant="outline" className="text-xs text-success border-success/30">
+                                      <CheckCircle className="h-2.5 w-2.5 mr-1" />
+                                      Geprüft
+                                    </Badge>
+                                  )}
+                                </div>
                                 <p className="text-sm text-muted-foreground">
                                   {item.weight_kg}kg • {item.volume_m3}m³ • {item.room_name || 'Kein Raum'}
                                 </p>
@@ -679,7 +790,89 @@ export default function VideoAnalysesAdmin() {
                           />
                         </div>
                       </div>
+                      
+                      {/* Convert to Lead */}
+                      {selectedAnalysis.status === 'analyzed' && !selectedAnalysis.converted_to_lead && (
+                        <Card className="mt-6 border-primary/30 bg-primary/5">
+                          <CardContent className="p-4">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <h4 className="font-medium">In Lead umwandeln</h4>
+                                <p className="text-sm text-muted-foreground">
+                                  Die Analyse ist abgeschlossen. Jetzt als Lead speichern.
+                                </p>
+                              </div>
+                              <Button 
+                                className="bg-primary hover:bg-primary/90"
+                                onClick={() => convertToLead.mutate(selectedAnalysis)}
+                                disabled={convertToLead.isPending}
+                              >
+                                {convertToLead.isPending ? (
+                                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                ) : (
+                                  <CheckCircle className="h-4 w-4 mr-2" />
+                                )}
+                                Als Lead speichern
+                              </Button>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      )}
+                      
+                      {selectedAnalysis.converted_to_lead && (
+                        <Badge variant="outline" className="mt-4 text-success border-success/30">
+                          <CheckCircle className="h-3 w-3 mr-1" />
+                          Bereits als Lead gespeichert
+                        </Badge>
+                      )}
                     </TabsContent>
+                    
+                    {/* AI Summary Tab */}
+                    {selectedAnalysis.ai_summary && (
+                      <TabsContent value="ai" className="space-y-4">
+                        <Card className="border-primary/20">
+                          <CardHeader className="pb-3">
+                            <CardTitle className="flex items-center gap-2 text-lg">
+                              <Brain className="h-5 w-5 text-primary" />
+                              KI-Zusammenfassung
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="prose prose-sm max-w-none text-foreground">
+                              <p className="whitespace-pre-wrap">{selectedAnalysis.ai_summary}</p>
+                            </div>
+                            
+                            {selectedAnalysis.confidence_score && (
+                              <div className="mt-4 pt-4 border-t flex items-center gap-4">
+                                <div>
+                                  <p className="text-sm text-muted-foreground">Konfidenz</p>
+                                  <div className="flex items-center gap-2 mt-1">
+                                    <div className="h-2 w-32 bg-muted rounded-full overflow-hidden">
+                                      <div 
+                                        className="h-full bg-primary rounded-full transition-all"
+                                        style={{ width: `${selectedAnalysis.confidence_score * 100}%` }}
+                                      />
+                                    </div>
+                                    <span className="text-sm font-medium">
+                                      {Math.round(selectedAnalysis.confidence_score * 100)}%
+                                    </span>
+                                  </div>
+                                </div>
+                                <div>
+                                  <p className="text-sm text-muted-foreground">Analysiert am</p>
+                                  <p className="text-sm font-medium">
+                                    {selectedAnalysis.ai_analyzed_at 
+                                      ? format(new Date(selectedAnalysis.ai_analyzed_at), 'dd.MM.yyyy HH:mm', { locale: de })
+                                      : '-'
+                                    }
+                                  </p>
+                                </div>
+                              </div>
+                            )}
+                          </CardContent>
+                        </Card>
+                      </TabsContent>
+                    )}
                   </Tabs>
                 </CardContent>
               </Card>
