@@ -10,6 +10,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { VideoUploadWidget } from "@/components/video-upload";
 
 const steps = [
   {
@@ -82,6 +84,7 @@ const comparisonData = [
 export const AIVideoCalculatorSection = memo(function AIVideoCalculatorSection() {
   const navigate = useNavigate();
   const [showPrivacy, setShowPrivacy] = useState(false);
+  const [showUploadDialog, setShowUploadDialog] = useState(false);
 
   return (
     <section className="py-16 md:py-24 bg-gradient-to-br from-primary/5 via-background to-secondary/5 overflow-hidden">
@@ -173,23 +176,33 @@ export const AIVideoCalculatorSection = memo(function AIVideoCalculatorSection()
 
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row gap-3 pt-4">
-              <Button
-                size="lg"
-                className="bg-primary hover:bg-primary/90 shadow-lg"
-                onClick={() => navigate('/umzugsrechner?tab=ai')}
-              >
-                <Video className="w-5 h-5 mr-2" />
-                Video-Rechner starten
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
+              <Dialog open={showUploadDialog} onOpenChange={setShowUploadDialog}>
+                <DialogTrigger asChild>
+                  <Button
+                    size="lg"
+                    className="bg-secondary hover:bg-secondary/90 shadow-lg"
+                  >
+                    <Upload className="w-5 h-5 mr-2" />
+                    Video jetzt hochladen
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-lg p-0 overflow-hidden">
+                  <VideoUploadWidget 
+                    onClose={() => setShowUploadDialog(false)}
+                    onUploadComplete={() => setShowUploadDialog(false)}
+                    showInline
+                  />
+                </DialogContent>
+              </Dialog>
               <Button
                 size="lg"
                 variant="outline"
                 className="border-primary/30"
-                onClick={() => navigate('/umzugsofferten')}
+                onClick={() => navigate('/umzugsrechner?tab=ai')}
               >
-                <Camera className="w-5 h-5 mr-2" />
-                Foto-Upload
+                <Video className="w-5 h-5 mr-2" />
+                Video-Rechner starten
               </Button>
             </div>
 
