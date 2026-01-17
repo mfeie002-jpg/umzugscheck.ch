@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { 
   Video, Package, TrendingUp, Clock, Truck, 
@@ -21,6 +21,7 @@ import { Footer } from '@/components/Footer';
 export default function VideoAnalysisResult() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const { data: analysis, isLoading, error } = useQuery({
     queryKey: ['video-analysis-result', id],
@@ -54,6 +55,32 @@ export default function VideoAnalysisResult() {
     },
     enabled: !!id
   });
+
+  // Realtime subscription for auto-refresh when analysis is completed
+  useEffect(() => {
+    if (!id) return;
+
+    const channel = supabase
+      .channel(`video-analysis-${id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'video_analyses',
+          filter: `id=eq.${id}`
+        },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ['video-analysis-result', id] });
+          queryClient.invalidateQueries({ queryKey: ['video-analysis-result-items', id] });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [id, queryClient]);
 
   if (isLoading) {
     return (
