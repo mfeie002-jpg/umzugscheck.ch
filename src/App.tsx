@@ -328,6 +328,10 @@ const Impressum = lazy(() => import("./pages/Impressum"));
 const UeberUns = lazy(() => import("./pages/UeberUns"));
 const SoFunktionierts = lazy(() => import("./pages/SoFunktionierts"));
 
+// Referral & Partner pages
+const Empfehlen = lazy(() => import("./pages/Empfehlen"));
+const PartnerWerden = lazy(() => import("./pages/PartnerWerden"));
+
 // Vision 2026 - Invisible Move Landing Page
 const InvisibleMove = lazy(() => import("./pages/InvisibleMove"));
 const InvisibleMoveV2 = lazy(() => import("./pages/InvisibleMoveV2"));
@@ -760,6 +764,11 @@ const AppRouterContent = () => {
           <Route path="/umzugshelfer" element={<UmzugshelferV2 />} />
           <Route path="/shop" element={<ShopPage />} />
           <Route path="/umzugskartons" element={<ShopPage />} />
+          
+          {/* Referral & Partner Program */}
+          <Route path="/empfehlen" element={<Empfehlen />} />
+          <Route path="/partner-werden" element={<PartnerWerden />} />
+          
           <Route path="/ratgeber/umzugskosten-berechnen" element={<UmzugskostenBerechnenPage />} />
           <Route path="/dienstleistungen" element={<ServicesOverview />} />
           <Route path="/dienstleistungen/privatumzug" element={<PrivateMoving />} />
