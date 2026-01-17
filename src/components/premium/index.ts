@@ -19,3 +19,8 @@ export { PremiumMobileAppBanner } from './PremiumMobileAppBanner';
 export { PremiumQuickQuote } from './PremiumQuickQuote';
 export { PremiumFloatingCTA } from './PremiumFloatingCTA';
 export { PremiumSocialShare } from './PremiumSocialShare';
+
+// Phase 7 Premium Features
+export { InteractiveChecklist } from './InteractiveChecklist';
+export { PersonalizedTimeline } from './PersonalizedTimeline';
+export { PhotoReviewUpload } from './PhotoReviewUpload';
