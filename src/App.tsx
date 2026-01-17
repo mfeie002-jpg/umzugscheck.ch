@@ -317,6 +317,7 @@ const KundenOnboarding = lazy(() => import("./pages/KundenOnboarding"));
 const UmzugschecklisteDownload = lazy(() => import("./pages/ratgeber/UmzugschecklisteDownload"));
 const UmzugskostenGuide = lazy(() => import("./pages/ratgeber/UmzugskostenGuide"));
 const UmzugstippsGuide = lazy(() => import("./pages/ratgeber/UmzugstippsGuide"));
+const UmzugsCheckliste = lazy(() => import("./pages/UmzugsCheckliste"));
 
 // Regional pages
 const RegionalTemplate = lazy(() => import("./pages/region/RegionalTemplate"));
@@ -576,6 +577,7 @@ const AppRouterContent = () => {
           <Route path="/ratgeber/:category/:slug" element={<BlogPost />} />
           <Route path="/ratgeber/umzugskosten-3-zimmer-wohnung" element={<UmzugskostenGuide />} />
           <Route path="/ratgeber/umzugscheckliste-download" element={<UmzugschecklisteDownload />} />
+          <Route path="/umzug-planen/checkliste" element={<UmzugsCheckliste />} />
           <Route path="/ratgeber/umzug-mit-kindern" element={<BlogPost />} />
           <Route path="/ratgeber/wohnungsabgabe" element={<WohnungsabgabeGuide />} />
           <Route path="/umzugsfirma-vergleichen" element={<UmzugsfirmaVergleichen />} />

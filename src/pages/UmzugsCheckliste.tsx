@@ -2,10 +2,7 @@
  * Umzugs-Checkliste Page
  * Interactive checklist with progress tracking
  */
-import { lazy, Suspense } from 'react';
 import { Helmet } from 'react-helmet';
-import { Navigation } from '@/components/Navigation';
-import { Footer } from '@/components/Footer';
 import { InteractiveChecklist } from '@/components/premium/InteractiveChecklist';
 import { PersonalizedTimeline } from '@/components/premium/PersonalizedTimeline';
 import { Card, CardContent } from '@/components/ui/card';
@@ -25,9 +22,7 @@ const UmzugsCheckliste = () => {
         <link rel="canonical" href="https://umzugscheck.ch/umzug-planen/checkliste" />
       </Helmet>
 
-      <Navigation />
-
-      <main className="min-h-screen bg-background pt-20">
+      <div className="min-h-screen bg-background pt-20">
         <div className="container py-12">
           {/* Hero Section */}
           <div className="text-center mb-12">
@@ -115,9 +110,7 @@ const UmzugsCheckliste = () => {
             </div>
           </div>
         </div>
-      </main>
-
-      <Footer />
+      </div>
     </>
   );
 };
