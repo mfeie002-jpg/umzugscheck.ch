@@ -286,6 +286,7 @@ const LandingPageChatGPTExport = lazy(() => import("./pages/admin/LandingPageCha
 const ZipExporter = lazy(() => import("./pages/admin/ZipExporter"));
 const PillButtonDemo = lazy(() => import("./pages/admin/PillButtonDemo"));
 const VideoAnalysesAdmin = lazy(() => import("./pages/admin/VideoAnalyses"));
+const VideoAnalysisResult = lazy(() => import("./pages/VideoAnalysisResult"));
 
 // ChatGPT Flow pages
 const ChatGPTFlow1 = lazy(() => import("./pages/ChatGPTFlow1"));
@@ -478,6 +479,7 @@ const AppRouterContent = () => {
           <Route path="/rechner/ai" element={<AIUpload />} />
           <Route path="/rechner/ergebnis" element={<CalculatorResults />} />
           <Route path="/ergebnis/:id" element={<EstimateResult />} />
+          <Route path="/video-analyse/:id" element={<VideoAnalysisResult />} />
           
           <Route path="/demo-ergebnis" element={<DemoResult />} />
           <Route path="/demo" element={<Navigate to="/demo-ergebnis" replace />} />

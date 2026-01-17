@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, Video, CheckCircle, AlertCircle, X, Shield, Clock, Sparkles } from 'lucide-react';
+import { Upload, Video, CheckCircle, AlertCircle, X, Shield, Clock, Sparkles, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent } from '@/components/ui/card';
@@ -19,6 +20,7 @@ interface VideoUploadWidgetProps {
 type UploadStep = 'select' | 'consent' | 'details' | 'uploading' | 'success';
 
 export function VideoUploadWidget({ onUploadComplete, onClose, showInline = false }: VideoUploadWidgetProps) {
+  const navigate = useNavigate();
   const [step, setStep] = useState<UploadStep>('select');
   const [file, setFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -429,9 +431,21 @@ export function VideoUploadWidget({ onUploadComplete, onClose, showInline = fals
                     </p>
                   </div>
 
-                  <Button onClick={onClose} className="w-full">
-                    Schliessen
-                  </Button>
+                  <div className="flex gap-3">
+                    <Button variant="outline" onClick={onClose} className="flex-1">
+                      Schliessen
+                    </Button>
+                    <Button 
+                      onClick={() => {
+                        onClose?.();
+                        navigate(`/video-analyse/${analysisId}`);
+                      }} 
+                      className="flex-1 gap-2"
+                    >
+                      Status prüfen
+                      <ArrowRight className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
