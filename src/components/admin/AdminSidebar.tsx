@@ -40,7 +40,8 @@ import {
   Shield,
   Clock,
   AlertTriangle,
-  Play
+  Play,
+  Video
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -203,6 +204,13 @@ const navStructure: NavItem[] = [
   
   // ========== VERWALTUNG ==========
   { type: "divider", title: "👥 Verwaltung" },
+  { 
+    title: "Video-Analysen", 
+    href: "/admin/video-analyses", 
+    icon: Video,
+    badge: "NEU",
+    highlight: true
+  },
   { 
     title: "Leads", 
     href: "/admin/leads", 
