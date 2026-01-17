@@ -62,6 +62,104 @@ export type Database = {
         }
         Relationships: []
       }
+      affiliate_partners: {
+        Row: {
+          affiliate_code: string
+          commission_rate_percent: number | null
+          company_name: string
+          contact_name: string | null
+          contract_signed_at: string | null
+          created_at: string
+          email: string
+          id: string
+          partner_type: string | null
+          phone: string | null
+          status: string | null
+          total_earned_chf: number | null
+          total_referrals: number | null
+          updated_at: string
+        }
+        Insert: {
+          affiliate_code: string
+          commission_rate_percent?: number | null
+          company_name: string
+          contact_name?: string | null
+          contract_signed_at?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          partner_type?: string | null
+          phone?: string | null
+          status?: string | null
+          total_earned_chf?: number | null
+          total_referrals?: number | null
+          updated_at?: string
+        }
+        Update: {
+          affiliate_code?: string
+          commission_rate_percent?: number | null
+          company_name?: string
+          contact_name?: string | null
+          contract_signed_at?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          partner_type?: string | null
+          phone?: string | null
+          status?: string | null
+          total_earned_chf?: number | null
+          total_referrals?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      affiliate_payouts: {
+        Row: {
+          amount_chf: number
+          created_at: string
+          id: string
+          paid_at: string | null
+          partner_id: string | null
+          payment_reference: string | null
+          period_end: string
+          period_start: string
+          referral_count: number | null
+          status: string | null
+        }
+        Insert: {
+          amount_chf: number
+          created_at?: string
+          id?: string
+          paid_at?: string | null
+          partner_id?: string | null
+          payment_reference?: string | null
+          period_end: string
+          period_start: string
+          referral_count?: number | null
+          status?: string | null
+        }
+        Update: {
+          amount_chf?: number
+          created_at?: string
+          id?: string
+          paid_at?: string | null
+          partner_id?: string | null
+          payment_reference?: string | null
+          period_end?: string
+          period_start?: string
+          referral_count?: number | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "affiliate_payouts_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "affiliate_partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       analysis_reports: {
         Row: {
           categories: Json
@@ -2802,6 +2900,99 @@ export type Database = {
           },
         ]
       }
+      referral_conversions: {
+        Row: {
+          conversion_type: string | null
+          created_at: string
+          id: string
+          lead_id: string | null
+          paid_at: string | null
+          referral_id: string | null
+          referred_email: string
+          referred_name: string | null
+          reward_amount_chf: number | null
+          reward_status: string | null
+        }
+        Insert: {
+          conversion_type?: string | null
+          created_at?: string
+          id?: string
+          lead_id?: string | null
+          paid_at?: string | null
+          referral_id?: string | null
+          referred_email: string
+          referred_name?: string | null
+          reward_amount_chf?: number | null
+          reward_status?: string | null
+        }
+        Update: {
+          conversion_type?: string | null
+          created_at?: string
+          id?: string
+          lead_id?: string | null
+          paid_at?: string | null
+          referral_id?: string | null
+          referred_email?: string
+          referred_name?: string | null
+          reward_amount_chf?: number | null
+          reward_status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_conversions_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referral_conversions_referral_id_fkey"
+            columns: ["referral_id"]
+            isOneToOne: false
+            referencedRelation: "referrals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      referrals: {
+        Row: {
+          created_at: string
+          id: string
+          referral_code: string
+          referrer_email: string
+          referrer_name: string | null
+          status: string | null
+          successful_referrals: number | null
+          total_earned_chf: number | null
+          total_referrals: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          referral_code: string
+          referrer_email: string
+          referrer_name?: string | null
+          status?: string | null
+          successful_referrals?: number | null
+          total_earned_chf?: number | null
+          total_referrals?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          referral_code?: string
+          referrer_email?: string
+          referrer_name?: string | null
+          status?: string | null
+          successful_referrals?: number | null
+          total_earned_chf?: number | null
+          total_referrals?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       regional_rankings: {
         Row: {
           company_id: string
@@ -4201,6 +4392,7 @@ export type Database = {
         }
         Returns: string[]
       }
+      generate_referral_code: { Args: never; Returns: string }
       get_canton_from_postal: { Args: { postal_code: string }; Returns: string }
       get_homepage_ab_stats: {
         Args: { p_days?: number }
