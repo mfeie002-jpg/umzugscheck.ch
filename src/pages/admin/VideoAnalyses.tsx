@@ -5,7 +5,8 @@ import {
   Video, Play, Pause, CheckCircle, Clock, AlertCircle, 
   User, Mail, Phone, MapPin, Calendar, Package, 
   Plus, Trash2, Save, Eye, Download, Filter,
-  ChevronLeft, ChevronRight, Search, RefreshCw
+  ChevronLeft, ChevronRight, Search, RefreshCw,
+  Sparkles, Brain, Loader2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -233,7 +234,26 @@ export default function VideoAnalysesAdmin() {
     }
   });
 
-  // Calculate totals from items
+  // AI Analysis mutation
+  const runAiAnalysis = useMutation({
+    mutationFn: async (analysisId: string) => {
+      const { data, error } = await supabase.functions.invoke('analyze-video', {
+        body: { analysis_id: analysisId }
+      });
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (data) => {
+      toast.success('KI-Analyse abgeschlossen!', {
+        description: `${data.result?.items?.length || 0} Items erkannt`
+      });
+      queryClient.invalidateQueries({ queryKey: ['video-analyses'] });
+      queryClient.invalidateQueries({ queryKey: ['video-analysis-items'] });
+    },
+    onError: (error) => {
+      toast.error('KI-Analyse fehlgeschlagen: ' + error.message);
+    }
+  });
   const calculateTotals = () => {
     const totalVolume = items.reduce((sum, item) => sum + (item.volume_m3 * item.quantity), 0);
     const totalWeight = items.reduce((sum, item) => sum + (item.weight_kg * item.quantity), 0);
@@ -410,6 +430,21 @@ export default function VideoAnalysesAdmin() {
                       <Badge className={statusColors[selectedAnalysis.status]} variant="outline">
                         {statusLabels[selectedAnalysis.status]}
                       </Badge>
+                      {selectedAnalysis.status === 'pending' && (
+                        <Button 
+                          onClick={() => runAiAnalysis.mutate(selectedAnalysis.id)}
+                          disabled={runAiAnalysis.isPending}
+                          variant="secondary"
+                          className="bg-gradient-to-r from-primary to-secondary text-white"
+                        >
+                          {runAiAnalysis.isPending ? (
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          ) : (
+                            <Brain className="h-4 w-4 mr-2" />
+                          )}
+                          KI-Analyse starten
+                        </Button>
+                      )}
                       <Button 
                         onClick={handleSaveAnalysis}
                         disabled={updateAnalysis.isPending}
