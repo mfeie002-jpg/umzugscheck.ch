@@ -15,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { NavConfig } from "@/lib/navigation-variants";
 import { CANTONS_MAP, CITIES_MAP } from "@/data/locations";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 // Beliebte Städte & Kantone
 const POPULAR_CITIES = ['zuerich', 'bern', 'basel', 'genf', 'lausanne', 'luzern'];
@@ -91,6 +92,7 @@ export const MobileMenuItemCompact = ({ to, icon: Icon, title, emoji, onClick }:
 // PREISRECHNER / KOSTEN CONTENT
 // ============================================
 export const PreisrechnerContent = ({ onClose, variant }: { onClose: () => void; variant: NavConfig }) => {
+  const flowPath = useFlowPath();
   // Variant-specific content detection
   const isKostenPlanung = variant.id === 'variant-d' || variant.id === 'variant-e' || variant.id === 'variant-f' || variant.id === 'variant-17';
   const isOffertenFirst = variant.id === 'variant-c';
@@ -106,7 +108,7 @@ export const PreisrechnerContent = ({ onClose, variant }: { onClose: () => void;
           <span>Offerten nach Region</span>
         </p>
         <div className="space-y-1">
-          <MobileMenuItem to="/umzugsofferten" icon={Search} title="Offerten vergleichen" badge="🔥 Gratis" emoji="🔍" description="Bis zu 40% sparen" onClick={onClose} />
+          <MobileMenuItem to={flowPath} icon={Search} title="Offerten vergleichen" badge="🔥 Gratis" emoji="🔍" description="Bis zu 40% sparen" onClick={onClose} />
           <MobileMenuItem to="/umzugsfirmen-schweiz" icon={MapPin} title="Alle Kantone" emoji="🗺️" description="500+ geprüfte Firmen" onClick={onClose} />
           <MobileMenuItem to="/beste-umzugsfirma" icon={Star} title="Beste Umzugsfirmen" emoji="⭐" description="Top-bewertete Anbieter" onClick={onClose} />
           <MobileMenuItem to="/guenstige-umzugsfirma" icon={DollarSign} title="Günstige Firmen" emoji="💰" description="Preis-Leistung" onClick={onClose} />
@@ -211,6 +213,7 @@ export const PreisrechnerContent = ({ onClose, variant }: { onClose: () => void;
 // FIRMEN / OFFERTEN CONTENT
 // ============================================
 export const FirmenContent = ({ onClose, searchTerm, setSearchTerm, variant }: MenuContentProps & { variant: NavConfig }) => {
+  const flowPath = useFlowPath();
   const isKostenSecond = variant.id === 'variant-c'; // Variant C has "Kosten & Planung" as second item
   const isUmzugsfirmaFinden = variant.id === 'variant-g'; // Variant G: "Umzugsfirma finden"
   const isFirmenumzug = variant.id === 'variant-h'; // Variant H: "Firmenumzug"
@@ -248,7 +251,7 @@ export const FirmenContent = ({ onClose, searchTerm, setSearchTerm, variant }: M
           <span>Vergleiche Firmen & Preise</span>
         </p>
         <div className="space-y-1">
-          <MobileMenuItem to="/umzugsofferten" icon={Search} title="Offerten vergleichen" badge="🔥 Gratis" emoji="🔍" description="Bis zu 40% sparen" onClick={onClose} />
+          <MobileMenuItem to={flowPath} icon={Search} title="Offerten vergleichen" badge="🔥 Gratis" emoji="🔍" description="Bis zu 40% sparen" onClick={onClose} />
           <MobileMenuItem to="/beste-umzugsfirma" icon={Star} title="Beste Umzugsfirmen" emoji="⭐" description="Top-bewertete Anbieter" onClick={onClose} />
           <MobileMenuItem to="/guenstige-umzugsfirma" icon={DollarSign} title="Günstigste Firmen" emoji="💰" description="Preis-Leistung" onClick={onClose} />
           <MobileMenuItem to="/umzugsfirmen-schweiz" icon={MapPin} title="Nach Kanton" emoji="🗺️" description="Alle Regionen" onClick={onClose} />
@@ -267,7 +270,7 @@ export const FirmenContent = ({ onClose, searchTerm, setSearchTerm, variant }: M
         </p>
         <div className="space-y-1">
           <MobileMenuItem to="/dienstleistungen/firmenumzug" icon={Briefcase} title="Firmenumzug" badge="Business" emoji="🏢" description="Büro & Geschäft" onClick={onClose} />
-          <MobileMenuItem to="/umzugsofferten" icon={Search} title="Firmenofferte" emoji="📋" description="Kostenlos anfragen" onClick={onClose} />
+          <MobileMenuItem to={flowPath} icon={Search} title="Firmenofferte" emoji="📋" description="Kostenlos anfragen" onClick={onClose} />
           <MobileMenuItem to="/umzugsfirmen-schweiz" icon={MapPin} title="Umzugsfirmen" emoji="🚛" description="Nach Region" onClick={onClose} />
           <MobileMenuItem to="/dienstleistungen/einlagerung" icon={Box} title="Lagerung" emoji="📦" description="Flexible Einlagerung" onClick={onClose} />
         </div>

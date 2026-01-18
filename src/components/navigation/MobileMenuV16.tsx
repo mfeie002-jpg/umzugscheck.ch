@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button";
 import { HeaderLogo } from "@/components/brand/HeaderLogo";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 interface MobileMenuV16Props {
   isOpen: boolean;
@@ -165,6 +166,7 @@ const NAV_SECTIONS: NavSection[] = [
 export const MobileMenuV16 = ({ isOpen, onClose }: MobileMenuV16Props) => {
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const flowPath = useFlowPath();
 
   const toggleSection = (id: string) => {
     setExpandedSection(expandedSection === id ? null : id);

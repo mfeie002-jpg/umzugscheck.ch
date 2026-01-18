@@ -43,6 +43,7 @@ import { Button } from "@/components/ui/button";
 import { HeaderLogo } from "@/components/brand/HeaderLogo";
 import { cn } from "@/lib/utils";
 import { MobileMenuV15 } from "./MobileMenuV15";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 interface NavItem {
   label: string;
@@ -107,6 +108,7 @@ const navStructure: NavItem[] = [
 export const NavigationV15 = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const flowPath = useFlowPath();
 
   return (
     <>
@@ -183,7 +185,7 @@ export const NavigationV15 = () => {
                         {section.label === "Offerten vergleichen" && (
                           <div className="mt-4 pt-4 border-t border-border">
                             <Button asChild className="w-full font-semibold gap-2 bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-md shadow-secondary/20">
-                              <Link to="/umzugsofferten">
+                              <Link to={flowPath}>
                                 Gratis Offerten holen
                                 <ArrowRight className="w-4 h-4" />
                               </Link>
@@ -204,7 +206,7 @@ export const NavigationV15 = () => {
               Für Anbieter
             </Link>
             <Button asChild className="font-semibold gap-2 bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-md shadow-secondary/20">
-              <Link to="/umzugsofferten">
+              <Link to={flowPath}>
                 Kostenlos Offerten erhalten
                 <ArrowRight className="w-4 h-4" />
               </Link>
@@ -213,7 +215,7 @@ export const NavigationV15 = () => {
 
           {/* Mobile CTA - RED (secondary) for visibility */}
           <Button asChild size="sm" className="lg:hidden h-9 px-3 font-semibold gap-1.5 rounded-lg bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-md shadow-secondary/20">
-            <Link to="/umzugsofferten">
+            <Link to={flowPath}>
               <Zap className="w-4 h-4" />
               Offerten
             </Link>
