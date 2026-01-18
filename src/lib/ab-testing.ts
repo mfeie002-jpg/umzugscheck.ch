@@ -180,14 +180,33 @@ abTesting.registerTest({
   ]
 });
 
-// Umzugsofferten Flow Variants A/B Test
+// Umzugsofferten Flow Variants A/B Test - Top 10 from Flow Command Center
 abTesting.registerTest({
   id: 'offerten_flow',
-  name: 'Umzugsofferten Flow Variants',
+  name: 'Umzugsofferten Flow Variants (Top 10)',
   variants: [
-    { id: 'control', name: 'Control (4-step)', weight: 0.25 },
-    { id: 'variant-a', name: 'Simplified 3-Step', weight: 0.25 },
-    { id: 'variant-b', name: 'Price-First', weight: 0.25 },
-    { id: 'variant-c', name: 'Conversational', weight: 0.25 }
+    { id: 'v2', name: 'V2 - Premium Full-Journey', weight: 0.10 },
+    { id: 'v1a', name: 'V1a Control (Feedback)', weight: 0.10 },
+    { id: 'v1b', name: 'V1b ChatGPT Agent', weight: 0.10 },
+    { id: 'v1c', name: 'V1c Gemini Pro', weight: 0.10 },
+    { id: 'v1d', name: 'V1d ChatGPT Pro Ext', weight: 0.10 },
+    { id: 'v1g', name: 'V1g Input UX + Validation', weight: 0.10 },
+    { id: 'v2e', name: 'V2.e - Chat Funnel', weight: 0.10 },
+    { id: 'v2d', name: 'V2d Feedback Optimized', weight: 0.10 },
+    { id: 'v3', name: 'V3 - God Mode', weight: 0.10 },
+    { id: 'v5c', name: 'V5c Invisible Interface', weight: 0.10 }
+  ]
+});
+
+// Social Proof Section A/B Test
+abTesting.registerTest({
+  id: 'social_proof',
+  name: 'Social Proof Section Variants',
+  variants: [
+    { id: 'v1', name: 'V1: Original (farbige Logos)', weight: 0.20 },
+    { id: 'v2', name: 'V2: Live Dashboard + Deal Cards', weight: 0.20 },
+    { id: 'v3', name: 'V3: Trust Hierarchy (Logos oben)', weight: 0.20 },
+    { id: 'v4', name: 'V4: Trust Stack (kompakt)', weight: 0.20 },
+    { id: 'v5', name: 'V5: Trust Strip 2.0 (unified)', weight: 0.20 }
   ]
 });

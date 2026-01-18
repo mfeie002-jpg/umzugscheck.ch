@@ -41,13 +41,14 @@ const HOMEPAGE_SECTIONS: SectionConfig[] = [
   {
     id: 'social-proof',
     name: 'Social Proof / Trust Badges',
-    description: 'Bekannt aus, Bewertungen, Partner-Logos',
+    description: 'Nach dem Hero: Bekannt aus, Bewertungen, Partner-Logos (5 Varianten)',
     icon: Users,
     variants: [
-      { id: 'social-proof-v1', name: 'Klassisch', description: 'Logo-Leiste mit Bewertungen' },
-      { id: 'social-proof-v2', name: 'Animated', description: 'Animierte Ticker mit Live-Aktivität' },
-      { id: 'social-proof-v3', name: 'Minimal', description: 'Nur Zahlen, kein Logo' },
-      { id: 'social-proof-v4', name: 'Premium', description: 'Grosse Karten mit Zertifikaten' },
+      { id: 'social-proof-v1', name: 'V1: Original', description: 'Farbige Logos klassisch' },
+      { id: 'social-proof-v2', name: 'V2: Live Dashboard', description: 'Dashboard + Deal Cards' },
+      { id: 'social-proof-v3', name: 'V3: Trust Hierarchy', description: 'Logos oben, Hierarchie' },
+      { id: 'social-proof-v4', name: 'V4: Trust Stack', description: 'Kompakt gestapelt' },
+      { id: 'social-proof-v5', name: 'V5: Trust Strip 2.0', description: 'Unified modern Strip' },
     ],
   },
   {
