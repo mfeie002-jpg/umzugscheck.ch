@@ -13,7 +13,6 @@ import { EnhancedConversionHero } from "@/components/homepage/EnhancedConversion
 import { MobileStickyBar } from "@/components/homepage/MobileStickyBar";
 // A/B Testing for Social Proof sections
 import { SocialProofABProvider } from "@/contexts/SocialProofABContext";
-import { NavigationABProvider } from "@/contexts/NavigationABContext";
 import { UnifiedABToggle } from "@/components/homepage/UnifiedABToggle";
 // Conversion & Analytics
 import { ExitIntentPopup } from "@/components/conversion/ExitIntentPopup";
@@ -81,7 +80,6 @@ const Index = () => {
   }, []);
 
   return (
-    <NavigationABProvider>
     <SocialProofABProvider>
     <ErrorBoundary>
       <div className="min-h-screen bg-background">
@@ -205,7 +203,6 @@ const Index = () => {
       </div>
     </ErrorBoundary>
     </SocialProofABProvider>
-    </NavigationABProvider>
   );
 };
 
