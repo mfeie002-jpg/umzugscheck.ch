@@ -340,11 +340,6 @@ const InvisibleMove = lazy(() => import("./pages/InvisibleMove"));
 const InvisibleMoveV2 = lazy(() => import("./pages/InvisibleMoveV2"));
 const Blueprint = lazy(() => import("./pages/Blueprint"));
 
-// Hero Test Pages
-const HeroTestIndex = lazy(() => import("./pages/hero-test/HeroTestIndex"));
-const HeroVariantA = lazy(() => import("./pages/hero-test/HeroVariantA"));
-const HeroVariantB = lazy(() => import("./pages/hero-test/HeroVariantB"));
-const HeroVariantC = lazy(() => import("./pages/hero-test/HeroVariantC"));
 const BlueprintV2 = lazy(() => import("./pages/BlueprintV2"));
 
 const queryClient = new QueryClient({
@@ -612,12 +607,6 @@ const AppRouterContent = () => {
           <Route path="/anbieter/portal" element={<ProviderPortal />} />
           <Route path="/umzugsofferten" element={<Umzugsofferten />} />
           <Route path="/umzugsofferten-baseline" element={<UmzugsoffertenBaseline />} />
-          
-          {/* Hero Test Pages */}
-          <Route path="/hero-test" element={<HeroTestIndex />} />
-          <Route path="/hero-test/variante-a" element={<HeroVariantA />} />
-          <Route path="/hero-test/variante-b" element={<HeroVariantB />} />
-          <Route path="/hero-test/variante-c" element={<HeroVariantC />} />
           
           <Route path="/umzugsofferten-v1" element={<UmzugsoffertenV1 />} />
           <Route path="/umzugsofferten-v1a" element={<UmzugsoffertenV1a />} />

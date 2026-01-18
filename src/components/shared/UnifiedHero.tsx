@@ -146,16 +146,18 @@ export const UnifiedHero = ({
 
   return (
     <section className="relative min-h-[75vh] md:min-h-[80vh] flex items-center overflow-hidden">
-      {/* Background Image */}
+      {/* Background Image with Homepage-style Light Overlay */}
       <div className="absolute inset-0 z-0">
         <img 
           src={backgroundImage}
           alt={`Umzugsfirmen in ${locationName} vergleichen`}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover scale-105"
           loading="eager"
           fetchPriority="high"
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-black/65 via-black/55 to-black/45" />
+        {/* Light Overlay - same as Homepage */}
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/98 to-background/80 md:via-background/95 md:to-background/60" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-background/40 md:via-transparent md:to-background/30" />
       </div>
 
       {/* Content */}
@@ -195,13 +197,13 @@ export const UnifiedHero = ({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 leading-tight"
             >
               {title}
               {titleAccent && (
                 <>
                   <br className="hidden sm:block" />
-                  <span className="text-secondary"> {titleAccent}</span>
+                  <span className="text-primary"> {titleAccent}</span>
                 </>
               )}
             </motion.h1>
@@ -211,7 +213,7 @@ export const UnifiedHero = ({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.15 }}
-              className="text-base md:text-lg lg:text-xl text-white/90 mb-6 max-w-xl"
+              className="text-base md:text-lg lg:text-xl text-muted-foreground mb-6 max-w-xl"
             >
               {subtitle}
             </motion.p>
@@ -223,16 +225,16 @@ export const UnifiedHero = ({
               transition={{ delay: 0.2 }}
               className="flex flex-wrap gap-3 mb-6"
             >
-              <div className="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full text-sm text-white border border-white/20">
-                <TrendingUp className="w-4 h-4 text-green-400" />
+              <div className="inline-flex items-center gap-1.5 bg-green-500/15 px-3 py-1.5 rounded-full text-sm text-green-700 dark:text-green-400 font-semibold border border-green-500/20">
+                <TrendingUp className="w-4 h-4" />
                 <span>Bis 40% günstiger</span>
               </div>
-              <div className="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full text-sm text-white border border-white/20">
-                <Camera className="w-4 h-4 text-violet-400" />
+              <div className="inline-flex items-center gap-1.5 bg-primary/10 px-3 py-1.5 rounded-full text-sm text-primary font-semibold border border-primary/20">
+                <Camera className="w-4 h-4" />
                 <span>Video-Analyse</span>
               </div>
-              <div className="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full text-sm text-white border border-white/20">
-                <CheckCircle className="w-4 h-4 text-blue-400" />
+              <div className="inline-flex items-center gap-1.5 bg-muted px-3 py-1.5 rounded-full text-sm text-muted-foreground border border-border">
+                <CheckCircle className="w-4 h-4" />
                 <span>{stats.providerCount}+ Firmen</span>
               </div>
             </motion.div>
@@ -242,11 +244,11 @@ export const UnifiedHero = ({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.25 }}
-              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 border border-white/20 mb-6"
+              className="inline-flex items-center gap-2 bg-muted/80 backdrop-blur-sm rounded-full px-4 py-2 border border-border mb-6"
             >
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-              <Users className="w-4 h-4 text-white/80" />
-              <span className="text-sm text-white">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+              <Users className="w-4 h-4 text-muted-foreground" />
+              <span className="text-sm text-foreground">
                 {liveCount} Personen vergleichen gerade {variant === 'canton' ? 'im Kanton' : 'in'} {locationName}
               </span>
             </motion.div>
