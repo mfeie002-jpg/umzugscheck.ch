@@ -19,9 +19,8 @@ import {
   PowerOff,
   Trash2
 } from 'lucide-react';
-import { NAV_VARIANTS, type NavConfig, setActiveVariant } from '@/lib/navigation-variants';
-
-const NAV_AB_STORAGE_KEY = 'nav_ab_active';
+import { NAV_VARIANTS } from '@/lib/navigation-variants';
+import { getNavVariant, isNavABActive, resetNavAB, setNavABActive, setNavVariant } from '@/lib/unified-ab-config';
 
 export function NavigationVariantManager() {
   const [currentVariant, setCurrentVariant] = useState<string | null>(null);
@@ -29,22 +28,17 @@ export function NavigationVariantManager() {
   const { toast } = useToast();
 
   useEffect(() => {
-    const stored = localStorage.getItem('nav-variant');
-    setCurrentVariant(stored || 'ultimate');
-    
-    // Check if Nav A/B test is active
-    const activeState = localStorage.getItem(NAV_AB_STORAGE_KEY);
-    setIsActive(activeState !== 'false');
+    setCurrentVariant(getNavVariant().id);
+    setIsActive(isNavABActive());
   }, []);
 
   const handleSetVariant = (variantId: string) => {
-    localStorage.setItem('nav-variant', variantId);
+    setNavVariant(variantId as any);
     setCurrentVariant(variantId);
     toast({
       title: 'Navigation aktualisiert',
       description: `Sie sehen jetzt: ${variantId}`,
     });
-    // Reload to apply changes
     setTimeout(() => window.location.reload(), 300);
   };
 
@@ -53,7 +47,7 @@ export function NavigationVariantManager() {
   };
 
   const resetVariant = () => {
-    localStorage.removeItem('nav-variant');
+    resetNavAB();
     setCurrentVariant('ultimate');
     toast({
       title: 'Navigation zurückgesetzt',
@@ -63,29 +57,25 @@ export function NavigationVariantManager() {
   };
 
   const resetAndReassign = () => {
-    // Remove all navigation-related localStorage items
-    localStorage.removeItem('nav-variant');
-    localStorage.removeItem('nav_ab_user_id');
-    sessionStorage.removeItem('nav_ab_session');
+    resetNavAB();
     setCurrentVariant(null);
-    
+
     toast({
       title: 'Navigation zurückgesetzt',
-      description: 'Bei der nächsten Seitenladung wird eine neue Variante zufällig zugewiesen',
+      description: 'Bei der nächsten Seitenladung wird eine neue Variante zugewiesen',
     });
-    
-    // Reload to trigger new random assignment
+
     setTimeout(() => window.location.reload(), 500);
   };
 
   const toggleABTest = (active: boolean) => {
-    localStorage.setItem(NAV_AB_STORAGE_KEY, active ? 'true' : 'false');
+    setNavABActive(active);
     setIsActive(active);
-    
+
     toast({
       title: active ? 'Navigation A/B Test aktiviert' : 'Navigation A/B Test deaktiviert',
-      description: active 
-        ? 'Benutzer werden zufällig auf Varianten verteilt' 
+      description: active
+        ? 'Benutzer werden automatisch auf Varianten verteilt'
         : 'Alle Benutzer sehen die Standard-Navigation',
     });
   };
