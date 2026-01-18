@@ -340,8 +340,8 @@ export const NavigationV16 = () => {
               <span className="text-[10px] text-muted-foreground mt-1">Gratis & unverbindlich</span>
             </div>
 
-            {/* Mobile CTA */}
-            <Button asChild size="sm" className="lg:hidden h-9 px-3 font-semibold gap-1.5 rounded-lg bg-gradient-to-r from-primary to-emerald-600 shadow-md shadow-primary/20">
+            {/* Mobile CTA - RED (secondary) for maximum visibility */}
+            <Button asChild size="sm" className="lg:hidden h-9 px-3 font-semibold gap-1.5 rounded-lg bg-gradient-to-r from-secondary to-secondary/90 text-secondary-foreground shadow-md shadow-secondary/20 hover:shadow-secondary/30">
               <Link to="/umzugsofferten">
                 <Zap className="w-4 h-4" />
                 Offerten
