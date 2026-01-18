@@ -14,6 +14,7 @@ import { Menu, X, ChevronDown, ArrowRight, Zap } from "lucide-react";
 import { useState, useRef, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { MobileMenuNew } from "@/components/MobileMenuNew";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 import { Logo } from "@/components/Logo";
 import { cn } from "@/lib/utils";
 import { HeaderCallButton, MobileHeaderCallButton } from "@/components/CallButton";
@@ -66,6 +67,7 @@ type DropdownType =
 
 export const NavigationV17 = () => {
   const navVariant = useNavigationVariant();
+  const flowPath = useFlowPath();
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<DropdownType>(null);
@@ -195,7 +197,7 @@ export const NavigationV17 = () => {
             <div className="flex lg:hidden items-center gap-1.5 sm:gap-2 flex-shrink-0">
               {/* RED "Offerten" CTA Button - Primary mobile action */}
               <Link 
-                to="/umzugsofferten" 
+                to={flowPath} 
                 className="flex items-center justify-center gap-1 bg-secondary text-secondary-foreground text-[11px] sm:text-xs font-bold px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg shadow-md shadow-secondary/20 active:scale-95 transition-all min-h-[40px] sm:min-h-[44px] touch-manipulation"
                 aria-label="Offerten erhalten"
               >

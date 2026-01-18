@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useHapticFeedback } from "@/hooks/useHapticFeedback";
 import { useState } from "react";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 import {
   Sheet,
   SheetContent,
@@ -76,8 +77,14 @@ const HIDDEN_PATHS = [
 export const MobileBottomNav = () => {
   const location = useLocation();
   const isMobile = useIsMobile();
+  const flowPath = useFlowPath();
   const { lightTap } = useHapticFeedback();
   const [moreOpen, setMoreOpen] = useState(false);
+
+  // Build nav items with dynamic flow path
+  const dynamicNavItems = navItems.map(item => 
+    item.isCenter ? { ...item, href: flowPath } : item
+  );
 
   // Hide on funnel pages or when not mobile
   const shouldHide = !isMobile || HIDDEN_PATHS.some(path => location.pathname.startsWith(path));
@@ -86,7 +93,7 @@ export const MobileBottomNav = () => {
   return (
     <nav className="site-bottom-nav fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-border shadow-lg pb-safe" aria-label="Mobile Navigation">
       <div className="flex items-center justify-around h-14 min-h-[56px]">
-        {navItems.map((item) => {
+        {dynamicNavItems.map((item) => {
           const isMenu = item.href === "menu";
           const isActive = !isMenu && (
             location.pathname === item.href || 
@@ -234,7 +241,7 @@ export const MobileBottomNav = () => {
                   <div className="flex gap-2 pt-3 border-t">
                     <Button asChild className="flex-1">
                       <Link
-                        to="/umzugsofferten"
+                        to={flowPath}
                         onClick={() => {
                           lightTap();
                           setMoreOpen(false);

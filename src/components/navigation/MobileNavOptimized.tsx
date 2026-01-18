@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronRight, Phone, Calculator, Building2, BookOpen, Users, ArrowRight } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 interface MobileNavOptimizedProps {
   isOpen: boolean;
@@ -49,6 +50,7 @@ export const MobileNavOptimized = memo(function MobileNavOptimized({
   onClose
 }: MobileNavOptimizedProps) {
   const location = useLocation();
+  const flowPath = useFlowPath();
   const [mounted, setMounted] = useState(false);
   
   // Track mount for safe animations
@@ -164,7 +166,7 @@ export const MobileNavOptimized = memo(function MobileNavOptimized({
             <div className="p-4 space-y-3 border-t bg-muted/30">
               {/* Primary CTA */}
               <Link
-                to="/umzugsofferten"
+                to={flowPath}
                 onClick={onClose}
                 className="flex items-center justify-center gap-2 w-full h-14 bg-secondary text-secondary-foreground rounded-xl font-bold text-base shadow-lg shadow-secondary/25 active:scale-[0.98] transition-transform touch-manipulation"
               >
