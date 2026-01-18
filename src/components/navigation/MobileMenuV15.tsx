@@ -295,7 +295,7 @@ export const MobileMenuV15 = ({ isOpen, onClose, navStructure }: MobileMenuV15Pr
                                   animate={{ opacity: 1 }}
                                   transition={{ delay: 0.3 }}
                                 >
-                                  <Button asChild className="w-full h-13 min-h-[52px] font-bold gap-2 text-base rounded-xl bg-gradient-to-r from-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-600/90 shadow-lg shadow-primary/25">
+                                  <Button asChild className="w-full h-13 min-h-[52px] font-bold gap-2 text-base rounded-xl bg-gradient-to-r from-secondary via-secondary to-secondary/90 hover:from-secondary/90 hover:to-secondary shadow-lg shadow-secondary/20">
                                     <Link to="/umzugsofferten" onClick={onClose}>
                                       <Zap className="w-5 h-5" />
                                       Gratis Offerten holen
@@ -362,7 +362,7 @@ export const MobileMenuV15 = ({ isOpen, onClose, navStructure }: MobileMenuV15Pr
 
               {/* Main CTA Button */}
               <div className="px-4 pb-4">
-                <Button asChild className="w-full h-14 min-h-[56px] text-base font-bold gap-3 rounded-2xl bg-gradient-to-r from-primary via-primary to-emerald-600 hover:opacity-95 shadow-xl shadow-primary/30 transition-all active:scale-[0.98]">
+                <Button asChild className="w-full h-14 min-h-[56px] text-base font-bold gap-3 rounded-2xl bg-gradient-to-r from-secondary via-secondary to-secondary/90 hover:opacity-95 shadow-xl shadow-secondary/25 transition-all active:scale-[0.98]">
                   <Link to="/umzugsofferten" onClick={onClose}>
                     <CheckCircle className="w-5 h-5" />
                     Kostenlos Offerten erhalten
