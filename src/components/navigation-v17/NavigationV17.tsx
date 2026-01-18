@@ -170,41 +170,40 @@ export const NavigationV17 = () => {
     <header className="sticky top-0 z-50 w-full overflow-x-hidden">
       {/* Brand accent line at very top */}
       <div className="h-1 bg-gradient-to-r from-primary to-secondary" />
-      
-      <nav 
+
+      <nav
         className={cn(
           "bg-gradient-to-b from-background to-background/98 backdrop-blur-md border-b border-primary/10 relative transition-shadow duration-300 w-full overflow-hidden",
           scrolled ? "shadow-lg shadow-primary/5" : "shadow-soft"
-        )} 
+        )}
         aria-label="Hauptnavigation"
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-full">
           <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20 min-w-0">
             {/* Logo - Always visible */}
             <Link to="/" className="flex-shrink-0 z-10">
-              <Logo size="lg" className="hidden lg:flex" />
-              <Logo size="md" className="flex lg:hidden" />
+              <Logo size="lg" className="hidden xl:flex" />
+              <Logo size="md" className="flex xl:hidden" />
             </Link>
 
-            {/* Desktop Navigation - show from lg breakpoint with compact styling */}
-            <nav className="hidden lg:flex items-center justify-center gap-0.5 xl:gap-1 2xl:gap-2 flex-1 mx-2 xl:mx-4 min-w-0 overflow-hidden" role="navigation">
+            {/* Desktop Navigation - show from xl to avoid overlap */}
+            <nav className="hidden xl:flex items-center justify-center gap-0.5 xl:gap-1 2xl:gap-2 flex-1 mx-2 xl:mx-4 min-w-0 overflow-hidden" role="navigation">
               {navItems.map((item) => (
                 <NavButton key={item.id} item={item} />
               ))}
             </nav>
 
-            {/* Mobile/Tablet: Menu button + Call + CTA - compact for small screens */}
-            <div className="flex lg:hidden items-center gap-1.5 sm:gap-2 flex-shrink-0">
-              {/* RED "Offerten" CTA Button - Primary mobile action */}
-              <Link 
-                to={flowPath} 
+            {/* Mobile/Tablet */}
+            <div className="flex xl:hidden items-center gap-1.5 sm:gap-2 flex-shrink-0">
+              <Link
+                to={flowPath}
                 className="flex items-center justify-center gap-1 bg-secondary text-secondary-foreground text-[11px] sm:text-xs font-bold px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg shadow-md shadow-secondary/20 active:scale-95 transition-all min-h-[40px] sm:min-h-[44px] touch-manipulation"
                 aria-label="Offerten erhalten"
               >
                 <Zap className="w-3.5 h-3.5" />
                 <span>Offerten</span>
               </Link>
-              
+
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 className={cn(
@@ -228,22 +227,21 @@ export const NavigationV17 = () => {
             </div>
 
             {/* CTA Button - Desktop */}
-            <div className="hidden lg:flex items-center flex-shrink-0 gap-2 xl:gap-3 min-w-0">
-              <HeaderCallButton className="hidden xl:flex flex-shrink-0" />
-              
-              {/* Micro trust hint - only on 2xl+ */}
+            <div className="hidden xl:flex items-center flex-shrink-0 gap-2 xl:gap-3 min-w-0">
+              <HeaderCallButton className="hidden 2xl:flex flex-shrink-0" />
+
               <div className="hidden 2xl:flex items-center gap-1.5 text-xs text-muted-foreground flex-shrink-0 whitespace-nowrap">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
                 <span className="font-medium">Gratis & unverbindlich</span>
               </div>
-              
+
               <Link to="/video-offerte" aria-label="Video-Offerte starten - Kostenlos" className="flex-shrink-0">
-                <Button 
+                <Button
                   size="lg"
                   className="group bg-gradient-to-r from-secondary via-secondary to-secondary/90 hover:from-secondary/90 hover:via-secondary hover:to-secondary text-secondary-foreground font-bold shadow-[0_4px_20px_rgba(220,38,38,0.35)] hover:shadow-[0_8px_30px_rgba(220,38,38,0.45)] transition-all text-sm px-3 xl:px-4 2xl:px-6 whitespace-nowrap"
                 >
-                  <span className="hidden xl:inline">🎥 Video-Offerte</span>
-                  <span className="xl:hidden">Video</span>
+                  <span className="hidden 2xl:inline">🎥 Video-Offerte</span>
+                  <span className="2xl:hidden">Video</span>
                   <ArrowRight className="w-4 h-4 ml-1.5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>

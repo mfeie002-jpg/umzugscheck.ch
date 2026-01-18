@@ -115,52 +115,35 @@ export const Navigation = () => {
         aria-label="Hauptnavigation"
       >
         <div className="w-full max-w-[1440px] mx-auto px-3 sm:px-4 lg:px-6">
-          <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20 gap-2 lg:gap-4">
+          <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20 gap-2 lg:gap-4 min-w-0">
             {/* Logo - Always visible (no nested links) */}
             <div className="flex-shrink-0">
-              <Logo size="xl" className="hidden xl:flex" />
-              <Logo size="lg" className="hidden lg:flex xl:hidden" />
+              <Logo size="xl" className="hidden 2xl:flex" />
+              <Logo size="lg" className="hidden lg:flex 2xl:hidden" />
               {/* Mobile */}
               <Logo size="md" className="flex lg:hidden" />
             </div>
 
-            {/* Desktop Navigation - Dynamic Labels from Variant */}
-            <nav className="hidden lg:flex items-center flex-1 justify-center gap-0.5 xl:gap-1 min-w-0" role="navigation">
-              <NavButton dropdown="umzug-planen">
-                {navVariant.labels.preisrechner}
-              </NavButton>
-
-              <NavButton dropdown="umzugsfirma-finden">
-                {navVariant.labels.firmen}
-              </NavButton>
-
-              <NavButton dropdown="services">
-                {navVariant.labels.services}
-              </NavButton>
-
-              <NavButton dropdown="ratgeber">
-                {navVariant.labels.ratgeber}
-              </NavButton>
-
-              <NavButton dropdown="fuer-firmen">
-                {navVariant.labels.fuerFirmen}
-              </NavButton>
+            {/* Desktop Navigation - show from xl to avoid overlap on mid screens */}
+            <nav className="hidden xl:flex items-center flex-1 justify-center gap-0.5 xl:gap-1 min-w-0 overflow-hidden" role="navigation">
+              <NavButton dropdown="umzug-planen">{navVariant.labels.preisrechner}</NavButton>
+              <NavButton dropdown="umzugsfirma-finden">{navVariant.labels.firmen}</NavButton>
+              <NavButton dropdown="services">{navVariant.labels.services}</NavButton>
+              <NavButton dropdown="ratgeber">{navVariant.labels.ratgeber}</NavButton>
+              <NavButton dropdown="fuer-firmen">{navVariant.labels.fuerFirmen}</NavButton>
             </nav>
 
-            {/* Mobile: Menu button + Call + mini CTA - properly spaced */}
-            <div className="flex lg:hidden items-center gap-1.5 sm:gap-2 flex-shrink-0">
-              {/* Call Button for mobile - compact */}
+            {/* Mobile/Tablet: Menu button + Call + mini CTA */}
+            <div className="flex xl:hidden items-center gap-1.5 sm:gap-2 flex-shrink-0">
               <MobileHeaderCallButton />
-              
-              {/* Mini CTA for mobile header - compact to avoid overlap */}
-              <Link 
+
+              <Link
                 to={flowPath}
                 className="flex items-center gap-1 bg-secondary text-secondary-foreground text-xs font-bold px-2.5 sm:px-3 py-2 sm:py-2.5 rounded-lg shadow-md shadow-secondary/20 active:scale-95 transition-all min-h-[40px] touch-manipulation"
               >
                 <span>Offerten</span>
               </Link>
-              
-              {/* Burger menu - compact */}
+
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 className={cn(
@@ -183,19 +166,17 @@ export const Navigation = () => {
               </button>
             </div>
 
-            {/* CTA Button - Desktop with enhanced styling */}
-            <div className="hidden lg:flex items-center flex-shrink-0 gap-2 xl:gap-3 min-w-0">
-              {/* Call Button for Desktop */}
+            {/* CTA Button - Desktop */}
+            <div className="hidden xl:flex items-center flex-shrink-0 gap-2 xl:gap-3 min-w-0">
               <HeaderCallButton className="flex-shrink-0" />
-              
-              {/* Micro trust hint */}
-              <div className="hidden xl:flex items-center gap-1.5 text-xs text-muted-foreground flex-shrink-0 whitespace-nowrap">
+
+              <div className="hidden 2xl:flex items-center gap-1.5 text-xs text-muted-foreground flex-shrink-0 whitespace-nowrap">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
                 <span className="font-medium">Gratis & unverbindlich</span>
               </div>
-              
+
               <Link to={flowPath} aria-label="Kostenlose Umzugsofferten vergleichen" className="flex-shrink-0">
-                <Button 
+                <Button
                   size="lg"
                   className="group bg-gradient-to-r from-secondary via-secondary to-secondary/90 hover:from-secondary/90 hover:via-secondary hover:to-secondary text-secondary-foreground font-bold shadow-[0_4px_20px_rgba(220,38,38,0.35)] hover:shadow-[0_8px_30px_rgba(220,38,38,0.45)] transition-all text-sm xl:text-base px-4 xl:px-6 whitespace-nowrap"
                 >
