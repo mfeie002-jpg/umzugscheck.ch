@@ -18,6 +18,7 @@ import {
   Trash2, Archive, CableCar, Briefcase, Wrench
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { HeaderLogo } from "@/components/brand/HeaderLogo";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { MobileMenuV11 } from "./MobileMenuV11";
@@ -173,16 +174,7 @@ export const NavigationV16 = () => {
         
         <div className="container max-w-full flex h-16 items-center justify-between px-4 xl:px-6">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 bg-gradient-to-br from-primary to-emerald-600 rounded-xl flex items-center justify-center shadow-md shadow-primary/20 group-hover:shadow-lg group-hover:shadow-primary/30 transition-all group-hover:scale-105">
-              <CheckCircle className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <span className="font-bold text-lg">
-              <span className="text-foreground">Umzugs</span>
-              <span className="text-primary">check</span>
-              <span className="text-muted-foreground text-sm">.ch</span>
-            </span>
-          </Link>
+          <HeaderLogo size="md" className="group" />
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1 flex-shrink min-w-0">
