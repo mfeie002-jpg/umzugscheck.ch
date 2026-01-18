@@ -524,7 +524,7 @@ const RegionArchetypPage = () => {
                   <div className="bg-card p-6 rounded-2xl border border-border/50 shadow-soft">
                     <h3 className="font-semibold text-lg mb-3">Weitere nützliche Seiten</h3>
                     <div className="grid sm:grid-cols-2 gap-3">
-                      <Link to="/regionen" className="group flex items-center justify-between rounded-xl border border-border/60 p-4 hover:bg-muted/50 transition-colors">
+                      <Link to="/umzugsfirmen-schweiz" className="group flex items-center justify-between rounded-xl border border-border/60 p-4 hover:bg-muted/50 transition-colors">
                         <span className="font-medium">Alle Kantone</span>
                         <ArrowRight className="w-4 h-4 opacity-60 group-hover:opacity-100" />
                       </Link>

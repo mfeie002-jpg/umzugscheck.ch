@@ -51,8 +51,8 @@ export const RegionsSection = () => {
             </div>
             
             <Button asChild className="bg-secondary hover:bg-secondary/90">
-              <Link to="/regionen">
-                Alle Regionen ansehen
+              <Link to="/umzugsfirmen-schweiz">
+                Alle Kantone ansehen
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Link>
             </Button>

@@ -137,11 +137,11 @@ export const CompaniesDropdownArchetype = ({ isOpen, onClose }: CompaniesDropdow
 
                 {/* All regions link */}
                 <Link
-                  to="/regionen"
+                  to="/umzugsfirmen-schweiz"
                   onClick={onClose}
                   className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline mt-2"
                 >
-                  Alle Regionen anzeigen
+                  Alle Kantone anzeigen
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>

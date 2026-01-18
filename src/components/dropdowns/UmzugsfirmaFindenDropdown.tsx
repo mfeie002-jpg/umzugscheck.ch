@@ -203,11 +203,11 @@ export const UmzugsfirmaFindenDropdown = ({ isOpen, onClose }: UmzugsfirmaFinden
               </div>
 
               <Link
-                to="/regionen"
+                to="/umzugsfirmen-schweiz"
                 onClick={onClose}
                 className="inline-flex items-center gap-2 mt-5 text-sm font-semibold text-primary hover:underline"
               >
-                Alle Städte & Regionen anzeigen
+                Alle Städte & Kantone anzeigen
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </DropdownSection>

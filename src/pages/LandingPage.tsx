@@ -499,12 +499,12 @@ const LandingPage = () => {
                   </Badge>
                 </Link>
               ))}
-              <Link to="/regionen">
+              <Link to="/umzugsfirmen-schweiz">
                 <Badge 
                   variant="outline" 
                   className="px-4 py-2 text-sm hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer"
                 >
-                  Alle Regionen →
+                  Alle Kantone →
                 </Badge>
               </Link>
             </div>

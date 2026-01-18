@@ -133,9 +133,9 @@ export const PopularMovingRoutes = () => {
         </div>
 
         <div className="mt-6 pt-4 border-t border-border">
-          <Link to="/regionen">
+          <Link to="/umzugsfirmen-schweiz">
             <Button variant="outline" className="w-full">
-              Alle Regionen durchsuchen
+              Alle Kantone durchsuchen
             </Button>
           </Link>
         </div>

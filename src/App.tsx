@@ -153,7 +153,8 @@ const City = lazy(() => import("./pages/City"));
 const ZuerichV1Landing = lazy(() => import("./pages/umzugsfirmen/zuerich/v1"));
 const CantonComparison = lazy(() => import("./pages/CantonComparison"));
 // DynamicCanton removed - now handled by RegionArchetypPage
-const RegionenOverview = lazy(() => import("./pages/Regionen"));
+// RegionenOverview removed - now redirects to /umzugsfirmen-schweiz
+import { RegionSlugRedirect } from "./components/redirects/RegionRedirect";
 const CityMovers = lazy(() => import("./pages/CityMovers"));
 const CityOptimized = lazy(() => import("./pages/CityOptimized"));
 const CityPage = lazy(() => import("./pages/CityPage").then(m => ({ default: m.CityPage })));
@@ -548,8 +549,9 @@ const AppRouterContent = () => {
           <Route path="/vergleichen" element={<Compare />} />
           <Route path="/vergleich" element={<Compare />} />
           <Route path="/firmen-vergleich" element={<CompanyComparison />} />
-          <Route path="/regionen" element={<RegionenOverview />} />
-          <Route path="/regionen/:slug" element={<RegionArchetypPage />} />
+          {/* Legacy /regionen routes - redirect to canonical URLs */}
+          <Route path="/regionen" element={<Navigate to="/umzugsfirmen-schweiz" replace />} />
+          <Route path="/regionen/:slug" element={<RegionSlugRedirect />} />
           <Route path="/fuer-firmen" element={<FuerFirmen />} />
           <Route path="/kanton/:slug" element={<RegionArchetypPage />} />
           <Route path="/umzug/:slug" element={<RegionArchetypPage />} />

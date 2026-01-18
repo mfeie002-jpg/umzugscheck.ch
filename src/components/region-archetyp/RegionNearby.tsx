@@ -67,10 +67,10 @@ export const RegionNearby = memo(({ nearbyRegions, currentRegion }: RegionNearby
           className="text-center mt-6"
         >
           <Link
-            to="/regionen"
+            to="/umzugsfirmen-schweiz"
             className="inline-flex items-center gap-2 text-sm text-primary hover:underline"
           >
-            Alle Regionen ansehen
+            Alle Kantone ansehen
             <ArrowRight className="w-4 h-4" />
           </Link>
         </motion.div>
