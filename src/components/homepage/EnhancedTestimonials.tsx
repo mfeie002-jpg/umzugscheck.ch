@@ -9,7 +9,7 @@
 
 import { memo } from 'react';
 import { motion } from 'framer-motion';
-import { Star, Play, TrendingDown, CheckCircle2, Quote, MapPin } from 'lucide-react';
+import { Star, Play, TrendingDown, CheckCircle2, Quote, MapPin, ArrowRight } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 // Video testimonials mit KONKRETER Ersparnis
@@ -60,18 +60,18 @@ export const EnhancedTestimonials = memo(function EnhancedTestimonials() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          {/* Big savings headline */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/15 border border-emerald-500/30 mb-4">
-            <TrendingDown className="w-5 h-5 text-emerald-600" />
-            <span className="font-bold text-emerald-700">Ø CHF 750 gespart</span>
-          </div>
-          
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-3">
-            Echte Kunden, echte Ersparnisse
+            Das sagen unsere Kunden
           </h2>
-          <p className="text-muted-foreground text-lg">
-            Was unsere Kunden mit dem Vergleich wirklich gespart haben
-          </p>
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <div className="flex gap-0.5">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+              ))}
+            </div>
+            <span className="font-bold text-lg">4.8/5</span>
+            <span className="text-muted-foreground">aus 2,847 Bewertungen</span>
+          </div>
         </motion.div>
 
         {/* ===== VIDEO TESTIMONIAL CARDS ===== */}
@@ -130,22 +130,20 @@ export const EnhancedTestimonials = memo(function EnhancedTestimonials() {
           ))}
         </div>
 
-        {/* ===== BOTTOM RATING SUMMARY ===== */}
+        {/* ===== BOTTOM CTA ===== */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="flex flex-col items-center gap-4"
         >
-          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-card border-2 border-primary/20 shadow-lg">
-            <div className="flex gap-0.5">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-6 h-6 fill-yellow-400 text-yellow-400" />
-              ))}
-            </div>
-            <span className="font-bold text-xl text-foreground">4.7 / 5</span>
-            <span className="text-muted-foreground">aus 2'847 Bewertungen</span>
-          </div>
+          <a 
+            href="#bewertungen" 
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-card border-2 border-primary/20 shadow-lg hover:border-primary/40 transition-all text-primary font-semibold group"
+          >
+            Alle Bewertungen ansehen
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </a>
         </motion.div>
       </div>
     </section>
