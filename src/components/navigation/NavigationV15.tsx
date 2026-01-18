@@ -134,7 +134,7 @@ export const NavigationV15 = () => {
                     activeDropdown === section.label && "bg-accent text-accent-foreground"
                   )}
                 >
-                  <span className="text-base leading-none hidden 2xl:inline" aria-hidden="true">{section.emoji}</span>
+                  <span className="text-base leading-none" aria-hidden="true">{section.emoji}</span>
                   <span className="leading-none">{section.label}</span>
                   <ChevronDown
                     className={cn(
