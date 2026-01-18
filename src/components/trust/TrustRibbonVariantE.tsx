@@ -99,7 +99,7 @@ export const TrustRibbonVariantE = memo(function TrustRibbonVariantE({
 
   return (
     <section className={`py-8 md:py-10 bg-gradient-to-b from-muted/20 to-background ${className}`}>
-      <div className="container mx-auto px-4 max-w-6xl">
+      <div className="container mx-auto px-4">
         
         {/* HEADLINE */}
         <motion.div 
