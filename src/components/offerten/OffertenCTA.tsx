@@ -1,8 +1,6 @@
-import { ArrowRight, Shield, Clock, Percent, CheckCircle, Sparkles } from "lucide-react";
+import { ArrowRight, Shield, Clock, Percent, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-
+import { SmartCTAButton } from "@/components/conversion/SmartCTAButton";
 const OffertenCTA = () => {
   return (
     <section className="py-16 md:py-24 relative overflow-hidden">
@@ -100,19 +98,13 @@ const OffertenCTA = () => {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.5 }}
+            className="max-w-md mx-auto"
           >
-            <Button
-              asChild
-              size="lg"
-              variant="secondary"
-              className="h-14 px-10 text-lg font-bold rounded-xl bg-white text-primary hover:bg-white/95 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 group"
-            >
-              <Link to="/umzugsofferten" className="flex items-center gap-3">
-                <CheckCircle className="w-5 h-5" />
-                Jetzt Offerten vergleichen
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </Button>
+            <SmartCTAButton 
+              to="/umzugsofferten" 
+              location="offerten-cta" 
+              size="xl"
+            />
           </motion.div>
           
           {/* Micro trust text */}
