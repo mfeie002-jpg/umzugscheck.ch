@@ -113,7 +113,7 @@ export const NavigationV11 = () => {
   );
 
   return (
-    <header className="sticky top-0 z-50">
+    <header className="sticky top-0 z-[9998]">
       {/* Emotional Trust Banner - Show on scroll or always */}
       <div className="hidden lg:block bg-gradient-to-r from-primary/5 via-accent to-primary/5 border-b border-border/50 py-1.5">
         <div className="container mx-auto px-4 flex items-center justify-center gap-6 text-sm">
@@ -284,7 +284,7 @@ const ServicesDropdownV11 = ({
       animate="visible"
       exit="exit"
       variants={dropdownVariants}
-      className="absolute left-0 right-0 bg-background/98 backdrop-blur-sm border-b border-border shadow-2xl"
+      className="absolute left-0 right-0 top-full bg-background/98 backdrop-blur-sm border-b border-border shadow-2xl z-[9999]"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
@@ -436,7 +436,7 @@ const RatgeberDropdownV11 = ({
       animate="visible"
       exit="exit"
       variants={dropdownVariants}
-      className="absolute left-0 right-0 bg-background/98 backdrop-blur-sm border-b border-border shadow-2xl"
+      className="absolute left-0 right-0 top-full bg-background/98 backdrop-blur-sm border-b border-border shadow-2xl z-[9999]"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >

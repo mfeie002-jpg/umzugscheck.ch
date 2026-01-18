@@ -136,7 +136,7 @@ export const NavigationV14 = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-[9998] w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
@@ -168,7 +168,7 @@ export const NavigationV14 = () => {
 
                 {/* Dropdown */}
                 {activeDropdown === section.label && (
-                  <div className="absolute top-full left-0 pt-2 z-50">
+                  <div className="absolute top-full left-0 pt-2 z-[9999]">
                     <div className="bg-background border border-border rounded-lg shadow-lg min-w-[320px] p-4">
                       {/* Tagline */}
                       <p className="text-xs text-muted-foreground mb-3 pb-3 border-b border-border">

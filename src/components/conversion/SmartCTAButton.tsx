@@ -37,24 +37,19 @@ export const SmartCTAButton = memo(function SmartCTAButton({
     onClick?.();
   };
 
+  // Only use design system colors: primary (blue) or secondary (red)
   const getColorClasses = () => {
     switch (color) {
-      case 'urgent':
-        return 'bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 shadow-orange-500/25';
-      case 'benefit':
-        return 'bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 shadow-green-500/25';
-      case 'social':
-        return 'bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 shadow-blue-500/25';
-      default:
+      case 'secondary':
         return 'bg-gradient-to-r from-secondary to-secondary/90 hover:from-secondary/90 hover:to-secondary shadow-secondary/25';
+      default:
+        return 'bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-primary/25';
     }
   };
 
   const getIcon = () => {
     switch (color) {
-      case 'urgent': return Clock;
-      case 'benefit': return Sparkles;
-      case 'social': return Users;
+      case 'secondary': return Sparkles;
       default: return ArrowRight;
     }
   };

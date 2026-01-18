@@ -4,27 +4,27 @@
  */
 import { useState, useEffect, useCallback } from 'react';
 
-// CTA variants for A/B testing
+// CTA variants for A/B testing - using only design system colors (primary/secondary)
 const CTA_VARIANTS = {
   default: {
     text: 'Offerten vergleichen',
     subtext: 'Kostenlos & unverbindlich',
-    color: 'default' as const,
+    color: 'default' as const, // Uses primary (blue)
   },
   urgency: {
     text: 'Jetzt vergleichen',
     subtext: 'Nur noch 3 Termine diese Woche',
-    color: 'urgent' as const,
+    color: 'default' as const, // Uses primary (blue) - NOT orange
   },
   benefit: {
     text: 'Bis 40% sparen',
     subtext: 'In 2 Minuten Offerten erhalten',
-    color: 'benefit' as const,
+    color: 'secondary' as const, // Uses secondary (red)
   },
   social: {
     text: 'Wie 15\'000+ andere',
     subtext: 'Jetzt kostenlos vergleichen',
-    color: 'social' as const,
+    color: 'default' as const, // Uses primary (blue)
   },
 } as const;
 

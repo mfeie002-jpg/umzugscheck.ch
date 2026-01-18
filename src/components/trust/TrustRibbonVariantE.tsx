@@ -121,8 +121,8 @@ export const TrustRibbonVariantE = memo(function TrustRibbonVariantE({
           viewport={{ once: true }}
         >
           
-          {/* ROW 1: Stats (horizontal scroll on mobile) */}
-          <div className="flex gap-3 overflow-x-auto pb-2 no-scrollbar justify-start md:justify-center">
+          {/* ROW 1: Stats (horizontal scroll on mobile, centered) */}
+          <div className="flex gap-3 overflow-x-auto pb-2 no-scrollbar justify-center">
             {stats.map((stat, i) => (
               <StatChip key={i} {...stat} />
             ))}

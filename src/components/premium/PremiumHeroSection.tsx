@@ -323,8 +323,8 @@ export const PremiumHeroSection = () => {
             transition={{ duration: 0.6 }}
             className="space-y-4 md:space-y-6 order-2 lg:order-1"
           >
-            {/* Dual USP Badges - Consistent Primary/Secondary colors */}
-            <div className="flex flex-wrap gap-2 sm:gap-3">
+            {/* Dual USP Badges - Consistent Primary/Secondary colors - Centered on mobile */}
+            <div className="flex flex-wrap gap-2 sm:gap-3 justify-center lg:justify-start">
               {/* Savings Badge - Primary Blue */}
               <motion.div 
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -358,21 +358,21 @@ export const PremiumHeroSection = () => {
               </motion.div>
             </div>
             
-            {/* Main Headline - Best Deal Focus */}
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-[1.15] tracking-tight">
+            {/* Main Headline - Best Deal Focus - Centered on mobile */}
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-[1.15] tracking-tight text-center lg:text-left">
               <span className="text-foreground">Der beste Deal</span>
               <span className="block text-primary mt-1 md:mt-2">der ganzen Schweiz.</span>
             </h1>
             
-            {/* Subheadline - Combined Value Proposition */}
-            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground max-w-xl leading-relaxed">
+            {/* Subheadline - Combined Value Proposition - Centered on mobile */}
+            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground max-w-xl leading-relaxed text-center lg:text-left mx-auto lg:mx-0">
               Unser <span className="inline-flex items-center gap-1 text-secondary font-semibold"><Video className="h-4 w-4" />KI-Rechner</span> analysiert 
               Ihren Umzug per Video – wir vergleichen <span className="font-semibold text-foreground">200+ Firmen</span> und finden 
               das <span className="inline-flex items-center gap-1 text-primary font-semibold"><Trophy className="h-4 w-4" />beste Angebot</span>.
             </p>
             
-            {/* USP Pills - Consistent Primary/Secondary */}
-            <div className="flex flex-wrap gap-2 pt-1">
+            {/* USP Pills - Consistent Primary/Secondary - Centered on mobile */}
+            <div className="flex flex-wrap gap-2 pt-1 justify-center lg:justify-start">
               <span className="inline-flex items-center gap-1.5 text-xs bg-primary/10 text-primary px-3 py-1.5 rounded-full font-medium">
                 <TrendingDown className="w-3 h-3" />
                 Bis 40% günstiger
