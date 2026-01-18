@@ -1,6 +1,7 @@
 import { Percent, CalendarClock, ShieldCheck, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
+import { SmartCTAButton } from "@/components/conversion/SmartCTAButton";
 
 const benefits = [
   {
@@ -69,6 +70,21 @@ const OffertenBenefits = () => {
             </motion.div>
           ))}
         </div>
+
+        {/* CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.4 }}
+          className="mt-12 max-w-md mx-auto"
+        >
+          <SmartCTAButton 
+            to="/umzugsofferten" 
+            location="offerten-benefits" 
+            size="xl"
+          />
+        </motion.div>
       </div>
     </section>
   );
