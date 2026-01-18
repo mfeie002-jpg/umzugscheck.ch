@@ -34,12 +34,12 @@ export function HeaderLogo({ className, size = "md", onClick, showTagline = true
         className={cn(s.height, "w-auto min-w-[140px] sm:min-w-[180px]")}
         aria-hidden="true"
       >
-        {/* House Icon - all red (Swiss) */}
+        {/* House Icon - Blue body, Red roof */}
         <g transform="translate(0, 0)">
-          {/* House body - red */}
+          {/* House body - blue */}
           <path 
             d="M16 8L4 16V32H28V16L16 8Z" 
-            fill="#dc2626"
+            fill="#1e40af"
           />
           {/* Roof - red */}
           <path 
@@ -69,9 +69,9 @@ export function HeaderLogo({ className, size = "md", onClick, showTagline = true
           fontSize={s.fontSize} 
           fontWeight="700"
         >
-          <tspan fill="#1a1a1a">Umzugs</tspan>
+          <tspan fill="#1e40af">Umzugs</tspan>
           <tspan fill="#dc2626">check</tspan>
-          <tspan fill="#64748b" fontWeight="500">.ch</tspan>
+          <tspan fill="#1e40af" fontWeight="600">.ch</tspan>
         </text>
       </svg>
       
