@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, MapPin, Wrench, BookOpen } from "lucide-react";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 interface InternalLinksBlockProps {
   variant?: "grid" | "inline";
@@ -114,19 +115,23 @@ export const InternalLinksBlock = ({
 };
 
 // Quick links for footer or sidebar
-export const QuickLinks = () => (
-  <div className="space-y-2">
-    <Link to="/umzugsofferten" className="flex items-center gap-2 text-sm text-primary hover:underline">
-      <ArrowRight className="h-3 w-3" />
-      Kostenlos Offerten erhalten
-    </Link>
-    <Link to="/umzugsofferten" className="flex items-center gap-2 text-sm text-primary hover:underline">
-      <ArrowRight className="h-3 w-3" />
-      Umzugskosten berechnen
-    </Link>
-    <Link to="/umzugsfirmen" className="flex items-center gap-2 text-sm text-primary hover:underline">
-      <ArrowRight className="h-3 w-3" />
-      Umzugsfirmen vergleichen
-    </Link>
-  </div>
-);
+export const QuickLinks = () => {
+  const flowPath = useFlowPath();
+  
+  return (
+    <div className="space-y-2">
+      <Link to={flowPath} className="flex items-center gap-2 text-sm text-primary hover:underline">
+        <ArrowRight className="h-3 w-3" />
+        Kostenlos Offerten erhalten
+      </Link>
+      <Link to={flowPath} className="flex items-center gap-2 text-sm text-primary hover:underline">
+        <ArrowRight className="h-3 w-3" />
+        Umzugskosten berechnen
+      </Link>
+      <Link to="/umzugsfirmen" className="flex items-center gap-2 text-sm text-primary hover:underline">
+        <ArrowRight className="h-3 w-3" />
+        Umzugsfirmen vergleichen
+      </Link>
+    </div>
+  );
+};

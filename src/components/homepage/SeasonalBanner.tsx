@@ -2,8 +2,11 @@ import { motion } from "framer-motion";
 import { Sparkles, Clock, ArrowRight, Percent } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 export const SeasonalBanner = () => {
+  const flowPath = useFlowPath();
+  
   return (
     <section className="py-8 bg-gradient-to-r from-secondary via-secondary to-secondary/90 text-white overflow-hidden">
       <div className="container">
@@ -36,7 +39,7 @@ export const SeasonalBanner = () => {
               asChild
               className="bg-white text-secondary hover:bg-white/90 font-semibold"
             >
-              <Link to="/umzugsofferten">
+              <Link to={flowPath}>
                 Jetzt sparen
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Link>

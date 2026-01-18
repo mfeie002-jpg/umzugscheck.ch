@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Star, MapPin, CheckCircle2, ArrowRight } from "lucide-react";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 const exampleCompanies = [
   {
@@ -41,6 +42,8 @@ const exampleCompanies = [
 ];
 
 export const ComparisonPreview = () => {
+  const flowPath = useFlowPath();
+  
   return (
     <section className="py-12 md:py-20 bg-background">
       <div className="container mx-auto px-4">
@@ -123,7 +126,7 @@ export const ComparisonPreview = () => {
                       </div>
                     </td>
                     <td className="px-6 py-5 text-center">
-                      <Link to="/umzugsofferten" aria-label={`Offerte von ${company.name} anfordern`}>
+                      <Link to={flowPath} aria-label={`Offerte von ${company.name} anfordern`}>
                         <Button size="sm" className="shadow-accent">
                           Offerte
                         </Button>
@@ -192,7 +195,7 @@ export const ComparisonPreview = () => {
                   </div>
                 </div>
 
-                <Link to="/umzugsofferten" className="block" aria-label={`Offerte von ${company.name} anfordern`}>
+                <Link to={flowPath} className="block" aria-label={`Offerte von ${company.name} anfordern`}>
                   <Button className="w-full shadow-accent">
                     Offerte anfragen
                   </Button>
