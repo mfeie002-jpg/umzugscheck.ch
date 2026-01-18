@@ -765,6 +765,6 @@ export const getActiveVariant = (): NavConfig => {
 
 export const setActiveVariant = (variant: NavVariant): void => {
   localStorage.setItem('nav-variant', variant);
-  // Trigger page reload to apply changes
-  window.location.reload();
+  // Dispatch custom event for DynamicNavigation to listen to
+  window.dispatchEvent(new CustomEvent('nav-variant-changed', { detail: variant }));
 };
