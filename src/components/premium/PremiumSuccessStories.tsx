@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Quote, ChevronLeft, ChevronRight, Star, MapPin, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SmartCTAButton } from "@/components/conversion/SmartCTAButton";
 
 const stories = [
   {
@@ -143,6 +144,15 @@ export const PremiumSuccessStories = () => {
             <Button variant="outline" size="icon" onClick={next} className="rounded-full">
               <ChevronRight className="w-5 h-5" />
             </Button>
+          </div>
+          
+          {/* CTA after carousel */}
+          <div className="mt-8 max-w-md mx-auto">
+            <SmartCTAButton 
+              to="/umzugsofferten" 
+              location="success-stories" 
+              size="lg"
+            />
           </div>
         </div>
       </div>
