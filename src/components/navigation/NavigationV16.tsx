@@ -170,7 +170,7 @@ export const NavigationV16 = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 overflow-x-hidden">
+      <header className="sticky top-0 z-[100] w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 overflow-x-hidden">
         {/* Warm accent line */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-emerald-500 to-primary/60" />
         
@@ -211,7 +211,7 @@ export const NavigationV16 = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 bg-black/10 backdrop-blur-[2px] z-40 top-[65px]"
+                        className="fixed inset-0 bg-black/10 backdrop-blur-[2px] z-[110] top-[65px]"
                         onClick={() => setActiveDropdown(null)}
                       />
                       
@@ -221,7 +221,7 @@ export const NavigationV16 = () => {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 5, scale: 0.98 }}
                         transition={{ duration: 0.2, ease: "easeOut" }}
-                        className="absolute top-full left-1/2 -translate-x-1/2 pt-3 z-50"
+                        className="absolute top-full left-1/2 -translate-x-1/2 pt-3 z-[120]"
                       >
                         <div className="w-[420px] bg-background rounded-2xl shadow-2xl shadow-primary/10 border border-border/50 overflow-hidden">
                           {/* Gradient accent */}
