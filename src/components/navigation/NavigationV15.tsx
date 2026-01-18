@@ -37,7 +37,8 @@ import {
   Phone,
   CheckCircle,
   ArrowRight,
-  Zap
+  Zap,
+  LogIn
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { HeaderLogo } from "@/components/brand/HeaderLogo";
@@ -101,6 +102,17 @@ const navStructure: NavItem[] = [
       { icon: MessageCircle, title: "Häufige Fragen (FAQ)", description: "Schnelle Antworten", href: "/faq" },
       { icon: Phone, title: "Kontakt", description: "Wir helfen dir gerne", href: "/kontakt" },
       { icon: CheckCircle, title: "Support", description: "Bei Problemen & Reklamationen", href: "/support" },
+    ]
+  },
+  {
+    label: "Für Anbieter",
+    tagline: "Partner werden & täglich qualifizierte Umzugs-Leads erhalten.",
+    emoji: "🏢",
+    items: [
+      { icon: Users, title: "Partner werden", description: "Erhalte täglich qualifizierte Leads", href: "/fuer-firmen" },
+      { icon: LogIn, title: "Anbieter Login", description: "Zugang zu deinem Partner-Dashboard", href: "/anbieter-login" },
+      { icon: Briefcase, title: "Firmenumzug anfragen", description: "Relocation Service für Unternehmen", href: "/firmenumzug" },
+      { icon: Calculator, title: "Firmenumzug-Rechner", description: "Kosten für Büroumzug kalkulieren", href: "/firmenumzug-rechner" },
     ]
   }
 ];
@@ -204,12 +216,6 @@ export const NavigationV15 = () => {
 
           {/* Desktop CTA */}
           <div className="hidden xl:flex items-center gap-2 2xl:gap-3 flex-shrink-0">
-            <Link
-              to="/anbieter"
-              className="hidden 2xl:block text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap"
-            >
-              Für Anbieter
-            </Link>
             <Button
               asChild
               className="h-10 font-semibold gap-2 bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-md shadow-secondary/20 text-sm px-4 whitespace-nowrap"
