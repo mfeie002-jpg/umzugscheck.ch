@@ -2,7 +2,8 @@ import { useState, useMemo, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowRight, Star, Shield, CheckCircle2, Clock, Check, TrendingDown, Trophy, Video } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ArrowRight, Star, Shield, CheckCircle2, Clock, Check, TrendingDown, Trophy, Video, Upload, FileText, Phone, MessageCircle } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import heroFamilyMoving from "@/assets/hero-family-moving.jpg";
@@ -391,10 +392,10 @@ export const PremiumHeroSection = () => {
             {/* Desktop CTA with MagneticButton */}
             <div className="hidden lg:flex items-center gap-4 pt-2">
               <MagneticButton strength={0.2}>
-                <Link to="/umzugsofferten">
-                  <Button size="lg" className="h-12 lg:h-14 px-5 lg:px-8 text-base lg:text-lg font-semibold shadow-cta hover:shadow-lift hover:-translate-y-0.5 transition-all">
-                    <CheckCircle2 className="mr-2 h-5 w-5" />
-                    Kostenlos Offerten erhalten
+                <Link to="/video-offerte">
+                  <Button size="lg" className="h-12 lg:h-14 px-5 lg:px-8 text-base lg:text-lg font-semibold shadow-cta hover:shadow-lift hover:-translate-y-0.5 transition-all bg-secondary hover:bg-secondary/90">
+                    <Video className="mr-2 h-5 w-5" />
+                    Video-Offerte starten
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
@@ -418,80 +419,140 @@ export const PremiumHeroSection = () => {
               <div className="space-y-3 sm:space-y-4 md:space-y-5">
                 {/* Form Header - Consistent Primary colors */}
                 <div className="text-center space-y-1 md:space-y-2">
-                  <div className="inline-flex items-center gap-2 text-xs sm:text-sm text-primary font-semibold bg-primary/10 px-3 py-1 rounded-full">
-                    <Trophy className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                    Bester Preis garantiert
+                  <div className="inline-flex items-center gap-2 text-xs sm:text-sm text-secondary font-semibold bg-secondary/10 px-3 py-1 rounded-full">
+                    <Video className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    Empfohlen: Video-Analyse
                   </div>
                   <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground">
-                    200+ Firmen vergleichen
+                    Präzise Offerte in 2 Min.
                   </h2>
                   <p className="text-xs sm:text-sm text-muted-foreground">
-                    Wir finden den günstigsten Anbieter für Sie
+                    Video hochladen = genauere Preise
                   </p>
                 </div>
                 
-                {/* Progress indicator */}
-                <div className="text-xs sm:text-sm text-muted-foreground text-center">
-                  Schritt 1 von 4 · Dauer ca. 2 Minuten
-                </div>
-                
-                {/* Form */}
-                <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
-                  <div className="space-y-1.5 md:space-y-2">
-                    <Label htmlFor="from" className="text-foreground font-medium text-xs sm:text-sm">Von (PLZ oder Ort)</Label>
-                    <Input
-                      id="from"
-                      ref={fromInputRef}
-                      list="from-options"
-                      placeholder="z.B. 8001 oder Zürich"
-                      value={fromPostal}
-                      onChange={(e) => setFromPostal(e.target.value)}
-                      inputMode="text"
-                      pattern="[0-9]*|[a-zA-ZäöüÄÖÜ\s-]+"
-                      enterKeyHint="next"
-                      className="h-10 sm:h-11 md:h-12 text-base bg-background border-2 border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20"
-                      autoComplete="address-level2"
-                      required
-                    />
-                    <datalist id="from-options">
-                      {fromOptions.map((option) => (
-                        <option key={`from-${option.code}`} value={`${option.code} - ${option.city} (${option.canton})`} />
-                      ))}
-                    </datalist>
-                  </div>
+                {/* Video-First Tabs */}
+                <Tabs defaultValue="video" className="w-full">
+                  <TabsList className="grid w-full grid-cols-2 h-10 sm:h-11">
+                    <TabsTrigger value="video" className="text-xs sm:text-sm font-semibold gap-1.5">
+                      <Video className="h-3.5 w-3.5" />
+                      Video/Fotos
+                    </TabsTrigger>
+                    <TabsTrigger value="form" className="text-xs sm:text-sm gap-1.5">
+                      <FileText className="h-3.5 w-3.5" />
+                      Formular
+                    </TabsTrigger>
+                  </TabsList>
                   
-                  <div className="space-y-1.5 md:space-y-2">
-                    <Label htmlFor="to" className="text-foreground font-medium text-xs sm:text-sm">Nach (PLZ oder Ort)</Label>
-                    <Input
-                      id="to"
-                      list="to-options"
-                      placeholder="z.B. 3011 oder Bern"
-                      value={toPostal}
-                      onChange={(e) => setToPostal(e.target.value)}
-                      inputMode="text"
-                      pattern="[0-9]*|[a-zA-ZäöüÄÖÜ\s-]+"
-                      enterKeyHint="done"
-                      className="h-10 sm:h-11 md:h-12 text-base bg-background border-2 border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20"
-                      autoComplete="address-level2"
-                      required
-                    />
-                    <datalist id="to-options">
-                      {toOptions.map((option) => (
-                        <option key={`to-${option.code}`} value={`${option.code} - ${option.city} (${option.canton})`} />
-                      ))}
-                    </datalist>
-                  </div>
+                  {/* Video Tab - Primary/Default */}
+                  <TabsContent value="video" className="mt-4 space-y-4">
+                    <Link to="/video-offerte" className="block">
+                      <div className="relative group cursor-pointer">
+                        <div className="border-2 border-dashed border-secondary/50 hover:border-secondary rounded-xl p-6 sm:p-8 text-center transition-all bg-secondary/5 hover:bg-secondary/10">
+                          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-secondary/20 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                            <Upload className="h-7 w-7 sm:h-8 sm:w-8 text-secondary" />
+                          </div>
+                          <p className="font-semibold text-sm sm:text-base text-foreground mb-1">
+                            Video oder Fotos hochladen
+                          </p>
+                          <p className="text-xs sm:text-sm text-muted-foreground">
+                            KI analysiert Ihre Wohnung automatisch
+                          </p>
+                          <div className="mt-3 inline-flex items-center gap-1.5 text-xs text-secondary font-medium">
+                            <CheckCircle2 className="h-3.5 w-3.5" />
+                            30% genauere Offerten
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                    
+                    {/* Secondary Options (smaller) */}
+                    <div className="flex items-center justify-center gap-3 pt-2">
+                      <span className="text-xs text-muted-foreground">Oder:</span>
+                      <a 
+                        href="https://wa.me/41445551234?text=Hallo%2C%20ich%20m%C3%B6chte%20eine%20Umzugsofferte"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-xs text-primary hover:text-primary/80 font-medium"
+                      >
+                        <MessageCircle className="h-3.5 w-3.5" />
+                        WhatsApp
+                      </a>
+                      <span className="text-muted-foreground">•</span>
+                      <a 
+                        href="tel:+41445551234"
+                        className="inline-flex items-center gap-1.5 text-xs text-primary hover:text-primary/80 font-medium"
+                      >
+                        <Phone className="h-3.5 w-3.5" />
+                        Anrufen
+                      </a>
+                    </div>
+                  </TabsContent>
                   
-                  <Button 
-                    type="submit" 
-                    size="lg" 
-                    className="w-full h-11 sm:h-12 md:h-14 text-sm sm:text-base md:text-lg font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all group relative z-20 touch-manipulation"
-                  >
-                    <CheckCircle2 className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                    {getCtaText()}
-                    <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                </form>
+                  {/* Form Tab - Classic Alternative */}
+                  <TabsContent value="form" className="mt-4 space-y-3 md:space-y-4">
+                    <div className="text-xs sm:text-sm text-muted-foreground text-center">
+                      Schritt 1 von 4 · Dauer ca. 2 Minuten
+                    </div>
+                    
+                    <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
+                      <div className="space-y-1.5 md:space-y-2">
+                        <Label htmlFor="from" className="text-foreground font-medium text-xs sm:text-sm">Von (PLZ oder Ort)</Label>
+                        <Input
+                          id="from"
+                          ref={fromInputRef}
+                          list="from-options"
+                          placeholder="z.B. 8001 oder Zürich"
+                          value={fromPostal}
+                          onChange={(e) => setFromPostal(e.target.value)}
+                          inputMode="text"
+                          pattern="[0-9]*|[a-zA-ZäöüÄÖÜ\s-]+"
+                          enterKeyHint="next"
+                          className="h-10 sm:h-11 md:h-12 text-base bg-background border-2 border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                          autoComplete="address-level2"
+                          required
+                        />
+                        <datalist id="from-options">
+                          {fromOptions.map((option) => (
+                            <option key={`from-${option.code}`} value={`${option.code} - ${option.city} (${option.canton})`} />
+                          ))}
+                        </datalist>
+                      </div>
+                      
+                      <div className="space-y-1.5 md:space-y-2">
+                        <Label htmlFor="to" className="text-foreground font-medium text-xs sm:text-sm">Nach (PLZ oder Ort)</Label>
+                        <Input
+                          id="to"
+                          list="to-options"
+                          placeholder="z.B. 3011 oder Bern"
+                          value={toPostal}
+                          onChange={(e) => setToPostal(e.target.value)}
+                          inputMode="text"
+                          pattern="[0-9]*|[a-zA-ZäöüÄÖÜ\s-]+"
+                          enterKeyHint="done"
+                          className="h-10 sm:h-11 md:h-12 text-base bg-background border-2 border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                          autoComplete="address-level2"
+                          required
+                        />
+                        <datalist id="to-options">
+                          {toOptions.map((option) => (
+                            <option key={`to-${option.code}`} value={`${option.code} - ${option.city} (${option.canton})`} />
+                          ))}
+                        </datalist>
+                      </div>
+                      
+                      <Button 
+                        type="submit" 
+                        size="lg" 
+                        className="w-full h-11 sm:h-12 md:h-14 text-sm sm:text-base md:text-lg font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all group relative z-20 touch-manipulation"
+                      >
+                        <CheckCircle2 className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                        {getCtaText()}
+                        <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />
+                      </Button>
+                    </form>
+                  </TabsContent>
+                </Tabs>
                 
                 {/* Trust Microcopy - Consistent Primary colors */}
                 <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 pt-1 md:pt-2 text-xs sm:text-sm text-foreground/60">

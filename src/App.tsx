@@ -499,6 +499,9 @@ const AppRouterContent = () => {
           <Route path="/rechner/moebelmontage" element={<AssemblyCalculator />} />
           <Route path="/rechner/konfigurator" element={<TotalPriceConfigurator />} />
           <Route path="/rechner/video" element={<VideoEstimator />} />
+          {/* Video-First Routes - Primary Entry Points */}
+          <Route path="/video" element={<VideoEstimator />} />
+          <Route path="/video-offerte" element={<VideoEstimator />} />
           {/* Canton redirects to /umzugsfirmen/:canton */}
           <Route path="/zug" element={<Navigate to="/umzugsfirmen/zug" replace />} />
           <Route path="/luzern" element={<Navigate to="/umzugsfirmen/luzern" replace />} />
