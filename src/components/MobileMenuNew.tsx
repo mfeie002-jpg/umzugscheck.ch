@@ -487,7 +487,7 @@ export const MobileMenuNew = ({ isOpen, onClose }: MobileMenuNewProps) => {
                             </div>
 
                             <Link
-                              to="/regionen"
+                              to="/umzugsfirmen-schweiz"
                               onClick={onClose}
                               className="inline-flex items-center gap-2 text-sm font-bold text-emerald-600 hover:text-emerald-700 py-2 touch-manipulation"
                             >

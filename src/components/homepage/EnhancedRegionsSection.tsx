@@ -97,8 +97,8 @@ export const EnhancedRegionsSection = memo(function EnhancedRegionsSection() {
             </div>
             
               <Button asChild size="lg" className="bg-secondary hover:bg-secondary/90 group">
-                <Link to="/regionen">
-                  Alle Regionen ansehen
+                <Link to="/umzugsfirmen-schweiz">
+                  Alle Kantone ansehen
                   <motion.span
                     className="ml-2"
                     initial={{ x: 0 }}

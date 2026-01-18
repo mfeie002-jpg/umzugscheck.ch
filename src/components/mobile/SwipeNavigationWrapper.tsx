@@ -16,7 +16,7 @@ const pageNames: Record<string, string> = {
   '/umzugsofferten': 'Offerten',
   '/umzugsfirmen': 'Firmen',
   '/dienstleistungen': 'Services',
-  '/regionen': 'Regionen',
+  '/umzugsfirmen-schweiz': 'Kantone',
   '/ratgeber': 'Ratgeber',
 };
 

@@ -202,9 +202,9 @@ export const MobileMenuV12 = ({ isOpen, onClose }: MobileMenuV12Props) => {
                       onClick={onClose} 
                     />
                     <MenuLink 
-                      to="/regionen" 
+                      to="/umzugsfirmen-schweiz" 
                       icon={Building2} 
-                      title="Nach Region" 
+                      title="Nach Kanton" 
                       onClick={onClose} 
                     />
                   </div>

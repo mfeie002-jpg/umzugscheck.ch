@@ -943,7 +943,7 @@ export default function CityMovers() {
                     <span className="font-medium">Kanton {cityInfo?.cantonName}</span>
                     <ArrowRight className="w-4 h-4 opacity-60 group-hover:opacity-100" />
                   </Link>
-                  <Link to="/regionen" className="group flex items-center justify-between rounded-xl border border-border/60 p-4 hover:bg-muted/50 transition-colors">
+                  <Link to="/umzugsfirmen-schweiz" className="group flex items-center justify-between rounded-xl border border-border/60 p-4 hover:bg-muted/50 transition-colors">
                     <span className="font-medium">Alle Kantone</span>
                     <ArrowRight className="w-4 h-4 opacity-60 group-hover:opacity-100" />
                   </Link>

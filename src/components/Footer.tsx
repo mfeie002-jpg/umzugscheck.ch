@@ -95,7 +95,7 @@ export const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/regionen" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
+                <Link to="/umzugsfirmen-schweiz" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
                   Umzug nach Region
                 </Link>
               </li>

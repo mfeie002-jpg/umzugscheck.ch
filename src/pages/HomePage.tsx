@@ -358,7 +358,7 @@ export const HomePage = () => {
           </div>
           
           <div className="text-center">
-            <Link to="/regionen" className="no-underline">
+            <Link to="/umzugsfirmen-schweiz" className="no-underline">
               <Button variant="outline" size="lg">
                 Alle 26 Kantone ansehen
               </Button>
