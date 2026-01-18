@@ -108,7 +108,7 @@ export const MobileBottomNav = () => {
                 >
                   {/* Pulsing glow effect behind the button */}
                   <motion.div
-                    className="absolute -mt-4 w-14 h-14 rounded-full bg-primary/40"
+                    className="absolute -mt-4 w-14 h-14 rounded-full bg-secondary/40"
                     animate={{
                       scale: [1, 1.25, 1],
                       opacity: [0.6, 0, 0.6],
@@ -121,12 +121,12 @@ export const MobileBottomNav = () => {
                   />
                   {/* Prominent center button */}
                   <motion.div 
-                    className="relative -mt-4 flex items-center justify-center w-14 h-14 rounded-full bg-primary shadow-lg shadow-primary/40"
+                    className="relative -mt-4 flex items-center justify-center w-14 h-14 rounded-full bg-secondary shadow-lg shadow-secondary/40"
                     animate={{
                       boxShadow: [
-                        "0 10px 15px -3px hsl(var(--primary) / 0.4), 0 4px 6px -4px hsl(var(--primary) / 0.4)",
-                        "0 10px 25px -3px hsl(var(--primary) / 0.6), 0 4px 10px -4px hsl(var(--primary) / 0.5)",
-                        "0 10px 15px -3px hsl(var(--primary) / 0.4), 0 4px 6px -4px hsl(var(--primary) / 0.4)",
+                        "0 10px 15px -3px hsl(var(--secondary) / 0.4), 0 4px 6px -4px hsl(var(--secondary) / 0.4)",
+                        "0 10px 25px -3px hsl(var(--secondary) / 0.6), 0 4px 10px -4px hsl(var(--secondary) / 0.5)",
+                        "0 10px 15px -3px hsl(var(--secondary) / 0.4), 0 4px 6px -4px hsl(var(--secondary) / 0.4)",
                       ]
                     }}
                     transition={{
@@ -135,9 +135,9 @@ export const MobileBottomNav = () => {
                       ease: "easeInOut",
                     }}
                   >
-                    <item.icon className="h-6 w-6 text-primary-foreground" />
+                    <item.icon className="h-6 w-6 text-secondary-foreground" />
                   </motion.div>
-                  <span className="text-[10px] font-bold text-primary leading-none whitespace-nowrap -mt-1">
+                  <span className="text-[10px] font-bold text-secondary leading-none whitespace-nowrap -mt-1">
                     {item.label}
                   </span>
                 </motion.div>
