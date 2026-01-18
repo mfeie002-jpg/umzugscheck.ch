@@ -9,7 +9,8 @@ import { PremiumSocialProof } from "@/components/premium/PremiumSocialProof";
 import { PremiumHowItWorks } from "@/components/premium/PremiumHowItWorks";
 import { PremiumFAQ } from "@/components/premium/PremiumFAQ";
 import { SocialProofABProvider } from "@/contexts/SocialProofABContext";
-import { SocialProofABToggle } from "@/components/homepage/SocialProofABToggle";
+import { NavigationABProvider } from "@/contexts/NavigationABContext";
+import { UnifiedABToggle } from "@/components/homepage/UnifiedABToggle";
 import { memo, useMemo, lazy, Suspense, useEffect, useRef } from "react";
 import { SectionSkeleton } from "@/components/ui/section-skeleton";
 import analytics from "@/lib/analytics";
@@ -144,6 +145,7 @@ const IndexPremium = () => {
   }
 
   return (
+    <NavigationABProvider>
     <SocialProofABProvider>
       <div className="min-h-screen bg-background">
         <ScrollProgress />
@@ -267,13 +269,14 @@ const IndexPremium = () => {
           </Suspense>
         </main>
 
-        {/* Social Proof A/B Toggle (dev/testing helper) */}
-        <SocialProofABToggle />
+        {/* Unified A/B Toggle for Navigation + Social Proof */}
+        <UnifiedABToggle />
         
         <StickyMobileCTA />
         <ScrollToTop />
       </div>
     </SocialProofABProvider>
+    </NavigationABProvider>
   );
 };
 
