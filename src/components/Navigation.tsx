@@ -182,17 +182,17 @@ export const Navigation = () => {
             </div>
 
             {/* CTA Button - Desktop with enhanced styling */}
-            <div className="hidden lg:flex items-center flex-shrink-0 gap-2 xl:gap-3">
+            <div className="hidden lg:flex items-center flex-shrink-0 gap-2 xl:gap-3 min-w-0">
               {/* Call Button for Desktop */}
-              <HeaderCallButton />
+              <HeaderCallButton className="flex-shrink-0" />
               
               {/* Micro trust hint */}
-              <div className="hidden xl:flex items-center gap-1.5 text-xs text-muted-foreground">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <div className="hidden xl:flex items-center gap-1.5 text-xs text-muted-foreground flex-shrink-0 whitespace-nowrap">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
                 <span className="font-medium">Gratis & unverbindlich</span>
               </div>
               
-              <Link to="/umzugsofferten" aria-label="Kostenlose Umzugsofferten vergleichen">
+              <Link to="/umzugsofferten" aria-label="Kostenlose Umzugsofferten vergleichen" className="flex-shrink-0">
                 <Button 
                   size="lg"
                   className="group bg-gradient-to-r from-secondary via-secondary to-secondary/90 hover:from-secondary/90 hover:via-secondary hover:to-secondary text-secondary-foreground font-bold shadow-[0_4px_20px_rgba(220,38,38,0.35)] hover:shadow-[0_8px_30px_rgba(220,38,38,0.45)] transition-all text-sm xl:text-base px-4 xl:px-6 whitespace-nowrap"
