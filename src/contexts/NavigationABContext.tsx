@@ -2,12 +2,17 @@
  * Navigation A/B Testing Context
  * 
  * Controls navigation variants via React context (no page reload needed)
- * Default: Variant 1 (Original/Status Quo)
+ * Uses the unified A/B config as source of truth
  */
 
 import { useContext, useState, useCallback, ReactNode, useEffect } from 'react';
 import { NAV_VARIANTS, type NavConfig, VARIANT_ULTIMATE } from '@/lib/navigation-variants';
 import { NavigationABContext, type NavigationABContextType } from '@/contexts/navigation-context';
+import { 
+  getNavVariant, 
+  setNavVariant as setStoredNavVariant,
+  AB_STORAGE_KEYS 
+} from '@/lib/unified-ab-config';
 
 export const useNavigationAB = (): NavigationABContextType => {
   const context = useContext(NavigationABContext);
@@ -17,30 +22,9 @@ export const useNavigationAB = (): NavigationABContextType => {
   return context;
 };
 
-// Get initial variant from URL or localStorage, default to VARIANT_ULTIMATE (Original)
+// Get initial variant using unified config
 const getInitialVariant = (): NavConfig => {
-  if (typeof window === 'undefined') return VARIANT_ULTIMATE;
-  
-  // Check URL param first
-  const urlParams = new URLSearchParams(window.location.search);
-  const urlVariant = urlParams.get('nav');
-  if (urlVariant) {
-    const found = NAV_VARIANTS.find(v => v.id === urlVariant);
-    if (found) {
-      localStorage.setItem('nav-variant', urlVariant);
-      return found;
-    }
-  }
-  
-  // Then check localStorage
-  const stored = localStorage.getItem('nav-variant');
-  if (stored) {
-    const found = NAV_VARIANTS.find(v => v.id === stored);
-    if (found) return found;
-  }
-  
-  // Default to Original (VARIANT_ULTIMATE)
-  return VARIANT_ULTIMATE;
+  return getNavVariant();
 };
 
 export const NavigationABProvider = ({ children }: { children: ReactNode }) => {
@@ -50,7 +34,7 @@ export const NavigationABProvider = ({ children }: { children: ReactNode }) => {
     const found = NAV_VARIANTS.find(v => v.id === id);
     if (found) {
       setVariantState(found);
-      localStorage.setItem('nav-variant', id);
+      setStoredNavVariant(id as any);
       
       // Update URL without reload
       const url = new URL(window.location.href);
@@ -59,19 +43,20 @@ export const NavigationABProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
-  // Listen for URL changes (popstate)
+  // Listen for URL changes and ab-state-changed events
   useEffect(() => {
-    const handlePopState = () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const urlVariant = urlParams.get('nav');
-      if (urlVariant) {
-        const found = NAV_VARIANTS.find(v => v.id === urlVariant);
-        if (found) setVariantState(found);
-      }
+    const handleChange = () => {
+      const newVariant = getNavVariant();
+      setVariantState(newVariant);
     };
     
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
+    window.addEventListener('popstate', handleChange);
+    window.addEventListener('ab-state-changed', handleChange);
+    
+    return () => {
+      window.removeEventListener('popstate', handleChange);
+      window.removeEventListener('ab-state-changed', handleChange);
+    };
   }, []);
 
   return (

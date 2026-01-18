@@ -1,8 +1,11 @@
 /**
  * Unified A/B Testing Hook
  * 
- * Single hook for getting current Nav + Flow variants
- * and the correct flow path for CTAs
+ * SINGLE HOOK for accessing and managing all A/B test state:
+ * - Navigation variants
+ * - Flow variants (Offerten funnel)
+ * 
+ * This hook is the ONLY way components should interact with A/B testing.
  */
 
 import { useState, useEffect, useCallback } from 'react';
@@ -14,17 +17,19 @@ import {
   resetFlowAB,
   setNavVariant,
   setFlowVariant,
+  setNavABActive,
+  setFlowABActive,
+  assignRandomFlowVariant,
   type UnifiedABState,
-  AB_STORAGE_KEYS,
   FLOW_VARIANTS,
-  type FlowVariantKey,
+  type FlowVariant,
 } from '@/lib/unified-ab-config';
 import { NAV_VARIANTS, type NavVariant } from '@/lib/navigation-variants';
 
 export const useUnifiedAB = () => {
   const [state, setState] = useState<UnifiedABState>(getUnifiedABState);
   
-  // Listen for changes
+  // Listen for any A/B state changes
   useEffect(() => {
     const handleChange = () => {
       setState(getUnifiedABState());
@@ -32,14 +37,16 @@ export const useUnifiedAB = () => {
     
     window.addEventListener('ab-state-changed', handleChange);
     window.addEventListener('storage', handleChange);
+    window.addEventListener('popstate', handleChange);
     
     return () => {
       window.removeEventListener('ab-state-changed', handleChange);
       window.removeEventListener('storage', handleChange);
+      window.removeEventListener('popstate', handleChange);
     };
   }, []);
   
-  // Set nav variant
+  // Set navigation variant
   const setNav = useCallback((variantId: NavVariant) => {
     setNavVariant(variantId);
     setState(getUnifiedABState());
@@ -48,6 +55,18 @@ export const useUnifiedAB = () => {
   // Set flow variant
   const setFlow = useCallback((variantId: string) => {
     setFlowVariant(variantId);
+    setState(getUnifiedABState());
+  }, []);
+  
+  // Toggle Nav A/B active state
+  const toggleNavAB = useCallback((active: boolean) => {
+    setNavABActive(active);
+    setState(getUnifiedABState());
+  }, []);
+  
+  // Toggle Flow A/B active state
+  const toggleFlowAB = useCallback((active: boolean) => {
+    setFlowABActive(active);
     setState(getUnifiedABState());
   }, []);
   
@@ -67,8 +86,17 @@ export const useUnifiedAB = () => {
     setState(getUnifiedABState());
   }, []);
   
+  // Assign random flow variant
+  const assignRandomFlow = useCallback(() => {
+    const variant = assignRandomFlowVariant();
+    setState(getUnifiedABState());
+    return variant;
+  }, []);
+  
   return {
+    // Current state
     ...state,
+    
     // Convenience getters
     flowPath: state.flowPath,
     navId: state.navVariant.id,
@@ -77,17 +105,23 @@ export const useUnifiedAB = () => {
     // Actions
     setNav,
     setFlow,
+    toggleNavAB,
+    toggleFlowAB,
     resetNav,
     resetFlow,
     resetAll,
+    assignRandomFlow,
     
-    // Data
+    // All available variants
     allNavVariants: NAV_VARIANTS,
-    allFlowVariants: Object.values(FLOW_VARIANTS),
+    allFlowVariants: Object.values(FLOW_VARIANTS) as FlowVariant[],
   };
 };
 
-// Simple hook just for getting the flow path (for CTAs)
+/**
+ * Simple hook just for getting the current flow path
+ * Use this in CTAs that need to navigate to the A/B assigned flow
+ */
 export const useFlowPath = (): string => {
   const [flowPath, setFlowPath] = useState(getCurrentFlowPath);
   
@@ -106,4 +140,12 @@ export const useFlowPath = (): string => {
   }, []);
   
   return flowPath;
+};
+
+/**
+ * Simple hook for getting current flow variant
+ */
+export const useFlowVariant = (): FlowVariant => {
+  const { flowVariant } = useUnifiedAB();
+  return flowVariant;
 };
