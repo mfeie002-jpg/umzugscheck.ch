@@ -125,13 +125,13 @@ export const NavigationV15 = () => {
   return (
     <>
       <header className="sticky top-0 z-[9998] w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto max-w-full px-3 sm:px-4 xl:px-6 flex h-16 items-center justify-between gap-2 min-w-0">
-          {/* Logo - Hide tagline on tablet for space */}
-          <HeaderLogo size="md" showTagline={false} className="flex-shrink-0 xl:hidden" />
-          <HeaderLogo size="md" showTagline={true} className="flex-shrink-0 hidden xl:flex" />
+        <div className="container mx-auto max-w-full px-3 sm:px-4 lg:px-6 flex h-16 items-center justify-between gap-2 min-w-0">
+          {/* Logo - Hide tagline on mobile/tablet for space */}
+          <HeaderLogo size="md" showTagline={false} className="flex-shrink-0 lg:hidden" />
+          <HeaderLogo size="md" showTagline={true} className="flex-shrink-0 hidden lg:flex" />
 
-          {/* Desktop Navigation */}
-          <nav className="hidden xl:flex items-center justify-center gap-0.5 2xl:gap-2 flex-1 min-w-0 overflow-visible">
+          {/* Desktop Navigation - Show from lg (1024px+) */}
+          <nav className="hidden lg:flex items-center justify-center gap-0.5 xl:gap-1 2xl:gap-2 flex-1 min-w-0 overflow-visible">
             {navStructure.map((section) => (
               <div
                 key={section.label}
@@ -141,13 +141,14 @@ export const NavigationV15 = () => {
               >
                 <button
                   className={cn(
-                    "flex items-center gap-1.5 px-3 py-2 h-10 text-sm font-medium rounded-lg transition-colors whitespace-nowrap",
+                    "flex items-center gap-1 lg:gap-1.5 px-2 lg:px-3 py-2 h-10 text-xs lg:text-sm font-medium rounded-lg transition-colors whitespace-nowrap",
                     "hover:bg-accent hover:text-accent-foreground",
                     activeDropdown === section.label && "bg-accent text-accent-foreground"
                   )}
                 >
-                  <span className="text-base leading-none" aria-hidden="true">{section.emoji}</span>
-                  <span className="leading-none">{section.label}</span>
+                  <span className="text-sm lg:text-base leading-none" aria-hidden="true">{section.emoji}</span>
+                  <span className="leading-none hidden xl:inline">{section.label}</span>
+                  <span className="leading-none xl:hidden">{section.label.split(' ')[0]}</span>
                   <ChevronDown
                     className={cn(
                       "h-4 w-4 transition-transform duration-200 flex-shrink-0",
@@ -215,26 +216,18 @@ export const NavigationV15 = () => {
           </nav>
 
           {/* Desktop CTA */}
-          <div className="hidden xl:flex items-center gap-2 2xl:gap-3 flex-shrink-0">
+          <div className="hidden lg:flex items-center gap-2 2xl:gap-3 flex-shrink-0">
             <Button
               asChild
-              className="h-10 font-semibold gap-2 bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-md shadow-secondary/20 text-sm px-4 whitespace-nowrap"
+              className="h-10 font-semibold gap-2 bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-md shadow-secondary/20 text-xs lg:text-sm px-3 lg:px-4 whitespace-nowrap"
             >
               <Link to={flowPath}>
-                <span className="hidden 2xl:inline">Kostenlos Offerten erhalten</span>
-                <span className="2xl:hidden">Offerten erhalten</span>
+                <span className="hidden xl:inline">Kostenlos Offerten erhalten</span>
+                <span className="xl:hidden">Offerten</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </Button>
           </div>
-
-          {/* Tablet CTA (lg only) */}
-          <Button asChild className="hidden lg:flex xl:hidden h-10 px-4 font-semibold gap-1.5 rounded-lg bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-md shadow-secondary/20">
-            <Link to={flowPath}>
-              <Zap className="w-4 h-4" />
-              Offerte
-            </Link>
-          </Button>
 
           {/* Mobile CTA */}
           <Button asChild size="sm" className="lg:hidden h-9 px-3 font-semibold gap-1.5 rounded-lg bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-md shadow-secondary/20">
@@ -242,17 +235,6 @@ export const NavigationV15 = () => {
               <Zap className="w-4 h-4" />
               Offerten
             </Link>
-          </Button>
-
-          {/* Tablet Menu Button (lg) */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="hidden lg:flex xl:hidden h-10 w-10"
-            onClick={() => setMobileMenuOpen(true)}
-          >
-            <Menu className="h-5 w-5" />
-            <span className="sr-only">Menü öffnen</span>
           </Button>
 
           {/* Mobile Menu Button */}
