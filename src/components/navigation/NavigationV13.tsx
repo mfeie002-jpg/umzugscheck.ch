@@ -99,7 +99,7 @@ export const NavigationV13 = () => {
   );
 
   return (
-    <header className="sticky top-0 z-50">
+    <header className="sticky top-0 z-[9998]">
       <nav className={cn(
         "bg-background/95 backdrop-blur-md border-b border-border transition-shadow duration-300",
         scrolled ? "shadow-lg" : "shadow-soft"
@@ -276,7 +276,7 @@ const PlanenDropdown = ({ isOpen, onClose, onMouseEnter, onMouseLeave }: Dropdow
 
   return (
     <div 
-      className="absolute left-0 right-0 bg-background border-b border-border shadow-xl"
+      className="absolute left-0 right-0 top-full bg-background border-b border-border shadow-xl z-[9999]"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
@@ -401,7 +401,7 @@ const OffertenDropdown = ({ isOpen, onClose, onMouseEnter, onMouseLeave }: Dropd
 
   return (
     <div 
-      className="absolute left-0 right-0 bg-background border-b border-border shadow-xl"
+      className="absolute left-0 right-0 top-full bg-background border-b border-border shadow-xl z-[9999]"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
@@ -506,7 +506,7 @@ const FunktioniertDropdown = ({ isOpen, onClose, onMouseEnter, onMouseLeave }: D
 
   return (
     <div 
-      className="absolute left-0 right-0 bg-background border-b border-border shadow-xl"
+      className="absolute left-0 right-0 top-full bg-background border-b border-border shadow-xl z-[9999]"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
@@ -580,7 +580,7 @@ const HilfeDropdown = ({ isOpen, onClose, onMouseEnter, onMouseLeave }: Dropdown
 
   return (
     <div 
-      className="absolute left-0 right-0 bg-background border-b border-border shadow-xl"
+      className="absolute left-0 right-0 top-full bg-background border-b border-border shadow-xl z-[9999]"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
