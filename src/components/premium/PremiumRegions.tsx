@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { memo } from "react";
 import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
+import { SmartCTAButton } from "@/components/conversion/SmartCTAButton";
 
 const regions = [
   { name: "Zürich", slug: "zuerich", count: 45, popular: true, rating: 4.8 },
@@ -120,13 +121,21 @@ export const PremiumRegions = memo(() => {
         </div>
         
         {/* CTA */}
-        <div className="text-center">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link to="/regionen">
             <Button variant="outline" size="default" className="font-semibold group">
               Alle Regionen
               <ArrowRight className="ml-1.5 h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </Button>
           </Link>
+          <div className="w-full sm:w-auto max-w-xs">
+            <SmartCTAButton 
+              to="/umzugsofferten" 
+              location="regions" 
+              size="lg"
+              showSubtext={false}
+            />
+          </div>
         </div>
       </div>
     </section>
