@@ -157,7 +157,7 @@ export const PremiumHeroSection = () => {
     : "min-h-[85svh] sm:min-h-[85vh] md:min-h-[85vh]";
 
   return (
-    <section ref={sectionRef} className={`relative ${heroHeightClass} flex items-center overflow-hidden pt-16 sm:pt-0`} style={{ position: 'relative' }}>
+    <section ref={sectionRef} className={`relative ${heroHeightClass} flex items-start sm:items-center overflow-hidden pt-14 sm:pt-0`} style={{ position: 'relative' }}>
       {/* Background Image with Parallax Effect */}
       <motion.div
         className="absolute inset-0 w-full h-full"
@@ -314,7 +314,7 @@ export const PremiumHeroSection = () => {
       {/* Content Container - Minimal top padding on mobile for above-the-fold CTA */}
       <div className="container mx-auto px-3 sm:px-6 pt-0 pb-3 sm:py-6 md:py-20 lg:py-24 relative z-10">
         {/* Mobile: Form first, Desktop: Text first */}
-        <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-12 items-start lg:items-center">
           
           {/* Left Column - Text & CTAs */}
           <motion.div 
