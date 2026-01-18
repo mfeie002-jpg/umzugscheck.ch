@@ -32,9 +32,6 @@ const fallbackTestimonials: Testimonial[] = [
   { id: "4", name: "Marco R.", location: "Luzern", type: "2.5-Zimmer", rating: 5, text: "Die AI-Analyse hat genau die richtigen Firmen gefunden.", verified: true }
 ];
 
-// Partner names only - display as styled text to avoid broken image links
-const partnerNames = ["20 Minuten", "Blick", "Watson", "TCS", "SRF", "NZZ"];
-
 // Memoized review card with GlowingCard
 const ReviewCard = memo(({ testimonial }: { testimonial: Testimonial }) => (
   <GlowingCard className="h-full">
@@ -162,25 +159,6 @@ export const PremiumSocialProof = memo(() => {
             </div>
             <span className="font-medium">{avgRating} von 5</span>
           </div>
-        </div>
-
-        {/* Partner Logos Marquee */}
-        <div className="mt-10 pt-8 border-t border-border/50">
-          <p className="text-center text-xs text-muted-foreground mb-4 uppercase tracking-wider">
-            Bekannt aus & geprüft von
-          </p>
-          <Marquee speed="slow" pauseOnHover className="py-2">
-            {partnerNames.map((name) => (
-              <div
-                key={name}
-                className="flex items-center justify-center mx-8 opacity-60 hover:opacity-100 transition-all duration-300"
-              >
-                <span className="text-base md:text-lg font-semibold text-muted-foreground whitespace-nowrap">
-                  {name}
-                </span>
-              </div>
-            ))}
-          </Marquee>
         </div>
       </div>
     </section>
