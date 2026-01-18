@@ -5,6 +5,7 @@ import { GlowingCard } from "@/components/common/GlowingCard";
 import { BlurReveal } from "@/components/common/BlurReveal";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
+import { SmartCTAButton } from "@/components/conversion/SmartCTAButton";
 
 const usps = [
   {
@@ -109,13 +110,20 @@ export const PremiumWhyUs = memo(() => {
         {/* Trust Footer */}
         {isScreenshot ? (
           <div className="mt-8 text-center">
-            <div className="inline-flex flex-wrap items-center justify-center gap-3 md:gap-5 text-xs text-muted-foreground">
+            <div className="inline-flex flex-wrap items-center justify-center gap-3 md:gap-5 text-xs text-muted-foreground mb-6">
               {trustBadges.map((badge, i) => (
                 <span key={i} className="flex items-center gap-1">
                   <CheckCircle className="h-3.5 w-3.5 text-emerald-500" />
                   {badge.text}
                 </span>
               ))}
+            </div>
+            <div className="max-w-sm mx-auto">
+              <SmartCTAButton 
+                to="/umzugsofferten" 
+                location="why-us" 
+                size="lg"
+              />
             </div>
           </div>
         ) : (
@@ -126,13 +134,20 @@ export const PremiumWhyUs = memo(() => {
             transition={{ delay: 0.3 }}
             className="mt-8 text-center"
           >
-            <div className="inline-flex flex-wrap items-center justify-center gap-3 md:gap-5 text-xs text-muted-foreground">
+            <div className="inline-flex flex-wrap items-center justify-center gap-3 md:gap-5 text-xs text-muted-foreground mb-6">
               {trustBadges.map((badge, i) => (
                 <span key={i} className="flex items-center gap-1">
                   <CheckCircle className="h-3.5 w-3.5 text-emerald-500" />
                   {badge.text}
                 </span>
               ))}
+            </div>
+            <div className="max-w-sm mx-auto">
+              <SmartCTAButton 
+                to="/umzugsofferten" 
+                location="why-us" 
+                size="lg"
+              />
             </div>
           </motion.div>
         )}
