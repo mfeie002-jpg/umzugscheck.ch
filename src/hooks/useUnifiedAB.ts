@@ -34,18 +34,20 @@ export const useUnifiedAB = () => {
     const handleChange = () => {
       setState(getUnifiedABState());
     };
-    
+
     window.addEventListener('ab-state-changed', handleChange);
+    window.addEventListener('nav-variant-changed', handleChange as EventListener);
     window.addEventListener('storage', handleChange);
     window.addEventListener('popstate', handleChange);
-    
+
     return () => {
       window.removeEventListener('ab-state-changed', handleChange);
+      window.removeEventListener('nav-variant-changed', handleChange as EventListener);
       window.removeEventListener('storage', handleChange);
       window.removeEventListener('popstate', handleChange);
     };
   }, []);
-  
+
   // Set navigation variant
   const setNav = useCallback((variantId: NavVariant) => {
     setNavVariant(variantId);

@@ -20,22 +20,24 @@ export const useNavigationVariant = (): NavConfig => {
   // Listen for changes when outside context
   useEffect(() => {
     if (context) return; // Don't need to listen if we have context
-    
+
     const handleChange = () => {
       setVariant(getNavVariant());
     };
-    
+
     window.addEventListener('ab-state-changed', handleChange);
+    window.addEventListener('nav-variant-changed', handleChange as EventListener);
     window.addEventListener('storage', handleChange);
     window.addEventListener('popstate', handleChange);
-    
+
     return () => {
       window.removeEventListener('ab-state-changed', handleChange);
+      window.removeEventListener('nav-variant-changed', handleChange as EventListener);
       window.removeEventListener('storage', handleChange);
       window.removeEventListener('popstate', handleChange);
     };
   }, [context]);
-  
+
   // If we're in the context, use it
   if (context) {
     return context.variant;

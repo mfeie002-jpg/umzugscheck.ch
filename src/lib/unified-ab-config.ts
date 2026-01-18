@@ -103,12 +103,23 @@ export const getOrCreateSessionId = (): string => {
 };
 
 // =====================================================
+// HASHING / BUCKETING (stable assignment)
+// =====================================================
+const hashToIndex = (input: string, modulo: number): number => {
+  let hash = 0;
+  for (let i = 0; i < input.length; i++) {
+    hash = (hash * 31 + input.charCodeAt(i)) >>> 0;
+  }
+  return modulo === 0 ? 0 : hash % modulo;
+};
+
+// =====================================================
 // NAVIGATION A/B FUNCTIONS
 // =====================================================
 
 export const getNavVariant = (): NavConfig => {
   if (typeof window === 'undefined') return DEFAULT_NAV;
-  
+
   // Check URL param first
   const urlParams = new URLSearchParams(window.location.search);
   const urlVariant = urlParams.get('nav');
@@ -119,26 +130,40 @@ export const getNavVariant = (): NavConfig => {
       return found;
     }
   }
-  
+
   // Then check localStorage
   const stored = localStorage.getItem(AB_STORAGE_KEYS.NAV_VARIANT);
   if (stored) {
     const found = NAV_VARIANTS.find(v => v.id === stored);
     if (found) return found;
   }
-  
+
+  // If A/B is active and there's no assignment yet, assign a stable variant per user.
+  if (isNavABActive()) {
+    const userId = getOrCreateUserId();
+    const index = hashToIndex(userId, NAV_VARIANTS.length);
+    const selected = NAV_VARIANTS[index] ?? DEFAULT_NAV;
+    localStorage.setItem(AB_STORAGE_KEYS.NAV_VARIANT, selected.id);
+    return selected;
+  }
+
   return DEFAULT_NAV;
 };
 
 export const setNavVariant = (variantId: NavVariant): void => {
   if (typeof window === 'undefined') return;
   localStorage.setItem(AB_STORAGE_KEYS.NAV_VARIANT, variantId);
+
+  // New unified event
   window.dispatchEvent(new CustomEvent('ab-state-changed', { detail: { type: 'nav', variantId } }));
+  // Backwards-compat for older listeners
+  window.dispatchEvent(new CustomEvent('nav-variant-changed', { detail: variantId }));
 };
 
 export const isNavABActive = (): boolean => {
   if (typeof window === 'undefined') return false;
-  return localStorage.getItem(AB_STORAGE_KEYS.NAV_AB_ACTIVE) !== 'false';
+  // Default OFF unless explicitly enabled.
+  return localStorage.getItem(AB_STORAGE_KEYS.NAV_AB_ACTIVE) === 'true';
 };
 
 export const setNavABActive = (active: boolean): void => {
@@ -159,25 +184,37 @@ export const resetNavAB = (): void => {
 
 export const getFlowVariant = (): FlowVariant => {
   if (typeof window === 'undefined') return DEFAULT_FLOW;
-  
+
   // Check URL param first
   const urlParams = new URLSearchParams(window.location.search);
   const urlVariant = urlParams.get('flow');
   if (urlVariant) {
-    const found = Object.values(FLOW_VARIANTS).find(v => v.id === urlVariant || v.path === `/${urlVariant}`);
+    const found = Object.values(FLOW_VARIANTS).find(
+      v => v.id === urlVariant || v.path === `/${urlVariant}`
+    );
     if (found) {
       localStorage.setItem(AB_STORAGE_KEYS.FLOW_VARIANT, found.id);
       return found;
     }
   }
-  
+
   // Then check localStorage
   const stored = localStorage.getItem(AB_STORAGE_KEYS.FLOW_VARIANT);
   if (stored) {
     const found = Object.values(FLOW_VARIANTS).find(v => v.id === stored);
     if (found) return found;
   }
-  
+
+  // If A/B is active and there's no assignment yet, assign a stable variant per user.
+  if (isFlowABActive()) {
+    const userId = getOrCreateUserId();
+    const variants = Object.values(FLOW_VARIANTS);
+    const index = hashToIndex(userId, variants.length);
+    const selected = variants[index] ?? DEFAULT_FLOW;
+    localStorage.setItem(AB_STORAGE_KEYS.FLOW_VARIANT, selected.id);
+    return selected;
+  }
+
   return DEFAULT_FLOW;
 };
 
@@ -189,7 +226,8 @@ export const setFlowVariant = (variantId: string): void => {
 
 export const isFlowABActive = (): boolean => {
   if (typeof window === 'undefined') return false;
-  return localStorage.getItem(AB_STORAGE_KEYS.FLOW_AB_ACTIVE) !== 'false';
+  // Default OFF unless explicitly enabled.
+  return localStorage.getItem(AB_STORAGE_KEYS.FLOW_AB_ACTIVE) === 'true';
 };
 
 export const setFlowABActive = (active: boolean): void => {
