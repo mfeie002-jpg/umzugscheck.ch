@@ -36,7 +36,8 @@ import {
   MessageCircle,
   Phone,
   CheckCircle,
-  ArrowRight
+  ArrowRight,
+  Zap
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -206,18 +207,26 @@ export const NavigationV15 = () => {
             ))}
           </nav>
 
-          {/* Desktop CTA */}
+          {/* Desktop CTA - RED (secondary) */}
           <div className="hidden lg:flex items-center gap-3">
             <Link to="/anbieter" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               Für Anbieter
             </Link>
-            <Button asChild className="font-semibold gap-2">
+            <Button asChild className="font-semibold gap-2 bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-md shadow-secondary/20">
               <Link to="/umzugsofferten">
                 Kostenlos Offerten erhalten
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </Button>
           </div>
+
+          {/* Mobile CTA - RED (secondary) for visibility */}
+          <Button asChild size="sm" className="lg:hidden h-9 px-3 font-semibold gap-1.5 rounded-lg bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-md shadow-secondary/20">
+            <Link to="/umzugsofferten">
+              <Zap className="w-4 h-4" />
+              Offerten
+            </Link>
+          </Button>
 
           {/* Mobile Menu Button */}
           <Button
