@@ -18,8 +18,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import { NavigationV17 } from "@/components/navigation-v17";
-import { Footer } from "@/components/Footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 
@@ -57,8 +55,6 @@ const HeroVariantA = memo(function HeroVariantA() {
         <title>Hero Test: Variante A - Homepage-Stil | Umzugscheck.ch</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
-      
-      <NavigationV17 />
       
       <main>
         {/* HERO SECTION - Homepage Style */}
@@ -302,8 +298,6 @@ const HeroVariantA = memo(function HeroVariantA() {
           </div>
         </section>
       </main>
-      
-      <Footer />
     </>
   );
 });
