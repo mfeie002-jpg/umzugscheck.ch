@@ -75,12 +75,12 @@ export function HeaderLogo({ className, size = "md", onClick, showTagline = true
         </text>
       </svg>
       
-      {/* Tagline - Gray, spaced below */}
+      {/* Tagline - More visible */}
       {showTagline && (
         <span className={cn(
-          "hidden sm:block font-medium leading-tight pl-0.5 mt-0.5",
-          s.tagline
-        )} style={{ color: '#6b7280' }}>
+          "hidden sm:block font-semibold leading-tight pl-0.5 mt-0.5 text-muted-foreground",
+          "text-[10px] sm:text-[11px] lg:text-xs"
+        )}>
           Der Schweizer Umzugsvergleich
         </span>
       )}
