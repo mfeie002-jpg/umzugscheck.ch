@@ -57,15 +57,26 @@ const HeroVariantA = memo(function HeroVariantA() {
       </Helmet>
       
       <main>
-        {/* HERO SECTION - Homepage Style */}
+        {/* HERO SECTION - Homepage Style with Background Image */}
         <section 
-          className="relative min-h-[85vh] flex items-center overflow-hidden bg-gradient-to-br from-background via-muted/20 to-background"
+          className="relative min-h-[85vh] flex items-center overflow-hidden"
         >
-          {/* Background Pattern */}
+          {/* Background Image with Light Overlay - same as Homepage */}
           <div className="absolute inset-0 z-0">
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--border))_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--border))_1px,transparent_1px)] bg-[size:3rem_3rem] opacity-15" />
-            <div className="absolute top-0 right-0 w-2/3 h-full bg-gradient-to-l from-primary/8 via-primary/3 to-transparent" />
-            <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-gradient-to-tr from-secondary/5 to-transparent" />
+            <div 
+              className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-105"
+              style={{
+                backgroundImage: "url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&q=80')",
+              }}
+            />
+            {/* Light Overlay - same as Homepage */}
+            <div className="absolute inset-0 bg-gradient-to-r from-background via-background/98 to-background/80 md:via-background/95 md:to-background/60" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-background/40 md:via-transparent md:to-background/30" />
+          </div>
+
+          {/* Subtle Pattern Overlay */}
+          <div className="absolute inset-0 z-[1] pointer-events-none">
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--border))_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--border))_1px,transparent_1px)] bg-[size:3rem_3rem] opacity-10" />
           </div>
 
           <div className="container relative z-10 py-12 md:py-16 lg:py-20">

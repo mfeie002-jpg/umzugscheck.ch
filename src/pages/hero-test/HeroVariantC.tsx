@@ -56,12 +56,24 @@ const HeroVariantC = memo(function HeroVariantC() {
       </Helmet>
       
       <main>
-        {/* HERO SECTION - Hybrid: Optimized Compact with Premium Elements */}
-        <section className="relative min-h-[70vh] flex items-center overflow-hidden bg-gradient-to-br from-primary/5 via-background to-secondary/5">
-          {/* Subtle Background Pattern */}
+        {/* HERO SECTION - Hybrid: Compact with Background Image */}
+        <section className="relative min-h-[70vh] flex items-center overflow-hidden">
+          {/* Background Image with Light Overlay - same as Homepage */}
           <div className="absolute inset-0 z-0">
+            <div 
+              className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-105"
+              style={{
+                backgroundImage: "url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&q=80')",
+              }}
+            />
+            {/* Light Overlay - same as Homepage */}
+            <div className="absolute inset-0 bg-gradient-to-r from-background via-background/98 to-background/80 md:via-background/95 md:to-background/60" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-background/40 md:via-transparent md:to-background/30" />
+          </div>
+
+          {/* Subtle Pattern Overlay */}
+          <div className="absolute inset-0 z-[1] pointer-events-none">
             <div className="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--border))_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--border))_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-10" />
-            <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary/5 to-transparent" />
           </div>
 
           <div className="container relative z-10 py-10 md:py-14 lg:py-16">

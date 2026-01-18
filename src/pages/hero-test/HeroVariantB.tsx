@@ -59,15 +59,17 @@ const HeroVariantB = memo(function HeroVariantB() {
       <main>
         {/* HERO SECTION - Landingpage Style with Background Image */}
         <section className="relative min-h-[75vh] md:min-h-[80vh] flex items-center overflow-hidden">
-          {/* Background Image */}
+          {/* Background Image with Homepage-style Light Overlay */}
           <div className="absolute inset-0 z-0">
             <img 
               src={HERO_BG}
               alt={`Umzugsfirmen in ${DEMO_LOCATION.name} vergleichen`}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover scale-105"
               loading="eager"
             />
-            <div className="absolute inset-0 bg-gradient-to-br from-black/65 via-black/55 to-black/45" />
+            {/* Light Overlay - same as Homepage */}
+            <div className="absolute inset-0 bg-gradient-to-r from-background via-background/98 to-background/80 md:via-background/95 md:to-background/60" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-background/40 md:via-transparent md:to-background/30" />
           </div>
 
           {/* Content */}
