@@ -35,10 +35,10 @@ export const Logo = ({ className = "", size = "lg", iconOnly = false }: LogoProp
           aria-hidden="true"
         >
           <g transform="translate(2, 4)">
-            {/* House body - blue */}
+            {/* House body - red (Swiss) */}
             <path 
               d="M18 10L4 20V36H32V20L18 10Z" 
-              fill="#0050A8"
+              fill="#dc2626"
             />
             {/* Roof - red accent */}
             <path 
@@ -77,10 +77,10 @@ export const Logo = ({ className = "", size = "lg", iconOnly = false }: LogoProp
       >
         {/* House/Box with Checkmark Icon */}
         <g transform="translate(2, 4)">
-          {/* House body - blue */}
+          {/* House body - red (Swiss) */}
           <path 
             d="M18 10L4 20V36H32V20L18 10Z" 
-            fill="#0050A8"
+            fill="#dc2626"
           />
           {/* Roof - red accent */}
           <path 
@@ -110,7 +110,7 @@ export const Logo = ({ className = "", size = "lg", iconOnly = false }: LogoProp
           fontSize="26" 
           fontWeight="700"
         >
-          <tspan fill="#0050A8">Umzugs</tspan><tspan fill="#dc2626">check.ch</tspan>
+          <tspan fill="#1a1a1a">Umzugs</tspan><tspan fill="#dc2626">check</tspan><tspan fill="#64748b" fontWeight="500">.ch</tspan>
         </text>
       </svg>
       {/* Slogan under logo - visible from sm breakpoint */}
@@ -129,10 +129,10 @@ export const LogoIcon = ({ className = "" }: { className?: string }) => (
     aria-hidden="true"
   >
     <g transform="translate(2, 4)">
-      {/* House body - blue */}
+      {/* House body - red (Swiss) */}
       <path 
         d="M18 10L4 20V36H32V20L18 10Z" 
-        fill="#0050A8"
+        fill="#dc2626"
       />
       {/* Roof - red accent */}
       <path 
