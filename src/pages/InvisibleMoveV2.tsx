@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import { useFlowPath } from '@/hooks/useUnifiedAB';
 
 // Hero Section
 const HeroSection = memo(function HeroSection() {

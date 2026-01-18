@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { motion, AnimatePresence } from "framer-motion";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -28,7 +29,8 @@ const TRUST_SIGNALS = [
   { icon: Heart, label: "100% Gratis", color: "text-rose-500" },
 ];
 
-const menuSections = [
+// Note: Menu items use flowPath dynamically in component
+const getMenuSections = (flowPath: string) => [
   {
     id: "calculator",
     title: "Preise berechnen",
@@ -36,11 +38,11 @@ const menuSections = [
     icon: Calculator,
     color: "from-primary to-primary/70",
     items: [
-      { icon: Calculator, title: "Umzugsrechner", description: "Kosten in 60 Sek.", href: "/umzugsofferten", featured: true },
-      { icon: Sparkles, title: "Reinigungsrechner", description: "Endreinigung kalkulieren", href: "/umzugsofferten?service=reinigung" },
-      { icon: Trash2, title: "Entsorgungsrechner", description: "Räumung berechnen", href: "/umzugsofferten?service=entsorgung" },
-      { icon: Box, title: "Lagerrechner", description: "Storage-Kosten", href: "/umzugsofferten?service=lagerung" },
-      { icon: Video, title: "Video-Umzugsrechner", description: "KI-Analyse per Video", href: "/umzugsofferten?mode=video", badge: "NEU" },
+      { icon: Calculator, title: "Umzugsrechner", description: "Kosten in 60 Sek.", href: flowPath, featured: true },
+      { icon: Sparkles, title: "Reinigungsrechner", description: "Endreinigung kalkulieren", href: `${flowPath}?service=reinigung` },
+      { icon: Trash2, title: "Entsorgungsrechner", description: "Räumung berechnen", href: `${flowPath}?service=entsorgung` },
+      { icon: Box, title: "Lagerrechner", description: "Storage-Kosten", href: `${flowPath}?service=lagerung` },
+      { icon: Video, title: "Video-Umzugsrechner", description: "KI-Analyse per Video", href: `${flowPath}?mode=video`, badge: "NEU" },
     ],
   },
   {
@@ -116,6 +118,10 @@ const menuSections = [
 export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
   const location = useLocation();
   const [activeSection, setActiveSection] = useState<string | null>(null);
+  const flowPath = useFlowPath();
+  
+  // Get menu sections with dynamic flow path
+  const menuSections = getMenuSections(flowPath);
 
   // Reset active section when menu opens
   useEffect(() => {
@@ -367,7 +373,7 @@ export const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
                 ))}
               </div>
               
-              <Link to="/umzugsofferten" onClick={onClose}>
+              <Link to={flowPath} onClick={onClose}>
                 <Button 
                   className="group w-full h-14 text-base font-bold bg-gradient-to-r from-secondary via-secondary to-secondary/90 hover:from-secondary/90 hover:via-secondary hover:to-secondary text-secondary-foreground shadow-lg shadow-secondary/25 hover:shadow-xl hover:shadow-secondary/30 transition-all"
                   size="lg"

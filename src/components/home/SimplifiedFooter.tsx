@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Mail, CheckCircle, Star, Shield, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FooterLogo } from "@/components/ui/footer-logo";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 const serviceLinks = [
   { label: "Umzugsofferten", href: "/umzugsofferten" },
@@ -37,6 +38,8 @@ const legalLinks = [
 ];
 
 export const SimplifiedFooter = () => {
+  const flowPath = useFlowPath();
+  
   return (
     <footer className="bg-uc-footer text-uc-footer-text">
       <div className="container mx-auto px-4 py-12 md:py-16">
@@ -152,7 +155,7 @@ export const SimplifiedFooter = () => {
                 Bis zu 40% sparen
               </div>
             </div>
-            <Link to="/umzugsofferten">
+            <Link to={flowPath}>
               <Button className="bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-cta font-semibold">
                 Jetzt Offerten erhalten
               </Button>

@@ -19,6 +19,7 @@ import {
   ClipboardList, MessageCircle, ShieldCheck, 
   CircleDollarSign, BadgeCheck, ThumbsUp, Recycle, Wrench, Leaf
 } from "lucide-react";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 const HERO_BG = "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=2000&q=80";
 const SERVICE_NAME = "Entsorgung";
@@ -117,6 +118,7 @@ const WhatsAppButton = () => (
 
 export default function EntsorgungServicePage() {
   const navigate = useNavigate();
+  const flowPath = useFlowPath();
   const [liveViewers, setLiveViewers] = useState(18);
   const [showStickyBar, setShowStickyBar] = useState(false);
   const [location, setLocation] = useState("");
@@ -137,6 +139,7 @@ export default function EntsorgungServicePage() {
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     localStorage.setItem("uc_prefill", JSON.stringify({ location, disposalType, service: SERVICE_SLUG, source: `${SERVICE_SLUG}-landing`, timestamp: Date.now() }));
+    navigate(flowPath);
     navigate("/umzugsofferten");
   };
 
@@ -226,7 +229,7 @@ export default function EntsorgungServicePage() {
 
                 <div className="lg:hidden space-y-3">
                   <Button asChild size="lg" className="w-full bg-green-600 hover:bg-green-700 text-white font-bold text-lg py-6 shadow-[0_4px_20px_rgba(34,197,94,0.4)]">
-                    <Link to="/umzugsofferten">Jetzt Offerten anfordern<ArrowRight className="ml-2 w-5 h-5" /></Link>
+                    <Link to={flowPath}>Jetzt Offerten anfordern<ArrowRight className="ml-2 w-5 h-5" /></Link>
                   </Button>
                   <p className="text-white/60 text-sm flex items-center justify-center gap-2"><Check className="w-4 h-4 text-green-400" />100% kostenlos & unverbindlich</p>
                 </div>

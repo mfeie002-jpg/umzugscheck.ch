@@ -7,6 +7,7 @@ import {
   ArrowRight, CheckCircle, Lightbulb, AlertTriangle, Clock
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 interface SavingTip {
   category: string;
@@ -135,6 +136,8 @@ const getImpactBadge = (impact: "high" | "medium" | "low") => {
 };
 
 export default function Spartipps() {
+  const flowPath = useFlowPath();
+  
   return (
     <>
       <OptimizedSEO
@@ -161,7 +164,7 @@ export default function Spartipps() {
                 Mit diesen bewährten Tipps reduzieren Sie Ihre Umzugskosten erheblich – 
                 ohne Kompromisse bei der Qualität.
               </p>
-              <Link to="/umzugsofferten">
+              <Link to={flowPath}>
                 <Button size="lg" className="bg-white text-primary hover:bg-white/90">
                   Günstige Offerten erhalten
                   <ArrowRight className="w-4 h-4 ml-2" />
@@ -303,7 +306,7 @@ export default function Spartipps() {
                 und sparen Sie mit unserem Vergleich.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link to="/umzugsofferten">
+                <Link to={flowPath}>
                   <Button size="lg">
                     <PiggyBank className="w-4 h-4 mr-2" />
                     Kostenlos Offerten erhalten

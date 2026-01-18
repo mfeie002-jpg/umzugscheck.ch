@@ -18,6 +18,7 @@ import {
   ClipboardList, MessageCircle, ShieldCheck, 
   CircleDollarSign, BadgeCheck, ThumbsUp, Wrench, Key, Thermometer
 } from "lucide-react";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 const HERO_BG = "https://images.unsplash.com/photo-1553413077-190dd305871c?auto=format&fit=crop&w=2000&q=80";
 const SERVICE_NAME = "Lagerung & Selfstorage";
@@ -116,6 +117,7 @@ const WhatsAppButton = () => (
 
 export default function LagerungServicePage() {
   const navigate = useNavigate();
+  const flowPath = useFlowPath();
   const [liveViewers, setLiveViewers] = useState(16);
   const [showStickyBar, setShowStickyBar] = useState(false);
   const [location, setLocation] = useState("");
@@ -136,7 +138,7 @@ export default function LagerungServicePage() {
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     localStorage.setItem("uc_prefill", JSON.stringify({ location, storageSize, service: SERVICE_SLUG, source: `${SERVICE_SLUG}-landing`, timestamp: Date.now() }));
-    navigate("/umzugsofferten");
+    navigate(flowPath);
   };
 
   const handleServiceChange = (value: string) => {
@@ -225,7 +227,7 @@ export default function LagerungServicePage() {
 
                 <div className="lg:hidden space-y-3">
                   <Button asChild size="lg" className="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold text-lg py-6 shadow-[0_4px_20px_rgba(245,158,11,0.4)]">
-                    <Link to="/umzugsofferten">Jetzt Lager finden<ArrowRight className="ml-2 w-5 h-5" /></Link>
+                    <Link to={flowPath}>Jetzt Lager finden<ArrowRight className="ml-2 w-5 h-5" /></Link>
                   </Button>
                   <p className="text-white/60 text-sm flex items-center justify-center gap-2"><Check className="w-4 h-4 text-amber-400" />Unverbindlich anfragen</p>
                 </div>
@@ -413,7 +415,7 @@ export default function LagerungServicePage() {
                         <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-amber-600" />Kontrollierte Luftfeuchtigkeit</li>
                         <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-amber-600" />Ideal für Wertgegenstände</li>
                       </ul>
-                      <Button asChild size="lg" className="w-fit bg-amber-500 hover:bg-amber-600"><Link to="/umzugsofferten"><Warehouse className="mr-2 w-4 h-4" />Klimatisiertes Lager finden</Link></Button>
+                      <Button asChild size="lg" className="w-fit bg-amber-500 hover:bg-amber-600"><Link to={flowPath}><Warehouse className="mr-2 w-4 h-4" />Klimatisiertes Lager finden</Link></Button>
                     </div>
                     <div className="bg-gradient-to-br from-amber-100 to-amber-50 p-8 flex items-center justify-center">
                       <div className="w-32 h-32 rounded-full bg-amber-200 flex items-center justify-center"><Thermometer className="w-16 h-16 text-amber-600" /></div>
@@ -524,7 +526,7 @@ export default function LagerungServicePage() {
               <p className="text-lg text-white/80 mb-8">Finden Sie jetzt den perfekten Lagerraum in Ihrer Nähe. Flexibel, sicher und günstig.</p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button asChild size="lg" className="bg-white text-amber-700 hover:bg-white/90 font-bold text-lg py-6 px-8 shadow-xl">
-                  <Link to="/umzugsofferten">Lagerraum finden<ArrowRight className="ml-2 w-5 h-5" /></Link>
+                  <Link to={flowPath}>Lagerraum finden<ArrowRight className="ml-2 w-5 h-5" /></Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 py-6 px-8">
                   <Link to="/firmen?service=lagerung">Anbieter ansehen</Link>
@@ -542,7 +544,7 @@ export default function LagerungServicePage() {
       {showStickyBar && (
         <motion.div initial={{ y: 100 }} animate={{ y: 0 }} className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-card border-t shadow-lg p-4">
           <Button asChild size="lg" className="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold">
-            <Link to="/umzugsofferten">Lagerraum finden<ArrowRight className="ml-2 w-5 h-5" /></Link>
+            <Link to={flowPath}>Lagerraum finden<ArrowRight className="ml-2 w-5 h-5" /></Link>
           </Button>
         </motion.div>
       )}

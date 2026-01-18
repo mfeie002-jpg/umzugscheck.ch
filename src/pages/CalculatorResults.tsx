@@ -16,10 +16,12 @@ import { cn } from "@/lib/utils";
 import { TopPicks } from "@/components/TopPicks";
 import { InsuranceBlock } from "@/components/trust/InsuranceBlock";
 import { Breadcrumbs, BreadcrumbItem } from "@/components/Breadcrumbs";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 const CalculatorResults = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const flowPath = useFlowPath();
   const [calculation, setCalculation] = useState<MovingCalculation | null>(null);
   const [distance, setDistance] = useState<number>(0);
   const [calculatorData, setCalculatorData] = useState<any>(null);
@@ -181,7 +183,7 @@ const CalculatorResults = () => {
           <div className="container mx-auto px-4 relative z-10">
             <Breadcrumbs items={breadcrumbItems} />
             <div className="max-w-4xl mx-auto mt-6">
-              <Link to="/umzugsofferten">
+              <Link to={flowPath}>
                 <Button variant="outline" className="mb-6 border-white/20 bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm">
                   <ArrowLeft className="mr-2 w-4 h-4" />
                   Zurück zum Rechner
