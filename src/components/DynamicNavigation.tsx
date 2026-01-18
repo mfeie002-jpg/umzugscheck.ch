@@ -26,6 +26,7 @@ export const DynamicNavigation = () => {
     return <NavigationV15 />;
   }
 
-  return <NavigationV16 />;
+  // Default to NavigationV15 (with emojis) for better UX
+  return <NavigationV15 />;
 };
 

@@ -176,7 +176,7 @@ export const NavigationV16 = () => {
         
         <div className="container max-w-full flex h-16 items-center justify-between px-4 xl:px-6">
           {/* Logo */}
-          <HeaderLogo size="md" className="group" />
+          <HeaderLogo size="md" showTagline={true} className="group" />
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1 flex-shrink min-w-0">

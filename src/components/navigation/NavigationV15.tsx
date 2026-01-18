@@ -115,7 +115,7 @@ export const NavigationV15 = () => {
       <header className="sticky top-0 z-[9998] w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto max-w-full px-4 xl:px-6 flex h-16 items-center justify-between gap-2 min-w-0">
           {/* Logo */}
-          <HeaderLogo size="md" showTagline={false} className="flex-shrink-0" />
+          <HeaderLogo size="md" showTagline={true} className="flex-shrink-0" />
 
           {/* Desktop Navigation */}
           <nav className="hidden xl:flex items-center justify-center gap-0.5 2xl:gap-2 flex-1 min-w-0 overflow-hidden">
