@@ -17,6 +17,7 @@ import {
   Globe, Package, Heart, BadgeCheck, Clock
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { HeaderLogo } from "@/components/brand/HeaderLogo";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -137,15 +138,8 @@ export const MobileMenuV15 = ({ isOpen, onClose, navStructure }: MobileMenuV15Pr
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.15 }}
                 >
-                  <div className="w-9 h-9 bg-gradient-to-br from-primary to-primary/80 rounded-xl flex items-center justify-center shadow-lg shadow-primary/25">
-                    <CheckCircle className="w-5 h-5 text-primary-foreground" />
-                  </div>
                   <div className="flex flex-col">
-                    <span className="font-bold text-lg leading-tight">
-                      <span className="text-foreground">Umzugs</span>
-                      <span className="text-primary">check</span>
-                      <span className="text-muted-foreground text-sm">.ch</span>
-                    </span>
+                    <HeaderLogo size="md" onClick={onClose} />
                     <span className="text-[10px] text-muted-foreground font-medium">🇨🇭 Schweizer Umzugsvergleich</span>
                   </div>
                 </motion.div>
