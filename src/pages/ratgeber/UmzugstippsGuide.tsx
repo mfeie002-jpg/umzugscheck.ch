@@ -2,6 +2,7 @@ import { OptimizedSEO } from "@/components/OptimizedSEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 import { 
   Lightbulb, CheckCircle, Clock, Calendar, Package, 
   Truck, Home, FileText, ArrowRight, Star, Shield,
@@ -136,6 +137,7 @@ const faqs = [
 ];
 
 export default function UmzugstippsGuide() {
+  const flowPath = useFlowPath();
   const { ref: tipsRef, isVisible: tipsVisible } = useScrollAnimation();
   const { ref: mistakesRef, isVisible: mistakesVisible } = useScrollAnimation();
   const { ref: packingRef, isVisible: packingVisible } = useScrollAnimation();
@@ -164,7 +166,7 @@ export default function UmzugstippsGuide() {
               Von der Planung bis zum Einzug: Mit diesen Tipps vermeiden Sie Stress und sparen Geld bei Ihrem Umzug.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/umzugsofferten">
+              <Link to={flowPath}>
                 <Button size="lg" variant="cta" className="h-14 px-8 text-lg">
                   Umzug planen
                   <ArrowRight className="ml-2 h-5 w-5" />
@@ -333,7 +335,7 @@ export default function UmzugstippsGuide() {
               </CardContent>
             </Card>
           </Link>
-          <Link to="/umzugsofferten">
+          <Link to={flowPath}>
             <Card className="h-full hover:shadow-lg transition-all hover:border-primary/50 cursor-pointer">
               <CardContent className="p-6 text-center">
                 <Truck className="h-10 w-10 text-primary mx-auto mb-4" />
@@ -364,7 +366,7 @@ export default function UmzugstippsGuide() {
           <p className="text-lg text-muted-foreground mb-8">
             Vergleichen Sie jetzt kostenlos Angebote von geprüften Umzugsfirmen und sparen Sie bis zu 40%.
           </p>
-          <Link to="/umzugsofferten">
+          <Link to={flowPath}>
             <Button size="lg" variant="cta" className="h-14 px-10 text-lg">
               Jetzt Offerten erhalten
               <ArrowRight className="ml-2 h-5 w-5" />

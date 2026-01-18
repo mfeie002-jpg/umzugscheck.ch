@@ -2,6 +2,7 @@ import { Shield, Users, Star, Award, CheckCircle2, Zap, TrendingUp } from "lucid
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 const stats = [
   {
@@ -37,6 +38,7 @@ const quickTrust = [
 ];
 
 export const TrustSignals = memo(() => {
+  const flowPath = useFlowPath();
   return (
     <section className="py-3 sm:py-4 md:py-6 bg-muted/40 border-y border-border/50 min-h-[100px] sm:min-h-[120px] md:min-h-[140px]" aria-label="Vertrauenssignale">
       <div className="container mx-auto px-4 sm:px-6">
@@ -71,7 +73,7 @@ export const TrustSignals = memo(() => {
               </span>
             ))}
             <Link 
-              to="/umzugsofferten" 
+              to={flowPath} 
               className="text-primary font-semibold hover:underline underline-offset-2 flex items-center gap-1"
             >
               Jetzt vergleichen

@@ -4,8 +4,10 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { MiniCalculator } from "./MiniCalculator";
 import { LiveSignals } from "./LiveSignals";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 export const NewHero = () => {
+  const flowPath = useFlowPath();
   return (
     <section className="relative min-h-[80vh] flex items-center overflow-hidden bg-gradient-to-br from-primary/5 via-background to-accent/5">
       {/* Emotional Background */}
@@ -70,7 +72,7 @@ export const NewHero = () => {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="mb-10 md:mb-12"
           >
-            <Link to="/umzugsofferten" className="inline-block">
+            <Link to={flowPath} className="inline-block">
               <Button 
                 size="lg"
                 className="h-14 md:h-16 px-8 md:px-12 text-base md:text-lg font-bold gradient-cta text-white shadow-strong hover:shadow-accent transition-all hover:scale-105"

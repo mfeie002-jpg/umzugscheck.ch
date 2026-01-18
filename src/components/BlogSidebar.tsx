@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { TrendingUp, BookOpen, DollarSign, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 interface BlogPost {
   id: string;
@@ -16,6 +17,7 @@ interface BlogSidebarProps {
 }
 
 export const BlogSidebar = ({ popularPosts, categories }: BlogSidebarProps) => {
+  const flowPath = useFlowPath();
   return (
     <div className="space-y-6">
       {/* Most Read */}
@@ -76,7 +78,7 @@ export const BlogSidebar = ({ popularPosts, categories }: BlogSidebarProps) => {
           <p className="text-sm text-muted-foreground mb-4">
             Berechnen Sie die Kosten für Ihren Umzug in 60 Sekunden
           </p>
-          <Link to="/umzugsofferten">
+          <Link to={flowPath}>
             <Button className="w-full bg-accent hover:bg-accent/90 group">
               Jetzt berechnen
               <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
