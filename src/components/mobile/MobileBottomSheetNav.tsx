@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useHaptic } from '@/hooks/use-haptic';
+import { useFlowPath } from '@/hooks/useUnifiedAB';
 import { cn } from '@/lib/utils';
 
 interface NavItem {
@@ -34,6 +35,7 @@ export const MobileBottomSheetNav = () => {
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useIsMobile();
   const location = useLocation();
+  const flowPath = useFlowPath();
   const { trigger } = useHaptic();
 
   if (!isMobile) return null;
@@ -117,11 +119,12 @@ export const MobileBottomSheetNav = () => {
                   <div className="grid grid-cols-3 gap-3">
                     {quickActions.map((item) => {
                       const Icon = item.icon;
-                      const isActive = location.pathname === item.href;
+                      const href = item.href === '/umzugsofferten' ? flowPath : item.href;
+                      const isActive = location.pathname === href;
                       return (
                         <Link
                           key={item.href}
-                          to={item.href}
+                          to={href}
                           onClick={handleLinkClick}
                           className={cn(
                             "flex flex-col items-center rounded-xl p-4 text-center transition-colors",
@@ -173,7 +176,7 @@ export const MobileBottomSheetNav = () => {
                 {/* CTA Button */}
                 <div className="mt-6">
                   <Link
-                    to="/umzugsofferten"
+                    to={flowPath}
                     onClick={handleLinkClick}
                     className="flex w-full items-center justify-center gap-2 rounded-xl bg-destructive py-4 font-semibold text-destructive-foreground transition-colors hover:bg-destructive/90"
                   >
