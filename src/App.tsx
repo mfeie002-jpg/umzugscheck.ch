@@ -95,7 +95,7 @@ const ProviderPricingPage = lazy(() => import("./pages/provider/ProviderPricing"
 const ProviderFAQPage = lazy(() => import("./pages/provider/ProviderFAQ"));
 
 // Core navigation components - keep synchronous for fast FCP
-import { NavigationV17 } from "./components/navigation-v17";
+import { DynamicNavigation } from "./components/DynamicNavigation";
 import { Footer } from "./components/Footer";
 import { ScrollToTop } from "./components/ScrollToTop";
 // NavigationVariantSwitcher removed - now using UnifiedABToggle in Index.tsx
@@ -356,7 +356,7 @@ const queryClient = new QueryClient({
 // Helper component for main site layout with Navigation/Footer
 const MainLayout = ({ children }: { children: React.ReactNode }) => (
   <div className="flex flex-col min-h-screen bg-background">
-    <NavigationV17 />
+    <DynamicNavigation />
     <ScrollProgressBar />
     
     {/* Lazy loaded UI components with Suspense */}
