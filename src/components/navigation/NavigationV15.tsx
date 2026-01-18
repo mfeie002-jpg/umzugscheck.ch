@@ -131,7 +131,7 @@ export const NavigationV15 = () => {
           <HeaderLogo size="md" showTagline={true} className="flex-shrink-0 hidden xl:flex" />
 
           {/* Desktop Navigation */}
-          <nav className="hidden xl:flex items-center justify-center gap-0.5 2xl:gap-2 flex-1 min-w-0 overflow-hidden">
+          <nav className="hidden xl:flex items-center justify-center gap-0.5 2xl:gap-2 flex-1 min-w-0 overflow-visible">
             {navStructure.map((section) => (
               <div
                 key={section.label}
