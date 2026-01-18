@@ -191,11 +191,11 @@ export const NavigationV17 = () => {
               <MobileHeaderCallButton className="w-10 h-10 sm:w-11 sm:h-11" />
               
               <Link 
-                to="/umzugsofferten" 
+                to="/video-offerte" 
                 className="flex items-center justify-center gap-1 bg-secondary text-secondary-foreground text-[11px] sm:text-xs font-bold px-2 sm:px-3 py-2 sm:py-2.5 rounded-lg shadow-md shadow-secondary/20 active:scale-95 transition-all min-h-[40px] sm:min-h-[44px] touch-manipulation"
-                aria-label="Offerten erhalten"
+                aria-label="Video-Offerte starten"
               >
-                <span>Offerten</span>
+                <span>🎥 Video</span>
               </Link>
               
               <button
@@ -230,13 +230,13 @@ export const NavigationV17 = () => {
                 <span className="font-medium">Gratis & unverbindlich</span>
               </div>
               
-              <Link to="/umzugsofferten" aria-label="Kostenlose Umzugsofferten vergleichen">
+              <Link to="/video-offerte" aria-label="Video-Offerte starten - Kostenlos">
                 <Button 
                   size="lg"
                   className="group bg-gradient-to-r from-secondary via-secondary to-secondary/90 hover:from-secondary/90 hover:via-secondary hover:to-secondary text-secondary-foreground font-bold shadow-[0_4px_20px_rgba(220,38,38,0.35)] hover:shadow-[0_8px_30px_rgba(220,38,38,0.45)] transition-all text-sm px-3 xl:px-4 2xl:px-6 whitespace-nowrap"
                 >
-                  <span className="hidden xl:inline">Offerten erhalten</span>
-                  <span className="xl:hidden">Offerten</span>
+                  <span className="hidden xl:inline">🎥 Video-Offerte</span>
+                  <span className="xl:hidden">Video</span>
                   <ArrowRight className="w-4 h-4 ml-1.5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
