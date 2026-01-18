@@ -6,24 +6,21 @@
  * - /umzugsfirmen/kanton-:slug (RegionArchetypPage)
  * - Service-Pages
  * 
- * Matches Homepage Design:
- * - Two feature badges (BIS 40% SPAREN, SCHWEIZER INNOVATION)
- * - Bold headline with gradient text
- * - Trust row with rating/reviews/companies
- * - MiniCalculator form
- * - Live signals
- * - Disclaimer
+ * NOW INCLUDES Video/Form Tabs like Homepage!
+ * - Both options are easily accessible
+ * - Not intimidating for users scared of video upload
  */
 
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
   MapPin, ArrowRight, Star, CheckCircle, Users, 
-  Sparkles, Camera, TrendingUp, Shield
+  Sparkles, Camera, TrendingUp, Shield, Video, FileText, Upload, Phone, MessageCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { swissPostalCodes, PostalCodeEntry } from "@/lib/swiss-postal-codes";
 
 interface UnifiedHeroProps {
@@ -52,6 +49,9 @@ interface UnifiedHeroProps {
   
   // Type for styling variations
   variant?: 'city' | 'canton' | 'service' | 'home';
+  
+  // Show video option (default true)
+  showVideoOption?: boolean;
 }
 
 export const UnifiedHero = ({
@@ -68,7 +68,8 @@ export const UnifiedHero = ({
   },
   backgroundImage,
   prefillFrom = "",
-  variant = 'city'
+  variant = 'city',
+  showVideoOption = true
 }: UnifiedHeroProps) => {
   const navigate = useNavigate();
   const [fromQuery, setFromQuery] = useState(prefillFrom || locationName);
@@ -275,99 +276,155 @@ export const UnifiedHero = ({
             transition={{ delay: 0.2 }}
             className="hidden lg:block"
           >
-            <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8 max-w-md mx-auto">
-              {/* Best Price Badge */}
+            <div className="bg-white rounded-2xl shadow-2xl p-5 md:p-6 max-w-md mx-auto">
+              {/* Header */}
               <div className="text-center mb-4">
-                <span className="inline-flex items-center gap-1.5 bg-primary/10 text-primary text-sm font-semibold px-4 py-1.5 rounded-full">
-                  <Star className="w-4 h-4 fill-primary" />
-                  Bester Preis garantiert
-                </span>
+                <h2 className="text-lg md:text-xl font-bold text-foreground mb-1">
+                  Wie möchten Sie starten?
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  Wählen Sie Ihre bevorzugte Methode
+                </p>
               </div>
 
-              <h2 className="text-xl md:text-2xl font-bold text-foreground text-center mb-2">
-                {stats.providerCount}+ Firmen vergleichen
-              </h2>
-              <p className="text-muted-foreground text-center text-sm mb-4">
-                Wir finden den günstigsten Anbieter für Sie
-              </p>
-              <p className="text-xs text-muted-foreground text-center mb-6">
-                Schritt 1 von 4 · Dauer ca. 2 Minuten
-              </p>
+              {/* Tabs - Video/Form like Homepage */}
+              <Tabs defaultValue={showVideoOption ? "video" : "form"} className="w-full">
+                <TabsList className="grid w-full grid-cols-2 h-12 p-1 bg-muted/50 mb-4">
+                  {showVideoOption && (
+                    <TabsTrigger 
+                      value="video" 
+                      className="text-sm font-medium gap-1.5 data-[state=active]:bg-secondary data-[state=active]:text-white h-full rounded-lg"
+                    >
+                      <Video className="h-4 w-4" />
+                      Video/Fotos
+                    </TabsTrigger>
+                  )}
+                  <TabsTrigger 
+                    value="form" 
+                    className={`text-sm font-medium gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-white h-full rounded-lg ${!showVideoOption ? 'col-span-2' : ''}`}
+                  >
+                    <FileText className="h-4 w-4" />
+                    Formular
+                  </TabsTrigger>
+                </TabsList>
+                
+                {/* Video Tab */}
+                {showVideoOption && (
+                  <TabsContent value="video" className="space-y-3">
+                    <Link to="/video-offerte" className="block">
+                      <div className="relative group cursor-pointer">
+                        <div className="border-2 border-secondary/40 hover:border-secondary rounded-xl p-5 text-center transition-all bg-gradient-to-br from-secondary/5 to-secondary/10 hover:from-secondary/10 hover:to-secondary/15">
+                          <div className="flex items-center justify-center gap-3 mb-3">
+                            <div className="w-11 h-11 rounded-xl bg-secondary/20 flex items-center justify-center group-hover:scale-105 transition-transform">
+                              <Video className="h-5 w-5 text-secondary" />
+                            </div>
+                            <div className="w-11 h-11 rounded-xl bg-secondary/20 flex items-center justify-center group-hover:scale-105 transition-transform">
+                              <Upload className="h-5 w-5 text-secondary" />
+                            </div>
+                          </div>
+                          <p className="font-semibold text-sm text-foreground mb-1">
+                            Video oder Fotos hochladen
+                          </p>
+                          <p className="text-xs text-muted-foreground mb-2">
+                            KI analysiert & berechnet automatisch
+                          </p>
+                          <div className="flex flex-wrap items-center justify-center gap-2 text-xs">
+                            <span className="inline-flex items-center gap-1 text-secondary font-medium bg-secondary/10 px-2 py-1 rounded-full">
+                              <CheckCircle className="h-3 w-3" />
+                              Schneller
+                            </span>
+                            <span className="inline-flex items-center gap-1 text-secondary font-medium bg-secondary/10 px-2 py-1 rounded-full">
+                              <CheckCircle className="h-3 w-3" />
+                              Genauer
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                    
+                    {/* Privacy reassurance */}
+                    <div className="flex items-center justify-center gap-2 text-[10px] text-muted-foreground">
+                      <Shield className="h-3 w-3 text-primary" />
+                      <span>100% sicher · Nur für Ihre Offerte</span>
+                    </div>
+                  </TabsContent>
+                )}
+                
+                {/* Form Tab */}
+                <TabsContent value="form" className="space-y-3">
+                  <p className="text-xs text-muted-foreground text-center">
+                    Schritt 1 von 4 · Dauer ca. 2 Minuten
+                  </p>
+                  
+                  <form onSubmit={handleSubmit} className="space-y-3">
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-1.5">
+                        Von (PLZ oder Ort)
+                      </label>
+                      <Input
+                        type="text"
+                        placeholder={`z.B. 8001 oder ${locationName}`}
+                        value={fromQuery}
+                        onChange={(e) => handleFromChange(e.target.value)}
+                        list="heroFromPostalList"
+                        className="h-11 text-base border-border bg-white"
+                      />
+                      <datalist id="heroFromPostalList">
+                        {filterPostalCodes(fromQuery).map((entry) => (
+                          <option 
+                            key={`${entry.code}-${entry.city}`} 
+                            value={`${entry.code} - ${entry.city}`}
+                          />
+                        ))}
+                      </datalist>
+                    </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
-                {/* Von */}
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Von (PLZ oder Ort)
-                  </label>
-                  <div className="relative">
-                    <Input
-                      type="text"
-                      placeholder={`z.B. 8001 oder ${locationName}`}
-                      value={fromQuery}
-                      onChange={(e) => handleFromChange(e.target.value)}
-                      list="heroFromPostalList"
-                      className="h-12 pl-4 pr-4 text-base border-border bg-white"
-                    />
-                    <datalist id="heroFromPostalList">
-                      {filterPostalCodes(fromQuery).map((entry) => (
-                        <option 
-                          key={`${entry.code}-${entry.city}`} 
-                          value={`${entry.code} - ${entry.city}`}
-                        />
-                      ))}
-                    </datalist>
-                  </div>
-                </div>
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-1.5">
+                        Nach (PLZ oder Ort)
+                      </label>
+                      <Input
+                        type="text"
+                        placeholder="z.B. 3011 oder Bern"
+                        value={toQuery}
+                        onChange={(e) => handleToChange(e.target.value)}
+                        list="heroToPostalList"
+                        className="h-11 text-base border-border bg-white"
+                      />
+                      <datalist id="heroToPostalList">
+                        {filterPostalCodes(toQuery).map((entry) => (
+                          <option 
+                            key={`${entry.code}-${entry.city}`} 
+                            value={`${entry.code} - ${entry.city}`}
+                          />
+                        ))}
+                      </datalist>
+                    </div>
 
-                {/* Nach */}
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Nach (PLZ oder Ort)
-                  </label>
-                  <div className="relative">
-                    <Input
-                      type="text"
-                      placeholder="z.B. 3011 oder Bern"
-                      value={toQuery}
-                      onChange={(e) => handleToChange(e.target.value)}
-                      list="heroToPostalList"
-                      className="h-12 pl-4 pr-4 text-base border-border bg-white"
-                    />
-                    <datalist id="heroToPostalList">
-                      {filterPostalCodes(toQuery).map((entry) => (
-                        <option 
-                          key={`${entry.code}-${entry.city}`} 
-                          value={`${entry.code} - ${entry.city}`}
-                        />
-                      ))}
-                    </datalist>
-                  </div>
-                </div>
-
-                {/* CTA */}
-                <Button 
-                  type="submit"
-                  size="lg"
-                  className="w-full h-14 text-base font-bold gradient-cta text-white shadow-strong"
-                >
-                  Preise jetzt vergleichen
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </form>
+                    <Button 
+                      type="submit"
+                      size="lg"
+                      className="w-full h-12 text-base font-bold gradient-cta text-white shadow-strong"
+                    >
+                      Preise jetzt vergleichen
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </Button>
+                  </form>
+                </TabsContent>
+              </Tabs>
 
               {/* Trust Row */}
-              <div className="flex items-center justify-center gap-4 mt-4 text-xs text-muted-foreground">
+              <div className="flex items-center justify-center gap-3 mt-4 pt-3 border-t border-border/50 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1">
-                  <CheckCircle className="w-4 h-4 text-green-600" />
+                  <CheckCircle className="w-3.5 h-3.5 text-green-600" />
                   Kostenlos
                 </span>
                 <span className="flex items-center gap-1">
-                  <CheckCircle className="w-4 h-4 text-green-600" />
+                  <CheckCircle className="w-3.5 h-3.5 text-green-600" />
                   Unverbindlich
                 </span>
                 <span className="flex items-center gap-1">
-                  <Shield className="w-4 h-4 text-green-600" />
+                  <Shield className="w-3.5 h-3.5 text-green-600" />
                   Datenschutz
                 </span>
               </div>
