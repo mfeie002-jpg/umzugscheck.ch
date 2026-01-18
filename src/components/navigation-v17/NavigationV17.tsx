@@ -10,7 +10,7 @@
  */
 
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown, ArrowRight } from "lucide-react";
+import { Menu, X, ChevronDown, ArrowRight, Zap } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { MobileMenuNew } from "@/components/MobileMenuNew";
@@ -186,16 +186,16 @@ export const NavigationV17 = () => {
               ))}
             </nav>
 
-            {/* Mobile/Tablet: Menu button + Call + mini CTA - compact for small screens */}
+            {/* Mobile/Tablet: Menu button + Call + CTA - compact for small screens */}
             <div className="flex lg:hidden items-center gap-1.5 sm:gap-2 flex-shrink-0">
-              <MobileHeaderCallButton className="w-10 h-10 sm:w-11 sm:h-11" />
-              
+              {/* RED "Offerten" CTA Button - Primary mobile action */}
               <Link 
-                to="/video-offerte" 
-                className="flex items-center justify-center gap-1 bg-secondary text-secondary-foreground text-[11px] sm:text-xs font-bold px-2 sm:px-3 py-2 sm:py-2.5 rounded-lg shadow-md shadow-secondary/20 active:scale-95 transition-all min-h-[40px] sm:min-h-[44px] touch-manipulation"
-                aria-label="Video-Offerte starten"
+                to="/umzugsofferten" 
+                className="flex items-center justify-center gap-1 bg-secondary text-secondary-foreground text-[11px] sm:text-xs font-bold px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg shadow-md shadow-secondary/20 active:scale-95 transition-all min-h-[40px] sm:min-h-[44px] touch-manipulation"
+                aria-label="Offerten erhalten"
               >
-                <span>🎥 Video</span>
+                <Zap className="w-3.5 h-3.5" />
+                <span>Offerten</span>
               </Link>
               
               <button
