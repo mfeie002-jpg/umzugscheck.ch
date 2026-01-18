@@ -1,30 +1,21 @@
 /**
  * Hook to get the active navigation variant.
- * Reacts to URL query changes (?nav=...) and localStorage changes.
+ * Uses the NavigationABContext if available, otherwise falls back to localStorage/URL.
  */
 
-import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import { getActiveVariant, type NavConfig, VARIANT_ULTIMATE } from "@/lib/navigation-variants";
+import { useContext } from "react";
+import { getActiveVariant, type NavConfig } from "@/lib/navigation-variants";
+import { NavigationABContext } from "@/contexts/navigation-context";
 
 export const useNavigationVariant = (): NavConfig => {
-  const location = useLocation();
-  const [variant, setVariant] = useState<NavConfig>(VARIANT_ULTIMATE);
-
-  useEffect(() => {
-    setVariant(getActiveVariant());
-  }, [location.search]);
-
-  useEffect(() => {
-    const onStorage = (e: StorageEvent) => {
-      if (e.key === "nav-variant") {
-        setVariant(getActiveVariant());
-      }
-    };
-
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
-  }, []);
-
-  return variant;
+  // Try to get from context first
+  const context = useContext(NavigationABContext);
+  
+  // If we're in the context, use it
+  if (context) {
+    return context.variant;
+  }
+  
+  // Fallback to localStorage/URL for pages outside the provider
+  return getActiveVariant();
 };

@@ -5,17 +5,11 @@
  * Default: Variant 1 (Original/Status Quo)
  */
 
-import { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react';
+import { useContext, useState, useCallback, ReactNode, useEffect } from 'react';
 import { NAV_VARIANTS, type NavConfig, VARIANT_ULTIMATE } from '@/lib/navigation-variants';
+import { NavigationABContext, type NavigationABContextType } from '@/contexts/navigation-context';
 
-interface NavigationABContextType {
-  variant: NavConfig;
-  setVariant: (id: string) => void;
-}
-
-const NavigationABContext = createContext<NavigationABContextType | null>(null);
-
-export const useNavigationAB = () => {
+export const useNavigationAB = (): NavigationABContextType => {
   const context = useContext(NavigationABContext);
   if (!context) {
     throw new Error('useNavigationAB must be used within NavigationABProvider');
@@ -86,3 +80,6 @@ export const NavigationABProvider = ({ children }: { children: ReactNode }) => {
     </NavigationABContext.Provider>
   );
 };
+
+// Re-export the context type for consumers
+export type { NavigationABContextType };

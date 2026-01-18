@@ -32,18 +32,6 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
   
   const location = useLocation();
 
-  // Only show on homepage
-  if (location.pathname !== '/') {
-    return null;
-  }
-
-  // Extract navigation variant number (e.g., "1" from "1. Original (Status Quo)")
-  const getNavVariantNumber = () => {
-    if (!navVariant?.name) return '1';
-    const match = navVariant.name.match(/^(\d+)/);
-    return match ? match[1] : '1';
-  };
-
   const handleNavVariantChange = useCallback((variantId: string) => {
     setNavVariant(variantId);
   }, [setNavVariant]);
@@ -52,8 +40,20 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
     setSPVariant(sv);
   }, [setSPVariant]);
 
+  // Extract navigation variant number (e.g., "1" from "1. Original (Status Quo)")
+  const getNavVariantNumber = () => {
+    if (!navVariant?.name) return '1';
+    const match = navVariant.name.match(/^(\d+)/);
+    return match ? match[1] : '1';
+  };
+
   const currentSPInfo = socialProofVariants[spVariant] || socialProofVariants.A;
   const navVariantNumber = getNavVariantNumber();
+
+  // Only show on homepage
+  if (location.pathname !== '/') {
+    return null;
+  }
 
   return (
     <div 
@@ -117,7 +117,7 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
                 {/* Navigation Variants */}
                 <TabsContent value="nav" className="p-3 pt-2 max-h-[50vh] overflow-y-auto">
                   <div className="space-y-2">
-                    {NAV_VARIANTS.slice(0, 8).map((nv) => {
+                    {NAV_VARIANTS.map((nv) => {
                       const isActive = navVariant?.id === nv.id;
                       const variantNum = nv.name.match(/^(\d+)/)?.[1] || '?';
                       return (
@@ -145,13 +145,6 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
                       );
                     })}
                   </div>
-                  
-                  {/* More variants hint */}
-                  {NAV_VARIANTS.length > 8 && (
-                    <p className="text-xs text-muted-foreground text-center mt-3">
-                      +{NAV_VARIANTS.length - 8} weitere Varianten via URL
-                    </p>
-                  )}
                 </TabsContent>
 
                 {/* Social Proof Variants */}

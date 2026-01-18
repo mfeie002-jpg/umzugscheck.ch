@@ -6,6 +6,7 @@ import { BrowserRouter, Route, Navigate, useLocation } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProviderAuthProvider } from "@/contexts/ProviderAuthContext";
 import { PerformanceProvider } from "@/contexts/PerformanceContext";
+import { NavigationABProvider } from "@/contexts/NavigationABContext";
 import { Suspense, lazy } from "react";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { PreloadResources } from "@/components/PreloadResources";
@@ -839,32 +840,34 @@ const App = () => (
       <AuthProvider>
         <ProviderAuthProvider>
           <PerformanceProvider>
-            <TooltipProvider>
-              <Toaster />
-              <Sonner />
-              <BrowserRouter>
-                <AnalyticsTracker />
-                <ScreenshotRenderModeRoot />
-                <CaptureReadySentinel />
-                <CaptureDebugOverlay />
-                <FunnelModeProvider />
-                <ReloadDiagnostics />
-                <CriticalCSS />
-                <CriticalCSSLoader />
-                <FontLoader />
-                <ResourceHints />
-                <PrefetchManager />
-                <PerformanceMonitor />
-                <WebVitalsReporter debug={process.env.NODE_ENV === 'development'} />
-                <PreloadResources />
-                <PerformanceDebugOverlay />
-                <AppRouterContent />
-                {/* Global Optimization Components */}
-                <Suspense fallback={null}>
-                  <SocialProofTicker position="bottom-left" />
-                </Suspense>
-              </BrowserRouter>
-            </TooltipProvider>
+            <NavigationABProvider>
+              <TooltipProvider>
+                <Toaster />
+                <Sonner />
+                <BrowserRouter>
+                  <AnalyticsTracker />
+                  <ScreenshotRenderModeRoot />
+                  <CaptureReadySentinel />
+                  <CaptureDebugOverlay />
+                  <FunnelModeProvider />
+                  <ReloadDiagnostics />
+                  <CriticalCSS />
+                  <CriticalCSSLoader />
+                  <FontLoader />
+                  <ResourceHints />
+                  <PrefetchManager />
+                  <PerformanceMonitor />
+                  <WebVitalsReporter debug={process.env.NODE_ENV === 'development'} />
+                  <PreloadResources />
+                  <PerformanceDebugOverlay />
+                  <AppRouterContent />
+                  {/* Global Optimization Components */}
+                  <Suspense fallback={null}>
+                    <SocialProofTicker position="bottom-left" />
+                  </Suspense>
+                </BrowserRouter>
+              </TooltipProvider>
+            </NavigationABProvider>
           </PerformanceProvider>
         </ProviderAuthProvider>
       </AuthProvider>
