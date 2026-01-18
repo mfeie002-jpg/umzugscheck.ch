@@ -27,12 +27,24 @@ export const AB_STORAGE_KEYS = {
 // FLOW VARIANTS
 // =====================================================
 export const FLOW_VARIANTS = {
-  'v1': { id: 'umzugsofferten-v1', name: 'V1 Control', path: '/umzugsofferten-v1' },
-  'v2': { id: 'umzugsofferten-v2', name: 'V2 Premium', path: '/umzugsofferten-v2' },
-  'v2e': { id: 'umzugsofferten-v2e', name: 'V2e Enhanced', path: '/umzugsofferten-v2e' },
-  'v3': { id: 'umzugsofferten-v3', name: 'V3 God Mode', path: '/umzugsofferten-v3' },
-  'v5': { id: 'umzugsofferten-v5', name: 'V5 Marketplace', path: '/umzugsofferten-v5' },
-  'ultimate': { id: 'umzugsofferten-ultimate-best36', name: 'Ultimate Best36', path: '/umzugsofferten-ultimate-best36' },
+  // Main flows (as routed in App.tsx)
+  v1: { id: 'umzugsofferten-v1', name: 'V1 Control', path: '/umzugsofferten-v1' },
+  v2: { id: 'umzugsofferten-v2', name: 'V2 Premium', path: '/umzugsofferten-v2' },
+  v2e: { id: 'umzugsofferten-v2e', name: 'V2e Enhanced', path: '/umzugsofferten-v2e' },
+  v3: { id: 'umzugsofferten-v3', name: 'V3 God Mode', path: '/umzugsofferten-v3' },
+  v4: { id: 'umzugsofferten-v4', name: 'V4 Video AI', path: '/umzugsofferten-v4' },
+  v5: { id: 'umzugsofferten-v5', name: 'V5 Marketplace', path: '/umzugsofferten-v5' },
+  v6: { id: 'umzugsofferten-v6', name: 'V6 Ultimate', path: '/umzugsofferten-v6' },
+  v7: { id: 'umzugsofferten-v7', name: 'V7 SwissMove', path: '/umzugsofferten-v7' },
+  v8: { id: 'umzugsofferten-v8', name: 'V8 Decision-Free', path: '/umzugsofferten-v8' },
+  v9: { id: 'umzugsofferten-v9', name: 'V9 Zero Friction', path: '/umzugsofferten-v9' },
+
+  // Special “ultimate” route used in production/tests
+  ultimate: {
+    id: 'umzugsofferten-ultimate-best36',
+    name: 'Ultimate Best36',
+    path: '/umzugsofferten-ultimate-best36',
+  },
 } as const;
 
 export type FlowVariantKey = keyof typeof FLOW_VARIANTS;

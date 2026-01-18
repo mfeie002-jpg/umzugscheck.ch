@@ -11,13 +11,14 @@
 
 import { Button } from "@/components/ui/button";
 import { Menu, X, ChevronDown, ArrowRight, Zap } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useState, useRef, useEffect, useMemo } from "react";
+import { Link } from "react-router-dom";
 import { MobileMenuNew } from "@/components/MobileMenuNew";
 import { Logo } from "@/components/Logo";
 import { cn } from "@/lib/utils";
 import { HeaderCallButton, MobileHeaderCallButton } from "@/components/CallButton";
-import { getActiveVariant, type NavConfig } from "@/lib/navigation-variants";
+import { type NavConfig } from "@/lib/navigation-variants";
+import { useNavigationVariant } from "@/hooks/useNavigationVariant";
 
 // V17 Dropdowns
 import { KostenPlanungDropdown } from "./dropdowns/KostenPlanungDropdown";
@@ -31,45 +32,49 @@ const buildNavItems = (variant: NavConfig) => [
   {
     id: 'kosten-planung' as const,
     label: variant.labels.preisrechner,
-    microcopy: variant.microcopy.preisrechner
+    microcopy: variant.microcopy.preisrechner,
   },
   {
     id: 'offerten-vergleichen' as const,
     label: variant.labels.firmen,
-    microcopy: variant.microcopy.firmen
+    microcopy: variant.microcopy.firmen,
   },
   {
     id: 'services' as const,
     label: variant.labels.services,
-    microcopy: variant.microcopy.services
+    microcopy: variant.microcopy.services,
   },
   {
     id: 'ratgeber' as const,
     label: variant.labels.ratgeber,
-    microcopy: variant.microcopy.ratgeber
+    microcopy: variant.microcopy.ratgeber,
   },
   {
     id: 'fuer-firmen' as const,
     label: variant.labels.fuerFirmen,
-    microcopy: variant.microcopy.fuerFirmen
-  }
+    microcopy: variant.microcopy.fuerFirmen,
+  },
 ] as const;
 
-type DropdownType = 'kosten-planung' | 'offerten-vergleichen' | 'services' | 'ratgeber' | 'fuer-firmen' | null;
+type DropdownType =
+  | 'kosten-planung'
+  | 'offerten-vergleichen'
+  | 'services'
+  | 'ratgeber'
+  | 'fuer-firmen'
+  | null;
 
 export const NavigationV17 = () => {
-  const location = useLocation();
+  const navVariant = useNavigationVariant();
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<DropdownType>(null);
   const [hoveredItem, setHoveredItem] = useState<DropdownType>(null);
   const [scrolled, setScrolled] = useState(false);
-  const [navItems, setNavItems] = useState(() => buildNavItems(getActiveVariant()));
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Update nav items when variant changes (via URL or localStorage)
-  useEffect(() => {
-    setNavItems(buildNavItems(getActiveVariant()));
-  }, [location.search]);
+  const navItems = useMemo(() => buildNavItems(navVariant), [navVariant]);
+
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Track scroll for enhanced shadow
   useEffect(() => {
