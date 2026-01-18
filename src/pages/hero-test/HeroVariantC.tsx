@@ -18,8 +18,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import { NavigationV17 } from "@/components/navigation-v17";
-import { Footer } from "@/components/Footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 
@@ -56,8 +54,6 @@ const HeroVariantC = memo(function HeroVariantC() {
         <title>Hero Test: Variante C - Hybrid-Lösung | Umzugscheck.ch</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
-      
-      <NavigationV17 />
       
       <main>
         {/* HERO SECTION - Hybrid: Optimized Compact with Premium Elements */}
@@ -316,8 +312,6 @@ const HeroVariantC = memo(function HeroVariantC() {
           </div>
         </section>
       </main>
-      
-      <Footer />
     </>
   );
 });

@@ -18,8 +18,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import { NavigationV17 } from "@/components/navigation-v17";
-import { Footer } from "@/components/Footer";
 
 // Demo background image
 const HERO_BG = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&q=80";
@@ -57,8 +55,6 @@ const HeroVariantB = memo(function HeroVariantB() {
         <title>Hero Test: Variante B - Landingpage-Stil | Umzugscheck.ch</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
-      
-      <NavigationV17 />
       
       <main>
         {/* HERO SECTION - Landingpage Style with Background Image */}
@@ -306,8 +302,6 @@ const HeroVariantB = memo(function HeroVariantB() {
           </div>
         </section>
       </main>
-      
-      <Footer />
     </>
   );
 });

@@ -4,8 +4,6 @@
 
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import { NavigationV17 } from "@/components/navigation-v17";
-import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Layout, Image, Layers, ExternalLink } from "lucide-react";
 
@@ -72,8 +70,6 @@ export default function HeroTestIndex() {
         <title>Hero-Varianten Test | Umzugscheck.ch</title>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
-      
-      <NavigationV17 />
       
       <main className="min-h-screen bg-muted/30">
         {/* Header */}
@@ -194,8 +190,6 @@ export default function HeroTestIndex() {
           </div>
         </section>
       </main>
-      
-      <Footer />
     </>
   );
 }
