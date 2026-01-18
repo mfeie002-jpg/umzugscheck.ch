@@ -6,6 +6,7 @@ import { BlurReveal } from "@/components/common/BlurReveal";
 import { NumberTicker } from "@/components/ui/animated-counter";
 import { GradientBorder } from "@/components/common/GradientBorder";
 import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
+import { SmartCTAButton } from "@/components/conversion/SmartCTAButton";
 
 // Service images
 import servicePrivatumzug from "@/assets/service-privatumzug.jpg";
@@ -233,13 +234,21 @@ export const PremiumServicesGrid = () => {
 
         {/* CTA */}
         {screenshotMode ? (
-          <div className="text-center mt-8">
+          <div className="text-center mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link to="/dienstleistungen">
-              <Button variant="secondary" size="lg" className="h-10 sm:h-11 px-4 sm:px-6 text-sm font-semibold group">
+              <Button variant="outline" size="lg" className="h-10 sm:h-11 px-4 sm:px-6 text-sm font-semibold">
                 Alle Services ansehen
                 <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
               </Button>
             </Link>
+            <div className="w-full sm:w-auto max-w-xs">
+              <SmartCTAButton 
+                to="/umzugsofferten" 
+                location="services-grid" 
+                size="lg"
+                showSubtext={false}
+              />
+            </div>
           </div>
         ) : (
           <motion.div
@@ -247,14 +256,22 @@ export const PremiumServicesGrid = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.4, delay: 0.3 }}
-            className="text-center mt-8"
+            className="text-center mt-8 flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             <Link to="/dienstleistungen">
-              <Button variant="secondary" size="lg" className="h-10 sm:h-11 px-4 sm:px-6 text-sm font-semibold group">
+              <Button variant="outline" size="lg" className="h-10 sm:h-11 px-4 sm:px-6 text-sm font-semibold group">
                 Alle Services ansehen
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
               </Button>
             </Link>
+            <div className="w-full sm:w-auto max-w-xs">
+              <SmartCTAButton 
+                to="/umzugsofferten" 
+                location="services-grid" 
+                size="lg"
+                showSubtext={false}
+              />
+            </div>
           </motion.div>
         )}
       </div>
