@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "@/components/ui/button";
 import { ArrowRight, MapPin, Star, Clock, Gift } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 interface RegionExitIntentProps {
   regionName: string;
@@ -20,6 +21,7 @@ export const RegionExitIntent = ({
   providerCount = 15,
   avgRating = 4.8 
 }: RegionExitIntentProps) => {
+  const flowPath = useFlowPath();
   const [isOpen, setIsOpen] = useState(false);
   const [hasTriggered, setHasTriggered] = useState(false);
 
@@ -102,7 +104,7 @@ export const RegionExitIntent = ({
             asChild
             className="w-full h-12 text-base font-semibold"
           >
-            <Link to="/umzugsofferten" onClick={() => setIsOpen(false)}>
+            <Link to={flowPath} onClick={() => setIsOpen(false)}>
               Gratis Offerten erhalten
               <ArrowRight className="ml-2 h-5 w-5" />
             </Link>

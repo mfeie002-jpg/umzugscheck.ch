@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle, Star, Clock, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 interface FinalCTAProps {
   placeName: string;
@@ -23,6 +24,7 @@ export const FinalCTA = memo(({
   providerCount = 200,
   serviceName,
 }: FinalCTAProps) => {
+  const flowPath = useFlowPath();
   const locationPrefix = placeKind === 'canton' ? 'im Kanton' : 'in';
   const contextText = serviceName || 'Ihren Umzug';
   
@@ -69,7 +71,7 @@ export const FinalCTA = memo(({
             className="h-14 px-10 text-lg font-bold bg-secondary text-secondary-foreground hover:bg-secondary/90 shadow-lg"
             asChild
           >
-            <Link to="/umzugsofferten">
+            <Link to={flowPath}>
               Kostenlos Offerten erhalten
               <ArrowRight className="ml-2 w-5 h-5" />
             </Link>
