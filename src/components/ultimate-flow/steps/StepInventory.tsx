@@ -115,7 +115,7 @@ export function StepInventory({ data, updateData }: StepInventoryProps) {
       {showDetails && (
         <div className="bg-card rounded-xl p-4 border space-y-3">
           <p className="text-sm text-muted-foreground text-center">
-            Optional: Für eine noch genauere Offerte
+            Optional: Präzise Analyse = <span className="text-secondary font-medium">bis 40% sparen</span>
           </p>
           <div className="grid grid-cols-2 gap-3">
             {INVENTORY_ITEMS.map((item) => (

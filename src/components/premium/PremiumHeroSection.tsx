@@ -673,7 +673,7 @@ export const PremiumHeroSection = () => {
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-xs font-medium text-foreground">Schneller mit Video/Fotos?</p>
-                          <p className="text-[10px] text-muted-foreground">KI berechnet automatisch – noch genauer!</p>
+                          <p className="text-[10px] text-muted-foreground">KI-Analyse = <span className="text-secondary font-semibold">bis 40% sparen</span></p>
                         </div>
                         <ArrowRight className="h-4 w-4 text-secondary group-hover:translate-x-0.5 transition-transform flex-shrink-0" />
                       </div>

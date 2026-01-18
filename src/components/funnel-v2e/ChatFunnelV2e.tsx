@@ -526,7 +526,7 @@ export function ChatFunnelV2e() {
       messages.push({
         id: "msg-video",
         type: "video",
-        content: "Möchten Sie ein Video Ihrer Wohnung hochladen? So kann ich noch genauere Angebote ermitteln.",
+        content: "Möchten Sie ein Video Ihrer Wohnung hochladen? Präzise Analyse = faire Preise, bis 40% sparen!",
         timestamp: now,
       });
       return messages;

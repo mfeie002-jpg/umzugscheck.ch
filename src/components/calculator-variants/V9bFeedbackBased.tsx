@@ -487,7 +487,7 @@ export const V9bFeedbackBased: React.FC = () => {
                       <Badge variant="outline" className="text-xs">Genauer</Badge>
                     </div>
                     <p className="text-xs text-muted-foreground mb-2">
-                      Für noch genaueren Fixpreis. Video wird nur zur Berechnung genutzt und danach gelöscht.
+                      Präzisere Analyse = <span className="text-secondary font-medium">bis 40% sparen</span>. Video wird nur zur Berechnung genutzt.
                     </p>
                     {!showVideoScan ? (
                       <Button 
