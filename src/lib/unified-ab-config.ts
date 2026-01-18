@@ -38,8 +38,11 @@ export interface FlowVariant {
 }
 
 export const FLOW_VARIANTS: Record<string, FlowVariant> = {
+  // Main control - this is the DEFAULT
+  control: { id: 'umzugsofferten', name: 'Control', path: '/umzugsofferten', description: 'Standard Control Flow' },
+  
   // Main versions
-  v1: { id: 'umzugsofferten-v1', name: 'V1 Control', path: '/umzugsofferten-v1', description: 'Standard Control Flow' },
+  v1: { id: 'umzugsofferten-v1', name: 'V1 Control', path: '/umzugsofferten-v1', description: 'V1 Control Flow' },
   v2: { id: 'umzugsofferten-v2', name: 'V2 Premium', path: '/umzugsofferten-v2', description: 'Premium Full-Journey' },
   v2e: { id: 'umzugsofferten-v2e', name: 'V2e Enhanced', path: '/umzugsofferten-v2e', description: 'Chat Funnel Enhanced' },
   v3: { id: 'umzugsofferten-v3', name: 'V3 God Mode', path: '/umzugsofferten-v3', description: 'God Mode Flow' },
@@ -61,9 +64,9 @@ export const FLOW_VARIANTS: Record<string, FlowVariant> = {
 
 export type FlowVariantKey = keyof typeof FLOW_VARIANTS;
 
-// Default variants
+// Default variants - use main /umzugsofferten route
 export const DEFAULT_NAV = VARIANT_ULTIMATE;
-export const DEFAULT_FLOW = FLOW_VARIANTS.v1;
+export const DEFAULT_FLOW = FLOW_VARIANTS.control;
 
 // =====================================================
 // UTILITY FUNCTIONS
