@@ -56,7 +56,7 @@ const TRUST_SIGNALS = [
 const NAV_SECTIONS: NavSection[] = [
   {
     id: "umzug-planen",
-    label: "Umzug planen",
+    label: "📋 Umzug planen",
     tagline: "Tools, Tipps & Rechner für deinen Zügeltag",
     items: [
       { icon: Calculator, title: "Umzugskosten-Rechner", description: "Was kostet dein Umzug? In 60 Sekunden.", href: "/preisrechner", badge: "Beliebt", badgeColor: "from-amber-500 to-orange-500" },
@@ -68,7 +68,7 @@ const NAV_SECTIONS: NavSection[] = [
   },
   {
     id: "umzugsfirmen",
-    label: "Umzugsfirmen",
+    label: "🔍 Umzugsfirmen",
     tagline: "200+ geprüfte Partner – Umzugsfirma finden & sparen",
     items: [
       { icon: MapPin, title: "Umzugsfirma Zürich", description: "Top-Bewertungen in Zürich", href: "/umzugsfirmen/zuerich", badge: "★4.9" },
@@ -80,7 +80,7 @@ const NAV_SECTIONS: NavSection[] = [
   },
   {
     id: "services",
-    label: "Services",
+    label: "🛠️ Services",
     tagline: "Rundum-Service: Reinigung, Lagerung, Entsorgung & mehr",
     items: [
       { icon: Home, title: "Umzugsreinigung", description: "Mit Abgabegarantie – Depot zurück!", href: "/umzugsreinigung", badge: "Garantie", badgeColor: "from-emerald-500 to-green-500" },
@@ -92,7 +92,7 @@ const NAV_SECTIONS: NavSection[] = [
   },
   {
     id: "ratgeber",
-    label: "Ratgeber",
+    label: "📚 Ratgeber",
     tagline: "Tipps & Tricks für einen stressfreien Umzug",
     items: [
       { icon: Baby, title: "Umziehen mit Kindern & Haustieren", description: "Stressfrei für die ganze Familie", href: "/ratgeber/umziehen-mit-kindern" },
@@ -104,7 +104,7 @@ const NAV_SECTIONS: NavSection[] = [
   },
   {
     id: "so-funktioniert",
-    label: "So funktioniert's",
+    label: "⭐ So funktioniert's",
     tagline: "Stressfrei in 3 Schritten – so funktioniert Umzugscheck",
     items: [
       { icon: Sparkles, title: "So funktioniert Umzugscheck", description: "Dein Weg zur besten Offerte", href: "/so-funktioniert" },
