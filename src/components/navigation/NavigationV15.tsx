@@ -113,9 +113,10 @@ export const NavigationV15 = () => {
   return (
     <>
       <header className="sticky top-0 z-[9998] w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto max-w-full px-4 xl:px-6 flex h-16 items-center justify-between gap-2 min-w-0">
-          {/* Logo */}
-          <HeaderLogo size="md" showTagline={true} className="flex-shrink-0" />
+        <div className="container mx-auto max-w-full px-3 sm:px-4 xl:px-6 flex h-16 items-center justify-between gap-2 min-w-0">
+          {/* Logo - Hide tagline on tablet for space */}
+          <HeaderLogo size="md" showTagline={false} className="flex-shrink-0 xl:hidden" />
+          <HeaderLogo size="md" showTagline={true} className="flex-shrink-0 hidden xl:flex" />
 
           {/* Desktop Navigation */}
           <nav className="hidden xl:flex items-center justify-center gap-0.5 2xl:gap-2 flex-1 min-w-0 overflow-hidden">
@@ -221,19 +222,38 @@ export const NavigationV15 = () => {
             </Button>
           </div>
 
+          {/* Tablet CTA (lg only) */}
+          <Button asChild className="hidden lg:flex xl:hidden h-10 px-4 font-semibold gap-1.5 rounded-lg bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-md shadow-secondary/20">
+            <Link to={flowPath}>
+              <Zap className="w-4 h-4" />
+              Offerte
+            </Link>
+          </Button>
+
           {/* Mobile CTA */}
-          <Button asChild size="sm" className="xl:hidden h-9 px-3 font-semibold gap-1.5 rounded-lg bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-md shadow-secondary/20">
+          <Button asChild size="sm" className="lg:hidden h-9 px-3 font-semibold gap-1.5 rounded-lg bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-md shadow-secondary/20">
             <Link to={flowPath}>
               <Zap className="w-4 h-4" />
               Offerten
             </Link>
           </Button>
 
+          {/* Tablet Menu Button (lg) */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="hidden lg:flex xl:hidden h-10 w-10"
+            onClick={() => setMobileMenuOpen(true)}
+          >
+            <Menu className="h-5 w-5" />
+            <span className="sr-only">Menü öffnen</span>
+          </Button>
+
           {/* Mobile Menu Button */}
           <Button
             variant="ghost"
             size="icon"
-            className="xl:hidden"
+            className="lg:hidden"
             onClick={() => setMobileMenuOpen(true)}
           >
             <Menu className="h-6 w-6" />
