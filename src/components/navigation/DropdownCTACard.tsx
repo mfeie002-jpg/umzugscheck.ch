@@ -1,6 +1,8 @@
 /**
  * Enhanced Dropdown CTA Card
  * Warm, inviting & trust-building conversion card
+ * 
+ * Uses A/B flow path for /umzugsofferten links
  */
 
 import { Link } from "react-router-dom";
@@ -8,6 +10,7 @@ import { ArrowRight, CheckCircle2, LucideIcon, Sparkles, Shield, Star, Users } f
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 interface DropdownCTACardProps {
   title: string;
@@ -39,6 +42,11 @@ export const DropdownCTACard = ({
   className,
   onClose,
 }: DropdownCTACardProps) => {
+  const flowPath = useFlowPath();
+  
+  // Use A/B flow path for /umzugsofferten links
+  const resolvedHref = buttonHref === "/umzugsofferten" ? flowPath : buttonHref;
+  
   const handleClick = () => {
     onButtonClick?.();
     onClose?.();
@@ -111,12 +119,12 @@ export const DropdownCTACard = ({
         )}
 
         {/* CTA Button */}
-        {buttonHref ? (
+        {resolvedHref ? (
           <Button 
             asChild 
             className="group w-full h-12 bg-gradient-to-r from-primary via-primary to-primary/90 hover:from-primary/90 hover:via-primary hover:to-primary text-primary-foreground font-bold shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all"
           >
-            <Link to={buttonHref} onClick={handleClick}>
+            <Link to={resolvedHref} onClick={handleClick}>
               {ButtonContent}
             </Link>
           </Button>
