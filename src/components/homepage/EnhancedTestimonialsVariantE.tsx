@@ -182,7 +182,7 @@ export const EnhancedTestimonialsVariantE = memo(function EnhancedTestimonialsVa
 
   return (
     <section id="bewertungen" className="py-12 md:py-16 bg-muted/10">
-      <div className="container mx-auto px-4 max-w-6xl">
+      <div className="container mx-auto px-4">
         
         {/* Header */}
         <motion.div
