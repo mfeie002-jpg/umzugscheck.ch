@@ -307,7 +307,7 @@ export const NavigationV16 = () => {
 
                           {/* Dropdown CTA */}
                           <div className="p-4 pt-2 bg-gradient-to-t from-muted/30 to-transparent">
-                            <Button asChild className="w-full h-12 font-bold gap-2 rounded-xl bg-gradient-to-r from-primary via-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-600/90 shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all hover:scale-[1.02]">
+                            <Button asChild className="w-full h-12 font-bold gap-2 rounded-xl bg-gradient-to-r from-secondary via-secondary to-secondary/90 hover:from-secondary/90 hover:to-secondary shadow-lg shadow-secondary/20 hover:shadow-xl hover:shadow-secondary/30 transition-all hover:scale-[1.02]">
                               <Link to="/umzugsofferten" onClick={() => setActiveDropdown(null)}>
                                 <Zap className="w-5 h-5" />
                                 Gratis Offerten holen
@@ -331,7 +331,7 @@ export const NavigationV16 = () => {
           <div className="flex items-center gap-2 xl:gap-3 flex-shrink-0">
             {/* Desktop CTA - Context-Aware */}
             <div className="hidden lg:flex flex-col items-end flex-shrink-0">
-              <Button asChild className="h-11 px-6 font-bold gap-2 rounded-xl bg-gradient-to-r from-primary via-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-600/90 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all hover:scale-105">
+              <Button asChild className="h-11 px-6 font-bold gap-2 rounded-xl bg-gradient-to-r from-secondary via-secondary to-secondary/90 hover:from-secondary/90 hover:to-secondary shadow-lg shadow-secondary/20 hover:shadow-xl hover:shadow-secondary/30 transition-all hover:scale-105">
                 <Link to="/umzugsofferten">
                   <Zap className="w-4 h-4" />
                   {getCtaLabel()}
