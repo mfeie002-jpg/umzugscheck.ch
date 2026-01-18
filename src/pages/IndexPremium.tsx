@@ -5,12 +5,12 @@ import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { ScrollProgress } from "@/components/ui/scroll-progress";
 import { AnimatedSection } from "@/components/ui/animated-section";
 import { PremiumHeroSection } from "@/components/premium/PremiumHeroSection";
-import { PremiumSocialProof } from "@/components/premium/PremiumSocialProof";
 import { PremiumHowItWorks } from "@/components/premium/PremiumHowItWorks";
 import { PremiumFAQ } from "@/components/premium/PremiumFAQ";
 import { SocialProofABProvider } from "@/contexts/SocialProofABContext";
-import { NavigationABProvider } from "@/contexts/NavigationABContext";
 import { UnifiedABToggle } from "@/components/homepage/UnifiedABToggle";
+import { TrustRibbonAB } from "@/components/trust/TrustRibbonAB";
+import { EnhancedTestimonialsAB } from "@/components/homepage/EnhancedTestimonialsAB";
 import { memo, useMemo, lazy, Suspense, useEffect, useRef } from "react";
 import { SectionSkeleton } from "@/components/ui/section-skeleton";
 import analytics from "@/lib/analytics";
@@ -26,9 +26,6 @@ const LazyPremiumServicesGrid = lazy(() =>
 );
 const LazyComparisonShowcase = lazy(() =>
   import("@/components/home/ComparisonShowcase").then((m) => ({ default: m.ComparisonShowcase }))
-);
-const LazyTrustRibbon = lazy(() =>
-  import("@/components/trust/TrustRibbon").then((m) => ({ default: m.TrustRibbon }))
 );
 const LazyPremiumMovingTimeline = lazy(() =>
   import("@/components/premium/PremiumMovingTimeline").then((m) => ({ default: m.PremiumMovingTimeline }))
@@ -145,7 +142,6 @@ const IndexPremium = () => {
   }
 
   return (
-    <NavigationABProvider>
     <SocialProofABProvider>
       <div className="min-h-screen bg-background">
         <ScrollProgress />
@@ -185,16 +181,16 @@ const IndexPremium = () => {
           {/* 1. Hero - Critical: Commitment hook */}
           <PremiumHeroSection />
 
-          {/* 2. Trust Ribbon - HIGH IMPACT Trust Section */}
+          {/* 2. Trust Ribbon (A/B TESTED) */}
           <Suspense fallback={<SectionSkeleton height="min-h-[300px]" />}>
             <AnimatedSection animation="fade-in">
-              <LazyTrustRibbon variant="full" />
+              <TrustRibbonAB variant="full" />
             </AnimatedSection>
           </Suspense>
 
-          {/* 4. Social Proof */}
+          {/* 3. Social Proof (A/B TESTED) */}
           <AnimatedSection animation="fade-up">
-            <PremiumSocialProof />
+            <EnhancedTestimonialsAB />
           </AnimatedSection>
 
           {/* 5. How It Works */}
@@ -276,7 +272,6 @@ const IndexPremium = () => {
         <ScrollToTop />
       </div>
     </SocialProofABProvider>
-    </NavigationABProvider>
   );
 };
 
