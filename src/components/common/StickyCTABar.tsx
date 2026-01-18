@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowRight, CheckCircle, Shield, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 // ============================================================================
 // TYPES
@@ -62,7 +63,7 @@ const trustIndicators = {
 // MAIN COMPONENT
 // ============================================================================
 export const StickyCTABar = memo(({
-  to = "/umzugsofferten",
+  to,
   text = "Jetzt Offerten erhalten",
   hint,
   trustIndicator = "guarantee",
@@ -73,6 +74,8 @@ export const StickyCTABar = memo(({
   className,
   variant = "default"
 }: StickyCTABarProps) => {
+  const flowPath = useFlowPath();
+  const destination = to || flowPath;
   const [isVisible, setIsVisible] = useState(showAfterScroll === 0);
   const [hasScrolledPast, setHasScrolledPast] = useState(false);
 
@@ -110,7 +113,7 @@ export const StickyCTABar = memo(({
   const ButtonWrapper = onClick ? 'button' : Link;
   const buttonProps = onClick 
     ? { onClick, type: 'button' as const } 
-    : { to };
+    : { to: destination };
 
   if (!isVisible) return null;
 
@@ -167,7 +170,7 @@ export const StickyCTABar = memo(({
               <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
             </>
           ) : (
-            <Link to={to} className="flex items-center justify-center w-full">
+            <Link to={destination} className="flex items-center justify-center w-full">
               <CheckCircle className="mr-2 h-5 w-5" aria-hidden="true" />
               {text}
               <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
@@ -192,7 +195,7 @@ StickyCTABar.displayName = 'StickyCTABar';
 // FLOATING ACTION BUTTON (Alternative for less intrusive CTA)
 // ============================================================================
 export const FloatingCTAButton = memo(({
-  to = "/umzugsofferten",
+  to,
   text = "Offerten",
   onClick,
   className
@@ -202,6 +205,8 @@ export const FloatingCTAButton = memo(({
   onClick?: () => void;
   className?: string;
 }) => {
+  const flowPath = useFlowPath();
+  const destination = to || flowPath;
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -241,7 +246,7 @@ export const FloatingCTAButton = memo(({
             {text}
           </>
         ) : (
-          <Link to={to} className="flex items-center">
+          <Link to={destination} className="flex items-center">
             <ArrowRight className="mr-2 h-5 w-5" />
             {text}
           </Link>

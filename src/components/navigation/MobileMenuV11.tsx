@@ -6,6 +6,7 @@
 
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 import { 
   X, 
   Home, 
@@ -63,6 +64,7 @@ const MINI_TESTIMONIALS = [
 
 export const MobileMenuV11 = ({ isOpen, onClose }: MobileMenuV11Props) => {
   const location = useLocation();
+  const flowPath = useFlowPath();
   const [openAccordion, setOpenAccordion] = useState<string | undefined>(undefined);
 
   // Reset on open
@@ -115,7 +117,7 @@ export const MobileMenuV11 = ({ isOpen, onClose }: MobileMenuV11Props) => {
         <div className="px-4 py-4 border-b border-border bg-gradient-to-br from-primary/5 via-accent/30 to-background">
           <div className="flex gap-2">
             <Button asChild className="flex-1 font-semibold shadow-lg shadow-primary/25 bg-gradient-to-r from-primary to-primary/90">
-              <Link to="/umzugsofferten" onClick={onClose}>
+              <Link to={flowPath} onClick={onClose}>
                 <Sparkles className="w-4 h-4 mr-2" />
                 Gratis Offerten
               </Link>

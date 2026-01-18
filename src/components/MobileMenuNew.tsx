@@ -10,7 +10,8 @@
  */
 
 import { useState, useEffect, useRef } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   ChevronDown, 
@@ -132,6 +133,7 @@ interface MobileMenuNewProps {
 export const MobileMenuNew = ({ isOpen, onClose }: MobileMenuNewProps) => {
   const location = useLocation();
   const navVariant = useNavigationVariant();
+  const flowPath = useFlowPath();
   const [searchTerm, setSearchTerm] = useState("");
   const [openAccordion, setOpenAccordion] = useState<string | undefined>(undefined);
   const [welcomeMessage] = useState(() => 
@@ -441,7 +443,7 @@ export const MobileMenuNew = ({ isOpen, onClose }: MobileMenuNewProps) => {
                   initial="initial"
                   animate="pulse"
                 >
-                  <Link to="/umzugsofferten" onClick={onClose}>
+                  <Link to={flowPath} onClick={onClose}>
                     <Button 
                       className="w-full h-16 min-h-[64px] text-lg font-bold bg-gradient-to-r from-primary via-primary to-emerald-500 hover:opacity-95 text-primary-foreground shadow-xl shadow-primary/30 rounded-2xl touch-manipulation transition-all active:scale-[0.98]"
                       size="lg"

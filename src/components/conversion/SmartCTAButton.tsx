@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Sparkles, Clock, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useFlowPath } from '@/hooks/useUnifiedAB';
 import { useCTAABTest } from '@/hooks/useCTAABTest';
 
 interface SmartCTAButtonProps {
@@ -20,13 +21,15 @@ interface SmartCTAButtonProps {
 }
 
 export const SmartCTAButton = memo(function SmartCTAButton({
-  to = '/umzugsofferten',
+  to,
   onClick,
   className,
   size = 'lg',
   location = 'unknown',
   showSubtext = true,
 }: SmartCTAButtonProps) {
+  const flowPath = useFlowPath();
+  const destination = to || flowPath;
   const { text, subtext, color, trackClick } = useCTAABTest();
 
   const handleClick = () => {
@@ -95,9 +98,9 @@ export const SmartCTAButton = memo(function SmartCTAButton({
     </motion.div>
   );
 
-  if (to && !onClick) {
+  if (destination && !onClick) {
     return (
-      <Link to={to} className="w-full block">
+      <Link to={destination} className="w-full block">
         {ButtonContent}
       </Link>
     );

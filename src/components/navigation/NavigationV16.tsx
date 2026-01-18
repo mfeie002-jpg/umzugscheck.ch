@@ -26,8 +26,9 @@ import { MobileMenuV12 } from "./MobileMenuV12";
 import { MobileMenuV13 } from "./MobileMenuV13";
 import { MobileMenuV16 } from "./MobileMenuV16";
 import { MobileMenuNew } from "@/components/MobileMenuNew";
-import { VARIANT_P, getActiveVariant } from "@/lib/navigation-variants";
+import { VARIANT_P } from "@/lib/navigation-variants";
 import { useNavigationVariant } from "@/hooks/useNavigationVariant";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 interface NavItem {
   icon: React.ElementType;
@@ -120,6 +121,7 @@ export const NavigationV16 = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const navVariant = useNavigationVariant();
+  const flowPath = useFlowPath();
 
   // Context-aware CTA label based on current page
   const getCtaLabel = () => {
@@ -300,7 +302,7 @@ export const NavigationV16 = () => {
                           {/* Dropdown CTA */}
                           <div className="p-4 pt-2 bg-gradient-to-t from-muted/30 to-transparent">
                             <Button asChild className="w-full h-12 font-bold gap-2 rounded-xl bg-gradient-to-r from-secondary via-secondary to-secondary/90 hover:from-secondary/90 hover:to-secondary shadow-lg shadow-secondary/20 hover:shadow-xl hover:shadow-secondary/30 transition-all hover:scale-[1.02]">
-                              <Link to="/umzugsofferten" onClick={() => setActiveDropdown(null)}>
+                              <Link to={flowPath} onClick={() => setActiveDropdown(null)}>
                                 <Zap className="w-5 h-5" />
                                 Gratis Offerten holen
                                 <ArrowRight className="w-4 h-4" />
@@ -324,7 +326,7 @@ export const NavigationV16 = () => {
             {/* Desktop CTA - Context-Aware */}
             <div className="hidden lg:flex flex-col items-end flex-shrink-0">
               <Button asChild className="h-11 px-6 font-bold gap-2 rounded-xl bg-gradient-to-r from-secondary via-secondary to-secondary/90 hover:from-secondary/90 hover:to-secondary shadow-lg shadow-secondary/20 hover:shadow-xl hover:shadow-secondary/30 transition-all hover:scale-105">
-                <Link to="/umzugsofferten">
+                <Link to={flowPath}>
                   <Zap className="w-4 h-4" />
                   {getCtaLabel()}
                 </Link>
@@ -334,7 +336,7 @@ export const NavigationV16 = () => {
 
             {/* Mobile CTA - RED (secondary) for maximum visibility */}
             <Button asChild size="sm" className="lg:hidden h-9 px-3 font-semibold gap-1.5 rounded-lg bg-gradient-to-r from-secondary to-secondary/90 text-secondary-foreground shadow-md shadow-secondary/20 hover:shadow-secondary/30">
-              <Link to="/umzugsofferten">
+              <Link to={flowPath}>
                 <Zap className="w-4 h-4" />
                 Offerten
               </Link>
