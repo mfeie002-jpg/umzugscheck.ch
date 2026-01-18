@@ -91,9 +91,11 @@ export const MobileMenuItemCompact = ({ to, icon: Icon, title, emoji, onClick }:
 // PREISRECHNER / KOSTEN CONTENT
 // ============================================
 export const PreisrechnerContent = ({ onClose, variant }: { onClose: () => void; variant: NavConfig }) => {
-  // Variant-specific content
+  // Variant-specific content detection
   const isKostenPlanung = variant.id === 'variant-d' || variant.id === 'variant-e' || variant.id === 'variant-f' || variant.id === 'variant-17';
   const isOffertenFirst = variant.id === 'variant-c';
+  const isUmzugPlanen = variant.id === 'variant-g'; // User Journey Split: "Umzug planen"
+  const isPrivatumzug = variant.id === 'variant-h'; // Zielgruppen-Split: "Privatumzug"
   
   if (isOffertenFirst) {
     // Variant C: "Offerten vergleichen" first - show companies/regions
@@ -108,6 +110,42 @@ export const PreisrechnerContent = ({ onClose, variant }: { onClose: () => void;
           <MobileMenuItem to="/umzugsfirmen-schweiz" icon={MapPin} title="Alle Kantone" emoji="🗺️" description="500+ geprüfte Firmen" onClick={onClose} />
           <MobileMenuItem to="/beste-umzugsfirma" icon={Star} title="Beste Umzugsfirmen" emoji="⭐" description="Top-bewertete Anbieter" onClick={onClose} />
           <MobileMenuItem to="/guenstige-umzugsfirma" icon={DollarSign} title="Günstige Firmen" emoji="💰" description="Preis-Leistung" onClick={onClose} />
+        </div>
+      </>
+    );
+  }
+  
+  if (isUmzugPlanen) {
+    // Variant G: "Umzug planen" - Tools & Tipps
+    return (
+      <>
+        <p className="text-xs font-bold text-muted-foreground mb-3 flex items-center gap-2">
+          <CheckSquare className="w-4 h-4 text-primary" /> 
+          <span>Tools & Tipps für deinen Umzug</span>
+        </p>
+        <div className="space-y-1">
+          <MobileMenuItem to="/vergleich" icon={Calculator} title="Preisrechner" badge="🔥 Gratis" emoji="💰" description="Was kostet dein Umzug?" onClick={onClose} />
+          <MobileMenuItem to="/ratgeber/umzugscheckliste-download" icon={CheckSquare} title="Checkliste (PDF)" emoji="✅" description="Nichts vergessen" onClick={onClose} />
+          <MobileMenuItem to="/ratgeber/zeitplan" icon={Clock} title="Zeitplan erstellen" emoji="📅" description="Perfekt organisiert" onClick={onClose} />
+          <MobileMenuItem to="/ratgeber/tipps" icon={Lightbulb} title="Spartipps" emoji="💡" description="Geld & Zeit sparen" onClick={onClose} />
+        </div>
+      </>
+    );
+  }
+  
+  if (isPrivatumzug) {
+    // Variant H: "Privatumzug" - Alles für Wohnungswechsel
+    return (
+      <>
+        <p className="text-xs font-bold text-muted-foreground mb-3 flex items-center gap-2">
+          <Home className="w-4 h-4 text-primary" /> 
+          <span>Alles für Ihren Wohnungswechsel</span>
+        </p>
+        <div className="space-y-1">
+          <MobileMenuItem to="/dienstleistungen/privatumzug" icon={Home} title="Privatumzug" badge="Beliebt" emoji="🏠" description="Wohnung & Haus" onClick={onClose} />
+          <MobileMenuItem to="/vergleich" icon={Calculator} title="Kosten berechnen" emoji="💰" description="Gratis Preisvergleich" onClick={onClose} />
+          <MobileMenuItem to="/ratgeber/umzugscheckliste-download" icon={CheckSquare} title="Umzugscheckliste" emoji="✅" description="PDF herunterladen" onClick={onClose} />
+          <MobileMenuItem to="/dienstleistungen/reinigung" icon={Sparkles} title="Endreinigung" emoji="✨" description="Mit Abgabegarantie" onClick={onClose} />
         </div>
       </>
     );
@@ -174,6 +212,8 @@ export const PreisrechnerContent = ({ onClose, variant }: { onClose: () => void;
 // ============================================
 export const FirmenContent = ({ onClose, searchTerm, setSearchTerm, variant }: MenuContentProps & { variant: NavConfig }) => {
   const isKostenSecond = variant.id === 'variant-c'; // Variant C has "Kosten & Planung" as second item
+  const isUmzugsfirmaFinden = variant.id === 'variant-g'; // Variant G: "Umzugsfirma finden"
+  const isFirmenumzug = variant.id === 'variant-h'; // Variant H: "Firmenumzug"
   
   // Search results
   const searchResults = searchTerm.trim() ? {
@@ -194,6 +234,42 @@ export const FirmenContent = ({ onClose, searchTerm, setSearchTerm, variant }: M
           <MobileMenuItem to="/ratgeber/umzugscheckliste-download" icon={CheckSquare} title="Umzugscheckliste" emoji="✅" description="Gratis PDF" onClick={onClose} />
           <MobileMenuItem to="/ratgeber/zeitplan" icon={Clock} title="Zeitplan erstellen" emoji="📅" description="Perfekt organisiert" onClick={onClose} />
           <MobileMenuItem to="/ratgeber/kosten" icon={DollarSign} title="Kostenübersicht" emoji="💵" description="Alle Infos" onClick={onClose} />
+        </div>
+      </>
+    );
+  }
+  
+  if (isUmzugsfirmaFinden) {
+    // Variant G: "Umzugsfirma finden" - Direct comparison
+    return (
+      <>
+        <p className="text-xs font-bold text-muted-foreground mb-3 flex items-center gap-2">
+          <Search className="w-4 h-4 text-emerald-500" /> 
+          <span>Vergleiche Firmen & Preise</span>
+        </p>
+        <div className="space-y-1">
+          <MobileMenuItem to="/umzugsofferten" icon={Search} title="Offerten vergleichen" badge="🔥 Gratis" emoji="🔍" description="Bis zu 40% sparen" onClick={onClose} />
+          <MobileMenuItem to="/beste-umzugsfirma" icon={Star} title="Beste Umzugsfirmen" emoji="⭐" description="Top-bewertete Anbieter" onClick={onClose} />
+          <MobileMenuItem to="/guenstige-umzugsfirma" icon={DollarSign} title="Günstigste Firmen" emoji="💰" description="Preis-Leistung" onClick={onClose} />
+          <MobileMenuItem to="/umzugsfirmen-schweiz" icon={MapPin} title="Nach Kanton" emoji="🗺️" description="Alle Regionen" onClick={onClose} />
+        </div>
+      </>
+    );
+  }
+  
+  if (isFirmenumzug) {
+    // Variant H: "Firmenumzug" - Business moves
+    return (
+      <>
+        <p className="text-xs font-bold text-muted-foreground mb-3 flex items-center gap-2">
+          <Briefcase className="w-4 h-4 text-primary" /> 
+          <span>Effiziente Büroumzüge</span>
+        </p>
+        <div className="space-y-1">
+          <MobileMenuItem to="/dienstleistungen/firmenumzug" icon={Briefcase} title="Firmenumzug" badge="Business" emoji="🏢" description="Büro & Geschäft" onClick={onClose} />
+          <MobileMenuItem to="/umzugsofferten" icon={Search} title="Firmenofferte" emoji="📋" description="Kostenlos anfragen" onClick={onClose} />
+          <MobileMenuItem to="/umzugsfirmen-schweiz" icon={MapPin} title="Umzugsfirmen" emoji="🚛" description="Nach Region" onClick={onClose} />
+          <MobileMenuItem to="/dienstleistungen/einlagerung" icon={Box} title="Lagerung" emoji="📦" description="Flexible Einlagerung" onClick={onClose} />
         </div>
       </>
     );

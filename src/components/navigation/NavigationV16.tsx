@@ -6,6 +6,7 @@
  * - Context-Aware CTA Button
  * - Premium animated dropdowns mit Trust-Signals
  * - SEO-optimized structure with microcopy
+ * - Dynamic Mobile Menu based on active variant
  */
 
 import { useState } from "react";
@@ -19,8 +20,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { MobileMenuV11 } from "./MobileMenuV11";
+import { MobileMenuV12 } from "./MobileMenuV12";
+import { MobileMenuV13 } from "./MobileMenuV13";
 import { MobileMenuV16 } from "./MobileMenuV16";
-import { VARIANT_P } from "@/lib/navigation-variants";
+import { MobileMenuNew } from "@/components/MobileMenuNew";
+import { VARIANT_P, getActiveVariant } from "@/lib/navigation-variants";
+import { useNavigationVariant } from "@/hooks/useNavigationVariant";
 
 interface NavItem {
   icon: React.ElementType;
@@ -112,6 +118,7 @@ export const NavigationV16 = () => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const navVariant = useNavigationVariant();
 
   // Context-aware CTA label based on current page
   const getCtaLabel = () => {
@@ -120,6 +127,42 @@ export const NavigationV16 = () => {
     if (location.pathname.includes('entsorgung')) return 'Entsorgungsofferte';
     if (location.pathname.includes('firmenumzug')) return 'Firmenofferte';
     return VARIANT_P.labels.cta;
+  };
+
+  // Render the appropriate mobile menu based on active variant
+  const renderMobileMenu = () => {
+    const variantId = navVariant.id;
+    
+    // Map variants to their dedicated mobile menus
+    // Varianten 1-10 (ultimate, variant-b bis variant-j) -> MobileMenuNew (dynamischer Content)
+    // Diese nutzen MobileMenuVariantContent für variantenspezifischen Inhalt
+    if (['ultimate', 'variant-b', 'variant-c', 'variant-d', 'variant-e', 
+         'variant-f', 'variant-g', 'variant-h', 'variant-i', 'variant-j'].includes(variantId)) {
+      return <MobileMenuNew isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />;
+    }
+    
+    // variant-k (11. Simpel & Clean) -> MobileMenuV11
+    if (variantId === 'variant-k') {
+      return <MobileMenuV11 isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />;
+    }
+    // variant-l (12. Best-of-Breed) -> MobileMenuV12
+    if (variantId === 'variant-l') {
+      return <MobileMenuV12 isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />;
+    }
+    // variant-m (13. Progressive Disclosure) -> MobileMenuV13
+    if (variantId === 'variant-m') {
+      return <MobileMenuV13 isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />;
+    }
+    // variant-n (14. Aggressive Funnel) -> MobileMenuNew (dynamic content)
+    if (variantId === 'variant-n') {
+      return <MobileMenuNew isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />;
+    }
+    // variant-o (15. Swiss Premium) -> MobileMenuNew (dynamic content)
+    if (variantId === 'variant-o') {
+      return <MobileMenuNew isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />;
+    }
+    // Default: MobileMenuV16 for variant-p (16. SEO-Optimiert)
+    return <MobileMenuV16 isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />;
   };
 
   return (
@@ -319,8 +362,8 @@ export const NavigationV16 = () => {
         </div>
       </header>
 
-      {/* Mobile Menu */}
-      <MobileMenuV16 isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
+      {/* Mobile Menu - Dynamic based on variant */}
+      {renderMobileMenu()}
     </>
   );
 };
