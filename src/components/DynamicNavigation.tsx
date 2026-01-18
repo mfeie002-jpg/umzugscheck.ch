@@ -17,16 +17,17 @@ import { useNavigationVariant } from "@/hooks/useNavigationVariant";
 export const DynamicNavigation = () => {
   const variant = useNavigationVariant();
 
+  // variant-17 uses NavigationV17
   if (variant.id === "variant-17") {
     return <NavigationV17 />;
   }
 
-  // variant-o (N15 / ChatGPT Feedback v15) uses NavigationV15
+  // variant-o (N15 / ChatGPT Feedback v15) uses NavigationV15 (with emojis)
   if (variant.id === "variant-o") {
     return <NavigationV15 />;
   }
 
-  // Default to NavigationV15 (with emojis) for better UX
-  return <NavigationV15 />;
+  // All other variants use NavigationV16
+  return <NavigationV16 />;
 };
 
