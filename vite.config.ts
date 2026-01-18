@@ -86,6 +86,7 @@ export default defineConfig(({ mode }) => ({
     chatgptExportPlugin(),
     VitePWA({
       registerType: 'autoUpdate',
+      injectRegister: null,
       devOptions: { enabled: false },
       includeAssets: ['favicon.ico', 'robots.txt', 'lovable-uploads/**/*'],
       manifest: {
@@ -106,6 +107,8 @@ export default defineConfig(({ mode }) => ({
         ]
       },
       workbox: {
+        clientsClaim: true,
+        skipWaiting: true,
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MB
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
         runtimeCaching: [
