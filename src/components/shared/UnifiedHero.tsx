@@ -287,9 +287,16 @@ export const UnifiedHero = ({
                 </p>
               </div>
 
-              {/* Tabs - Video/Form like Homepage */}
-              <Tabs defaultValue={showVideoOption ? "video" : "form"} className="w-full">
+              {/* Tabs - Form default, Video as option */}
+              <Tabs defaultValue="form" className="w-full">
                 <TabsList className="grid w-full grid-cols-2 h-12 p-1 bg-muted/50 mb-4">
+                  <TabsTrigger 
+                    value="form" 
+                    className="text-sm font-medium gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-white h-full rounded-lg"
+                  >
+                    <FileText className="h-4 w-4" />
+                    Formular
+                  </TabsTrigger>
                   {showVideoOption && (
                     <TabsTrigger 
                       value="video" 
@@ -297,15 +304,11 @@ export const UnifiedHero = ({
                     >
                       <Video className="h-4 w-4" />
                       Video/Fotos
+                      <span className="ml-1 px-1.5 py-0.5 text-[10px] bg-secondary/20 text-secondary rounded font-normal">
+                        NEU
+                      </span>
                     </TabsTrigger>
                   )}
-                  <TabsTrigger 
-                    value="form" 
-                    className={`text-sm font-medium gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-white h-full rounded-lg ${!showVideoOption ? 'col-span-2' : ''}`}
-                  >
-                    <FileText className="h-4 w-4" />
-                    Formular
-                  </TabsTrigger>
                 </TabsList>
                 
                 {/* Video Tab */}
@@ -350,8 +353,24 @@ export const UnifiedHero = ({
                   </TabsContent>
                 )}
                 
-                {/* Form Tab */}
+                {/* Form Tab - with Video Hint */}
                 <TabsContent value="form" className="space-y-3">
+                  {/* Video Hint Banner */}
+                  {showVideoOption && (
+                    <Link to="/video-offerte" className="block group">
+                      <div className="flex items-center gap-3 p-2.5 bg-secondary/10 hover:bg-secondary/15 rounded-lg border border-secondary/20 transition-colors">
+                        <div className="w-8 h-8 rounded-lg bg-secondary/20 flex items-center justify-center flex-shrink-0">
+                          <Video className="h-4 w-4 text-secondary" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-medium text-foreground">Schneller mit Video?</p>
+                          <p className="text-[10px] text-muted-foreground">KI berechnet automatisch</p>
+                        </div>
+                        <ArrowRight className="h-4 w-4 text-secondary group-hover:translate-x-0.5 transition-transform flex-shrink-0" />
+                      </div>
+                    </Link>
+                  )}
+                  
                   <p className="text-xs text-muted-foreground text-center">
                     Schritt 1 von 4 · Dauer ca. 2 Minuten
                   </p>
