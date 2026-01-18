@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Calendar, FileText, Truck, Key, CheckCircle, Clock, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { SmartCTAButton } from "@/components/conversion/SmartCTAButton";
 
 const timelineSteps = [
   {
@@ -103,18 +104,21 @@ export const PremiumMovingTimeline = () => {
             <p className="text-muted-foreground mb-6">
               Planen Sie Ihren Umzug noch detaillierter mit unserer interaktiven Checkliste
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Button asChild size="lg" className="gap-2">
                 <Link to="/umzug-planen/checkliste">
                   Zur Umzugs-Checkliste
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="lg">
-                <Link to="/umzugsofferten">
-                  Jetzt Offerten erhalten
-                </Link>
-              </Button>
+              <div className="w-full sm:w-auto max-w-xs">
+                <SmartCTAButton 
+                  to="/umzugsofferten" 
+                  location="timeline-cta" 
+                  size="lg"
+                  showSubtext={false}
+                />
+              </div>
             </div>
           </motion.div>
         </div>
