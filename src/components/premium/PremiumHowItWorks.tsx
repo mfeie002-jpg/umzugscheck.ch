@@ -6,6 +6,7 @@ import step1Img from "@/assets/step-1-form.jpg";
 import step2Img from "@/assets/step-2-analysis.jpg";
 import step3Img from "@/assets/step-3-choose.jpg";
 import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
+import { SmartCTAButton } from "@/components/conversion/SmartCTAButton";
 
 const steps = [
   {
@@ -249,13 +250,13 @@ export const PremiumHowItWorks = () => {
         {/* CTA */}
         {isScreenshot ? (
           <div className="text-center">
-            <Link to="/umzugsofferten">
-              <Button size="lg" className="h-11 sm:h-12 md:h-14 px-5 sm:px-8 md:px-10 text-sm sm:text-base md:text-lg font-semibold shadow-cta hover:shadow-lift transition-all group">
-                <CheckCircle2 className="mr-2 h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
-                Jetzt checken lassen
-                <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
-              </Button>
-            </Link>
+            <div className="max-w-md mx-auto">
+              <SmartCTAButton 
+                to="/umzugsofferten" 
+                location="how-it-works" 
+                size="xl"
+              />
+            </div>
             <p className="mt-3 text-xs sm:text-sm text-muted-foreground">
               100% kostenlos & unverbindlich – dauert nur 2 Minuten
             </p>
@@ -268,13 +269,13 @@ export const PremiumHowItWorks = () => {
             transition={{ duration: 0.4, delay: 0.5 }}
             className="text-center"
           >
-            <Link to="/umzugsofferten">
-              <Button size="lg" className="h-11 sm:h-12 md:h-14 px-5 sm:px-8 md:px-10 text-sm sm:text-base md:text-lg font-semibold shadow-cta hover:shadow-lift transition-all group">
-                <CheckCircle2 className="mr-2 h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
-                Jetzt checken lassen
-                <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
-              </Button>
-            </Link>
+            <div className="max-w-md mx-auto">
+              <SmartCTAButton 
+                to="/umzugsofferten" 
+                location="how-it-works" 
+                size="xl"
+              />
+            </div>
             <p className="mt-3 text-xs sm:text-sm text-muted-foreground">
               100% kostenlos & unverbindlich – dauert nur 2 Minuten
             </p>
