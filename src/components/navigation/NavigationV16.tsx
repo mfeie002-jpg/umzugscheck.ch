@@ -174,12 +174,13 @@ export const NavigationV16 = () => {
         {/* Warm accent line */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-emerald-500 to-primary/60" />
         
-        <div className="container max-w-full flex h-16 items-center justify-between px-4 xl:px-6">
-          {/* Logo */}
-          <HeaderLogo size="md" showTagline={true} className="group" />
+        <div className="container max-w-full flex h-16 items-center justify-between px-3 sm:px-4 xl:px-6">
+          {/* Logo - Hide tagline on tablet for space */}
+          <HeaderLogo size="md" showTagline={false} className="group xl:hidden" />
+          <HeaderLogo size="md" showTagline={true} className="group hidden xl:flex" />
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1 flex-shrink min-w-0">
+          {/* Desktop Navigation - Only show from xl breakpoint */}
+          <nav className="hidden xl:flex items-center gap-1 flex-shrink min-w-0">
             {NAV_SECTIONS.map((section) => (
               <div
                 key={section.id}
@@ -323,8 +324,8 @@ export const NavigationV16 = () => {
 
           {/* Right Side: CTA + Mobile Menu */}
           <div className="flex items-center gap-2 xl:gap-3 flex-shrink-0">
-            {/* Desktop CTA - Context-Aware */}
-            <div className="hidden lg:flex flex-col items-end flex-shrink-0">
+            {/* Desktop CTA - Context-Aware (xl+) */}
+            <div className="hidden xl:flex flex-col items-end flex-shrink-0">
               <Button asChild className="h-11 px-6 font-bold gap-2 rounded-xl bg-gradient-to-r from-secondary via-secondary to-secondary/90 hover:from-secondary/90 hover:to-secondary shadow-lg shadow-secondary/20 hover:shadow-xl hover:shadow-secondary/30 transition-all hover:scale-105">
                 <Link to={flowPath}>
                   <Zap className="w-4 h-4" />
@@ -334,12 +335,31 @@ export const NavigationV16 = () => {
               <span className="text-[10px] text-muted-foreground mt-1">Gratis & unverbindlich</span>
             </div>
 
+            {/* Tablet CTA (lg only) - Compact but visible */}
+            <Button asChild className="hidden lg:flex xl:hidden h-10 px-4 font-semibold gap-1.5 rounded-lg bg-gradient-to-r from-secondary to-secondary/90 text-secondary-foreground shadow-md shadow-secondary/20">
+              <Link to={flowPath}>
+                <Zap className="w-4 h-4" />
+                Offerte
+              </Link>
+            </Button>
+
             {/* Mobile CTA - RED (secondary) for maximum visibility */}
             <Button asChild size="sm" className="lg:hidden h-9 px-3 font-semibold gap-1.5 rounded-lg bg-gradient-to-r from-secondary to-secondary/90 text-secondary-foreground shadow-md shadow-secondary/20 hover:shadow-secondary/30">
               <Link to={flowPath}>
                 <Zap className="w-4 h-4" />
                 Offerten
               </Link>
+            </Button>
+
+            {/* Tablet Menu Button (lg) */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="hidden lg:flex xl:hidden h-10 w-10 hover:bg-primary/10"
+              onClick={() => setMobileMenuOpen(true)}
+            >
+              <Menu className="h-5 w-5" />
+              <span className="sr-only">Menü öffnen</span>
             </Button>
 
             {/* Mobile Menu Button */}
