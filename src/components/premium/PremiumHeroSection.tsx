@@ -154,7 +154,7 @@ export const PremiumHeroSection = () => {
   const screenshotMode = isScreenshotRenderMode();
   const heroHeightClass = screenshotMode
     ? "min-h-[700px]" // Fixed height for screenshots
-    : "min-h-[90svh] sm:min-h-[85vh] md:min-h-[85vh]";
+    : "min-h-[85svh] sm:min-h-[85vh] md:min-h-[85vh]";
 
   return (
     <section ref={sectionRef} className={`relative ${heroHeightClass} flex items-center overflow-hidden pt-16 sm:pt-0`} style={{ position: 'relative' }}>
@@ -311,10 +311,10 @@ export const PremiumHeroSection = () => {
       {/* Grid Pattern Overlay */}
       <GridPattern className="hidden md:block" size={32} fade />
       
-      {/* Content Container */}
-      <div className="container mx-auto px-4 sm:px-6 pt-0 pb-4 sm:py-6 md:py-20 lg:py-24 relative z-10">
+      {/* Content Container - Minimal top padding on mobile for above-the-fold CTA */}
+      <div className="container mx-auto px-3 sm:px-6 pt-0 pb-3 sm:py-6 md:py-20 lg:py-24 relative z-10">
         {/* Mobile: Form first, Desktop: Text first */}
-        <div className="grid lg:grid-cols-2 gap-6 lg:gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-12 items-center">
           
           {/* Left Column - Text & CTAs */}
           <motion.div 
@@ -418,14 +418,14 @@ export const PremiumHeroSection = () => {
             }}
             className="order-1 lg:order-2"
           >
-            <div className="bg-card rounded-xl md:rounded-2xl shadow-xl border border-border p-4 sm:p-5 md:p-8 relative">
-              <div className="space-y-3 sm:space-y-4 md:space-y-5">
+            <div className="bg-card rounded-xl md:rounded-2xl shadow-xl border border-border p-3 sm:p-5 md:p-8 relative">
+              <div className="space-y-2.5 sm:space-y-4 md:space-y-5">
                 {/* Form Header - Friendly, not pushy */}
-                <div className="text-center space-y-1 md:space-y-2">
-                  <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground">
+                <div className="text-center space-y-0.5 md:space-y-2">
+                  <h2 className="text-base sm:text-xl md:text-2xl font-bold text-foreground">
                     Wie möchten Sie starten?
                   </h2>
-                  <p className="text-xs sm:text-sm text-muted-foreground">
+                  <p className="text-[11px] sm:text-sm text-muted-foreground">
                     Wählen Sie Ihre bevorzugte Methode
                   </p>
                 </div>
