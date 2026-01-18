@@ -113,31 +113,30 @@ export const NavigationV15 = () => {
   return (
     <>
       <header className="sticky top-0 z-[9998] w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto px-4 lg:px-6 flex h-16 items-center justify-between">
+        <div className="container mx-auto px-4 lg:px-6 flex h-16 items-center justify-between gap-2">
           {/* Logo */}
-          <HeaderLogo size="md" />
-
+          <HeaderLogo size="md" showTagline={false} className="flex-shrink-0" />
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex flex-1 items-center justify-center gap-1.5 min-w-0">
+          <nav className="hidden lg:flex items-center justify-center gap-0.5 xl:gap-1 2xl:gap-2 flex-1 min-w-0 overflow-hidden">
             {navStructure.map((section) => (
               <div
                 key={section.label}
-                className="relative"
+                className="relative flex-shrink-0"
                 onMouseEnter={() => setActiveDropdown(section.label)}
                 onMouseLeave={() => setActiveDropdown(null)}
               >
                 <button
                   className={cn(
-                    "flex items-center gap-2 px-3 py-2 h-10 text-sm font-medium rounded-lg transition-colors whitespace-nowrap",
+                    "flex items-center gap-1 xl:gap-1.5 px-2 xl:px-3 py-2 h-10 text-xs xl:text-sm font-medium rounded-lg transition-colors whitespace-nowrap",
                     "hover:bg-accent hover:text-accent-foreground",
                     activeDropdown === section.label && "bg-accent text-accent-foreground"
                   )}
                 >
-                  <span className="text-base leading-none" aria-hidden="true">{section.emoji}</span>
+                  <span className="text-sm xl:text-base leading-none hidden xl:inline" aria-hidden="true">{section.emoji}</span>
                   <span className="leading-none">{section.label}</span>
                   <ChevronDown className={cn(
-                    "h-4 w-4 transition-transform duration-200",
+                    "h-3 w-3 xl:h-4 xl:w-4 transition-transform duration-200 flex-shrink-0",
                     activeDropdown === section.label && "rotate-180"
                   )} />
                 </button>
@@ -201,14 +200,15 @@ export const NavigationV15 = () => {
           </nav>
 
           {/* Desktop CTA - RED (secondary) */}
-          <div className="hidden lg:flex items-center gap-3">
-            <Link to="/anbieter" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+          <div className="hidden lg:flex items-center gap-2 xl:gap-3 flex-shrink-0">
+            <Link to="/anbieter" className="hidden xl:block text-xs xl:text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap">
               Für Anbieter
             </Link>
-            <Button asChild className="font-semibold gap-2 bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-md shadow-secondary/20">
+            <Button asChild size="sm" className="font-semibold gap-1.5 xl:gap-2 bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-md shadow-secondary/20 text-xs xl:text-sm px-3 xl:px-4 whitespace-nowrap">
               <Link to={flowPath}>
-                Kostenlos Offerten erhalten
-                <ArrowRight className="w-4 h-4" />
+                <span className="hidden xl:inline">Kostenlos Offerten erhalten</span>
+                <span className="xl:hidden">Offerten erhalten</span>
+                <ArrowRight className="w-3.5 h-3.5 xl:w-4 xl:h-4" />
               </Link>
             </Button>
           </div>
