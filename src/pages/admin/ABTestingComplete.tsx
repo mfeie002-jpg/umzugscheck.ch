@@ -1,17 +1,18 @@
 /**
  * Complete A/B Testing Admin Page
- * Includes Flow Variants, Navigation Variants, Homepage Sections, and Company Ranking Tests
+ * Includes Unified A/B Control, Flow Variants, Navigation Variants, Homepage Sections, and Company Ranking Tests
  */
 
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { UnifiedABPanel } from "@/components/admin/UnifiedABPanel";
 import { FlowVariantManager } from "@/components/admin/FlowVariantManager";
 import { NavigationVariantManager } from "@/components/admin/NavigationVariantManager";
 import { HomepageSectionManager } from "@/components/admin/HomepageSectionManager";
 import { ABTestManager } from "@/components/admin/ABTestManager";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { FlaskConical, Navigation2, Building2, LayoutGrid } from "lucide-react";
+import { FlaskConical, Navigation2, Building2, LayoutGrid, Zap } from "lucide-react";
 
 export default function ABTestingComplete() {
   const [currentFeatured, setCurrentFeatured] = useState<any[]>([]);
@@ -58,25 +59,33 @@ export default function ABTestingComplete() {
           </p>
         </div>
 
-        <Tabs defaultValue="flows" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-8">
+        <Tabs defaultValue="unified" className="w-full">
+          <TabsList className="grid w-full grid-cols-5 mb-8">
+            <TabsTrigger value="unified" className="flex items-center gap-2">
+              <Zap className="h-4 w-4" />
+              Unified A/B
+            </TabsTrigger>
             <TabsTrigger value="flows" className="flex items-center gap-2">
               <FlaskConical className="h-4 w-4" />
-              Flow Varianten
+              Flow Details
             </TabsTrigger>
             <TabsTrigger value="navigation" className="flex items-center gap-2">
               <Navigation2 className="h-4 w-4" />
-              Navigation
+              Nav Details
             </TabsTrigger>
             <TabsTrigger value="sections" className="flex items-center gap-2">
               <LayoutGrid className="h-4 w-4" />
-              Homepage Sections
+              Sections
             </TabsTrigger>
             <TabsTrigger value="rankings" className="flex items-center gap-2">
               <Building2 className="h-4 w-4" />
-              Firmen-Rankings
+              Rankings
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="unified">
+            <UnifiedABPanel />
+          </TabsContent>
 
           <TabsContent value="flows">
             <FlowVariantManager />

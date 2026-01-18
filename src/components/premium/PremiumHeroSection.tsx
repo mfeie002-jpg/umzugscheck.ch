@@ -16,6 +16,7 @@ import { MagneticButton } from "@/components/common/MagneticButton";
 import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
 import { useSmartAutofocus, useIsDesktop } from "@/hooks/useSmartAutofocus";
 import { useABTest } from "@/hooks/use-ab-test";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 // Animated Counter Component
 const AnimatedCounter = ({ 
@@ -83,6 +84,7 @@ const filterPostalCodes = (query: string) => {
 
 export const PremiumHeroSection = () => {
   const navigate = useNavigate();
+  const flowPath = useFlowPath(); // Get A/B assigned flow path
   const [fromPostal, setFromPostal] = useState("");
   const [toPostal, setToPostal] = useState("");
   const prefersReducedMotion = useReducedMotion();
@@ -144,7 +146,8 @@ export const PremiumHeroSection = () => {
     const params = new URLSearchParams();
     if (fromPostal) params.set("from", fromPostal);
     if (toPostal) params.set("to", toPostal);
-    navigate(`/umzugsofferten?${params.toString()}`);
+    // Use the A/B assigned flow path
+    navigate(`${flowPath}?${params.toString()}`);
   };
 
   // Use fixed height in screenshot mode to prevent vh/svh from exploding with tall viewports
