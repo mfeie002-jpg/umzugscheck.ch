@@ -108,7 +108,7 @@ export const NavigationV15 = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-[9998] w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
@@ -150,50 +150,57 @@ export const NavigationV15 = () => {
 
                 {/* Dropdown */}
                 {activeDropdown === section.label && (
-                  <div className="absolute top-full left-0 pt-2 z-50">
-                    <div className="bg-background border border-border rounded-xl shadow-xl min-w-[380px] p-4 animate-in fade-in-0 slide-in-from-top-2 duration-200">
-                      {/* Tagline */}
-                      <p className="text-sm text-muted-foreground mb-4 pb-3 border-b border-border leading-relaxed">
-                        {section.tagline}
-                      </p>
-                      
-                      {/* Links */}
-                      <div className="space-y-1">
-                        {section.items.map((item) => {
-                          const Icon = item.icon;
-                          return (
-                            <Link
-                              key={item.href}
-                              to={item.href}
-                              className="flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-accent transition-colors group"
-                              onClick={() => setActiveDropdown(null)}
-                            >
-                              <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
-                                <Icon className="h-4 w-4 text-primary" />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <span className="text-sm font-semibold text-foreground block">{item.title}</span>
-                                <span className="text-xs text-muted-foreground line-clamp-1">{item.description}</span>
-                              </div>
-                              <ArrowRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity mt-1" />
-                            </Link>
-                          );
-                        })}
-                      </div>
-
-                      {/* CTA in Dropdown */}
-                      {section.label === "Offerten vergleichen" && (
-                        <div className="mt-4 pt-4 border-t border-border">
-                          <Button asChild className="w-full font-semibold gap-2">
-                            <Link to="/umzugsofferten">
-                              Gratis Offerten holen
-                              <ArrowRight className="w-4 h-4" />
-                            </Link>
-                          </Button>
+                  <>
+                    {/* Backdrop */}
+                    <div 
+                      className="fixed inset-0 bg-black/10 z-[9998]"
+                      onClick={() => setActiveDropdown(null)}
+                    />
+                    <div className="absolute top-full left-0 pt-2 z-[9999]">
+                      <div className="bg-background border border-border rounded-xl shadow-2xl min-w-[380px] p-4 animate-in fade-in-0 slide-in-from-top-2 duration-200">
+                        {/* Tagline */}
+                        <p className="text-sm text-muted-foreground mb-4 pb-3 border-b border-border leading-relaxed">
+                          {section.tagline}
+                        </p>
+                        
+                        {/* Links */}
+                        <div className="space-y-1">
+                          {section.items.map((item) => {
+                            const Icon = item.icon;
+                            return (
+                              <Link
+                                key={item.href}
+                                to={item.href}
+                                className="flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-accent transition-colors group"
+                                onClick={() => setActiveDropdown(null)}
+                              >
+                                <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
+                                  <Icon className="h-4 w-4 text-primary" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <span className="text-sm font-semibold text-foreground block">{item.title}</span>
+                                  <span className="text-xs text-muted-foreground line-clamp-1">{item.description}</span>
+                                </div>
+                                <ArrowRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity mt-1" />
+                              </Link>
+                            );
+                          })}
                         </div>
-                      )}
+
+                        {/* CTA in Dropdown */}
+                        {section.label === "Offerten vergleichen" && (
+                          <div className="mt-4 pt-4 border-t border-border">
+                            <Button asChild className="w-full font-semibold gap-2">
+                              <Link to="/umzugsofferten">
+                                Gratis Offerten holen
+                                <ArrowRight className="w-4 h-4" />
+                              </Link>
+                            </Button>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
+                  </>
                 )}
               </div>
             ))}
