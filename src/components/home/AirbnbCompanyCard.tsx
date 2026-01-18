@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Star, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 interface AirbnbCompanyCardProps {
   id: string;
@@ -28,6 +29,8 @@ export const AirbnbCompanyCard = ({
   badges,
   delay = 0,
 }: AirbnbCompanyCardProps) => {
+  const flowPath = useFlowPath();
+  
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -90,7 +93,7 @@ export const AirbnbCompanyCard = ({
           </div>
 
           {/* CTA */}
-          <Link to="/umzugsofferten">
+          <Link to={flowPath}>
             <Button className="w-full h-12 text-base font-bold group-hover:shadow-accent transition-shadow">
               Offerte anfragen
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />

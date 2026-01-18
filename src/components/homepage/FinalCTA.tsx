@@ -3,8 +3,11 @@ import { motion } from "framer-motion";
 import { CheckCircle, ArrowRight, Shield, Star, Users, Calculator } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 export const FinalCTA = memo(function FinalCTA() {
+  const flowPath = useFlowPath();
+  
   return (
     <section className="py-16 md:py-24 bg-gradient-to-br from-primary via-primary to-primary/90 relative overflow-hidden">
       {/* Background Pattern */}
@@ -49,7 +52,7 @@ export const FinalCTA = memo(function FinalCTA() {
               size="lg" 
               className="bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-cta h-14 px-8 text-base font-semibold"
             >
-              <Link to="/umzugsofferten">
+              <Link to={flowPath}>
                 <CheckCircle className="w-5 h-5 mr-2" />
                 Jetzt Offerten erhalten
                 <ArrowRight className="w-5 h-5 ml-2" />
@@ -61,7 +64,7 @@ export const FinalCTA = memo(function FinalCTA() {
               variant="outline"
               className="bg-white/10 border-white/30 text-white hover:bg-white/20 h-14 px-8 text-base font-medium"
             >
-              <Link to="/umzugsofferten">
+              <Link to={flowPath}>
                 <Calculator className="w-5 h-5 mr-2" />
                 Kosten berechnen
               </Link>

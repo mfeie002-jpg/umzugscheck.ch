@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { MapPin, Video, CheckCircle, ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 interface LocationAwareHowItWorksProps {
   locationName: string;
@@ -21,6 +22,7 @@ export const LocationAwareHowItWorks = memo(({
   variant = 'city',
   exampleCities = []
 }: LocationAwareHowItWorksProps) => {
+  const flowPath = useFlowPath();
   const locationPrefix = variant === 'canton' ? 'im Kanton' : 'in';
   const titleVariant = variant === 'canton' 
     ? `In 3 Schritten zu geprüften Umzugsfirmen ${locationPrefix} ${locationName}`
@@ -110,7 +112,7 @@ export const LocationAwareHowItWorks = memo(({
           className="text-center mt-10"
         >
           <Button size="lg" className="h-14 px-8 gradient-cta text-white shadow-strong" asChild>
-            <Link to="/umzugsofferten">
+            <Link to={flowPath}>
               Jetzt starten – kostenlos
               <ArrowRight className="ml-2 w-5 h-5" />
             </Link>

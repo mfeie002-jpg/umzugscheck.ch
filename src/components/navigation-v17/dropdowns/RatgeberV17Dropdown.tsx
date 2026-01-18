@@ -23,6 +23,7 @@ import { DropdownSection } from "@/components/navigation/DropdownSection";
 import { DropdownCTACard } from "@/components/navigation/DropdownCTACard";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 interface DropdownProps {
   isOpen: boolean;
@@ -43,6 +44,8 @@ const DOWNLOADS = [
 ];
 
 export const RatgeberV17Dropdown = ({ isOpen, onClose }: DropdownProps) => {
+  const flowPath = useFlowPath();
+  
   return (
     <DropdownWrapper isOpen={isOpen} onClose={onClose}>
       <div className="container mx-auto px-4 lg:px-6 py-6 lg:py-8">
@@ -174,7 +177,7 @@ export const RatgeberV17Dropdown = ({ isOpen, onClose }: DropdownProps) => {
                   asChild 
                   className="group w-full h-12 bg-gradient-to-r from-primary via-primary to-primary/90 hover:from-primary/90 hover:via-primary hover:to-primary text-primary-foreground font-bold shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all"
                 >
-                  <Link to="/umzugsofferten" onClick={onClose}>
+                  <Link to={flowPath} onClick={onClose}>
                     Anfrage starten
                     <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                   </Link>

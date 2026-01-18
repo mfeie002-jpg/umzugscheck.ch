@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 interface ServiceItem {
   title: string;
@@ -82,6 +83,7 @@ export const RegionServicesEnhanced = memo(({
   regionSlug,
   variant = 'canton' 
 }: RegionServicesEnhancedProps) => {
+  const flowPath = useFlowPath();
   const locationPrefix = variant === 'canton' ? 'im Kanton' : 'in';
   const urlPrefix = variant === 'canton' ? `kanton-${regionSlug}` : regionSlug;
   
@@ -131,7 +133,7 @@ export const RegionServicesEnhanced = memo(({
                   className="w-full text-xs h-8 gradient-cta text-white"
                   asChild
                 >
-                  <Link to="/umzugsofferten">
+                  <Link to={flowPath}>
                     <FileText className="w-3 h-3 mr-1" />
                     Offerte
                   </Link>
@@ -163,7 +165,7 @@ export const RegionServicesEnhanced = memo(({
             Sie benötigen mehrere Services? Kombinieren Sie und sparen Sie bis zu 20%!
           </p>
           <Button size="lg" asChild className="gradient-cta text-white">
-            <Link to="/umzugsofferten">
+            <Link to={flowPath}>
               Komplettpaket anfragen
               <ArrowRight className="ml-2 w-5 h-5" />
             </Link>

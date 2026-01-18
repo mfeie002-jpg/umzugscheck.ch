@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 interface RegionKomplettpaketProps {
   regionName: string;
@@ -35,6 +36,8 @@ const PAKET_ITEMS = [
 ];
 
 export const RegionKomplettpaket = memo(({ regionName }: RegionKomplettpaketProps) => {
+  const flowPath = useFlowPath();
+  
   return (
     <section id="komplettpaket" className="py-12 scroll-mt-20">
       <div className="container mx-auto px-4">
@@ -115,7 +118,7 @@ export const RegionKomplettpaket = memo(({ regionName }: RegionKomplettpaketProp
                   </p>
                 </div>
                 <Button size="lg" asChild className="shrink-0">
-                  <Link to="/umzugsofferten" className="flex items-center gap-2">
+                  <Link to={flowPath} className="flex items-center gap-2">
                     Jetzt Offerten erhalten
                     <ArrowRight className="h-4 w-4" />
                   </Link>
