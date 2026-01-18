@@ -83,7 +83,7 @@ export const OffertenVergleichenDropdown = ({ isOpen, onClose }: DropdownProps) 
                     transition={{ delay: 0.1 + idx * 0.03 }}
                   >
                     <Link
-                      to={`/regionen/${region.slug}`}
+                      to={`/umzugsfirmen/kanton-${region.slug}`}
                       onClick={onClose}
                       className={cn(
                         "group flex items-center gap-2.5 p-3 rounded-xl transition-all",

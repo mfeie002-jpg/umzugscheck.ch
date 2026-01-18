@@ -549,6 +549,7 @@ const AppRouterContent = () => {
           <Route path="/vergleich" element={<Compare />} />
           <Route path="/firmen-vergleich" element={<CompanyComparison />} />
           <Route path="/regionen" element={<RegionenOverview />} />
+          <Route path="/regionen/:slug" element={<RegionArchetypPage />} />
           <Route path="/fuer-firmen" element={<FuerFirmen />} />
           <Route path="/kanton/:slug" element={<RegionArchetypPage />} />
           <Route path="/umzug/:slug" element={<RegionArchetypPage />} />
