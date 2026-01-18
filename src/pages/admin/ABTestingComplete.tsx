@@ -1,16 +1,17 @@
 /**
  * Complete A/B Testing Admin Page
- * Includes Flow Variants, Navigation Variants, and Company Ranking Tests
+ * Includes Flow Variants, Navigation Variants, Homepage Sections, and Company Ranking Tests
  */
 
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FlowVariantManager } from "@/components/admin/FlowVariantManager";
 import { NavigationVariantManager } from "@/components/admin/NavigationVariantManager";
+import { HomepageSectionManager } from "@/components/admin/HomepageSectionManager";
 import { ABTestManager } from "@/components/admin/ABTestManager";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { FlaskConical, Navigation2, Building2 } from "lucide-react";
+import { FlaskConical, Navigation2, Building2, LayoutGrid } from "lucide-react";
 
 export default function ABTestingComplete() {
   const [currentFeatured, setCurrentFeatured] = useState<any[]>([]);
@@ -53,12 +54,12 @@ export default function ABTestingComplete() {
             A/B Testing Center
           </h1>
           <p className="text-muted-foreground mt-2">
-            Verwalten Sie alle A/B Tests: Flow-Varianten, Navigation und Firmen-Rankings
+            Verwalten Sie alle A/B Tests: Flow-Varianten, Navigation, Homepage-Sektionen und Firmen-Rankings
           </p>
         </div>
 
         <Tabs defaultValue="flows" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-8">
+          <TabsList className="grid w-full grid-cols-4 mb-8">
             <TabsTrigger value="flows" className="flex items-center gap-2">
               <FlaskConical className="h-4 w-4" />
               Flow Varianten
@@ -66,6 +67,10 @@ export default function ABTestingComplete() {
             <TabsTrigger value="navigation" className="flex items-center gap-2">
               <Navigation2 className="h-4 w-4" />
               Navigation
+            </TabsTrigger>
+            <TabsTrigger value="sections" className="flex items-center gap-2">
+              <LayoutGrid className="h-4 w-4" />
+              Homepage Sections
             </TabsTrigger>
             <TabsTrigger value="rankings" className="flex items-center gap-2">
               <Building2 className="h-4 w-4" />
@@ -79,6 +84,10 @@ export default function ABTestingComplete() {
 
           <TabsContent value="navigation">
             <NavigationVariantManager />
+          </TabsContent>
+
+          <TabsContent value="sections">
+            <HomepageSectionManager />
           </TabsContent>
 
           <TabsContent value="rankings">

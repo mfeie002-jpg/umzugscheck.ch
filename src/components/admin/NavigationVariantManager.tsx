@@ -1,29 +1,40 @@
 /**
  * Navigation Variant Manager - Admin component to manage navigation A/B tests
- * Allows switching between 16 navigation variants
+ * Allows switching between 16+ navigation variants with full reset + active/inactive toggle
  */
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { 
   Navigation2, 
   RefreshCw, 
   Eye, 
   Check,
-  ExternalLink
+  ExternalLink,
+  Power,
+  PowerOff,
+  Trash2
 } from 'lucide-react';
 import { NAV_VARIANTS, type NavConfig, setActiveVariant } from '@/lib/navigation-variants';
 
+const NAV_AB_STORAGE_KEY = 'nav_ab_active';
+
 export function NavigationVariantManager() {
   const [currentVariant, setCurrentVariant] = useState<string | null>(null);
+  const [isActive, setIsActive] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
     const stored = localStorage.getItem('nav-variant');
     setCurrentVariant(stored || 'ultimate');
+    
+    // Check if Nav A/B test is active
+    const activeState = localStorage.getItem(NAV_AB_STORAGE_KEY);
+    setIsActive(activeState !== 'false');
   }, []);
 
   const handleSetVariant = (variantId: string) => {
@@ -51,6 +62,34 @@ export function NavigationVariantManager() {
     setTimeout(() => window.location.reload(), 300);
   };
 
+  const resetAndReassign = () => {
+    // Remove all navigation-related localStorage items
+    localStorage.removeItem('nav-variant');
+    localStorage.removeItem('nav_ab_user_id');
+    sessionStorage.removeItem('nav_ab_session');
+    setCurrentVariant(null);
+    
+    toast({
+      title: 'Navigation zurückgesetzt',
+      description: 'Bei der nächsten Seitenladung wird eine neue Variante zufällig zugewiesen',
+    });
+    
+    // Reload to trigger new random assignment
+    setTimeout(() => window.location.reload(), 500);
+  };
+
+  const toggleABTest = (active: boolean) => {
+    localStorage.setItem(NAV_AB_STORAGE_KEY, active ? 'true' : 'false');
+    setIsActive(active);
+    
+    toast({
+      title: active ? 'Navigation A/B Test aktiviert' : 'Navigation A/B Test deaktiviert',
+      description: active 
+        ? 'Benutzer werden zufällig auf Varianten verteilt' 
+        : 'Alle Benutzer sehen die Standard-Navigation',
+    });
+  };
+
   return (
     <div className="space-y-6">
       {/* Status Card */}
@@ -63,24 +102,54 @@ export function NavigationVariantManager() {
                 Navigation A/B Testing
               </CardTitle>
               <CardDescription>
-                16 Navigations-Varianten für Mobile und Desktop
+                16+ Navigations-Varianten für Mobile und Desktop
               </CardDescription>
             </div>
-            <Button variant="outline" size="sm" onClick={resetVariant}>
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Zurücksetzen
-            </Button>
+            <div className="flex items-center gap-4">
+              <Badge variant={isActive ? 'default' : 'secondary'} className="text-sm">
+                {isActive ? (
+                  <>
+                    <Power className="h-3 w-3 mr-1" />
+                    Aktiv
+                  </>
+                ) : (
+                  <>
+                    <PowerOff className="h-3 w-3 mr-1" />
+                    Inaktiv
+                  </>
+                )}
+              </Badge>
+              <Switch
+                checked={isActive}
+                onCheckedChange={toggleABTest}
+                aria-label="Navigation A/B Test aktivieren"
+              />
+            </div>
           </div>
         </CardHeader>
         <CardContent>
           <div className="bg-muted/50 rounded-lg p-4">
-            <p className="text-sm font-medium">Aktuelle Navigation:</p>
-            <p className="text-lg font-bold text-primary">
-              {NAV_VARIANTS.find(v => v.id === currentVariant)?.name || 'Standard'}
-            </p>
-            <p className="text-xs text-muted-foreground mt-1">
-              Wechseln Sie per URL: ?nav=variant-b oder klicken Sie unten
-            </p>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium">Aktuelle Navigation:</p>
+                <p className="text-lg font-bold text-primary">
+                  {NAV_VARIANTS.find(v => v.id === currentVariant)?.name || 'Standard'}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Wechseln Sie per URL: ?nav=variant-b oder klicken Sie unten
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" onClick={resetVariant}>
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Zurücksetzen
+                </Button>
+                <Button variant="destructive" size="sm" onClick={resetAndReassign}>
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Reset & neu zuweisen
+                </Button>
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -93,20 +162,20 @@ export function NavigationVariantManager() {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {NAV_VARIANTS.map((variant) => {
-              const isActive = currentVariant === variant.id;
+              const isCurrentActive = currentVariant === variant.id;
               
               return (
                 <div
                   key={variant.id}
                   className={`border rounded-lg p-4 transition-all ${
-                    isActive 
+                    isCurrentActive 
                       ? 'border-primary bg-primary/5 ring-2 ring-primary/20' 
                       : 'hover:border-primary/50'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-2">
                     <h4 className="font-semibold text-sm">{variant.name}</h4>
-                    {isActive && (
+                    {isCurrentActive && (
                       <Badge variant="default" className="text-xs">
                         <Check className="h-3 w-3 mr-1" />
                         Aktiv
@@ -141,11 +210,11 @@ export function NavigationVariantManager() {
                       Preview
                     </Button>
                     <Button
-                      variant={isActive ? 'secondary' : 'default'}
+                      variant={isCurrentActive ? 'secondary' : 'default'}
                       size="sm"
                       className="flex-1"
                       onClick={() => handleSetVariant(variant.id)}
-                      disabled={isActive}
+                      disabled={isCurrentActive}
                     >
                       <ExternalLink className="h-3 w-3 mr-1" />
                       Aktivieren
