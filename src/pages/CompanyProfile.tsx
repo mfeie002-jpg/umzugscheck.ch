@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { OptimizedSEO } from "@/components/OptimizedSEO";
 import { ScrollReveal } from "@/components/ScrollReveal";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -36,6 +37,7 @@ import CompanyAwardsSection from "@/components/CompanyAwardsSection";
 export default function CompanyProfile() {
   const { slug } = useParams();
   const [activeTab, setActiveTab] = useState<string>("overview");
+  const flowPath = useFlowPath();
   
   const { data: company, isLoading, error } = useCompanyBySlug(slug || "");
 
@@ -384,7 +386,7 @@ export default function CompanyProfile() {
                             <p className="text-muted-foreground mb-4">
                               Fordern Sie jetzt ein kostenloses Angebot an und vergleichen Sie Preise.
                             </p>
-                            <Link to="/umzugsofferten">
+                            <Link to={flowPath}>
                               <Button size="lg" className="gap-2">
                                 Offerte anfordern
                                 <ChevronRight className="w-4 h-4" />

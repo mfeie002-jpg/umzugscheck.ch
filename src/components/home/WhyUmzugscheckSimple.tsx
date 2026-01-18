@@ -2,6 +2,7 @@ import { Clock, Heart, Award, TrendingUp, Leaf, Package } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 import uspAiTechnology from "@/assets/usp-ai-technology.jpg";
 import uspVerifiedCompanies from "@/assets/usp-verified-companies.jpg";
 import uspPriceTransparency from "@/assets/usp-price-transparency.jpg";
@@ -49,7 +50,7 @@ const usps = [
     description: "Pay-per-Buchung oder qualifizierte Offerte, kein unnützer Lead-Spam. Umzugsfirmen sehen Kosten pro Auftrag, Auftragswert und ROI. Das bedeutet für dich: nur motivierte, qualifizierte Angebote statt 20 Standard-Mails.",
     highlight: "Klarer ROI für Firmen = bessere Offerten für dich",
     ctaText: "Offerten vergleichen",
-    ctaLink: "/umzugsofferten",
+    ctaLink: "FLOW_PATH",
     image: uspPriceTransparency
   },
   {
@@ -77,6 +78,14 @@ const usps = [
 ];
 
 export const WhyUmzugscheckSimple = () => {
+  const flowPath = useFlowPath();
+  
+  // Replace placeholder with actual flow path
+  const uspItems = usps.map(usp => ({
+    ...usp,
+    ctaLink: usp.ctaLink === "FLOW_PATH" ? flowPath : usp.ctaLink
+  }));
+  
   return (
     <section className="py-16 md:py-28 bg-gradient-to-b from-background via-secondary/10 to-background">
       <div className="container mx-auto px-4">
@@ -96,7 +105,7 @@ export const WhyUmzugscheckSimple = () => {
         </motion.div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-7xl mx-auto">
-          {usps.map((usp, index) => (
+          {uspItems.map((usp, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 30 }}

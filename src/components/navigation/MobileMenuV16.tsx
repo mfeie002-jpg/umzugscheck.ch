@@ -395,7 +395,7 @@ export const MobileMenuV16 = ({ isOpen, onClose }: MobileMenuV16Props) => {
                                 transition={{ delay: 0.25 }}
                               >
                                 <Button asChild className="w-full h-13 min-h-[52px] font-bold gap-2 text-base rounded-xl bg-gradient-to-r from-secondary via-secondary to-secondary/90 hover:from-secondary/90 hover:to-secondary shadow-lg shadow-secondary/20">
-                                  <Link to="/umzugsofferten" onClick={onClose}>
+                                  <Link to={flowPath} onClick={onClose}>
                                     <Zap className="w-5 h-5" />
                                     Gratis Offerten holen
                                     <ArrowRight className="w-5 h-5" />
@@ -461,7 +461,7 @@ export const MobileMenuV16 = ({ isOpen, onClose }: MobileMenuV16Props) => {
               {/* Main CTA Button */}
               <div className="px-4 pb-4">
                 <Button asChild className="w-full h-14 min-h-[56px] text-base font-bold gap-3 rounded-2xl bg-gradient-to-r from-secondary via-secondary to-secondary/90 hover:opacity-95 shadow-xl shadow-secondary/25 transition-all active:scale-[0.98]">
-                  <Link to="/umzugsofferten" onClick={onClose}>
+                  <Link to={flowPath} onClick={onClose}>
                     <CheckCircle className="w-5 h-5" />
                     Offerten erhalten
                     <ArrowRight className="w-5 h-5" />

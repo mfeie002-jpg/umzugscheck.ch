@@ -4,6 +4,7 @@ import { Menu, X, ChevronDown, Building2, Sparkles, MapPin, FileText, Users, Tru
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 // Removed redundant "Preisrechner" - CTA button serves this purpose
 const navLinks = [
@@ -71,6 +72,7 @@ export const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const dropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const flowPath = useFlowPath();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -252,7 +254,7 @@ export const Header = () => {
               size="lg"
               className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold shadow-[0_4px_20px_rgba(220,38,38,0.4)] hover:shadow-[0_6px_25px_rgba(220,38,38,0.5)] transition-all"
             >
-              <Link to="/umzugsofferten">
+              <Link to={flowPath}>
                 Kostenlos Offerten erhalten
               </Link>
             </Button>

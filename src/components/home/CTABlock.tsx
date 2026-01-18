@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 interface CTABlockProps {
   title?: string;
@@ -15,6 +16,7 @@ export const CTABlock = ({
   buttonText = "GRATIS OFFERTEN STARTEN",
   buttonLink = "/firmen"
 }: CTABlockProps) => {
+  const flowPath = useFlowPath();
   return (
     <section className="py-16 md:py-20 relative overflow-hidden">
       {/* Gradient Background */}
@@ -51,7 +53,7 @@ export const CTABlock = ({
                 <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
             </Link>
-            <Link to="/umzugsofferten" className="w-full sm:w-auto">
+            <Link to={flowPath} className="w-full sm:w-auto">
               <Button 
                 size="lg"
                 variant="outline"

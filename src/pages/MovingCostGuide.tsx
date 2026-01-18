@@ -1,7 +1,7 @@
 import { Navigation } from "@/components/Navigation";
-
 import { Breadcrumbs, BreadcrumbItem } from "@/components/Breadcrumbs";
 import { OptimizedSEO } from "@/components/OptimizedSEO";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -29,6 +29,7 @@ const breadcrumbItems: BreadcrumbItem[] = [
 ];
 
 const MovingCostGuide = () => {
+  const flowPath = useFlowPath();
   const priceRanges = [
     {
       icon: Home,
@@ -156,7 +157,7 @@ const MovingCostGuide = () => {
               und wie Sie bis zu 40% sparen können.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
-              <Link to="/umzugsofferten">
+              <Link to={flowPath}>
                 <Button size="lg" className="bg-white text-primary hover:bg-white/90 shadow-strong group">
                   <Calculator className="mr-2 w-5 h-5" />
                   Kosten berechnen
