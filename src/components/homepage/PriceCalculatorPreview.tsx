@@ -4,8 +4,10 @@ import { Calculator, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Link } from "react-router-dom";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 export const PriceCalculatorPreview = () => {
+  const flowPath = useFlowPath();
   const [rooms, setRooms] = useState([3]);
   const [distance, setDistance] = useState([20]);
 
@@ -71,7 +73,7 @@ export const PriceCalculatorPreview = () => {
           </p>
         </div>
 
-        <Link to="/umzugsofferten">
+        <Link to={flowPath}>
           <Button className="w-full gap-2 h-10 sm:h-11 text-sm sm:text-base active:scale-[0.98] transition-transform">
             Detaillierte Berechnung
             <ArrowRight className="h-4 w-4" />

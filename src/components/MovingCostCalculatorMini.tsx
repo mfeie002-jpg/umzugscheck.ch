@@ -4,9 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Calculator, ArrowRight, TrendingDown } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 import { motion, AnimatePresence } from "framer-motion";
 
 export const MovingCostCalculatorMini = () => {
+  const flowPath = useFlowPath();
   const [rooms, setRooms] = useState([3]);
   const [distance, setDistance] = useState([25]);
   const [showResult, setShowResult] = useState(false);
@@ -86,7 +88,7 @@ export const MovingCostCalculatorMini = () => {
           )}
         </AnimatePresence>
 
-        <Link to="/umzugsofferten">
+        <Link to={flowPath}>
           <Button className="w-full" size="lg">
             Genaue Offerten erhalten
             <ArrowRight className="h-4 w-4 ml-2" />

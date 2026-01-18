@@ -6,8 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Phone, Calculator, MessageCircle, X, Send, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 export const ZuerichQuickActions = () => {
+  const flowPath = useFlowPath();
   const [showCallback, setShowCallback] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [phone, setPhone] = useState("");
@@ -38,7 +40,7 @@ export const ZuerichQuickActions = () => {
         </motion.div>
 
         <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
-          <Link to="/umzugsofferten">
+          <Link to={flowPath}>
             <Button size="icon" className="h-12 w-12 rounded-full shadow-lg bg-primary hover:bg-primary/90">
               <Calculator className="h-5 w-5" />
             </Button>

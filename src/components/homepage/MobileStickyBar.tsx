@@ -3,8 +3,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Sparkles, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 export const MobileStickyBar = memo(() => {
+  const flowPath = useFlowPath();
   const [isVisible, setIsVisible] = useState(false);
   const [hideOnScroll, setHideOnScroll] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -51,7 +53,7 @@ export const MobileStickyBar = memo(() => {
             {/* Two-button layout for better conversion */}
             <div className="flex gap-2">
               {/* Primary CTA - 48px min touch target */}
-              <Link to="/umzugsofferten" className="flex-1">
+              <Link to={flowPath} className="flex-1">
                 <Button 
                   className="w-full h-14 text-base font-bold bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-cta rounded-xl gap-2 active:scale-[0.98] transition-transform touch-manipulation"
                   style={{ minHeight: '56px' }} // Explicit 56px for accessibility

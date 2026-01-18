@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Check, X, Star, ArrowRight, Crown } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 interface QuoteOption {
   id: string;
@@ -64,6 +65,7 @@ const DEFAULT_QUOTES: QuoteOption[] = [
 ];
 
 export const QuoteComparisonTable = ({ quotes = DEFAULT_QUOTES }: QuoteComparisonTableProps) => {
+  const flowPath = useFlowPath();
   return (
     <Card className="border-border/50 shadow-sm overflow-hidden">
       <CardHeader className="pb-3 bg-muted/30">
@@ -128,7 +130,7 @@ export const QuoteComparisonTable = ({ quotes = DEFAULT_QUOTES }: QuoteCompariso
                 <td className="p-4"></td>
                 {quotes.map((quote) => (
                   <td key={quote.id} className="p-4 text-center">
-                    <Link to="/umzugsofferten">
+                    <Link to={flowPath}>
                       <Button 
                         size="sm" 
                         variant={quote.recommended ? "default" : "outline"}

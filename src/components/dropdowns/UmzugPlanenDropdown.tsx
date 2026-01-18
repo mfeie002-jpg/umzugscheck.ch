@@ -8,6 +8,7 @@
  */
 
 import { Link } from "react-router-dom";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 import { 
   Calculator, 
   CheckSquare, 
@@ -68,6 +69,7 @@ const quickTools = [
 
 export const UmzugPlanenDropdown = ({ isOpen, onClose }: UmzugPlanenDropdownProps) => {
   const navVariant = useNavigationVariant();
+  const flowPath = useFlowPath();
   
   return (
     <DropdownWrapper isOpen={isOpen} onClose={onClose}>
@@ -125,7 +127,7 @@ export const UmzugPlanenDropdown = ({ isOpen, onClose }: UmzugPlanenDropdownProp
                   size="sm" 
                   className="w-full bg-primary hover:bg-primary/90"
                 >
-                  <Link to="/umzugsofferten" onClick={onClose}>
+                  <Link to={flowPath} onClick={onClose}>
                     Jetzt Offerten
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Link>

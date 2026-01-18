@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Check, X, Star, Shield, Clock, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 const comparisonData = [
   { feature: "Kostenlose Offerten", us: true, others: true },
@@ -15,6 +16,7 @@ const comparisonData = [
 ];
 
 export const PremiumCompanyComparison = () => {
+  const flowPath = useFlowPath();
   return (
     <section className="py-16 bg-background">
       <div className="container mx-auto px-4">
@@ -110,7 +112,7 @@ export const PremiumCompanyComparison = () => {
                   </div>
                 </div>
                 <Button asChild>
-                  <Link to="/umzugsofferten">Jetzt vergleichen</Link>
+                  <Link to={flowPath}>Jetzt vergleichen</Link>
                 </Button>
               </div>
             </div>

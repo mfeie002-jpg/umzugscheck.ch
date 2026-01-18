@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Gift, Clock, Percent, ArrowRight, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 interface Deal {
   id: string;
@@ -45,6 +46,7 @@ const SEASONAL_DEALS: Deal[] = [
 ];
 
 export const SeasonalDealsWidget = () => {
+  const flowPath = useFlowPath();
   return (
     <Card className="border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 shadow-sm overflow-hidden">
       <div className="h-1 bg-gradient-to-r from-amber-400 to-orange-400" />
@@ -96,7 +98,7 @@ export const SeasonalDealsWidget = () => {
           </motion.div>
         ))}
         
-        <Link to="/umzugsofferten">
+        <Link to={flowPath}>
           <Button variant="outline" className="w-full mt-2 border-amber-300 hover:bg-amber-50">
             Alle Angebote ansehen
             <ArrowRight className="h-4 w-4 ml-2" />

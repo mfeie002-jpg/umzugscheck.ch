@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { ButtonPremium } from "@/components/ui/button-premium";
 import { Link } from "react-router-dom";
 import { Sparkles, TrendingUp, Shield, ArrowRight } from "lucide-react";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 const benefits = [
   {
@@ -19,6 +20,7 @@ const benefits = [
 ];
 
 export const PremiumAIShowcase = () => {
+  const flowPath = useFlowPath();
   return (
     <section className="section-spacing bg-white">
       <div className="container-premium">
@@ -75,7 +77,7 @@ export const PremiumAIShowcase = () => {
             </div>
 
             <ButtonPremium size="lg" variant="default" asChild>
-              <Link to="/umzugsofferten">
+              <Link to={flowPath}>
                 Jetzt AI-Rechner testen
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Link>

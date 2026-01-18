@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Star, MapPin, Award } from "lucide-react";
 import { Link } from "react-router-dom";
 import { trackProfileView } from "@/lib/monetization-events";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 interface SponsoredCompanyCardProps {
   id: string;
@@ -28,6 +29,7 @@ export const SponsoredCompanyCard = ({
   specialOffer,
   priceLevel,
 }: SponsoredCompanyCardProps) => {
+  const flowPath = useFlowPath();
   return (
     <Card className="p-4 sm:p-6 hover:shadow-lg transition-shadow border-2 border-primary/20 bg-primary/5">
       <div className="flex flex-col sm:flex-row items-start gap-4 mb-4">
@@ -86,7 +88,7 @@ export const SponsoredCompanyCard = ({
             Firma ansehen
           </Button>
         </Link>
-        <Link to="/umzugsofferten" className="w-full">
+        <Link to={flowPath} className="w-full">
           <Button size="lg" className="w-full h-12 sm:h-auto">
             Offerte anfordern
           </Button>

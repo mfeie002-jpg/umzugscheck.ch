@@ -10,6 +10,7 @@
 
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 import { 
   X, 
   Calculator,
@@ -60,6 +61,7 @@ const TRUST_STATS = {
 
 export const MobileMenuV12 = ({ isOpen, onClose }: MobileMenuV12Props) => {
   const location = useLocation();
+  const flowPath = useFlowPath();
   const [openAccordion, setOpenAccordion] = useState<string | undefined>(undefined);
 
   // Reset on open
@@ -106,7 +108,7 @@ export const MobileMenuV12 = ({ isOpen, onClose }: MobileMenuV12Props) => {
         <div className="px-4 py-3 border-b border-border bg-accent/30">
           <div className="flex gap-2">
             <Button asChild className="flex-1 font-semibold">
-              <Link to="/umzugsofferten" onClick={onClose}>
+              <Link to={flowPath} onClick={onClose}>
                 Offerten vergleichen
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Link>

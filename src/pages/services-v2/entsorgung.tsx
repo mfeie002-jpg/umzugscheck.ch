@@ -140,7 +140,6 @@ export default function EntsorgungServicePage() {
     e.preventDefault();
     localStorage.setItem("uc_prefill", JSON.stringify({ location, disposalType, service: SERVICE_SLUG, source: `${SERVICE_SLUG}-landing`, timestamp: Date.now() }));
     navigate(flowPath);
-    navigate("/umzugsofferten");
   };
 
   const handleServiceChange = (value: string) => {
@@ -418,7 +417,7 @@ export default function EntsorgungServicePage() {
                         <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-600" />Maximales Recycling</li>
                         <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-600" />Wertanrechnung möglich</li>
                       </ul>
-                      <Button asChild size="lg" className="w-fit bg-green-600 hover:bg-green-700"><Link to="/umzugsofferten"><Recycle className="mr-2 w-4 h-4" />Umweltgerechte Offerten anfordern</Link></Button>
+                      <Button asChild size="lg" className="w-fit bg-green-600 hover:bg-green-700"><Link to={flowPath}><Recycle className="mr-2 w-4 h-4" />Umweltgerechte Offerten anfordern</Link></Button>
                     </div>
                     <div className="bg-gradient-to-br from-green-100 to-green-50 p-8 flex items-center justify-center">
                       <div className="w-32 h-32 rounded-full bg-green-200 flex items-center justify-center"><Leaf className="w-16 h-16 text-green-600" /></div>
@@ -529,7 +528,7 @@ export default function EntsorgungServicePage() {
               <p className="text-lg text-white/80 mb-8">Vergleichen Sie jetzt kostenlos Offerten von geprüften Entsorgungsfirmen und sparen Sie bis zu 40%.</p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button asChild size="lg" className="bg-white text-green-700 hover:bg-white/90 font-bold text-lg py-6 px-8 shadow-xl">
-                  <Link to="/umzugsofferten">Kostenlos Offerten erhalten<ArrowRight className="ml-2 w-5 h-5" /></Link>
+                  <Link to={flowPath}>Kostenlos Offerten erhalten<ArrowRight className="ml-2 w-5 h-5" /></Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 py-6 px-8">
                   <Link to="/firmen?service=entsorgung">Firmen ansehen</Link>
@@ -547,7 +546,7 @@ export default function EntsorgungServicePage() {
       {showStickyBar && (
         <motion.div initial={{ y: 100 }} animate={{ y: 0 }} className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-card border-t shadow-lg p-4">
           <Button asChild size="lg" className="w-full bg-green-600 hover:bg-green-700 text-white font-bold">
-            <Link to="/umzugsofferten">Kostenlos Offerten erhalten<ArrowRight className="ml-2 w-5 h-5" /></Link>
+            <Link to={flowPath}>Kostenlos Offerten erhalten<ArrowRight className="ml-2 w-5 h-5" /></Link>
           </Button>
         </motion.div>
       )}

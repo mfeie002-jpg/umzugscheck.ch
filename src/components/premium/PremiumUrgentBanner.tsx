@@ -3,8 +3,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { AlertTriangle, Clock, X, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 export const PremiumUrgentBanner = () => {
+  const flowPath = useFlowPath();
   const [isVisible, setIsVisible] = useState(false);
   const [timeLeft, setTimeLeft] = useState({ hours: 2, minutes: 47, seconds: 33 });
 
@@ -71,7 +73,7 @@ export const PremiumUrgentBanner = () => {
                 size="sm"
                 className="bg-white text-red-600 hover:bg-white/90 hidden sm:flex"
               >
-                <Link to="/umzugsofferten">
+                <Link to={flowPath}>
                   Jetzt sichern
                   <ArrowRight className="w-4 h-4 ml-1" />
                 </Link>
