@@ -417,58 +417,83 @@ export const PremiumHeroSection = () => {
           >
             <div className="bg-card rounded-xl md:rounded-2xl shadow-xl border border-border p-4 sm:p-5 md:p-8 relative">
               <div className="space-y-3 sm:space-y-4 md:space-y-5">
-                {/* Form Header - Consistent Primary colors */}
+                {/* Form Header - Friendly, not pushy */}
                 <div className="text-center space-y-1 md:space-y-2">
-                  <div className="inline-flex items-center gap-2 text-xs sm:text-sm text-secondary font-semibold bg-secondary/10 px-3 py-1 rounded-full">
-                    <Video className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                    Empfohlen: Video-Analyse
-                  </div>
                   <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground">
-                    Präzise Offerte in 2 Min.
+                    Wie möchten Sie starten?
                   </h2>
                   <p className="text-xs sm:text-sm text-muted-foreground">
-                    Video hochladen = genauere Preise
+                    Wählen Sie Ihre bevorzugte Methode
                   </p>
                 </div>
                 
-                {/* Video-First Tabs */}
+                {/* Friendly Tabs - Both options feel accessible */}
                 <Tabs defaultValue="video" className="w-full">
-                  <TabsList className="grid w-full grid-cols-2 h-10 sm:h-11">
-                    <TabsTrigger value="video" className="text-xs sm:text-sm font-semibold gap-1.5">
-                      <Video className="h-3.5 w-3.5" />
-                      Video/Fotos
+                  <TabsList className="grid w-full grid-cols-2 h-12 sm:h-14 p-1 bg-muted/50">
+                    <TabsTrigger 
+                      value="video" 
+                      className="text-xs sm:text-sm font-medium gap-1.5 data-[state=active]:bg-secondary data-[state=active]:text-white h-full rounded-lg"
+                    >
+                      <Video className="h-4 w-4" />
+                      <span className="hidden xs:inline">Video/</span>Fotos
+                      <span className="hidden sm:inline-flex ml-1 px-1.5 py-0.5 text-[10px] bg-white/20 rounded font-normal">
+                        Empfohlen
+                      </span>
                     </TabsTrigger>
-                    <TabsTrigger value="form" className="text-xs sm:text-sm gap-1.5">
-                      <FileText className="h-3.5 w-3.5" />
+                    <TabsTrigger 
+                      value="form" 
+                      className="text-xs sm:text-sm font-medium gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-white h-full rounded-lg"
+                    >
+                      <FileText className="h-4 w-4" />
                       Formular
+                      <span className="hidden sm:inline-flex ml-1 px-1.5 py-0.5 text-[10px] bg-black/10 rounded font-normal">
+                        Klassisch
+                      </span>
                     </TabsTrigger>
                   </TabsList>
                   
-                  {/* Video Tab - Primary/Default */}
-                  <TabsContent value="video" className="mt-4 space-y-4">
+                  {/* Video Tab - Friendly, not intimidating */}
+                  <TabsContent value="video" className="mt-4 space-y-3">
                     <Link to="/video-offerte" className="block">
                       <div className="relative group cursor-pointer">
-                        <div className="border-2 border-dashed border-secondary/50 hover:border-secondary rounded-xl p-6 sm:p-8 text-center transition-all bg-secondary/5 hover:bg-secondary/10">
-                          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-secondary/20 flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
-                            <Upload className="h-7 w-7 sm:h-8 sm:w-8 text-secondary" />
+                        <div className="border-2 border-secondary/40 hover:border-secondary rounded-xl p-5 sm:p-6 text-center transition-all bg-gradient-to-br from-secondary/5 to-secondary/10 hover:from-secondary/10 hover:to-secondary/15">
+                          <div className="flex items-center justify-center gap-3 mb-3">
+                            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-secondary/20 flex items-center justify-center group-hover:scale-105 transition-transform">
+                              <Video className="h-5 w-5 sm:h-6 sm:w-6 text-secondary" />
+                            </div>
+                            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-secondary/20 flex items-center justify-center group-hover:scale-105 transition-transform">
+                              <Upload className="h-5 w-5 sm:h-6 sm:w-6 text-secondary" />
+                            </div>
                           </div>
                           <p className="font-semibold text-sm sm:text-base text-foreground mb-1">
                             Video oder Fotos hochladen
                           </p>
-                          <p className="text-xs sm:text-sm text-muted-foreground">
-                            KI analysiert Ihre Wohnung automatisch
+                          <p className="text-xs text-muted-foreground mb-2">
+                            Unsere KI analysiert & berechnet automatisch
                           </p>
-                          <div className="mt-3 inline-flex items-center gap-1.5 text-xs text-secondary font-medium">
-                            <CheckCircle2 className="h-3.5 w-3.5" />
-                            30% genauere Offerten
+                          <div className="flex flex-wrap items-center justify-center gap-2 text-xs">
+                            <span className="inline-flex items-center gap-1 text-secondary font-medium bg-secondary/10 px-2 py-1 rounded-full">
+                              <CheckCircle2 className="h-3 w-3" />
+                              Schneller
+                            </span>
+                            <span className="inline-flex items-center gap-1 text-secondary font-medium bg-secondary/10 px-2 py-1 rounded-full">
+                              <CheckCircle2 className="h-3 w-3" />
+                              Genauer
+                            </span>
                           </div>
                         </div>
                       </div>
                     </Link>
                     
-                    {/* Secondary Options (smaller) */}
-                    <div className="flex items-center justify-center gap-3 pt-2">
-                      <span className="text-xs text-muted-foreground">Oder:</span>
+                    {/* Privacy reassurance */}
+                    <div className="flex items-center justify-center gap-2 text-[10px] sm:text-xs text-muted-foreground">
+                      <Shield className="h-3 w-3 text-primary" />
+                      <span>100% sicher · Nur für Ihre Offerte · Wird nicht gespeichert</span>
+                    </div>
+                    
+                    {/* Secondary Options */}
+                    <div className="flex items-center justify-center gap-3 pt-1 border-t border-border/50">
+                      <span className="text-xs text-muted-foreground">Direkt kontaktieren:</span>
                       <a 
                         href="https://wa.me/41445551234?text=Hallo%2C%20ich%20m%C3%B6chte%20eine%20Umzugsofferte"
                         target="_blank"
@@ -478,7 +503,6 @@ export const PremiumHeroSection = () => {
                         <MessageCircle className="h-3.5 w-3.5" />
                         WhatsApp
                       </a>
-                      <span className="text-muted-foreground">•</span>
                       <a 
                         href="tel:+41445551234"
                         className="inline-flex items-center gap-1.5 text-xs text-primary hover:text-primary/80 font-medium"
