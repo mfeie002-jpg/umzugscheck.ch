@@ -7,6 +7,7 @@ import { memo, useMemo } from "react";
 import { BlurReveal } from "@/components/common/BlurReveal";
 import { GlowingCard } from "@/components/common/GlowingCard";
 import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
+import { SmartCTAButton } from "@/components/conversion/SmartCTAButton";
 
 interface FAQItem {
   question: string;
@@ -112,18 +113,27 @@ export const PremiumFAQ = memo(({ items }: PremiumFAQProps) => {
           )}
 
           {/* Contact CTA with GlowingCard */}
-          <BlurReveal delay={0.2} className="mt-8 flex justify-center">
-            <GlowingCard className="text-center max-w-xs">
-              <MessageCircle className="h-5 w-5 text-primary mx-auto mb-2" aria-hidden="true" />
-              <p className="text-sm font-medium text-foreground mb-1">Noch Fragen?</p>
-              <p className="text-xs text-muted-foreground mb-3">Wir helfen gerne weiter.</p>
-              <Link to="/kontakt">
-                <Button variant="outline" size="sm" className="text-xs h-8 group">
-                  Kontakt
-                  <ArrowRight className="ml-1 h-3 w-3 group-hover:translate-x-0.5 transition-transform" aria-hidden="true" />
-                </Button>
-              </Link>
-            </GlowingCard>
+          <BlurReveal delay={0.2} className="mt-8">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <GlowingCard className="text-center max-w-xs">
+                <MessageCircle className="h-5 w-5 text-primary mx-auto mb-2" aria-hidden="true" />
+                <p className="text-sm font-medium text-foreground mb-1">Noch Fragen?</p>
+                <p className="text-xs text-muted-foreground mb-3">Wir helfen gerne weiter.</p>
+                <Link to="/kontakt">
+                  <Button variant="outline" size="sm" className="text-xs h-8 group">
+                    Kontakt
+                    <ArrowRight className="ml-1 h-3 w-3 group-hover:translate-x-0.5 transition-transform" aria-hidden="true" />
+                  </Button>
+                </Link>
+              </GlowingCard>
+              <div className="w-full sm:w-auto max-w-xs">
+                <SmartCTAButton 
+                  to="/umzugsofferten" 
+                  location="faq" 
+                  size="lg"
+                />
+              </div>
+            </div>
           </BlurReveal>
         </div>
       </div>
