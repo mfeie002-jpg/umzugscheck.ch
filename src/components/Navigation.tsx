@@ -11,6 +11,7 @@ import { FuerFirmenDropdown } from "@/components/dropdowns/FuerFirmenDropdown";
 import { Logo } from "@/components/Logo";
 import { cn } from "@/lib/utils";
 import { useNavigationVariant } from "@/hooks/useNavigationVariant";
+import { useFlowPath } from "@/hooks/useUnifiedAB";
 import { HeaderCallButton, MobileHeaderCallButton, COMPANY_PHONE } from "@/components/CallButton";
 
 // 5 Hauptkategorien gemäß Navigationskonzept 2026
@@ -24,6 +25,7 @@ export const Navigation = () => {
   
   // Get active navigation variant
   const navVariant = useNavigationVariant();
+  const flowPath = useFlowPath();
 
   // Track scroll for enhanced shadow
   useEffect(() => {
@@ -152,7 +154,7 @@ export const Navigation = () => {
               
               {/* Mini CTA for mobile header - compact to avoid overlap */}
               <Link 
-                to="/umzugsofferten" 
+                to={flowPath}
                 className="flex items-center gap-1 bg-secondary text-secondary-foreground text-xs font-bold px-2.5 sm:px-3 py-2 sm:py-2.5 rounded-lg shadow-md shadow-secondary/20 active:scale-95 transition-all min-h-[40px] touch-manipulation"
               >
                 <span>Offerten</span>
@@ -192,7 +194,7 @@ export const Navigation = () => {
                 <span className="font-medium">Gratis & unverbindlich</span>
               </div>
               
-              <Link to="/umzugsofferten" aria-label="Kostenlose Umzugsofferten vergleichen" className="flex-shrink-0">
+              <Link to={flowPath} aria-label="Kostenlose Umzugsofferten vergleichen" className="flex-shrink-0">
                 <Button 
                   size="lg"
                   className="group bg-gradient-to-r from-secondary via-secondary to-secondary/90 hover:from-secondary/90 hover:via-secondary hover:to-secondary text-secondary-foreground font-bold shadow-[0_4px_20px_rgba(220,38,38,0.35)] hover:shadow-[0_8px_30px_rgba(220,38,38,0.45)] transition-all text-sm xl:text-base px-4 xl:px-6 whitespace-nowrap"
