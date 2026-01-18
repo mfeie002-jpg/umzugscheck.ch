@@ -427,25 +427,43 @@ export const PremiumHeroSection = () => {
                   </p>
                 </div>
                 
-                {/* Friendly Tabs - Form is default, Video is highlighted option */}
+                {/* 4 Options: Formular, Video, KI-Chat, WhatsApp */}
                 <Tabs defaultValue="form" className="w-full">
-                  <TabsList className="grid w-full grid-cols-2 h-12 sm:h-14 p-1 bg-muted/50">
+                  <TabsList className="grid w-full grid-cols-4 h-12 sm:h-14 p-1 bg-muted/50">
                     <TabsTrigger 
                       value="form" 
-                      className="text-xs sm:text-sm font-medium gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-white h-full rounded-lg"
+                      className="text-[10px] sm:text-xs font-medium gap-1 data-[state=active]:bg-primary data-[state=active]:text-white h-full rounded-lg px-1 sm:px-2"
                     >
-                      <FileText className="h-4 w-4" />
-                      Formular
+                      <FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                      <span className="hidden xs:inline">Formular</span>
+                      <span className="xs:hidden">Form</span>
                     </TabsTrigger>
                     <TabsTrigger 
                       value="video" 
-                      className="text-xs sm:text-sm font-medium gap-1.5 data-[state=active]:bg-secondary data-[state=active]:text-white h-full rounded-lg"
+                      className="text-[10px] sm:text-xs font-medium gap-1 data-[state=active]:bg-secondary data-[state=active]:text-white h-full rounded-lg px-1 sm:px-2"
                     >
-                      <Video className="h-4 w-4" />
-                      <span className="hidden xs:inline">Video/</span>Fotos
-                      <span className="hidden sm:inline-flex ml-1 px-1.5 py-0.5 text-[10px] bg-secondary/20 rounded font-normal text-secondary">
+                      <Video className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                      <span className="hidden xs:inline">Video</span>
+                      <span className="xs:hidden">Video</span>
+                    </TabsTrigger>
+                    <TabsTrigger 
+                      value="chat" 
+                      className="text-[10px] sm:text-xs font-medium gap-1 data-[state=active]:bg-violet-600 data-[state=active]:text-white h-full rounded-lg px-1 sm:px-2 relative"
+                    >
+                      <MessageCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                      <span className="hidden xs:inline">KI-Chat</span>
+                      <span className="xs:hidden">Chat</span>
+                      <span className="absolute -top-1 -right-1 px-1 py-0.5 text-[8px] bg-violet-600 text-white rounded font-medium hidden sm:inline-flex">
                         NEU
                       </span>
+                    </TabsTrigger>
+                    <TabsTrigger 
+                      value="whatsapp" 
+                      className="text-[10px] sm:text-xs font-medium gap-1 data-[state=active]:bg-green-600 data-[state=active]:text-white h-full rounded-lg px-1 sm:px-2"
+                    >
+                      <MessageCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                      <span className="hidden sm:inline">WhatsApp</span>
+                      <span className="sm:hidden">WA</span>
                     </TabsTrigger>
                   </TabsList>
                   
@@ -506,6 +524,95 @@ export const PremiumHeroSection = () => {
                       >
                         <Phone className="h-3.5 w-3.5" />
                         Anrufen
+                      </a>
+                    </div>
+                  </TabsContent>
+                  
+                  {/* KI-Chat Tab - Conversational experience */}
+                  <TabsContent value="chat" className="mt-4 space-y-3">
+                    <Link to="/umzugsofferten-v2e" className="block">
+                      <div className="relative group cursor-pointer">
+                        <div className="border-2 border-violet-500/40 hover:border-violet-500 rounded-xl p-5 sm:p-6 text-center transition-all bg-gradient-to-br from-violet-500/5 to-violet-500/10 hover:from-violet-500/10 hover:to-violet-500/15">
+                          <div className="flex items-center justify-center gap-3 mb-3">
+                            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-violet-500/20 flex items-center justify-center group-hover:scale-105 transition-transform">
+                              <MessageCircle className="h-5 w-5 sm:h-6 sm:w-6 text-violet-600" />
+                            </div>
+                          </div>
+                          <p className="font-semibold text-sm sm:text-base text-foreground mb-1">
+                            Chat mit KI-Assistent
+                          </p>
+                          <p className="text-xs text-muted-foreground mb-2">
+                            Persönliche Beratung & Offerte in natürlichem Gespräch
+                          </p>
+                          <div className="flex flex-wrap items-center justify-center gap-2 text-xs">
+                            <span className="inline-flex items-center gap-1 text-violet-600 font-medium bg-violet-500/10 px-2 py-1 rounded-full">
+                              <CheckCircle2 className="h-3 w-3" />
+                              Persönlich
+                            </span>
+                            <span className="inline-flex items-center gap-1 text-violet-600 font-medium bg-violet-500/10 px-2 py-1 rounded-full">
+                              <CheckCircle2 className="h-3 w-3" />
+                              24/7 verfügbar
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                    
+                    <div className="flex items-center justify-center gap-2 text-[10px] sm:text-xs text-muted-foreground">
+                      <Shield className="h-3 w-3 text-violet-600" />
+                      <span>Schweizer Qualität · Kostenlos · Unverbindlich</span>
+                    </div>
+                  </TabsContent>
+                  
+                  {/* WhatsApp Tab - Direct contact */}
+                  <TabsContent value="whatsapp" className="mt-4 space-y-3">
+                    <a 
+                      href="https://wa.me/41445551234?text=Hallo%2C%20ich%20m%C3%B6chte%20eine%20Umzugsofferte%20erhalten.%20Bitte%20kontaktieren%20Sie%20mich."
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block"
+                    >
+                      <div className="relative group cursor-pointer">
+                        <div className="border-2 border-green-500/40 hover:border-green-500 rounded-xl p-5 sm:p-6 text-center transition-all bg-gradient-to-br from-green-500/5 to-green-500/10 hover:from-green-500/10 hover:to-green-500/15">
+                          <div className="flex items-center justify-center gap-3 mb-3">
+                            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-green-500/20 flex items-center justify-center group-hover:scale-105 transition-transform">
+                              <MessageCircle className="h-5 w-5 sm:h-6 sm:w-6 text-green-600" />
+                            </div>
+                          </div>
+                          <p className="font-semibold text-sm sm:text-base text-foreground mb-1">
+                            Direkt via WhatsApp
+                          </p>
+                          <p className="text-xs text-muted-foreground mb-2">
+                            Persönlicher Kontakt – Antwort in wenigen Minuten
+                          </p>
+                          <div className="flex flex-wrap items-center justify-center gap-2 text-xs">
+                            <span className="inline-flex items-center gap-1 text-green-600 font-medium bg-green-500/10 px-2 py-1 rounded-full">
+                              <CheckCircle2 className="h-3 w-3" />
+                              Sofort
+                            </span>
+                            <span className="inline-flex items-center gap-1 text-green-600 font-medium bg-green-500/10 px-2 py-1 rounded-full">
+                              <Phone className="h-3 w-3" />
+                              Persönlich
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </a>
+                    
+                    <div className="flex items-center justify-center gap-2 text-[10px] sm:text-xs text-muted-foreground">
+                      <Shield className="h-3 w-3 text-green-600" />
+                      <span>Direkte Antwort · Mo-Fr 8-18 Uhr · Sa 9-15 Uhr</span>
+                    </div>
+                    
+                    {/* Alternative: Anrufen */}
+                    <div className="flex items-center justify-center gap-3 pt-2 border-t border-border/50">
+                      <span className="text-xs text-muted-foreground">Oder direkt anrufen:</span>
+                      <a 
+                        href="tel:+41445551234"
+                        className="inline-flex items-center gap-1.5 text-xs text-primary hover:text-primary/80 font-medium"
+                      >
+                        <Phone className="h-3.5 w-3.5" />
+                        +41 44 555 12 34
                       </a>
                     </div>
                   </TabsContent>
