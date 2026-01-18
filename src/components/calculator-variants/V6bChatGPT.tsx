@@ -525,7 +525,7 @@ function VideoScanStep({
               <ul className="text-sm text-muted-foreground space-y-1">
                 <li>📱 Filmen Sie einen Rundgang durch Ihre Wohnung</li>
                 <li>🤖 Unsere KI erkennt Möbel automatisch</li>
-                <li>💰 Sie erhalten einen noch genaueren Fixpreis</li>
+                <li>💰 Präzise Analyse = <strong>bis 40% sparen</strong></li>
               </ul>
             </div>
           </div>
