@@ -1,11 +1,12 @@
 import { motion } from "framer-motion";
+import { Shield, Lock, Award, CheckCircle, Handshake } from "lucide-react";
 
 const badges = [
-  { emoji: "🛡️", label: "Versicherte Partner", bg: "bg-green-50 dark:bg-green-950/30" },
-  { emoji: "🔒", label: "SSL Verschlüsselt", bg: "bg-blue-50 dark:bg-blue-950/30" },
-  { emoji: "🏆", label: "Top bewertet", bg: "bg-amber-50 dark:bg-amber-950/30" },
-  { emoji: "✅", label: "Geprüfte Firmen", bg: "bg-secondary/10" },
-  { emoji: "🤝", label: "Unabhängig", bg: "bg-purple-50 dark:bg-purple-950/30" },
+  { icon: Shield, label: "Versicherte Partner", bg: "bg-green-50 dark:bg-green-950/30" },
+  { icon: Lock, label: "SSL Verschlüsselt", bg: "bg-blue-50 dark:bg-blue-950/30" },
+  { icon: Award, label: "Top bewertet", bg: "bg-amber-50 dark:bg-amber-950/30" },
+  { icon: CheckCircle, label: "Geprüfte Firmen", bg: "bg-secondary/10" },
+  { icon: Handshake, label: "Unabhängig", bg: "bg-purple-50 dark:bg-purple-950/30" },
 ];
 
 export const TrustBadges = () => {
@@ -33,8 +34,8 @@ export const TrustBadges = () => {
               whileHover={{ scale: 1.05, y: -2 }}
               className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl ${badge.bg} border border-border/50 shadow-sm hover:shadow-md transition-all duration-300 cursor-default`}
             >
-              <div className={`w-8 h-8 rounded-lg ${badge.bg} flex items-center justify-center text-lg`}>
-                {badge.emoji}
+              <div className={`w-8 h-8 rounded-lg ${badge.bg} flex items-center justify-center`}>
+                <badge.icon className="w-4 h-4 text-primary" />
               </div>
               <span className="font-medium text-sm text-foreground">{badge.label}</span>
             </motion.div>

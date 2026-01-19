@@ -1,23 +1,24 @@
 import { motion } from "framer-motion";
+import { Shield, CheckCircle, Clock, BadgeSwissFranc } from "lucide-react";
 
 const guarantees = [
   {
-    emoji: "🛡️",
+    icon: Shield,
     title: "100% Versichert",
     description: "Alle Partner sind vollversichert"
   },
   {
-    emoji: "✅",
+    icon: CheckCircle,
     title: "Geprüfte Firmen",
     description: "Strenger Qualitätscheck"
   },
   {
-    emoji: "⏰",
+    icon: Clock,
     title: "24h Antwort",
     description: "Schnelle Rückmeldung garantiert"
   },
   {
-    emoji: "💰",
+    icon: BadgeSwissFranc,
     title: "Bestpreis",
     description: "Günstigste Angebote finden"
   }
@@ -37,8 +38,8 @@ export const GuaranteeBadges = () => {
               transition={{ delay: index * 0.1 }}
               className="text-center"
             >
-              <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3 text-2xl">
-                {guarantee.emoji}
+              <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
+                <guarantee.icon className="w-7 h-7 text-primary" />
               </div>
               <h3 className="font-bold text-foreground mb-1">{guarantee.title}</h3>
               <p className="text-sm text-muted-foreground">{guarantee.description}</p>

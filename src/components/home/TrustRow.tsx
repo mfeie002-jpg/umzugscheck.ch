@@ -1,19 +1,20 @@
 import { motion } from "framer-motion";
+import { Star, Award, CheckCircle } from "lucide-react";
 
 export const TrustRow = () => {
   const items = [
     {
-      emoji: "⭐",
+      icon: Star,
       label: "4.8 / 5",
       sublabel: "aus echten Kundenbewertungen"
     },
     {
-      emoji: "🏆",
+      icon: Award,
       label: "15'000+",
       sublabel: "vermittelte Umzüge"
     },
     {
-      emoji: "✅",
+      icon: CheckCircle,
       label: "100%",
       sublabel: "kostenlos & unverbindlich"
     }
@@ -29,8 +30,8 @@ export const TrustRow = () => {
           transition={{ delay: idx * 0.1, duration: 0.5 }}
           className="flex items-center gap-3"
         >
-          <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-xl">
-            {item.emoji}
+          <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+            <item.icon className="w-5 h-5 text-white" />
           </div>
           <div>
             <div className="font-bold text-white text-lg">{item.label}</div>
