@@ -18,9 +18,9 @@ import { motion } from "framer-motion";
 import { GOLDEN_NAV_CONFIG, type NavSection } from "../config/navigation";
 
 const TRUST_SIGNALS = [
-  { icon: Shield, label: "Geprüfte Firmen", color: "text-emerald-600" },
-  { icon: Star, label: "4.8★ Bewertung", color: "text-amber-500" },
-  { icon: Heart, label: "100% Gratis", color: "text-rose-500" },
+  { icon: Shield, label: "Geprüfte Firmen", color: "text-primary" },
+  { icon: Star, label: "4.8★ Bewertung", color: "text-secondary" },
+  { icon: Heart, label: "100% Gratis", color: "text-secondary" },
 ];
 
 interface GoldenDropdownProps {
@@ -51,10 +51,10 @@ export const GoldenDropdown = memo(({ section, onClose, flowPath }: GoldenDropdo
       >
         <div className="w-[420px] bg-background rounded-2xl shadow-2xl shadow-primary/10 border border-border/50 overflow-hidden">
           {/* Gradient accent */}
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary/60 via-emerald-500/60 to-secondary/60" />
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-primary" />
           
           {/* Trust micro-bar */}
-          <div className="border-b border-border/50 bg-gradient-to-r from-primary/[0.04] via-transparent to-emerald-500/[0.04]">
+          <div className="border-b border-border/50 bg-gradient-to-r from-primary/[0.04] via-transparent to-secondary/[0.04]">
             <div className="flex items-center justify-center gap-4 py-2.5 px-4">
               {TRUST_SIGNALS.map((signal, i) => (
                 <motion.div
@@ -94,9 +94,9 @@ export const GoldenDropdown = memo(({ section, onClose, flowPath }: GoldenDropdo
                   <Link
                     to={item.href}
                     onClick={onClose}
-                    className="flex items-start gap-3 px-3 py-3.5 rounded-xl hover:bg-gradient-to-r hover:from-primary/10 hover:to-emerald-500/5 transition-all group"
+                    className="flex items-start gap-3 px-3 py-3.5 rounded-xl hover:bg-gradient-to-r hover:from-primary/10 hover:to-secondary/5 transition-all group"
                   >
-                    <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary/20 via-primary/10 to-transparent flex items-center justify-center flex-shrink-0 group-hover:from-primary/30 group-hover:to-emerald-500/10 transition-all group-hover:scale-110 shadow-sm shadow-primary/10">
+                    <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary/20 via-primary/10 to-transparent flex items-center justify-center flex-shrink-0 group-hover:from-primary/30 group-hover:to-secondary/10 transition-all group-hover:scale-110 shadow-sm shadow-primary/10">
                       <Icon className="h-5 w-5 text-primary" />
                     </div>
                     <div className="flex-1 min-w-0">
