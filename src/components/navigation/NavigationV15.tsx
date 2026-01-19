@@ -128,8 +128,8 @@ export const NavigationV15 = () => {
                   )}
                 >
                   <span className="text-sm lg:text-base leading-none" aria-hidden="true">{section.emoji}</span>
-                  <span className="leading-none hidden xl:inline">{section.label}</span>
-                  <span className="leading-none xl:hidden">{section.label.split(' ')[0]}</span>
+                  <span className="leading-none hidden 2xl:inline">{section.label}</span>
+                  <span className="leading-none 2xl:hidden">{section.label.split(' ')[0]}</span>
                   <ChevronDown
                     className={cn(
                       "h-4 w-4 transition-transform duration-200 flex-shrink-0",
@@ -200,8 +200,8 @@ export const NavigationV15 = () => {
               className="h-10 font-semibold gap-2 bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-md shadow-secondary/20 text-xs lg:text-sm px-3 lg:px-4 whitespace-nowrap"
             >
               <Link to={flowPath}>
-                <span className="hidden xl:inline">Kostenlos Offerten erhalten</span>
-                <span className="xl:hidden">Offerten</span>
+                <span className="hidden 2xl:inline">Kostenlos Offerten erhalten</span>
+                <span className="2xl:hidden">Offerten</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </Button>

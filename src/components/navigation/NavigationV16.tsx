@@ -180,7 +180,7 @@ export const NavigationV16 = () => {
           <HeaderLogo size="md" showTagline={true} className="group hidden xl:flex" />
 
           {/* Desktop Navigation - Only show from xl breakpoint */}
-          <nav className="hidden xl:flex items-center gap-1 flex-shrink min-w-0">
+          <nav className="hidden xl:flex items-center gap-0.5 flex-1 min-w-0 justify-center">
             {NAV_SECTIONS.map((section) => (
               <div
                 key={section.id}
@@ -190,7 +190,7 @@ export const NavigationV16 = () => {
               >
                 <button
                   className={cn(
-                    "flex items-center gap-1 px-2.5 xl:px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap",
+                    "flex items-center gap-1 px-2 xl:px-3 py-2 rounded-lg text-[13px] 2xl:text-sm font-medium transition-all whitespace-nowrap",
                     "hover:bg-primary/10 hover:text-primary",
                     activeDropdown === section.id && "bg-primary/10 text-primary"
                   )}
