@@ -170,13 +170,13 @@ export const NavigationV16 = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-[9998] w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 overflow-x-hidden">
+      <header className="sticky top-0 z-[9998] w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         {/* Warm accent line */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-emerald-500 to-primary/60" />
         
         <div className="container max-w-full flex h-16 items-center justify-between px-3 sm:px-4 xl:px-6">
-          {/* Logo - Hide tagline on tablet for space */}
-          <HeaderLogo size="md" showTagline={false} className="group xl:hidden" />
+          {/* Logo */}
+          <HeaderLogo size="md" showTagline={true} className="group xl:hidden" />
           <HeaderLogo size="md" showTagline={true} className="group hidden xl:flex" />
 
           {/* Desktop Navigation - Only show from xl breakpoint */}
@@ -344,7 +344,7 @@ export const NavigationV16 = () => {
             </Button>
 
             {/* Mobile CTA - RED (secondary) for maximum visibility */}
-            <Button asChild size="sm" className="lg:hidden h-9 px-3 font-semibold gap-1.5 rounded-lg bg-gradient-to-r from-secondary to-secondary/90 text-secondary-foreground shadow-md shadow-secondary/20 hover:shadow-secondary/30">
+            <Button asChild size="sm" className="lg:hidden h-10 px-3 font-semibold gap-1.5 rounded-lg bg-gradient-to-r from-secondary to-secondary/90 text-secondary-foreground shadow-md shadow-secondary/20 hover:shadow-secondary/30">
               <Link to={flowPath}>
                 <Zap className="w-4 h-4" />
                 Offerten
