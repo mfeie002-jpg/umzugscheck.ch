@@ -49,12 +49,12 @@ export const GoldenDropdown = memo(({ section, onClose, flowPath }: GoldenDropdo
         transition={{ duration: 0.2, ease: "easeOut" }}
         className="absolute top-full left-1/2 -translate-x-1/2 pt-3 z-[9999]"
       >
-        <div className="w-[420px] bg-background rounded-2xl shadow-2xl shadow-primary/10 border border-border/50 overflow-hidden">
-          {/* Gradient accent */}
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-primary" />
+        <div className="w-[420px] bg-background rounded-2xl shadow-2xl border border-border/50 overflow-hidden">
+          {/* Gradient accent - Brand colors only */}
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#0050A8] via-[#E32026] to-[#0050A8]" />
           
           {/* Trust micro-bar */}
-          <div className="border-b border-border/50 bg-gradient-to-r from-primary/[0.04] via-transparent to-secondary/[0.04]">
+          <div className="border-b border-border/50 bg-muted/30">
             <div className="flex items-center justify-center gap-4 py-2.5 px-4">
               {TRUST_SIGNALS.map((signal, i) => (
                 <motion.div
@@ -94,10 +94,10 @@ export const GoldenDropdown = memo(({ section, onClose, flowPath }: GoldenDropdo
                   <Link
                     to={item.href}
                     onClick={onClose}
-                    className="flex items-start gap-3 px-3 py-3.5 rounded-xl hover:bg-gradient-to-r hover:from-primary/10 hover:to-secondary/5 transition-all group"
+                    className="flex items-start gap-3 px-3 py-3.5 rounded-xl hover:bg-muted/50 transition-all group"
                   >
-                    <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary/20 via-primary/10 to-transparent flex items-center justify-center flex-shrink-0 group-hover:from-primary/30 group-hover:to-secondary/10 transition-all group-hover:scale-110 shadow-sm shadow-primary/10">
-                      <Icon className="h-5 w-5 text-primary" />
+                    <div className="w-11 h-11 rounded-xl bg-muted/50 flex items-center justify-center flex-shrink-0 group-hover:bg-muted transition-all group-hover:scale-110">
+                      <Icon className="h-5 w-5 text-muted-foreground" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">

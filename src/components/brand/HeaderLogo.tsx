@@ -34,18 +34,18 @@ export function HeaderLogo({ className, size = "md", onClick, showTagline = true
         className={cn(s.height, "w-auto min-w-[120px] xs:min-w-[140px] sm:min-w-[180px] max-w-[150px] xs:max-w-[170px] sm:max-w-none")}
         aria-hidden="true"
       >
-        {/* House Icon - Blue body, Red roof */}
+        {/* House Icon - Brand Blue body, Brand Red roof */}
         <g transform="translate(0, 0)">
-          {/* House body - blue */}
+          {/* House body - Brand Primary Blue #0050A8 */}
           <path 
             d="M16 8L4 16V32H28V16L16 8Z" 
-            fill="#1e40af"
+            fill="#0050A8"
           />
-          {/* Roof - red */}
+          {/* Roof - Brand Secondary Red #E32026 */}
           <path 
             d="M0 17L16 4L32 17" 
             fill="none" 
-            stroke="#dc2626" 
+            stroke="#E32026" 
             strokeWidth="3" 
             strokeLinecap="round" 
             strokeLinejoin="round"
@@ -61,7 +61,7 @@ export function HeaderLogo({ className, size = "md", onClick, showTagline = true
           />
         </g>
         
-        {/* Text "Umzugscheck.ch" */}
+        {/* Text "Umzugscheck.ch" - Brand Colors */}
         <text 
           x="38" 
           y="25" 
@@ -69,9 +69,9 @@ export function HeaderLogo({ className, size = "md", onClick, showTagline = true
           fontSize={s.fontSize} 
           fontWeight="700"
         >
-          <tspan fill="#1e40af">Umzugs</tspan>
-          <tspan fill="#dc2626">check</tspan>
-          <tspan fill="#1e40af" fontWeight="600">.ch</tspan>
+          <tspan fill="#0050A8">Umzugs</tspan>
+          <tspan fill="#E32026">check</tspan>
+          <tspan fill="#0050A8" fontWeight="600">.ch</tspan>
         </text>
       </svg>
       
