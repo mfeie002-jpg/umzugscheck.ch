@@ -170,11 +170,11 @@ export const NavigationV16 = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-[9998] w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-[9998] w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 overflow-x-clip">
         {/* Warm accent line */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-emerald-500 to-primary/60" />
         
-        <div className="container max-w-full flex h-16 items-center justify-between px-4 pr-5 sm:px-5 sm:pr-6 xl:px-6">
+        <div className="mx-auto flex h-16 w-full max-w-[1440px] items-center justify-between px-4 sm:px-5 xl:px-6 pl-[calc(1rem+env(safe-area-inset-left))] pr-[calc(1.5rem+env(safe-area-inset-right))]">
           {/* Logo */}
           <HeaderLogo size="md" showTagline={true} className="group xl:hidden" />
           <HeaderLogo size="md" showTagline={true} className="group hidden xl:flex" />
