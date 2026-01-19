@@ -1,15 +1,16 @@
 /**
  * Unified A/B Testing Toggle
  * 
- * Combines Navigation A/B Test + Social Proof A/B Test in one compact toggle
- * with tabs to switch between the two test categories
+ * Combines Navigation A/B Test + Social Proof A/B Test + Hero Tab Hints
+ * in one compact toggle with tabs to switch between the test categories
  */
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { FlaskConical, X, Check, Navigation, Sparkles } from 'lucide-react';
+import { FlaskConical, X, Check, Navigation, Sparkles, MousePointerClick } from 'lucide-react';
 import { useState, memo, useCallback } from 'react';
 import { useSocialProofAB } from '@/contexts/SocialProofABContext';
 import { useNavigationAB } from '@/contexts/NavigationABContext';
+import { useTabHintAB, TabHintVariant } from '@/contexts/TabHintABContext';
 import { NAV_VARIANTS } from '@/lib/navigation-variants';
 import { useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
@@ -24,11 +25,33 @@ const socialProofVariants = {
   E: { label: 'V5', title: 'Trust Strip 2.0', color: 'bg-rose-600' },
 };
 
+// Tab Hint variant info
+const tabHintVariants: Record<TabHintVariant, { label: string; title: string; color: string }> = {
+  default: { label: '1', title: 'Kein Hint (Standard)', color: 'bg-slate-600' },
+  A: { label: '2', title: 'ODER-Trennlinie', color: 'bg-blue-600' },
+  B: { label: '3', title: 'Pulsing Hint', color: 'bg-emerald-600' },
+  C: { label: '4', title: 'Label oben', color: 'bg-amber-600' },
+  D: { label: '5', title: 'Badge Alternativen', color: 'bg-violet-600' },
+};
+
 export const UnifiedABToggle = memo(function UnifiedABToggle() {
   const { variant: spVariant, setVariant: setSPVariant } = useSocialProofAB();
   const { variant: navVariant, setVariant: setNavVariant } = useNavigationAB();
+  
+  // Tab Hint A/B - handle case where provider might not exist
+  let tabHintVariant: TabHintVariant = 'default';
+  let setTabHintVariant: ((v: TabHintVariant) => void) | null = null;
+  
+  try {
+    const tabHintContext = useTabHintAB();
+    tabHintVariant = tabHintContext.variant;
+    setTabHintVariant = tabHintContext.setVariant;
+  } catch {
+    // Context not available - use default
+  }
+  
   const [isExpanded, setIsExpanded] = useState(false);
-  const [activeTab, setActiveTab] = useState<'nav' | 'social'>('nav');
+  const [activeTab, setActiveTab] = useState<'nav' | 'social' | 'hero'>('nav');
   
   const location = useLocation();
 
@@ -40,6 +63,12 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
     setSPVariant(sv);
   }, [setSPVariant]);
 
+  const handleTabHintChange = useCallback((v: TabHintVariant) => {
+    if (setTabHintVariant) {
+      setTabHintVariant(v);
+    }
+  }, [setTabHintVariant]);
+
   // Extract navigation variant number (e.g., "1" from "1. Original (Status Quo)")
   const getNavVariantNumber = () => {
     if (!navVariant?.name) return '1';
@@ -48,6 +77,7 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
   };
 
   const currentSPInfo = socialProofVariants[spVariant] || socialProofVariants.A;
+  const currentTabHintInfo = tabHintVariants[tabHintVariant] || tabHintVariants.default;
   const navVariantNumber = getNavVariantNumber();
 
   // Only show on homepage
@@ -80,7 +110,7 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
               initial={{ opacity: 0, y: 20, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.9 }}
-              className="fixed bottom-24 left-4 right-4 sm:right-auto sm:w-[380px] bg-background border-2 border-primary rounded-2xl shadow-2xl overflow-hidden z-[90]"
+              className="fixed bottom-24 left-4 right-4 sm:right-auto sm:w-[400px] bg-background border-2 border-primary rounded-2xl shadow-2xl overflow-hidden z-[90]"
             >
               {/* Header */}
               <div className="flex items-center justify-between p-4 bg-muted/50 border-b border-border">
@@ -90,7 +120,7 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
                   </div>
                   <div>
                     <h3 className="font-bold text-base">🧪 A/B Tests</h3>
-                    <p className="text-xs text-muted-foreground">Navigation & Social Proof</p>
+                    <p className="text-xs text-muted-foreground">Navigation, Social Proof & Hero</p>
                   </div>
                 </div>
                 <button 
@@ -102,15 +132,19 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
               </div>
 
               {/* Tabs */}
-              <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as 'nav' | 'social')} className="w-full">
-                <TabsList className="w-full grid grid-cols-2 p-1 m-3 mb-0 bg-muted/50">
-                  <TabsTrigger value="nav" className="gap-2 text-xs sm:text-sm">
-                    <Navigation className="w-4 h-4" />
+              <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as 'nav' | 'social' | 'hero')} className="w-full">
+                <TabsList className="w-full grid grid-cols-3 p-1 m-3 mb-0 bg-muted/50">
+                  <TabsTrigger value="nav" className="gap-1.5 text-xs">
+                    <Navigation className="w-3.5 h-3.5" />
                     Navigation
                   </TabsTrigger>
-                  <TabsTrigger value="social" className="gap-2 text-xs sm:text-sm">
-                    <Sparkles className="w-4 h-4" />
-                    Social Proof
+                  <TabsTrigger value="social" className="gap-1.5 text-xs">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    Social
+                  </TabsTrigger>
+                  <TabsTrigger value="hero" className="gap-1.5 text-xs">
+                    <MousePointerClick className="w-3.5 h-3.5" />
+                    Hero Tabs
                   </TabsTrigger>
                 </TabsList>
 
@@ -188,13 +222,55 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
                     <div><strong>V5:</strong> Trust Strip 2.0 (unified)</div>
                   </div>
                 </TabsContent>
+
+                {/* Hero Tab Hints */}
+                <TabsContent value="hero" className="p-3 pt-2 max-h-[50vh] overflow-y-auto">
+                  <div className="space-y-2">
+                    {(Object.keys(tabHintVariants) as TabHintVariant[]).map((thv) => {
+                      const info = tabHintVariants[thv];
+                      const isActive = tabHintVariant === thv;
+                      return (
+                        <button
+                          key={thv}
+                          onClick={() => handleTabHintChange(thv)}
+                          className={cn(
+                            "w-full py-2.5 px-3 rounded-lg font-medium text-sm transition-all flex items-center justify-between",
+                            isActive 
+                              ? `${info.color} text-white shadow-lg` 
+                              : "bg-muted/50 text-foreground hover:bg-muted"
+                          )}
+                        >
+                          <span className="flex items-center gap-2">
+                            <span className={cn(
+                              "w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold",
+                              isActive ? "bg-white/20" : "bg-muted"
+                            )}>
+                              {info.label}
+                            </span>
+                            <span>{info.title}</span>
+                          </span>
+                          {isActive && <Check className="w-4 h-4" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  
+                  {/* Legend */}
+                  <div className="mt-4 p-3 bg-muted/30 rounded-lg text-xs text-muted-foreground space-y-1">
+                    <div><strong>1:</strong> Standard - keine Hinweise</div>
+                    <div><strong>2:</strong> "ODER"-Linie unterhalb Tabs</div>
+                    <div><strong>3:</strong> Puls + "Klicken für andere Methoden"</div>
+                    <div><strong>4:</strong> "Eine Methode wählen" Label oben</div>
+                    <div><strong>5:</strong> "3 Alternativen" Badge</div>
+                  </div>
+                </TabsContent>
               </Tabs>
             </motion.div>
           </>
         )}
       </AnimatePresence>
       
-      {/* Floating Toggle Button - Shows both N (Nav) and SP (Social Proof) variants */}
+      {/* Floating Toggle Button - Shows N (Nav), SP (Social Proof), and TH (Tab Hint) variants */}
       <motion.button
         onClick={() => setIsExpanded(!isExpanded)}
         className={cn(
@@ -210,6 +286,8 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
         <span className="text-xs whitespace-nowrap">N{navVariantNumber}</span>
         <span className="text-white/50">|</span>
         <span className="text-xs whitespace-nowrap">SP{currentSPInfo.label}</span>
+        <span className="text-white/50">|</span>
+        <span className="text-xs whitespace-nowrap">TH{currentTabHintInfo.label}</span>
       </motion.button>
     </div>
   );

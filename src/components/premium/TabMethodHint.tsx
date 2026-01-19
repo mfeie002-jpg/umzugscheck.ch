@@ -2,34 +2,20 @@
  * TabMethodHint Component
  * 
  * Makes it clearer that users can click to choose a method.
- * 4 variants available via URL param ?tabHint=A|B|C|D
+ * Now integrated with A/B testing via TabHintABContext
  * 
+ * default: No hint (baseline)
  * A: "ODER" divider line between tabs and form
  * B: Pulsing glow on inactive tabs + hint text
  * C: "Methode wählen" label + larger button-like tabs
  * D: Arrow pointing at alternatives with badge
  */
 
-import { memo, useState, useEffect } from "react";
+import { memo, useState, useEffect, useContext, createContext } from "react";
 import { motion } from "framer-motion";
 import { ChevronDown, Sparkles, MousePointerClick } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-type HintVariant = "A" | "B" | "C" | "D" | null;
-
-// Get variant from URL or localStorage
-const getTabHintVariant = (): HintVariant => {
-  if (typeof window === "undefined") return null;
-  
-  const params = new URLSearchParams(window.location.search);
-  const urlVariant = params.get("tabHint")?.toUpperCase() as HintVariant;
-  
-  if (urlVariant && ["A", "B", "C", "D"].includes(urlVariant)) {
-    return urlVariant;
-  }
-  
-  return null;
-};
+import { useTabHintAB, TabHintVariant } from "@/contexts/TabHintABContext";
 
 interface TabMethodHintProps {
   className?: string;
@@ -151,19 +137,30 @@ TabHintBadge.displayName = "TabHintBadge";
 
 /**
  * Combined TabMethodHint Component
- * Renders the appropriate variant based on URL parameter
+ * Renders the appropriate variant based on A/B context
  */
 export const TabMethodHint = memo(({ 
   className,
   position = "below" 
 }: TabMethodHintProps) => {
-  const [variant, setVariant] = useState<HintVariant>(null);
+  // Try to use context, but handle case where component is used outside provider
+  let variant: TabHintVariant = 'default';
+  
+  try {
+    const context = useTabHintAB();
+    variant = context.variant;
+  } catch {
+    // Not in provider context - check URL param as fallback
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const urlVariant = params.get("tabHint")?.toUpperCase();
+      if (urlVariant && ["A", "B", "C", "D"].includes(urlVariant)) {
+        variant = urlVariant as TabHintVariant;
+      }
+    }
+  }
 
-  useEffect(() => {
-    setVariant(getTabHintVariant());
-  }, []);
-
-  if (!variant) return null;
+  if (variant === "default") return null;
 
   if (variant === "A" && position === "below") {
     return <TabHintDivider className={className} />;
@@ -186,16 +183,15 @@ export const TabMethodHint = memo(({
 TabMethodHint.displayName = "TabMethodHint";
 
 /**
- * Hook to get current tab hint variant
+ * Hook to get current tab hint variant from context
  */
-export const useTabHintVariant = () => {
-  const [variant, setVariant] = useState<HintVariant>(null);
-
-  useEffect(() => {
-    setVariant(getTabHintVariant());
-  }, []);
-
-  return variant;
+export const useTabHintVariant = (): TabHintVariant => {
+  try {
+    const { variant } = useTabHintAB();
+    return variant;
+  } catch {
+    return 'default';
+  }
 };
 
 export default TabMethodHint;
