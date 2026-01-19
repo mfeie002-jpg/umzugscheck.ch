@@ -46,7 +46,12 @@ export const RegionStickyMobileCTA = memo(({
           {/* Gradient backdrop */}
           <div className="bg-gradient-to-t from-background via-background to-transparent h-8" />
           
-          <div className="bg-background border-t border-border shadow-2xl px-4 py-3 pb-safe">
+          <div className="bg-background border-t border-border shadow-2xl px-4 pt-3 pb-4 safe-area-inset-bottom">
+            {/* Micro trust line - above buttons */}
+            <p className="text-[11px] text-center text-muted-foreground mb-3">
+              ✓ Kostenlos · ✓ Unverbindlich · ✓ {locationPrefix} {regionName}
+            </p>
+            
             <div className="flex gap-3">
               {/* Primary CTA */}
               <Button 
@@ -71,11 +76,6 @@ export const RegionStickyMobileCTA = memo(({
                 </a>
               </Button>
             </div>
-            
-            {/* Micro trust line */}
-            <p className="text-[10px] text-center text-muted-foreground mt-2">
-              ✓ Kostenlos · ✓ Unverbindlich · ✓ {locationPrefix} {regionName}
-            </p>
           </div>
         </motion.div>
       )}
