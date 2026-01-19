@@ -8,6 +8,7 @@ import { PremiumHeroSection } from "@/components/premium/PremiumHeroSection";
 import { PremiumHowItWorks } from "@/components/premium/PremiumHowItWorks";
 import { PremiumFAQ } from "@/components/premium/PremiumFAQ";
 import { SocialProofABProvider } from "@/contexts/SocialProofABContext";
+import { TabHintABProvider } from "@/contexts/TabHintABContext";
 import { UnifiedABToggle } from "@/components/homepage/UnifiedABToggle";
 import { TrustRibbonAB } from "@/components/trust/TrustRibbonAB";
 import { EnhancedTestimonialsAB } from "@/components/homepage/EnhancedTestimonialsAB";
@@ -142,136 +143,138 @@ const IndexPremium = () => {
   }
 
   return (
-    <SocialProofABProvider>
-      <div className="min-h-screen bg-background">
-        <ScrollProgress />
-        <Helmet>
-          <title>Umzugsfirmen vergleichen Schweiz 2025 – Kostenlos | Umzugscheck.ch</title>
-          <meta 
-            name="description" 
-            content="Vergleichen Sie 200+ geprüfte Schweizer Umzugsfirmen kostenlos. KI-Preisanalyse, echte Bewertungen, bis zu 40% sparen. Jetzt Offerten erhalten!" 
-          />
-          <meta name="keywords" content="Umzug Schweiz, Umzugsfirmen vergleichen, Umzugsofferten, günstige Umzugsfirma" />
-          <link rel="canonical" href="https://umzugscheck.ch/" />
+    <TabHintABProvider>
+      <SocialProofABProvider>
+        <div className="min-h-screen bg-background">
+          <ScrollProgress />
+          <Helmet>
+            <title>Umzugsfirmen vergleichen Schweiz 2025 – Kostenlos | Umzugscheck.ch</title>
+            <meta 
+              name="description" 
+              content="Vergleichen Sie 200+ geprüfte Schweizer Umzugsfirmen kostenlos. KI-Preisanalyse, echte Bewertungen, bis zu 40% sparen. Jetzt Offerten erhalten!" 
+            />
+            <meta name="keywords" content="Umzug Schweiz, Umzugsfirmen vergleichen, Umzugsofferten, günstige Umzugsfirma" />
+            <link rel="canonical" href="https://umzugscheck.ch/" />
+            
+            {/* Open Graph - with image */}
+            <meta property="og:title" content="Umzugsfirmen vergleichen Schweiz | Umzugscheck.ch" />
+            <meta property="og:description" content="200+ geprüfte Umzugsfirmen. KI-Rechner. Bis zu 40% sparen!" />
+            <meta property="og:type" content="website" />
+            <meta property="og:url" content="https://umzugscheck.ch/" />
+            <meta property="og:locale" content="de_CH" />
+            <meta property="og:image" content="https://umzugscheck.ch/og-home.jpg" />
+            <meta property="og:image:width" content="1200" />
+            <meta property="og:image:height" content="630" />
+            
+            {/* Twitter - with image */}
+            <meta name="twitter:card" content="summary_large_image" />
+            <meta name="twitter:title" content="Umzugsfirmen vergleichen Schweiz | Umzugscheck.ch" />
+            <meta name="twitter:description" content="200+ geprüfte Umzugsfirmen. KI-Rechner. Bis zu 40% sparen!" />
+            <meta name="twitter:image" content="https://umzugscheck.ch/og-home.jpg" />
+            
+            <meta name="robots" content="index, follow" />
+            <meta name="geo.region" content="CH" />
+            <script type="application/ld+json">{schemaScript}</script>
+          </Helmet>
           
-          {/* Open Graph - with image */}
-          <meta property="og:title" content="Umzugsfirmen vergleichen Schweiz | Umzugscheck.ch" />
-          <meta property="og:description" content="200+ geprüfte Umzugsfirmen. KI-Rechner. Bis zu 40% sparen!" />
-          <meta property="og:type" content="website" />
-          <meta property="og:url" content="https://umzugscheck.ch/" />
-          <meta property="og:locale" content="de_CH" />
-          <meta property="og:image" content="https://umzugscheck.ch/og-home.jpg" />
-          <meta property="og:image:width" content="1200" />
-          <meta property="og:image:height" content="630" />
+          <SkipToContent />
           
-          {/* Twitter - with image */}
-          <meta name="twitter:card" content="summary_large_image" />
-          <meta name="twitter:title" content="Umzugsfirmen vergleichen Schweiz | Umzugscheck.ch" />
-          <meta name="twitter:description" content="200+ geprüfte Umzugsfirmen. KI-Rechner. Bis zu 40% sparen!" />
-          <meta name="twitter:image" content="https://umzugscheck.ch/og-home.jpg" />
-          
-          <meta name="robots" content="index, follow" />
-          <meta name="geo.region" content="CH" />
-          <script type="application/ld+json">{schemaScript}</script>
-        </Helmet>
-        
-        <SkipToContent />
-        
-        <main id="main-content" role="main">
-          {/* 1. Hero - Critical: Commitment hook */}
-          <PremiumHeroSection />
+          <main id="main-content" role="main">
+            {/* 1. Hero - Critical: Commitment hook */}
+            <PremiumHeroSection />
 
-          {/* 2. Trust Ribbon (A/B TESTED) */}
-          <Suspense fallback={<SectionSkeleton height="min-h-[300px]" />}>
+            {/* 2. Trust Ribbon (A/B TESTED) */}
+            <Suspense fallback={<SectionSkeleton height="min-h-[300px]" />}>
+              <AnimatedSection animation="fade-in">
+                <TrustRibbonAB variant="full" />
+              </AnimatedSection>
+            </Suspense>
+
+            {/* 3. Social Proof (A/B TESTED) */}
+            <AnimatedSection animation="fade-up">
+              <EnhancedTestimonialsAB />
+            </AnimatedSection>
+
+            {/* 5. How It Works */}
+            <AnimatedSection animation="fade-up">
+              <PremiumHowItWorks />
+            </AnimatedSection>
+
+            {/* 5b. Moving Timeline - Planning helper */}
+            <Suspense fallback={<SectionSkeleton height="min-h-[400px]" />}>
+              <AnimatedSection animation="fade-up">
+                <LazyPremiumMovingTimeline />
+              </AnimatedSection>
+            </Suspense>
+
+            {/* 6. Comparison Showcase - Lazy */}
+            <Suspense fallback={<SectionSkeleton height="min-h-[400px]" variant="cards" />}>
+              <AnimatedSection animation="fade-in">
+                <LazyComparisonShowcase variant="premium" />
+              </AnimatedSection>
+            </Suspense>
+            
+            {/* 7. Services Grid - Lazy */}
+            <Suspense fallback={<SectionSkeleton height="min-h-[400px]" variant="cards" />}>
+              <AnimatedSection animation="fade-up">
+                <LazyPremiumServicesGrid />
+              </AnimatedSection>
+            </Suspense>
+            
+            {/* 7. FAQ - Key for SEO and conversion */}
             <AnimatedSection animation="fade-in">
-              <TrustRibbonAB variant="full" />
+              <PremiumFAQ items={faqItems} />
             </AnimatedSection>
-          </Suspense>
+            
+            {/* 8. Provider CTA / Final CTA - Lazy */}
+            <Suspense fallback={<SectionSkeleton height="min-h-[200px]" />}>
+              <AnimatedSection animation="fade-up">
+                <LazyPremiumProviderCTA />
+              </AnimatedSection>
+            </Suspense>
 
-          {/* 3. Social Proof (A/B TESTED) */}
-          <AnimatedSection animation="fade-up">
-            <EnhancedTestimonialsAB />
-          </AnimatedSection>
+            {/* =========================================
+                OPTIONAL SECTIONS BELOW MAIN CTA
+                These can be removed for "less scroll, more action"
+                ========================================= */}
+            
+            {/* AI Calculator Showcase - Optional */}
+            <Suspense fallback={<SectionSkeleton height="min-h-[500px]" />}>
+              <AnimatedSection animation="scale">
+                <LazyPremiumAIShowcase />
+              </AnimatedSection>
+            </Suspense>
+            
+            {/* Cost Examples - Optional */}
+            <Suspense fallback={<SectionSkeleton height="min-h-[350px]" variant="cards" />}>
+              <AnimatedSection animation="fade-up">
+                <LazyPremiumCostExamples />
+              </AnimatedSection>
+            </Suspense>
+            
+            {/* Regions - Optional */}
+            <Suspense fallback={<SectionSkeleton height="min-h-[300px]" />}>
+              <AnimatedSection animation="slide-left">
+                <LazyPremiumRegions />
+              </AnimatedSection>
+            </Suspense>
+            
+            {/* Why Us - Optional */}
+            <Suspense fallback={<SectionSkeleton height="min-h-[400px]" variant="cards" />}>
+              <AnimatedSection animation="scale">
+                <LazyPremiumWhyUs />
+              </AnimatedSection>
+            </Suspense>
+          </main>
 
-          {/* 5. How It Works */}
-          <AnimatedSection animation="fade-up">
-            <PremiumHowItWorks />
-          </AnimatedSection>
-
-          {/* 5b. Moving Timeline - Planning helper */}
-          <Suspense fallback={<SectionSkeleton height="min-h-[400px]" />}>
-            <AnimatedSection animation="fade-up">
-              <LazyPremiumMovingTimeline />
-            </AnimatedSection>
-          </Suspense>
-
-          {/* 6. Comparison Showcase - Lazy */}
-          <Suspense fallback={<SectionSkeleton height="min-h-[400px]" variant="cards" />}>
-            <AnimatedSection animation="fade-in">
-              <LazyComparisonShowcase variant="premium" />
-            </AnimatedSection>
-          </Suspense>
+          {/* Unified A/B Toggle for Navigation + Social Proof */}
+          <UnifiedABToggle />
           
-          {/* 7. Services Grid - Lazy */}
-          <Suspense fallback={<SectionSkeleton height="min-h-[400px]" variant="cards" />}>
-            <AnimatedSection animation="fade-up">
-              <LazyPremiumServicesGrid />
-            </AnimatedSection>
-          </Suspense>
-          
-          {/* 7. FAQ - Key for SEO and conversion */}
-          <AnimatedSection animation="fade-in">
-            <PremiumFAQ items={faqItems} />
-          </AnimatedSection>
-          
-          {/* 8. Provider CTA / Final CTA - Lazy */}
-          <Suspense fallback={<SectionSkeleton height="min-h-[200px]" />}>
-            <AnimatedSection animation="fade-up">
-              <LazyPremiumProviderCTA />
-            </AnimatedSection>
-          </Suspense>
-
-          {/* =========================================
-              OPTIONAL SECTIONS BELOW MAIN CTA
-              These can be removed for "less scroll, more action"
-              ========================================= */}
-          
-          {/* AI Calculator Showcase - Optional */}
-          <Suspense fallback={<SectionSkeleton height="min-h-[500px]" />}>
-            <AnimatedSection animation="scale">
-              <LazyPremiumAIShowcase />
-            </AnimatedSection>
-          </Suspense>
-          
-          {/* Cost Examples - Optional */}
-          <Suspense fallback={<SectionSkeleton height="min-h-[350px]" variant="cards" />}>
-            <AnimatedSection animation="fade-up">
-              <LazyPremiumCostExamples />
-            </AnimatedSection>
-          </Suspense>
-          
-          {/* Regions - Optional */}
-          <Suspense fallback={<SectionSkeleton height="min-h-[300px]" />}>
-            <AnimatedSection animation="slide-left">
-              <LazyPremiumRegions />
-            </AnimatedSection>
-          </Suspense>
-          
-          {/* Why Us - Optional */}
-          <Suspense fallback={<SectionSkeleton height="min-h-[400px]" variant="cards" />}>
-            <AnimatedSection animation="scale">
-              <LazyPremiumWhyUs />
-            </AnimatedSection>
-          </Suspense>
-        </main>
-
-        {/* Unified A/B Toggle for Navigation + Social Proof */}
-        <UnifiedABToggle />
-        
-        <StickyMobileCTA />
-        <ScrollToTop />
-      </div>
-    </SocialProofABProvider>
+          <StickyMobileCTA />
+          <ScrollToTop />
+        </div>
+      </SocialProofABProvider>
+    </TabHintABProvider>
   );
 };
 
