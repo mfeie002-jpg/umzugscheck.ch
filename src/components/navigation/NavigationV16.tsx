@@ -174,7 +174,7 @@ export const NavigationV16 = () => {
         {/* Warm accent line */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-emerald-500 to-primary/60" />
         
-        <div className="container max-w-full flex h-16 items-center justify-between px-4 sm:px-5 xl:px-6">
+        <div className="container max-w-full flex h-16 items-center justify-between px-4 pr-5 sm:px-5 sm:pr-6 xl:px-6">
           {/* Logo */}
           <HeaderLogo size="md" showTagline={true} className="group xl:hidden" />
           <HeaderLogo size="md" showTagline={true} className="group hidden xl:flex" />
