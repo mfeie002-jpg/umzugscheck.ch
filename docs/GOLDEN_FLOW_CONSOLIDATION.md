@@ -4,57 +4,57 @@
 
 ## Executive Summary
 
-Consolidating 40+ flow variants into a single, optimized **Golden Flow** based on V9 Zero Friction principles with V1's proven conversion patterns.
+Adding a new optimized **Golden Flow** (V10) based on V9 Zero Friction principles with V1's proven conversion patterns. All existing variants are **kept for A/B testing**.
 
 ---
 
 ## 1. Current State Analysis
 
-### Variant Inventory (To Delete/Archive)
+### Variant Inventory (All Kept for A/B Testing)
 
-#### Individual Page Files (40+)
+#### Individual Page Files (40+) - KEPT
 ```
 src/pages/
-├── UmzugsoffertenV1.tsx          → DELETE
-├── UmzugsoffertenV1a.tsx         → DELETE
-├── UmzugsoffertenV1b.tsx         → DELETE
-├── UmzugsoffertenV1c.tsx         → DELETE
-├── UmzugsoffertenV1d.tsx         → DELETE
-├── UmzugsoffertenV1e.tsx         → DELETE
-├── UmzugsoffertenV1f.tsx         → DELETE
-├── UmzugsoffertenV1g.tsx         → DELETE
-├── UmzugsoffertenV2a.tsx         → DELETE
-├── UmzugsoffertenV2b.tsx         → DELETE
-├── UmzugsoffertenV2e.tsx         → DELETE
-├── UmzugsoffertenV2Archetyp.tsx  → DELETE
-├── UmzugsoffertenV3a.tsx         → DELETE
-├── UmzugsoffertenV3b.tsx         → DELETE
-├── UmzugsoffertenV3c.tsx         → DELETE
-├── UmzugsoffertenV3d.tsx         → DELETE
-├── UmzugsoffertenV3e.tsx         → DELETE
-├── UmzugsoffertenV4a.tsx         → DELETE
-├── UmzugsoffertenV4b.tsx         → DELETE
-├── UmzugsoffertenV4c.tsx         → DELETE
-├── UmzugsoffertenV4d.tsx         → DELETE
-├── UmzugsoffertenV4e.tsx         → DELETE
-├── UmzugsoffertenV5a.tsx         → DELETE
-├── UmzugsoffertenV5b.tsx         → DELETE
-├── UmzugsoffertenV5c.tsx         → DELETE
-├── UmzugsoffertenV5d.tsx         → DELETE
-├── UmzugsoffertenV5e.tsx         → DELETE
-├── UmzugsoffertenV8a.tsx         → DELETE
-├── UmzugsoffertenV9a.tsx         → DELETE
-├── UmzugsoffertenV9b.tsx         → DELETE
-├── UmzugsoffertenV9c.tsx         → DELETE
-├── UmzugsoffertenV9D.tsx         → DELETE
-├── V9ZeroFriction.tsx            → DELETE
-├── UmzugsoffertenBaseline.tsx    → DELETE
-├── UmzugsoffertenDynamic.tsx     → DELETE
-├── UmzugsoffertenVariant.tsx     → DELETE
-├── UmzugsoffertenUltimate.tsx    → KEEP (for dynamic loading)
-├── UmzugsoffertenUltimateCH.tsx  → DELETE
-├── UltimateBest36.tsx            → DELETE
-└── GoldenFlowV10.tsx             → RENAME to primary
+├── UmzugsoffertenV1.tsx          → KEEP (A/B testing)
+├── UmzugsoffertenV1a.tsx         → KEEP (A/B testing)
+├── UmzugsoffertenV1b.tsx         → KEEP (A/B testing)
+├── UmzugsoffertenV1c.tsx         → KEEP (A/B testing)
+├── UmzugsoffertenV1d.tsx         → KEEP (A/B testing)
+├── UmzugsoffertenV1e.tsx         → KEEP (A/B testing)
+├── UmzugsoffertenV1f.tsx         → KEEP (A/B testing)
+├── UmzugsoffertenV1g.tsx         → KEEP (A/B testing)
+├── UmzugsoffertenV2a.tsx         → KEEP (A/B testing)
+├── UmzugsoffertenV2b.tsx         → KEEP (A/B testing)
+├── UmzugsoffertenV2e.tsx         → KEEP (A/B testing)
+├── UmzugsoffertenV2Archetyp.tsx  → KEEP (A/B testing)
+├── UmzugsoffertenV3a.tsx         → KEEP (A/B testing)
+├── UmzugsoffertenV3b.tsx         → KEEP (A/B testing)
+├── UmzugsoffertenV3c.tsx         → KEEP (A/B testing)
+├── UmzugsoffertenV3d.tsx         → KEEP (A/B testing)
+├── UmzugsoffertenV3e.tsx         → KEEP (A/B testing)
+├── UmzugsoffertenV4a.tsx         → KEEP (A/B testing)
+├── UmzugsoffertenV4b.tsx         → KEEP (A/B testing)
+├── UmzugsoffertenV4c.tsx         → KEEP (A/B testing)
+├── UmzugsoffertenV4d.tsx         → KEEP (A/B testing)
+├── UmzugsoffertenV4e.tsx         → KEEP (A/B testing)
+├── UmzugsoffertenV5a.tsx         → KEEP (A/B testing)
+├── UmzugsoffertenV5b.tsx         → KEEP (A/B testing)
+├── UmzugsoffertenV5c.tsx         → KEEP (A/B testing)
+├── UmzugsoffertenV5d.tsx         → KEEP (A/B testing)
+├── UmzugsoffertenV5e.tsx         → KEEP (A/B testing)
+├── UmzugsoffertenV8a.tsx         → KEEP (A/B testing)
+├── UmzugsoffertenV9a.tsx         → KEEP (A/B testing)
+├── UmzugsoffertenV9b.tsx         → KEEP (A/B testing)
+├── UmzugsoffertenV9c.tsx         → KEEP (A/B testing)
+├── UmzugsoffertenV9D.tsx         → KEEP (A/B testing)
+├── V9ZeroFriction.tsx            → KEEP (A/B testing)
+├── UmzugsoffertenBaseline.tsx    → KEEP (A/B testing)
+├── UmzugsoffertenDynamic.tsx     → KEEP (A/B testing)
+├── UmzugsoffertenVariant.tsx     → KEEP (A/B testing)
+├── UmzugsoffertenUltimate.tsx    → KEEP (dynamic loading)
+├── UmzugsoffertenUltimateCH.tsx  → KEEP (A/B testing)
+├── UltimateBest36.tsx            → KEEP (A/B testing)
+└── GoldenFlowV10.tsx             → NEW (Golden Flow entry point)
 ```
 
 #### Component Folders to Consolidate
