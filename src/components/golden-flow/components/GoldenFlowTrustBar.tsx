@@ -20,26 +20,26 @@ const TRUST_ITEMS = [
   { 
     icon: Shield, 
     text: '🇨🇭 Schweizer Server', 
-    color: 'text-green-600',
-    bgColor: 'bg-green-50'
+    color: 'text-primary',
+    bgColor: 'bg-primary/10'
   },
   { 
     icon: Star, 
     text: '4.9/5 (2\'847 Bewertungen)', 
-    color: 'text-amber-500',
-    bgColor: 'bg-amber-50'
+    color: 'text-secondary',
+    bgColor: 'bg-secondary/10'
   },
   { 
     icon: Lock, 
     text: '256-Bit SSL', 
-    color: 'text-blue-600',
-    bgColor: 'bg-blue-50'
+    color: 'text-primary',
+    bgColor: 'bg-primary/10'
   },
   { 
     icon: Phone, 
     text: 'Keine Werbeanrufe', 
-    color: 'text-purple-600',
-    bgColor: 'bg-purple-50'
+    color: 'text-muted-foreground',
+    bgColor: 'bg-muted'
   },
 ];
 
@@ -55,15 +55,15 @@ export function GoldenFlowTrustBar({ className, variant = 'full' }: GoldenFlowTr
     return (
       <div className={cn("flex flex-wrap items-center justify-center gap-3 text-xs text-muted-foreground", className)}>
         <span className="flex items-center gap-1">
-          <Shield className="h-3.5 w-3.5 text-green-600" />
+          <Shield className="h-3.5 w-3.5 text-primary" />
           🇨🇭 Schweizer Server
         </span>
         <span className="flex items-center gap-1">
-          <Lock className="h-3.5 w-3.5 text-blue-600" />
+          <Lock className="h-3.5 w-3.5 text-primary" />
           256-Bit SSL
         </span>
         <span className="flex items-center gap-1">
-          <Phone className="h-3.5 w-3.5 text-purple-600" />
+          <Phone className="h-3.5 w-3.5 text-muted-foreground" />
           Keine Werbeanrufe
         </span>
       </div>
@@ -128,14 +128,14 @@ export function GoldenFlowTrustBar({ className, variant = 'full' }: GoldenFlowTr
 export function SwissTrustBadge({ className }: { className?: string }) {
   return (
     <div className={cn(
-      "inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-green-200 bg-green-50",
+      "inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/20 bg-primary/10",
       className
     )}>
       <span className="text-base">🇨🇭</span>
-      <span className="text-xs font-semibold text-green-800">
+      <span className="text-xs font-semibold text-primary">
         100% Schweizer Qualität
       </span>
-      <CheckCircle className="h-3.5 w-3.5 text-green-600" />
+      <CheckCircle className="h-3.5 w-3.5 text-primary" />
     </div>
   );
 }
@@ -146,7 +146,7 @@ export function SwissTrustBadge({ className }: { className?: string }) {
 export function SecurityBadge({ className }: { className?: string }) {
   return (
     <div className={cn(
-      "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 text-blue-700",
+      "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 text-primary",
       className
     )}>
       <Lock className="h-3 w-3" />
