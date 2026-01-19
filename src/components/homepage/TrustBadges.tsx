@@ -1,12 +1,11 @@
 import { motion } from "framer-motion";
-import { Shield, Lock, Award, CheckCircle, HeartHandshake, Sparkles } from "lucide-react";
 
 const badges = [
-  { icon: Shield, label: "Versicherte Partner", color: "text-green-600", bg: "bg-green-50 dark:bg-green-950/30" },
-  { icon: Lock, label: "SSL Verschlüsselt", color: "text-blue-600", bg: "bg-blue-50 dark:bg-blue-950/30" },
-  { icon: Award, label: "Top bewertet", color: "text-amber-600", bg: "bg-amber-50 dark:bg-amber-950/30" },
-  { icon: CheckCircle, label: "Geprüfte Firmen", color: "text-secondary", bg: "bg-secondary/10" },
-  { icon: HeartHandshake, label: "Unabhängig", color: "text-purple-600", bg: "bg-purple-50 dark:bg-purple-950/30" },
+  { emoji: "🛡️", label: "Versicherte Partner", bg: "bg-green-50 dark:bg-green-950/30" },
+  { emoji: "🔒", label: "SSL Verschlüsselt", bg: "bg-blue-50 dark:bg-blue-950/30" },
+  { emoji: "🏆", label: "Top bewertet", bg: "bg-amber-50 dark:bg-amber-950/30" },
+  { emoji: "✅", label: "Geprüfte Firmen", bg: "bg-secondary/10" },
+  { emoji: "🤝", label: "Unabhängig", bg: "bg-purple-50 dark:bg-purple-950/30" },
 ];
 
 export const TrustBadges = () => {
@@ -19,7 +18,7 @@ export const TrustBadges = () => {
           viewport={{ once: true }}
           className="flex items-center justify-center gap-2 mb-6"
         >
-          <Sparkles className="w-4 h-4 text-secondary" />
+          <span className="text-base">✨</span>
           <span className="text-sm font-medium text-muted-foreground">Warum uns vertrauen?</span>
         </motion.div>
         
@@ -34,8 +33,8 @@ export const TrustBadges = () => {
               whileHover={{ scale: 1.05, y: -2 }}
               className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl ${badge.bg} border border-border/50 shadow-sm hover:shadow-md transition-all duration-300 cursor-default`}
             >
-              <div className={`w-8 h-8 rounded-lg ${badge.bg} flex items-center justify-center`}>
-                <badge.icon className={`w-4.5 h-4.5 ${badge.color}`} />
+              <div className={`w-8 h-8 rounded-lg ${badge.bg} flex items-center justify-center text-lg`}>
+                {badge.emoji}
               </div>
               <span className="font-medium text-sm text-foreground">{badge.label}</span>
             </motion.div>
