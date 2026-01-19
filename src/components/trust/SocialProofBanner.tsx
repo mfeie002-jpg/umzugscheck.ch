@@ -1,11 +1,12 @@
 import { motion } from "framer-motion";
+import { Star, Users, Shield, Award } from "lucide-react";
 import { PulsingDot } from "@/components/common/PulsingDot";
 
 const stats = [
-  { emoji: "⭐", value: "4.8/5", label: "Bewertung" },
-  { emoji: "👥", value: "15'000+", label: "Umzüge" },
-  { emoji: "🛡️", value: "100%", label: "Geprüft" },
-  { emoji: "🏆", value: "200+", label: "Partner" }
+  { icon: Star, value: "4.8/5", label: "Bewertung" },
+  { icon: Users, value: "15'000+", label: "Umzüge" },
+  { icon: Shield, value: "100%", label: "Geprüft" },
+  { icon: Award, value: "200+", label: "Partner" }
 ];
 
 export const SocialProofBanner = () => {
@@ -34,7 +35,7 @@ export const SocialProofBanner = () => {
               transition={{ delay: idx * 0.1 }}
               className="flex items-center gap-2"
             >
-              <span className="text-lg">{stat.emoji}</span>
+              <stat.icon className="w-4 h-4 text-primary" />
               <span className="font-bold text-foreground">{stat.value}</span>
               <span className="text-sm text-muted-foreground hidden sm:inline">{stat.label}</span>
             </motion.div>

@@ -2,10 +2,11 @@
  * TRUST MICROBAR
  * 
  * Compact trust signals bar for location pages
- * Displays key trust indicators with emojis
+ * Displays key trust indicators with icons
  */
 
 import { memo } from "react";
+import { Shield, Clock, Star, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface TrustMicrobarProps {
@@ -20,10 +21,10 @@ interface TrustMicrobarProps {
 }
 
 const trustItems = [
-  { emoji: "🛡️", label: '100% kostenlos & unverbindlich', key: 'free' },
-  { emoji: "⏰", label: '3–5 Offerten in 24–48h', key: 'speed' },
-  { emoji: "⭐", label: 'Ø 4.9/5 Bewertung', key: 'rating', dynamic: true },
-  { emoji: "👥", label: '200+ geprüfte Firmen', key: 'providers', dynamic: true },
+  { icon: Shield, label: '100% kostenlos & unverbindlich', key: 'free' },
+  { icon: Clock, label: '3–5 Offerten in 24–48h', key: 'speed' },
+  { icon: Star, label: 'Ø 4.9/5 Bewertung', key: 'rating', dynamic: true },
+  { icon: Users, label: '200+ geprüfte Firmen', key: 'providers', dynamic: true },
 ];
 
 export const TrustMicrobar = memo(({
@@ -62,7 +63,10 @@ export const TrustMicrobar = memo(({
             key={item.key}
             className="flex items-center gap-2 text-sm"
           >
-            <span className="text-lg flex-shrink-0">{item.emoji}</span>
+            <item.icon className={cn(
+              "w-4 h-4 flex-shrink-0",
+              variant === 'light' ? 'text-white' : 'text-primary'
+            )} />
             <span className={variant === 'light' ? 'text-white/90' : 'text-muted-foreground'}>
               {getLabel(item)}
             </span>
