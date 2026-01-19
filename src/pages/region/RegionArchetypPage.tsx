@@ -599,12 +599,6 @@ const RegionArchetypPage = () => {
         />
       </main>
 
-      {/* Exit Intent Popup */}
-      <RegionExitIntent 
-        regionName={region.name}
-        providerCount={region.stats.providerCount}
-        avgRating={region.stats.avgRating}
-      />
     </div>
   );
 };
