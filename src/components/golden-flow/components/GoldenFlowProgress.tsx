@@ -1,7 +1,10 @@
 /**
  * GoldenFlowProgress - Progress indicator with psychological optimization
  * 
- * Starts at 20% (Endowed Progress Effect) and uses micro-animations
+ * Phase 2.3: Progress Psychology
+ * - Starts at 20% (Endowed Progress Effect)
+ * - Micro-animations on step completion
+ * - "Steps remaining" countdown text
  */
 
 import { motion } from 'framer-motion';
@@ -18,15 +21,18 @@ const STEP_LABELS = ['Adressen', 'Details', 'Services', 'Kontakt'];
 
 export function GoldenFlowProgress({ currentStep, className }: GoldenFlowProgressProps) {
   const stepNumber = typeof currentStep === 'number' ? currentStep : 4;
+  const totalSteps = 4;
+  const stepsRemaining = totalSteps - stepNumber + 1;
+  
   // Start at 20% (Endowed Progress Effect)
-  const progressPercent = 20 + ((stepNumber - 1) / 4) * 80;
+  const progressPercent = 20 + ((stepNumber - 1) / totalSteps) * 80;
   
   return (
     <div className={cn("mb-6", className)}>
       {/* Progress bar */}
       <div className="relative h-2 bg-muted rounded-full overflow-hidden mb-3">
         <motion.div
-          className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary to-primary/80 rounded-full"
+          className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary to-secondary rounded-full"
           initial={{ width: '20%' }}
           animate={{ width: `${progressPercent}%` }}
           transition={{ duration: 0.4, ease: 'easeOut' }}
@@ -69,14 +75,32 @@ export function GoldenFlowProgress({ currentStep, className }: GoldenFlowProgres
         })}
       </div>
       
-      {/* Mobile step label */}
-      <div className="text-center mt-2 sm:hidden">
-        <span className="text-sm font-medium text-primary">
-          {STEP_LABELS[stepNumber - 1]}
-        </span>
-        <span className="text-xs text-muted-foreground ml-2">
-          Schritt {stepNumber} von 4
-        </span>
+      {/* Mobile step label + Steps remaining countdown */}
+      <div className="flex items-center justify-between mt-2 sm:mt-3">
+        <div className="text-center sm:text-left flex-1">
+          <span className="text-sm font-medium text-primary sm:hidden">
+            {STEP_LABELS[stepNumber - 1]}
+          </span>
+          <span className="text-xs text-muted-foreground sm:hidden ml-2">
+            Schritt {stepNumber} von {totalSteps}
+          </span>
+        </div>
+        
+        {/* Steps remaining countdown */}
+        <motion.span
+          key={stepsRemaining}
+          initial={{ opacity: 0, y: -5 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-xs"
+        >
+          {stepsRemaining === 1 ? (
+            <span className="text-secondary font-semibold">✨ Letzter Schritt!</span>
+          ) : (
+            <span className="text-muted-foreground">
+              Noch {stepsRemaining} Schritte
+            </span>
+          )}
+        </motion.span>
       </div>
     </div>
   );
