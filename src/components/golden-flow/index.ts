@@ -16,3 +16,6 @@ export { GoldenFlowSuccess } from './steps/GoldenFlowSuccess';
 export { GoldenFlowProgress } from './components/GoldenFlowProgress';
 export { GoldenFlowTrustBar } from './components/GoldenFlowTrustBar';
 export { GoldenFlowPricePreview } from './components/GoldenFlowPricePreview';
+export { GoldenFlowRoomGrid } from './components/GoldenFlowRoomGrid';
+export { GoldenFlowLaborIllusion } from './components/GoldenFlowLaborIllusion';
+export { GoldenFlowResultTeaser } from './components/GoldenFlowResultTeaser';
