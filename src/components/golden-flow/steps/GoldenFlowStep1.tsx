@@ -2,11 +2,12 @@
  * GoldenFlowStep1 - Addresses (Zero Friction Entry)
  * 
  * Goal: Get user started in <5 seconds with instant price preview
+ * Features AI Video USP prominently as unique differentiator
  */
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, ArrowRight, Sparkles } from 'lucide-react';
+import { MapPin, ArrowRight, Sparkles, Video } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -85,6 +86,36 @@ export function GoldenFlowStep1({ formData, priceEstimate, onUpdate, onNext }: G
         <p className="text-muted-foreground">
           Vergleichen Sie kostenlos bis zu 5 Offerten von geprüften Schweizer Firmen
         </p>
+      </div>
+      
+      {/* AI Video USP Banner */}
+      <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10 border border-primary/20 p-4">
+        <div className="absolute -top-2 -right-2">
+          <span className="bg-secondary text-secondary-foreground text-[10px] font-bold px-2 py-1 rounded-full shadow-lg animate-pulse">
+            🎥 NEU
+          </span>
+        </div>
+        <div className="flex items-start gap-3">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shrink-0">
+            <Video className="w-5 h-5 text-primary-foreground" />
+          </div>
+          <div className="flex-1">
+            <h3 className="text-sm font-bold text-foreground">
+              Bis zu 40% sparen mit KI-Video-Analyse
+            </h3>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              30-60 Sek. Video statt Inventarliste – unsere KI erkennt Volumen präzise
+            </p>
+            <button 
+              type="button"
+              className="mt-2 text-xs font-semibold text-primary hover:text-primary/80 flex items-center gap-1 transition-colors"
+              onClick={() => window.location.href = '/video-offerte'}
+            >
+              Video-Offerte starten
+              <ArrowRight className="w-3 h-3" />
+            </button>
+          </div>
+        </div>
       </div>
       
       {/* Address inputs */}

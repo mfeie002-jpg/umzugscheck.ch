@@ -8,6 +8,24 @@ export const GOLDEN_FLOW_STORAGE_KEY = 'umzugscheck_golden_flow_data';
 
 export const GOLDEN_FLOW_SERVICES: GoldenFlowService[] = [
   {
+    id: 'video-analyse',
+    label: '🎥 KI-Video-Analyse',
+    description: 'Bis zu 40% sparen durch präzise Volumenerfassung',
+    details: 'Unser USP: Statt mühsamer Inventarliste nehmen Sie ein 30-60 Sekunden Video auf. Unsere KI erkennt Möbel, berechnet das exakte Volumen und Sie erhalten präzisere Offerten ohne versteckte "Sicherheitspuffer".',
+    benefits: [
+      '🎯 Bis zu 40% günstiger durch Präzision',
+      '⏱️ Nur 30-60 Sekunden statt Inventarliste',
+      '🤖 KI erkennt Möbel & Volumen automatisch',
+      '📊 Exakte Offerten ohne Sicherheitszuschläge'
+    ],
+    priceRange: 'GRATIS',
+    priceAdd: 0,
+    icon: 'Video',
+    popular: true,
+    highlight: true,
+    bookingPercent: 67,
+  },
+  {
     id: 'umzug',
     label: 'Umzug (Basis)',
     description: 'Transport aller Möbel & Gegenstände von A nach B',
