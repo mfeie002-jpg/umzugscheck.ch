@@ -8,15 +8,14 @@
  * - Labor illusion loading for perceived value
  * 
  * Features:
- * - GoldenNavigation (V15-based optimized nav)
+ * - Uses DynamicNavigation from MainLayout (no duplicate header)
  * - GoldenSocialProof (trust elements)
  * - KI-Video-Analyse USP prominently featured
  */
 
 import { GoldenFlowWizard } from "@/components/golden-flow";
-import { GoldenNavigation, GoldenSocialProof, GoldenTrustBadges } from "@/components/golden";
+import { GoldenSocialProof, GoldenTrustBadges } from "@/components/golden";
 import { Helmet } from "react-helmet";
-import { Footer } from "@/components/Footer";
 
 const GoldenFlowV10Page = () => {
   return (
@@ -29,10 +28,9 @@ const GoldenFlowV10Page = () => {
         />
       </Helmet>
 
-      {/* Golden Navigation */}
-      <GoldenNavigation />
+      {/* NOTE: Navigation provided by MainLayout - no GoldenNavigation here to avoid double header */}
 
-      <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 pt-20">
+      <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
         {/* Hero Section with Social Proof */}
         <div className="container mx-auto px-4 py-6">
           <GoldenSocialProof variant="strip" className="mb-6" />
@@ -55,8 +53,6 @@ const GoldenFlowV10Page = () => {
           <GoldenTrustBadges preset="premium" className="justify-center" />
         </div>
       </div>
-
-      <Footer />
     </>
   );
 };

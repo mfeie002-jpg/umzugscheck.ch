@@ -19,9 +19,9 @@ import { cn } from "@/lib/utils";
 
 // Trust hierarchy stats (most compelling first)
 const TRUST_STATS = [
-  { value: "200+", label: "Geprüfte Partner", icon: Shield, color: "text-emerald-600" },
+  { value: "200+", label: "Geprüfte Partner", icon: Shield, color: "text-primary" },
   { value: "15'000+", label: "Erfolgreiche Umzüge", icon: TrendingUp, color: "text-primary" },
-  { value: "4.8/5", label: "Kundenbewertung", icon: Star, color: "text-amber-500" },
+  { value: "4.8/5", label: "Kundenbewertung", icon: Star, color: "text-secondary" },
   { value: "40%", label: "Durchschnittliche Ersparnis", icon: CheckCircle, color: "text-secondary" },
 ];
 
@@ -148,8 +148,8 @@ export const GoldenSocialProof = memo(({
         >
           <div className="flex items-center justify-center gap-2">
             <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary" />
             </span>
             <AnimatePresence mode="wait">
               <motion.p
@@ -176,10 +176,10 @@ export const GoldenSocialProof = memo(({
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ delay: idx * 0.05 }}
               viewport={{ once: true }}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 rounded-full"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-primary/5 dark:bg-primary/10 border border-primary/20 dark:border-primary/20 rounded-full"
             >
-              <CheckCircle className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-              <span className="text-xs font-medium text-emerald-700 dark:text-emerald-300">{badge}</span>
+              <CheckCircle className="w-3.5 h-3.5 text-primary dark:text-primary" />
+              <span className="text-xs font-medium text-primary dark:text-primary">{badge}</span>
             </motion.div>
           ))}
         </div>
@@ -213,10 +213,10 @@ export const GoldenSocialProof = memo(({
                   <div className="text-right">
                     <div className="flex items-center gap-0.5 justify-end mb-1">
                       {[...Array(TESTIMONIALS[activeTestimonial].rating)].map((_, i) => (
-                        <Star key={i} className="w-4 h-4 text-amber-500 fill-amber-500" />
+                        <Star key={i} className="w-4 h-4 text-secondary fill-secondary" />
                       ))}
                     </div>
-                    <p className="text-sm font-semibold text-emerald-600">
+                    <p className="text-sm font-semibold text-primary">
                       {TESTIMONIALS[activeTestimonial].savings} gespart
                     </p>
                   </div>
@@ -270,8 +270,8 @@ const SocialProofCompact = memo(({
     {/* Live activity */}
     <div className="flex items-center gap-2 text-sm">
       <span className="relative flex h-2 w-2">
-        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+        <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
       </span>
       <span className="text-muted-foreground">{liveActivity.city} {liveActivity.action}</span>
     </div>

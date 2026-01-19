@@ -62,9 +62,9 @@ export const GOLDEN_NAV_CONFIG: GoldenNavConfig = {
     soFunktionierts: "Transparent von Anfrage bis Offerte",
   },
   trustSignals: [
-    { icon: "Shield", label: "Geprüfte Firmen", color: "text-emerald-600" },
-    { icon: "Star", label: "4.8★ Bewertung", color: "text-amber-500" },
-    { icon: "Heart", label: "100% Gratis", color: "text-rose-500" },
+    { icon: "Shield", label: "Geprüfte Firmen", color: "text-primary" },
+    { icon: "Star", label: "4.8★ Bewertung", color: "text-secondary" },
+    { icon: "Heart", label: "100% Gratis", color: "text-secondary" },
   ],
   ctaCard: {
     title: "In 2 Minuten Klarheit",
