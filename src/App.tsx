@@ -311,6 +311,7 @@ const SwissConciergeHybrid = lazy(() => import("./pages/SwissConciergeHybrid"));
 const V9ZeroFriction = lazy(() => import("./pages/V9ZeroFriction"));
 const UltimateBest36 = lazy(() => import("./pages/UltimateBest36"));
 const GoldenFlowV10 = lazy(() => import("./pages/GoldenFlowV10"));
+const GoldenDemo = lazy(() => import("./pages/GoldenDemo"));
 
 // Customer pages
 const KundenOnboarding = lazy(() => import("./pages/KundenOnboarding"));
@@ -697,6 +698,7 @@ const AppRouterContent = () => {
           <Route path="/v9-zero-friction" element={<V9ZeroFriction />} />
           <Route path="/ultimate-best36" element={<UltimateBest36 />} />
           <Route path="/golden-flow-v10" element={<GoldenFlowV10 />} />
+          <Route path="/golden-demo" element={<GoldenDemo />} />
           
           {/* Flow Command Center - Public (no admin auth required) */}
           <Route path="/flow-command-center" element={<FlowCommandCenter />} />
