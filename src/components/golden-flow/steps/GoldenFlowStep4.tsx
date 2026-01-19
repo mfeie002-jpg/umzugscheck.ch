@@ -114,6 +114,9 @@ export function GoldenFlowStep4({
             onChange={(e) => onUpdate({ name: e.target.value })}
             className={cn("h-12", errors.name && "border-destructive")}
             autoComplete="name"
+            autoCapitalize="words"
+            autoCorrect="off"
+            spellCheck="false"
           />
           {errors.name && (
             <p className="text-xs text-destructive mt-1">{errors.name}</p>
@@ -135,6 +138,9 @@ export function GoldenFlowStep4({
             className={cn("h-12", errors.email && "border-destructive")}
             autoComplete="email"
             inputMode="email"
+            autoCapitalize="off"
+            autoCorrect="off"
+            spellCheck="false"
           />
           {errors.email && (
             <p className="text-xs text-destructive mt-1">{errors.email}</p>
@@ -156,6 +162,8 @@ export function GoldenFlowStep4({
             className={cn("h-12", errors.phone && "border-destructive")}
             autoComplete="tel"
             inputMode="tel"
+            autoCapitalize="off"
+            autoCorrect="off"
           />
           {errors.phone && (
             <p className="text-xs text-destructive mt-1">{errors.phone}</p>

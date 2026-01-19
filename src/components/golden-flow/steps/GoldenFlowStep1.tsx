@@ -131,13 +131,16 @@ export function GoldenFlowStep1({ formData, priceEstimate, onUpdate, onNext }: G
               id="fromPLZ"
               type="text"
               inputMode="numeric"
+              pattern="[0-9]*"
               placeholder="z.B. 8001"
               value={formData.fromPLZ}
               onChange={(e) => handlePLZChange('fromPLZ', e.target.value)}
               onFocus={() => formData.fromPLZ.length >= 2 && setShowFromSuggestions(fromSuggestions.length > 0)}
               onBlur={() => setTimeout(() => setShowFromSuggestions(false), 150)}
               className="h-12 text-lg"
-              autoComplete="off"
+              autoComplete="postal-code"
+              autoCapitalize="off"
+              autoCorrect="off"
             />
             {formData.fromCity && (
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
@@ -175,13 +178,16 @@ export function GoldenFlowStep1({ formData, priceEstimate, onUpdate, onNext }: G
               id="toPLZ"
               type="text"
               inputMode="numeric"
+              pattern="[0-9]*"
               placeholder="z.B. 3011"
               value={formData.toPLZ}
               onChange={(e) => handlePLZChange('toPLZ', e.target.value)}
               onFocus={() => formData.toPLZ.length >= 2 && setShowToSuggestions(toSuggestions.length > 0)}
               onBlur={() => setTimeout(() => setShowToSuggestions(false), 150)}
               className="h-12 text-lg"
-              autoComplete="off"
+              autoComplete="postal-code"
+              autoCapitalize="off"
+              autoCorrect="off"
             />
             {formData.toCity && (
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">

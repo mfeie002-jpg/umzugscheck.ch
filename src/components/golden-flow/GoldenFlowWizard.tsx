@@ -2,6 +2,7 @@
  * GoldenFlowWizard - Main orchestrator for the Golden Flow
  * 
  * Consolidated from 40+ variants into a single optimized flow.
+ * Phase 2.2: Includes Labor Illusion loading animation
  */
 
 import { useState, useEffect, useCallback } from 'react';
@@ -11,6 +12,7 @@ import { toast } from 'sonner';
 import { GoldenFlowData, GoldenFlowPriceEstimate, GoldenFlowStep } from './types';
 import { GOLDEN_FLOW_STORAGE_KEY, GOLDEN_FLOW_SERVICES, BASE_PRICES } from './constants';
 import { GoldenFlowProgress } from './components/GoldenFlowProgress';
+import { GoldenFlowLaborIllusion } from './components/GoldenFlowLaborIllusion';
 import { GoldenFlowStep1 } from './steps/GoldenFlowStep1';
 import { GoldenFlowStep2 } from './steps/GoldenFlowStep2';
 import { GoldenFlowStep3 } from './steps/GoldenFlowStep3';
@@ -75,6 +77,7 @@ export function GoldenFlowWizard() {
   const [formData, setFormData] = useState<GoldenFlowData>(getInitialFormData);
   const [priceEstimate, setPriceEstimate] = useState<GoldenFlowPriceEstimate | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showLaborIllusion, setShowLaborIllusion] = useState(false);
 
   // Calculate price when data changes
   useEffect(() => {
@@ -109,10 +112,13 @@ export function GoldenFlowWizard() {
 
   const handleSubmit = useCallback(async () => {
     setIsSubmitting(true);
-    
+    setShowLaborIllusion(true);
+  }, []);
+
+  const handleLaborIllusionComplete = useCallback(async () => {
     try {
-      // Simulate API call with labor illusion
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Actual API call would go here
+      await new Promise(resolve => setTimeout(resolve, 500));
       
       toast.success('Ihre Anfrage wurde erfolgreich gesendet!');
       setCurrentStep('success');
@@ -121,66 +127,80 @@ export function GoldenFlowWizard() {
       toast.error('Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.');
     } finally {
       setIsSubmitting(false);
+      setShowLaborIllusion(false);
     }
   }, []);
 
   return (
-    <Card className="w-full max-w-2xl mx-auto shadow-xl border-0 bg-card/95 backdrop-blur">
-      <CardContent className="p-6 sm:p-8">
-        {currentStep !== 'success' && (
-          <GoldenFlowProgress currentStep={currentStep} />
+    <>
+      {/* Labor Illusion overlay */}
+      <AnimatePresence>
+        {showLaborIllusion && (
+          <GoldenFlowLaborIllusion
+            isActive={showLaborIllusion}
+            onComplete={handleLaborIllusionComplete}
+            matchedCompanies={3}
+          />
         )}
-        
-        <AnimatePresence mode="wait">
-          {currentStep === 1 && (
-            <GoldenFlowStep1
-              key="step1"
-              formData={formData}
-              priceEstimate={priceEstimate}
-              onUpdate={updateFormData}
-              onNext={nextStep}
-            />
+      </AnimatePresence>
+      
+      <Card className="w-full max-w-2xl mx-auto shadow-xl border-0 bg-card/95 backdrop-blur">
+        <CardContent className="p-6 sm:p-8">
+          {currentStep !== 'success' && (
+            <GoldenFlowProgress currentStep={currentStep} />
           )}
-          {currentStep === 2 && (
-            <GoldenFlowStep2
-              key="step2"
-              formData={formData}
-              priceEstimate={priceEstimate}
-              onUpdate={updateFormData}
-              onNext={nextStep}
-              onBack={prevStep}
-            />
-          )}
-          {currentStep === 3 && (
-            <GoldenFlowStep3
-              key="step3"
-              formData={formData}
-              priceEstimate={priceEstimate}
-              onUpdate={updateFormData}
-              onNext={nextStep}
-              onBack={prevStep}
-            />
-          )}
-          {currentStep === 4 && (
-            <GoldenFlowStep4
-              key="step4"
-              formData={formData}
-              priceEstimate={priceEstimate}
-              isSubmitting={isSubmitting}
-              onUpdate={updateFormData}
-              onSubmit={handleSubmit}
-              onBack={prevStep}
-            />
-          )}
-          {currentStep === 'success' && (
-            <GoldenFlowSuccess
-              key="success"
-              formData={formData}
-              priceEstimate={priceEstimate}
-            />
-          )}
-        </AnimatePresence>
-      </CardContent>
-    </Card>
+          
+          <AnimatePresence mode="wait">
+            {currentStep === 1 && (
+              <GoldenFlowStep1
+                key="step1"
+                formData={formData}
+                priceEstimate={priceEstimate}
+                onUpdate={updateFormData}
+                onNext={nextStep}
+              />
+            )}
+            {currentStep === 2 && (
+              <GoldenFlowStep2
+                key="step2"
+                formData={formData}
+                priceEstimate={priceEstimate}
+                onUpdate={updateFormData}
+                onNext={nextStep}
+                onBack={prevStep}
+              />
+            )}
+            {currentStep === 3 && (
+              <GoldenFlowStep3
+                key="step3"
+                formData={formData}
+                priceEstimate={priceEstimate}
+                onUpdate={updateFormData}
+                onNext={nextStep}
+                onBack={prevStep}
+              />
+            )}
+            {currentStep === 4 && (
+              <GoldenFlowStep4
+                key="step4"
+                formData={formData}
+                priceEstimate={priceEstimate}
+                isSubmitting={isSubmitting}
+                onUpdate={updateFormData}
+                onSubmit={handleSubmit}
+                onBack={prevStep}
+              />
+            )}
+            {currentStep === 'success' && (
+              <GoldenFlowSuccess
+                key="success"
+                formData={formData}
+                priceEstimate={priceEstimate}
+              />
+            )}
+          </AnimatePresence>
+        </CardContent>
+      </Card>
+    </>
   );
 }
