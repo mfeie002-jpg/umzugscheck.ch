@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowRight, Star, Shield, CheckCircle2, Clock, Check, TrendingDown, Trophy, Video, Upload, FileText, Phone, MessageCircle, Bot } from "lucide-react";
+import { TabMethodHint, useTabHintVariant } from "./TabMethodHint";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import heroFamilyMoving from "@/assets/hero-family-moving.jpg";
@@ -429,6 +430,10 @@ export const PremiumHeroSection = () => {
                     Wählen Sie Ihre bevorzugte Methode
                   </p>
                 </div>
+                {/* Hint above tabs for variants C and D */}
+                <div className="relative">
+                  <TabMethodHint position="above" />
+                </div>
                 
                 {/* 4 Options: Formular, Video, KI-Chat, WhatsApp - Clearly Clickable */}
                 <Tabs defaultValue="form" className="w-full">
@@ -507,6 +512,9 @@ export const PremiumHeroSection = () => {
                       </span>
                     </TabsTrigger>
                   </TabsList>
+                  
+                  {/* Hint below tabs for variants A and B */}
+                  <TabMethodHint position="below" />
                   
                   {/* Video Tab - Friendly, not intimidating */}
                   <TabsContent value="video" className="mt-4 space-y-3">
