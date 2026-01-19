@@ -117,12 +117,12 @@ export const TabHintBadge = memo(({ className }: { className?: string }) => {
 
   return (
     <motion.div
-      className={cn("absolute -top-2 right-2 z-20", className)}
+      className={cn("absolute -top-2 right-2 z-20 pointer-events-none", className)}
       initial={{ opacity: 0, scale: 0.8, y: 10 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
     >
-      <div className="flex items-center gap-1.5 px-2.5 py-1 bg-primary text-white text-[10px] font-bold rounded-full shadow-lg">
+      <div className="flex items-center gap-1.5 px-2.5 py-1 bg-primary text-white text-[10px] font-bold rounded-full shadow-lg pointer-events-none">
         <MousePointerClick className="w-3 h-3" />
         <span>3 Alternativen</span>
         <motion.div
