@@ -39,8 +39,8 @@ export const GoldenNavigation = memo(() => {
   return (
     <>
       <header className="sticky top-0 z-[9998] w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 overflow-x-clip">
-        {/* Premium gradient accent line */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-primary" />
+        {/* Premium gradient accent line - Brand colors only */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#0050A8] via-[#E32026] to-[#0050A8]" />
         
         <div className="mx-auto flex h-16 w-full max-w-[1440px] items-center justify-between px-4 sm:px-5 xl:px-6 pl-[calc(1rem+env(safe-area-inset-left))] pr-[calc(1.5rem+env(safe-area-inset-right))]">
           {/* Logo */}

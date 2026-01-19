@@ -46,11 +46,11 @@ interface NavSection {
   items: NavItem[];
 }
 
-// Trust signals for dropdown header
+// Trust signals for dropdown header - Brand colors only
 const TRUST_SIGNALS = [
-  { icon: Shield, label: "Geprüfte Firmen", color: "text-emerald-600" },
-  { icon: Star, label: "4.8★ Bewertung", color: "text-amber-500" },
-  { icon: Heart, label: "100% Gratis", color: "text-rose-500" },
+  { icon: Shield, label: "Geprüfte Firmen", color: "text-primary" },
+  { icon: Star, label: "4.8★ Bewertung", color: "text-secondary" },
+  { icon: Heart, label: "100% Gratis", color: "text-secondary" },
 ];
 
 const NAV_SECTIONS: NavSection[] = [
@@ -171,8 +171,8 @@ export const NavigationV16 = () => {
   return (
     <>
       <header className="sticky top-0 z-[9998] w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 overflow-x-clip">
-        {/* Warm accent line */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-emerald-500 to-primary/60" />
+        {/* Brand accent line - Primary Blue via Secondary Red to Primary */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#0050A8] via-[#E32026] to-[#0050A8]" />
         
         <div className="mx-auto flex h-16 w-full max-w-[1440px] items-center justify-between px-4 sm:px-5 xl:px-6 pl-[calc(1rem+env(safe-area-inset-left))] pr-[calc(1.5rem+env(safe-area-inset-right))]">
           {/* Logo */}
@@ -223,12 +223,12 @@ export const NavigationV16 = () => {
                         transition={{ duration: 0.2, ease: "easeOut" }}
                         className="absolute top-full left-1/2 -translate-x-1/2 pt-3 z-[9999]"
                       >
-                        <div className="w-[420px] bg-background rounded-2xl shadow-2xl shadow-primary/10 border border-border/50 overflow-hidden">
-                          {/* Gradient accent */}
-                          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary/60 via-emerald-500/60 to-secondary/60" />
+                        <div className="w-[420px] bg-background rounded-2xl shadow-2xl border border-border/50 overflow-hidden">
+                          {/* Gradient accent - Brand colors */}
+                          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#0050A8] via-[#E32026] to-[#0050A8]" />
                           
                           {/* Trust micro-bar */}
-                          <div className="border-b border-border/50 bg-gradient-to-r from-primary/[0.04] via-transparent to-emerald-500/[0.04]">
+                          <div className="border-b border-border/50 bg-muted/30">
                             <div className="flex items-center justify-center gap-4 py-2.5 px-4">
                               {TRUST_SIGNALS.map((signal, i) => (
                                 <motion.div
@@ -268,10 +268,10 @@ export const NavigationV16 = () => {
                                   <Link
                                     to={item.href}
                                     onClick={() => setActiveDropdown(null)}
-                                    className="flex items-start gap-3 px-3 py-3.5 rounded-xl hover:bg-gradient-to-r hover:from-primary/10 hover:to-emerald-500/5 transition-all group"
+                                    className="flex items-start gap-3 px-3 py-3.5 rounded-xl hover:bg-muted/50 transition-all group"
                                   >
-                                    <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary/20 via-primary/10 to-transparent flex items-center justify-center flex-shrink-0 group-hover:from-primary/30 group-hover:to-emerald-500/10 transition-all group-hover:scale-110 shadow-sm shadow-primary/10">
-                                      <Icon className="h-5 w-5 text-primary" />
+                                    <div className="w-11 h-11 rounded-xl bg-muted/50 flex items-center justify-center flex-shrink-0 group-hover:bg-muted transition-all group-hover:scale-110">
+                                      <Icon className="h-5 w-5 text-muted-foreground" />
                                     </div>
                                     <div className="flex-1 min-w-0">
                                       <div className="flex items-center gap-2">

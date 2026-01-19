@@ -57,23 +57,24 @@ src/pages/
 └── GoldenFlowV10.tsx             → NEW (Golden Flow entry point)
 ```
 
-#### Component Folders to Consolidate
+#### Component Folders - ALL KEPT for A/B Testing
 ```
 src/components/
 ├── funnel-v1/           → KEEP (Golden Flow base)
-├── funnel-v1b/          → DELETE (merge into funnel-v1)
-├── funnel-v1d/          → DELETE
-├── funnel-v1e/          → DELETE
-├── funnel-v2e/          → DELETE
-├── god-mode-v3/         → DELETE
-├── video-first-v4/      → DELETE
-├── marketplace-v5/      → DELETE
-├── ultimate-v6/         → DELETE
-├── swissmove-v7/        → DELETE
-├── decisionfree-v8/     → DELETE
-├── zerofriction-v9/     → MERGE best into funnel-v1
-├── calculator-variants/ → DELETE (all 25+ variants)
-└── ultimate-flow/       → KEEP (for dynamic)
+├── funnel-v1b/          → KEEP (A/B testing)
+├── funnel-v1d/          → KEEP (A/B testing)
+├── funnel-v1e/          → KEEP (A/B testing)
+├── funnel-v2e/          → KEEP (A/B testing)
+├── god-mode-v3/         → KEEP (A/B testing)
+├── video-first-v4/      → KEEP (A/B testing)
+├── marketplace-v5/      → KEEP (A/B testing)
+├── ultimate-v6/         → KEEP (A/B testing)
+├── swissmove-v7/        → KEEP (A/B testing)
+├── decisionfree-v8/     → KEEP (A/B testing)
+├── zerofriction-v9/     → KEEP (A/B testing)
+├── calculator-variants/ → KEEP (A/B testing)
+├── ultimate-flow/       → KEEP (dynamic loading)
+└── golden-flow/         → NEW (Golden Flow V10)
 ```
 
 ---
@@ -150,17 +151,19 @@ Step 4: Contact (Trust-Optimized)
 - [x] Create `/golden-demo` showcase page
 - [x] Integrate Golden components into GoldenFlowV10 page
 
-### Phase 2: Route Consolidation
-- [ ] Update `Umzugsofferten.tsx` to use GoldenFlow only
-- [ ] Remove ?v= parameter handling
-- [ ] Set up 301 redirects for old URLs
-- [ ] Update internal links
+### Phase 2: Route Updates (NOT DELETION)
+- [ ] Update main `/umzugsofferten` to default to GoldenFlow
+- [ ] Keep ?v= parameter for accessing all A/B variants
+- [ ] Update internal links to point to Golden by default
+- [ ] Keep all funnel component folders for A/B testing
 
-### Phase 3: Cleanup
-- [ ] Delete obsolete page files
-- [ ] Delete obsolete component folders
-- [ ] Update App.tsx routes
-- [ ] Clean flowConfigs.ts
+### Phase 3: Polish & Optimization ✅ COMPLETE
+- [x] Ensure brand colors consistent (#0050A8 blue, #E32026 red)
+- [x] Remove all emerald/green colors from navigation
+- [x] Fix NavigationV16 trust signals to use brand colors
+- [x] Fix dropdown icon colors (neutral instead of blue)
+- [x] Fix HeaderLogo to use correct hex colors
+- [ ] Optimize bundle size (future)
 
 ### Phase 4: Optimization ✅ COMPLETE
 - [ ] Add Google Places Autocomplete (skipped - no API key)
