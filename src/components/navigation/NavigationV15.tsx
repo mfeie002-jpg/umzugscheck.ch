@@ -126,9 +126,8 @@ export const NavigationV15 = () => {
     <>
       <header className="sticky top-0 z-[9998] w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto max-w-full px-3 sm:px-4 lg:px-6 flex h-16 items-center justify-between gap-2 min-w-0">
-          {/* Logo - Hide tagline on mobile/tablet for space */}
-          <HeaderLogo size="md" showTagline={false} className="flex-shrink-0 lg:hidden" />
-          <HeaderLogo size="md" showTagline={true} className="flex-shrink-0 hidden lg:flex" />
+          {/* Logo - Show tagline always */}
+          <HeaderLogo size="md" showTagline={true} className="flex-shrink-0" />
 
           {/* Desktop Navigation - Show from lg (1024px+) */}
           <nav className="hidden lg:flex items-center justify-center gap-0.5 xl:gap-1 2xl:gap-2 flex-1 min-w-0 overflow-visible">
@@ -229,24 +228,24 @@ export const NavigationV15 = () => {
             </Button>
           </div>
 
-          {/* Mobile CTA */}
-          <Button asChild size="sm" className="lg:hidden h-9 px-3 font-semibold gap-1.5 rounded-lg bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-md shadow-secondary/20">
-            <Link to={flowPath}>
-              <Zap className="w-4 h-4" />
-              Offerten
-            </Link>
-          </Button>
+          {/* Mobile CTA + Menu Button - pushed to right */}
+          <div className="lg:hidden flex items-center gap-2 ml-auto">
+            <Button asChild size="sm" className="h-9 px-3 font-semibold gap-1.5 rounded-lg bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-md shadow-secondary/20">
+              <Link to={flowPath}>
+                <Zap className="w-4 h-4" />
+                Offerten
+              </Link>
+            </Button>
 
-          {/* Mobile Menu Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="lg:hidden"
-            onClick={() => setMobileMenuOpen(true)}
-          >
-            <Menu className="h-6 w-6" />
-            <span className="sr-only">Menü öffnen</span>
-          </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setMobileMenuOpen(true)}
+            >
+              <Menu className="h-6 w-6" />
+              <span className="sr-only">Menü öffnen</span>
+            </Button>
+          </div>
         </div>
       </header>
 
