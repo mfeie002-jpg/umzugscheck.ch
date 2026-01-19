@@ -431,7 +431,7 @@ export const PremiumHeroSection = () => {
                   </p>
                 </div>
                 {/* Hint above tabs for variants C and D */}
-                <div className="relative">
+                <div className="relative pointer-events-none">
                   <TabMethodHint position="above" />
                 </div>
                 
