@@ -5,7 +5,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Package, Sparkles, Brush, Trash2, Warehouse, 
+  Package, Sparkles, Brush, Trash2, Warehouse, Video,
   Plus, Minus, CheckCircle, Info, ArrowRight, ArrowLeft 
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -28,6 +28,7 @@ const ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   Brush,
   Trash2,
   Warehouse,
+  Video,
 };
 
 export function GoldenFlowStep3({ formData, priceEstimate, onUpdate, onNext, onBack }: GoldenFlowStep3Props) {
