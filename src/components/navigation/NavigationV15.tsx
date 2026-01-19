@@ -19,26 +19,8 @@ import { Link, useLocation } from "react-router-dom";
 import { 
   ChevronDown, 
   Menu, 
-  ClipboardList, 
-  Calculator, 
-  Box, 
-  Bot, 
-  Package,
-  Home,
-  Briefcase,
-  Sparkles,
-  Globe,
-  Warehouse,
-  HelpCircle,
-  Star,
-  Shield,
-  Users,
-  MessageCircle,
-  Phone,
-  CheckCircle,
   ArrowRight,
-  Zap,
-  LogIn
+  Zap
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { HeaderLogo } from "@/components/brand/HeaderLogo";
@@ -51,7 +33,7 @@ interface NavItem {
   tagline: string;
   emoji?: string;
   items: {
-    icon: React.ElementType;
+    emoji: string;
     title: string;
     description: string;
     href: string;
@@ -64,11 +46,11 @@ const navStructure: NavItem[] = [
     tagline: "Tools, Checklisten & Tipps, damit du stressfrei an alles denkst.",
     emoji: "📋",
     items: [
-      { icon: ClipboardList, title: "Umzugscheckliste", description: "Alles auf einen Blick", href: "/checkliste" },
-      { icon: Calculator, title: "Umzugskosten-Rechner", description: "In 2 Min zum Richtpreis", href: "/umzugsrechner" },
-      { icon: Box, title: "Volumenrechner", description: "Wie viel passt in den LKW?", href: "/volumenrechner" },
-      { icon: Bot, title: "Digitaler Assistent", description: "Persönliche Tipps (Beta)", href: "/assistent" },
-      { icon: Package, title: "Packtipps", description: "So packst du richtig", href: "/ratgeber/packtipps" },
+      { emoji: "✅", title: "Umzugscheckliste", description: "Alles auf einen Blick", href: "/checkliste" },
+      { emoji: "🧮", title: "Umzugskosten-Rechner", description: "In 2 Min zum Richtpreis", href: "/umzugsrechner" },
+      { emoji: "📦", title: "Volumenrechner", description: "Wie viel passt in den LKW?", href: "/volumenrechner" },
+      { emoji: "🤖", title: "Digitaler Assistent", description: "Persönliche Tipps (Beta)", href: "/assistent" },
+      { emoji: "🎁", title: "Packtipps", description: "So packst du richtig", href: "/ratgeber/packtipps" },
     ]
   },
   {
@@ -76,11 +58,11 @@ const navStructure: NavItem[] = [
     tagline: "Hol dir gratis Offerten von geprüften Umzugsfirmen & finde das beste Angebot.",
     emoji: "🔍",
     items: [
-      { icon: Home, title: "Privatumzug", description: "Zügle ohne Stress – Angebote für deinen Wohnungs- oder Hausumzug", href: "/privatumzug" },
-      { icon: Briefcase, title: "Büro & Firmenumzug", description: "Reibungsloser Geschäftsumzug – Offerten für Büro oder Firma", href: "/firmenumzug" },
-      { icon: Sparkles, title: "Umzug + Reinigung", description: "Komplett sorglos – inkl. Endreinigung durch Profis", href: "/umzug-mit-reinigung" },
-      { icon: Globe, title: "Internationaler Umzug", description: "Von der Schweiz in die Welt – erfahrene Partner", href: "/international" },
-      { icon: Warehouse, title: "Lagerung & Entsorgung", description: "Zwischenlagern oder Entsorgen leicht gemacht", href: "/lagerung-entsorgung" },
+      { emoji: "🏠", title: "Privatumzug", description: "Zügle ohne Stress – Angebote für deinen Wohnungs- oder Hausumzug", href: "/privatumzug" },
+      { emoji: "💼", title: "Büro & Firmenumzug", description: "Reibungsloser Geschäftsumzug – Offerten für Büro oder Firma", href: "/firmenumzug" },
+      { emoji: "✨", title: "Umzug + Reinigung", description: "Komplett sorglos – inkl. Endreinigung durch Profis", href: "/umzug-mit-reinigung" },
+      { emoji: "🌍", title: "Internationaler Umzug", description: "Von der Schweiz in die Welt – erfahrene Partner", href: "/international" },
+      { emoji: "🏭", title: "Lagerung & Entsorgung", description: "Zwischenlagern oder Entsorgen leicht gemacht", href: "/lagerung-entsorgung" },
     ]
   },
   {
@@ -88,10 +70,10 @@ const navStructure: NavItem[] = [
     tagline: "In 3 Schritten zu deinem stressfreien Umzug – transparent, sicher und einfach erklärt.",
     emoji: "⭐",
     items: [
-      { icon: HelpCircle, title: "Ablauf erklärt", description: "So funktioniert Umzugscheck", href: "/so-funktionierts" },
-      { icon: Star, title: "Kundenbewertungen", description: "Echte Erfahrungen lesen", href: "/bewertungen" },
-      { icon: Shield, title: "Geprüfte Partner", description: "Qualität die du vertrauen kannst", href: "/partner" },
-      { icon: Users, title: "Über uns", description: "Unser Team & unsere Mission", href: "/ueber-uns" },
+      { emoji: "❓", title: "Ablauf erklärt", description: "So funktioniert Umzugscheck", href: "/so-funktionierts" },
+      { emoji: "⭐", title: "Kundenbewertungen", description: "Echte Erfahrungen lesen", href: "/bewertungen" },
+      { emoji: "🛡️", title: "Geprüfte Partner", description: "Qualität die du vertrauen kannst", href: "/partner" },
+      { emoji: "👥", title: "Über uns", description: "Unser Team & unsere Mission", href: "/ueber-uns" },
     ]
   },
   {
@@ -99,9 +81,9 @@ const navStructure: NavItem[] = [
     tagline: "Wir sind für dich da – FAQ, Tipps und persönlicher Support bei allen Umzugsfragen.",
     emoji: "📞",
     items: [
-      { icon: MessageCircle, title: "Häufige Fragen (FAQ)", description: "Schnelle Antworten", href: "/faq" },
-      { icon: Phone, title: "Kontakt", description: "Wir helfen dir gerne", href: "/kontakt" },
-      { icon: CheckCircle, title: "Support", description: "Bei Problemen & Reklamationen", href: "/support" },
+      { emoji: "💬", title: "Häufige Fragen (FAQ)", description: "Schnelle Antworten", href: "/faq" },
+      { emoji: "📞", title: "Kontakt", description: "Wir helfen dir gerne", href: "/kontakt" },
+      { emoji: "🆘", title: "Support", description: "Bei Problemen & Reklamationen", href: "/support" },
     ]
   },
   {
@@ -109,10 +91,10 @@ const navStructure: NavItem[] = [
     tagline: "Partner werden & täglich qualifizierte Umzugs-Leads erhalten.",
     emoji: "🏢",
     items: [
-      { icon: Users, title: "Partner werden", description: "Erhalte täglich qualifizierte Leads", href: "/fuer-firmen" },
-      { icon: LogIn, title: "Anbieter Login", description: "Zugang zu deinem Partner-Dashboard", href: "/anbieter-login" },
-      { icon: Briefcase, title: "Firmenumzug anfragen", description: "Relocation Service für Unternehmen", href: "/firmenumzug" },
-      { icon: Calculator, title: "Firmenumzug-Rechner", description: "Kosten für Büroumzug kalkulieren", href: "/firmenumzug-rechner" },
+      { emoji: "🤝", title: "Partner werden", description: "Erhalte täglich qualifizierte Leads", href: "/fuer-firmen" },
+      { emoji: "🔐", title: "Anbieter Login", description: "Zugang zu deinem Partner-Dashboard", href: "/anbieter-login" },
+      { emoji: "💼", title: "Firmenumzug anfragen", description: "Relocation Service für Unternehmen", href: "/firmenumzug" },
+      { emoji: "🧮", title: "Firmenumzug-Rechner", description: "Kosten für Büroumzug kalkulieren", href: "/firmenumzug-rechner" },
     ]
   }
 ];
@@ -173,17 +155,15 @@ export const NavigationV15 = () => {
 
                         {/* Links */}
                         <div className="space-y-1">
-                          {section.items.map((item) => {
-                            const Icon = item.icon;
-                            return (
+                          {section.items.map((item) => (
                               <Link
                                 key={item.href}
                                 to={item.href}
                                 className="flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-accent transition-colors group"
                                 onClick={() => setActiveDropdown(null)}
                               >
-                                <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
-                                  <Icon className="h-4 w-4 text-primary" />
+                                <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors text-lg">
+                                  {item.emoji}
                                 </div>
                                 <div className="flex-1 min-w-0">
                                   <span className="text-sm font-semibold text-foreground block">{item.title}</span>
@@ -191,8 +171,7 @@ export const NavigationV15 = () => {
                                 </div>
                                 <ArrowRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity mt-1" />
                               </Link>
-                            );
-                          })}
+                          ))}
                         </div>
 
                         {/* CTA in Dropdown */}

@@ -27,7 +27,7 @@ interface NavItem {
   tagline: string;
   emoji?: string;
   items: {
-    icon: React.ElementType;
+    emoji: string;
     title: string;
     description: string;
     href: string;
@@ -252,9 +252,7 @@ export const MobileMenuV15 = ({ isOpen, onClose, navStructure }: MobileMenuV15Pr
                             className="overflow-hidden"
                           >
                             <div className="px-4 pb-4 pt-2 space-y-2 bg-gradient-to-b from-primary/5 to-transparent">
-                              {section.items.map((item, itemIdx) => {
-                                const Icon = item.icon;
-                                return (
+                              {section.items.map((item, itemIdx) => (
                                   <motion.div
                                     key={item.href}
                                     initial={{ opacity: 0, x: -10 }}
@@ -266,8 +264,8 @@ export const MobileMenuV15 = ({ isOpen, onClose, navStructure }: MobileMenuV15Pr
                                       onClick={onClose}
                                       className="flex items-start gap-4 px-4 py-4 min-h-[64px] rounded-xl hover:bg-background/80 active:bg-accent transition-all group touch-manipulation border border-transparent hover:border-border/50 hover:shadow-sm"
                                     >
-                                      <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center flex-shrink-0 group-hover:from-primary/30 group-hover:to-primary/10 transition-all">
-                                        <Icon className="h-5 w-5 text-primary" />
+                                      <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center flex-shrink-0 group-hover:from-primary/30 group-hover:to-primary/10 transition-all text-xl">
+                                        {item.emoji}
                                       </div>
                                       <div className="flex-1 min-w-0 pt-0.5">
                                         <span className="text-sm font-semibold text-foreground block group-hover:text-primary transition-colors">
@@ -280,8 +278,7 @@ export const MobileMenuV15 = ({ isOpen, onClose, navStructure }: MobileMenuV15Pr
                                       <ArrowRight className="w-4 h-4 text-muted-foreground/50 group-hover:text-primary group-hover:translate-x-1 transition-all mt-1 flex-shrink-0" />
                                     </Link>
                                   </motion.div>
-                                );
-                              })}
+                              ))}
 
                               {/* Section-specific CTA for Offerten */}
                               {section.label === "Offerten vergleichen" && (
