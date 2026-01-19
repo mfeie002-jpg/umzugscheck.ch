@@ -31,7 +31,7 @@ export function HeaderLogo({ className, size = "md", onClick, showTagline = true
     >
       <svg 
         viewBox="0 0 280 36" 
-        className={cn(s.height, "w-auto min-w-[140px] sm:min-w-[180px]")}
+        className={cn(s.height, "w-auto min-w-[120px] xs:min-w-[140px] sm:min-w-[180px] max-w-[150px] xs:max-w-[170px] sm:max-w-none")}
         aria-hidden="true"
       >
         {/* House Icon - Blue body, Red roof */}

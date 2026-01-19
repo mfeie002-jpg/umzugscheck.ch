@@ -323,7 +323,7 @@ export const NavigationV16 = () => {
           </nav>
 
           {/* Right Side: CTA + Mobile Menu */}
-          <div className="flex items-center gap-2 xl:gap-3 flex-shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-2 xl:gap-3 flex-shrink-0">
             {/* Desktop CTA - Context-Aware (xl+) */}
             <div className="hidden xl:flex flex-col items-end flex-shrink-0">
               <Button asChild className="h-11 px-6 font-bold gap-2 rounded-xl bg-gradient-to-r from-secondary via-secondary to-secondary/90 hover:from-secondary/90 hover:to-secondary shadow-lg shadow-secondary/20 hover:shadow-xl hover:shadow-secondary/30 transition-all hover:scale-105">
@@ -344,12 +344,12 @@ export const NavigationV16 = () => {
             </Button>
 
             {/* Mobile CTA - RED (secondary) for maximum visibility */}
-            <Button asChild size="sm" className="lg:hidden h-9 px-3 font-semibold gap-1 rounded-lg bg-gradient-to-r from-secondary to-secondary/90 text-secondary-foreground shadow-md shadow-secondary/20 hover:shadow-secondary/30 text-sm">
-              <Link to={flowPath}>
-                <Zap className="w-3.5 h-3.5" />
-                Offerten
-              </Link>
-            </Button>
+            <Link to={flowPath}>
+              <Button size="sm" className="lg:hidden h-9 px-2.5 font-semibold gap-1 rounded-lg bg-gradient-to-r from-secondary to-secondary/90 text-secondary-foreground shadow-md shadow-secondary/20 hover:shadow-secondary/30 text-xs sm:text-sm">
+                <Zap className="w-3.5 h-3.5 flex-shrink-0" />
+                <span className="truncate">Offerten</span>
+              </Button>
+            </Link>
 
             {/* Tablet Menu Button (lg) */}
             <Button
