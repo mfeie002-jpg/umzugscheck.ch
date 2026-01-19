@@ -593,8 +593,6 @@ export default function CityMoversArchetyp() {
         {/* Footer CTA */}
         <RegionFooterCTA regionName={cityData.displayName} variant="city" />
 
-        {/* Exit Intent */}
-        <RegionExitIntent regionName={cityData.displayName} />
       </main>
     </div>
   );

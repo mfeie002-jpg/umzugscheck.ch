@@ -852,10 +852,6 @@ const App = () => (
                   <PreloadResources />
                   <PerformanceDebugOverlay />
                   <AppRouterContent />
-                  {/* Global Optimization Components */}
-                  <Suspense fallback={null}>
-                    <SocialProofTicker position="bottom-left" />
-                  </Suspense>
                 </BrowserRouter>
               </TooltipProvider>
             </NavigationABProvider>
