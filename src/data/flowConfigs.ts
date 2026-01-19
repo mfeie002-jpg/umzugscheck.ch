@@ -224,6 +224,20 @@ export const FLOW_CONFIGS: Record<string, FlowConfig> = {
       { step: 6, name: 'Fertig', description: 'Erfolgsbestätigung' },
     ],
   },
+  // V10 - Golden Flow (Best of All)
+  'golden-flow-v10': {
+    id: 'golden-flow-v10',
+    label: 'V10 - Golden Flow ⭐⭐⭐',
+    path: '/golden-flow-v10',
+    color: 'bg-gradient-to-r from-amber-500 to-yellow-600',
+    description: 'Optimierter 4-Step Flow: V9 Zero Friction + V1 Conversion Patterns',
+    steps: [
+      { step: 1, name: 'Adressen', description: 'Von-Nach PLZ mit Autocomplete' },
+      { step: 2, name: 'Details', description: 'Zimmer, Etage, Datum' },
+      { step: 3, name: 'Services', description: 'Erweiterte Service-Karten mit Preisen' },
+      { step: 4, name: 'Kontakt', description: 'Vertrauens-optimiertes Formular' },
+    ],
+  },
 };
 
 // Sub-Variant Configurations for V9 feedback-based variants
