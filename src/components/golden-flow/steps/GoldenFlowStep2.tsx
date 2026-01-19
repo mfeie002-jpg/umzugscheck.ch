@@ -1,9 +1,11 @@
 /**
  * GoldenFlowStep2 - Details (Rooms, Floor, Date)
+ * Phase 2.4: Visual Inventory Gamification
  */
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Home, Building, Calendar, ArrowRight, ArrowLeft, CheckCircle } from 'lucide-react';
+import { Home, Building, Calendar, ArrowRight, ArrowLeft, CheckCircle, Grid3X3 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,6 +14,7 @@ import { cn } from '@/lib/utils';
 import { GoldenFlowData, GoldenFlowPriceEstimate } from '../types';
 import { ROOM_OPTIONS, FLOOR_OPTIONS } from '../constants';
 import { GoldenFlowPricePreview } from '../components/GoldenFlowPricePreview';
+import { GoldenFlowRoomGrid } from '../components/GoldenFlowRoomGrid';
 
 interface GoldenFlowStep2Props {
   formData: GoldenFlowData;
@@ -22,6 +25,7 @@ interface GoldenFlowStep2Props {
 }
 
 export function GoldenFlowStep2({ formData, priceEstimate, onUpdate, onNext, onBack }: GoldenFlowStep2Props) {
+  const [showDetailedInventory, setShowDetailedInventory] = useState(false);
   const selectedRoom = ROOM_OPTIONS.find(r => r.value === (formData.rooms?.toString() || '3-3.5'));
   
   return (
@@ -41,12 +45,24 @@ export function GoldenFlowStep2({ formData, priceEstimate, onUpdate, onNext, onB
         </p>
       </div>
       
-      {/* Room selector (Visual) */}
-      <div>
-        <Label className="text-sm font-medium flex items-center gap-2 mb-3">
+      {/* Room selector toggle */}
+      <div className="flex items-center justify-between mb-2">
+        <Label className="text-sm font-medium flex items-center gap-2">
           <Home className="h-4 w-4 text-primary" />
           Anzahl Zimmer
         </Label>
+        <button
+          type="button"
+          onClick={() => setShowDetailedInventory(!showDetailedInventory)}
+          className="text-xs text-primary flex items-center gap-1 hover:underline"
+        >
+          <Grid3X3 className="h-3 w-3" />
+          {showDetailedInventory ? 'Einfache Ansicht' : 'Detailliert'}
+        </button>
+      </div>
+
+      {/* Simple room count OR detailed inventory */}
+      {!showDetailedInventory ? (
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
           {ROOM_OPTIONS.map((room) => (
             <button
@@ -67,7 +83,20 @@ export function GoldenFlowStep2({ formData, priceEstimate, onUpdate, onNext, onB
             </button>
           ))}
         </div>
-      </div>
+      ) : (
+        <GoldenFlowRoomGrid 
+          totalRooms={formData.rooms} 
+          onRoomCountChange={(rooms) => {
+            // Calculate total from detailed inventory
+            const total = Object.values(rooms).reduce((sum, count) => sum + count, 0);
+            // Map to closest room option
+            const closestOption = ROOM_OPTIONS.reduce((prev, curr) => 
+              Math.abs(curr.rooms - total) < Math.abs(prev.rooms - total) ? curr : prev
+            );
+            onUpdate({ rooms: closestOption.rooms });
+          }}
+        />
+      )}
       
       {/* Floor & Elevator */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

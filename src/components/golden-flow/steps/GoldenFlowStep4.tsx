@@ -1,5 +1,6 @@
 /**
  * GoldenFlowStep4 - Contact & Submit
+ * Phase 2.1: Result Teasing (Glimp Method) integrated
  */
 
 import { useState } from 'react';
@@ -17,6 +18,7 @@ import { cn } from '@/lib/utils';
 import { GoldenFlowData, GoldenFlowPriceEstimate } from '../types';
 import { GoldenFlowPricePreview } from '../components/GoldenFlowPricePreview';
 import { GoldenFlowTrustBar } from '../components/GoldenFlowTrustBar';
+import { GoldenFlowResultTeaser } from '../components/GoldenFlowResultTeaser';
 
 interface GoldenFlowStep4Props {
   formData: GoldenFlowData;
@@ -82,6 +84,13 @@ export function GoldenFlowStep4({
           Die Firmen melden sich innerhalb von 24 Stunden
         </p>
       </div>
+      
+      {/* Result Teaser (Phase 2.1 - Glimp Method) */}
+      <GoldenFlowResultTeaser 
+        matchedCompanies={3}
+        fromCity={formData.fromCity}
+        toCity={formData.toCity}
+      />
       
       {/* Summary */}
       <div className="bg-muted/50 rounded-xl p-4 space-y-2">
