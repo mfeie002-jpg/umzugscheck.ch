@@ -46,22 +46,24 @@ TabHintDivider.displayName = "TabHintDivider";
  */
 export const TabHintPulsing = memo(({ className }: { className?: string }) => {
   return (
-    <motion.div 
-      className={cn("w-full flex items-center justify-center gap-2 mt-2", className)}
+    <motion.div
+      className={cn("w-full py-2 flex justify-center", className)}
       initial={{ opacity: 0, y: -5 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 1.5, duration: 0.4 }}
     >
-      <motion.span
-        animate={{ scale: [1, 1.2, 1] }}
-        transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-        className="text-base"
-      >
-        👆
-      </motion.span>
-      <span className="text-xs text-muted-foreground font-medium">
-        Klicken für andere Methoden
-      </span>
+      <div className="inline-flex items-center justify-center gap-2 text-center">
+        <motion.span
+          animate={{ scale: [1, 1.2, 1] }}
+          transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+          className="text-base"
+        >
+          👆
+        </motion.span>
+        <span className="text-xs text-muted-foreground font-medium">
+          Klicken für andere Methoden
+        </span>
+      </div>
     </motion.div>
   );
 });
