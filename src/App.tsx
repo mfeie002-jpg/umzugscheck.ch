@@ -39,6 +39,7 @@ const NewIndex = lazy(() => import("./pages/NewIndex"));
 const HomePage = lazy(() => import("./pages/HomePage").then(m => ({ default: m.HomePage })));
 const HomeOptimized = lazy(() => import("./pages/HomeOptimized"));
 const LandingPage = lazy(() => import("./pages/LandingPage"));
+const VisionPage = lazy(() => import("./pages/VisionPage"));
 const AdminInternResults = lazy(() => import("./pages/AdminInternResults"));
 const ExportDownload = lazy(() => import("./pages/ExportDownload"));
 
@@ -475,6 +476,7 @@ const AppRouterContent = () => {
         <AnimatedRoutes>
           <Route path="/" element={<IndexPremium />} />
           <Route path="/landing" element={<LandingPage />} />
+          <Route path="/vision" element={<VisionPage />} />
           <Route path="/old-home" element={<Index />} />
           <Route path="/v2" element={<HomeOptimized />} />
           <Route path="/v3" element={<NewIndex />} />
