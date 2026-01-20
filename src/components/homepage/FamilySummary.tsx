@@ -236,7 +236,7 @@ export const FamilySummary = memo(() => {
                 <p className="text-sm text-muted-foreground mb-2">= Gewinn pro Kunde</p>
                 <span className="text-4xl font-black text-green-600 dark:text-green-400">503 CHF</span>
                 <span className="ml-3 px-3 py-1 rounded-full bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 text-sm font-bold">
-                  >90% Marge!
+                  {'>'}90% Marge!
                 </span>
               </div>
             </div>
