@@ -39,7 +39,7 @@ const businessPillarsSummary = [
   { emoji: "🛡️", title: "Micro-Insurance", revenue: "50-99 CHF/Police", moat: "60% Marge" },
   { emoji: "♻️", title: "Circular Economy", revenue: "50-200 CHF", moat: "Doppel-Revenue" },
   { emoji: "📈", title: "Daten-Monetarisierung", revenue: "50-150 CHF/Lead", moat: "First-Mover" },
-  { emoji: "🚀", title: "Lean Operations", revenue: "553 CHF/Kunde", moat: "{'>'}40% EBITDA" },
+  { emoji: "🚀", title: "Lean Operations", revenue: "553 CHF/Kunde", moat: ">40% EBITDA" },
 ];
 
 // Meilensteine & Vision
