@@ -12,6 +12,7 @@ import { GradientCTA } from "@/components/home/GradientCTA";
 import { FAQAccordion } from "@/components/FAQAccordion";
 import { Vision10PillarSection } from "@/components/homepage/Vision10PillarSection";
 import { CustomerUSPVisualCards } from "@/components/homepage/CustomerUSPVisualCards";
+import { FamilySummary } from "@/components/homepage/FamilySummary";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { initPerformanceOptimizations } from "@/lib/performance";
@@ -143,6 +144,11 @@ export default function HomeOptimized() {
       {/* Vision 10 Pillars - Kunden & Investoren USPs (Tabs) */}
       <ScrollReveal>
         <Vision10PillarSection />
+      </ScrollReveal>
+
+      {/* Eltern-Zusammenfassung */}
+      <ScrollReveal>
+        <FamilySummary />
       </ScrollReveal>
 
       {/* CTA Gradient */}

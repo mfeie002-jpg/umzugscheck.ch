@@ -1,12 +1,15 @@
 /**
- * Customer USP Visual Cards - Premium Edition
- * Educational infographic-style cards with generated images
+ * Customer USP Visual Cards - ULTRA Premium Edition
+ * Educational infographic-style cards with premium animations
  * "Schulbuch-Stil" - clear, visual, easy to understand for parents/customers
  */
 
 import { memo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, Star, Rocket, ArrowRight, ChevronDown, Sparkles, Heart, Shield } from "lucide-react";
+import { 
+  Check, Star, Rocket, ArrowRight, ChevronDown, Sparkles, 
+  Heart, Shield, Zap, Clock, Users, Award, Gift, ThumbsUp
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
@@ -34,11 +37,12 @@ const customerUSPsVisual = [
     benefit: "Kein Hausbesuch nötig – exakte Offerten in Minuten statt Tagen.",
     painPoint: "Früher: Fremde Leute im Haus, ungenaue Schätzungen, Überraschungen bei der Rechnung.",
     solution: "Jetzt: 2 Minuten Video = präzise Offerte. Die KI erkennt jeden Schrank.",
-    howItWorks: ["📱 Video aufnehmen", "🤖 KI analysiert Volumen", "📋 5 exakte Offerten"],
+    howItWorks: ["📱 Video aufnehmen", "🤖 KI analysiert", "📋 5 Offerten erhalten"],
+    stats: { value: "2 Min", label: "statt 2 Stunden" },
     emoji: "📹",
     color: "from-blue-500 to-cyan-500",
-    bgColor: "bg-blue-50 dark:bg-blue-950/40",
-    borderColor: "border-blue-300 dark:border-blue-700",
+    bgColor: "bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/60 dark:to-cyan-950/60",
+    borderColor: "border-blue-300 dark:border-blue-600",
     accentColor: "text-blue-600 dark:text-blue-400"
   },
   {
@@ -51,11 +55,12 @@ const customerUSPsVisual = [
     benefit: "100% Schutz vor Betrug. Zahlen Sie erst, wenn alles okay ist.",
     painPoint: "Früher: Vorkasse an unbekannte Firmen, Angst vor Betrug, keine Kontrolle.",
     solution: "Jetzt: Geld bei uns sicher verwahrt. Sie klicken «OK» → Firma wird bezahlt.",
-    howItWorks: ["💰 Zahlung an Tresor", "🚛 Umzug erfolgt", "✅ Sie bestätigen → Auszahlung"],
+    howItWorks: ["💰 Zahlung an Tresor", "🚛 Umzug erfolgt", "✅ Bestätigen → Auszahlung"],
+    stats: { value: "0 CHF", label: "Betrugs-Risiko" },
     emoji: "🔐",
     color: "from-green-500 to-emerald-500",
-    bgColor: "bg-green-50 dark:bg-green-950/40",
-    borderColor: "border-green-300 dark:border-green-700",
+    bgColor: "bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/60 dark:to-emerald-950/60",
+    borderColor: "border-green-300 dark:border-green-600",
     accentColor: "text-green-600 dark:text-green-400"
   },
   {
@@ -69,10 +74,11 @@ const customerUSPsVisual = [
     painPoint: "Früher: Endlose Formulare, Warteschleifen beim Amt, Chaos mit Anbietern.",
     solution: "Jetzt: Ein Klick. Unser Roboter erledigt den ganzen Papierkram.",
     howItWorks: ["📝 Daten eingeben", "🤖 Autopilot startet", "📬 Alles bestätigt"],
+    stats: { value: "8h", label: "Zeit gespart" },
     emoji: "🤖",
     color: "from-violet-500 to-purple-500",
-    bgColor: "bg-violet-50 dark:bg-violet-950/40",
-    borderColor: "border-violet-300 dark:border-violet-700",
+    bgColor: "bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-950/60 dark:to-purple-950/60",
+    borderColor: "border-violet-300 dark:border-violet-600",
     accentColor: "text-violet-600 dark:text-violet-400"
   },
   {
@@ -85,11 +91,12 @@ const customerUSPsVisual = [
     benefit: "Sie geben nur den Schlüssel ab. Der Stress bleibt bei uns.",
     painPoint: "Früher: Stress mit Vermieter, Kaution-Streit, selbst putzen oder hoffen.",
     solution: "Jetzt: Profis mit Garantie. Meckert jemand? Wir regeln das – ohne Sie.",
-    howItWorks: ["🧹 Reinigung gebucht", "✨ Wohnung blitzt", "🔑 Schlüssel abgeben, fertig"],
+    howItWorks: ["🧹 Reinigung buchen", "✨ Wohnung blitzt", "🔑 Schlüssel abgeben"],
+    stats: { value: "100%", label: "Abnahme-Quote" },
     emoji: "✨",
     color: "from-pink-500 to-rose-500",
-    bgColor: "bg-pink-50 dark:bg-pink-950/40",
-    borderColor: "border-pink-300 dark:border-pink-700",
+    bgColor: "bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-950/60 dark:to-rose-950/60",
+    borderColor: "border-pink-300 dark:border-pink-600",
     accentColor: "text-pink-600 dark:text-pink-400"
   },
   {
@@ -103,10 +110,11 @@ const customerUSPsVisual = [
     painPoint: "Früher: Altes Zeug mitschleppen, höhere Kosten, Chaos nach dem Umzug.",
     solution: "Jetzt: Vorher aussortieren. Wir holen ab, spenden oder verkaufen für Sie.",
     howItWorks: ["🏷️ Im Video markieren", "🚚 Wir holen ab", "♻️ Spenden/Verkaufen"],
+    stats: { value: "-30%", label: "Umzugskosten" },
     emoji: "♻️",
     color: "from-teal-500 to-emerald-500",
-    bgColor: "bg-teal-50 dark:bg-teal-950/40",
-    borderColor: "border-teal-300 dark:border-teal-700",
+    bgColor: "bg-gradient-to-br from-teal-50 to-emerald-50 dark:from-teal-950/60 dark:to-emerald-950/60",
+    borderColor: "border-teal-300 dark:border-teal-600",
     accentColor: "text-teal-600 dark:text-teal-400"
   },
   {
@@ -120,10 +128,11 @@ const customerUSPsVisual = [
     painPoint: "Früher: Ein Angebot, keine Vergleichsmöglichkeit, Unsicherheit beim Preis.",
     solution: "Jetzt: 5 geprüfte Firmen im direkten Vergleich. KI filtert Abzocker.",
     howItWorks: ["📋 Anfrage stellen", "📊 5 Offerten in 24h", "⚖️ Fair vergleichen"],
+    stats: { value: "5", label: "Offerten garantiert" },
     emoji: "⚖️",
     color: "from-orange-500 to-amber-500",
-    bgColor: "bg-orange-50 dark:bg-orange-950/40",
-    borderColor: "border-orange-300 dark:border-orange-700",
+    bgColor: "bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-950/60 dark:to-amber-950/60",
+    borderColor: "border-orange-300 dark:border-orange-600",
     accentColor: "text-orange-600 dark:text-orange-400"
   },
   {
@@ -137,10 +146,11 @@ const customerUSPsVisual = [
     painPoint: "Früher: Fremd in der neuen Gegend, endloses Suchen, Wochen bis man ankommt.",
     solution: "Jetzt: Wir liefern das Wissen der Nachbarn digital mit.",
     howItWorks: ["📍 Neue Adresse", "🗺️ Interaktive Karte", "🏪 Alle Infos parat"],
+    stats: { value: "50+", label: "POIs angezeigt" },
     emoji: "🗺️",
     color: "from-cyan-500 to-blue-500",
-    bgColor: "bg-cyan-50 dark:bg-cyan-950/40",
-    borderColor: "border-cyan-300 dark:border-cyan-700",
+    bgColor: "bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-cyan-950/60 dark:to-blue-950/60",
+    borderColor: "border-cyan-300 dark:border-cyan-600",
     accentColor: "text-cyan-600 dark:text-cyan-400"
   },
   {
@@ -153,11 +163,12 @@ const customerUSPsVisual = [
     benefit: "Bei Schäden zahlt die Versicherung sofort. Keine Formular-Schlachten.",
     painPoint: "Früher: Keine Beweise, endlose Formulare, Streit mit Versicherung.",
     solution: "Jetzt: Video-Beweis vor dem Umzug. Schaden? KI vergleicht vorher/nachher → Geld.",
-    howItWorks: ["📹 Video = Beweis", "📦 Umzug", "💰 Schaden? → Sofort Geld"],
+    howItWorks: ["📹 Video = Beweis", "📦 Umzug", "💰 Schaden → Sofort Geld"],
+    stats: { value: "24h", label: "Auszahlung" },
     emoji: "🛡️",
     color: "from-indigo-500 to-blue-500",
-    bgColor: "bg-indigo-50 dark:bg-indigo-950/40",
-    borderColor: "border-indigo-300 dark:border-indigo-700",
+    bgColor: "bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-950/60 dark:to-blue-950/60",
+    borderColor: "border-indigo-300 dark:border-indigo-600",
     accentColor: "text-indigo-600 dark:text-indigo-400"
   },
   {
@@ -170,11 +181,12 @@ const customerUSPsVisual = [
     benefit: "Wenn Sie nervös sind, sind wir da. KI löst 95% der Fragen sofort.",
     painPoint: "Früher: Hotline-Warteschleife, E-Mail ohne Antwort, Stress am Umzugstag.",
     solution: "Jetzt: Sofort-Antwort via WhatsApp/Chat. Mensch da, wenn nötig.",
-    howItWorks: ["💬 WhatsApp/Chat", "🤖 KI antwortet sofort", "👤 Mensch wenn nötig"],
+    howItWorks: ["💬 WhatsApp/Chat", "🤖 KI antwortet", "👤 Mensch wenn nötig"],
+    stats: { value: "<30s", label: "Antwortzeit" },
     emoji: "🎧",
     color: "from-rose-500 to-pink-500",
-    bgColor: "bg-rose-50 dark:bg-rose-950/40",
-    borderColor: "border-rose-300 dark:border-rose-700",
+    bgColor: "bg-gradient-to-br from-rose-50 to-pink-50 dark:from-rose-950/60 dark:to-pink-950/60",
+    borderColor: "border-rose-300 dark:border-rose-600",
     accentColor: "text-rose-600 dark:text-rose-400"
   },
   {
@@ -187,11 +199,12 @@ const customerUSPsVisual = [
     benefit: "Sie müssen am Umzugstag keinen Schraubenzieher anfassen.",
     painPoint: "Früher: Selbst abbauen, selbst aufbauen, Stunden mit Werkzeug.",
     solution: "Jetzt: Wir machen alles. Sie entspannen. Montage ist eingeplant.",
-    howItWorks: ["🔧 Demontage alte Wohnung", "🚚 Transport", "🛠️ Aufbau am Ziel"],
+    howItWorks: ["🔧 Demontage", "🚚 Transport", "🛠️ Aufbau am Ziel"],
+    stats: { value: "0", label: "Eigene Arbeit" },
     emoji: "🔧",
     color: "from-amber-500 to-orange-500",
-    bgColor: "bg-amber-50 dark:bg-amber-950/40",
-    borderColor: "border-amber-300 dark:border-amber-700",
+    bgColor: "bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/60 dark:to-orange-950/60",
+    borderColor: "border-amber-300 dark:border-amber-600",
     accentColor: "text-amber-600 dark:text-amber-400"
   }
 ];
@@ -202,93 +215,130 @@ const VisualUSPCard = memo(({ usp, index }: { usp: typeof customerUSPsVisual[0];
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ delay: index * 0.04, duration: 0.5, ease: "easeOut" }}
-      className={`group relative rounded-3xl overflow-hidden border-2 ${usp.borderColor} ${usp.bgColor} hover:shadow-2xl transition-all duration-500`}
+      initial={{ opacity: 0, y: 50, scale: 0.95 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ delay: index * 0.06, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className={`group relative rounded-[2rem] overflow-hidden border-2 ${usp.borderColor} ${usp.bgColor} hover:shadow-2xl hover:shadow-primary/10 transition-all duration-700 hover:-translate-y-2`}
     >
-      {/* Image Header with gradient overlay */}
-      <div className="relative h-52 overflow-hidden">
+      {/* Decorative corner accent */}
+      <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl ${usp.color} opacity-20 blur-2xl`} />
+      
+      {/* Image Header with premium overlay */}
+      <div className="relative h-56 overflow-hidden">
         <img 
           src={usp.image} 
           alt={usp.title}
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out"
           loading="lazy"
         />
-        {/* Gradient overlays */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-        <div className={`absolute inset-0 bg-gradient-to-br ${usp.color} opacity-20 mix-blend-overlay`} />
+        {/* Multi-layer gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10" />
+        <div className={`absolute inset-0 bg-gradient-to-br ${usp.color} opacity-30 mix-blend-overlay`} />
         
-        {/* Number badge - top left */}
-        <div className={`absolute top-4 left-4 w-12 h-12 rounded-2xl bg-gradient-to-br ${usp.color} flex items-center justify-center shadow-xl`}>
-          <span className="font-black text-xl text-white">{usp.id}</span>
-        </div>
+        {/* Premium number badge */}
+        <motion.div 
+          initial={{ scale: 0, rotate: -180 }}
+          whileInView={{ scale: 1, rotate: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: index * 0.06 + 0.3, type: "spring", stiffness: 200 }}
+          className={`absolute top-4 left-4 w-14 h-14 rounded-2xl bg-gradient-to-br ${usp.color} flex items-center justify-center shadow-xl ring-4 ring-white/20`}
+        >
+          <span className="font-black text-2xl text-white drop-shadow-md">{usp.id}</span>
+        </motion.div>
         
-        {/* Tagline badge - top right */}
+        {/* Tagline badge with glow */}
         <div className="absolute top-4 right-4">
-          <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/95 dark:bg-black/80 text-xs font-bold ${usp.accentColor} shadow-lg`}>
-            <Sparkles className="w-3 h-3" />
+          <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/95 dark:bg-black/80 text-xs font-bold ${usp.accentColor} shadow-lg backdrop-blur-sm`}>
+            <Sparkles className="w-3.5 h-3.5" />
             {usp.tagline}
           </span>
         </div>
         
+        {/* Stats badge - bottom right */}
+        <div className="absolute bottom-4 right-4">
+          <div className={`px-4 py-2 rounded-xl bg-gradient-to-r ${usp.color} shadow-lg`}>
+            <p className="text-xl font-black text-white">{usp.stats.value}</p>
+            <p className="text-[10px] text-white/80 font-medium uppercase tracking-wider">{usp.stats.label}</p>
+          </div>
+        </div>
+        
         {/* Title section on image */}
-        <div className="absolute bottom-0 left-0 right-0 p-5">
+        <div className="absolute bottom-0 left-0 right-20 p-6">
           <div className="flex items-center gap-2 mb-2">
-            <span className="text-2xl">{usp.emoji}</span>
-            <span className="text-xs text-white/80 font-medium bg-white/20 px-2 py-0.5 rounded-full backdrop-blur-sm">
+            <span className="text-3xl drop-shadow-lg">{usp.emoji}</span>
+            <span className="text-xs text-white/90 font-bold bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm border border-white/20">
               {usp.subtitle}
             </span>
           </div>
-          <h3 className="text-2xl font-black text-white leading-tight drop-shadow-lg">
+          <h3 className="text-2xl md:text-3xl font-black text-white leading-tight drop-shadow-xl">
             {usp.title}
           </h3>
         </div>
       </div>
       
       {/* Content */}
-      <div className="p-6">
-        {/* Simple explanation */}
-        <p className="text-base font-medium text-foreground mb-5 leading-relaxed">
-          {usp.simpleExplanation}
-        </p>
+      <div className="p-6 md:p-7">
+        {/* Simple explanation with icon */}
+        <div className="flex items-start gap-3 mb-6">
+          <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${usp.color} flex items-center justify-center flex-shrink-0 shadow-md`}>
+            <Zap className="w-5 h-5 text-white" />
+          </div>
+          <p className="text-base font-medium text-foreground leading-relaxed">
+            {usp.simpleExplanation}
+          </p>
+        </div>
         
         {/* Visual workflow - 3 steps */}
-        <div className="bg-white/80 dark:bg-black/30 rounded-2xl p-4 mb-5 border border-border/50">
-          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
-            <ArrowRight className="w-3 h-3" />
+        <div className="bg-white/80 dark:bg-black/40 rounded-2xl p-5 mb-6 border border-border/50 shadow-inner">
+          <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4 flex items-center gap-2">
+            <ArrowRight className="w-4 h-4" />
             So funktioniert's
           </p>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 gap-4">
             {usp.howItWorks.map((step, idx) => (
-              <div key={idx} className="text-center">
-                <div className={`w-8 h-8 mx-auto mb-2 rounded-full bg-gradient-to-br ${usp.color} flex items-center justify-center text-white font-bold text-sm`}>
+              <motion.div 
+                key={idx} 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.06 + idx * 0.1 + 0.4 }}
+                className="text-center"
+              >
+                <div className={`w-10 h-10 mx-auto mb-3 rounded-full bg-gradient-to-br ${usp.color} flex items-center justify-center text-white font-bold text-sm shadow-lg ring-4 ring-white/50 dark:ring-black/50`}>
                   {idx + 1}
                 </div>
-                <p className="text-xs font-medium text-foreground leading-tight">{step}</p>
-              </div>
+                <p className="text-xs font-semibold text-foreground leading-tight">{step}</p>
+              </motion.div>
             ))}
           </div>
         </div>
         
         {/* Benefit highlight - main message */}
-        <div className={`flex items-start gap-3 p-4 rounded-xl border-2 ${usp.borderColor} bg-white dark:bg-black/50 mb-4`}>
-          <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${usp.color} flex items-center justify-center flex-shrink-0`}>
-            <Check className="w-4 h-4 text-white" />
+        <div className={`flex items-start gap-4 p-5 rounded-2xl border-2 ${usp.borderColor} bg-white dark:bg-black/50 mb-5 shadow-sm`}>
+          <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${usp.color} flex items-center justify-center flex-shrink-0 shadow-md`}>
+            <Check className="w-5 h-5 text-white" />
           </div>
-          <p className={`text-sm font-bold ${usp.accentColor} leading-relaxed`}>
-            {usp.benefit}
-          </p>
+          <div>
+            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Ihr Vorteil</p>
+            <p className={`text-sm font-bold ${usp.accentColor} leading-relaxed`}>
+              {usp.benefit}
+            </p>
+          </div>
         </div>
 
         {/* Expandable before/after section */}
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="w-full flex items-center justify-between text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
+          className="w-full flex items-center justify-between text-sm text-muted-foreground hover:text-foreground transition-colors py-3 px-4 rounded-xl hover:bg-muted/50"
         >
-          <span className="font-medium">Vorher vs. Nachher anzeigen</span>
-          <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} />
+          <span className="font-medium flex items-center gap-2">
+            <ThumbsUp className="w-4 h-4" />
+            Vorher vs. Nachher anzeigen
+          </span>
+          <motion.div animate={{ rotate: isExpanded ? 180 : 0 }} transition={{ duration: 0.3 }}>
+            <ChevronDown className="w-5 h-5" />
+          </motion.div>
         </button>
         
         <AnimatePresence>
@@ -297,27 +347,37 @@ const VisualUSPCard = memo(({ usp, index }: { usp: typeof customerUSPsVisual[0];
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
               className="overflow-hidden"
             >
-              <div className="pt-3 space-y-3">
+              <div className="pt-4 space-y-4">
                 {/* Pain point - Before */}
-                <div className="flex items-start gap-3 p-3 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800">
-                  <span className="text-lg">😫</span>
+                <motion.div 
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.1 }}
+                  className="flex items-start gap-4 p-4 rounded-2xl bg-red-50 dark:bg-red-950/40 border-2 border-red-200 dark:border-red-800"
+                >
+                  <span className="text-2xl">😫</span>
                   <div>
-                    <p className="text-xs font-bold text-red-600 dark:text-red-400 mb-1">VORHER</p>
-                    <p className="text-xs text-red-700 dark:text-red-300">{usp.painPoint}</p>
+                    <p className="text-xs font-black text-red-600 dark:text-red-400 mb-1 uppercase tracking-wider">VORHER – Der Stress</p>
+                    <p className="text-sm text-red-700 dark:text-red-300">{usp.painPoint}</p>
                   </div>
-                </div>
+                </motion.div>
                 
                 {/* Solution - After */}
-                <div className={`flex items-start gap-3 p-3 rounded-xl ${usp.bgColor} border ${usp.borderColor}`}>
-                  <span className="text-lg">🎉</span>
+                <motion.div 
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className={`flex items-start gap-4 p-4 rounded-2xl ${usp.bgColor} border-2 ${usp.borderColor}`}
+                >
+                  <span className="text-2xl">🎉</span>
                   <div>
-                    <p className={`text-xs font-bold ${usp.accentColor} mb-1`}>NACHHER</p>
-                    <p className="text-xs text-foreground">{usp.solution}</p>
+                    <p className={`text-xs font-black ${usp.accentColor} mb-1 uppercase tracking-wider`}>NACHHER – Die Lösung</p>
+                    <p className="text-sm text-foreground font-medium">{usp.solution}</p>
                   </div>
-                </div>
+                </motion.div>
               </div>
             </motion.div>
           )}
@@ -332,79 +392,89 @@ VisualUSPCard.displayName = 'VisualUSPCard';
 // Main Section Component
 export const CustomerUSPVisualCards = memo(() => {
   return (
-    <section className="py-20 md:py-28 bg-gradient-to-b from-background via-muted/30 to-background relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0 opacity-30 pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl" />
+    <section className="py-24 md:py-32 bg-gradient-to-b from-background via-muted/20 to-background relative overflow-hidden">
+      {/* Premium background decoration */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-20 left-10 w-96 h-96 bg-primary/10 rounded-full blur-[100px]" />
+        <div className="absolute bottom-20 right-10 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[120px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-violet-500/5 to-transparent rounded-full" />
       </div>
 
       <div className="container mx-auto px-4 relative">
-        {/* Header */}
+        {/* Premium Header */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          transition={{ duration: 0.8 }}
+          className="text-center mb-20"
         >
-          <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/10 text-primary text-sm font-bold mb-6">
-            <Heart className="w-4 h-4" />
-            10 Vorteile für Familien
-          </span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-foreground mb-5">
-            Warum <span className="text-primary">Umzugscheck.ch?</span>
+          <motion.span 
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary/10 text-primary text-sm font-bold mb-8 border border-primary/20"
+          >
+            <Heart className="w-5 h-5" />
+            10 Vorteile für Schweizer Familien
+            <Heart className="w-5 h-5" />
+          </motion.span>
+          
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-foreground mb-6 leading-tight">
+            Warum <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-blue-500 to-violet-500">Umzugscheck.ch?</span>
           </h2>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+          
+          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-8">
             Einfach erklärt – wie in einem Schulbuch. Jeder Vorteil auf den Punkt gebracht.
-            <br />
-            <span className="font-semibold text-foreground">Ihr stressfreier Umzug beginnt hier.</span>
           </p>
-        </motion.div>
-        
-        {/* Trust indicators */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="flex flex-wrap justify-center gap-4 mb-12"
-        >
-          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-sm font-medium">
-            <Shield className="w-4 h-4" />
-            100% Gratis & Unverbindlich
-          </div>
-          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-sm font-medium">
-            <Star className="w-4 h-4" />
-            4.9/5 Bewertung
-          </div>
-          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 text-sm font-medium">
-            <Sparkles className="w-4 h-4" />
-            150+ geprüfte Firmen
+
+          <div className="flex flex-wrap justify-center gap-4">
+            <div className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 text-sm font-bold border border-green-200 dark:border-green-700">
+              <Shield className="w-4 h-4" />
+              100% Gratis & Unverbindlich
+            </div>
+            <div className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 text-sm font-bold border border-amber-200 dark:border-amber-700">
+              <Star className="w-4 h-4" />
+              4.9/5 Sterne Bewertung
+            </div>
+            <div className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 text-sm font-bold border border-blue-200 dark:border-blue-700">
+              <Users className="w-4 h-4" />
+              25'000+ zufriedene Kunden
+            </div>
           </div>
         </motion.div>
         
-        {/* Visual USP Grid - 2 columns on large screens */}
-        <div className="grid md:grid-cols-2 gap-6 lg:gap-8 max-w-6xl mx-auto mb-16">
+        {/* USP Cards Grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
           {customerUSPsVisual.map((usp, idx) => (
             <VisualUSPCard key={usp.id} usp={usp} index={idx} />
           ))}
         </div>
         
-        {/* CTA */}
+        {/* Bottom CTA */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center"
+          className="mt-20 text-center"
         >
-          <Link to="/umzugsofferten">
-            <Button size="lg" className="h-16 px-12 text-lg font-black shadow-2xl shadow-primary/30 hover:shadow-primary/50 transition-all duration-300 hover:scale-105">
-              Jetzt alle Vorteile nutzen
-              <ArrowRight className="ml-3 w-6 h-6" />
-            </Button>
-          </Link>
-          <p className="mt-4 text-sm text-muted-foreground">
-            ✓ Kostenlos · ✓ Unverbindlich · ✓ In 2 Minuten
-          </p>
+          <div className="inline-flex flex-col items-center gap-6 p-8 md:p-10 rounded-3xl bg-gradient-to-br from-primary/10 via-blue-500/10 to-violet-500/10 border-2 border-primary/20">
+            <div className="flex items-center gap-3">
+              <Gift className="w-8 h-8 text-primary" />
+              <span className="text-2xl md:text-3xl font-black text-foreground">
+                Bereit für Ihren stressfreien Umzug?
+              </span>
+            </div>
+            <p className="text-muted-foreground text-lg max-w-xl">
+              Alle 10 Vorteile – kostenlos und unverbindlich. Jetzt in 2 Minuten Offerten erhalten.
+            </p>
+            <Link to="/umzugsofferten">
+              <Button size="lg" className="h-14 px-10 text-lg font-bold shadow-xl shadow-primary/25 hover:shadow-primary/40 transition-all">
+                <Rocket className="w-5 h-5 mr-2" />
+                JETZT GRATIS OFFERTEN ERHALTEN
+              </Button>
+            </Link>
+          </div>
         </motion.div>
       </div>
     </section>
