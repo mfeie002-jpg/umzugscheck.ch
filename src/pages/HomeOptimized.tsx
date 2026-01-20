@@ -10,7 +10,7 @@ import { HowItWorksSimple } from "@/components/home/HowItWorksSimple";
 import { SocialProofSimple } from "@/components/home/SocialProofSimple";
 import { GradientCTA } from "@/components/home/GradientCTA";
 import { FAQAccordion } from "@/components/FAQAccordion";
-
+import { Vision10PillarSection } from "@/components/homepage/Vision10PillarSection";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { initPerformanceOptimizations } from "@/lib/performance";
@@ -132,6 +132,11 @@ export default function HomeOptimized() {
       {/* Social Proof */}
       <ScrollReveal>
         <SocialProofSimple />
+      </ScrollReveal>
+
+      {/* Vision 10 Pillars - Kunden & Investoren USPs */}
+      <ScrollReveal>
+        <Vision10PillarSection />
       </ScrollReveal>
 
       {/* CTA Gradient */}
