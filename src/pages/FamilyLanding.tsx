@@ -28,6 +28,7 @@ import { FunNarrator } from "@/components/persona/FunNarrator";
 import { FunInterruptCard } from "@/components/persona/FunInterruptCard";
 import { FunSectionIntro } from "@/components/persona/FunSectionIntro";
 import { FunCTA } from "@/components/persona/FunCTA";
+import { VIPWelcomeBanner } from "@/components/persona/VIPWelcomeBanner";
 
 export default function FamilyLanding() {
   const [lang, setLang] = useState<FamilyLanguage>(() => {
@@ -97,6 +98,9 @@ export default function FamilyLanding() {
           </div>
         </div>
       </div>
+
+      {/* VIP Welcome Banner */}
+      {isPersonalized && <VIPWelcomeBanner persona={persona} />}
 
       {/* 1. HERO - Family variant with emotional image */}
       <VisionEmotionalHero language={lang} variant="family" />

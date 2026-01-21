@@ -35,6 +35,7 @@ import { FunNarrator } from "@/components/persona/FunNarrator";
 import { FunInterruptCard } from "@/components/persona/FunInterruptCard";
 import { FunSectionIntro } from "@/components/persona/FunSectionIntro";
 import { FunCTA } from "@/components/persona/FunCTA";
+import { VIPWelcomeBanner } from "@/components/persona/VIPWelcomeBanner";
 
 // Translations
 const translations: Record<'de' | 'bg' | 'it', {
@@ -162,6 +163,9 @@ export default function InvestorenLanding() {
           </div>
         </div>
       </div>
+
+      {/* VIP Welcome Banner */}
+      {isPersonalized && <VIPWelcomeBanner persona={persona} />}
 
       {/* 1. HERO - Investor variant */}
       <VisionEmotionalHero language={language} variant="investor" />

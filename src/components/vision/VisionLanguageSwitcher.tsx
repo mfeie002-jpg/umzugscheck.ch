@@ -33,7 +33,7 @@ export const VisionLanguageSwitcher = memo(({ currentLang, onLanguageChange }: V
   const { persona, setPersona, funMode, setFunMode, showPersonaPicker, showFunToggle } = usePersona(currentLang);
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
       {/* Persona picker for Bulgarian */}
       {showPersonaPicker && (
         <PersonaPicker currentPersona={persona} onPersonaChange={setPersona} />
@@ -47,10 +47,10 @@ export const VisionLanguageSwitcher = memo(({ currentLang, onLanguageChange }: V
       {/* Language selector */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className="gap-2">
+          <Button variant="outline" size="sm" className="gap-1.5 px-2 sm:px-3 h-9 sm:h-10">
             <Globe className="w-4 h-4" />
             <span className="text-base">{current.flag}</span>
-            <span className="hidden sm:inline">{current.code.toUpperCase()}</span>
+            <span className="hidden md:inline text-xs">{current.code.toUpperCase()}</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-40">
