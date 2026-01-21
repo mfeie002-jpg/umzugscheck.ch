@@ -43,7 +43,7 @@ const getCustomerBenefitsSummary = (lang: VisionLanguage) => {
     { emoji: "✨", title: "Reinigungsgarantie", short: "Profis mit Nachbesserungs-Garantie" },
     { emoji: "♻️", title: "Entrümpelungs-Service", short: "Weniger mitnehmen = billiger" },
     { emoji: "⚖️", title: "Preisvergleich", short: "5 geprüfte Firmen vergleichen" },
-    { emoji: "🗺️", title: "Neighborhood Guide", short: "Alle Infos zur neuen Gegend" },
+    { emoji: "🗺️", title: "Quartier-Guide", short: "Alle Infos zur neuen Gegend" },
     { emoji: "🛡️", title: "Smart Versicherung", short: "Video-Beweis bei Schäden" },
     { emoji: "🎧", title: "24/7 Support", short: "Sofort-Hilfe via WhatsApp" },
     { emoji: "🔧", title: "Handwerker-Service", short: "Montage alles inklusive" },
