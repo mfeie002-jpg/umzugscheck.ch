@@ -1,7 +1,7 @@
 /**
- * Aspirational Hero Section
+ * VisionEmotionalHero - Aspirational Hero Section with Unique Images
  * Win-Win-Win positioning: simple, transparent, fair
- * We will become #1 - not we are #1
+ * Now with language-specific unique hero images
  */
 
 import { memo } from "react";
@@ -10,6 +10,11 @@ import { Sparkles, Zap, Globe, ArrowRight, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import type { VisionLanguage } from "@/lib/vision-translations";
+
+// Unique hero images
+import heroSwissPanorama from "@/assets/vision/hero-swiss-panorama.jpg";
+import investorMeeting from "@/assets/vision/investor-meeting.jpg";
+import momentNewBeginning from "@/assets/vision/moment-new-beginning.jpg";
 
 interface VisionEmotionalHeroProps {
   language: VisionLanguage;
@@ -32,7 +37,6 @@ const content = {
       full: "KI-Präzision. Escrow-Sicherheit. Bürokratie-Autopilot. Ein Ökosystem, das Umziehen in der Schweiz revolutioniert."
     },
     
-    // 3 Core promises
     promises: [
       "Stress weg",
       "Fairness rein", 
@@ -122,30 +126,29 @@ const content = {
   }
 };
 
-// Real moving images - people actively moving, packing boxes, carrying furniture
-const heroImages = {
-  de: "https://images.unsplash.com/photo-1600585152915-d208bec867a1?w=1400&q=90", // Couple carrying moving boxes
-  bg: "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=1400&q=90", // Professional movers with boxes
-  it: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=1400&q=90", // Family moving day with boxes
-  fallback: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1400&q=90", // Moving truck and boxes
+// Variant-specific images
+const variantImages = {
+  family: momentNewBeginning,
+  investor: investorMeeting,
+  full: heroSwissPanorama,
 };
 
 export const VisionEmotionalHero = memo(({ language, variant = 'full' }: VisionEmotionalHeroProps) => {
   const t = content[language] || content.de;
   
-  const currentImage = heroImages[language] || heroImages.fallback;
+  const currentImage = variantImages[variant];
   
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-secondary/5">
-      {/* Background with real emotional image - more visible */}
+      {/* Background with variant-specific image */}
       <div className="absolute inset-0 z-0">
         <img
           src={currentImage}
-          alt="Happy family moving to their new home"
-          className="w-full h-full object-cover opacity-40"
+          alt="Vision Hero"
+          className="w-full h-full object-cover opacity-30"
           loading="eager"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/80 to-background/70" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/85 to-background/75" />
       </div>
       
       <div className="container mx-auto px-4 py-12 md:py-20 lg:py-28 relative z-10">
@@ -180,7 +183,7 @@ export const VisionEmotionalHero = memo(({ language, variant = 'full' }: VisionE
             {t.subheadline[variant]}
           </motion.p>
           
-          {/* 3 Core Promises - The Feeling */}
+          {/* 3 Core Promises */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -256,7 +259,7 @@ export const VisionEmotionalHero = memo(({ language, variant = 'full' }: VisionE
         </div>
       </div>
       
-      {/* Bottom wave decoration */}
+      {/* Bottom wave */}
       <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-background to-transparent" />
     </section>
   );
