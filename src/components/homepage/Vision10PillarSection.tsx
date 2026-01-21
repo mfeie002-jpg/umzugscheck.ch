@@ -618,16 +618,16 @@ export const Vision10PillarSection = memo(() => {
             Wir sind das <span className="font-semibold text-foreground">Betriebssystem für den Wohnortswechsel.</span>
           </p>
           
-          {/* Expand All Button */}
-          <div className="mt-6">
+          {/* Expand All Button - Prominent for Screenshots */}
+          <div className="mt-8 flex justify-center">
             <Button 
-              variant="outline" 
-              size="sm"
+              variant={allExpanded ? "default" : "outline"}
+              size="lg"
               onClick={() => setAllExpanded(!allExpanded)}
-              className="gap-2"
+              className={`gap-3 font-bold shadow-lg ${allExpanded ? 'bg-primary text-primary-foreground' : 'border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground'}`}
             >
-              <ChevronRight className={`w-4 h-4 transition-transform ${allExpanded ? 'rotate-90' : ''}`} />
-              {allExpanded ? 'Alle Details verbergen' : 'Alle Details anzeigen (für Screenshot)'}
+              <ChevronRight className={`w-5 h-5 transition-transform duration-300 ${allExpanded ? 'rotate-90' : ''}`} />
+              {allExpanded ? '✅ Alle Details sichtbar' : '📸 Alle Details anzeigen (für Screenshot)'}
             </Button>
           </div>
         </motion.div>
