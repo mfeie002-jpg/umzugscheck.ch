@@ -397,8 +397,8 @@ const de: VisionTranslations = {
           "✅ Escrow/Treuhand System",
           "✅ Quality Badge System",
           "✅ Behörden-API Integration",
+          "✅ Partner Operating System (SaaS)",
           "🔄 AI Video Inventory (Computer Vision)",
-          "⏳ Partner Operating System",
           "⏳ Micro-Insurance Module"
         ]
       }
@@ -408,9 +408,9 @@ const de: VisionTranslations = {
       subtitle: "Tag und Nacht gearbeitet – hier ist das Ergebnis",
       months: "3+ Monate intensive Arbeit",
       items: [
-        "260+ React Komponenten entwickelt",
-        "65+ Seiten und Routes erstellt",
-        "28+ Datenbank-Tabellen designt",
+        "270+ React Komponenten entwickelt",
+        "70+ Seiten und Routes erstellt",
+        "30+ Datenbank-Tabellen designt",
         "10 verschiedene Rechner implementiert",
         "26 Städte mit Neighborhood-Daten",
         "30+ Umzugsfirmen im System",
@@ -427,6 +427,7 @@ const de: VisionTranslations = {
         "Email Automation Framework",
         "Stripe Payment Integration",
         "Behörden-API (11 Services)",
+        "Partner OS (Mover SaaS)",
         "Post-Move Checklist (7 Kategorien)",
         "Neighborhood Comparison (11 Metriken)",
         "Vision Page für Stakeholder",
