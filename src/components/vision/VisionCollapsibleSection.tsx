@@ -18,7 +18,7 @@ interface VisionCollapsibleSectionProps {
   children: ReactNode;
   className?: string;
   headerClassName?: string;
-  language?: 'de' | 'bg';
+  language?: 'de' | 'bg' | 'it';
 }
 
 export const VisionCollapsibleSection = memo(({
