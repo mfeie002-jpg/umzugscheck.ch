@@ -122,27 +122,30 @@ const content = {
   }
 };
 
-// Professional business images
-const heroImages = [
-  "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&q=80", // Modern skyscraper
-  "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=80", // Modern office
-  "https://images.unsplash.com/photo-1460472178825-e5240623afd5?w=1200&q=80", // City skyline
-];
+// Real emotional moving images - happy families, new beginnings
+const heroImages = {
+  de: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=1400&q=90", // Happy family with moving boxes
+  bg: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1400&q=90", // Beautiful new home
+  it: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1400&q=90", // Couple celebrating in new apartment
+  fallback: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1400&q=90", // Joyful family unpacking
+};
 
 export const VisionEmotionalHero = memo(({ language, variant = 'full' }: VisionEmotionalHeroProps) => {
   const t = content[language] || content.de;
   
+  const currentImage = heroImages[language] || heroImages.fallback;
+  
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-secondary/5">
-      {/* Background with gradient overlay */}
+      {/* Background with real emotional image - more visible */}
       <div className="absolute inset-0 z-0">
         <img
-          src={heroImages[0]}
-          alt=""
-          className="w-full h-full object-cover opacity-20"
+          src={currentImage}
+          alt="Happy family moving to their new home"
+          className="w-full h-full object-cover opacity-40"
           loading="eager"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/95 to-background/80" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/80 to-background/70" />
       </div>
       
       <div className="container mx-auto px-4 py-12 md:py-20 lg:py-28 relative z-10">
