@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Calendar, Package, TrendingUp, Eye, Zap } from "lucide-react";
+import { MapPin, Calendar, Package, Eye, Zap, Flame, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Lead {
@@ -12,6 +12,7 @@ interface Lead {
   quality_score?: number;
   recommended_price?: number;
   calculator_output: any;
+  interested_providers?: number;
 }
 
 interface MobileOptimizedLeadCardProps {
@@ -29,13 +30,45 @@ export const MobileOptimizedLeadCard = ({ lead, onView, onQuickBid }: MobileOpti
   };
 
   const qualityScore = lead.quality_score || 50;
+  
+  // Calculate urgency based on move date proximity
+  const daysUntilMove = Math.ceil(
+    (new Date(lead.move_date).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
+  );
+  const isUrgent = daysUntilMove <= 7;
+  const isHighDemand = (lead.interested_providers || 0) >= 5;
 
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+    <Card className={cn(
+      "overflow-hidden hover:shadow-lg transition-shadow",
+      isUrgent && "ring-2 ring-destructive/50"
+    )}>
       <div className={cn(
         "h-1",
         getQualityColor(qualityScore)
       )} />
+      
+      {/* Urgency Banner */}
+      {(isUrgent || isHighDemand) && (
+        <div className={cn(
+          "px-3 py-1.5 text-xs font-medium flex items-center gap-1.5",
+          isUrgent 
+            ? "bg-destructive/10 text-destructive" 
+            : "bg-primary/10 text-primary"
+        )}>
+          {isUrgent ? (
+            <>
+              <Flame className="h-3 w-3" />
+              Dringend – nur noch {daysUntilMove} Tage!
+            </>
+          ) : (
+            <>
+              <Clock className="h-3 w-3" />
+              {lead.interested_providers} Anbieter interessiert
+            </>
+          )}
+        </div>
+      )}
       
       <CardContent className="p-4 space-y-3">
         {/* Header with Quality Badge */}
