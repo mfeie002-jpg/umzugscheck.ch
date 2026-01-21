@@ -100,16 +100,16 @@ export default function VisionPage() {
 
       {/* Sticky Header with Download Buttons */}
       <div className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div className="container mx-auto px-3 md:px-4 py-2 md:py-3">
+          <div className="flex items-center justify-between gap-2">
             <Link to="/">
-              <Button variant="ghost" size="sm">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                {t.page.backToMain}
+              <Button variant="ghost" size="sm" className="touch-manipulation min-h-[40px] px-2 md:px-3">
+                <ArrowLeft className="w-4 h-4 md:mr-2" />
+                <span className="hidden md:inline">{t.page.backToMain}</span>
               </Button>
             </Link>
             
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex items-center gap-1.5 md:gap-2">
               <VisionLanguageSwitcher 
                 currentLang={language} 
                 onLanguageChange={setLanguage} 
@@ -119,25 +119,26 @@ export default function VisionPage() {
                 size="sm"
                 onClick={handleExportTextPDF}
                 disabled={isExporting}
+                className="touch-manipulation min-h-[40px] px-2 md:px-3 hidden sm:flex"
               >
-                <FileText className="w-4 h-4 mr-2" />
-                {t.page.compactPdf}
+                <FileText className="w-4 h-4 md:mr-2" />
+                <span className="hidden lg:inline">{t.page.compactPdf}</span>
               </Button>
               <Button 
                 onClick={handleExportPDF}
                 disabled={isExporting}
-                className="relative"
+                className="relative touch-manipulation min-h-[40px] px-2 md:px-3"
                 size="sm"
               >
                 {isExporting ? (
                   <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    {exportProgress}%
+                    <Loader2 className="w-4 h-4 md:mr-2 animate-spin" />
+                    <span className="hidden md:inline">{exportProgress}%</span>
                   </>
                 ) : (
                   <>
-                    <Download className="w-4 h-4 mr-2" />
-                    {t.page.downloadPdf}
+                    <Download className="w-4 h-4 md:mr-2" />
+                    <span className="hidden md:inline">{t.page.downloadPdf}</span>
                   </>
                 )}
               </Button>
@@ -279,16 +280,17 @@ export default function VisionPage() {
       </div>
 
       {/* Footer CTA */}
-      <section className="py-12 bg-primary/5">
+      <section className="py-8 md:py-12 bg-primary/5">
         <div className="container mx-auto px-4 text-center">
-          <p className="text-muted-foreground mb-4">
+          <p className="text-sm md:text-base text-muted-foreground mb-4">
             {t.footer.questions}
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4">
             <Button 
               variant="outline"
               onClick={handleExportPDF}
               disabled={isExporting}
+              className="w-full sm:w-auto min-h-[48px] touch-manipulation"
             >
               {isExporting ? (
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -297,8 +299,8 @@ export default function VisionPage() {
               )}
               {t.footer.downloadPdf}
             </Button>
-            <Link to="/">
-              <Button size="lg">
+            <Link to="/" className="w-full sm:w-auto">
+              <Button size="lg" className="w-full min-h-[48px] touch-manipulation">
                 {t.footer.toMainPage}
               </Button>
             </Link>

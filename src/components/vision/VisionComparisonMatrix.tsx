@@ -109,7 +109,7 @@ export const VisionComparisonMatrix = memo(({ language }: VisionComparisonMatrix
   const t = content[language];
   
   return (
-    <section className="py-12">
+    <section className="py-8 md:py-12">
       <div className="container mx-auto px-4">
         <div className="max-w-5xl mx-auto">
           
@@ -118,68 +118,74 @@ export const VisionComparisonMatrix = memo(({ language }: VisionComparisonMatrix
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-8"
+            className="text-center mb-6 md:mb-8"
           >
             <Badge className="mb-3 bg-primary/10 text-primary">
               <Crown className="w-3 h-3 mr-1" />
               {t.badge}
             </Badge>
-            <h2 className="text-2xl md:text-3xl font-bold mb-2">{t.title}</h2>
-            <p className="text-muted-foreground">{t.subtitle}</p>
+            <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-2">{t.title}</h2>
+            <p className="text-sm md:text-base text-muted-foreground">{t.subtitle}</p>
           </motion.div>
           
-          {/* Comparison Table */}
+          {/* Comparison Table - Horizontal scroll on mobile */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
+            className="-mx-4 px-4 md:mx-0 md:px-0"
           >
-            <Card className="overflow-hidden">
-              {/* Header Row */}
-              <div className="grid grid-cols-4 bg-muted/50 border-b">
-                <div className="p-4 font-medium text-sm text-muted-foreground">
-                  {language === 'de' ? 'Feature' : 'Функция'}
-                </div>
-                <div className="p-4 text-center">
-                  <div className="font-bold text-primary flex items-center justify-center gap-1.5">
-                    <Crown className="w-4 h-4" />
-                    {t.competitors.umzugscheck}
+            <div className="overflow-x-auto pb-2 md:pb-0">
+              <Card className="overflow-hidden min-w-[600px] md:min-w-0">
+                {/* Header Row */}
+                <div className="grid grid-cols-4 bg-muted/50 border-b">
+                  <div className="p-2 md:p-4 font-medium text-xs md:text-sm text-muted-foreground">
+                    {language === 'de' ? 'Feature' : 'Функция'}
+                  </div>
+                  <div className="p-2 md:p-4 text-center">
+                    <div className="font-bold text-primary flex items-center justify-center gap-1">
+                      <Crown className="w-3 h-3 md:w-4 md:h-4" />
+                      <span className="text-xs md:text-sm">{t.competitors.umzugscheck}</span>
+                    </div>
+                  </div>
+                  <div className="p-2 md:p-4 text-center">
+                    <div className="font-medium text-muted-foreground text-xs md:text-sm">{t.competitors.movu}</div>
+                  </div>
+                  <div className="p-2 md:p-4 text-center">
+                    <div className="font-medium text-muted-foreground text-xs md:text-sm">{t.competitors.traditional}</div>
                   </div>
                 </div>
-                <div className="p-4 text-center">
-                  <div className="font-medium text-muted-foreground">{t.competitors.movu}</div>
-                </div>
-                <div className="p-4 text-center">
-                  <div className="font-medium text-muted-foreground">{t.competitors.traditional}</div>
-                </div>
-              </div>
-              
-              {/* Feature Rows */}
-              {t.features.map((feature, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.03 }}
-                  className="grid grid-cols-4 border-b last:border-0 hover:bg-muted/30 transition-colors"
-                >
-                  <div className="p-4 flex items-center gap-2">
-                    <span className="text-primary">{getCategoryIcon(feature.category)}</span>
-                    <span className="text-sm">{feature.name}</span>
-                  </div>
-                  <div className="p-4 flex items-center justify-center bg-green-50/50 dark:bg-green-950/20">
-                    {getIcon(feature.umzugscheck)}
-                  </div>
-                  <div className="p-4 flex items-center justify-center">
-                    {getIcon(feature.movu)}
-                  </div>
-                  <div className="p-4 flex items-center justify-center">
-                    {getIcon(feature.traditional)}
-                  </div>
-                </motion.div>
-              ))}
-            </Card>
+                
+                {/* Feature Rows */}
+                {t.features.map((feature, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.03 }}
+                    className="grid grid-cols-4 border-b last:border-0 hover:bg-muted/30 transition-colors"
+                  >
+                    <div className="p-2 md:p-4 flex items-center gap-1.5 md:gap-2">
+                      <span className="text-primary flex-shrink-0">{getCategoryIcon(feature.category)}</span>
+                      <span className="text-xs md:text-sm leading-tight">{feature.name}</span>
+                    </div>
+                    <div className="p-2 md:p-4 flex items-center justify-center bg-green-50/50 dark:bg-green-950/20">
+                      {getIcon(feature.umzugscheck)}
+                    </div>
+                    <div className="p-2 md:p-4 flex items-center justify-center">
+                      {getIcon(feature.movu)}
+                    </div>
+                    <div className="p-2 md:p-4 flex items-center justify-center">
+                      {getIcon(feature.traditional)}
+                    </div>
+                  </motion.div>
+                ))}
+              </Card>
+            </div>
+            <p className="text-[10px] text-muted-foreground text-center mt-2 md:hidden">
+              ← {language === 'de' ? 'Wischen für mehr' : 'Плъзни за повече'} →
+            </p>
           </motion.div>
           
           {/* Winner Badge */}

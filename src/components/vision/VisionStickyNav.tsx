@@ -77,35 +77,37 @@ export const VisionStickyNav = memo(({ language }: VisionStickyNavProps) => {
   };
 
   return (
-    <div className="sticky top-14 z-40 bg-background/95 backdrop-blur-sm border-b">
-      <div className="container mx-auto px-4">
+    <div className="sticky top-[53px] md:top-14 z-40 bg-background/95 backdrop-blur-sm border-b">
+      <div className="container mx-auto px-3 md:px-4">
         {/* Mobile: Dropdown */}
-        <div className="md:hidden py-2">
+        <div className="md:hidden py-1.5">
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="w-full flex items-center justify-between px-3 py-2 rounded-lg bg-muted/50 text-sm font-medium"
+            className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg bg-muted/50 text-sm font-medium min-h-[44px] touch-manipulation active:bg-muted"
           >
             <span className="flex items-center gap-2">
               {navItems.find(n => n.id === activeSection)?.icon}
-              {language === 'de' 
-                ? navItems.find(n => n.id === activeSection)?.labelDe 
-                : navItems.find(n => n.id === activeSection)?.labelBg
-              }
+              <span className="truncate">
+                {language === 'de' 
+                  ? navItems.find(n => n.id === activeSection)?.labelDe 
+                  : navItems.find(n => n.id === activeSection)?.labelBg
+                }
+              </span>
             </span>
-            <ChevronDown className={cn("w-4 h-4 transition-transform", isExpanded && "rotate-180")} />
+            <ChevronDown className={cn("w-4 h-4 transition-transform flex-shrink-0", isExpanded && "rotate-180")} />
           </button>
           
           {isExpanded && (
-            <div className="absolute left-4 right-4 mt-1 bg-background border rounded-lg shadow-lg p-2 space-y-1">
+            <div className="absolute left-3 right-3 mt-1 bg-background border rounded-lg shadow-lg p-1.5 space-y-0.5 z-50 max-h-[60vh] overflow-y-auto">
               {navItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
                   className={cn(
-                    "w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-colors",
+                    "w-full flex items-center gap-2 px-3 py-2.5 rounded-md text-sm transition-colors min-h-[44px] touch-manipulation",
                     activeSection === item.id
                       ? "bg-primary text-primary-foreground"
-                      : "hover:bg-muted"
+                      : "hover:bg-muted active:bg-muted"
                   )}
                 >
                   {item.icon}

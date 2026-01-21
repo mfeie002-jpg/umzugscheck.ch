@@ -102,18 +102,18 @@ export const VisionAudienceSwitcher = memo(({ language, className }: VisionAudie
   const t = content[language];
   
   return (
-    <section className={cn("py-8", className)}>
+    <section className={cn("py-6 md:py-8", className)}>
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           
           {/* Header */}
-          <div className="text-center mb-6">
-            <h2 className="text-xl font-bold mb-2">{t.title}</h2>
-            <p className="text-muted-foreground text-sm">{t.subtitle}</p>
+          <div className="text-center mb-4 md:mb-6">
+            <h2 className="text-lg md:text-xl font-bold mb-1 md:mb-2">{t.title}</h2>
+            <p className="text-muted-foreground text-xs md:text-sm">{t.subtitle}</p>
           </div>
           
           {/* Audience Cards */}
-          <div className="grid md:grid-cols-3 gap-4 mb-6">
+          <div className="grid gap-3 md:gap-4 md:grid-cols-3 mb-4 md:mb-6">
             {t.audiences.map((audience, i) => (
               <motion.div
                 key={audience.id}
@@ -123,20 +123,20 @@ export const VisionAudienceSwitcher = memo(({ language, className }: VisionAudie
               >
                 <Link to={audience.link}>
                   <Card className={cn(
-                    "p-5 h-full transition-all cursor-pointer border-2",
+                    "p-4 md:p-5 h-full transition-all cursor-pointer border-2 touch-manipulation active:scale-[0.98]",
                     audience.color
                   )}>
-                    <div className="flex items-start justify-between mb-3">
-                      <audience.icon className={cn("w-8 h-8", audience.iconColor)} />
-                      <Badge variant="secondary" className="text-xs">
+                    <div className="flex items-start justify-between mb-2 md:mb-3">
+                      <audience.icon className={cn("w-6 h-6 md:w-8 md:h-8", audience.iconColor)} />
+                      <Badge variant="secondary" className="text-[10px] md:text-xs">
                         {audience.badge}
                       </Badge>
                     </div>
-                    <h3 className="font-bold mb-1">{audience.title}</h3>
-                    <p className="text-sm text-muted-foreground mb-3">{audience.description}</p>
-                    <div className="flex items-center gap-1 text-sm font-medium text-primary">
+                    <h3 className="font-bold text-sm md:text-base mb-1">{audience.title}</h3>
+                    <p className="text-xs md:text-sm text-muted-foreground mb-2 md:mb-3">{audience.description}</p>
+                    <div className="flex items-center gap-1 text-xs md:text-sm font-medium text-primary">
                       <span>{language === 'de' ? 'Ansehen' : 'Виж'}</span>
-                      <ArrowRight className="w-4 h-4" />
+                      <ArrowRight className="w-3 h-3 md:w-4 md:h-4" />
                     </div>
                   </Card>
                 </Link>
@@ -145,7 +145,7 @@ export const VisionAudienceSwitcher = memo(({ language, className }: VisionAudie
           </div>
           
           {/* Continue hint */}
-          <p className="text-center text-sm text-muted-foreground">
+          <p className="text-center text-xs md:text-sm text-muted-foreground">
             ↓ {t.continueHere} ↓
           </p>
           

@@ -97,7 +97,7 @@ export const VisionHeroExecutive = memo(({
   const t = content[language];
   
   return (
-    <section id="vision-hero" className="py-12 md:py-20 bg-gradient-to-b from-primary/10 via-primary/5 to-background">
+    <section id="vision-hero" className="py-8 md:py-20 bg-gradient-to-b from-primary/10 via-primary/5 to-background">
       <div className="container mx-auto px-4">
         <div className="max-w-5xl mx-auto">
           
@@ -105,9 +105,9 @@ export const VisionHeroExecutive = memo(({
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-6"
+            className="text-center mb-4 md:mb-6"
           >
-            <Badge variant="secondary" className="text-sm px-4 py-1.5">
+            <Badge variant="secondary" className="text-xs md:text-sm px-3 md:px-4 py-1 md:py-1.5">
               {t.badge}
             </Badge>
           </motion.div>
@@ -117,7 +117,7 @@ export const VisionHeroExecutive = memo(({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-4 leading-tight"
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-3 md:mb-4 leading-tight px-2"
           >
             {t.headline}
           </motion.h1>
@@ -127,24 +127,24 @@ export const VisionHeroExecutive = memo(({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-lg md:text-xl text-muted-foreground text-center mb-8 max-w-3xl mx-auto"
+            className="text-base md:text-lg lg:text-xl text-muted-foreground text-center mb-6 md:mb-8 max-w-3xl mx-auto px-2"
           >
             {t.subheadline}
           </motion.p>
           
-          {/* 3 CTAs */}
+          {/* 3 CTAs - Stack on mobile */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="flex flex-wrap items-center justify-center gap-4 mb-10"
+            className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 mb-8 md:mb-10"
           >
             <Button 
               size="lg" 
               onClick={onDemoClick}
-              className="gap-2 min-w-[160px]"
+              className="gap-2 min-h-[52px] w-full sm:w-auto sm:min-w-[160px] touch-manipulation active:scale-[0.98] transition-transform"
             >
-              <Play className="w-4 h-4" />
+              <Play className="w-4 h-4 flex-shrink-0" />
               <div className="text-left">
                 <div className="font-semibold">{t.ctas.demo}</div>
                 <div className="text-xs opacity-80">{t.ctas.demoSub}</div>
@@ -155,9 +155,9 @@ export const VisionHeroExecutive = memo(({
               size="lg" 
               variant="outline"
               onClick={onPitchDeckClick}
-              className="gap-2 min-w-[160px]"
+              className="gap-2 min-h-[52px] w-full sm:w-auto sm:min-w-[160px] touch-manipulation active:scale-[0.98] transition-transform"
             >
-              <FileText className="w-4 h-4" />
+              <FileText className="w-4 h-4 flex-shrink-0" />
               <div className="text-left">
                 <div className="font-semibold">{t.ctas.pitchDeck}</div>
                 <div className="text-xs opacity-80">{t.ctas.pitchDeckSub}</div>
@@ -168,9 +168,9 @@ export const VisionHeroExecutive = memo(({
               size="lg" 
               variant="outline"
               onClick={onContactClick}
-              className="gap-2 min-w-[160px]"
+              className="gap-2 min-h-[52px] w-full sm:w-auto sm:min-w-[160px] touch-manipulation active:scale-[0.98] transition-transform"
             >
-              <Calendar className="w-4 h-4" />
+              <Calendar className="w-4 h-4 flex-shrink-0" />
               <div className="text-left">
                 <div className="font-semibold">{t.ctas.contact}</div>
                 <div className="text-xs opacity-80">{t.ctas.contactSub}</div>
@@ -183,16 +183,16 @@ export const VisionHeroExecutive = memo(({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10"
+            className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-8 md:mb-10"
           >
             {t.stats.map((stat, i) => (
               <div 
                 key={i} 
-                className="p-4 rounded-xl bg-background border shadow-sm text-center"
+                className="p-3 md:p-4 rounded-xl bg-background border shadow-sm text-center"
               >
-                <stat.icon className={`w-5 h-5 mx-auto mb-2 ${stat.color}`} />
-                <div className="text-2xl md:text-3xl font-bold text-foreground">{stat.value}</div>
-                <div className="text-xs md:text-sm text-muted-foreground">{stat.label}</div>
+                <stat.icon className={`w-4 h-4 md:w-5 md:h-5 mx-auto mb-1.5 md:mb-2 ${stat.color}`} />
+                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground">{stat.value}</div>
+                <div className="text-[10px] sm:text-xs md:text-sm text-muted-foreground leading-tight">{stat.label}</div>
               </div>
             ))}
           </motion.div>
@@ -202,17 +202,17 @@ export const VisionHeroExecutive = memo(({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="bg-slate-900 text-white rounded-xl p-6"
+            className="bg-slate-900 text-white rounded-xl p-4 md:p-6"
           >
-            <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-              <Rocket className="w-5 h-5 text-primary" />
+            <h3 className="font-bold text-base md:text-lg mb-3 md:mb-4 flex items-center gap-2">
+              <Rocket className="w-4 h-4 md:w-5 md:h-5 text-primary flex-shrink-0" />
               {t.whyNow.title}
             </h3>
-            <ul className="grid md:grid-cols-2 gap-3">
+            <ul className="grid gap-2 md:gap-3 md:grid-cols-2">
               {t.whyNow.points.map((point, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
-                  <span className="text-primary mt-0.5">✓</span>
-                  {point}
+                <li key={i} className="flex items-start gap-2 text-xs sm:text-sm text-slate-300">
+                  <span className="text-primary mt-0.5 flex-shrink-0">✓</span>
+                  <span>{point}</span>
                 </li>
               ))}
             </ul>

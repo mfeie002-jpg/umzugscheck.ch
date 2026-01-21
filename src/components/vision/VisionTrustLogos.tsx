@@ -52,7 +52,7 @@ export const VisionTrustLogos = memo(({ language }: VisionTrustLogosProps) => {
   const t = content[language];
   
   return (
-    <section className="py-10 border-y bg-muted/20">
+    <section className="py-6 md:py-10 border-y bg-muted/20">
       <div className="container mx-auto px-4">
         <div className="max-w-5xl mx-auto">
           
@@ -61,13 +61,13 @@ export const VisionTrustLogos = memo(({ language }: VisionTrustLogosProps) => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-8"
+            className="text-center mb-5 md:mb-8"
           >
-            <Badge className="mb-3 bg-primary/10 text-primary">
+            <Badge className="mb-2 md:mb-3 bg-primary/10 text-primary text-xs">
               <Shield className="w-3 h-3 mr-1" />
               {t.badge}
             </Badge>
-            <h3 className="text-xl font-bold">{t.title}</h3>
+            <h3 className="text-lg md:text-xl font-bold">{t.title}</h3>
           </motion.div>
           
           {/* Technology Partners */}
@@ -75,10 +75,10 @@ export const VisionTrustLogos = memo(({ language }: VisionTrustLogosProps) => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mb-8"
+            className="mb-5 md:mb-8"
           >
-            <p className="text-sm text-muted-foreground text-center mb-4">{t.techTitle}</p>
-            <div className="flex flex-wrap items-center justify-center gap-6">
+            <p className="text-xs md:text-sm text-muted-foreground text-center mb-3 md:mb-4">{t.techTitle}</p>
+            <div className="flex flex-wrap items-center justify-center gap-2 md:gap-4">
               {techPartners.map((partner, i) => (
                 <motion.a
                   key={i}
@@ -90,7 +90,7 @@ export const VisionTrustLogos = memo(({ language }: VisionTrustLogosProps) => {
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.05 }}
                   whileHover={{ scale: 1.05 }}
-                  className="px-4 py-2 bg-background border rounded-lg hover:border-primary/50 transition-colors flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"
+                  className="px-3 py-2 md:px-4 md:py-2 bg-background border rounded-lg hover:border-primary/50 transition-colors flex items-center gap-2 text-xs md:text-sm font-medium text-muted-foreground hover:text-foreground min-h-[40px] touch-manipulation active:scale-[0.97]"
                 >
                   {partner.name}
                 </motion.a>
@@ -103,16 +103,21 @@ export const VisionTrustLogos = memo(({ language }: VisionTrustLogosProps) => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mb-8"
+            className="mb-5 md:mb-8"
           >
-            <p className="text-sm text-muted-foreground text-center mb-4">{t.sourcesTitle}</p>
-            <div className="flex flex-wrap items-center justify-center gap-4">
+            <p className="text-xs md:text-sm text-muted-foreground text-center mb-3 md:mb-4">{t.sourcesTitle}</p>
+            <div className="flex flex-wrap items-center justify-center gap-2 md:gap-4">
               {dataSources.map((source, i) => (
-                <div key={i} className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <div key={i} className="flex items-center gap-1.5 text-[10px] md:text-xs text-muted-foreground px-2 py-1.5 bg-background/50 rounded-md">
                   <span className="font-medium">{source.name}</span>
-                  <span className="text-muted-foreground/50">({source.desc})</span>
+                  <span className="text-muted-foreground/50 hidden sm:inline">({source.desc})</span>
                   {source.url && (
-                    <a href={source.url} target="_blank" rel="noopener noreferrer">
+                    <a 
+                      href={source.url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="p-1 -m-1 touch-manipulation"
+                    >
                       <ExternalLink className="w-3 h-3 hover:text-primary" />
                     </a>
                   )}
