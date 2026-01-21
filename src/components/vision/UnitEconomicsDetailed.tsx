@@ -1,6 +1,7 @@
 /**
  * Unit Economics Detailed Component
  * Clear breakdown of the 10 revenue streams adding up to 553 CHF
+ * Now with DE/BG translation support
  */
 
 import { memo } from "react";
@@ -17,26 +18,70 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import type { VisionLanguage } from "@/lib/vision-translations";
+import { getVisionTranslation } from "@/lib/vision-translations";
 
-// All 10 revenue streams with their contribution
+interface UnitEconomicsDetailedProps {
+  language: VisionLanguage;
+}
+
+// Revenue breakdown data
 const revenueBreakdown = [
-  { name: "Basis-Provision", amount: 225, color: "bg-blue-500", description: "15% Take-Rate vom Umzug (Ø 1'500 CHF)" },
-  { name: "Affiliate (Telco/Energie)", amount: 100, color: "bg-green-500", description: "Internet, Strom, Gas Wechsel-Provisionen" },
-  { name: "Versicherung", amount: 99, color: "bg-purple-500", description: "Micro-Insurance mit 60% Marge" },
-  { name: "Circular Economy", amount: 50, color: "bg-amber-500", description: "Entrümpelung + Weiterverkauf" },
-  { name: "Bürokratie-Autopilot", amount: 49, color: "bg-cyan-500", description: "Ummeldungs-Service (98% Marge)" },
-  { name: "Escrow/Treuhand", amount: 30, color: "bg-indigo-500", description: "1.5% Fee + Float-Zinsen" },
+  { nameKey: 0, amount: 225, color: "bg-blue-500" },
+  { nameKey: 1, amount: 100, color: "bg-green-500" },
+  { nameKey: 2, amount: 99, color: "bg-purple-500" },
+  { nameKey: 3, amount: 50, color: "bg-amber-500" },
+  { nameKey: 4, amount: 49, color: "bg-cyan-500" },
+  { nameKey: 5, amount: 30, color: "bg-indigo-500" },
 ];
 
-// Costs breakdown
+// Costs breakdown data
 const costsBreakdown = [
-  { name: "CAC (Kundenakquise)", amount: 35, description: "SEO + Google Ads anteilig" },
-  { name: "Server/Infrastruktur", amount: 5, description: "Cloud Hosting pro Kunde" },
-  { name: "Support (anteilig)", amount: 5, description: "5% brauchen menschliche Hilfe" },
-  { name: "Zahlungsgebühren", amount: 5, description: "Stripe/Kreditkarte ~0.3%" },
+  { amount: 35 },
+  { amount: 5 },
+  { amount: 5 },
+  { amount: 5 },
 ];
 
-export const UnitEconomicsDetailed = memo(() => {
+const revenueNames = {
+  de: [
+    { name: "Basis-Provision", desc: "15% Take-Rate vom Umzug (Ø 1'500 CHF)" },
+    { name: "Affiliate (Telco/Energie)", desc: "Internet, Strom, Gas Wechsel-Provisionen" },
+    { name: "Versicherung", desc: "Micro-Insurance mit 60% Marge" },
+    { name: "Circular Economy", desc: "Entrümpelung + Weiterverkauf" },
+    { name: "Bürokratie-Autopilot", desc: "Ummeldungs-Service (98% Marge)" },
+    { name: "Escrow/Treuhand", desc: "1.5% Fee + Float-Zinsen" },
+  ],
+  bg: [
+    { name: "Базова комисионна", desc: "15% Take-Rate от преместване (Ø 1'500 CHF)" },
+    { name: "Affiliate (Telco/Енергия)", desc: "Интернет, ток, газ провизии" },
+    { name: "Застраховка", desc: "Micro-Insurance с 60% марж" },
+    { name: "Circular Economy", desc: "Изхвърляне + препродажба" },
+    { name: "Бюрократичен автопилот", desc: "Услуга за пререгистрация (98% марж)" },
+    { name: "Escrow/Доверителна сметка", desc: "1.5% такса + лихви от float" },
+  ]
+};
+
+const costNames = {
+  de: [
+    { name: "CAC (Kundenakquise)", desc: "SEO + Google Ads anteilig" },
+    { name: "Server/Infrastruktur", desc: "Cloud Hosting pro Kunde" },
+    { name: "Support (anteilig)", desc: "5% brauchen menschliche Hilfe" },
+    { name: "Zahlungsgebühren", desc: "Stripe/Kreditkarte ~0.3%" },
+  ],
+  bg: [
+    { name: "CAC (Придобиване на клиенти)", desc: "SEO + Google Ads пространствено" },
+    { name: "Сървър/Инфраструктура", desc: "Cloud Hosting на клиент" },
+    { name: "Поддръжка (пространствено)", desc: "5% се нуждаят от човешка помощ" },
+    { name: "Такси за плащане", desc: "Stripe/Кредитна карта ~0.3%" },
+  ]
+};
+
+export const UnitEconomicsDetailed = memo(({ language }: UnitEconomicsDetailedProps) => {
+  const t = getVisionTranslation(language);
+  const revenueLabels = revenueNames[language];
+  const costLabels = costNames[language];
+  
   const totalRevenue = revenueBreakdown.reduce((sum, item) => sum + item.amount, 0);
   const totalCosts = costsBreakdown.reduce((sum, item) => sum + item.amount, 0);
   const profit = totalRevenue - totalCosts;
@@ -54,10 +99,10 @@ export const UnitEconomicsDetailed = memo(() => {
         >
           <Badge className="mb-4 bg-primary/10 text-primary hover:bg-primary/20">
             <TrendingUp className="w-3 h-3 mr-1" />
-            Unit Economics pro Kunde
+            {t.unitEconomics.badge}
           </Badge>
           <h2 className="text-3xl md:text-4xl font-black text-foreground mb-4">
-            Wie sich 553 CHF pro Kunde zusammensetzen
+            {t.unitEconomics.title}
           </h2>
           
           {/* Clarification Box */}
@@ -66,14 +111,9 @@ export const UnitEconomicsDetailed = memo(() => {
               <HelpCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
               <div className="text-left text-sm">
                 <p className="font-bold text-blue-800 dark:text-blue-300 mb-1">
-                  Warum "10 Einnahmequellen" und "6 Umsatzströme"?
+                  {t.unitEconomics.clarificationTitle}
                 </p>
-                <p className="text-blue-700 dark:text-blue-400">
-                  <strong>10 Einnahmequellen</strong> = Alle möglichen Revenue Streams (inkl. B2B, Partner SaaS, etc.).<br/>
-                  <strong>6 Umsatzströme</strong> = Was ein <em>typischer Privatkunde</em> nutzt und generiert.
-                  <br/><br/>
-                  Die 553 CHF sind der Durchschnitt bei Privatkunden. Mit B2B/Enterprise-Kunden steigt der Wert deutlich höher.
-                </p>
+                <p className="text-blue-700 dark:text-blue-400" dangerouslySetInnerHTML={{ __html: t.unitEconomics.clarificationText }} />
               </div>
             </div>
           </div>
@@ -94,8 +134,8 @@ export const UnitEconomicsDetailed = memo(() => {
                     <DollarSign className="w-5 h-5 text-green-600" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-foreground">Umsatz pro Kunde</h3>
-                    <p className="text-xs text-muted-foreground">6 Umsatzströme bei Privatkunden</p>
+                    <h3 className="font-bold text-foreground">{t.unitEconomics.revenuePerCustomer}</h3>
+                    <p className="text-xs text-muted-foreground">{t.unitEconomics.revenueSubtitle}</p>
                   </div>
                 </div>
                 
@@ -112,7 +152,7 @@ export const UnitEconomicsDetailed = memo(() => {
                             />
                           </TooltipTrigger>
                           <TooltipContent>
-                            <p className="font-bold">{item.name}</p>
+                            <p className="font-bold">{revenueLabels[idx].name}</p>
                             <p className="text-xs">{item.amount} CHF ({Math.round((item.amount / totalRevenue) * 100)}%)</p>
                           </TooltipContent>
                         </Tooltip>
@@ -135,8 +175,8 @@ export const UnitEconomicsDetailed = memo(() => {
                       <div className="flex items-center gap-3">
                         <div className={`w-3 h-3 rounded-full ${item.color}`} />
                         <div>
-                          <p className="font-medium text-foreground text-sm">{item.name}</p>
-                          <p className="text-xs text-muted-foreground">{item.description}</p>
+                          <p className="font-medium text-foreground text-sm">{revenueLabels[idx].name}</p>
+                          <p className="text-xs text-muted-foreground">{revenueLabels[idx].desc}</p>
                         </div>
                       </div>
                       <span className="font-bold text-green-600 dark:text-green-400">
@@ -148,7 +188,7 @@ export const UnitEconomicsDetailed = memo(() => {
                 
                 {/* Total */}
                 <div className="mt-4 pt-4 border-t-2 border-green-200 dark:border-green-800 flex items-center justify-between">
-                  <span className="font-bold text-foreground">Total Umsatz</span>
+                  <span className="font-bold text-foreground">{t.unitEconomics.totalRevenue}</span>
                   <span className="text-2xl font-black text-green-600 dark:text-green-400">
                     {totalRevenue} CHF
                   </span>
@@ -170,8 +210,8 @@ export const UnitEconomicsDetailed = memo(() => {
                     <Minus className="w-5 h-5 text-red-600" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-foreground">Kosten pro Kunde</h3>
-                    <p className="text-xs text-muted-foreground">Fast alles automatisiert</p>
+                    <h3 className="font-bold text-foreground">{t.unitEconomics.costsPerCustomer}</h3>
+                    <p className="text-xs text-muted-foreground">{t.unitEconomics.costsSubtitle}</p>
                   </div>
                 </div>
                 
@@ -179,8 +219,8 @@ export const UnitEconomicsDetailed = memo(() => {
                   {costsBreakdown.map((item, idx) => (
                     <div key={idx} className="flex items-center justify-between py-1.5">
                       <div>
-                        <p className="text-sm font-medium text-foreground">{item.name}</p>
-                        <p className="text-xs text-muted-foreground">{item.description}</p>
+                        <p className="text-sm font-medium text-foreground">{costLabels[idx].name}</p>
+                        <p className="text-xs text-muted-foreground">{costLabels[idx].desc}</p>
                       </div>
                       <span className="font-medium text-red-600 dark:text-red-400">
                         -{item.amount} CHF
@@ -190,7 +230,7 @@ export const UnitEconomicsDetailed = memo(() => {
                 </div>
                 
                 <div className="mt-3 pt-3 border-t flex items-center justify-between">
-                  <span className="font-bold text-foreground">Total Kosten</span>
+                  <span className="font-bold text-foreground">{t.unitEconomics.totalCosts}</span>
                   <span className="text-xl font-bold text-red-600 dark:text-red-400">
                     -{totalCosts} CHF
                   </span>
@@ -204,8 +244,8 @@ export const UnitEconomicsDetailed = memo(() => {
                     <Equal className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-green-800 dark:text-green-300">Gewinn pro Kunde</h3>
-                    <p className="text-xs text-green-600 dark:text-green-400">Die Unit Economics</p>
+                    <h3 className="font-bold text-green-800 dark:text-green-300">{t.unitEconomics.profitPerCustomer}</h3>
+                    <p className="text-xs text-green-600 dark:text-green-400">{t.unitEconomics.unitEconomicsLabel}</p>
                   </div>
                 </div>
                 
@@ -224,15 +264,15 @@ export const UnitEconomicsDetailed = memo(() => {
                 <div className="flex items-center justify-center gap-4">
                   <Badge className="bg-green-500 text-white text-lg py-1.5 px-4">
                     <Sparkles className="w-4 h-4 mr-1" />
-                    {margin}% Marge
+                    {margin}% {t.unitEconomics.margin}
                   </Badge>
                 </div>
                 
                 {/* Comparison */}
                 <div className="mt-4 pt-4 border-t border-green-200 dark:border-green-700">
                   <p className="text-sm text-center text-green-700 dark:text-green-400">
-                    <strong>Klassischer Vermittler:</strong> ~20 CHF Gewinn/Kunde<br/>
-                    <strong>Wir:</strong> ~{profit} CHF = <span className="font-black">{Math.round(profit / 20)}× mehr</span>
+                    <strong>{t.unitEconomics.classicProvider}:</strong> ~20 CHF {language === 'de' ? 'Gewinn/Kunde' : 'печалба/клиент'}<br/>
+                    <strong>{t.unitEconomics.us}:</strong> ~{profit} CHF = <span className="font-black">{Math.round(profit / 20)}{t.unitEconomics.timesMore}</span>
                   </p>
                 </div>
               </Card>
@@ -252,28 +292,15 @@ export const UnitEconomicsDetailed = memo(() => {
                   <CheckCircle2 className="w-6 h-6" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-lg mb-2">Warum ist 90%+ Marge möglich?</h4>
-                  <p className="text-slate-300 text-sm leading-relaxed">
-                    <strong className="text-white">Normale Firmen</strong> haben 10-30% Marge, weil sie viele Mitarbeiter brauchen.<br/><br/>
-                    <strong className="text-white">Wir</strong> haben {'>'} 90% weil:
-                  </p>
+                  <h4 className="font-bold text-lg mb-2">{t.unitEconomics.whyPossibleTitle}</h4>
+                  <p className="text-slate-300 text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: t.unitEconomics.whyPossibleIntro }} />
                   <ul className="mt-3 space-y-2 text-sm text-slate-300">
-                    <li className="flex items-center gap-2">
-                      <ArrowRight className="w-4 h-4 text-primary flex-shrink-0" />
-                      <span><strong className="text-white">95% KI-Automatisierung</strong> – Fast keine manuellen Prozesse</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <ArrowRight className="w-4 h-4 text-primary flex-shrink-0" />
-                      <span><strong className="text-white">10 Revenue Streams</strong> – Mehr verdienen pro Kunde als nur Provision</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <ArrowRight className="w-4 h-4 text-primary flex-shrink-0" />
-                      <span><strong className="text-white">SEO-First</strong> – Niedrige Akquisekosten durch organischen Traffic</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <ArrowRight className="w-4 h-4 text-primary flex-shrink-0" />
-                      <span><strong className="text-white">3-5 Mitarbeiter</strong> reichen für 10'000+ Kunden/Jahr</span>
-                    </li>
+                    {t.unitEconomics.whyPossibleReasons.map((reason, idx) => (
+                      <li key={idx} className="flex items-center gap-2">
+                        <ArrowRight className="w-4 h-4 text-primary flex-shrink-0" />
+                        <span dangerouslySetInnerHTML={{ __html: reason }} />
+                      </li>
+                    ))}
                   </ul>
                 </div>
               </div>

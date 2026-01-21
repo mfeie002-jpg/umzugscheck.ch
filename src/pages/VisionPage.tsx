@@ -190,7 +190,7 @@ export default function VisionPage() {
           defaultOpen={false}
         >
           <div id="vision-revenue-examples">
-            <RevenueStreamExamples />
+            <RevenueStreamExamples language={language} />
           </div>
         </VisionCollapsibleSection>
         
@@ -202,7 +202,7 @@ export default function VisionPage() {
           defaultOpen={false}
         >
           <div id="vision-unit-economics">
-            <UnitEconomicsDetailed />
+            <UnitEconomicsDetailed language={language} />
           </div>
         </VisionCollapsibleSection>
         
@@ -214,7 +214,7 @@ export default function VisionPage() {
           defaultOpen={false}
         >
           <div id="vision-market-potential">
-            <MarketPotentialSection />
+            <MarketPotentialSection language={language} />
           </div>
         </VisionCollapsibleSection>
         
