@@ -19,10 +19,11 @@ export const StickyCTABar = () => {
     <AnimatePresence>
       {isVisible && (
         <motion.div
-          initial={{ y: -100, opacity: 0 }}
+          initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          exit={{ y: -100, opacity: 0 }}
-          className="fixed top-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-b border-border shadow-lg hidden md:block"
+          exit={{ y: 100, opacity: 0 }}
+          className="fixed bottom-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-t border-border shadow-lg hidden md:block"
+          style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
         >
           <div className="container mx-auto px-4 py-3 flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -38,7 +39,7 @@ export const StickyCTABar = () => {
                 </Button>
               </Link>
               <Link to="/umzugsofferten">
-                <Button size="sm" className="gap-2 bg-primary hover:bg-primary/90">
+                <Button size="sm" className="gap-2 bg-secondary hover:bg-secondary/90 text-secondary-foreground">
                   Offerten erhalten
                   <ArrowRight className="h-4 w-4" />
                 </Button>

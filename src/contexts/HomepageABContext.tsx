@@ -22,10 +22,10 @@ const HomepageABContext = createContext<HomepageABContextValue | undefined>(unde
 
 export const HomepageABProvider = memo(function HomepageABProvider({ children }: { children: ReactNode }) {
   const [variant, setVariantState] = useState<HomepageVariant>(() => {
-    if (typeof window === 'undefined') return 'C';
+    if (typeof window === 'undefined') return 'A';
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored === 'A' || stored === 'B' || stored === 'C') return stored;
-    return 'C'; // Default to SmartRouter
+    return 'A'; // Default to Original (Screenshot-style with form card)
   });
 
   const setVariant = useCallback((v: HomepageVariant) => {
@@ -54,7 +54,7 @@ export function useHomepageAB() {
   const context = useContext(HomepageABContext);
   if (!context) {
     // Return safe default if used outside provider
-    return { variant: 'C' as HomepageVariant, setVariant: () => {} };
+    return { variant: 'A' as HomepageVariant, setVariant: () => {} };
   }
   return context;
 }
