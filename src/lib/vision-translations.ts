@@ -383,9 +383,9 @@ const de: VisionTranslations = {
           "✅ Lead Bidding System (Echtzeit-Auktionen)",
           "✅ Email Automation Framework",
           "✅ Stripe Payment Integration",
-          "🔄 SEO Hub-and-Spoke Strategie",
-          "🔄 A/B Testing Framework",
-          "⏳ Google Ads Kampagnen"
+          "✅ SEO Hub-and-Spoke Strategie",
+          "✅ A/B Testing Framework",
+          "🔄 Google Ads Kampagnen"
         ]
       },
       {
@@ -404,6 +404,21 @@ const de: VisionTranslations = {
           "✅ Kreislaufwirtschaft (Circular Economy)",
           "✅ Data Journalism (Marktstatistiken)"
         ]
+      },
+      {
+        phase: "Phase 5: Launch",
+        title: "Conversion & Go-Live",
+        description: "Finales Tuning und Marktstart",
+        items: [
+          "🔄 Golden Flow Conversion-Optimierung",
+          "🔄 Performance & Lighthouse Audit",
+          "⏳ Final Security Review",
+          "⏳ Provider Onboarding (erste 10 Partner)",
+          "⏳ Google Ads Kampagnen",
+          "⏳ Soft Launch (Beta-Kunden)",
+          "⏳ Press Kit & PR Vorbereitung",
+          "⏳ Go-Live 🚀"
+        ]
       }
     ],
     workDone: {
@@ -411,14 +426,14 @@ const de: VisionTranslations = {
       subtitle: "Tag und Nacht gearbeitet – hier ist das Ergebnis",
       months: "3+ Monate intensive Arbeit",
       items: [
-        "320+ React Komponenten entwickelt",
-        "95+ Seiten und Routes erstellt",
-        "37+ Datenbank-Tabellen designt",
+        "330+ React Komponenten entwickelt",
+        "100+ Seiten und Routes erstellt",
+        "38+ Datenbank-Tabellen designt",
         "10 verschiedene Rechner implementiert",
         "26 Städte mit Neighborhood-Daten",
         "30+ Umzugsfirmen im System",
         "5-stufiger Lead-Funnel gebaut",
-        "15+ Extended Features implementiert",
+        "16+ Extended Features implementiert",
         "AI Cost Predictor mit CH-Daten",
         "WhatsApp-First Integration",
         "Capacity Radar (Live-Verfügbarkeit)",
@@ -438,6 +453,8 @@ const de: VisionTranslations = {
         "Micro-Insurance (4 Tarife)",
         "Post-Move Checklist (7 Kategorien)",
         "Neighborhood Comparison (11 Metriken)",
+        "SEO Hub-and-Spoke Architektur",
+        "A/B Testing Framework (6 Tests)",
         "Vision Page für Stakeholder",
         "Dark Mode + Mobile-First Design"
       ]
