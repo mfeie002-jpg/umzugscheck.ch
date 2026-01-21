@@ -380,10 +380,12 @@ const de: VisionTranslations = {
           "✅ Capacity Radar (Echtzeit-Verfügbarkeit)",
           "✅ Provider Live-Chat Widget",
           "✅ Buddy Matching (LKW-Sharing)",
+          "✅ Lead Bidding System (Echtzeit-Auktionen)",
+          "✅ Email Automation Framework",
+          "✅ Stripe Payment Integration",
           "🔄 SEO Hub-and-Spoke Strategie",
           "🔄 A/B Testing Framework",
-          "⏳ Google Ads Kampagnen",
-          "⏳ Email Automation Flows"
+          "⏳ Google Ads Kampagnen"
         ]
       },
       {
@@ -392,8 +394,9 @@ const de: VisionTranslations = {
         description: "Schwer kopierbare Features",
         items: [
           "✅ AR Inventory Scanner (Raum-für-Raum)",
+          "✅ Escrow/Treuhand System",
+          "✅ Quality Badge System",
           "🔄 AI Video Inventory (Computer Vision)",
-          "⏳ Escrow/Treuhand System",
           "⏳ Behörden-API Integration",
           "⏳ Partner Operating System",
           "⏳ Micro-Insurance Module"
@@ -419,6 +422,10 @@ const de: VisionTranslations = {
         "Buddy Matching für LKW-Sharing",
         "AR Inventory Scanner",
         "Provider Live-Chat System",
+        "Lead Bidding System (Auktionen)",
+        "Escrow/Treuhand System",
+        "Email Automation Framework",
+        "Stripe Payment Integration",
         "Post-Move Checklist (7 Kategorien)",
         "Neighborhood Comparison (11 Metriken)",
         "Vision Page für Stakeholder",
