@@ -160,7 +160,7 @@ export const VisionComplianceSection = memo(({ language }: VisionComplianceSecti
   const t = content[language];
   
   return (
-    <section className="py-12 bg-slate-50 dark:bg-slate-900/50">
+    <section className="py-8 md:py-12 bg-slate-50 dark:bg-slate-900/50">
       <div className="container mx-auto px-4">
         <div className="max-w-5xl mx-auto">
           
@@ -169,18 +169,18 @@ export const VisionComplianceSection = memo(({ language }: VisionComplianceSecti
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-10"
+            className="text-center mb-6 md:mb-10"
           >
-            <Badge className="mb-3 bg-primary/10 text-primary">
+            <Badge className="mb-2 md:mb-3 bg-primary/10 text-primary text-xs">
               <Shield className="w-3 h-3 mr-1" />
               {t.badge}
             </Badge>
-            <h2 className="text-2xl md:text-3xl font-bold mb-2">{t.title}</h2>
-            <p className="text-muted-foreground">{t.subtitle}</p>
+            <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-2">{t.title}</h2>
+            <p className="text-sm md:text-base text-muted-foreground">{t.subtitle}</p>
           </motion.div>
           
           {/* Compliance Areas Grid */}
-          <div className="grid md:grid-cols-2 gap-6 mb-8">
+          <div className="grid gap-4 md:gap-6 md:grid-cols-2 mb-6 md:mb-8">
             {t.areas.map((area, i) => (
               <motion.div
                 key={i}
@@ -189,26 +189,26 @@ export const VisionComplianceSection = memo(({ language }: VisionComplianceSecti
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
               >
-                <Card className="p-5 h-full">
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <area.icon className="w-5 h-5 text-primary" />
+                <Card className="p-4 md:p-5 h-full">
+                  <div className="flex items-start gap-3 md:gap-4">
+                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <area.icon className="w-4 h-4 md:w-5 md:h-5 text-primary" />
                     </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <h3 className="font-bold text-foreground">{area.title}</h3>
-                        <Badge className={area.statusColor} variant="secondary">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-1.5 md:gap-2 mb-2">
+                        <h3 className="font-bold text-sm md:text-base text-foreground">{area.title}</h3>
+                        <Badge className={`${area.statusColor} text-[10px] md:text-xs`} variant="secondary">
                           {area.status}
                         </Badge>
                       </div>
-                      <p className="text-sm text-muted-foreground mb-3">
+                      <p className="text-xs md:text-sm text-muted-foreground mb-2 md:mb-3">
                         {area.description}
                       </p>
-                      <ul className="space-y-1.5">
+                      <ul className="space-y-1 md:space-y-1.5">
                         {area.details.map((detail, j) => (
-                          <li key={j} className="flex items-center gap-2 text-xs text-muted-foreground">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
-                            {detail}
+                          <li key={j} className="flex items-center gap-1.5 md:gap-2 text-[10px] md:text-xs text-muted-foreground">
+                            <CheckCircle2 className="w-3 h-3 md:w-3.5 md:h-3.5 text-green-500 flex-shrink-0" />
+                            <span>{detail}</span>
                           </li>
                         ))}
                       </ul>
@@ -225,20 +225,20 @@ export const VisionComplianceSection = memo(({ language }: VisionComplianceSecti
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <Card className="p-6 bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800">
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-xl bg-green-500 flex items-center justify-center flex-shrink-0">
-                  <Scale className="w-5 h-5 text-white" />
+            <Card className="p-4 md:p-6 bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800">
+              <div className="flex items-start gap-3 md:gap-4">
+                <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-green-500 flex items-center justify-center flex-shrink-0">
+                  <Scale className="w-4 h-4 md:w-5 md:h-5 text-white" />
                 </div>
-                <div>
-                  <h4 className="font-bold text-green-800 dark:text-green-300 mb-3">
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-bold text-green-800 dark:text-green-300 mb-2 md:mb-3 text-sm md:text-base">
                     {t.reassurance.title}
                   </h4>
-                  <ul className="space-y-2">
+                  <ul className="space-y-1.5 md:space-y-2">
                     {t.reassurance.points.map((point, i) => (
-                      <li key={i} className="flex items-center gap-2 text-sm text-green-700 dark:text-green-400">
-                        <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-                        {point}
+                      <li key={i} className="flex items-start gap-1.5 md:gap-2 text-xs md:text-sm text-green-700 dark:text-green-400">
+                        <CheckCircle2 className="w-3.5 h-3.5 md:w-4 md:h-4 flex-shrink-0 mt-0.5" />
+                        <span>{point}</span>
                       </li>
                     ))}
                   </ul>
@@ -252,9 +252,9 @@ export const VisionComplianceSection = memo(({ language }: VisionComplianceSecti
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            className="mt-6 flex items-start gap-2 text-xs text-muted-foreground max-w-2xl mx-auto"
+            className="mt-4 md:mt-6 flex items-start gap-2 text-[10px] md:text-xs text-muted-foreground max-w-2xl mx-auto"
           >
-            <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+            <AlertTriangle className="w-3.5 h-3.5 md:w-4 md:h-4 flex-shrink-0 mt-0.5" />
             <p>{t.disclaimer}</p>
           </motion.div>
           

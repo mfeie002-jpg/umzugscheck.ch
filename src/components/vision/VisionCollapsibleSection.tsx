@@ -39,22 +39,22 @@ export const VisionCollapsibleSection = memo(({
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "w-full py-4 px-4 md:px-6 flex items-center justify-between",
-          "hover:bg-muted/50 transition-colors",
+          "w-full py-3 md:py-4 px-4 md:px-6 flex items-center justify-between",
+          "hover:bg-muted/50 transition-colors min-h-[56px] touch-manipulation active:bg-muted/70",
           headerClassName
         )}
       >
-        <div className="flex items-center gap-3">
-          {icon && <span className="text-primary">{icon}</span>}
-          <span className="font-bold text-lg text-left">{title}</span>
+        <div className="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
+          {icon && <span className="text-primary flex-shrink-0">{icon}</span>}
+          <span className="font-bold text-sm md:text-lg text-left truncate">{title}</span>
           {badge && (
-            <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary">
+            <span className="text-[10px] md:text-xs px-1.5 md:px-2 py-0.5 rounded-full bg-primary/10 text-primary flex-shrink-0 hidden sm:inline-block">
               {badge}
             </span>
           )}
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-muted-foreground hidden sm:inline">
+        <div className="flex items-center gap-1.5 md:gap-2 flex-shrink-0 ml-2">
+          <span className="text-[10px] md:text-xs text-muted-foreground hidden sm:inline">
             {isOpen ? collapseLabel : expandLabel}
           </span>
           {isOpen ? (
