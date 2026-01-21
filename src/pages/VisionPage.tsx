@@ -25,6 +25,9 @@ import { VisionTractionDashboard } from "@/components/vision/VisionTractionDashb
 import { VisionTrustLogos } from "@/components/vision/VisionTrustLogos";
 import { VisionComparisonMatrix } from "@/components/vision/VisionComparisonMatrix";
 import { VisionComplianceSection } from "@/components/vision/VisionComplianceSection";
+import { VisionProfitabilityRoadmap } from "@/components/vision/VisionProfitabilityRoadmap";
+import { VisionEmotionalHero } from "@/components/vision/VisionEmotionalHero";
+import { VisionMovingMoments } from "@/components/vision/VisionMovingMoments";
 import { getVisionTranslation, type VisionLanguage } from "@/lib/vision-translations";
 
 export default function VisionPage() {
@@ -157,6 +160,9 @@ export default function VisionPage() {
       {/* Sticky Navigation */}
       <VisionStickyNav language={language} />
 
+      {/* 0. EMOTIONAL HERO - Human Side of Moving */}
+      <VisionEmotionalHero language={language} variant="full" />
+
       {/* 1. EXECUTIVE SUMMARY HERO (ChatGPT Priority #1) */}
       <VisionHeroExecutive 
         language={language}
@@ -168,8 +174,16 @@ export default function VisionPage() {
       {/* 2. AUDIENCE SWITCHER (ChatGPT Priority #2) */}
       <VisionAudienceSwitcher language={language} />
 
+      {/* NEW: Emotional Moving Moments Gallery */}
+      <VisionMovingMoments language={language} />
+
       {/* NEW: Trust Logos Bar (External Validation) */}
       <VisionTrustLogos language={language} />
+
+      {/* NEW: Profitability Roadmap (12-Month Timeline) */}
+      <div id="vision-roadmap">
+        <VisionProfitabilityRoadmap language={language} />
+      </div>
 
       {/* 3. TRACTION DASHBOARD (ChatGPT Priority #4) */}
       <div id="vision-progress">
