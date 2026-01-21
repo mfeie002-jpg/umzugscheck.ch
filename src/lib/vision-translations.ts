@@ -417,7 +417,7 @@ const de: VisionTranslations = {
           "✅ Google Ads Kampagnen-Manager",
           "✅ Soft Launch / Beta Program",
           "✅ Press Kit & PR System",
-          "🔄 Go-Live 🚀"
+          "✅ Go-Live Checklist & Dashboard 🚀"
         ]
       }
     ],
@@ -426,14 +426,14 @@ const de: VisionTranslations = {
       subtitle: "Tag und Nacht gearbeitet – hier ist das Ergebnis",
       months: "3+ Monate intensive Arbeit",
       items: [
-        "355+ React Komponenten entwickelt",
-        "115+ Seiten und Routes erstellt",
+        "360+ React Komponenten entwickelt",
+        "120+ Seiten und Routes erstellt",
         "38+ Datenbank-Tabellen designt",
         "10 verschiedene Rechner implementiert",
         "26 Städte mit Neighborhood-Daten",
         "30+ Umzugsfirmen im System",
         "5-stufiger Lead-Funnel gebaut",
-        "19+ Extended Features implementiert",
+        "20+ Extended Features implementiert",
         "AI Cost Predictor mit CH-Daten",
         "WhatsApp-First Integration",
         "Capacity Radar (Live-Verfügbarkeit)",
