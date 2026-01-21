@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { useNavigate, Link } from "react-router-dom";
 import { useProviderAuth } from "@/contexts/ProviderAuthContext";
 import { Helmet } from "react-helmet";
-import { Loader2, TrendingUp, Calendar, Users, Settings, AlertCircle, CheckCircle2, Clock } from "lucide-react";
+import { Loader2, TrendingUp, Calendar, Users, Settings, AlertCircle, CheckCircle2, Clock, Gavel, Zap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -180,6 +180,34 @@ const ProviderDashboard = () => {
                     Alternativ können Sie einzelne Leads kaufen (CHF 15-45 pro Lead).
                   </p>
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Marketplace Quick Access */}
+          <Card className="mb-8 bg-gradient-to-r from-primary/10 to-secondary/10 border-primary/20">
+            <CardContent className="pt-6">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center">
+                    <Gavel className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg flex items-center gap-2">
+                      Lead Marktplatz
+                      <Badge className="bg-secondary">Neu</Badge>
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      Bieten Sie auf Leads, optimieren Sie Preise & steigern Sie Ihre Qualität
+                    </p>
+                  </div>
+                </div>
+                <Button asChild size="lg">
+                  <Link to="/anbieter/marktplatz">
+                    <Zap className="w-4 h-4 mr-2" />
+                    Zum Marktplatz
+                  </Link>
+                </Button>
               </div>
             </CardContent>
           </Card>
