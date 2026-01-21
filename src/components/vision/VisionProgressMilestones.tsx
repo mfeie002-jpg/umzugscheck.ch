@@ -157,7 +157,8 @@ const milestones = {
     // Stats
     stats: {
       totalDays: "120+ Tage",
-      totalHours: "1'500+ Stunden",
+      totalHours: "1'680+ Stunden",
+      hoursPerDay: "14-15h/Tag",
       components: "200+",
       pages: "50+",
       tables: "20+",
@@ -280,7 +281,8 @@ const milestones = {
     
     stats: {
       totalDays: "120+ дни",
-      totalHours: "1'500+ часа",
+      totalHours: "1'680+ часа",
+      hoursPerDay: "14-15ч/ден",
       components: "200+",
       pages: "50+",
       tables: "20+",

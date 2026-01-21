@@ -85,22 +85,22 @@ const content = {
         {
           title: "10 Revenue Streams statt 1",
           desc: "Niemand kombiniert: Lead-Gen + Provision + Escrow + Insurance + SaaS + Affiliate",
-          color: "bg-green-500"
+          color: "bg-primary"
         },
         {
           title: "95% KI-Automatisierung",
           desc: "Von Video-Analyse bis Behörden-Bot – minimale Personalkosten",
-          color: "bg-blue-500"
+          color: "bg-primary/80"
         },
         {
           title: "Fintech-Layer (Escrow)",
           desc: "Wir kontrollieren den Geldfluss – das macht uns zur Plattform, nicht zum Makler",
-          color: "bg-purple-500"
+          color: "bg-primary/60"
         },
         {
           title: "Schweiz als Proof-of-Concept",
           desc: "Klein genug zum Dominieren, reich genug für Premium-Preise, skalierbar auf DACH",
-          color: "bg-amber-500"
+          color: "bg-primary/40"
         }
       ]
     },
@@ -158,10 +158,10 @@ const content = {
     uniqueFactors: {
       title: "Какво наистина ни прави уникални",
       items: [
-        { title: "10 източника на приходи вместо 1", desc: "Никой не комбинира: Lead-Gen + Комисионна + Escrow + Застраховка + SaaS + Affiliate", color: "bg-green-500" },
-        { title: "95% AI автоматизация", desc: "От видео анализ до бот за власти – минимални разходи за персонал", color: "bg-blue-500" },
-        { title: "Fintech слой (Escrow)", desc: "Контролираме паричния поток – това ни прави платформа, не посредник", color: "bg-purple-500" },
-        { title: "Швейцария като Proof-of-Concept", desc: "Достатъчно малка за доминиране, достатъчно богата за премиум цени, мащабируема към DACH", color: "bg-amber-500" }
+        { title: "10 източника на приходи вместо 1", desc: "Никой не комбинира: Lead-Gen + Комисионна + Escrow + Застраховка + SaaS + Affiliate", color: "bg-primary" },
+        { title: "95% AI автоматизация", desc: "От видео анализ до бот за власти – минимални разходи за персонал", color: "bg-primary/80" },
+        { title: "Fintech слой (Escrow)", desc: "Контролираме паричния поток – това ни прави платформа, не посредник", color: "bg-primary/60" },
+        { title: "Швейцария като Proof-of-Concept", desc: "Достатъчно малка за доминиране, достатъчно богата за премиум цени, мащабируема към DACH", color: "bg-primary/40" }
       ]
     },
     
