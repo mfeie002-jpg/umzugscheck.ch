@@ -1,9 +1,9 @@
 /**
- * Vision Page Translations - DE/BG
+ * Vision Page Translations - DE/BG/IT
  * Complete translation support for the Vision page
  */
 
-export type VisionLanguage = 'de' | 'bg';
+export type VisionLanguage = 'de' | 'bg' | 'it';
 
 export interface RevenueStreamTranslation {
   name: string;
@@ -939,9 +939,13 @@ const bg: VisionTranslations = {
   }
 };
 
+// Import Italian translations
+import { it } from './vision-translations-it';
+
 export const visionTranslations: Record<VisionLanguage, VisionTranslations> = {
   de,
-  bg
+  bg,
+  it
 };
 
 export const getVisionTranslation = (lang: VisionLanguage): VisionTranslations => {

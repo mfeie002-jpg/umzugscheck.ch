@@ -21,7 +21,8 @@ interface VisionLanguageSwitcherProps {
 
 const languages = [
   { code: 'de' as VisionLanguage, label: 'Deutsch', flag: '🇨🇭' },
-  { code: 'bg' as VisionLanguage, label: 'Български', flag: '🇧🇬' }
+  { code: 'bg' as VisionLanguage, label: 'Български', flag: '🇧🇬' },
+  { code: 'it' as VisionLanguage, label: 'Italiano', flag: '🇮🇹' }
 ];
 
 export const VisionLanguageSwitcher = memo(({ currentLang, onLanguageChange }: VisionLanguageSwitcherProps) => {
