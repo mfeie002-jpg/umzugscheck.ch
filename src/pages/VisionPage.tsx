@@ -5,7 +5,7 @@ import { CustomerUSPVisualCards } from "@/components/homepage/CustomerUSPVisualC
 import { FamilySummary } from "@/components/homepage/FamilySummary";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Download, FileText, Loader2, Users, TrendingUp, Sparkles, DollarSign, Target, Rocket } from "lucide-react";
+import { ArrowLeft, Download, FileText, Loader2, Users, TrendingUp, Sparkles, DollarSign, Target, Rocket, Zap, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { exportVisionToPDF, exportVisionAsTextPDF } from "@/lib/vision-pdf-export";
 import { useToast } from "@/hooks/use-toast";
@@ -31,6 +31,9 @@ import { VisionMovingMoments } from "@/components/vision/VisionMovingMoments";
 import { VisionSalesFunnelDiagram } from "@/components/vision/VisionSalesFunnelDiagram";
 import { VisionHumanStorySection } from "@/components/vision/VisionHumanStorySection";
 import { VisionSystemDiagram } from "@/components/vision/VisionSystemDiagram";
+// NEW: Gemini Feedback Components
+import { VisionProofBar } from "@/components/vision/VisionProofBar";
+import { VisionLightBreak } from "@/components/vision/VisionLightBreak";
 import { getVisionTranslation, type VisionLanguage } from "@/lib/vision-translations";
 
 export default function VisionPage() {
@@ -166,7 +169,7 @@ export default function VisionPage() {
       {/* 0. EMOTIONAL HERO - Human Side of Moving */}
       <VisionEmotionalHero language={language} variant="full" />
 
-      {/* 1. EXECUTIVE SUMMARY HERO (ChatGPT Priority #1) */}
+      {/* 1. EXECUTIVE SUMMARY HERO (Swiss Trust Wording) */}
       <VisionHeroExecutive 
         language={language}
         onDemoClick={handleDemoClick}
@@ -174,8 +177,14 @@ export default function VisionPage() {
         onContactClick={handleContactClick}
       />
 
-      {/* 2. AUDIENCE SWITCHER (ChatGPT Priority #2) */}
+      {/* NEW: PROOF BAR with Count-Up Animation (Gemini Feedback) */}
+      <VisionProofBar language={language} />
+
+      {/* 2. AUDIENCE SWITCHER - "Für wen ist diese Seite?" */}
       <VisionAudienceSwitcher language={language} />
+
+      {/* LIGHT BREAK: Quote Testimonial */}
+      <VisionLightBreak variant="quote" language={language} />
 
       {/* NEW: Emotional Moving Moments Gallery */}
       <VisionMovingMoments language={language} />
@@ -188,13 +197,30 @@ export default function VisionPage() {
         <VisionProfitabilityRoadmap language={language} />
       </div>
 
-      {/* 3. TRACTION DASHBOARD (ChatGPT Priority #4) */}
+      {/* LIGHT BREAK: Dark Section - Innovation Statement */}
+      <VisionLightBreak 
+        variant="dark" 
+        language={language}
+        icon={<Zap className="w-10 h-10 text-primary" />}
+        headline={language === 'de' ? "Nicht noch ein Portal." : language === 'it' ? "Non un altro portale." : "Не още един портал."}
+        subheadline={language === 'de' 
+          ? "Das Betriebssystem für eine Branche, die noch im Faxzeitalter steckt."
+          : language === 'it'
+            ? "Il sistema operativo per un settore ancora nell'era del fax."
+            : "Операционната система за индустрия, която все още е във факс ерата."
+        }
+      />
+
+      {/* 3. TRACTION DASHBOARD */}
       <div id="vision-progress">
         <VisionTractionDashboard language={language} />
       </div>
 
       {/* NEW: Comparison Matrix (Unfair Advantage) */}
       <VisionComparisonMatrix language={language} />
+
+      {/* LIGHT BREAK: Quote before Sales Funnel */}
+      <VisionLightBreak variant="quote" language={language} />
 
       {/* NEW: Sales Funnel Diagram - Complete Revenue Map */}
       <div id="vision-sales-funnel">
@@ -203,6 +229,19 @@ export default function VisionPage() {
 
       {/* NEW: Human Stories - Emotional Connection */}
       <VisionHumanStorySection language={language} />
+
+      {/* LIGHT BREAK: Gradient with Family Image */}
+      <VisionLightBreak 
+        variant="gradient" 
+        language={language}
+        headline={language === 'de' ? "Wir helfen Menschen, neu anzufangen." : language === 'it' ? "Aiutiamo le persone a ricominciare." : "Помагаме на хората да започнат отново."}
+        subheadline={language === 'de' 
+          ? "Momente die zählen. Nicht Formulare."
+          : language === 'it'
+            ? "Momenti che contano. Non moduli."
+            : "Моменти, които имат значение. Не формуляри."
+        }
+      />
 
       {/* NEW: System Diagram - How Everything Connects */}
       <div id="vision-system">

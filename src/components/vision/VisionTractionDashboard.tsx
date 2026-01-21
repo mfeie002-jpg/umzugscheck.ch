@@ -135,6 +135,63 @@ const content = {
         "Планирани Escrow плащания"
       ]
     }
+  },
+  it: {
+    badge: "Traction & Stato",
+    title: "Dove siamo",
+    subtitle: "Metriche attuali e traguardi",
+    
+    liveStatus: {
+      label: "Stato piattaforma",
+      value: "LIVE",
+      sublabel: "www.umzugscheck.ch",
+      link: "https://umzugscheck.ch"
+    },
+    
+    metrics: [
+      { 
+        label: "Pagine", 
+        value: "130+", 
+        description: "Landing Pages ottimizzate SEO",
+        trend: null
+      },
+      { 
+        label: "Città", 
+        value: "26", 
+        description: "Con dati sui quartieri",
+        trend: null
+      },
+      { 
+        label: "Calcolatori", 
+        value: "10", 
+        description: "Trasloco, pulizia, smaltimento...",
+        trend: null
+      },
+      { 
+        label: "Tempo sviluppo", 
+        value: "2'100+", 
+        description: "Ore in 83 giorni",
+        trend: null
+      }
+    ],
+    
+    milestones: [
+      { text: "Production Deployment live", done: true },
+      { text: "Dominio & SSL configurato", done: true },
+      { text: "10 varianti Funnel A/B-ready", done: true },
+      { text: "Multi-Language (DE/FR/IT)", done: true },
+      { text: "Onboarding fornitori", done: false },
+      { text: "Primi clienti paganti", done: false }
+    ],
+    
+    socialProof: {
+      title: "Costruire fiducia",
+      items: [
+        "Hosting svizzero & protezione dati",
+        "Conforme GDPR/DSG",
+        "Pagamenti Escrow pianificati"
+      ]
+    }
   }
 };
 

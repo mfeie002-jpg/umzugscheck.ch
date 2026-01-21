@@ -21,11 +21,15 @@ interface VisionHeroExecutiveProps {
   onContactClick?: () => void;
 }
 
+// Import the generated images
+import visionSwissCity from "@/assets/vision-swiss-city.jpg";
+
 const content = {
   de: {
     badge: "🇨🇭 Made in Switzerland",
-    headline: "Umziehen in der Schweiz – endlich einfach.",
-    subheadline: "Wir haben einen fragmentierten, stressigen Prozess in eine transparente Plattform verwandelt. Faire Preise, geprüfte Firmen, ein Klick – fertig.",
+    // SWISS TRUST WORDING - Gemini Feedback: No "MOVU-Killer", no "dominieren"
+    headline: "Das Betriebssystem für den Schweizer Umzug.",
+    subheadline: "Umziehen, wie es in der Schweiz sein sollte: klar, sicher, digital. Faire Preise, geprüfte Partner, maximale Transparenz.",
     
     // 3 CTAs
     ctas: {
@@ -45,28 +49,24 @@ const content = {
       { value: "10×", label: "Revenue Streams", icon: TrendingUp, color: "text-primary" }
     ],
     
-    // What we built - FULL STACK uniqueness based on ChatGPT competitive analysis
+    // What we built - SWISS TRUST focus (no "killer", no "dominieren")
     whyUnique: {
-      title: "Warum weltweit führend?",
-      subtitle: "Nicht einzelne Features – sondern die KOMPLETTE Full-Stack-Kombi macht uns einzigartig:",
+      title: "Warum der neue Schweizer Standard?",
+      subtitle: "Nicht einzelne Features – die KOMPLETTE Full-Stack-Kombi macht uns zur intelligenten Evolution des Marktes:",
       points: [
         { title: "«Invisible Move»", desc: "Kein Rechner, keine Formulare – KI übernimmt alles. Paradigmenwechsel statt Feature." },
-        { title: "Digitaler Zwilling (Video-Inventar)", desc: "AI Video-Scan als Single Source of Truth → Offerten in ~60 Sekunden." },
-        { title: "Fintech-Layer (Escrow/Treuhand)", desc: "Wir kontrollieren den Geldfluss. Trust, Float, Fees – nicht nur Lead-Broker." },
+        { title: "Video-Scan statt Hausbesuch", desc: "AI Video-Analyse als Single Source of Truth → Offerten in ~60 Sekunden." },
+        { title: "Fintech-Layer (Treuhand)", desc: "Wir kontrollieren den Geldfluss. Trust, Float, Fees – Plattform statt Makler." },
         { title: "10 Revenue Streams gestapelt", desc: "Logistik + Telco + Cleaning + Insurance + SaaS + B2B HR – pro Kunde statt 1×." },
-        { title: "Bürokratie-Autopilot", desc: "eGov-Schnittstellen, Adresswechsel, Provider – automatisiert, nicht nur Checkliste." },
-        { title: "Micro-Insurance + Video-Beweis", desc: "Claims-Handling integriert. Versicherung, die wirklich zahlt." },
-        { title: "Partner OS (SaaS für Mover)", desc: "Vendor Lock-in. Supply-Seite gebunden → bessere Preise/Qualität/Verfügbarkeit." },
-        { title: "Relocation Data Intelligence", desc: "Life-Transition Graph. System of Record fürs Umziehen → Cross-Sell + Forecasting." },
-        { title: "Circular Economy Hub", desc: "Entsorgung/Resale im Flow. Zusätzliche GMV, ESG-Boost, weniger Pain." },
-        { title: "95% KI-Automatisierung", desc: "Kostenstruktur-Vorteil vs. Callcenter-Modelle. Die Marge macht den Bass." }
+        { title: "Relocation-Autopilot", desc: "eGov-Schnittstellen, Adresswechsel, Provider – automatisiert, nicht nur Checkliste." },
+        { title: "Micro-Insurance + Video-Beweis", desc: "Claims-Handling integriert. Versicherung, die wirklich zahlt." }
       ]
     }
   },
   bg: {
     badge: "🇨🇭 Made in Switzerland",
-    headline: "Преместване в Швейцария – най-накрая лесно.",
-    subheadline: "Превърнахме фрагментиран, стресиращ процес в прозрачна платформа. Честни цени, проверени фирми, един клик – готово.",
+    headline: "Операционната система за швейцарско преместване.",
+    subheadline: "Преместване, както трябва да бъде в Швейцария: ясно, сигурно, дигитално. Честни цени, проверени партньори, максимална прозрачност.",
     
     ctas: {
       demo: "Гледай демо",
@@ -85,26 +85,22 @@ const content = {
     ],
     
     whyUnique: {
-      title: "Защо сме световни лидери?",
-      subtitle: "Не отделни функции – а ПЪЛНИЯТ Full-Stack ни прави уникални:",
+      title: "Защо новият швейцарски стандарт?",
+      subtitle: "Не отделни функции – ПЪЛНИЯТ Full-Stack ни прави интелигентната еволюция на пазара:",
       points: [
         { title: "«Invisible Move»", desc: "Без калкулатори, без формуляри – AI поема всичко. Смяна на парадигмата." },
-        { title: "Дигитален близнак (видео инвентар)", desc: "AI видео сканиране като единствен източник → оферти за ~60 секунди." },
-        { title: "Fintech слой (Escrow)", desc: "Контролираме паричния поток. Trust, Float, Fees – не просто lead брокер." },
-        { title: "10 приходни потока натрупани", desc: "Логистика + Телеком + Почистване + Застраховка + SaaS + B2B HR – на клиент." },
-        { title: "Бюрократичен автопилот", desc: "eGov интерфейси, смяна на адрес – автоматизирано, не само чеклист." },
-        { title: "Микро-застраховка + видео доказателство", desc: "Claims интегрирани. Застраховка, която наистина плаща." },
-        { title: "Partner OS (SaaS за преместващи)", desc: "Vendor Lock-in. Supply страна обвързана → по-добри цени/качество." },
-        { title: "Relocation Data Intelligence", desc: "Life-Transition Graph. System of Record → Cross-Sell + Прогнози." },
-        { title: "Circular Economy Hub", desc: "Изхвърляне/препродажба във flow. Допълнителен GMV, ESG boost." },
-        { title: "95% AI автоматизация", desc: "Разходна структура предимство vs. кол център модели." }
+        { title: "Видео скан вместо посещение", desc: "AI видео анализ като единствен източник → оферти за ~60 секунди." },
+        { title: "Fintech слой (Escrow)", desc: "Контролираме паричния поток. Trust, Float, Fees – платформа, не посредник." },
+        { title: "10 приходни потока", desc: "Логистика + Телеком + Почистване + Застраховка + SaaS + B2B HR – на клиент." },
+        { title: "Relocation автопилот", desc: "eGov интерфейси, смяна на адрес – автоматизирано, не само чеклист." },
+        { title: "Микро-застраховка + видео доказателство", desc: "Claims интегрирани. Застраховка, която наистина плаща." }
       ]
     }
   },
   it: {
     badge: "🇨🇭 Made in Switzerland",
-    headline: "Traslocare in Svizzera – finalmente semplice.",
-    subheadline: "Abbiamo trasformato un processo frammentato e stressante in una piattaforma trasparente. Prezzi equi, aziende verificate, un click – fatto.",
+    headline: "Il sistema operativo per il trasloco svizzero.",
+    subheadline: "Traslocare come dovrebbe essere in Svizzera: chiaro, sicuro, digitale. Prezzi equi, partner verificati, massima trasparenza.",
     
     ctas: {
       demo: "Guarda demo",
@@ -123,19 +119,15 @@ const content = {
     ],
     
     whyUnique: {
-      title: "Perché leader mondiali?",
-      subtitle: "Non singole funzionalità – ma la COMPLETA combinazione Full-Stack ci rende unici:",
+      title: "Perché il nuovo standard svizzero?",
+      subtitle: "Non singole funzionalità – la COMPLETA combinazione Full-Stack ci rende l'evoluzione intelligente del mercato:",
       points: [
         { title: "«Invisible Move»", desc: "Niente calcolatori, niente moduli – l'AI fa tutto. Cambio di paradigma." },
-        { title: "Gemello digitale (video inventario)", desc: "AI video scan come unica fonte di verità → preventivi in ~60 secondi." },
-        { title: "Layer Fintech (Escrow)", desc: "Controlliamo il flusso di denaro. Trust, Float, Fees – non solo lead broker." },
-        { title: "10 flussi di entrate impilati", desc: "Logistica + Telco + Pulizia + Assicurazione + SaaS + B2B HR – per cliente." },
-        { title: "Autopilota burocrazia", desc: "Interfacce eGov, cambio indirizzo – automatizzato, non solo checklist." },
-        { title: "Micro-assicurazione + prova video", desc: "Claims integrati. Assicurazione che paga davvero." },
-        { title: "Partner OS (SaaS per traslochi)", desc: "Vendor Lock-in. Lato supply legato → migliori prezzi/qualità." },
-        { title: "Relocation Data Intelligence", desc: "Life-Transition Graph. System of Record → Cross-Sell + Previsioni." },
-        { title: "Circular Economy Hub", desc: "Smaltimento/rivendita nel flusso. GMV aggiuntivo, boost ESG." },
-        { title: "95% automazione AI", desc: "Vantaggio di struttura dei costi vs. modelli call center." }
+        { title: "Video scan invece di visita", desc: "AI video analisi come unica fonte di verità → preventivi in ~60 secondi." },
+        { title: "Layer Fintech (Escrow)", desc: "Controlliamo il flusso di denaro. Trust, Float, Fees – piattaforma, non broker." },
+        { title: "10 flussi di entrate", desc: "Logistica + Telco + Pulizia + Assicurazione + SaaS + B2B HR – per cliente." },
+        { title: "Autopilota Relocation", desc: "Interfacce eGov, cambio indirizzo – automatizzato, non solo checklist." },
+        { title: "Micro-assicurazione + prova video", desc: "Claims integrati. Assicurazione che paga davvero." }
       ]
     }
   }
@@ -154,8 +146,8 @@ export const VisionHeroExecutive = memo(({
       {/* Hero Background Image */}
       <div className="absolute inset-0 z-0">
         <img 
-          src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80"
-          alt="Modern cityscape representing innovation"
+          src={visionSwissCity}
+          alt="Moderne Schweizer Stadt mit Alpen"
           className="w-full h-full object-cover"
         />
         {/* Dark overlay for text readability */}
