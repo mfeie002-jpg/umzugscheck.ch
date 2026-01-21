@@ -401,7 +401,8 @@ const de: VisionTranslations = {
           "✅ Micro-Insurance Module",
           "✅ AI Video Inventory (Computer Vision)",
           "✅ Verpackungsservice-Modul (Upsell)",
-          "✅ Kreislaufwirtschaft (Circular Economy)"
+          "✅ Kreislaufwirtschaft (Circular Economy)",
+          "✅ Data Journalism (Marktstatistiken)"
         ]
       }
     ],
@@ -410,14 +411,14 @@ const de: VisionTranslations = {
       subtitle: "Tag und Nacht gearbeitet – hier ist das Ergebnis",
       months: "3+ Monate intensive Arbeit",
       items: [
-        "310+ React Komponenten entwickelt",
-        "90+ Seiten und Routes erstellt",
-        "36+ Datenbank-Tabellen designt",
+        "320+ React Komponenten entwickelt",
+        "95+ Seiten und Routes erstellt",
+        "37+ Datenbank-Tabellen designt",
         "10 verschiedene Rechner implementiert",
         "26 Städte mit Neighborhood-Daten",
         "30+ Umzugsfirmen im System",
         "5-stufiger Lead-Funnel gebaut",
-        "14+ Extended Features implementiert",
+        "15+ Extended Features implementiert",
         "AI Cost Predictor mit CH-Daten",
         "WhatsApp-First Integration",
         "Capacity Radar (Live-Verfügbarkeit)",
@@ -426,6 +427,7 @@ const de: VisionTranslations = {
         "AI Video Inventory (Computer Vision)",
         "Verpackungsservice-Modul (Upsell)",
         "Kreislaufwirtschaft (Circular Economy)",
+        "Data Journalism (Marktstatistiken)",
         "Provider Live-Chat System",
         "Lead Bidding System (Auktionen)",
         "Escrow/Treuhand System",
