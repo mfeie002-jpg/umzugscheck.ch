@@ -352,8 +352,12 @@ const PartnerWerden = lazy(() => import("./pages/PartnerWerden"));
 const InvisibleMove = lazy(() => import("./pages/InvisibleMove"));
 const InvisibleMoveV2 = lazy(() => import("./pages/InvisibleMoveV2"));
 const Blueprint = lazy(() => import("./pages/Blueprint"));
-
 const BlueprintV2 = lazy(() => import("./pages/BlueprintV2"));
+
+// Managed Service & Feedback pages
+const OfferCheck = lazy(() => import("./pages/OfferCheck"));
+const Managed = lazy(() => import("./pages/Managed"));
+const MoverFeedback = lazy(() => import("./pages/MoverFeedback"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -807,6 +811,11 @@ const AppRouterContent = () => {
           {/* Referral & Partner Program */}
           <Route path="/empfehlen" element={<Empfehlen />} />
           <Route path="/partner-werden" element={<PartnerWerden />} />
+          
+          {/* Managed Service & Feedback Routes */}
+          <Route path="/offer-check" element={<OfferCheck />} />
+          <Route path="/managed" element={<Managed />} />
+          <Route path="/mover-feedback" element={<MoverFeedback />} />
           
           <Route path="/ratgeber/umzugskosten-berechnen" element={<UmzugskostenBerechnenPage />} />
           <Route path="/dienstleistungen" element={<ServicesOverview />} />

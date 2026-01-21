@@ -373,6 +373,47 @@ export type Database = {
           },
         ]
       }
+      case_timeline_events: {
+        Row: {
+          case_id: string
+          created_at: string
+          created_by: string | null
+          event_data: Json | null
+          event_description: string | null
+          event_title: string
+          event_type: string
+          id: string
+        }
+        Insert: {
+          case_id: string
+          created_at?: string
+          created_by?: string | null
+          event_data?: Json | null
+          event_description?: string | null
+          event_title: string
+          event_type: string
+          id?: string
+        }
+        Update: {
+          case_id?: string
+          created_at?: string
+          created_by?: string | null
+          event_data?: Json | null
+          event_description?: string | null
+          event_title?: string
+          event_type?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "case_timeline_events_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "managed_cases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       companies: {
         Row: {
           certifications: string[] | null
@@ -2389,6 +2430,94 @@ export type Database = {
           },
         ]
       }
+      managed_cases: {
+        Row: {
+          assigned_provider_id: string | null
+          case_number: string
+          created_at: string
+          customer_email: string | null
+          customer_name: string
+          customer_phone: string | null
+          final_price_chf: number | null
+          from_address: string | null
+          id: string
+          internal_notes: string | null
+          lead_id: string | null
+          move_date: string | null
+          priority: string | null
+          quoted_price_chf: number | null
+          service_type: string | null
+          status: string | null
+          timeline: Json | null
+          to_address: string | null
+          updated_at: string
+        }
+        Insert: {
+          assigned_provider_id?: string | null
+          case_number: string
+          created_at?: string
+          customer_email?: string | null
+          customer_name: string
+          customer_phone?: string | null
+          final_price_chf?: number | null
+          from_address?: string | null
+          id?: string
+          internal_notes?: string | null
+          lead_id?: string | null
+          move_date?: string | null
+          priority?: string | null
+          quoted_price_chf?: number | null
+          service_type?: string | null
+          status?: string | null
+          timeline?: Json | null
+          to_address?: string | null
+          updated_at?: string
+        }
+        Update: {
+          assigned_provider_id?: string | null
+          case_number?: string
+          created_at?: string
+          customer_email?: string | null
+          customer_name?: string
+          customer_phone?: string | null
+          final_price_chf?: number | null
+          from_address?: string | null
+          id?: string
+          internal_notes?: string | null
+          lead_id?: string | null
+          move_date?: string | null
+          priority?: string | null
+          quoted_price_chf?: number | null
+          service_type?: string | null
+          status?: string | null
+          timeline?: Json | null
+          to_address?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "managed_cases_assigned_provider_id_fkey"
+            columns: ["assigned_provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "managed_cases_assigned_provider_id_fkey"
+            columns: ["assigned_provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "managed_cases_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ml_ranking_models: {
         Row: {
           accuracy_score: number | null
@@ -2424,6 +2553,97 @@ export type Database = {
           training_data?: Json
         }
         Relationships: []
+      }
+      movescan_hard_truth: {
+        Row: {
+          actual_crew_size: number | null
+          actual_duration_hours: number | null
+          actual_truck_type: string | null
+          actual_volume_m3: number | null
+          actual_weight_kg: number | null
+          created_at: string
+          customer_satisfaction: number | null
+          distance_km: number | null
+          estimated_volume_m3: number | null
+          feedback_source: string | null
+          id: string
+          invoice_total_chf: number | null
+          issues_reported: string[] | null
+          lead_id: string | null
+          mover_notes: string | null
+          movescan_id: string | null
+          price_deviation_percent: number | null
+          provider_id: string | null
+          verified: boolean | null
+          volume_deviation_percent: number | null
+        }
+        Insert: {
+          actual_crew_size?: number | null
+          actual_duration_hours?: number | null
+          actual_truck_type?: string | null
+          actual_volume_m3?: number | null
+          actual_weight_kg?: number | null
+          created_at?: string
+          customer_satisfaction?: number | null
+          distance_km?: number | null
+          estimated_volume_m3?: number | null
+          feedback_source?: string | null
+          id?: string
+          invoice_total_chf?: number | null
+          issues_reported?: string[] | null
+          lead_id?: string | null
+          mover_notes?: string | null
+          movescan_id?: string | null
+          price_deviation_percent?: number | null
+          provider_id?: string | null
+          verified?: boolean | null
+          volume_deviation_percent?: number | null
+        }
+        Update: {
+          actual_crew_size?: number | null
+          actual_duration_hours?: number | null
+          actual_truck_type?: string | null
+          actual_volume_m3?: number | null
+          actual_weight_kg?: number | null
+          created_at?: string
+          customer_satisfaction?: number | null
+          distance_km?: number | null
+          estimated_volume_m3?: number | null
+          feedback_source?: string | null
+          id?: string
+          invoice_total_chf?: number | null
+          issues_reported?: string[] | null
+          lead_id?: string | null
+          mover_notes?: string | null
+          movescan_id?: string | null
+          price_deviation_percent?: number | null
+          provider_id?: string | null
+          verified?: boolean | null
+          volume_deviation_percent?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "movescan_hard_truth_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "movescan_hard_truth_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "movescan_hard_truth_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers_public"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       neighborhood_profiles: {
         Row: {
@@ -2536,6 +2756,45 @@ export type Database = {
           source?: string | null
           subscribed_at?: string
           unsubscribed_at?: string | null
+        }
+        Relationships: []
+      }
+      offer_check_requests: {
+        Row: {
+          analysis_result: Json | null
+          created_at: string
+          detected_issues: Json | null
+          id: string
+          offer_amount: number | null
+          offer_provider: string | null
+          offer_text: string
+          session_id: string | null
+          status: string | null
+          updated_at: string
+        }
+        Insert: {
+          analysis_result?: Json | null
+          created_at?: string
+          detected_issues?: Json | null
+          id?: string
+          offer_amount?: number | null
+          offer_provider?: string | null
+          offer_text: string
+          session_id?: string | null
+          status?: string | null
+          updated_at?: string
+        }
+        Update: {
+          analysis_result?: Json | null
+          created_at?: string
+          detected_issues?: Json | null
+          id?: string
+          offer_amount?: number | null
+          offer_provider?: string | null
+          offer_text?: string
+          session_id?: string | null
+          status?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
