@@ -11,6 +11,36 @@ import { supabase } from '@/integrations/supabase/client';
 import { Helmet } from 'react-helmet';
 import { CITIES_MAP, getCity } from '@/data/locations';
 import { getRegionImage } from '@/data/region-images';
+import { NeighborhoodQuickFacts } from '@/components/NeighborhoodQuickFacts';
+
+// City to Canton Code mapping for neighborhood data
+const CITY_TO_CANTON_CODE: Record<string, string> = {
+  zug: 'ZG',
+  baar: 'ZG',
+  cham: 'ZG',
+  'risch-rotkreuz': 'ZG',
+  steinhausen: 'ZG',
+  huenenberg: 'ZG',
+  oberaegeri: 'ZG',
+  unteraegeri: 'ZG',
+  menzingen: 'ZG',
+  walchwil: 'ZG',
+  neuheim: 'ZG',
+  zuerich: 'ZH',
+  winterthur: 'ZH',
+  bern: 'BE',
+  basel: 'BS',
+  genf: 'GE',
+  lausanne: 'VD',
+  luzern: 'LU',
+  stgallen: 'SG',
+  lugano: 'TI',
+  thun: 'BE',
+  biel: 'BE',
+  fribourg: 'FR',
+  schaffhausen: 'SH',
+  chur: 'GR',
+};
 
 // SEO helpers
 import { generateFAQSchema, generateHowToSchema } from '@/lib/seo-enhanced';
@@ -911,6 +941,29 @@ export default function CityMovers() {
           </motion.div>
         </div>
       </section>
+
+      {/* Neighborhood Quick Facts - if data exists */}
+      {CITY_TO_CANTON_CODE[citySlug] && (
+        <section className="py-16">
+          <div className="container mx-auto px-4">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="max-w-4xl mx-auto"
+            >
+              <h2 className="text-3xl md:text-4xl font-display font-bold text-center mb-8">
+                Leben in {cityData.displayName}
+              </h2>
+              <NeighborhoodQuickFacts 
+                cityName={cityData.displayName}
+                cantonCode={CITY_TO_CANTON_CODE[citySlug]}
+              />
+            </motion.div>
+          </div>
+        </section>
+      )}
 
       {/* NEW: Why Save Block */}
       <RegionWhySave regionName={cityData.displayName} />
