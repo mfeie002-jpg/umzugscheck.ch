@@ -29,6 +29,8 @@ import { VisionProfitabilityRoadmap } from "@/components/vision/VisionProfitabil
 import { VisionEmotionalHero } from "@/components/vision/VisionEmotionalHero";
 import { VisionMovingMoments } from "@/components/vision/VisionMovingMoments";
 import { VisionSalesFunnelDiagram } from "@/components/vision/VisionSalesFunnelDiagram";
+import { VisionHumanStorySection } from "@/components/vision/VisionHumanStorySection";
+import { VisionSystemDiagram } from "@/components/vision/VisionSystemDiagram";
 import { getVisionTranslation, type VisionLanguage } from "@/lib/vision-translations";
 
 export default function VisionPage() {
@@ -197,6 +199,14 @@ export default function VisionPage() {
       {/* NEW: Sales Funnel Diagram - Complete Revenue Map */}
       <div id="vision-sales-funnel">
         <VisionSalesFunnelDiagram language={language} />
+      </div>
+
+      {/* NEW: Human Stories - Emotional Connection */}
+      <VisionHumanStorySection language={language} />
+
+      {/* NEW: System Diagram - How Everything Connects */}
+      <div id="vision-system">
+        <VisionSystemDiagram language={language} />
       </div>
 
       {/* COLLAPSIBLE SECTIONS */}
