@@ -426,14 +426,14 @@ const de: VisionTranslations = {
       subtitle: "Tag und Nacht gearbeitet – hier ist das Ergebnis",
       months: "3+ Monate intensive Arbeit",
       items: [
-        "330+ React Komponenten entwickelt",
+        "335+ React Komponenten entwickelt",
         "100+ Seiten und Routes erstellt",
         "38+ Datenbank-Tabellen designt",
         "10 verschiedene Rechner implementiert",
         "26 Städte mit Neighborhood-Daten",
         "30+ Umzugsfirmen im System",
         "5-stufiger Lead-Funnel gebaut",
-        "16+ Extended Features implementiert",
+        "17+ Extended Features implementiert",
         "AI Cost Predictor mit CH-Daten",
         "WhatsApp-First Integration",
         "Capacity Radar (Live-Verfügbarkeit)",
@@ -455,6 +455,8 @@ const de: VisionTranslations = {
         "Neighborhood Comparison (11 Metriken)",
         "SEO Hub-and-Spoke Architektur",
         "A/B Testing Framework (6 Tests)",
+        "Performance Monitor (Core Web Vitals)",
+        "Launch Readiness Dashboard",
         "Vision Page für Stakeholder",
         "Dark Mode + Mobile-First Design"
       ]
