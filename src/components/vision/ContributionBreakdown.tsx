@@ -184,14 +184,26 @@ const content = {
   }
 };
 
+// Milestones with positions (0-100% on the bar)
+const milestones = [
+  { number: 1, position: 12.5, labelDe: "Foundation", labelBg: "Фундамент", complete: true },
+  { number: 2, position: 25, labelDe: "Core", labelBg: "Ядро", complete: true },
+  { number: 3, position: 37.5, labelDe: "Calculator", labelBg: "Калкулатор", complete: true },
+  { number: 4, position: 50, labelDe: "Ranking", labelBg: "Рейтинг", complete: true },
+  { number: 5, position: 62.5, labelDe: "Launch", labelBg: "Лансиране", complete: true },
+  { number: 6, position: 75, labelDe: "Growth", labelBg: "Растеж", complete: true },
+  { number: 7, position: 87.5, labelDe: "Go-Live", labelBg: "На живо", complete: true },
+  { number: 8, position: 100, labelDe: "Expansion", labelBg: "Експанзия", complete: false },
+];
+
 export const ContributionBreakdown = memo(({ language }: ContributionBreakdownProps) => {
   const t = content[language];
   
-  // Calculate overall progress (85% complete, 15% remaining)
-  const overallProgress = 85;
+  // Calculate overall progress (7 of 8 milestones = 87.5%)
+  const overallProgress = 88;
   const aiDonePercent = 85; // Of the work done, 85% was AI
   const humanDonePercent = 15; // Of the work done, 15% was human
-  const remainingTotal = 15;
+  const remainingTotal = 12;
   const remainingAI = 60; // Of remaining, 60% is AI work
   const remainingHuman = 40; // Of remaining, 40% is human work
   
@@ -212,7 +224,7 @@ export const ContributionBreakdown = memo(({ language }: ContributionBreakdownPr
           <p className="text-sm text-muted-foreground">{t.subtitle}</p>
         </div>
         
-        {/* Overall Progress with Arrow Indicator */}
+        {/* Overall Progress with Milestone Markers */}
         <div className="mb-8 p-4 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent rounded-xl">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
@@ -222,32 +234,82 @@ export const ContributionBreakdown = memo(({ language }: ContributionBreakdownPr
             <span className="text-3xl font-black text-primary">{overallProgress}%</span>
           </div>
           
-          {/* Progress Bar with Arrow Indicator */}
-          <div className="relative mb-6">
-            <div className="h-4 rounded-full overflow-hidden flex">
+          {/* Milestone Labels Row */}
+          <div className="relative h-10 mb-2">
+            {milestones.map((m, i) => (
+              <div 
+                key={i}
+                className="absolute flex flex-col items-center"
+                style={{ left: `${m.position}%`, transform: 'translateX(-50%)' }}
+              >
+                <span className={cn(
+                  "text-[9px] font-medium whitespace-nowrap leading-tight",
+                  m.complete ? "text-primary" : "text-muted-foreground"
+                )}>
+                  {language === 'de' ? m.labelDe : m.labelBg}
+                </span>
+              </div>
+            ))}
+          </div>
+          
+          {/* Progress Bar with Milestone Markers */}
+          <div className="relative mb-2">
+            <div className="h-5 rounded-full overflow-hidden flex border-2 border-primary/20">
               <div 
                 className="bg-primary transition-all duration-500"
                 style={{ width: `${overallProgress}%` }}
               />
               <div 
-                className="bg-secondary transition-all duration-500"
+                className="bg-secondary/30 transition-all duration-500"
                 style={{ width: `${100 - overallProgress}%` }}
               />
             </div>
             
-            {/* Arrow Indicator - "Hier sind wir" */}
+            {/* Milestone Markers on the bar */}
+            {milestones.map((m, i) => (
+              <div 
+                key={i}
+                className="absolute top-1/2 -translate-y-1/2 flex flex-col items-center"
+                style={{ left: `${m.position}%`, transform: 'translateX(-50%) translateY(-50%)' }}
+              >
+                <div className={cn(
+                  "w-3 h-3 rounded-full border-2 border-white shadow-sm",
+                  m.complete ? "bg-primary" : "bg-muted-foreground/40"
+                )} />
+              </div>
+            ))}
+            
+            {/* "Hier sind wir" Arrow */}
             <div 
-              className="absolute -top-8 flex flex-col items-center transition-all duration-500"
+              className="absolute -bottom-7 flex flex-col items-center transition-all duration-500"
               style={{ left: `${overallProgress}%`, transform: 'translateX(-50%)' }}
             >
-              <span className="text-xs font-bold text-primary whitespace-nowrap bg-background px-2 py-0.5 rounded border border-primary/30">
+              <ChevronDown className="w-4 h-4 text-secondary animate-bounce rotate-180" />
+              <span className="text-[10px] font-bold text-secondary whitespace-nowrap bg-background px-1.5 py-0.5 rounded border border-secondary/30">
                 {t.hereWeAre}
               </span>
-              <ChevronDown className="w-4 h-4 text-primary animate-bounce" />
             </div>
           </div>
           
-          <p className="text-xs text-muted-foreground italic">
+          {/* Milestone Numbers Row */}
+          <div className="relative h-5 mb-6">
+            {milestones.map((m, i) => (
+              <div 
+                key={i}
+                className="absolute flex items-center justify-center"
+                style={{ left: `${m.position}%`, transform: 'translateX(-50%)' }}
+              >
+                <span className={cn(
+                  "text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center",
+                  m.complete ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+                )}>
+                  {m.number}
+                </span>
+              </div>
+            ))}
+          </div>
+          
+          <p className="text-xs text-muted-foreground italic mt-4">
             💡 {t.whatIs100}
           </p>
         </div>
