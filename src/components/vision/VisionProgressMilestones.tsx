@@ -118,57 +118,62 @@ const milestones = {
           "Performance Optimierung",
           "SEO Final Audit"
         ]
+      },
+      {
+        id: "m6",
+        name: "Meilenstein 6: Strategisches Wachstum",
+        timeframe: "Januar 2025",
+        durationDays: 20,
+        progress: 100,
+        summary: "Skalierung, Automation & Optimierung",
+        achievements: [
+          "Smart Lead Scoring System",
+          "Automated Follow-Up Sequences",
+          "Dynamic Pricing Engine",
+          "Mock Data Framework",
+          "Provider Performance Analytics",
+          "Customer Journey Insights",
+          "Mobile UX Final Polish"
+        ]
       }
     ],
     
-    // Current milestone (Milestone 6 - Strategic Growth - 100% complete!)
+    // Current milestone (Milestone 7 - Go-Live - DONE since deployed to umzugscheck.ch)
     currentMilestone: {
-      id: "m6",
-      name: "Meilenstein 6: Strategisches Wachstum",
-      timeframe: "Januar - Februar 2025",
-      durationDays: 30,
+      id: "m7",
+      name: "Meilenstein 7: Go-Live & First Revenue",
+      timeframe: "Januar 2025",
+      durationDays: 10,
       progress: 100,
-      summary: "Skalierung, Automation & Optimierung",
+      summary: "🎉 LIVE auf www.umzugscheck.ch",
       completed: [
-        "Smart Lead Scoring System",
-        "Automated Follow-Up Sequences",
-        "Dynamic Pricing Engine",
-        "Mock Data Framework",
-        "Provider Performance Analytics",
-        "Customer Journey Insights",
-        "Mobile UX Final Polish"
+        "Production Deployment",
+        "Domain umzugscheck.ch konfiguriert",
+        "SSL & DNS aktiv",
+        "Plattform öffentlich zugänglich"
       ],
-      inProgress: [],
-      upcoming: []
+      inProgress: [
+        "Google Ads Kampagnen aufsetzen",
+        "Erste Leads generieren"
+      ],
+      upcoming: [
+        "Provider-Onboarding (10 Firmen)"
+      ]
     },
     
-    // Future milestones (Post-Launch Growth)
+    // Future milestones (Post-Launch Growth) - only 1 left!
     futureMilestones: [
-      {
-        id: "m7",
-        name: "Meilenstein 7: Go-Live & First Revenue",
-        timeframe: "Februar 2025",
-        progress: 0,
-        summary: "Launch und erste Einnahmen",
-        items: [
-          "Production Deployment",
-          "Domain konfigurieren",
-          "Google Ads Aktivierung",
-          "Erste 100 Leads generieren",
-          "Provider-Onboarding (10 Firmen)"
-        ]
-      },
       {
         id: "m8",
         name: "Meilenstein 8: Market Expansion",
-        timeframe: "März - April 2025",
+        timeframe: "Februar - März 2025",
         progress: 0,
-        summary: "Wachstum in neue Märkte",
+        summary: "Wachstum & erste Umsätze",
         items: [
+          "Erste 100 Leads generieren",
+          "Provider-Onboarding (10 Firmen)",
           "Französische Schweiz (Romandie)",
-          "Tessin (Italienisch)",
-          "B2B Enterprise Features",
-          "White-Label Lösung für Partner"
+          "Tessin (Italienisch)"
         ]
       }
     ],
@@ -279,57 +284,62 @@ const milestones = {
           "Оптимизация на производителността",
           "SEO финален одит"
         ]
+      },
+      {
+        id: "m6",
+        name: "Етап 6: Стратегически растеж",
+        timeframe: "Януари 2025",
+        durationDays: 20,
+        progress: 100,
+        summary: "Мащабиране, автоматизация и оптимизация",
+        achievements: [
+          "Smart Lead Scoring система",
+          "Автоматични Follow-Up последователности",
+          "Dynamic Pricing Engine",
+          "Mock Data Framework",
+          "Provider Performance Analytics",
+          "Customer Journey Insights",
+          "Mobile UX финален полиш"
+        ]
       }
     ],
     
-    // Current milestone (Milestone 6 - 100% complete!)
+    // Current milestone (Milestone 7 - Go-Live - DONE!)
     currentMilestone: {
-      id: "m6",
-      name: "Етап 6: Стратегически растеж",
-      timeframe: "Януари - Февруари 2025",
-      durationDays: 30,
+      id: "m7",
+      name: "Етап 7: Go-Live & Първи приходи",
+      timeframe: "Януари 2025",
+      durationDays: 10,
       progress: 100,
-      summary: "Мащабиране, автоматизация и оптимизация",
+      summary: "🎉 LIVE на www.umzugscheck.ch",
       completed: [
-        "Smart Lead Scoring система",
-        "Автоматични Follow-Up последователности",
-        "Dynamic Pricing Engine",
-        "Mock Data Framework",
-        "Provider Performance Analytics",
-        "Customer Journey Insights",
-        "Mobile UX финален полиш"
+        "Production Deployment",
+        "Домейн umzugscheck.ch конфигуриран",
+        "SSL & DNS активни",
+        "Платформата е публично достъпна"
       ],
-      inProgress: [],
-      upcoming: []
+      inProgress: [
+        "Настройка на Google Ads кампании",
+        "Генериране на първите leads"
+      ],
+      upcoming: [
+        "Onboarding на доставчици (10 фирми)"
+      ]
     },
     
-    // Future milestones (Post-Launch Growth)
+    // Future milestones (Post-Launch Growth) - only 1 left!
     futureMilestones: [
-      {
-        id: "m7",
-        name: "Етап 7: Go-Live & Първи приходи",
-        timeframe: "Февруари 2025",
-        progress: 0,
-        summary: "Стартиране и първи приходи",
-        items: [
-          "Production Deployment",
-          "Конфигуриране на домейн",
-          "Активиране на Google Ads",
-          "Първите 100 leads",
-          "Onboarding на доставчици (10 фирми)"
-        ]
-      },
       {
         id: "m8",
         name: "Етап 8: Пазарна експанзия",
-        timeframe: "Март - Април 2025",
+        timeframe: "Февруари - Март 2025",
         progress: 0,
-        summary: "Разширяване в нови пазари",
+        summary: "Растеж & първи приходи",
         items: [
+          "Първите 100 leads",
+          "Onboarding на доставчици (10 фирми)",
           "Френска Швейцария (Романди)",
-          "Тичино (италиански)",
-          "B2B Enterprise функции",
-          "White-Label решение за партньори"
+          "Тичино (италиански)"
         ]
       }
     ],
@@ -349,6 +359,7 @@ const milestones = {
 export const VisionProgressMilestones = memo(({ language }: VisionProgressMilestonesProps) => {
   const t = milestones[language];
   const [expandedPast, setExpandedPast] = useState(false);
+  const [expandedCurrent, setExpandedCurrent] = useState(false);
   const [expandedFuture, setExpandedFuture] = useState(false);
   
   // Calculate overall progress - 6 of 8 milestones done (5 past + current at 100%)
@@ -504,81 +515,100 @@ export const VisionProgressMilestones = memo(({ language }: VisionProgressMilest
             </AnimatePresence>
           </Card>
           
-          {/* CURRENT MILESTONE (Always visible, highlighted) */}
-          <Card className="border-2 border-primary bg-primary/5 dark:bg-primary/10 overflow-hidden">
-            <div className="p-4">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+          {/* CURRENT MILESTONE (Collapsible, highlighted) */}
+          <Card className="border-2 border-primary overflow-hidden">
+            <button
+              onClick={() => setExpandedCurrent(!expandedCurrent)}
+              className="w-full p-4 flex items-center justify-between bg-primary/10 hover:bg-primary/20 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
                   {t.currentMilestone.progress === 100 ? 
-                    <CheckCircle2 className="w-5 h-5 text-white" /> : 
-                    <Sparkles className="w-5 h-5 text-white animate-pulse" />
+                    <CheckCircle2 className="w-4 h-4 text-white" /> : 
+                    <Sparkles className="w-4 h-4 text-white animate-pulse" />
                   }
                 </div>
-                <div className="flex-1">
+                <div className="text-left">
                   <span className="font-bold text-primary">{t.currentMilestoneTitle}</span>
                   <p className="text-sm text-primary/80">{t.currentMilestone.name}</p>
                 </div>
+              </div>
+              <div className="flex items-center gap-3">
                 <span className="text-2xl font-black text-primary">{t.currentMilestone.progress}%</span>
+                {expandedCurrent ? <ChevronUp className="w-5 h-5 text-primary" /> : <ChevronDown className="w-5 h-5 text-primary" />}
               </div>
-              
-              {/* Progress bar for current milestone */}
-              <div className="h-2 bg-primary/20 rounded-full overflow-hidden mb-4">
+            </button>
+            
+            <AnimatePresence>
+              {expandedCurrent && (
                 <motion.div
-                  initial={{ width: 0 }}
-                  whileInView={{ width: `${t.currentMilestone.progress}%` }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 1 }}
-                  className="h-full bg-primary rounded-full"
-                />
-              </div>
-              
-              <p className="text-sm text-muted-foreground mb-3">
-                {t.currentMilestone.timeframe} • {t.currentMilestone.summary}
-              </p>
-              
-              {/* Dynamic grid - only show filled columns */}
-              <div className={cn(
-                "grid gap-3",
-                t.currentMilestone.inProgress.length > 0 && t.currentMilestone.upcoming.length > 0 ? "md:grid-cols-3" :
-                t.currentMilestone.inProgress.length > 0 || t.currentMilestone.upcoming.length > 0 ? "md:grid-cols-2" : "md:grid-cols-1"
-              )}>
-                {/* Completed - always show */}
-                {t.currentMilestone.completed.length > 0 && (
-                  <div className="bg-primary/20 rounded-lg p-3">
-                    <p className="text-xs font-bold text-primary mb-2">✅ {language === 'de' ? 'Fertig' : 'Готово'} ({t.currentMilestone.completed.length})</p>
-                    <ul className="text-xs space-y-1">
-                      {t.currentMilestone.completed.map((item, i) => (
-                        <li key={i} className="text-primary">• {item}</li>
-                      ))}
-                    </ul>
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  className="overflow-hidden"
+                >
+                  <div className="p-4 bg-primary/5">
+                    {/* Progress bar for current milestone */}
+                    <div className="h-2 bg-primary/20 rounded-full overflow-hidden mb-4">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        whileInView={{ width: `${t.currentMilestone.progress}%` }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 1 }}
+                        className="h-full bg-primary rounded-full"
+                      />
+                    </div>
+                    
+                    <p className="text-sm text-muted-foreground mb-3">
+                      {t.currentMilestone.timeframe} • {t.currentMilestone.summary}
+                    </p>
+                    
+                    {/* Dynamic grid - only show filled columns */}
+                    <div className={cn(
+                      "grid gap-3",
+                      t.currentMilestone.inProgress.length > 0 && t.currentMilestone.upcoming.length > 0 ? "md:grid-cols-3" :
+                      t.currentMilestone.inProgress.length > 0 || t.currentMilestone.upcoming.length > 0 ? "md:grid-cols-2" : "md:grid-cols-1"
+                    )}>
+                      {/* Completed - always show */}
+                      {t.currentMilestone.completed.length > 0 && (
+                        <div className="bg-primary/20 rounded-lg p-3">
+                          <p className="text-xs font-bold text-primary mb-2">✅ {language === 'de' ? 'Fertig' : 'Готово'} ({t.currentMilestone.completed.length})</p>
+                          <ul className="text-xs space-y-1">
+                            {t.currentMilestone.completed.map((item, i) => (
+                              <li key={i} className="text-primary">• {item}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      
+                      {/* In Progress - only show if not empty */}
+                      {t.currentMilestone.inProgress.length > 0 && (
+                        <div className="bg-accent/50 rounded-lg p-3">
+                          <p className="text-xs font-bold text-accent-foreground mb-2">🔄 {language === 'de' ? 'In Arbeit' : 'В процес'}</p>
+                          <ul className="text-xs space-y-1">
+                            {t.currentMilestone.inProgress.map((item, i) => (
+                              <li key={i} className="text-accent-foreground">• {item}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      
+                      {/* Upcoming - only show if not empty */}
+                      {t.currentMilestone.upcoming.length > 0 && (
+                        <div className="bg-muted rounded-lg p-3">
+                          <p className="text-xs font-bold text-muted-foreground mb-2">⏳ {language === 'de' ? 'Geplant' : 'Планирано'}</p>
+                          <ul className="text-xs space-y-1 text-muted-foreground">
+                            {t.currentMilestone.upcoming.map((item, i) => (
+                              <li key={i}>• {item}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                )}
-                
-                {/* In Progress - only show if not empty */}
-                {t.currentMilestone.inProgress.length > 0 && (
-                  <div className="bg-accent/50 rounded-lg p-3">
-                    <p className="text-xs font-bold text-accent-foreground mb-2">🔄 {language === 'de' ? 'In Arbeit' : 'В процес'}</p>
-                    <ul className="text-xs space-y-1">
-                      {t.currentMilestone.inProgress.map((item, i) => (
-                        <li key={i} className="text-accent-foreground">• {item}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                
-                {/* Upcoming - only show if not empty */}
-                {t.currentMilestone.upcoming.length > 0 && (
-                  <div className="bg-muted rounded-lg p-3">
-                    <p className="text-xs font-bold text-muted-foreground mb-2">⏳ {language === 'de' ? 'Geplant' : 'Планирано'}</p>
-                    <ul className="text-xs space-y-1 text-muted-foreground">
-                      {t.currentMilestone.upcoming.map((item, i) => (
-                        <li key={i}>• {item}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </Card>
           
           {/* FUTURE MILESTONES (Collapsible) */}
