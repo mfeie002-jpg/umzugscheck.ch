@@ -1,20 +1,20 @@
 /**
- * VisionEmotionalHero - Aspirational Hero Section with Moving Transport Images
- * Win-Win-Win positioning: simple, transparent, fair
- * Corporate Identity matching /umzugsfirmen/zug style
+ * VisionEmotionalHero - Homepage-Style Hero with Rich Visuals
+ * Same look & feel as homepage /umzugsfirmen/zug
+ * Less text, more visual impact with proper dark overlay
  */
 
 import { memo } from "react";
 import { motion } from "framer-motion";
-import { Sparkles, Zap, Globe, ArrowRight, Heart } from "lucide-react";
+import { Globe, ArrowRight, Heart, Sparkles, Users, TrendingUp, Shield, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import type { VisionLanguage } from "@/lib/vision-translations";
 
-// Import unique moving transport images
-import movingTruckSwiss from "@/assets/vision/moving-truck-swiss.jpg";
-import familyMovingHome from "@/assets/vision/family-moving-home.jpg";
-import investorMeetingRoom from "@/assets/vision/investor-meeting-room.jpg";
+// Import high-quality hero images
+import heroFamilyNewHome from "@/assets/vision/hero-family-new-home.jpg";
+import heroMovingSwitzerland from "@/assets/vision/hero-moving-switzerland.jpg";
+import heroInvestorMeeting from "@/assets/vision/hero-investor-meeting.jpg";
 
 interface VisionEmotionalHeroProps {
   language: VisionLanguage;
@@ -24,136 +24,104 @@ interface VisionEmotionalHeroProps {
 const content = {
   de: {
     badge: "🇨🇭 Weltweit einzigartig",
-    
     headline: {
-      family: "Umziehen war noch nie so einfach",
-      investor: "Das weltweit erste Full-Stack Umzugsportal",
-      full: "Das weltweit erste Full-Stack Umzugsportal"
+      family: "Ihr Umzug. Stressfrei.",
+      investor: "Das First Full-Stack Umzugsportal",
+      full: "Umziehen – endlich einfach."
     },
-    
     subheadline: {
-      family: "Während andere noch Telefonnummern googeln, haben unsere Kunden schon 5 Offerten. Transparent, fair, stressfrei.",
-      investor: "KI-Präzision. Escrow-Sicherheit. 10 Revenue Streams. Ein Ökosystem, das Umziehen in der Schweiz revolutioniert.",
-      full: "KI-Präzision. Escrow-Sicherheit. Bürokratie-Autopilot. Ein Ökosystem, das Umziehen in der Schweiz revolutioniert."
+      family: "Während andere googeln, haben Sie schon 5 Offerten.",
+      investor: "10 Revenue Streams. 95% KI. 90%+ Marge.",
+      full: "KI-Präzision. Escrow-Sicherheit. Ein Ökosystem."
     },
-    
-    promises: [
-      "Stress weg",
-      "Fairness rein", 
-      "Kontrolle zurück"
-    ],
-    
     stats: [
-      { value: "Weltweit", label: "Einzigartig" },
-      { value: "95%", label: "KI-Automatisiert" },
-      { value: "10×", label: "Revenue Streams" }
+      { icon: Globe, value: "Weltweit", label: "Einzigartig" },
+      { icon: Zap, value: "95%", label: "KI-Automatisiert" },
+      { icon: TrendingUp, value: "10×", label: "Revenue Streams" }
     ],
-    
     cta: {
       primary: "Vision entdecken",
       secondary: "Live Demo"
     },
-    
-    tagline: "Win-Win-Win: Kunden sparen, Firmen wachsen, wir skalieren"
+    tagline: "Win-Win-Win"
   },
   bg: {
     badge: "🇨🇭 Световен уникат",
-    
     headline: {
-      family: "Преместването никога не е било толкова лесно",
-      investor: "Първият в света Full-Stack портал за преместване",
-      full: "Първият в света Full-Stack портал за преместване"
+      family: "Вашето преместване. Без стрес.",
+      investor: "Първият Full-Stack портал за преместване",
+      full: "Преместване – най-накрая лесно."
     },
-    
     subheadline: {
-      family: "Докато другите търсят телефонни номера, нашите клиенти вече имат 5 оферти. Прозрачно, честно, без стрес.",
-      investor: "AI прецизност. Escrow сигурност. 10 потока приходи. Екосистема, която революционизира преместването.",
-      full: "AI прецизност. Escrow сигурност. Бюрократичен автопилот. Екосистема, която революционизира преместването."
+      family: "Докато другите търсят, вие вече имате 5 оферти.",
+      investor: "10 потока приходи. 95% AI. 90%+ марж.",
+      full: "AI прецизност. Escrow сигурност. Една екосистема."
     },
-    
-    promises: [
-      "Без стрес",
-      "Честност",
-      "Контрол обратно"
-    ],
-    
     stats: [
-      { value: "Световен", label: "Уникат" },
-      { value: "95%", label: "AI-автоматизирано" },
-      { value: "10×", label: "Потоци приходи" }
+      { icon: Globe, value: "Световен", label: "Уникат" },
+      { icon: Zap, value: "95%", label: "AI-автоматизирано" },
+      { icon: TrendingUp, value: "10×", label: "Потоци приходи" }
     ],
-    
     cta: {
       primary: "Открий визията",
       secondary: "Live Demo"
     },
-    
-    tagline: "Win-Win-Win: Клиенти спестяват, фирми растат, ние скалираме"
+    tagline: "Win-Win-Win"
   },
   it: {
     badge: "🇨🇭 Unico al mondo",
-    
     headline: {
-      family: "Traslocare non è mai stato così semplice",
-      investor: "Il primo portale traslochi Full-Stack al mondo",
-      full: "Il primo portale traslochi Full-Stack al mondo"
+      family: "Il tuo trasloco. Senza stress.",
+      investor: "Il primo portale traslochi Full-Stack",
+      full: "Traslocare – finalmente semplice."
     },
-    
     subheadline: {
-      family: "Mentre altri cercano ancora numeri di telefono, i nostri clienti hanno già 5 preventivi. Trasparente, equo, senza stress.",
-      investor: "Precisione AI. Sicurezza Escrow. 10 flussi di ricavo. Un ecosistema che rivoluziona i traslochi.",
-      full: "Precisione AI. Sicurezza Escrow. Autopilota burocrazia. Un ecosistema che rivoluziona i traslochi."
+      family: "Mentre altri cercano, tu hai già 5 preventivi.",
+      investor: "10 flussi di ricavo. 95% AI. 90%+ margine.",
+      full: "Precisione AI. Sicurezza Escrow. Un ecosistema."
     },
-    
-    promises: [
-      "Via lo stress",
-      "Dentro l'equità",
-      "Riprendere il controllo"
-    ],
-    
     stats: [
-      { value: "Mondiale", label: "Unico" },
-      { value: "95%", label: "Automatizzato AI" },
-      { value: "10×", label: "Flussi di Ricavo" }
+      { icon: Globe, value: "Mondiale", label: "Unico" },
+      { icon: Zap, value: "95%", label: "Automatizzato AI" },
+      { icon: TrendingUp, value: "10×", label: "Flussi di Ricavo" }
     ],
-    
     cta: {
       primary: "Scopri la visione",
       secondary: "Live Demo"
     },
-    
-    tagline: "Win-Win-Win: Clienti risparmiano, aziende crescono, noi scaliamo"
+    tagline: "Win-Win-Win"
   }
 };
 
-// Variant-specific images - Real moving transport images
+// Variant-specific images
 const variantImages = {
-  family: familyMovingHome,
-  investor: investorMeetingRoom,
-  full: movingTruckSwiss,
+  family: heroFamilyNewHome,
+  investor: heroInvestorMeeting,
+  full: heroMovingSwitzerland,
 };
 
 export const VisionEmotionalHero = memo(({ language, variant = 'full' }: VisionEmotionalHeroProps) => {
   const t = content[language] || content.de;
-  
   const currentImage = variantImages[variant];
   
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-secondary/5">
-      {/* Background with variant-specific moving image - more visible */}
+    <section className="relative overflow-hidden min-h-[85vh] flex items-center">
+      {/* Full-width Background Image with Homepage-Style Overlay */}
       <div className="absolute inset-0 z-0">
         <img
           src={currentImage}
           alt="Umzug Schweiz"
-          className="w-full h-full object-cover opacity-40"
+          className="w-full h-full object-cover"
           loading="eager"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/75 to-background/60" />
+        {/* Dark gradient overlay like homepage mobile */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70" />
       </div>
       
-      <div className="container mx-auto px-4 py-12 md:py-20 lg:py-28 relative z-10">
+      <div className="container mx-auto px-4 py-16 md:py-24 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
           
+          {/* Badge */}
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -165,48 +133,32 @@ export const VisionEmotionalHero = memo(({ language, variant = 'full' }: VisionE
             </span>
           </motion.div>
           
+          {/* Main Headline - Large & Bold */}
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-foreground mb-6 leading-tight"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white mb-4 leading-tight drop-shadow-lg"
           >
             {t.headline[variant]}
           </motion.h1>
           
+          {/* Short Subheadline */}
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-lg md:text-xl text-muted-foreground mb-6 leading-relaxed max-w-3xl mx-auto"
+            className="text-lg md:text-xl lg:text-2xl text-white/90 mb-8 leading-relaxed max-w-2xl mx-auto drop-shadow-md"
           >
             {t.subheadline[variant]}
           </motion.p>
           
-          {/* 3 Core Promises */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.25 }}
-            className="flex flex-wrap justify-center gap-3 mb-8"
-          >
-            {t.promises.map((promise, i) => (
-              <span 
-                key={i}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary font-bold text-sm border border-primary/20"
-              >
-                <span className="text-secondary">✓</span>
-                {promise}
-              </span>
-            ))}
-          </motion.div>
-          
-          {/* Stats */}
+          {/* Stats - Icon Cards */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="grid grid-cols-3 gap-4 mb-10 max-w-xl mx-auto"
+            className="grid grid-cols-3 gap-3 md:gap-4 mb-10 max-w-md mx-auto"
           >
             {t.stats.map((stat, i) => (
               <motion.div
@@ -214,10 +166,11 @@ export const VisionEmotionalHero = memo(({ language, variant = 'full' }: VisionE
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.4 + i * 0.1 }}
-                className="text-center p-4 rounded-2xl bg-card/90 backdrop-blur-sm border-2 border-primary/20 shadow-lg"
+                className="text-center p-3 md:p-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/20"
               >
-                <p className="text-2xl md:text-3xl font-black text-primary">{stat.value}</p>
-                <p className="text-xs md:text-sm text-muted-foreground font-medium">{stat.label}</p>
+                <stat.icon className="w-5 h-5 md:w-6 md:h-6 text-secondary mx-auto mb-1" />
+                <p className="text-lg md:text-xl font-black text-white">{stat.value}</p>
+                <p className="text-[10px] md:text-xs text-white/70">{stat.label}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -227,40 +180,39 @@ export const VisionEmotionalHero = memo(({ language, variant = 'full' }: VisionE
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.5 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center mb-8"
+            className="flex flex-col sm:flex-row gap-3 justify-center mb-6"
           >
             <Link to="/vision#vision-customer-usps">
-              <Button size="lg" className="w-full sm:w-auto min-h-[52px] text-base font-bold px-8 group shadow-xl">
+              <Button size="lg" className="w-full sm:w-auto min-h-[52px] text-base font-bold px-8 bg-secondary hover:bg-secondary/90 shadow-xl group">
                 <Sparkles className="w-5 h-5 mr-2" />
                 {t.cta.primary}
                 <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
             <Link to="/">
-              <Button variant="outline" size="lg" className="w-full sm:w-auto min-h-[52px] text-base font-bold px-8 border-2 bg-background/80 backdrop-blur-sm">
-                <Zap className="w-5 h-5 mr-2" />
+              <Button variant="outline" size="lg" className="w-full sm:w-auto min-h-[52px] text-base font-bold px-8 border-2 border-white/30 text-white bg-white/10 hover:bg-white/20 backdrop-blur-sm">
                 {t.cta.secondary}
               </Button>
             </Link>
           </motion.div>
           
-          {/* Tagline */}
+          {/* Tagline with Heart */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.7 }}
-            className="flex items-center justify-center gap-2 text-sm font-bold text-primary"
+            className="flex items-center justify-center gap-2 text-sm font-bold text-white/80"
           >
-            <Heart className="w-4 h-4 fill-current" />
+            <Heart className="w-4 h-4 fill-secondary text-secondary" />
             <span>{t.tagline}</span>
-            <Heart className="w-4 h-4 fill-current" />
+            <Heart className="w-4 h-4 fill-secondary text-secondary" />
           </motion.div>
           
         </div>
       </div>
       
-      {/* Bottom wave */}
-      <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-background to-transparent" />
+      {/* Bottom gradient fade */}
+      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
     </section>
   );
 });

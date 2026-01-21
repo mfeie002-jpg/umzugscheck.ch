@@ -5,7 +5,7 @@ import { CustomerUSPVisualCards } from "@/components/homepage/CustomerUSPVisualC
 import { FamilySummary } from "@/components/homepage/FamilySummary";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Download, FileText, Loader2, Users, TrendingUp, Sparkles, DollarSign, Target, Rocket, Zap, Heart } from "lucide-react";
+import { ArrowLeft, Download, FileText, Loader2, Users, TrendingUp, Sparkles, DollarSign, Target, Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
 import { exportVisionToPDF, exportVisionAsTextPDF } from "@/lib/vision-pdf-export";
 import { useToast } from "@/hooks/use-toast";
@@ -19,7 +19,6 @@ import { VisionUniqueness } from "@/components/vision/VisionUniqueness";
 import { VisionCollapsibleSection } from "@/components/vision/VisionCollapsibleSection";
 import { VisionStickyNav } from "@/components/vision/VisionStickyNav";
 import { VisionTeamSection } from "@/components/vision/VisionTeamSection";
-import { VisionHeroExecutive } from "@/components/vision/VisionHeroExecutive";
 import { VisionAudienceSwitcher } from "@/components/vision/VisionAudienceSwitcher";
 import { VisionTractionDashboard } from "@/components/vision/VisionTractionDashboard";
 import { VisionTrustLogos } from "@/components/vision/VisionTrustLogos";
@@ -27,14 +26,11 @@ import { VisionComparisonMatrix } from "@/components/vision/VisionComparisonMatr
 import { VisionComplianceSection } from "@/components/vision/VisionComplianceSection";
 import { VisionProfitabilityRoadmap } from "@/components/vision/VisionProfitabilityRoadmap";
 import { VisionEmotionalHero } from "@/components/vision/VisionEmotionalHero";
-import { VisionMovingMoments } from "@/components/vision/VisionMovingMoments";
+import { VisionQuickStats } from "@/components/vision/VisionQuickStats";
+import { VisionIconFeatures } from "@/components/vision/VisionIconFeatures";
+import { VisionVisualDivider } from "@/components/vision/VisionVisualDivider";
 import { VisionSalesFunnelDiagram } from "@/components/vision/VisionSalesFunnelDiagram";
-import { VisionHumanStorySection } from "@/components/vision/VisionHumanStorySection";
 import { VisionSystemDiagram } from "@/components/vision/VisionSystemDiagram";
-import { VisionStickyCTA } from "@/components/vision/VisionStickyCTA";
-// NEW: Gemini Feedback Components
-import { VisionProofBar } from "@/components/vision/VisionProofBar";
-import { VisionLightBreak } from "@/components/vision/VisionLightBreak";
 import { getVisionTranslation, type VisionLanguage } from "@/lib/vision-translations";
 
 export default function VisionPage() {
@@ -87,30 +83,14 @@ export default function VisionPage() {
     }
   };
 
-  // CTA Handlers
-  const handleDemoClick = () => {
-    toast({
-      title: language === 'de' ? "Demo Video" : language === 'it' ? "Video Demo" : "Демо видео",
-      description: language === 'de' ? "Coming soon! Kontaktiere uns für eine Live-Demo." : language === 'it' ? "Prossimamente! Contattaci per una demo dal vivo." : "Скоро! Свържи се с нас за live demo.",
-    });
-  };
-
-  const handlePitchDeckClick = () => {
-    handleExportPDF();
-  };
-
-  const handleContactClick = () => {
-    window.location.href = "mailto:info@umzugscheck.ch?subject=Umzugscheck.ch%20-%20Gespräch%20anfragen";
-  };
-
   return (
-    <div className="min-h-screen bg-background pb-24 md:pb-0">
+    <div className="min-h-screen bg-background">
       <SEOHead
         pageType="home"
         url="https://umzugscheck.ch/vision"
       />
 
-      {/* NON-Sticky Header with Download Buttons - Removed sticky to prevent conflict with StickyNav */}
+      {/* Compact Header */}
       <div className="bg-background border-b border-border">
         <div className="container mx-auto px-3 md:px-4 py-2 md:py-3">
           <div className="flex items-center justify-between gap-2">
@@ -167,94 +147,56 @@ export default function VisionPage() {
       {/* Sticky Navigation */}
       <VisionStickyNav language={language} />
 
-      {/* VisionStickyCTA removed - not needed for internal stakeholder pages */}
-
-      {/* 0. EMOTIONAL HERO - Human Side of Moving */}
+      {/* 1. HERO - Homepage Style with Full-Width Image */}
       <VisionEmotionalHero language={language} variant="full" />
 
-      {/* 1. EXECUTIVE SUMMARY HERO (Swiss Trust Wording) */}
-      <VisionHeroExecutive 
-        language={language}
-        onDemoClick={handleDemoClick}
-        onPitchDeckClick={handlePitchDeckClick}
-        onContactClick={handleContactClick}
-      />
+      {/* 2. QUICK STATS - Icon-focused grid */}
+      <VisionQuickStats language={language} variant="full" />
 
-      {/* NEW: PROOF BAR with Count-Up Animation (Gemini Feedback) */}
-      <VisionProofBar language={language} />
-
-      {/* 2. AUDIENCE SWITCHER - "Für wen ist diese Seite?" */}
+      {/* 3. AUDIENCE SWITCHER */}
       <VisionAudienceSwitcher language={language} />
 
-      {/* LIGHT BREAK: Quote Testimonial */}
-      <VisionLightBreak variant="quote" language={language} />
+      {/* 4. ICON FEATURES - Visual grid of capabilities */}
+      <VisionIconFeatures language={language} />
 
-      {/* NEW: Emotional Moving Moments Gallery */}
-      <VisionMovingMoments language={language} />
+      {/* 5. VISUAL DIVIDER - Emotional break */}
+      <VisionVisualDivider language={language} variant="journey" />
 
-      {/* NEW: Trust Logos Bar (External Validation) */}
+      {/* 6. TRUST LOGOS */}
       <VisionTrustLogos language={language} />
 
-      {/* NEW: Profitability Roadmap (12-Month Timeline) */}
+      {/* 7. PROFITABILITY ROADMAP */}
       <div id="vision-roadmap">
         <VisionProfitabilityRoadmap language={language} />
       </div>
 
-      {/* LIGHT BREAK: Dark Section - Innovation Statement */}
-      <VisionLightBreak 
-        variant="dark" 
-        language={language}
-        icon={<Zap className="w-10 h-10 text-primary" />}
-        headline={language === 'de' ? "Nicht noch ein Portal." : language === 'it' ? "Non un altro portale." : "Не още един портал."}
-        subheadline={language === 'de' 
-          ? "Das Betriebssystem für eine Branche, die noch im Faxzeitalter steckt."
-          : language === 'it'
-            ? "Il sistema operativo per un settore ancora nell'era del fax."
-            : "Операционната система за индустрия, която все още е във факс ерата."
-        }
-      />
+      {/* 8. VISUAL DIVIDER - Business */}
+      <VisionVisualDivider language={language} variant="business" />
 
-      {/* 3. TRACTION DASHBOARD */}
+      {/* 9. TRACTION DASHBOARD */}
       <div id="vision-progress">
         <VisionTractionDashboard language={language} />
       </div>
 
-      {/* NEW: Comparison Matrix (Unfair Advantage) */}
+      {/* 10. COMPARISON MATRIX */}
       <VisionComparisonMatrix language={language} />
 
-      {/* LIGHT BREAK: Quote before Sales Funnel */}
-      <VisionLightBreak variant="quote" language={language} />
+      {/* 11. VISUAL DIVIDER - Family */}
+      <VisionVisualDivider language={language} variant="family" />
 
-      {/* NEW: Sales Funnel Diagram - Complete Revenue Map */}
+      {/* 12. SALES FUNNEL */}
       <div id="vision-sales-funnel">
         <VisionSalesFunnelDiagram language={language} />
       </div>
 
-      {/* NEW: Human Stories - Emotional Connection */}
-      <VisionHumanStorySection language={language} />
-
-      {/* LIGHT BREAK: Gradient with Family Image */}
-      <VisionLightBreak 
-        variant="gradient" 
-        language={language}
-        headline={language === 'de' ? "Wir helfen Menschen, neu anzufangen." : language === 'it' ? "Aiutiamo le persone a ricominciare." : "Помагаме на хората да започнат отново."}
-        subheadline={language === 'de' 
-          ? "Momente die zählen. Nicht Formulare."
-          : language === 'it'
-            ? "Momenti che contano. Non moduli."
-            : "Моменти, които имат значение. Не формуляри."
-        }
-      />
-
-      {/* NEW: System Diagram - How Everything Connects */}
+      {/* 13. SYSTEM DIAGRAM */}
       <div id="vision-system">
         <VisionSystemDiagram language={language} />
       </div>
 
-      {/* COLLAPSIBLE SECTIONS */}
+      {/* COLLAPSIBLE SECTIONS - Detailed Content */}
       <div className="max-w-6xl mx-auto">
         
-        {/* Customer USPs - Changed "Magic" to "Systemvorteile" */}
         <VisionCollapsibleSection
           title={language === 'de' ? "10 Kunden-Vorteile" : language === 'it' ? "10 Vantaggi Clienti" : "10 клиентски предимства"}
           icon={<Users className="w-5 h-5" />}
@@ -268,7 +210,6 @@ export default function VisionPage() {
           </div>
         </VisionCollapsibleSection>
         
-        {/* Investor Pillars */}
         <VisionCollapsibleSection
           title={language === 'de' ? "10 Investoren-Säulen" : language === 'it' ? "10 Pilastri Investitori" : "10 инвеститорски стълба"}
           icon={<TrendingUp className="w-5 h-5" />}
@@ -282,7 +223,6 @@ export default function VisionPage() {
           </div>
         </VisionCollapsibleSection>
         
-        {/* Family Summary */}
         <VisionCollapsibleSection
           title={language === 'de' ? "Einfach erklärt für die Familie" : language === 'it' ? "Spiegato Semplicemente per la Famiglia" : "Обяснено просто за семейството"}
           icon={<Sparkles className="w-5 h-5" />}
@@ -296,7 +236,6 @@ export default function VisionPage() {
           </div>
         </VisionCollapsibleSection>
         
-        {/* Revenue Streams */}
         <VisionCollapsibleSection
           title={language === 'de' ? "10 Einnahmequellen im Detail" : language === 'it' ? "10 Fonti di Ricavo in Dettaglio" : "10 източника на приходи"}
           icon={<DollarSign className="w-5 h-5" />}
@@ -310,7 +249,6 @@ export default function VisionPage() {
           </div>
         </VisionCollapsibleSection>
         
-        {/* Unit Economics (ChatGPT Priority #3 - already has CAC breakdown) */}
         <VisionCollapsibleSection
           title={language === 'de' ? "Unit Economics: Contribution Margin" : language === 'it' ? "Unit Economics: Contribution Margin" : "Unit Economics: Contribution Margin"}
           icon={<Target className="w-5 h-5" />}
@@ -324,7 +262,6 @@ export default function VisionPage() {
           </div>
         </VisionCollapsibleSection>
         
-        {/* Market Potential */}
         <VisionCollapsibleSection
           title={language === 'de' ? "Marktpotenzial Schweiz" : language === 'it' ? "Potenziale di Mercato Svizzera" : "Пазарен потенциал Швейцария"}
           icon={<Rocket className="w-5 h-5" />}
@@ -340,31 +277,31 @@ export default function VisionPage() {
         
       </div>
 
-      {/* NEW: Compliance & Regulatory Section (CRITICAL for Escrow credibility) */}
+      {/* COMPLIANCE */}
       <VisionComplianceSection language={language} />
 
-      {/* Team Section */}
+      {/* TEAM */}
       <div id="vision-team">
         <ScrollReveal>
           <VisionTeamSection language={language} />
         </ScrollReveal>
       </div>
 
-      {/* Uniqueness */}
+      {/* UNIQUENESS */}
       <div id="vision-uniqueness">
         <ScrollReveal>
           <VisionUniqueness language={language} />
         </ScrollReveal>
       </div>
 
-      {/* Exit Timeline */}
+      {/* EXIT TIMELINE */}
       <div id="vision-exit">
         <ScrollReveal>
           <ExitTimeline language={language} />
         </ScrollReveal>
       </div>
 
-      {/* Footer CTA */}
+      {/* FOOTER CTA */}
       <section className="py-8 md:py-12 bg-primary/5">
         <div className="container mx-auto px-4 text-center">
           <p className="text-sm md:text-base text-muted-foreground mb-4">
