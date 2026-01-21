@@ -364,11 +364,11 @@ const de: VisionTranslations = {
           "✅ Neighborhood Profiles (26 Städte)",
           "✅ POIs & lokale Informationen",
           "✅ Newcomer Kit UI-Komponenten",
-          "🔄 City Moving Checklists",
-          "🔄 Schema.org SEO Markup",
-          "⏳ Lead Bidding System",
-          "⏳ Dynamic Pricing Engine",
-          "⏳ Provider Quality Scores"
+          "✅ City Moving Checklists",
+          "✅ Schema.org SEO Markup",
+          "✅ Neighborhood Comparison Tool",
+          "✅ Post-Move Checklist (20+ Tasks)",
+          "✅ AI Cost Predictor Engine"
         ]
       },
       {
@@ -376,13 +376,14 @@ const de: VisionTranslations = {
         title: "Marketing & Growth",
         description: "Traffic-Akquisition und Monetarisierung",
         items: [
-          "⏳ SEO Hub-and-Spoke Strategie",
+          "✅ WhatsApp-First Flow Integration",
+          "✅ Capacity Radar (Echtzeit-Verfügbarkeit)",
+          "✅ Provider Live-Chat Widget",
+          "✅ Buddy Matching (LKW-Sharing)",
+          "🔄 SEO Hub-and-Spoke Strategie",
+          "🔄 A/B Testing Framework",
           "⏳ Google Ads Kampagnen",
-          "⏳ Content Marketing (Ratgeber)",
-          "⏳ Affiliate Partnerprogramm",
-          "⏳ Email Automation Flows",
-          "⏳ A/B Testing Framework",
-          "⏳ Analytics & Reporting"
+          "⏳ Email Automation Flows"
         ]
       },
       {
@@ -390,35 +391,38 @@ const de: VisionTranslations = {
         title: "Wettbewerbsvorteile",
         description: "Schwer kopierbare Features",
         items: [
-          "⏳ AI Video Inventory Scanner",
+          "✅ AR Inventory Scanner (Raum-für-Raum)",
+          "🔄 AI Video Inventory (Computer Vision)",
           "⏳ Escrow/Treuhand System",
           "⏳ Behörden-API Integration",
           "⏳ Partner Operating System",
-          "⏳ Micro-Insurance Module",
-          "⏳ Circular Economy Hub"
+          "⏳ Micro-Insurance Module"
         ]
       }
     ],
     workDone: {
-      title: "Was in 3 Monaten entstanden ist",
+      title: "Was in 3+ Monaten entstanden ist",
       subtitle: "Tag und Nacht gearbeitet – hier ist das Ergebnis",
-      months: "3 Monate intensive Arbeit",
+      months: "3+ Monate intensive Arbeit",
       items: [
-        "200+ React Komponenten entwickelt",
-        "50+ Seiten und Routes erstellt",
-        "20+ Datenbank-Tabellen designt",
+        "250+ React Komponenten entwickelt",
+        "60+ Seiten und Routes erstellt",
+        "25+ Datenbank-Tabellen designt",
         "10 verschiedene Rechner implementiert",
         "26 Städte mit Neighborhood-Daten",
         "30+ Umzugsfirmen im System",
         "5-stufiger Lead-Funnel gebaut",
-        "Mobile-First responsive Design",
-        "Dark Mode Support",
-        "PDF Export Funktionalität",
+        "10 Extended Features implementiert",
+        "AI Cost Predictor mit CH-Daten",
+        "WhatsApp-First Integration",
+        "Capacity Radar (Live-Verfügbarkeit)",
+        "Buddy Matching für LKW-Sharing",
+        "AR Inventory Scanner",
+        "Provider Live-Chat System",
+        "Post-Move Checklist (7 Kategorien)",
+        "Neighborhood Comparison (11 Metriken)",
         "Vision Page für Stakeholder",
-        "Admin Dashboard Grundstruktur",
-        "SEO-optimierte Meta Tags",
-        "Schema.org Structured Data",
-        "Edge Functions für Backend-Logik"
+        "Dark Mode + Mobile-First Design"
       ]
     }
   },
@@ -692,11 +696,11 @@ const bg: VisionTranslations = {
           "✅ Профили на квартали (26 града)",
           "✅ POIs & локална информация",
           "✅ Newcomer Kit UI компоненти",
-          "🔄 City Moving Checklists",
-          "🔄 Schema.org SEO маркиране",
-          "⏳ Lead Bidding система",
-          "⏳ Dynamic Pricing Engine",
-          "⏳ Provider Quality Scores"
+          "✅ City Moving Checklists",
+          "✅ Schema.org SEO маркиране",
+          "✅ Сравнение на квартали",
+          "✅ Post-Move чеклист (20+ задачи)",
+          "✅ AI Cost Predictor Engine"
         ]
       },
       {
@@ -704,13 +708,14 @@ const bg: VisionTranslations = {
         title: "Маркетинг & Растеж",
         description: "Привличане на трафик и монетизация",
         items: [
-          "⏳ SEO Hub-and-Spoke стратегия",
+          "✅ WhatsApp-First Flow интеграция",
+          "✅ Capacity Radar (реално време)",
+          "✅ Provider Live-Chat Widget",
+          "✅ Buddy Matching (споделяне на камион)",
+          "🔄 SEO Hub-and-Spoke стратегия",
+          "🔄 A/B Testing Framework",
           "⏳ Google Ads кампании",
-          "⏳ Content Marketing (Ratgeber)",
-          "⏳ Affiliate партньорска програма",
-          "⏳ Email Automation Flows",
-          "⏳ A/B Testing Framework",
-          "⏳ Analytics & Reporting"
+          "⏳ Email Automation Flows"
         ]
       },
       {
@@ -718,35 +723,38 @@ const bg: VisionTranslations = {
         title: "Конкурентни предимства",
         description: "Трудни за копиране функции",
         items: [
-          "⏳ AI Video Inventory Scanner",
+          "✅ AR Inventory Scanner (стая по стая)",
+          "🔄 AI Video Inventory (Computer Vision)",
           "⏳ Escrow/Ескроу система",
           "⏳ Интеграция с API на властите",
           "⏳ Partner Operating System",
-          "⏳ Micro-Insurance модул",
-          "⏳ Circular Economy Hub"
+          "⏳ Micro-Insurance модул"
         ]
       }
     ],
     workDone: {
-      title: "Какво е създадено за 3 месеца",
+      title: "Какво е създадено за 3+ месеца",
       subtitle: "Денонощна работа – ето резултата",
-      months: "3 месеца интензивна работа",
+      months: "3+ месеца интензивна работа",
       items: [
-        "200+ React компонента разработени",
-        "50+ страници и routes създадени",
-        "20+ таблици в базата данни дизайнирани",
-        "10 различни калкулатора имплементирани",
+        "250+ React компонента разработени",
+        "60+ страници и routes създадени",
+        "25+ таблици в базата данни",
+        "10 различни калкулатора",
         "26 града с данни за квартали",
         "30+ преместващи фирми в системата",
         "5-степенен lead фунел изграден",
-        "Mobile-First responsive дизайн",
-        "Поддръжка на Dark Mode",
-        "PDF Export функционалност",
+        "10 Extended Features имплементирани",
+        "AI Cost Predictor с CH данни",
+        "WhatsApp-First интеграция",
+        "Capacity Radar (живи данни)",
+        "Buddy Matching за споделяне на камион",
+        "AR Inventory Scanner",
+        "Provider Live-Chat система",
+        "Post-Move чеклист (7 категории)",
+        "Сравнение на квартали (11 метрики)",
         "Vision Page за заинтересовани страни",
-        "Admin Dashboard базова структура",
-        "SEO-оптимизирани мета тагове",
-        "Schema.org Structured Data",
-        "Edge Functions за backend логика"
+        "Dark Mode + Mobile-First дизайн"
       ]
     }
   },
