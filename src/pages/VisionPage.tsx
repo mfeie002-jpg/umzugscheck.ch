@@ -21,6 +21,9 @@ import { VisionTeamSection } from "@/components/vision/VisionTeamSection";
 import { VisionHeroExecutive } from "@/components/vision/VisionHeroExecutive";
 import { VisionAudienceSwitcher } from "@/components/vision/VisionAudienceSwitcher";
 import { VisionTractionDashboard } from "@/components/vision/VisionTractionDashboard";
+import { VisionTrustLogos } from "@/components/vision/VisionTrustLogos";
+import { VisionComparisonMatrix } from "@/components/vision/VisionComparisonMatrix";
+import { VisionComplianceSection } from "@/components/vision/VisionComplianceSection";
 import { getVisionTranslation, type VisionLanguage } from "@/lib/vision-translations";
 
 export default function VisionPage() {
@@ -157,19 +160,25 @@ export default function VisionPage() {
       {/* 2. AUDIENCE SWITCHER (ChatGPT Priority #2) */}
       <VisionAudienceSwitcher language={language} />
 
+      {/* NEW: Trust Logos Bar (External Validation) */}
+      <VisionTrustLogos language={language} />
+
       {/* 3. TRACTION DASHBOARD (ChatGPT Priority #4) */}
       <div id="vision-progress">
         <VisionTractionDashboard language={language} />
       </div>
 
+      {/* NEW: Comparison Matrix (Unfair Advantage) */}
+      <VisionComparisonMatrix language={language} />
+
       {/* COLLAPSIBLE SECTIONS */}
       <div className="max-w-6xl mx-auto">
         
-        {/* Customer USPs */}
+        {/* Customer USPs - Changed "Magic" to "Systemvorteile" */}
         <VisionCollapsibleSection
           title={language === 'de' ? "10 Kunden-Vorteile" : "10 клиентски предимства"}
           icon={<Users className="w-5 h-5" />}
-          badge={language === 'de' ? "Magic für Familien" : "Магия за семейства"}
+          badge={language === 'de' ? "Systemvorteile" : "Системни предимства"}
           defaultOpen={false}
           language={language}
         >
@@ -245,10 +254,15 @@ export default function VisionPage() {
         
       </div>
 
+      {/* NEW: Compliance & Regulatory Section (CRITICAL for Escrow credibility) */}
+      <VisionComplianceSection language={language} />
+
       {/* Team Section */}
-      <ScrollReveal>
-        <VisionTeamSection language={language} />
-      </ScrollReveal>
+      <div id="vision-team">
+        <ScrollReveal>
+          <VisionTeamSection language={language} />
+        </ScrollReveal>
+      </div>
 
       {/* Uniqueness */}
       <div id="vision-uniqueness">

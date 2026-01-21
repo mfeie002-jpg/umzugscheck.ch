@@ -9,11 +9,9 @@ import {
   Rocket, 
   Users, 
   TrendingUp, 
-  Heart, 
   DollarSign, 
   Target, 
   Globe,
-  Sparkles,
   UserCircle,
   ChevronDown
 } from "lucide-react";
@@ -28,12 +26,10 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { id: "vision-hero", labelDe: "Vision", labelBg: "Визия", icon: <Rocket className="w-3.5 h-3.5" /> },
-  { id: "vision-progress", labelDe: "Fortschritt", labelBg: "Прогрес", icon: <Target className="w-3.5 h-3.5" /> },
-  { id: "vision-customer-usps", labelDe: "Kunden", labelBg: "Клиенти", icon: <Users className="w-3.5 h-3.5" /> },
-  { id: "vision-investor-pillars", labelDe: "Investoren", labelBg: "Инвеститори", icon: <TrendingUp className="w-3.5 h-3.5" /> },
-  { id: "vision-family-summary", labelDe: "Familie", labelBg: "Семейство", icon: <Heart className="w-3.5 h-3.5" /> },
-  { id: "vision-revenue-examples", labelDe: "Revenue", labelBg: "Приходи", icon: <DollarSign className="w-3.5 h-3.5" /> },
-  { id: "vision-unit-economics", labelDe: "Economics", labelBg: "Икономика", icon: <Sparkles className="w-3.5 h-3.5" /> },
+  { id: "vision-progress", labelDe: "Traction", labelBg: "Traction", icon: <Target className="w-3.5 h-3.5" /> },
+  { id: "vision-customer-usps", labelDe: "USPs", labelBg: "USPs", icon: <Users className="w-3.5 h-3.5" /> },
+  { id: "vision-investor-pillars", labelDe: "Pillars", labelBg: "Pillars", icon: <TrendingUp className="w-3.5 h-3.5" /> },
+  { id: "vision-unit-economics", labelDe: "Economics", labelBg: "Икономика", icon: <DollarSign className="w-3.5 h-3.5" /> },
   { id: "vision-market-potential", labelDe: "Markt", labelBg: "Пазар", icon: <Globe className="w-3.5 h-3.5" /> },
   { id: "vision-team", labelDe: "Team", labelBg: "Екип", icon: <UserCircle className="w-3.5 h-3.5" /> },
   { id: "vision-exit", labelDe: "Exit", labelBg: "Изход", icon: <Rocket className="w-3.5 h-3.5" /> },
