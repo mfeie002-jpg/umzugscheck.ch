@@ -284,6 +284,9 @@ const VariantTestHub = lazy(() => import("./pages/admin/VariantTestHub"));
 const FlowCommandCenter = lazy(() => import("./pages/admin/FlowCommandCenter"));
 const CommandCenter = lazy(() => import("./pages/admin/CommandCenter"));
 const AnalysisFramework = lazy(() => import("./pages/admin/AnalysisFramework"));
+const EmailTemplatesAdmin = lazy(() => import("./pages/admin/EmailTemplates"));
+const MockDataDashboard = lazy(() => import("./pages/admin/MockDataDashboard"));
+const DocumentationBrowser = lazy(() => import("./pages/admin/Documentation"));
 const FlowFeedbackVariants = lazy(() => import("./pages/admin/FlowFeedbackVariants"));
 const WorldClassDashboard = lazy(() => import("./components/admin/WorldClassDashboard").then(m => ({ default: m.WorldClassDashboard })));
 const AllFlowsScreenshotReview = lazy(() => import("./pages/admin/AllFlowsScreenshotReview"));
@@ -453,6 +456,10 @@ const AdminRoutes = () => (
       <Route path="/admin/phase-6" element={<Phase6Admin />} />
       <Route path="/admin/go-live" element={<GoLive />} />
       <Route path="/admin/video-analyses" element={<VideoAnalysesAdmin />} />
+      {/* New Admin Pages */}
+      <Route path="/admin/email-templates" element={<EmailTemplatesAdmin />} />
+      <Route path="/admin/mock-data" element={<MockDataDashboard />} />
+      <Route path="/admin/documentation" element={<DocumentationBrowser />} />
     </AnimatedRoutes>
   </Suspense>
 );
