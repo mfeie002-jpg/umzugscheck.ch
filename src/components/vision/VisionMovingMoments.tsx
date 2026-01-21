@@ -1,14 +1,17 @@
 /**
- * Competitive Advantages Gallery
- * Bold, assertive messaging about our market dominance
- * "American" confidence style - we are the best
+ * VisionMovingMoments
+ * Human, emotional "Momente die zählen" section + Testimonials
  */
 
 import { memo } from "react";
 import { motion } from "framer-motion";
-import { Trophy, Target, Zap, Shield, Crown, Rocket } from "lucide-react";
+import { Heart, Sparkles, Home, ArrowRight, Quote } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import type { VisionLanguage } from "@/lib/vision-translations";
+
+import movingFamily from "@/assets/vision-family-moving.jpg";
+import movingTeam from "@/assets/vision-moving-team.jpg";
+import { VisionTestimonials } from "@/components/vision/VisionTestimonials";
 
 interface VisionMovingMomentsProps {
   language: VisionLanguage;
@@ -16,133 +19,79 @@ interface VisionMovingMomentsProps {
 
 const content = {
   de: {
-    title: "Warum wir unschlagbar sind",
-    subtitle: "Die Fakten sprechen für sich. Kein Wettbewerber kann mithalten.",
-    
-    advantages: [
+    title: "Momente die zählen.",
+    subtitle: "Ein Umzug ist nicht nur Logistik – es ist ein Neustart. Wir machen ihn ruhig, planbar und sicher.",
+    moments: [
       {
-        icon: Trophy,
-        title: "Marktführer",
-        stat: "#1",
-        description: "Beste Technologie im Schweizer Markt"
+        title: "Der Moment, wenn es plötzlich leicht wird",
+        description: "In wenigen Schritten zur passenden Offerte – ohne Telefonmarathon.",
+        imageAlt: "Familie packt Umzugskartons in einem hellen Wohnzimmer",
+        image: movingFamily,
       },
       {
-        icon: Zap,
-        title: "AI-Power",
-        stat: "95%",
-        description: "Vollautomatisiert – 3 Mitarbeiter statt 50"
+        title: "Der Moment, wenn man wieder atmen kann",
+        description: "Geprüfte Partner, klare Preise, echte Vergleichbarkeit.",
+        imageAlt: "Professionelles Umzugsteam trägt Kartons sorgfältig",
+        image: movingTeam,
       },
       {
-        icon: Target,
-        title: "Revenue Streams",
-        stat: "10×",
-        description: "Zehnfache Monetarisierung pro Kunde"
+        title: "Der Moment, wenn die neue Tür aufgeht",
+        description: "Einfach ankommen – wir kümmern uns um den Rest.",
+        imageAlt: "Einzug in ein neues Zuhause in der Schweiz",
+        image: movingFamily,
       },
-      {
-        icon: Shield,
-        title: "Marge",
-        stat: ">90%",
-        description: "Während Konkurrenten mit 10% kämpfen"
-      }
     ],
-    
-    comparison: {
-      title: "Umzugscheck vs. Alle Anderen",
-      items: [
-        { us: "5 Offerten in 24h", them: "3 Tage telefonieren" },
-        { us: "AI Video-Scan", them: "Hausbesuch nötig" },
-        { us: "Escrow-Sicherheit", them: "Vorauszahlung riskant" },
-        { us: "1-Klick Bürokratie", them: "Stunden Papierkram" }
-      ],
-      usLabel: "Wir",
-      themLabel: "Konkurrenz"
-    }
+    kicker: "Echte Stimmen statt Versprechen",
   },
   bg: {
-    title: "Защо сме непобедими",
-    subtitle: "Фактите говорят сами за себе си. Никой конкурент не може да ни настигне.",
-    
-    advantages: [
+    title: "Моменти, които имат значение.",
+    subtitle: "Преместването не е само логистика – това е ново начало. Ние го правим спокойно, предвидимо и сигурно.",
+    moments: [
       {
-        icon: Trophy,
-        title: "Лидер на пазара",
-        stat: "#1",
-        description: "Най-добрата технология в швейцарския пазар"
+        title: "Моментът, когато става лесно",
+        description: "Само няколко стъпки до правилната оферта – без безкрайни обаждания.",
+        imageAlt: "Семейство опакова кашони в светла стая",
+        image: movingFamily,
       },
       {
-        icon: Zap,
-        title: "AI-мощ",
-        stat: "95%",
-        description: "Напълно автоматизирано – 3 служители вместо 50"
+        title: "Моментът, когато можеш да си поемеш дъх",
+        description: "Проверени партньори, ясни цени, реално сравнение.",
+        imageAlt: "Професионален екип за преместване носи кашони",
+        image: movingTeam,
       },
       {
-        icon: Target,
-        title: "Потоци приходи",
-        stat: "10×",
-        description: "Десетократна монетизация на клиент"
+        title: "Моментът, когато новата врата се отвори",
+        description: "Просто пристигаш – ние се грижим за останалото.",
+        imageAlt: "Ново жилище в Швейцария",
+        image: movingFamily,
       },
-      {
-        icon: Shield,
-        title: "Марж",
-        stat: ">90%",
-        description: "Докато конкурентите се борят с 10%"
-      }
     ],
-    
-    comparison: {
-      title: "Umzugscheck vs. Всички други",
-      items: [
-        { us: "5 оферти за 24ч", them: "3 дни обаждания" },
-        { us: "AI видео-сканиране", them: "Нужно посещение" },
-        { us: "Escrow сигурност", them: "Рисково авансово плащане" },
-        { us: "1-клик бюрокрация", them: "Часове документи" }
-      ],
-      usLabel: "Ние",
-      themLabel: "Конкуренция"
-    }
+    kicker: "Истински гласове вместо обещания",
   },
   it: {
-    title: "Perché siamo imbattibili",
-    subtitle: "I fatti parlano da soli. Nessun concorrente può starci dietro.",
-    
-    advantages: [
+    title: "Momenti che contano.",
+    subtitle: "Un trasloco non è solo logistica – è un nuovo inizio. Noi lo rendiamo calmo, prevedibile e sicuro.",
+    moments: [
       {
-        icon: Trophy,
-        title: "Leader di Mercato",
-        stat: "#1",
-        description: "La migliore tecnologia nel mercato svizzero"
+        title: "Il momento in cui diventa facile",
+        description: "Pochi step fino al preventivo giusto – senza telefonate infinite.",
+        imageAlt: "Famiglia che prepara scatoloni in un soggiorno luminoso",
+        image: movingFamily,
       },
       {
-        icon: Zap,
-        title: "Potenza AI",
-        stat: "95%",
-        description: "Completamente automatizzato – 3 dipendenti invece di 50"
+        title: "Il momento in cui puoi respirare",
+        description: "Partner verificati, prezzi chiari, confronto reale.",
+        imageAlt: "Team di trasloco professionale che trasporta scatole",
+        image: movingTeam,
       },
       {
-        icon: Target,
-        title: "Flussi di Ricavo",
-        stat: "10×",
-        description: "Monetizzazione decuplicata per cliente"
+        title: "Il momento in cui si apre la nuova porta",
+        description: "Arrivi e basta – al resto pensiamo noi.",
+        imageAlt: "Nuova casa in Svizzera",
+        image: movingFamily,
       },
-      {
-        icon: Shield,
-        title: "Margine",
-        stat: ">90%",
-        description: "Mentre i concorrenti lottano con il 10%"
-      }
     ],
-    
-    comparison: {
-      title: "Umzugscheck vs. Tutti gli Altri",
-      items: [
-        { us: "5 preventivi in 24h", them: "3 giorni al telefono" },
-        { us: "AI Video-Scan", them: "Visita a casa necessaria" },
-        { us: "Sicurezza Escrow", them: "Anticipo rischioso" },
-        { us: "1-clic burocrazia", them: "Ore di scartoffie" }
-      ],
-      usLabel: "Noi",
-      themLabel: "Concorrenza"
-    }
+    kicker: "Voci reali, risultati concreti",
   }
 };
 
@@ -160,10 +109,10 @@ export const VisionMovingMoments = memo(({ language }: VisionMovingMomentsProps)
           viewport={{ once: true }}
           className="text-center mb-10"
         >
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-primary-foreground text-sm font-black mb-4">
-            <Crown className="w-4 h-4" />
-            🏆
-          </span>
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-semibold mb-4">
+              <Heart className="w-4 h-4" />
+              {t.kicker}
+            </span>
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-foreground mb-3">
             {t.title}
           </h2>
@@ -171,67 +120,49 @@ export const VisionMovingMoments = memo(({ language }: VisionMovingMomentsProps)
             {t.subtitle}
           </p>
         </motion.div>
-        
-        {/* Advantages Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
-          {t.advantages.map((advantage, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-            >
-              <Card className="p-4 md:p-6 h-full text-center border-2 border-primary/20 hover:border-primary/50 transition-colors bg-gradient-to-br from-primary/5 to-transparent">
-                <advantage.icon className="w-8 h-8 md:w-10 md:h-10 text-primary mx-auto mb-3" />
-                <p className="text-3xl md:text-4xl font-black text-primary mb-1">{advantage.stat}</p>
-                <p className="font-bold text-sm md:text-base mb-1">{advantage.title}</p>
-                <p className="text-xs text-muted-foreground">{advantage.description}</p>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
-        
-        {/* Comparison Table */}
+
+        {/* Moments grid */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <Card className="p-6 md:p-8 bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/10">
-            <h3 className="text-lg md:text-xl font-black text-center mb-6 flex items-center justify-center gap-2">
-              <Rocket className="w-5 h-5 text-primary" />
-              {t.comparison.title}
-            </h3>
-            
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr>
-                    <th className="text-left p-2 md:p-3 font-black text-primary bg-primary/10 rounded-l-lg">
-                      ✅ {t.comparison.usLabel}
-                    </th>
-                    <th className="text-left p-2 md:p-3 font-bold text-muted-foreground bg-muted/50 rounded-r-lg">
-                      ❌ {t.comparison.themLabel}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {t.comparison.items.map((item, i) => (
-                    <tr key={i} className="border-b border-border/50 last:border-0">
-                      <td className="p-2 md:p-3 text-sm md:text-base font-medium text-foreground">
-                        {item.us}
-                      </td>
-                      <td className="p-2 md:p-3 text-sm md:text-base text-muted-foreground line-through opacity-60">
-                        {item.them}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </Card>
+          <div className="grid md:grid-cols-3 gap-4">
+            {t.moments.map((m, i) => (
+              <motion.div
+                key={m.title}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.08 }}
+              >
+                <Card className="overflow-hidden border border-border bg-card">
+                  <div className="aspect-[16/10] overflow-hidden">
+                    <img
+                      src={m.image}
+                      alt={m.imageAlt}
+                      loading="lazy"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-semibold text-foreground mb-1">{m.title}</h3>
+                    <p className="text-sm text-muted-foreground">{m.description}</p>
+                    <div className="mt-3 inline-flex items-center gap-2 text-sm text-primary">
+                      <Sparkles className="w-4 h-4" />
+                      <span>Umzugscheck</span>
+                    </div>
+                  </div>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
         </motion.div>
+
+        {/* Testimonials (requested) */}
+        <div className="mt-10">
+          <VisionTestimonials language={language} />
+        </div>
         
       </div>
     </section>

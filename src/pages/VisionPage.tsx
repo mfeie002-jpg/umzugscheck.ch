@@ -31,6 +31,7 @@ import { VisionMovingMoments } from "@/components/vision/VisionMovingMoments";
 import { VisionSalesFunnelDiagram } from "@/components/vision/VisionSalesFunnelDiagram";
 import { VisionHumanStorySection } from "@/components/vision/VisionHumanStorySection";
 import { VisionSystemDiagram } from "@/components/vision/VisionSystemDiagram";
+import { VisionStickyCTA } from "@/components/vision/VisionStickyCTA";
 // NEW: Gemini Feedback Components
 import { VisionProofBar } from "@/components/vision/VisionProofBar";
 import { VisionLightBreak } from "@/components/vision/VisionLightBreak";
@@ -103,14 +104,14 @@ export default function VisionPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-24 md:pb-0">
       <SEOHead
         pageType="home"
         url="https://umzugscheck.ch/vision"
       />
 
       {/* NON-Sticky Header with Download Buttons - Removed sticky to prevent conflict with StickyNav */}
-      <div className="bg-background border-b border-[#8B0000]/20">
+      <div className="bg-background border-b border-border">
         <div className="container mx-auto px-3 md:px-4 py-2 md:py-3">
           <div className="flex items-center justify-between gap-2">
             <Link to="/">
@@ -143,7 +144,7 @@ export default function VisionPage() {
               <Button 
                 onClick={handleExportPDF}
                 disabled={isExporting}
-                className="relative touch-manipulation min-h-[40px] px-3 md:px-4 bg-[#8B0000] hover:bg-[#6B0000] text-white whitespace-nowrap"
+                className="relative touch-manipulation min-h-[40px] px-3 md:px-4 bg-secondary hover:bg-secondary/90 text-secondary-foreground whitespace-nowrap"
                 size="sm"
               >
                 {isExporting ? (
@@ -165,6 +166,9 @@ export default function VisionPage() {
 
       {/* Sticky Navigation */}
       <VisionStickyNav language={language} />
+
+      {/* Always-visible conversion CTA for /vision */}
+      <VisionStickyCTA />
 
       {/* 0. EMOTIONAL HERO - Human Side of Moving */}
       <VisionEmotionalHero language={language} variant="full" />

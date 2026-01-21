@@ -22,7 +22,8 @@ interface VisionHeroExecutiveProps {
 }
 
 // Import the generated images
-import visionSwissCity from "@/assets/vision-swiss-city.jpg";
+import visionFamilyMoving from "@/assets/vision-family-moving.jpg";
+import visionHeroLoop from "@/assets/vision-hero-loop.mp4";
 
 const content = {
   de: {
@@ -31,15 +32,12 @@ const content = {
     headline: "Das Betriebssystem für den Schweizer Umzug.",
     subheadline: "Umziehen, wie es in der Schweiz sein sollte: klar, sicher, digital. Faire Preise, geprüfte Partner, maximale Transparenz.",
     
-    // 3 CTAs
-    ctas: {
-      demo: "Demo ansehen",
-      demoSub: "60 Sek. Video",
-      pitchDeck: "Pitch Deck",
-      pitchDeckSub: "PDF Download",
-      contact: "Gespräch buchen",
-      contactSub: "15 Min. Call"
-    },
+    // Single primary CTA (Swiss clarity)
+    ctaPrimary: "Offerten erhalten",
+    ctaPrimarySub: "Kostenlos. Ohne Verpflichtung.",
+    ctaSecondaryDemo: "Demo (60 Sek.)",
+    ctaSecondaryDeck: "Pitch Deck (PDF)",
+    ctaSecondaryCall: "Gespräch (15 Min.)",
     
     // Key Stats (Value-focused)
     stats: [
@@ -68,14 +66,11 @@ const content = {
     headline: "Операционната система за швейцарско преместване.",
     subheadline: "Преместване, както трябва да бъде в Швейцария: ясно, сигурно, дигитално. Честни цени, проверени партньори, максимална прозрачност.",
     
-    ctas: {
-      demo: "Гледай демо",
-      demoSub: "60 сек видео",
-      pitchDeck: "Pitch Deck",
-      pitchDeckSub: "PDF Download",
-      contact: "Резервирай разговор",
-      contactSub: "15 мин. call"
-    },
+    ctaPrimary: "Получи оферти",
+    ctaPrimarySub: "Безплатно. Без ангажимент.",
+    ctaSecondaryDemo: "Демо (60 сек.)",
+    ctaSecondaryDeck: "Pitch Deck (PDF)",
+    ctaSecondaryCall: "Разговор (15 мин.)",
     
     stats: [
       { value: "Световен", label: "Уникат", icon: Globe, color: "text-primary" },
@@ -102,14 +97,11 @@ const content = {
     headline: "Il sistema operativo per il trasloco svizzero.",
     subheadline: "Traslocare come dovrebbe essere in Svizzera: chiaro, sicuro, digitale. Prezzi equi, partner verificati, massima trasparenza.",
     
-    ctas: {
-      demo: "Guarda demo",
-      demoSub: "Video 60 sec",
-      pitchDeck: "Pitch Deck",
-      pitchDeckSub: "PDF Download",
-      contact: "Prenota chiamata",
-      contactSub: "15 min. call"
-    },
+    ctaPrimary: "Ricevi preventivi",
+    ctaPrimarySub: "Gratis. Senza impegno.",
+    ctaSecondaryDemo: "Demo (60 sec.)",
+    ctaSecondaryDeck: "Pitch Deck (PDF)",
+    ctaSecondaryCall: "Chiamata (15 min.)",
     
     stats: [
       { value: "Mondiale", label: "Unico", icon: Globe, color: "text-primary" },
@@ -143,17 +135,23 @@ export const VisionHeroExecutive = memo(({
   
   return (
     <section id="vision-hero" className="relative min-h-[85vh] flex items-center overflow-hidden">
-      {/* Hero Background Image */}
+      {/* Hero Background Video (loop) + Image fallback */}
       <div className="absolute inset-0 z-0">
-        <img 
-          src={visionSwissCity}
-          alt="Moderne Schweizer Stadt mit Alpen"
+        <video
           className="w-full h-full object-cover"
-        />
-        {/* Dark overlay for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/95 via-slate-900/85 to-slate-900/70" />
-        {/* Accent gradient */}
-        <div className="absolute inset-0 bg-gradient-to-t from-primary/20 via-transparent to-transparent" />
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          poster={visionFamilyMoving}
+          aria-label="Emotionaler Umzugsmoment"
+        >
+          <source src={visionHeroLoop} type="video/mp4" />
+        </video>
+        {/* Readability overlay using tokens */}
+        <div className="absolute inset-0 bg-background/70" />
+        <div className="absolute inset-0 bg-gradient-to-t from-primary/15 via-transparent to-transparent" />
       </div>
       
       <div className="container mx-auto px-4 relative z-10">
@@ -175,7 +173,7 @@ export const VisionHeroExecutive = memo(({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 leading-tight"
           >
             {t.headline}
           </motion.h1>
@@ -185,7 +183,7 @@ export const VisionHeroExecutive = memo(({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-lg md:text-xl text-white/80 mb-8 max-w-2xl"
+            className="text-lg md:text-xl text-foreground/80 mb-8 max-w-2xl"
           >
             {t.subheadline}
           </motion.p>
@@ -200,59 +198,62 @@ export const VisionHeroExecutive = memo(({
             {t.stats.map((stat, i) => (
               <div 
                 key={i} 
-                className="p-4 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 text-center"
+                className="p-4 rounded-xl bg-card/80 backdrop-blur-sm border border-border text-center"
               >
                 <stat.icon className="w-5 h-5 mx-auto mb-2 text-primary" />
-                <div className="text-xl sm:text-2xl font-bold text-white">{stat.value}</div>
-                <div className="text-xs text-white/70">{stat.label}</div>
+                <div className="text-xl sm:text-2xl font-bold text-foreground">{stat.value}</div>
+                <div className="text-xs text-muted-foreground">{stat.label}</div>
               </div>
             ))}
           </motion.div>
           
-          {/* 3 CTAs */}
+          {/* Single primary CTA + secondary links (no "tab" look) */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="flex flex-col sm:flex-row gap-3 mb-10"
+            className="flex flex-col gap-3 mb-10"
           >
             <Button 
               size="lg" 
-              onClick={onDemoClick}
-              className="gap-2 min-h-[52px] bg-primary hover:bg-primary/90"
+              asChild
+              className="gap-2 min-h-[52px] bg-primary hover:bg-primary/90 text-primary-foreground"
             >
-              <Play className="w-4 h-4" />
-              <div className="text-left">
-                <div className="font-semibold">{t.ctas.demo}</div>
-                <div className="text-xs opacity-80">{t.ctas.demoSub}</div>
-              </div>
+              <a href="/umzugsofferten">
+                <Rocket className="w-4 h-4" />
+                <div className="text-left">
+                  <div className="font-semibold">{t.ctaPrimary}</div>
+                  <div className="text-xs opacity-80">{t.ctaPrimarySub}</div>
+                </div>
+              </a>
             </Button>
-            
-            <Button 
-              size="lg" 
-              variant="outline"
-              onClick={onPitchDeckClick}
-              className="gap-2 min-h-[52px] border-white/30 text-white hover:bg-white/10"
-            >
-              <FileText className="w-4 h-4" />
-              <div className="text-left">
-                <div className="font-semibold">{t.ctas.pitchDeck}</div>
-                <div className="text-xs opacity-80">{t.ctas.pitchDeckSub}</div>
-              </div>
-            </Button>
-            
-            <Button 
-              size="lg" 
-              variant="outline"
-              onClick={onContactClick}
-              className="gap-2 min-h-[52px] border-white/30 text-white hover:bg-white/10"
-            >
-              <Calendar className="w-4 h-4" />
-              <div className="text-left">
-                <div className="font-semibold">{t.ctas.contact}</div>
-                <div className="text-xs opacity-80">{t.ctas.contactSub}</div>
-              </div>
-            </Button>
+
+            <div className="flex flex-wrap items-center gap-3 text-sm">
+              <button
+                type="button"
+                onClick={onDemoClick}
+                className="inline-flex items-center gap-2 text-primary hover:underline underline-offset-4"
+              >
+                <Play className="w-4 h-4" />
+                {t.ctaSecondaryDemo}
+              </button>
+              <button
+                type="button"
+                onClick={onPitchDeckClick}
+                className="inline-flex items-center gap-2 text-primary hover:underline underline-offset-4"
+              >
+                <FileText className="w-4 h-4" />
+                {t.ctaSecondaryDeck}
+              </button>
+              <button
+                type="button"
+                onClick={onContactClick}
+                className="inline-flex items-center gap-2 text-primary hover:underline underline-offset-4"
+              >
+                <Calendar className="w-4 h-4" />
+                {t.ctaSecondaryCall}
+              </button>
+            </div>
           </motion.div>
           
           {/* Why Unique Box - Full Stack Differentiation */}
@@ -260,20 +261,20 @@ export const VisionHeroExecutive = memo(({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="bg-white/10 backdrop-blur-md rounded-xl p-5 border border-white/20"
+            className="bg-card/80 backdrop-blur-md rounded-xl p-5 border border-border"
           >
             <h3 className="font-bold text-lg mb-2 flex items-center gap-2 text-white">
               <Globe className="w-5 h-5 text-primary" />
               {t.whyUnique.title}
             </h3>
-            <p className="text-sm text-white/70 mb-4">{t.whyUnique.subtitle}</p>
+            <p className="text-sm text-muted-foreground mb-4">{t.whyUnique.subtitle}</p>
             <ul className="grid gap-3 md:grid-cols-2">
               {t.whyUnique.points.map((point, i) => (
                 <li key={i} className="flex items-start gap-2 text-sm">
                   <span className="text-primary mt-0.5 flex-shrink-0 font-bold">✓</span>
                   <div>
-                    <span className="font-semibold text-white">{point.title}:</span>{' '}
-                    <span className="text-white/75">{point.desc}</span>
+                    <span className="font-semibold text-foreground">{point.title}:</span>{' '}
+                    <span className="text-muted-foreground">{point.desc}</span>
                   </div>
                 </li>
               ))}

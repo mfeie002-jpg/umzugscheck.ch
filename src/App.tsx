@@ -371,36 +371,51 @@ const queryClient = new QueryClient({
 });
 
 // Helper component for main site layout with Navigation/Footer
-const MainLayout = ({ children }: { children: React.ReactNode }) => (
+// NOTE: Some pages (e.g. /vision) provide their own sticky navigation and should not
+// render the global navigation/footers to avoid double-sticky UI.
+const MainLayout = ({
+  children,
+  hideChrome = false,
+}: {
+  children: React.ReactNode;
+  hideChrome?: boolean;
+}) => (
   <div className="flex flex-col min-h-screen bg-background">
-    <DynamicNavigation />
-    <ScrollProgressBar />
-    
-    {/* Lazy loaded UI components with Suspense */}
-    <Suspense fallback={null}>
-      <AIMovingAssistant />
-      <ProviderOnboarding />
-      <OfflineIndicator />
-      <StickyContactBar />
-      <MobileSearchButton />
-    </Suspense>
-    
-    <ScrollToTopOnRoute />
-    <ScrollToTop />
-    
+    {!hideChrome && (
+      <>
+        <DynamicNavigation />
+        <ScrollProgressBar />
+
+        {/* Lazy loaded UI components with Suspense */}
+        <Suspense fallback={null}>
+          <AIMovingAssistant />
+          <ProviderOnboarding />
+          <OfflineIndicator />
+          <StickyContactBar />
+          <MobileSearchButton />
+        </Suspense>
+
+        <ScrollToTopOnRoute />
+        <ScrollToTop />
+      </>
+    )}
+
     <MobilePullToRefresh>
       <SwipeNavigationWrapper>
-        <main className="flex-1 pb-16 md:pb-0">
+        <main className={hideChrome ? "flex-1" : "flex-1 pb-16 md:pb-0"}>
           {children}
         </main>
       </SwipeNavigationWrapper>
     </MobilePullToRefresh>
-    
-    <Footer />
-    
-    <Suspense fallback={null}>
-      <MobileBottomNav />
-    </Suspense>
+
+    {!hideChrome && (
+      <>
+        <Footer />
+        <Suspense fallback={null}>
+          <MobileBottomNav />
+        </Suspense>
+      </>
+    )}
   </div>
 );
 
@@ -477,6 +492,7 @@ const AppRouterContent = () => {
   const pathname = location.pathname.toLowerCase();
   const isAdminRoute = pathname.startsWith('/admin') || pathname === '/all-flows-review';
   const isFlowTester = pathname === '/flow-tester';
+  const isStakeholderRoute = pathname === '/vision' || pathname === '/family' || pathname === '/investoren';
 
   if (isAdminRoute) {
     return <AdminRoutes />;
@@ -494,7 +510,7 @@ const AppRouterContent = () => {
   }
 
   return (
-    <MainLayout>
+    <MainLayout hideChrome={isStakeholderRoute}>
       <Suspense fallback={<PageLoadingFallback />}>
         <AnimatedRoutes>
           <Route path="/" element={<Suspense fallback={<PageLoadingFallback />}><Index /></Suspense>} />

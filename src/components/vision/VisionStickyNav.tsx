@@ -85,7 +85,7 @@ export const VisionStickyNav = memo(({ language }: VisionStickyNavProps) => {
   };
 
   return (
-    <div className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-[#8B0000]/20">
+    <div className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
       <div className="container mx-auto px-3 md:px-4">
         {/* Mobile: Dropdown */}
         <div className="md:hidden py-1.5">
