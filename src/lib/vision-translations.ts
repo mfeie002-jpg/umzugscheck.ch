@@ -5,6 +5,24 @@
 
 export type VisionLanguage = 'de' | 'bg';
 
+export interface RevenueStreamTranslation {
+  name: string;
+  tagline: string;
+  scenario: string;
+  steps: string[];
+  whyValuable: string;
+}
+
+export interface ExitMilestoneTranslation {
+  phase: string;
+  description: string;
+}
+
+export interface ComparableTranslation {
+  description: string;
+  relevance: string;
+}
+
 export interface VisionTranslations {
   // Page header
   page: {
@@ -118,6 +136,99 @@ export interface VisionTranslations {
       classic: string;
       us: string;
     }>;
+  };
+  
+  // NEW: Revenue Stream Examples
+  revenueExamples: {
+    badge: string;
+    title: string;
+    subtitle: string;
+    quickWins: string;
+    standard: string;
+    complex: string;
+    exampleScenario: string;
+    howItWorks: string;
+    customerPays: string;
+    weGet: string;
+    partnerGets: string;
+    whyValuable: string;
+    streams: RevenueStreamTranslation[];
+  };
+  
+  // NEW: Unit Economics
+  unitEconomics: {
+    badge: string;
+    title: string;
+    clarificationTitle: string;
+    clarificationText: string;
+    revenuePerCustomer: string;
+    revenueSubtitle: string;
+    totalRevenue: string;
+    costsPerCustomer: string;
+    costsSubtitle: string;
+    totalCosts: string;
+    profitPerCustomer: string;
+    unitEconomicsLabel: string;
+    margin: string;
+    whyPossibleTitle: string;
+    whyPossibleIntro: string;
+    whyPossibleReasons: string[];
+    classicProvider: string;
+    us: string;
+    timesMore: string;
+  };
+  
+  // NEW: Market Potential
+  marketPotential: {
+    badge: string;
+    title: string;
+    subtitle: string;
+    totalMarket: string;
+    movesPerYear: string;
+    private: string;
+    business: string;
+    payingCustomers: string;
+    budgetReady: string;
+    bookProService: string;
+    comparisNote: string;
+    ourMarketShare: string;
+    basedOnSeo: string;
+    conservative: string;
+    realistic: string;
+    ambitious: string;
+    ordersPerYear: string;
+    marketShare: string;
+    goal: string;
+    revenueCalculation: string;
+    orders: string;
+    revenuePerCustomer: string;
+    marginLabel: string;
+    profit: string;
+    acquisitionStrategy: string;
+    keyInsights: string;
+    insights: Array<{ title: string; text: string }>;
+  };
+  
+  // NEW: Exit Timeline
+  exitTimeline: {
+    badge: string;
+    title: string;
+    subtitle: string;
+    now: string;
+    comparableTitle: string;
+    comparableSubtitle: string;
+    movuTitle: string;
+    movuText: string;
+    whyWeWorthMore: string;
+    movuReasons: string[];
+    higherValuation: string;
+    exitOptions: {
+      strategic: { title: string; text: string };
+      pe: { title: string; text: string };
+      ipo: { title: string; text: string };
+    };
+    milestones: ExitMilestoneTranslation[];
+    comparables: ComparableTranslation[];
   };
   
   // Footer
@@ -328,6 +439,131 @@ const de: VisionTranslations = {
     questions: "Fragen? Sprich mich einfach an.",
     downloadPdf: "PDF herunterladen",
     toMainPage: "Zur Hauptseite"
+  },
+  
+  // NEW SECTIONS - German
+  revenueExamples: {
+    badge: "10 Einnahmequellen im Detail",
+    title: "Konkrete Beispiele: So verdienen wir Geld",
+    subtitle: "Jede Einnahmequelle erklärt mit einem echten Beispiel-Szenario. Von einfach (sofort umsetzbar) bis komplex (braucht Aufbau).",
+    quickWins: "Quick Win",
+    standard: "Standard",
+    complex: "Komplex",
+    exampleScenario: "📌 Beispiel-Szenario",
+    howItWorks: "🔄 So funktioniert's",
+    customerPays: "Kunde zahlt",
+    weGet: "Wir bekommen",
+    partnerGets: "Partner erhält",
+    whyValuable: "💡 Warum wertvoll",
+    streams: [
+      { name: "Affiliate Telco/Energie", tagline: "Kunde wechselt Anbieter → Wir kassieren", scenario: "Familie Müller zieht um und braucht Internet am neuen Ort. Wir empfehlen Swisscom.", steps: ["Kunde gibt neue Adresse ein", "Wir zeigen passende Internet/Strom-Angebote", "Kunde klickt auf 'Jetzt wechseln'", "Anbieter zahlt uns 80-150 CHF Provision"], whyValuable: "Zero-Cost Revenue: Wir verdienen, ohne etwas zu liefern. Pure Vermittlung." },
+      { name: "Lead-Verkauf (CPL)", tagline: "Umzugsfirma zahlt für qualifizierte Anfrage", scenario: "Herr Schmidt sucht Umzugsfirma für 3-Zimmer-Wohnung. 3 Firmen bekommen seine Anfrage.", steps: ["Kunde füllt Offerten-Formular aus", "Wir matchen mit 3-5 passenden Firmen", "Jede Firma zahlt 15-45 CHF pro Lead", "Firmen kontaktieren Kunde direkt"], whyValuable: "Skaliert perfekt: Mehr Traffic = linear mehr Revenue. Kein Fulfillment nötig." },
+      { name: "Basis-Provision (Take-Rate)", tagline: "15% von jedem Umzug über unsere Plattform", scenario: "Umzug Zürich → Bern, 30m³. Umzugsfirma berechnet CHF 1'500.", steps: ["Kunde bucht Umzug über unsere Plattform", "Umzugsfirma führt Umzug durch", "Kunde zahlt an uns (Treuhand)", "Wir behalten 15% und zahlen 85% an Firma"], whyValuable: "Unser Kern-Revenue: Je mehr Umzüge, desto mehr verdienen wir. Durchschnitt: CHF 225/Umzug." },
+      { name: "Reinigung mit Garantie", tagline: "Abnahme-Garantie = Premium-Preis", scenario: "4-Zimmer-Wohnung, 85m². Reinigung mit Abnahme-Garantie.", steps: ["Kunde bucht 'Garantie-Reinigung'", "Zertifizierte Putzfirma reinigt", "Falls Vermieter reklamiert: kostenlose Nachbesserung", "Wir behalten 20% für Garantie-Risiko"], whyValuable: "Höhere Marge als Standard wegen Garantie-Versprechen. Cross-Sell zu jedem Umzug." },
+      { name: "Bürokratie-Autopilot", tagline: "Ein Klick = Alles umgemeldet", scenario: "Komplette Ummeldung: Gemeinde, Strom, Internet, Versicherung, Post.", steps: ["Kunde gibt alte + neue Adresse ein", "Wählt Services: Gemeinde, Strom, Post, etc.", "Zahlt CHF 49 Pauschal", "Unser Bot erledigt alles automatisch"], whyValuable: "98% Marge da vollautomatisch. Spart Kunden 5-8 Stunden Arbeit." },
+      { name: "Escrow / Treuhand-Fees", tagline: "Wir halten das Geld = Wir verdienen am Float", scenario: "Umzug für CHF 2'000. Kunde zahlt vorab an uns. Firma wird nach Abschluss bezahlt.", steps: ["Kunde bucht Umzug und zahlt an Treuhand-Konto", "Geld liegt 7-14 Tage bei uns", "Nach erfolgreichem Umzug: 'Bestätigen' klicken", "Firma wird ausbezahlt, wir behalten 1.5% Fee"], whyValuable: "Doppelter Vorteil: Fee + Float-Zinsen. Bei 1'000 Umzügen/Monat = 1.5 Mio Float!" },
+      { name: "Circular Economy", tagline: "Altes Zeug wird zu Geld", scenario: "Kunde will altes Sofa, Schrank und Matratze loswerden.", steps: ["Kunde markiert im Video was weg soll", "Wir holen ab (CHF 80-200 je nach Menge)", "Brauchbares wird auf Ricardo/Tutti verkauft", "Wir behalten Entsorgungsgebühr + 20% vom Verkauf"], whyValuable: "Doppelte Einnahme: Entsorgung bezahlt + Weiterverkauf. Reduziert auch Umzugskosten." },
+      { name: "Micro-Insurance", tagline: "Video-Beweis = Sofort-Zahlung bei Schäden", scenario: "Umzugsversicherung für Hausrat im Wert von CHF 50'000.", steps: ["Kunde macht Video-Inventar vor Umzug", "Wählt Versicherungs-Paket (Basic/Premium)", "Bei Schaden: KI vergleicht Vorher/Nachher-Video", "Automatische Auszahlung innerhalb 48h"], whyValuable: "60% Marge weil Video-Beweise die Schadenquote minimieren. Klassische Versicherung: 20% Marge." },
+      { name: "Partner SaaS (MRR)", tagline: "Umzugsfirmen zahlen monatlich für unsere Software", scenario: "Umzugsfirma 'Blitz-Umzüge' nutzt unser Dispo-System.", steps: ["Firma meldet sich für Partner-Portal an", "Nutzt Lead-Management, Kapazitätsplanung, Auto-Bidding", "Zahlt CHF 99/Monat Abo", "Zusätzlich: 15% Provision pro vermitteltem Auftrag"], whyValuable: "Recurring Revenue! 100 Partner × 99 CHF = 10k MRR. Plus Lock-in Effekt." },
+      { name: "B2B HR-Relocation", tagline: "Enterprise-Kunden mit hohen Warenkörben", scenario: "Credit Suisse relociert 5 Expats von London nach Zürich.", steps: ["HR-Abteilung bucht Relocation-Paket", "Wir organisieren: Umzug, Wohnung, Schule, Behörden", "Monatliches Abo + Provision pro Mitarbeiter", "LTV pro Enterprise-Kunde: >50'000 CHF"], whyValuable: "High-Value Segment: Ein Firmen-Kunde = 50 Privatkunden. Lange Verträge." }
+    ]
+  },
+  
+  unitEconomics: {
+    badge: "Unit Economics pro Kunde",
+    title: "Wie sich 553 CHF pro Kunde zusammensetzen",
+    clarificationTitle: "Warum \"10 Einnahmequellen\" und \"6 Umsatzströme\"?",
+    clarificationText: "10 Einnahmequellen = Alle möglichen Revenue Streams (inkl. B2B, Partner SaaS, etc.). 6 Umsatzströme = Was ein typischer Privatkunde nutzt und generiert. Die 553 CHF sind der Durchschnitt bei Privatkunden. Mit B2B/Enterprise-Kunden steigt der Wert deutlich höher.",
+    revenuePerCustomer: "Umsatz pro Kunde",
+    revenueSubtitle: "6 Umsatzströme bei Privatkunden",
+    totalRevenue: "Total Umsatz",
+    costsPerCustomer: "Kosten pro Kunde",
+    costsSubtitle: "Fast alles automatisiert",
+    totalCosts: "Total Kosten",
+    profitPerCustomer: "Gewinn pro Kunde",
+    unitEconomicsLabel: "Die Unit Economics",
+    margin: "Marge",
+    whyPossibleTitle: "Warum ist 90%+ Marge möglich?",
+    whyPossibleIntro: "Normale Firmen haben 10-30% Marge, weil sie viele Mitarbeiter brauchen. Wir haben > 90% weil:",
+    whyPossibleReasons: [
+      "95% KI-Automatisierung – Fast keine manuellen Prozesse",
+      "10 Revenue Streams – Mehr verdienen pro Kunde als nur Provision",
+      "SEO-First – Niedrige Akquisekosten durch organischen Traffic",
+      "3-5 Mitarbeiter reichen für 10'000+ Kunden/Jahr"
+    ],
+    classicProvider: "Klassischer Vermittler",
+    us: "Wir",
+    timesMore: "× mehr"
+  },
+  
+  marketPotential: {
+    badge: "📊 Marktanalyse Schweiz",
+    title: "Marktpotenzial & Wachstumsstrategie",
+    subtitle: "Basierend auf Post-Daten, Comparis-Studien und Branchen-Insights",
+    totalMarket: "Gesamtmarkt",
+    movesPerYear: "Umzugsaufträge pro Jahr in der Schweiz",
+    private: "Privat",
+    business: "Business",
+    payingCustomers: "Zahlende Kunden",
+    budgetReady: "Kunden mit Budget & Bereitschaft",
+    bookProService: "buchen Profi-Service",
+    comparisNote: "Laut Comparis-Umfrage nutzen ~⅓ einen professionellen Umzugsdienst",
+    ourMarketShare: "Unser realistischer Marktanteil",
+    basedOnSeo: "Basierend auf SEO-Dominanz + gezieltem Marketing",
+    conservative: "Konservativ (Jahr 1)",
+    realistic: "Realistisch (Jahr 2-3)",
+    ambitious: "Ambitioniert (Jahr 4+)",
+    ordersPerYear: "Aufträge/Jahr",
+    marketShare: "Marktanteil",
+    goal: "Ziel",
+    revenueCalculation: "Revenue-Rechnung (5% Marktanteil)",
+    orders: "Aufträge",
+    revenuePerCustomer: "× Umsatz/Kunde",
+    marginLabel: "Marge 90%",
+    profit: "Gewinn",
+    acquisitionStrategy: "Kundenakquisitions-Strategie",
+    keyInsights: "💡 Schlüssel-Erkenntnisse",
+    insights: [
+      { title: "Fokus auf 165k", text: "Nicht alle 450k erreichen — nur die ~165k+ mit Budget & Bereitschaft targetieren" },
+      { title: "Business = Höherer Profit", text: "Firmenumzüge sind weniger, aber 100% Service-Bereitschaft & höherer Auftragswert" },
+      { title: "5-Sek TV = Awareness", text: "Kurze Spots (\"Es gibt diesen Service!\") bei selektierten Sendern & Zeiten" }
+    ]
+  },
+  
+  exitTimeline: {
+    badge: "Exit-Strategie & Bewertung",
+    title: "Was ist das Ziel? 🎯",
+    subtitle: "Wann könnte man die Firma verkaufen und für wie viel? Basierend auf vergleichbaren Transaktionen im Markt.",
+    now: "Jetzt",
+    comparableTitle: "Vergleichbare Transaktionen",
+    comparableSubtitle: "Was haben ähnliche Firmen bei einem Exit erzielt?",
+    movuTitle: "MOVU → Baloise (2017): Der relevanteste Vergleich",
+    movuText: "MOVU wurde 2017 von der Baloise Gruppe übernommen – die grösste digitale Umzugsplattform der Schweiz zu dem Zeitpunkt. Der Kaufpreis wurde nicht veröffentlicht, wird aber auf 5-10 Mio CHF geschätzt.",
+    whyWeWorthMore: "Warum wir mehr wert sein werden:",
+    movuReasons: [
+      "10 Revenue Streams statt nur Lead-Verkauf",
+      "KI-Technologie (Video, Automation) – MOVU hatte das nicht",
+      "Fintech-Layer (Escrow) – höhere Stickiness",
+      "90%+ Marge vs. klassische 20-30%"
+    ],
+    higherValuation: "→ Bei vergleichbarer Grösse: 3-5× höhere Bewertung möglich durch Tech + Moats",
+    exitOptions: {
+      strategic: { title: "Strategic Acquisition", text: "Versicherung (Baloise, AXA) oder Immobilien-Portal (Homegate, ImmoScout)" },
+      pe: { title: "Private Equity", text: "Growth Buyout bei 5-10 Mio ARR, dann Scale-Up für IPO" },
+      ipo: { title: "IPO (Long-term)", text: "Bei 100+ Mio Umsatz, europäische Marktführerschaft" }
+    },
+    milestones: [
+      { phase: "Heute", description: "MVP fertig, erste Traction" },
+      { phase: "Seed-Ready", description: "1'000+ Leads/Monat, Profitabel" },
+      { phase: "Series A", description: "Marktführer Schweiz, DACH-Expansion" },
+      { phase: "Growth", description: "DACH dominiert, 50k+ Umzüge/Jahr" },
+      { phase: "Exit / IPO", description: "Europäischer Leader, IPO-Ready" }
+    ],
+    comparables: [
+      { description: "Schweizer Umzugs-Plattform", relevance: "Direkter Vergleich – wir bauen MOVU 2.0 mit 10x mehr Features" },
+      { description: "Deutsches Umzugs-Startup", relevance: "Warnung: Zu schnell skaliert ohne Unit Economics. Wir = Profitabel first." },
+      { description: "PropTech / Immobilien-Makler", relevance: "Ähnliches Modell (Lead-Gen + Services) in Immobilien" }
+    ]
   }
 };
 
@@ -531,6 +767,131 @@ const bg: VisionTranslations = {
     questions: "Въпроси? Просто ме попитай.",
     downloadPdf: "Изтегли PDF",
     toMainPage: "Към началната страница"
+  },
+  
+  // NEW SECTIONS - Bulgarian
+  revenueExamples: {
+    badge: "10 източника на приходи в детайли",
+    title: "Конкретни примери: Как печелим пари",
+    subtitle: "Всеки източник на приходи обяснен с реален пример. От прост (веднага приложим) до сложен (нужен е развитие).",
+    quickWins: "Бърза победа",
+    standard: "Стандартен",
+    complex: "Сложен",
+    exampleScenario: "📌 Примерен сценарий",
+    howItWorks: "🔄 Как работи",
+    customerPays: "Клиентът плаща",
+    weGet: "Ние получаваме",
+    partnerGets: "Партньорът получава",
+    whyValuable: "💡 Защо е ценно",
+    streams: [
+      { name: "Affiliate Телеком/Енергия", tagline: "Клиент сменя доставчик → Ние печелим", scenario: "Семейство Мюлер се мести и има нужда от интернет на новото място. Препоръчваме Swisscom.", steps: ["Клиент въвежда нов адрес", "Показваме подходящи оферти за интернет/ток", "Клиент кликва 'Смени сега'", "Доставчикът ни плаща 80-150 CHF комисионна"], whyValuable: "Приход без разходи: Печелим, без да доставяме нищо. Чисто посредничество." },
+      { name: "Продажба на лийдове (CPL)", tagline: "Преместваща фирма плаща за квалифицирана заявка", scenario: "Г-н Шмидт търси преместваща фирма за 3-стаен апартамент. 3 фирми получават заявката му.", steps: ["Клиент попълва формуляр за оферти", "Свързваме с 3-5 подходящи фирми", "Всяка фирма плаща 15-45 CHF на лийд", "Фирмите контактуват клиента директно"], whyValuable: "Скалира перфектно: Повече трафик = линейно повече приходи. Не е нужно изпълнение." },
+      { name: "Базова комисионна (Take-Rate)", tagline: "15% от всяко преместване през платформата", scenario: "Преместване Цюрих → Берн, 30м³. Преместващата фирма таксува 1'500 CHF.", steps: ["Клиент резервира преместване през платформата", "Преместващата фирма извършва преместването", "Клиент плаща на нас (ескроу)", "Задържаме 15% и плащаме 85% на фирмата"], whyValuable: "Наш основен приход: Повече премествания, повече печалба. Средно: 225 CHF/преместване." },
+      { name: "Почистване с гаранция", tagline: "Гаранция за приемане = Premium цена", scenario: "4-стаен апартамент, 85м². Почистване с гаранция за приемане.", steps: ["Клиент резервира 'Гаранция-Почистване'", "Сертифицирана почистваща фирма чисти", "Ако хазяинът се оплаче: безплатна корекция", "Задържаме 20% за гаранционен риск"], whyValuable: "По-висок марж от стандарта заради гаранцията. Cross-sell към всяко преместване." },
+      { name: "Бюрократичен автопилот", tagline: "Един клик = Всичко пререгистрирано", scenario: "Пълна пререгистрация: община, ток, интернет, застраховка, поща.", steps: ["Клиент въвежда стар + нов адрес", "Избира услуги: община, ток, поща и т.н.", "Плаща 49 CHF фиксирано", "Нашият бот прави всичко автоматично"], whyValuable: "98% марж защото е напълно автоматизирано. Спестява на клиентите 5-8 часа работа." },
+      { name: "Ескроу / Такси за доверие", tagline: "Ние държим парите = Печелим от float", scenario: "Преместване за 2'000 CHF. Клиент плаща предварително на нас. Фирмата получава след завършване.", steps: ["Клиент резервира и плаща в ескроу сметка", "Парите са при нас 7-14 дни", "След успешно преместване: натиснете 'Потвърди'", "Фирмата получава, ние задържаме 1.5% такса"], whyValuable: "Двойна полза: Такса + лихви от float. При 1'000 премествания/месец = 1.5 млн. CHF float!" },
+      { name: "Кръгова икономика", tagline: "Старите неща стават пари", scenario: "Клиент иска да се отърве от стар диван, шкаф и матрак.", steps: ["Клиент маркира във видеото какво да махнем", "Ние взимаме (80-200 CHF според количеството)", "Годното се продава в Ricardo/Tutti", "Задържаме такса за извозване + 20% от продажбата"], whyValuable: "Двоен приход: Платено извозване + препродажба. Намалява и разходите за преместване." },
+      { name: "Микро-застраховка", tagline: "Видео доказателство = Незабавно плащане при щети", scenario: "Застраховка за домашни вещи на стойност 50'000 CHF.", steps: ["Клиент прави видео инвентар преди преместване", "Избира застрахователен пакет (Basic/Premium)", "При щета: AI сравнява преди/след видео", "Автоматично изплащане в рамките на 48ч"], whyValuable: "60% марж защото видео доказателствата минимизират щетите. Класическа застраховка: 20% марж." },
+      { name: "Партньорски SaaS (MRR)", tagline: "Преместващи фирми плащат месечно за нашия софтуер", scenario: "Преместваща фирма 'Blitz-Umzüge' използва нашата диспечерска система.", steps: ["Фирма се регистрира за партньорски портал", "Използва управление на лийдове, планиране на капацитет, авто-bidding", "Плаща 99 CHF/месец абонамент", "Допълнително: 15% комисионна на посредничена поръчка"], whyValuable: "Recurring Revenue! 100 партньори × 99 CHF = 10k MRR. Плюс lock-in ефект." },
+      { name: "B2B HR-Relocation", tagline: "Enterprise клиенти с високи кошници", scenario: "Credit Suisse релокира 5 експата от Лондон в Цюрих.", steps: ["HR отдел резервира релокационен пакет", "Ние организираме: преместване, жилище, училище, власти", "Месечен абонамент + комисионна на служител", "LTV на Enterprise клиент: >50'000 CHF"], whyValuable: "High-Value сегмент: Един фирмен клиент = 50 частни клиенти. Дълги договори." }
+    ]
+  },
+  
+  unitEconomics: {
+    badge: "Unit Economics на клиент",
+    title: "Как се събират 553 CHF на клиент",
+    clarificationTitle: "Защо \"10 източника на приходи\" и \"6 потока на приходи\"?",
+    clarificationText: "10 източника на приходи = Всички възможни Revenue Streams (вкл. B2B, Partner SaaS и т.н.). 6 потока на приходи = Какво използва и генерира типичен частен клиент. 553 CHF е средната стойност при частни клиенти. С B2B/Enterprise клиенти стойността расте значително.",
+    revenuePerCustomer: "Приходи на клиент",
+    revenueSubtitle: "6 потока на приходи при частни клиенти",
+    totalRevenue: "Общо приходи",
+    costsPerCustomer: "Разходи на клиент",
+    costsSubtitle: "Почти всичко автоматизирано",
+    totalCosts: "Общо разходи",
+    profitPerCustomer: "Печалба на клиент",
+    unitEconomicsLabel: "Unit Economics",
+    margin: "Марж",
+    whyPossibleTitle: "Защо е възможен 90%+ марж?",
+    whyPossibleIntro: "Нормалните фирми имат 10-30% марж, защото имат нужда от много служители. Ние имаме > 90% защото:",
+    whyPossibleReasons: [
+      "95% AI-автоматизация – Почти няма ръчни процеси",
+      "10 Revenue Streams – Печелим повече на клиент от само комисионна",
+      "SEO-First – Ниски разходи за привличане чрез органичен трафик",
+      "3-5 служители достигат за 10'000+ клиенти/година"
+    ],
+    classicProvider: "Класически посредник",
+    us: "Ние",
+    timesMore: "× повече"
+  },
+  
+  marketPotential: {
+    badge: "📊 Пазарен анализ Швейцария",
+    title: "Пазарен потенциал & Стратегия за растеж",
+    subtitle: "Базирано на данни от Пощата, проучвания на Comparis и insights от индустрията",
+    totalMarket: "Общ пазар",
+    movesPerYear: "Поръчки за преместване годишно в Швейцария",
+    private: "Частни",
+    business: "Бизнес",
+    payingCustomers: "Платежоспособни клиенти",
+    budgetReady: "Клиенти с бюджет и готовност",
+    bookProService: "резервират професионална услуга",
+    comparisNote: "Според проучване на Comparis ~⅓ използват професионална услуга за преместване",
+    ourMarketShare: "Нашият реалистичен пазарен дял",
+    basedOnSeo: "Базирано на SEO доминация + целеви маркетинг",
+    conservative: "Консервативно (Година 1)",
+    realistic: "Реалистично (Година 2-3)",
+    ambitious: "Амбициозно (Година 4+)",
+    ordersPerYear: "Поръчки/година",
+    marketShare: "Пазарен дял",
+    goal: "Цел",
+    revenueCalculation: "Изчисление на приходи (5% пазарен дял)",
+    orders: "Поръчки",
+    revenuePerCustomer: "× Приходи/клиент",
+    marginLabel: "Марж 90%",
+    profit: "Печалба",
+    acquisitionStrategy: "Стратегия за привличане на клиенти",
+    keyInsights: "💡 Ключови insights",
+    insights: [
+      { title: "Фокус върху 165k", text: "Не достигаме всички 450k — таргетираме само ~165k+ с бюджет и готовност" },
+      { title: "Бизнес = По-висока печалба", text: "Фирмените премествания са по-малко, но 100% готовност за услуга и по-висока стойност на поръчка" },
+      { title: "5-сек ТВ = Awareness", text: "Кратки спотове (\"Има такава услуга!\") при избрани канали и часове" }
+    ]
+  },
+  
+  exitTimeline: {
+    badge: "Exit-Стратегия & Оценка",
+    title: "Каква е целта? 🎯",
+    subtitle: "Кога може да се продаде фирмата и за колко? Базирано на сравними транзакции на пазара.",
+    now: "Сега",
+    comparableTitle: "Сравними транзакции",
+    comparableSubtitle: "Какво са постигнали подобни фирми при Exit?",
+    movuTitle: "MOVU → Baloise (2017): Най-релевантното сравнение",
+    movuText: "MOVU беше придобита през 2017 от Baloise Group – най-голямата дигитална платформа за преместване в Швейцария към този момент. Цената не беше публикувана, но се оценява на 5-10 млн. CHF.",
+    whyWeWorthMore: "Защо ние ще струваме повече:",
+    movuReasons: [
+      "10 Revenue Streams вместо само продажба на лийдове",
+      "AI технология (видео, автоматизация) – MOVU нямаше това",
+      "Fintech слой (Escrow) – по-висока stickiness",
+      "90%+ марж vs. класически 20-30%"
+    ],
+    higherValuation: "→ При сравним размер: 3-5× по-висока оценка възможна чрез Tech + Moats",
+    exitOptions: {
+      strategic: { title: "Стратегическо придобиване", text: "Застраховка (Baloise, AXA) или имотен портал (Homegate, ImmoScout)" },
+      pe: { title: "Private Equity", text: "Growth Buyout при 5-10 млн. ARR, после Scale-Up за IPO" },
+      ipo: { title: "IPO (дългосрочно)", text: "При 100+ млн. приходи, европейско лидерство" }
+    },
+    milestones: [
+      { phase: "Днес", description: "MVP готов, първа Traction" },
+      { phase: "Seed-Ready", description: "1'000+ лийда/месец, Профитабилна" },
+      { phase: "Series A", description: "Лидер в Швейцария, DACH-Експанзия" },
+      { phase: "Growth", description: "DACH доминирана, 50k+ премествания/година" },
+      { phase: "Exit / IPO", description: "Европейски лидер, IPO-Ready" }
+    ],
+    comparables: [
+      { description: "Швейцарска платформа за преместване", relevance: "Директно сравнение – ние строим MOVU 2.0 с 10× повече функции" },
+      { description: "Немски преместващ стартъп", relevance: "Предупреждение: Твърде бързо скалиране без Unit Economics. Ние = Първо профитабилни." },
+      { description: "PropTech / Имотен брокер", relevance: "Подобен модел (Lead-Gen + Services) в имоти" }
+    ]
   }
 };
 
