@@ -1,12 +1,12 @@
 /**
- * Emotional Hero Section
- * Celebrates the human side of moving - new beginnings, family moments
- * Uses stock photos + emotional messaging
+ * Confident Hero Section
+ * Bold, assertive "American" style - we are the best
+ * Strong messaging with competitive positioning
  */
 
 import { memo } from "react";
 import { motion } from "framer-motion";
-import { Heart, Sparkles, Home, ArrowRight } from "lucide-react";
+import { Trophy, Zap, Crown, ArrowRight, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import type { VisionLanguage } from "@/lib/vision-translations";
@@ -18,200 +18,199 @@ interface VisionEmotionalHeroProps {
 
 const content = {
   de: {
-    badge: "Neue Anfänge ✨",
+    badge: "#1 in der Schweiz 🏆",
     
     headline: {
-      family: "Ein Umzug ist mehr als nur Kartons",
-      investor: "450'000 neue Kapitel pro Jahr",
-      full: "Wir helfen Menschen, neu anzufangen"
+      family: "Die beste Umzugsplattform der Schweiz",
+      investor: "Die #1 Umzugsplattform – 10 Umsatzströme, 95% AI",
+      full: "Wir dominieren den Schweizer Umzugsmarkt"
     },
     
     subheadline: {
-      family: "Es ist der Beginn eines neuen Lebensabschnitts. Das erste Frühstück im neuen Zuhause. Der Moment, wenn die Kinder ihr neues Zimmer entdecken.",
-      investor: "Jeder Umzug ist ein emotionaler Meilenstein – eine Hochzeit, ein neuer Job, ein grösseres Zuhause für die wachsende Familie.",
-      full: "Jeder Umzug erzählt eine Geschichte. Wir machen diese Geschichten stressfrei und unvergesslich."
+      family: "Während andere noch Telefonnummern googeln, haben unsere Kunden schon 5 Offerten. Das ist der Unterschied.",
+      investor: "10 Revenue Streams. 95% Automatisierung. 15x Marge vs. Konkurrenz. Die Zukunft der Relocation-Industrie.",
+      full: "Die fortschrittlichste Umzugstechnologie Europas. Punkt. Kein Wettbewerber kommt auch nur annähernd heran."
     },
     
     stats: [
-      { value: "450k", label: "Umzüge/Jahr in CH" },
-      { value: "85%", label: "positive Lebensveränderung" },
-      { value: "#1", label: "Stressfaktor im Leben" }
+      { value: "#1", label: "Schweizer Markt" },
+      { value: "95%", label: "AI-Automatisiert" },
+      { value: "10×", label: "Revenue Streams" }
     ],
     
     cta: {
-      primary: "Unsere Mission entdecken",
-      secondary: "So funktioniert's"
+      primary: "Unsere Dominanz entdecken",
+      secondary: "Technologie ansehen"
     },
     
-    imageAlt: "Glückliche Familie beim Umzug in ihr neues Zuhause"
+    tagline: "Überlegen in jeder Dimension"
   },
   bg: {
-    badge: "Нови начала ✨",
+    badge: "#1 в Швейцария 🏆",
     
     headline: {
-      family: "Преместването е повече от кашони",
-      investor: "450'000 нови глави годишно",
-      full: "Помагаме на хората да започнат отначало"
+      family: "Най-добрата платформа за преместване в Швейцария",
+      investor: "#1 Платформа – 10 потока приходи, 95% AI",
+      full: "Доминираме швейцарския пазар за преместване"
     },
     
     subheadline: {
-      family: "Това е началото на нов етап от живота. Първата закуска в новия дом. Моментът, когато децата откриват новата си стая.",
-      investor: "Всяко преместване е емоционален етап – сватба, нова работа, по-голям дом за растящото семейство.",
-      full: "Всяко преместване разказва история. Ние правим тези истории безстресови и незабравими."
+      family: "Докато другите търсят телефонни номера, нашите клиенти вече имат 5 оферти. Това е разликата.",
+      investor: "10 потока приходи. 95% автоматизация. 15× марж спрямо конкуренцията. Бъдещето на релокацията.",
+      full: "Най-напредналата технология за преместване в Европа. Точка. Никой конкурент не може да се доближи."
     },
     
     stats: [
-      { value: "450k", label: "преместванията/год в CH" },
-      { value: "85%", label: "положителна промяна в живота" },
-      { value: "#1", label: "стрес фактор в живота" }
+      { value: "#1", label: "Швейцарски пазар" },
+      { value: "95%", label: "AI-автоматизирано" },
+      { value: "10×", label: "Потоци приходи" }
     ],
     
     cta: {
-      primary: "Открийте нашата мисия",
-      secondary: "Как работи"
+      primary: "Вижте нашето превъзходство",
+      secondary: "Технология"
     },
     
-    imageAlt: "Щастливо семейство, което се мести в новия си дом"
+    tagline: "Превъзходни във всяко измерение"
+  },
+  it: {
+    badge: "#1 in Svizzera 🏆",
+    
+    headline: {
+      family: "La migliore piattaforma di trasloco della Svizzera",
+      investor: "La #1 Piattaforma – 10 flussi di ricavo, 95% AI",
+      full: "Dominiamo il mercato svizzero dei traslochi"
+    },
+    
+    subheadline: {
+      family: "Mentre altri cercano ancora numeri di telefono, i nostri clienti hanno già 5 preventivi. Questa è la differenza.",
+      investor: "10 flussi di ricavo. 95% automazione. 15× margine vs. concorrenza. Il futuro dell'industria del trasloco.",
+      full: "La tecnologia di trasloco più avanzata d'Europa. Punto. Nessun concorrente si avvicina neanche lontanamente."
+    },
+    
+    stats: [
+      { value: "#1", label: "Mercato Svizzero" },
+      { value: "95%", label: "Automatizzato AI" },
+      { value: "10×", label: "Flussi di Ricavo" }
+    ],
+    
+    cta: {
+      primary: "Scopri il nostro dominio",
+      secondary: "Vedi tecnologia"
+    },
+    
+    tagline: "Superiori in ogni dimensione"
   }
 };
 
-// High-quality Unsplash images of happy moving families
+// Professional business images
 const heroImages = [
-  "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80", // Modern home interior
-  "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80", // Beautiful house exterior
-  "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&q=80", // Bright living room
-];
-
-const familyImages = [
-  "https://images.unsplash.com/photo-1581579438747-1dc8d17bbce4?w=800&q=80", // Family with boxes
-  "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=800&q=80", // Happy family home
-  "https://images.unsplash.com/photo-1600573472591-ee6e7e3c7c8e?w=800&q=80", // Family moment
+  "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&q=80", // Modern skyscraper
+  "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=80", // Modern office
+  "https://images.unsplash.com/photo-1460472178825-e5240623afd5?w=1200&q=80", // City skyline
 ];
 
 export const VisionEmotionalHero = memo(({ language, variant = 'full' }: VisionEmotionalHeroProps) => {
-  const t = content[language];
+  const t = content[language] || content.de;
   
   return (
-    <section className="relative overflow-hidden">
+    <section className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-secondary/5">
       {/* Background with gradient overlay */}
       <div className="absolute inset-0 z-0">
         <img
           src={heroImages[0]}
           alt=""
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover opacity-20"
           loading="eager"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/95 to-background/70" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/95 to-background/80" />
       </div>
       
       <div className="container mx-auto px-4 py-12 md:py-20 lg:py-28 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+        <div className="max-w-4xl mx-auto text-center">
           
-          {/* Left: Text Content */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
           >
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/10 text-secondary text-sm font-bold mb-6">
-              <Heart className="w-4 h-4" />
+            <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-black mb-6 shadow-lg">
+              <Trophy className="w-4 h-4" />
               {t.badge}
             </span>
-            
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-foreground mb-6 leading-tight">
-              {t.headline[variant]}
-            </h1>
-            
-            <p className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed max-w-xl">
-              {t.subheadline[variant]}
-            </p>
-            
-            {/* Stats */}
-            <div className="grid grid-cols-3 gap-4 mb-8">
-              {t.stats.map((stat, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 + i * 0.1 }}
-                  className="text-center p-3 rounded-xl bg-card/80 backdrop-blur-sm border"
-                >
-                  <p className="text-xl md:text-2xl font-black text-primary">{stat.value}</p>
-                  <p className="text-[10px] md:text-xs text-muted-foreground">{stat.label}</p>
-                </motion.div>
-              ))}
-            </div>
-            
-            {/* CTAs */}
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Link to="/vision#vision-customer-usps">
-                <Button size="lg" className="w-full sm:w-auto min-h-[48px] group">
-                  <Sparkles className="w-4 h-4 mr-2" />
-                  {t.cta.primary}
-                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </Link>
-              <Link to="/">
-                <Button variant="outline" size="lg" className="w-full sm:w-auto min-h-[48px]">
-                  <Home className="w-4 h-4 mr-2" />
-                  {t.cta.secondary}
-                </Button>
-              </Link>
-            </div>
           </motion.div>
           
-          {/* Right: Image Collage */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="relative hidden lg:block"
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-foreground mb-6 leading-tight"
           >
-            <div className="relative">
-              {/* Main image */}
-              <div className="rounded-2xl overflow-hidden shadow-2xl">
-                <img
-                  src={familyImages[0]}
-                  alt={t.imageAlt}
-                  className="w-full h-80 object-cover"
-                  loading="eager"
-                />
-              </div>
-              
-              {/* Floating smaller images */}
+            {t.headline[variant]}
+          </motion.h1>
+          
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed max-w-3xl mx-auto"
+          >
+            {t.subheadline[variant]}
+          </motion.p>
+          
+          {/* Stats */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="grid grid-cols-3 gap-4 mb-10 max-w-xl mx-auto"
+          >
+            {t.stats.map((stat, i) => (
               <motion.div
+                key={i}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.5 }}
-                className="absolute -bottom-6 -left-6 w-40 h-28 rounded-xl overflow-hidden shadow-xl border-4 border-background"
+                transition={{ delay: 0.4 + i * 0.1 }}
+                className="text-center p-4 rounded-2xl bg-card/80 backdrop-blur-sm border-2 border-primary/20 shadow-lg"
               >
-                <img
-                  src={familyImages[1]}
-                  alt=""
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
+                <p className="text-2xl md:text-3xl font-black text-primary">{stat.value}</p>
+                <p className="text-xs md:text-sm text-muted-foreground font-medium">{stat.label}</p>
               </motion.div>
-              
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.7 }}
-                className="absolute -top-4 -right-4 w-32 h-24 rounded-xl overflow-hidden shadow-xl border-4 border-background"
-              >
-                <img
-                  src={familyImages[2]}
-                  alt=""
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
-              </motion.div>
-              
-              {/* Decorative elements */}
-              <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-primary/10 rounded-full blur-3xl" />
-              <div className="absolute -z-10 bottom-0 right-0 w-40 h-40 bg-secondary/10 rounded-full blur-2xl" />
-            </div>
+            ))}
+          </motion.div>
+          
+          {/* CTAs */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="flex flex-col sm:flex-row gap-4 justify-center mb-8"
+          >
+            <Link to="/vision#vision-customer-usps">
+              <Button size="lg" className="w-full sm:w-auto min-h-[52px] text-base font-bold px-8 group shadow-xl">
+                <Crown className="w-5 h-5 mr-2" />
+                {t.cta.primary}
+                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </Link>
+            <Link to="/">
+              <Button variant="outline" size="lg" className="w-full sm:w-auto min-h-[52px] text-base font-bold px-8 border-2">
+                <Zap className="w-5 h-5 mr-2" />
+                {t.cta.secondary}
+              </Button>
+            </Link>
+          </motion.div>
+          
+          {/* Tagline */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.7 }}
+            className="flex items-center justify-center gap-2 text-sm font-bold text-primary"
+          >
+            <Star className="w-4 h-4 fill-current" />
+            <span>{t.tagline}</span>
+            <Star className="w-4 h-4 fill-current" />
           </motion.div>
           
         </div>

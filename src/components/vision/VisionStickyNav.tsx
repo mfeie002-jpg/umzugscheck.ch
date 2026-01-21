@@ -24,15 +24,23 @@ interface NavItem {
   icon: React.ReactNode;
 }
 
+interface NavItem {
+  id: string;
+  labelDe: string;
+  labelBg: string;
+  labelIt: string;
+  icon: React.ReactNode;
+}
+
 const navItems: NavItem[] = [
-  { id: "vision-hero", labelDe: "Vision", labelBg: "Визия", icon: <Rocket className="w-3.5 h-3.5" /> },
-  { id: "vision-progress", labelDe: "Traction", labelBg: "Traction", icon: <Target className="w-3.5 h-3.5" /> },
-  { id: "vision-customer-usps", labelDe: "USPs", labelBg: "USPs", icon: <Users className="w-3.5 h-3.5" /> },
-  { id: "vision-investor-pillars", labelDe: "Pillars", labelBg: "Pillars", icon: <TrendingUp className="w-3.5 h-3.5" /> },
-  { id: "vision-unit-economics", labelDe: "Economics", labelBg: "Икономика", icon: <DollarSign className="w-3.5 h-3.5" /> },
-  { id: "vision-market-potential", labelDe: "Markt", labelBg: "Пазар", icon: <Globe className="w-3.5 h-3.5" /> },
-  { id: "vision-team", labelDe: "Team", labelBg: "Екип", icon: <UserCircle className="w-3.5 h-3.5" /> },
-  { id: "vision-exit", labelDe: "Exit", labelBg: "Изход", icon: <Rocket className="w-3.5 h-3.5" /> },
+  { id: "vision-hero", labelDe: "Vision", labelBg: "Визия", labelIt: "Visione", icon: <Rocket className="w-3.5 h-3.5" /> },
+  { id: "vision-progress", labelDe: "Roadmap", labelBg: "Roadmap", labelIt: "Roadmap", icon: <Target className="w-3.5 h-3.5" /> },
+  { id: "vision-customer-usps", labelDe: "USPs", labelBg: "USPs", labelIt: "USPs", icon: <Users className="w-3.5 h-3.5" /> },
+  { id: "vision-investor-pillars", labelDe: "Pillars", labelBg: "Pillars", labelIt: "Pilastri", icon: <TrendingUp className="w-3.5 h-3.5" /> },
+  { id: "vision-unit-economics", labelDe: "Economics", labelBg: "Икономика", labelIt: "Economics", icon: <DollarSign className="w-3.5 h-3.5" /> },
+  { id: "vision-market-potential", labelDe: "Markt", labelBg: "Пазар", labelIt: "Mercato", icon: <Globe className="w-3.5 h-3.5" /> },
+  { id: "vision-team", labelDe: "Team", labelBg: "Екип", labelIt: "Team", icon: <UserCircle className="w-3.5 h-3.5" /> },
+  { id: "vision-exit", labelDe: "Exit", labelBg: "Изход", labelIt: "Exit", icon: <Rocket className="w-3.5 h-3.5" /> },
 ];
 
 interface VisionStickyNavProps {
@@ -90,7 +98,9 @@ export const VisionStickyNav = memo(({ language }: VisionStickyNavProps) => {
               <span className="truncate">
                 {language === 'de' 
                   ? navItems.find(n => n.id === activeSection)?.labelDe 
-                  : navItems.find(n => n.id === activeSection)?.labelBg
+                  : language === 'it'
+                    ? navItems.find(n => n.id === activeSection)?.labelIt
+                    : navItems.find(n => n.id === activeSection)?.labelBg
                 }
               </span>
             </span>
@@ -109,10 +119,10 @@ export const VisionStickyNav = memo(({ language }: VisionStickyNavProps) => {
                       ? "bg-primary text-primary-foreground"
                       : "hover:bg-muted active:bg-muted"
                   )}
-                >
-                  {item.icon}
-                  {language === 'de' ? item.labelDe : item.labelBg}
-                </button>
+                  >
+                    {item.icon}
+                    {language === 'de' ? item.labelDe : language === 'it' ? item.labelIt : item.labelBg}
+                  </button>
               ))}
             </div>
           )}
@@ -132,7 +142,7 @@ export const VisionStickyNav = memo(({ language }: VisionStickyNavProps) => {
               )}
             >
               {item.icon}
-              {language === 'de' ? item.labelDe : item.labelBg}
+              {language === 'de' ? item.labelDe : language === 'it' ? item.labelIt : item.labelBg}
             </button>
           ))}
         </nav>

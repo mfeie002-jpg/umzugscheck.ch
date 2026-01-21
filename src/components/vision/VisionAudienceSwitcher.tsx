@@ -20,24 +20,24 @@ interface VisionAudienceSwitcherProps {
 const content = {
   de: {
     title: "Wähle deine Perspektive",
-    subtitle: "Diese Seite enthält alles – oder springe direkt zu deinem Fokus:",
+    subtitle: "Diese Seite zeigt alles – oder springe direkt zu deinem Fokus:",
     
     audiences: [
       {
         id: "family",
         icon: Heart,
         title: "Für Familie",
-        description: "Einfach erklärt: Was ich baue und warum es funktioniert",
+        description: "Einfach erklärt: Warum wir die #1 sind",
         link: "/family",
         color: "border-red-200 hover:border-red-400 hover:bg-red-50/50",
         iconColor: "text-red-500",
-        badge: "Für Eltern"
+        badge: "Einfach"
       },
       {
         id: "investors",
         icon: TrendingUp,
         title: "Für Investoren",
-        description: "Unit Economics, Market Sizing, Exit Strategy",
+        description: "Unit Economics, 10 Revenue Streams, Exit Potenzial",
         link: "/investoren",
         color: "border-primary/30 hover:border-primary hover:bg-primary/5",
         iconColor: "text-primary",
@@ -47,7 +47,7 @@ const content = {
         id: "partners",
         icon: Building2,
         title: "Für Partner",
-        description: "Umzugsfirmen: Leads, Bidding & Provision",
+        description: "Umzugsfirmen: Premium-Leads, Bidding & Wachstum",
         link: "/fuer-firmen",
         color: "border-slate-200 hover:border-slate-400 hover:bg-slate-50/50",
         iconColor: "text-slate-600",
@@ -59,24 +59,24 @@ const content = {
   },
   bg: {
     title: "Избери своята перспектива",
-    subtitle: "Тази страница съдържа всичко – или скочи директно към твоя фокус:",
+    subtitle: "Тази страница показва всичко – или скочи директно към твоя фокус:",
     
     audiences: [
       {
         id: "family",
         icon: Heart,
         title: "За семейството",
-        description: "Просто обяснено: Какво строя и защо работи",
+        description: "Просто обяснено: Защо сме #1",
         link: "/family",
         color: "border-red-200 hover:border-red-400 hover:bg-red-50/50",
         iconColor: "text-red-500",
-        badge: "За родители"
+        badge: "Просто"
       },
       {
         id: "investors",
         icon: TrendingUp,
         title: "За инвеститори",
-        description: "Unit Economics, Market Sizing, Exit Strategy",
+        description: "Unit Economics, 10 потока приходи, Exit потенциал",
         link: "/investoren",
         color: "border-primary/30 hover:border-primary hover:bg-primary/5",
         iconColor: "text-primary",
@@ -86,7 +86,7 @@ const content = {
         id: "partners",
         icon: Building2,
         title: "За партньори",
-        description: "Фирми за преместване: Leads, Bidding & Комисионни",
+        description: "Фирми за преместване: Premium-Leads, Bidding & растеж",
         link: "/fuer-firmen",
         color: "border-slate-200 hover:border-slate-400 hover:bg-slate-50/50",
         iconColor: "text-slate-600",
@@ -95,6 +95,45 @@ const content = {
     ],
     
     continueHere: "Или продължи да скролиш за пълния преглед"
+  },
+  it: {
+    title: "Scegli la tua prospettiva",
+    subtitle: "Questa pagina mostra tutto – o salta direttamente al tuo focus:",
+    
+    audiences: [
+      {
+        id: "family",
+        icon: Heart,
+        title: "Per la Famiglia",
+        description: "Spiegato semplicemente: Perché siamo #1",
+        link: "/family",
+        color: "border-red-200 hover:border-red-400 hover:bg-red-50/50",
+        iconColor: "text-red-500",
+        badge: "Semplice"
+      },
+      {
+        id: "investors",
+        icon: TrendingUp,
+        title: "Per Investitori",
+        description: "Unit Economics, 10 flussi di ricavo, potenziale Exit",
+        link: "/investoren",
+        color: "border-primary/30 hover:border-primary hover:bg-primary/5",
+        iconColor: "text-primary",
+        badge: "Business"
+      },
+      {
+        id: "partners",
+        icon: Building2,
+        title: "Per Partner",
+        description: "Aziende di trasloco: Lead Premium, Bidding & Crescita",
+        link: "/fuer-firmen",
+        color: "border-slate-200 hover:border-slate-400 hover:bg-slate-50/50",
+        iconColor: "text-slate-600",
+        badge: "B2B"
+      }
+    ],
+    
+    continueHere: "Oppure continua a scorrere per la panoramica completa"
   }
 };
 
@@ -135,7 +174,7 @@ export const VisionAudienceSwitcher = memo(({ language, className }: VisionAudie
                     <h3 className="font-bold text-sm md:text-base mb-1">{audience.title}</h3>
                     <p className="text-xs md:text-sm text-muted-foreground mb-2 md:mb-3">{audience.description}</p>
                     <div className="flex items-center gap-1 text-xs md:text-sm font-medium text-primary">
-                      <span>{language === 'de' ? 'Ansehen' : 'Виж'}</span>
+                      <span>{language === 'de' ? 'Ansehen' : language === 'it' ? 'Vedi' : 'Виж'}</span>
                       <ArrowRight className="w-3 h-3 md:w-4 md:h-4" />
                     </div>
                   </Card>
