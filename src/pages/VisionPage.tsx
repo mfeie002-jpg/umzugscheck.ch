@@ -5,22 +5,23 @@ import { CustomerUSPVisualCards } from "@/components/homepage/CustomerUSPVisualC
 import { FamilySummary } from "@/components/homepage/FamilySummary";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Download, FileText, Loader2, Eye, EyeOff } from "lucide-react";
+import { ArrowLeft, Download, FileText, Loader2, Eye, EyeOff, Users, TrendingUp, Sparkles, DollarSign, Target, Crown, Globe, Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
 import { exportVisionToPDF, exportVisionAsTextPDF } from "@/lib/vision-pdf-export";
 import { useToast } from "@/hooks/use-toast";
 import { VisionLanguageSwitcher } from "@/components/vision/VisionLanguageSwitcher";
-import { VisionRoadmapTimeline } from "@/components/vision/VisionRoadmapTimeline";
+import { VisionProgressMilestones } from "@/components/vision/VisionProgressMilestones";
 import { RevenueStreamExamples } from "@/components/vision/RevenueStreamExamples";
 import { UnitEconomicsDetailed } from "@/components/vision/UnitEconomicsDetailed";
 import { ExitTimeline } from "@/components/vision/ExitTimeline";
 import { MarketPotentialSection } from "@/components/vision/MarketPotentialSection";
+import { VisionUniqueness } from "@/components/vision/VisionUniqueness";
+import { VisionCollapsibleSection } from "@/components/vision/VisionCollapsibleSection";
 import { getVisionTranslation, type VisionLanguage } from "@/lib/vision-translations";
 
 export default function VisionPage() {
   const [isExporting, setIsExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
-  const [allExpanded, setAllExpanded] = useState(false);
   const [language, setLanguage] = useState<VisionLanguage>('de');
   const { toast } = useToast();
   
@@ -74,125 +75,160 @@ export default function VisionPage() {
         url="https://umzugscheck.ch/vision"
       />
 
-      {/* Simple Header with Download Buttons */}
-      <div className="container mx-auto px-4 py-6">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <Link to="/">
-            <Button variant="ghost" size="sm">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              {t.page.backToMain}
-            </Button>
-          </Link>
-          
-          <div className="flex flex-wrap items-center gap-2">
-            <VisionLanguageSwitcher 
-              currentLang={language} 
-              onLanguageChange={setLanguage} 
-            />
-            <Button 
-              variant={allExpanded ? "default" : "outline"}
-              size="sm"
-              onClick={() => setAllExpanded(!allExpanded)}
-              className="gap-2"
-            >
-              {allExpanded ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              {allExpanded ? t.page.hideDetails : t.page.showAllDetails}
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={handleExportTextPDF}
-              disabled={isExporting}
-            >
-              <FileText className="w-4 h-4 mr-2" />
-              {t.page.compactPdf}
-            </Button>
-            <Button 
-              onClick={handleExportPDF}
-              disabled={isExporting}
-              className="relative"
-            >
-              {isExporting ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  {exportProgress}%
-                </>
-              ) : (
-                <>
-                  <Download className="w-4 h-4 mr-2" />
-                  {t.page.downloadPdf}
-                </>
-              )}
-            </Button>
+      {/* Sticky Header with Download Buttons */}
+      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b">
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <Link to="/">
+              <Button variant="ghost" size="sm">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                {t.page.backToMain}
+              </Button>
+            </Link>
+            
+            <div className="flex flex-wrap items-center gap-2">
+              <VisionLanguageSwitcher 
+                currentLang={language} 
+                onLanguageChange={setLanguage} 
+              />
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={handleExportTextPDF}
+                disabled={isExporting}
+              >
+                <FileText className="w-4 h-4 mr-2" />
+                {t.page.compactPdf}
+              </Button>
+              <Button 
+                onClick={handleExportPDF}
+                disabled={isExporting}
+                className="relative"
+                size="sm"
+              >
+                {isExporting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    {exportProgress}%
+                  </>
+                ) : (
+                  <>
+                    <Download className="w-4 h-4 mr-2" />
+                    {t.page.downloadPdf}
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Hero for Vision Page */}
-      <section id="vision-hero" className="py-12 md:py-16 bg-gradient-to-b from-primary/5 to-background">
+      {/* Compact Hero */}
+      <section id="vision-hero" className="py-8 md:py-12 bg-gradient-to-b from-primary/5 to-background">
         <div className="container mx-auto px-4 text-center">
-          <span className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
+          <span className="inline-block px-3 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
             {t.page.badge}
           </span>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
             {t.page.title}
           </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             {t.page.subtitle}
           </p>
         </div>
       </section>
 
-      {/* 10 Kunden-USPs - Visuelle Infografik-Karten */}
-      <div id="vision-customer-usps">
+      {/* 1. PROGRESS MILESTONES (Always visible - shows the 3 months of work) */}
+      <div id="vision-progress">
+        <VisionProgressMilestones language={language} />
+      </div>
+
+      {/* COLLAPSIBLE SECTIONS START */}
+      <div className="max-w-6xl mx-auto">
+        
+        {/* 2. Customer USPs (Collapsible) */}
+        <VisionCollapsibleSection
+          title={language === 'de' ? "10 Kunden-Vorteile" : "10 клиентски предимства"}
+          icon={<Users className="w-5 h-5" />}
+          badge={language === 'de' ? "Magic für Familien" : "Магия за семейства"}
+          defaultOpen={false}
+        >
+          <div id="vision-customer-usps">
+            <CustomerUSPVisualCards />
+          </div>
+        </VisionCollapsibleSection>
+        
+        {/* 3. Investor Pillars (Collapsible) */}
+        <VisionCollapsibleSection
+          title={language === 'de' ? "10 Investoren-Säulen" : "10 инвеститорски стълба"}
+          icon={<TrendingUp className="w-5 h-5" />}
+          badge={language === 'de' ? "Business Model" : "Бизнес модел"}
+          defaultOpen={false}
+        >
+          <div id="vision-investor-pillars">
+            <Vision10PillarSection allExpanded={false} />
+          </div>
+        </VisionCollapsibleSection>
+        
+        {/* 4. Family Summary (Collapsible but important) */}
+        <VisionCollapsibleSection
+          title={language === 'de' ? "Einfach erklärt für die Familie" : "Обяснено просто за семейството"}
+          icon={<Sparkles className="w-5 h-5" />}
+          badge={language === 'de' ? "Für Eltern" : "За родители"}
+          defaultOpen={true}
+        >
+          <div id="vision-family-summary">
+            <FamilySummary />
+          </div>
+        </VisionCollapsibleSection>
+        
+        {/* 5. Revenue Streams (Collapsible) */}
+        <VisionCollapsibleSection
+          title={language === 'de' ? "10 Einnahmequellen im Detail" : "10 източника на приходи"}
+          icon={<DollarSign className="w-5 h-5" />}
+          badge={language === 'de' ? "553 CHF/Kunde" : "553 CHF/клиент"}
+          defaultOpen={false}
+        >
+          <div id="vision-revenue-examples">
+            <RevenueStreamExamples />
+          </div>
+        </VisionCollapsibleSection>
+        
+        {/* 6. Unit Economics (Collapsible) */}
+        <VisionCollapsibleSection
+          title={language === 'de' ? "Unit Economics: Wie wir Geld verdienen" : "Unit Economics: Как печелим пари"}
+          icon={<Target className="w-5 h-5" />}
+          badge={language === 'de' ? "90%+ Marge" : "90%+ марж"}
+          defaultOpen={false}
+        >
+          <div id="vision-unit-economics">
+            <UnitEconomicsDetailed />
+          </div>
+        </VisionCollapsibleSection>
+        
+        {/* 7. Market Potential (Collapsible) */}
+        <VisionCollapsibleSection
+          title={language === 'de' ? "Marktpotenzial Schweiz" : "Пазарен потенциал Швейцария"}
+          icon={<Rocket className="w-5 h-5" />}
+          badge={language === 'de' ? "450k Umzüge/Jahr" : "450k преместванията/год"}
+          defaultOpen={false}
+        >
+          <div id="vision-market-potential">
+            <MarketPotentialSection />
+          </div>
+        </VisionCollapsibleSection>
+        
+      </div>
+      {/* COLLAPSIBLE SECTIONS END */}
+
+      {/* 8. UNIQUENESS - Why this doesn't exist (Full section, not collapsible) */}
+      <div id="vision-uniqueness">
         <ScrollReveal>
-          <CustomerUSPVisualCards />
+          <VisionUniqueness language={language} />
         </ScrollReveal>
       </div>
 
-      {/* Vision 10 Pillars - Kunden & Investoren USPs (Tabs) */}
-      <div id="vision-investor-pillars">
-        <ScrollReveal>
-          <Vision10PillarSection allExpanded={allExpanded} />
-        </ScrollReveal>
-      </div>
-
-      {/* Eltern-Zusammenfassung */}
-      <div id="vision-family-summary">
-        <ScrollReveal>
-          <FamilySummary />
-        </ScrollReveal>
-      </div>
-
-      {/* NEW: Detaillierte Revenue Stream Beispiele */}
-      <div id="vision-revenue-examples">
-        <ScrollReveal>
-          <RevenueStreamExamples />
-        </ScrollReveal>
-      </div>
-
-      {/* NEW: Unit Economics Detailed */}
-      <div id="vision-unit-economics">
-        <ScrollReveal>
-          <UnitEconomicsDetailed />
-        </ScrollReveal>
-      </div>
-
-      {/* NEW: Marktpotenzial Schweiz */}
-      <div id="vision-market-potential">
-        <ScrollReveal>
-          <MarketPotentialSection />
-        </ScrollReveal>
-      </div>
-
-      {/* Roadmap Timeline - Der Weg zum Marktführer */}
-      <div id="vision-roadmap">
-        <ScrollReveal>
-          <VisionRoadmapTimeline t={t} />
-        </ScrollReveal>
-      </div>
-
-      {/* NEW: Exit Timeline mit Bewertungen */}
+      {/* 9. Exit Timeline (Full section, important) */}
       <div id="vision-exit">
         <ScrollReveal>
           <ExitTimeline />
@@ -200,7 +236,7 @@ export default function VisionPage() {
       </div>
 
       {/* Footer CTA */}
-      <section className="py-16 bg-primary/5">
+      <section className="py-12 bg-primary/5">
         <div className="container mx-auto px-4 text-center">
           <p className="text-muted-foreground mb-4">
             {t.footer.questions}
