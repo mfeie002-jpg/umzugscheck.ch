@@ -53,6 +53,78 @@ export function usePublicProviders(limit: number = 6) {
   });
 }
 
+export function useFeaturedProviders(limit: number = 6) {
+  return useQuery({
+    queryKey: ["featured-providers", limit],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("service_providers_public")
+        .select(`
+          id,
+          company_name,
+          city,
+          cantons_served,
+          services_offered,
+          price_level,
+          quality_score,
+          response_time_minutes,
+          is_featured,
+          sponsored_tier,
+          verification_status,
+          short_description,
+          logo_url,
+          certifications
+        `)
+        .eq("account_status", "active")
+        .eq("verification_status", "approved")
+        .eq("is_featured", true)
+        .order("quality_score", { ascending: false, nullsFirst: false })
+        .limit(limit);
+
+      if (error) throw error;
+      return data as PublicProvider[];
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+export function useProvidersByRegion(canton: string, limit: number = 10) {
+  return useQuery({
+    queryKey: ["providers-by-region", canton, limit],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("service_providers_public")
+        .select(`
+          id,
+          company_name,
+          city,
+          cantons_served,
+          services_offered,
+          price_level,
+          quality_score,
+          response_time_minutes,
+          is_featured,
+          sponsored_tier,
+          verification_status,
+          short_description,
+          logo_url,
+          certifications
+        `)
+        .eq("account_status", "active")
+        .eq("verification_status", "approved")
+        .contains("cantons_served", [canton])
+        .order("sponsored_tier", { ascending: false, nullsFirst: false })
+        .order("quality_score", { ascending: false, nullsFirst: false })
+        .limit(limit);
+
+      if (error) throw error;
+      return data as PublicProvider[];
+    },
+    staleTime: 5 * 60 * 1000,
+    enabled: !!canton,
+  });
+}
+
 // Helper function to estimate price range based on price_level
 export function getPriceRange(priceLevel: string | null): string {
   switch (priceLevel) {
@@ -77,8 +149,19 @@ export function getResponseTimeString(minutes: number | null): string {
   return "< 24 Std.";
 }
 
-// Helper to generate a rating from quality score (0-100 -> 4.0-5.0)
+// Helper to generate a rating from quality score (0-1 or 0-100 -> 4.0-5.0)
 export function getDisplayRating(qualityScore: number | null): number {
   if (!qualityScore) return 4.5;
-  return Math.round((4.0 + (qualityScore / 100) * 1.0) * 10) / 10;
+  // Handle both 0-1 and 0-100 scales
+  const normalizedScore = qualityScore > 1 ? qualityScore / 100 : qualityScore;
+  return Math.round((4.0 + normalizedScore * 1.0) * 10) / 10;
+}
+
+// Helper to get review count estimate based on quality score
+export function getEstimatedReviewCount(qualityScore: number | null): number {
+  if (!qualityScore) return 50;
+  // Handle both 0-1 and 0-100 scales
+  const normalizedScore = qualityScore > 1 ? qualityScore / 100 : qualityScore;
+  // Higher quality score = more reviews (50-500 range)
+  return Math.round(50 + normalizedScore * 450);
 }
