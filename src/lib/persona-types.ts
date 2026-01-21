@@ -65,6 +65,8 @@ export interface PersonaInfo {
   emoji: string;
   description: string;
   themes: string[];
+  vipTitle: string;
+  vipBadge: string;
 }
 
 export const PERSONA_INFO: Record<PersonaKey, PersonaInfo> = {
@@ -72,35 +74,45 @@ export const PERSONA_INFO: Record<PersonaKey, PersonaInfo> = {
     key: 'bg0',
     name: 'Неутрален',
     emoji: '🇧🇬',
-    description: 'Стандартен професионален тон',
-    themes: ['professional', 'neutral']
+    description: 'Стандартен изглед',
+    themes: ['professional', 'neutral'],
+    vipTitle: 'VIP Гост',
+    vipBadge: '⭐ Първи Гледащ'
   },
   bg1: {
     key: 'bg1',
     name: 'Димитър',
     emoji: '🥊',
-    description: 'Боксьор, детектив, 50г.',
-    themes: ['boxing', 'paranoia', 'security', 'pasta', 'lotto']
+    description: 'Боксьор & Охрана',
+    themes: ['boxing', 'paranoia', 'security', 'pasta', 'lotto'],
+    vipTitle: 'Шампион VIP',
+    vipBadge: '🏆 Защитник #1'
   },
   bg2: {
     key: 'bg2',
     name: 'Fudely',
-    emoji: '💅',
-    description: 'Готвачка, танцьорка, 31г.',
-    themes: ['shopping', 'cooking', 'dancing', 'rabbits', 'mercedes']
+    emoji: '💃',
+    description: 'Шопинг & Танци',
+    themes: ['shopping', 'cooking', 'dancing', 'rabbits', 'mercedes'],
+    vipTitle: 'Кралица VIP',
+    vipBadge: '👑 Стил Икона'
   },
   bg3: {
     key: 'bg3',
     name: 'Мартин',
     emoji: '🎰',
-    description: 'Майстор, баща, e-bike фен',
-    themes: ['gambling', 'repair', 'ebike', 'beer', 'dinosaurs']
+    description: 'Майстор & E-Bike',
+    themes: ['gambling', 'repair', 'ebike', 'beer', 'dinosaurs'],
+    vipTitle: 'Джакпот VIP',
+    vipBadge: '🌟 Късметлия #1'
   },
   it: {
     key: 'it',
     name: 'Morris',
     emoji: '🇮🇹',
-    description: 'Campeggio, mamma, 51 anni',
-    themes: ['camping', 'cycling', 'cocacola', 'italy', 'kiosk']
+    description: 'Italiano Fun',
+    themes: ['camping', 'cycling', 'cocacola', 'italy', 'kiosk'],
+    vipTitle: 'VIP Italiano',
+    vipBadge: '⭐ Prima Vista'
   }
 };
