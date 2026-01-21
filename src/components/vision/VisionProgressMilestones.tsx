@@ -104,13 +104,13 @@ const milestones = {
       }
     ],
     
-    // Current milestone (Phase 6 - Strategic Growth)
+    // Current milestone (Phase 6 - Strategic Growth - 90% complete!)
     currentMilestone: {
       id: "m6",
       name: "Phase 6: Strategisches Wachstum",
       timeframe: "Januar - Februar 2025",
       durationDays: 45,
-      progress: 60,
+      progress: 90,
       summary: "Skalierung, Automation & Optimierung",
       completed: [
         "Smart Lead Scoring System",
@@ -120,41 +120,38 @@ const milestones = {
         "Mock Data Framework",
         "Multi-Language Support (DE/FR/IT)",
         "Platform Documentation",
-        "Admin Dashboard Components"
+        "Admin Dashboard Components",
+        "Admin Routes registriert",
+        "Provider Performance Analytics",
+        "Customer Journey Insights"
       ],
       inProgress: [
-        "Provider Performance Analytics",
-        "Customer Journey Insights",
-        "Conversion Funnel Optimierung",
         "Mobile UX Final Polish"
       ],
       upcoming: [
-        "Live Traffic Monitoring",
-        "A/B Test Auswertung",
-        "SEO Ranking Tracking",
-        "Revenue Attribution"
+        "Go-Live Deployment"
       ]
     },
     
-    // Future milestones (BONUS - Post-Launch Growth)
+    // Future milestones (Post-Launch Growth)
     futureMilestones: [
       {
-        id: "m6",
-        name: "Phase 6: Strategisches Wachstum",
-        timeframe: "Februar - März 2025",
-        progress: 50,
-        summary: "Skalierung und Optimierung",
+        id: "m7",
+        name: "Phase 7: Go-Live & First Revenue",
+        timeframe: "Februar 2025",
+        progress: 0,
+        summary: "Launch und erste Einnahmen",
         items: [
-          "✅ Smart Lead Scoring",
-          "✅ Automated Follow-Ups",
-          "✅ Dynamic Pricing Engine",
-          "🔄 Provider Performance Analytics",
-          "🔄 Customer Journey Insights"
+          "Production Deployment",
+          "Google Ads Aktivierung",
+          "Erste 100 Leads generieren",
+          "Provider-Onboarding (10 Firmen)",
+          "Conversion Tracking aktivieren"
         ]
       },
       {
-        id: "m7",
-        name: "Phase 7: Market Expansion",
+        id: "m8",
+        name: "Phase 8: Market Expansion",
         timeframe: "März - April 2025",
         progress: 0,
         summary: "Wachstum in neue Märkte",
@@ -162,12 +159,12 @@ const milestones = {
           "Französische Schweiz (Romandie)",
           "Tessin (Italienisch)",
           "B2B Enterprise Features",
-          "White-Label Lösung"
+          "White-Label Lösung für Partner"
         ]
       },
       {
-        id: "m8",
-        name: "Phase 8: Exit Preparation",
+        id: "m9",
+        name: "Phase 9: Exit Preparation",
         timeframe: "Q3-Q4 2025",
         progress: 0,
         summary: "Strategische Akquisitionsvorbereitung",
@@ -272,57 +269,76 @@ const milestones = {
       }
     ],
     
-    // Current milestone (NOW COMPLETE!)
+    // Current milestone (Phase 6 - 90% complete!)
     currentMilestone: {
-      id: "m5",
-      name: "Етап 5: Конверсия & Go-Live",
-      timeframe: "Януари 2025",
-      durationDays: 30,
-      progress: 100,
-      summary: "Качество на leads и първи приходи - ЗАВЪРШЕН ✅",
+      id: "m6",
+      name: "Фаза 6: Стратегически растеж",
+      timeframe: "Януари - Февруари 2025",
+      durationDays: 45,
+      progress: 90,
+      summary: "Мащабиране, автоматизация и оптимизация",
       completed: [
-        "A/B тест система",
-        "Flow анализ система",
-        "SEO Hub-and-Spoke основа",
-        "Интеграция на Extended Features",
-        "Lead Bidding система",
-        "Provider Quality Scores",
-        "Email Automation",
-        "Stripe интеграция",
-        "Google Ads Kampagnen-Manager",
-        "Go-Live Dashboard & Checklist",
-        "Post-Launch Analytics Dashboard",
-        "Phase 6 Growth Features"
+        "Smart Lead Scoring система",
+        "Автоматични Follow-Up последователности",
+        "Dynamic Pricing Engine",
+        "Email Template система (10 шаблона)",
+        "Mock Data Framework",
+        "Многоезична поддръжка (DE/FR/IT)",
+        "Документация на платформата",
+        "Admin Dashboard компоненти",
+        "Admin Routes регистрирани",
+        "Provider Performance Analytics",
+        "Customer Journey Insights"
       ],
-      inProgress: [],
-      upcoming: []
+      inProgress: [
+        "Mobile UX финален полиш"
+      ],
+      upcoming: [
+        "Go-Live внедряване"
+      ]
     },
     
-    // Future milestones (BONUS - Post-Launch Growth)
+    // Future milestones (Post-Launch Growth)
     futureMilestones: [
       {
-        id: "m6",
-        name: "Фаза 6: Стратегически растеж",
-        timeframe: "Февруари - Март 2025",
-        progress: 50,
-        summary: "Мащабиране и оптимизация",
-        items: ["✅ Smart Lead Scoring", "✅ Automated Follow-Ups", "✅ Dynamic Pricing", "🔄 Provider Analytics"]
-      },
-      {
         id: "m7",
-        name: "Фаза 7: Пазарна експанзия",
-        timeframe: "Март - Април 2025",
+        name: "Фаза 7: Go-Live & Първи приходи",
+        timeframe: "Февруари 2025",
         progress: 0,
-        summary: "Разширяване в нови пазари",
-        items: ["Френска Швейцария", "Тичино (италиански)", "B2B Enterprise", "White-Label"]
+        summary: "Стартиране и първи приходи",
+        items: [
+          "Production Deployment",
+          "Активиране на Google Ads",
+          "Първите 100 leads",
+          "Onboarding на доставчици (10 фирми)",
+          "Активиране на Conversion Tracking"
+        ]
       },
       {
         id: "m8",
-        name: "Фаза 8: Подготовка за Exit",
+        name: "Фаза 8: Пазарна експанзия",
+        timeframe: "Март - Април 2025",
+        progress: 0,
+        summary: "Разширяване в нови пазари",
+        items: [
+          "Френска Швейцария (Романди)",
+          "Тичино (италиански)",
+          "B2B Enterprise функции",
+          "White-Label решение за партньори"
+        ]
+      },
+      {
+        id: "m9",
+        name: "Фаза 9: Подготовка за Exit",
         timeframe: "Q3-Q4 2025",
         progress: 0,
         summary: "Подготовка за стратегическо придобиване",
-        items: ["MOVU конкурентна позиция", "Due Diligence пакет", "10'000+ leads/месец", "Доказана печалба"]
+        items: [
+          "MOVU конкурентна позиция",
+          "Due Diligence пакет",
+          "10'000+ leads/месец",
+          "Доказана печалба"
+        ]
       }
     ],
     
