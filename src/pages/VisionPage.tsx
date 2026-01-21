@@ -11,6 +11,7 @@ import { exportVisionToPDF, exportVisionAsTextPDF } from "@/lib/vision-pdf-expor
 import { useToast } from "@/hooks/use-toast";
 import { VisionLanguageSwitcher } from "@/components/vision/VisionLanguageSwitcher";
 import { VisionProgressMilestones } from "@/components/vision/VisionProgressMilestones";
+import { ContributionBreakdown } from "@/components/vision/ContributionBreakdown";
 import { RevenueStreamExamples } from "@/components/vision/RevenueStreamExamples";
 import { UnitEconomicsDetailed } from "@/components/vision/UnitEconomicsDetailed";
 import { ExitTimeline } from "@/components/vision/ExitTimeline";
@@ -141,6 +142,7 @@ export default function VisionPage() {
       {/* 1. PROGRESS MILESTONES (Always visible - shows the 3 months of work) */}
       <div id="vision-progress">
         <VisionProgressMilestones language={language} />
+        <ContributionBreakdown language={language} />
       </div>
 
       {/* COLLAPSIBLE SECTIONS START */}
