@@ -1,13 +1,14 @@
 /**
  * Contribution Breakdown Component
  * Shows AI vs Human split, timeline, and remaining work prognosis
+ * BRAND COLORS: Only Primary Blue & Secondary Red
  */
 
 import { memo } from "react";
 import { motion } from "framer-motion";
 import { 
   Bot, User, Clock, Calendar, Target, TrendingUp,
-  CheckCircle2, Circle, Sparkles
+  CheckCircle2, Circle, Sparkles, ChevronDown
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -27,19 +28,20 @@ const content = {
     // Overall stats
     totalProgress: "Gesamtfortschritt bis Launch",
     whatIs100: "100% = Produkt ist live & generiert Umsatz",
+    hereWeAre: "Hier sind wir",
     
     // Timeline
     timeline: {
       title: "Projekt-Timeline",
       start: "Start",
-      startDate: "15. Oktober 2024",
+      startDate: "31. Oktober 2024",
       today: "Heute",
       todayDate: "21. Januar 2025",
       launch: "Launch",
       launchDate: "~Februar 2025",
       elapsed: "Vergangen",
       remaining: "Verbleibend",
-      daysElapsed: "98 Tage",
+      daysElapsed: "83 Tage",
       daysRemaining: "~14-21 Tage",
       atCurrentPace: "Bei aktuellem Tempo (14-15h/Tag)"
     },
@@ -108,18 +110,19 @@ const content = {
     
     totalProgress: "Общ напредък до лансиране",
     whatIs100: "100% = Продуктът е на живо & генерира приходи",
+    hereWeAre: "Тук сме",
     
     timeline: {
       title: "Времева линия",
       start: "Старт",
-      startDate: "15 октомври 2024",
+      startDate: "31 октомври 2024",
       today: "Днес",
       todayDate: "21 януари 2025",
       launch: "Лансиране",
       launchDate: "~Февруари 2025",
       elapsed: "Изминало",
       remaining: "Остава",
-      daysElapsed: "98 дни",
+      daysElapsed: "83 дни",
       daysRemaining: "~14-21 дни",
       atCurrentPace: "При текущо темпо (14-15ч/ден)"
     },
@@ -209,7 +212,7 @@ export const ContributionBreakdown = memo(({ language }: ContributionBreakdownPr
           <p className="text-sm text-muted-foreground">{t.subtitle}</p>
         </div>
         
-        {/* Overall Progress with Explanation */}
+        {/* Overall Progress with Arrow Indicator */}
         <div className="mb-8 p-4 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent rounded-xl">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
@@ -218,7 +221,32 @@ export const ContributionBreakdown = memo(({ language }: ContributionBreakdownPr
             </div>
             <span className="text-3xl font-black text-primary">{overallProgress}%</span>
           </div>
-          <Progress value={overallProgress} className="h-4 mb-2" />
+          
+          {/* Progress Bar with Arrow Indicator */}
+          <div className="relative mb-6">
+            <div className="h-4 rounded-full overflow-hidden flex">
+              <div 
+                className="bg-primary transition-all duration-500"
+                style={{ width: `${overallProgress}%` }}
+              />
+              <div 
+                className="bg-secondary transition-all duration-500"
+                style={{ width: `${100 - overallProgress}%` }}
+              />
+            </div>
+            
+            {/* Arrow Indicator - "Hier sind wir" */}
+            <div 
+              className="absolute -top-8 flex flex-col items-center transition-all duration-500"
+              style={{ left: `${overallProgress}%`, transform: 'translateX(-50%)' }}
+            >
+              <span className="text-xs font-bold text-primary whitespace-nowrap bg-background px-2 py-0.5 rounded border border-primary/30">
+                {t.hereWeAre}
+              </span>
+              <ChevronDown className="w-4 h-4 text-primary animate-bounce" />
+            </div>
+          </div>
+          
           <p className="text-xs text-muted-foreground italic">
             💡 {t.whatIs100}
           </p>
@@ -241,7 +269,7 @@ export const ContributionBreakdown = memo(({ language }: ContributionBreakdownPr
                 transition={{ duration: 1 }}
                 className="absolute left-0 h-full bg-gradient-to-r from-primary via-primary to-primary/60 rounded-full"
               />
-              {/* Today marker */}
+              {/* Today marker - using secondary (red) */}
               <div className="absolute left-[82%] top-1/2 -translate-y-1/2 w-4 h-4 bg-secondary border-2 border-white rounded-full shadow-lg" />
             </div>
             
@@ -256,42 +284,42 @@ export const ContributionBreakdown = memo(({ language }: ContributionBreakdownPr
                 <p className="text-muted-foreground">{t.timeline.todayDate}</p>
               </div>
               <div className="text-right">
-                <p className="font-bold text-emerald-600">{t.timeline.launch}</p>
+                <p className="font-bold text-primary">{t.timeline.launch}</p>
                 <p className="text-muted-foreground">{t.timeline.launchDate}</p>
               </div>
             </div>
             
-            {/* Time stats */}
+            {/* Time stats - using brand colors */}
             <div className="grid grid-cols-2 gap-4 mt-4">
               <div className="bg-primary/10 rounded-lg p-3 text-center">
                 <p className="text-2xl font-black text-primary">{t.timeline.daysElapsed}</p>
                 <p className="text-xs text-muted-foreground">{t.timeline.elapsed}</p>
               </div>
-              <div className="bg-emerald-500/10 rounded-lg p-3 text-center">
-                <p className="text-2xl font-black text-emerald-600">{t.timeline.daysRemaining}</p>
+              <div className="bg-primary/10 rounded-lg p-3 text-center">
+                <p className="text-2xl font-black text-primary">{t.timeline.daysRemaining}</p>
                 <p className="text-xs text-muted-foreground">{t.timeline.remaining}</p>
               </div>
             </div>
           </div>
         </div>
         
-        {/* AI vs Human Contribution */}
+        {/* AI vs Human Contribution - BRAND COLORS ONLY */}
         <div className="mb-8">
           <h4 className="font-bold mb-4 flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-primary" />
             {t.contribution.title}
           </h4>
           
-          {/* Visual Split Bar */}
+          {/* Visual Split Bar - Primary Blue & Secondary Red */}
           <div className="h-8 rounded-full overflow-hidden flex mb-4 shadow-inner">
             <motion.div 
               initial={{ width: 0 }}
               whileInView={{ width: `${aiDonePercent}%` }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
-              className="bg-gradient-to-r from-violet-500 to-violet-600 flex items-center justify-center"
+              className="bg-primary flex items-center justify-center"
             >
-              <span className="text-white text-sm font-bold flex items-center gap-1">
+              <span className="text-primary-foreground text-sm font-bold flex items-center gap-1">
                 <Bot className="w-4 h-4" />
                 {aiDonePercent}% KI
               </span>
@@ -301,22 +329,22 @@ export const ContributionBreakdown = memo(({ language }: ContributionBreakdownPr
               whileInView={{ width: `${humanDonePercent}%` }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="bg-gradient-to-r from-amber-500 to-amber-600 flex items-center justify-center"
+              className="bg-secondary flex items-center justify-center"
             >
-              <span className="text-white text-xs font-bold flex items-center gap-1">
+              <span className="text-secondary-foreground text-xs font-bold flex items-center gap-1">
                 <User className="w-3 h-3" />
                 {humanDonePercent}%
               </span>
             </motion.div>
           </div>
           
-          {/* Details Grid */}
+          {/* Details Grid - Brand Colors */}
           <div className="grid md:grid-cols-2 gap-4">
-            {/* AI Column */}
-            <div className="bg-violet-500/10 rounded-xl p-4 border border-violet-500/20">
+            {/* AI Column - Primary Blue */}
+            <div className="bg-primary/10 rounded-xl p-4 border border-primary/20">
               <div className="flex items-center gap-2 mb-3">
-                <div className="w-10 h-10 rounded-full bg-violet-500 flex items-center justify-center">
-                  <Bot className="w-5 h-5 text-white" />
+                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+                  <Bot className="w-5 h-5 text-primary-foreground" />
                 </div>
                 <div>
                   <p className="font-bold">{t.contribution.ai.name}</p>
@@ -326,18 +354,18 @@ export const ContributionBreakdown = memo(({ language }: ContributionBreakdownPr
               <ul className="space-y-1.5">
                 {t.contribution.ai.items.map((item, i) => (
                   <li key={i} className="text-sm flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-violet-500 shrink-0 mt-0.5" />
+                    <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                     <span>{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
             
-            {/* Human Column */}
-            <div className="bg-amber-500/10 rounded-xl p-4 border border-amber-500/20">
+            {/* Human Column - Secondary Red */}
+            <div className="bg-secondary/10 rounded-xl p-4 border border-secondary/20">
               <div className="flex items-center gap-2 mb-3">
-                <div className="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center">
-                  <User className="w-5 h-5 text-white" />
+                <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
+                  <User className="w-5 h-5 text-secondary-foreground" />
                 </div>
                 <div>
                   <p className="font-bold">{t.contribution.human.name}</p>
@@ -347,7 +375,7 @@ export const ContributionBreakdown = memo(({ language }: ContributionBreakdownPr
               <ul className="space-y-1.5">
                 {t.contribution.human.items.map((item, i) => (
                   <li key={i} className="text-sm flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                    <CheckCircle2 className="w-4 h-4 text-secondary shrink-0 mt-0.5" />
                     <span>{item}</span>
                   </li>
                 ))}
@@ -356,7 +384,7 @@ export const ContributionBreakdown = memo(({ language }: ContributionBreakdownPr
           </div>
         </div>
         
-        {/* Remaining Work */}
+        {/* Remaining Work - Brand Colors */}
         <div className="mb-6">
           <h4 className="font-bold mb-4 flex items-center gap-2">
             <Circle className="w-4 h-4 text-muted-foreground" />
@@ -375,22 +403,22 @@ export const ContributionBreakdown = memo(({ language }: ContributionBreakdownPr
             
             <div className="h-6 rounded-full overflow-hidden flex mb-3">
               <div 
-                className="bg-violet-400 flex items-center justify-center transition-all"
+                className="bg-primary/70 flex items-center justify-center transition-all"
                 style={{ width: `${remainingAI}%` }}
               >
-                <span className="text-white text-xs font-bold">{remainingAI}% KI</span>
+                <span className="text-primary-foreground text-xs font-bold">{remainingAI}% KI</span>
               </div>
               <div 
-                className="bg-amber-400 flex items-center justify-center transition-all"
+                className="bg-secondary/70 flex items-center justify-center transition-all"
                 style={{ width: `${remainingHuman}%` }}
               >
-                <span className="text-white text-xs font-bold">{remainingHuman}% {language === 'de' ? 'Du' : 'Ти'}</span>
+                <span className="text-secondary-foreground text-xs font-bold">{remainingHuman}% {language === 'de' ? 'Du' : 'Ти'}</span>
               </div>
             </div>
             
             <div className="grid md:grid-cols-2 gap-3 text-sm">
               <div>
-                <p className="font-medium text-violet-600 mb-1">🤖 KI-Tasks:</p>
+                <p className="font-medium text-primary mb-1">🤖 KI-Tasks:</p>
                 <ul className="text-xs space-y-1 text-muted-foreground">
                   {t.remaining.aiTasks.map((task, i) => (
                     <li key={i}>• {task}</li>
@@ -398,7 +426,7 @@ export const ContributionBreakdown = memo(({ language }: ContributionBreakdownPr
                 </ul>
               </div>
               <div>
-                <p className="font-medium text-amber-600 mb-1">👤 {language === 'de' ? 'Deine Tasks' : 'Твоите задачи'}:</p>
+                <p className="font-medium text-secondary mb-1">👤 {language === 'de' ? 'Deine Tasks' : 'Твоите задачи'}:</p>
                 <ul className="text-xs space-y-1 text-muted-foreground">
                   {t.remaining.humanTasks.map((task, i) => (
                     <li key={i}>• {task}</li>
@@ -409,28 +437,28 @@ export const ContributionBreakdown = memo(({ language }: ContributionBreakdownPr
           </div>
         </div>
         
-        {/* Prognosis */}
-        <div className="bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-transparent rounded-xl p-4 border border-emerald-500/20">
-          <h4 className="font-bold mb-3 flex items-center gap-2 text-emerald-700 dark:text-emerald-400">
+        {/* Prognosis - Brand Primary */}
+        <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent rounded-xl p-4 border border-primary/20">
+          <h4 className="font-bold mb-3 flex items-center gap-2 text-primary">
             <Clock className="w-4 h-4" />
             {t.prognosis.title}
           </h4>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
             <div>
-              <p className="text-lg font-bold text-emerald-600">{t.prognosis.currentPace}</p>
+              <p className="text-lg font-bold text-primary">{t.prognosis.currentPace}</p>
               <p className="text-xs text-muted-foreground">{language === 'de' ? 'Tempo' : 'Темпо'}</p>
             </div>
             <div>
-              <p className="text-lg font-bold text-emerald-600">{t.prognosis.estimatedCompletion}</p>
+              <p className="text-lg font-bold text-primary">{t.prognosis.estimatedCompletion}</p>
               <p className="text-xs text-muted-foreground">{language === 'de' ? 'Bis Launch' : 'До лансиране'}</p>
             </div>
             <div>
-              <p className="text-lg font-bold text-emerald-600">{t.prognosis.completionDate}</p>
+              <p className="text-lg font-bold text-primary">{t.prognosis.completionDate}</p>
               <p className="text-xs text-muted-foreground">{language === 'de' ? 'Zieldatum' : 'Целева дата'}</p>
             </div>
             <div>
-              <p className="text-lg font-bold text-emerald-600">✓</p>
+              <p className="text-lg font-bold text-primary">✓</p>
               <p className="text-xs text-muted-foreground">{t.prognosis.confidence}</p>
             </div>
           </div>
