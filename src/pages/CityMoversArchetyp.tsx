@@ -50,6 +50,9 @@ import { RegionKomplettpaket } from '@/components/region-archetyp/RegionKomplett
 import { RegionMidCTA } from '@/components/region-archetyp/RegionMidCTA';
 import { RegionExitIntent } from '@/components/region-archetyp/RegionExitIntent';
 
+// Hub-and-Spoke SEO Components (Sprint 5)
+import { CitySpokeActions } from '@/components/region-archetyp/CitySpokeActions';
+
 interface CityData {
   name: string;
   displayName: string;
@@ -389,6 +392,14 @@ export default function CityMoversArchetyp() {
             regionName={cityData.displayName}
           />
         </motion.div>
+
+        {/* SPOKE CONTENT: Local Quick Actions (Sprint 5 - SEO Hub-and-Spoke) */}
+        <CitySpokeActions 
+          citySlug={citySlug} 
+          cityName={cityData.displayName} 
+          cantonName={cityData.cantonName}
+          cantonSlug={cityData.cantonSlug}
+        />
 
         {/* Top Companies */}
         <motion.div

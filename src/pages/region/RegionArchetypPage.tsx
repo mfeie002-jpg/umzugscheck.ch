@@ -73,6 +73,9 @@ import { RegionContentCluster } from "@/components/region-archetyp/RegionContent
 import { RegionMidCTA } from "@/components/region-archetyp/RegionMidCTA";
 import { RegionExitIntent } from "@/components/region-archetyp/RegionExitIntent";
 
+// Hub-and-Spoke SEO Components (Sprint 5)
+import { CantonHubInfo } from "@/components/region-archetyp/CantonHubInfo";
+
 // Data Layer
 import { getRegionBySlug } from "@/data/regions-database";
 import { CITIES_MAP } from "@/data/locations";
@@ -402,6 +405,9 @@ const RegionArchetypPage = () => {
         >
           <RegionKomplettpaket regionName={region.name} />
         </motion.div>
+
+        {/* HUB CONTENT: Regional Information (Sprint 5 - SEO Hub-and-Spoke) */}
+        <CantonHubInfo cantonSlug={effectiveSlug || ''} cantonName={region.name} />
 
         {/* Zone 3: SEO Layer - Prices with ID for anchor */}
         <motion.div

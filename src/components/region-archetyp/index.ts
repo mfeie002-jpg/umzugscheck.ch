@@ -63,3 +63,7 @@ export { LazySection } from './LazySection';
 // SEO Components
 export { RegionSEO } from './RegionSEO';
 export { PillarPageSEO } from './PillarPageSEO';
+
+// SEO Hub-and-Spoke Components (Sprint 5)
+export { CantonHubInfo } from './CantonHubInfo';
+export { CitySpokeActions } from './CitySpokeActions';
