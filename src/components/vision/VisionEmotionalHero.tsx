@@ -18,19 +18,26 @@ interface VisionEmotionalHeroProps {
 
 const content = {
   de: {
-    badge: "🇨🇭 Made in Switzerland",
+    badge: "🇨🇭 Weltweit einzigartig",
     
     headline: {
       family: "Umziehen war noch nie so einfach",
-      investor: "Die Zukunft des Umzugsmarktes – 10 Umsatzströme",
-      full: "Wir werden die Nr. 1 in der Schweiz"
+      investor: "Das weltweit erste Full-Stack Umzugsportal",
+      full: "Das weltweit erste Full-Stack Umzugsportal"
     },
     
     subheadline: {
       family: "Während andere noch Telefonnummern googeln, haben unsere Kunden schon 5 Offerten. Transparent, fair, stressfrei.",
-      investor: "10 Revenue Streams. 95% Automatisierung. Win-Win-Win für Kunden, Firmen und uns. Das ist die Zukunft.",
-      full: "Wir haben einen fragmentierten, stressigen Prozess revolutioniert. Faire Preise, echte Bewertungen, ein Ökosystem."
+      investor: "KI-Präzision. Escrow-Sicherheit. 10 Revenue Streams. Ein Ökosystem, das Umziehen in der Schweiz revolutioniert.",
+      full: "KI-Präzision. Escrow-Sicherheit. Bürokratie-Autopilot. Ein Ökosystem, das Umziehen in der Schweiz revolutioniert."
     },
+    
+    // 3 Core promises
+    promises: [
+      "Stress weg",
+      "Fairness rein", 
+      "Kontrolle zurück"
+    ],
     
     stats: [
       { value: "Weltweit", label: "Einzigartig" },
@@ -39,26 +46,32 @@ const content = {
     ],
     
     cta: {
-      primary: "Unsere Vision entdecken",
-      secondary: "Technologie ansehen"
+      primary: "Vision entdecken",
+      secondary: "Live Demo"
     },
     
-    tagline: "Win-Win-Win für alle Beteiligten"
+    tagline: "Win-Win-Win: Kunden sparen, Firmen wachsen, wir skalieren"
   },
   bg: {
-    badge: "🇨🇭 Made in Switzerland",
+    badge: "🇨🇭 Световен уникат",
     
     headline: {
       family: "Преместването никога не е било толкова лесно",
-      investor: "Бъдещето на пазара – 10 потока приходи",
-      full: "Ще станем №1 в Швейцария"
+      investor: "Първият в света Full-Stack портал за преместване",
+      full: "Първият в света Full-Stack портал за преместване"
     },
     
     subheadline: {
       family: "Докато другите търсят телефонни номера, нашите клиенти вече имат 5 оферти. Прозрачно, честно, без стрес.",
-      investor: "10 потока приходи. 95% автоматизация. Win-Win-Win за клиенти, фирми и нас. Това е бъдещето.",
-      full: "Революционизирахме един фрагментиран, стресиращ процес. Честни цени, истински отзиви, една екосистема."
+      investor: "AI прецизност. Escrow сигурност. 10 потока приходи. Екосистема, която революционизира преместването.",
+      full: "AI прецизност. Escrow сигурност. Бюрократичен автопилот. Екосистема, която революционизира преместването."
     },
+    
+    promises: [
+      "Без стрес",
+      "Честност",
+      "Контрол обратно"
+    ],
     
     stats: [
       { value: "Световен", label: "Уникат" },
@@ -67,26 +80,32 @@ const content = {
     ],
     
     cta: {
-      primary: "Открийте нашата визия",
-      secondary: "Технология"
+      primary: "Открий визията",
+      secondary: "Live Demo"
     },
     
-    tagline: "Win-Win-Win за всички участници"
+    tagline: "Win-Win-Win: Клиенти спестяват, фирми растат, ние скалираме"
   },
   it: {
-    badge: "🇨🇭 Made in Switzerland",
+    badge: "🇨🇭 Unico al mondo",
     
     headline: {
       family: "Traslocare non è mai stato così semplice",
-      investor: "Il futuro del mercato – 10 flussi di ricavo",
-      full: "Diventeremo il #1 in Svizzera"
+      investor: "Il primo portale traslochi Full-Stack al mondo",
+      full: "Il primo portale traslochi Full-Stack al mondo"
     },
     
     subheadline: {
       family: "Mentre altri cercano ancora numeri di telefono, i nostri clienti hanno già 5 preventivi. Trasparente, equo, senza stress.",
-      investor: "10 flussi di ricavo. 95% automazione. Win-Win-Win per clienti, aziende e noi. Questo è il futuro.",
-      full: "Abbiamo rivoluzionato un processo frammentato e stressante. Prezzi equi, recensioni vere, un ecosistema."
+      investor: "Precisione AI. Sicurezza Escrow. 10 flussi di ricavo. Un ecosistema che rivoluziona i traslochi.",
+      full: "Precisione AI. Sicurezza Escrow. Autopilota burocrazia. Un ecosistema che rivoluziona i traslochi."
     },
+    
+    promises: [
+      "Via lo stress",
+      "Dentro l'equità",
+      "Riprendere il controllo"
+    ],
     
     stats: [
       { value: "Mondiale", label: "Unico" },
@@ -95,11 +114,11 @@ const content = {
     ],
     
     cta: {
-      primary: "Scopri la nostra visione",
-      secondary: "Vedi tecnologia"
+      primary: "Scopri la visione",
+      secondary: "Live Demo"
     },
     
-    tagline: "Win-Win-Win per tutti i partecipanti"
+    tagline: "Win-Win-Win: Clienti risparmiano, aziende crescono, noi scaliamo"
   }
 };
 
@@ -153,10 +172,28 @@ export const VisionEmotionalHero = memo(({ language, variant = 'full' }: VisionE
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-lg md:text-xl text-muted-foreground mb-8 leading-relaxed max-w-3xl mx-auto"
+            className="text-lg md:text-xl text-muted-foreground mb-6 leading-relaxed max-w-3xl mx-auto"
           >
             {t.subheadline[variant]}
           </motion.p>
+          
+          {/* 3 Core Promises - The Feeling */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.25 }}
+            className="flex flex-wrap justify-center gap-3 mb-8"
+          >
+            {t.promises.map((promise, i) => (
+              <span 
+                key={i}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary font-bold text-sm border border-primary/20"
+              >
+                <span className="text-secondary">✓</span>
+                {promise}
+              </span>
+            ))}
+          </motion.div>
           
           {/* Stats */}
           <motion.div 
