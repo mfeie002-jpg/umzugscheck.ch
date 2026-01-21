@@ -16,6 +16,7 @@ import { VisionProgressMilestones } from "@/components/vision/VisionProgressMile
 import { ContributionBreakdown } from "@/components/vision/ContributionBreakdown";
 import { VisionTractionDashboard } from "@/components/vision/VisionTractionDashboard";
 import { VisionLanguageSwitcher } from "@/components/vision/VisionLanguageSwitcher";
+import { ExpandAllToggle } from "@/components/vision/ExpandAllToggle";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, TrendingUp, Target, DollarSign, Rocket, Building2 } from "lucide-react";
@@ -88,6 +89,7 @@ const translations = {
 
 export default function InvestorenLanding() {
   const [language, setLanguage] = useState<VisionLanguage>('de');
+  const [allExpanded, setAllExpanded] = useState(false);
   const t = translations[language];
 
   return (
@@ -108,6 +110,11 @@ export default function InvestorenLanding() {
               </Button>
             </Link>
             <div className="flex items-center gap-2">
+              <ExpandAllToggle
+                isExpanded={allExpanded}
+                onToggle={() => setAllExpanded(!allExpanded)}
+                language={language}
+              />
               <VisionLanguageSwitcher 
                 currentLang={language} 
                 onLanguageChange={setLanguage} 
@@ -193,7 +200,7 @@ export default function InvestorenLanding() {
               {t.sections.pillarsSubtitle}
             </p>
           </div>
-          <Vision10PillarSection allExpanded={false} language={language} />
+          <Vision10PillarSection allExpanded={allExpanded} language={language} />
         </div>
       </section>
 

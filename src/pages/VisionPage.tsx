@@ -5,11 +5,12 @@ import { CustomerUSPVisualCards } from "@/components/homepage/CustomerUSPVisualC
 import { FamilySummary } from "@/components/homepage/FamilySummary";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Download, FileText, Loader2, Users, TrendingUp, Sparkles, DollarSign, Target, Globe, Rocket } from "lucide-react";
+import { ArrowLeft, Download, FileText, Loader2, Users, TrendingUp, Sparkles, DollarSign, Target, Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
 import { exportVisionToPDF, exportVisionAsTextPDF } from "@/lib/vision-pdf-export";
 import { useToast } from "@/hooks/use-toast";
 import { VisionLanguageSwitcher } from "@/components/vision/VisionLanguageSwitcher";
+import { ExpandAllToggle } from "@/components/vision/ExpandAllToggle";
 import { RevenueStreamExamples } from "@/components/vision/RevenueStreamExamples";
 import { UnitEconomicsDetailed } from "@/components/vision/UnitEconomicsDetailed";
 import { ExitTimeline } from "@/components/vision/ExitTimeline";
@@ -30,6 +31,7 @@ export default function VisionPage() {
   const [isExporting, setIsExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
   const [language, setLanguage] = useState<VisionLanguage>('de');
+  const [allExpanded, setAllExpanded] = useState(false);
   const { toast } = useToast();
   
   const t = getVisionTranslation(language);
@@ -110,6 +112,11 @@ export default function VisionPage() {
             </Link>
             
             <div className="flex items-center gap-1.5 md:gap-2">
+              <ExpandAllToggle
+                isExpanded={allExpanded}
+                onToggle={() => setAllExpanded(!allExpanded)}
+                language={language}
+              />
               <VisionLanguageSwitcher 
                 currentLang={language} 
                 onLanguageChange={setLanguage} 
@@ -181,6 +188,7 @@ export default function VisionPage() {
           icon={<Users className="w-5 h-5" />}
           badge={language === 'de' ? "Systemvorteile" : "Системни предимства"}
           defaultOpen={false}
+          forceOpen={allExpanded}
           language={language}
         >
           <div id="vision-customer-usps">
@@ -194,10 +202,11 @@ export default function VisionPage() {
           icon={<TrendingUp className="w-5 h-5" />}
           badge={language === 'de' ? "Business Model" : "Бизнес модел"}
           defaultOpen={false}
+          forceOpen={allExpanded}
           language={language}
         >
           <div id="vision-investor-pillars">
-            <Vision10PillarSection allExpanded={false} language={language} />
+            <Vision10PillarSection allExpanded={allExpanded} language={language} />
           </div>
         </VisionCollapsibleSection>
         
@@ -207,6 +216,7 @@ export default function VisionPage() {
           icon={<Sparkles className="w-5 h-5" />}
           badge={language === 'de' ? "Für Eltern" : "За родители"}
           defaultOpen={false}
+          forceOpen={allExpanded}
           language={language}
         >
           <div id="vision-family-summary">
@@ -220,6 +230,7 @@ export default function VisionPage() {
           icon={<DollarSign className="w-5 h-5" />}
           badge={language === 'de' ? "553 CHF/Kunde" : "553 CHF/клиент"}
           defaultOpen={false}
+          forceOpen={allExpanded}
           language={language}
         >
           <div id="vision-revenue-examples">
@@ -233,6 +244,7 @@ export default function VisionPage() {
           icon={<Target className="w-5 h-5" />}
           badge={language === 'de' ? "CAC + Ops getrennt" : "CAC + Ops отделно"}
           defaultOpen={false}
+          forceOpen={allExpanded}
           language={language}
         >
           <div id="vision-unit-economics">
@@ -246,6 +258,7 @@ export default function VisionPage() {
           icon={<Rocket className="w-5 h-5" />}
           badge={language === 'de' ? "450'000 Umzüge/Jahr" : "450'000 преместванията/год"}
           defaultOpen={false}
+          forceOpen={allExpanded}
           language={language}
         >
           <div id="vision-market-potential">
