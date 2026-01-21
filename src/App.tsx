@@ -292,6 +292,9 @@ const ZipExporter = lazy(() => import("./pages/admin/ZipExporter"));
 const PillButtonDemo = lazy(() => import("./pages/admin/PillButtonDemo"));
 const VideoAnalysesAdmin = lazy(() => import("./pages/admin/VideoAnalyses"));
 const VideoAnalysisResult = lazy(() => import("./pages/VideoAnalysisResult"));
+const PostLaunch = lazy(() => import("./pages/admin/PostLaunch"));
+const Phase6Admin = lazy(() => import("./pages/admin/Phase6"));
+const GoLive = lazy(() => import("./pages/admin/GoLive"));
 
 // ChatGPT Flow pages
 const ChatGPTFlow1 = lazy(() => import("./pages/ChatGPTFlow1"));
@@ -446,6 +449,10 @@ const AdminRoutes = () => (
       <Route path="/admin/world-class" element={<WorldClassDashboard />} />
       <Route path="/admin/zip-export" element={<ZipExporter />} />
       <Route path="/admin/buttons" element={<PillButtonDemo />} />
+      <Route path="/admin/post-launch" element={<PostLaunch />} />
+      <Route path="/admin/phase-6" element={<Phase6Admin />} />
+      <Route path="/admin/go-live" element={<GoLive />} />
+      <Route path="/admin/video-analyses" element={<VideoAnalysesAdmin />} />
     </AnimatedRoutes>
   </Suspense>
 );
