@@ -1,16 +1,17 @@
 /**
  * Unified A/B Testing Toggle
  * 
- * Combines Navigation A/B Test + Social Proof A/B Test + Hero Tab Hints
+ * Combines Navigation A/B Test + Social Proof A/B Test + Hero Tab Hints + Homepage Hero
  * in one compact toggle with tabs to switch between the test categories
  */
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { FlaskConical, X, Check, Navigation, Sparkles, MousePointerClick } from 'lucide-react';
+import { FlaskConical, X, Check, Navigation, Sparkles, MousePointerClick, LayoutTemplate } from 'lucide-react';
 import { useState, memo, useCallback } from 'react';
 import { useSocialProofAB } from '@/contexts/SocialProofABContext';
 import { useNavigationAB } from '@/contexts/NavigationABContext';
 import { useTabHintAB, TabHintVariant } from '@/contexts/TabHintABContext';
+import { useHomepageAB, HomepageVariant } from '@/contexts/HomepageABContext';
 import { NAV_VARIANTS } from '@/lib/navigation-variants';
 import { useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
@@ -34,9 +35,17 @@ const tabHintVariants: Record<TabHintVariant, { label: string; title: string; co
   D: { label: '5', title: 'Badge Alternativen', color: 'bg-violet-600' },
 };
 
+// Homepage Hero variant info
+const homepageVariants: Record<HomepageVariant, { label: string; title: string; color: string; description: string }> = {
+  A: { label: 'A', title: 'Original (Split)', color: 'bg-blue-600', description: 'Split-Layout mit Form rechts' },
+  B: { label: 'B', title: 'Premium (4 Tabs)', color: 'bg-amber-600', description: 'IndexPremium mit 4 Tab-Optionen' },
+  C: { label: 'C', title: 'SmartRouter', color: 'bg-emerald-600', description: 'PLZ-first Wizard (aktuell)' },
+};
+
 export const UnifiedABToggle = memo(function UnifiedABToggle() {
   const { variant: spVariant, setVariant: setSPVariant } = useSocialProofAB();
   const { variant: navVariant, setVariant: setNavVariant } = useNavigationAB();
+  const { variant: homepageVariant, setVariant: setHomepageVariant } = useHomepageAB();
   
   // Tab Hint A/B - handle case where provider might not exist
   let tabHintVariant: TabHintVariant = 'default';
@@ -51,7 +60,7 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
   }
   
   const [isExpanded, setIsExpanded] = useState(false);
-  const [activeTab, setActiveTab] = useState<'nav' | 'social' | 'hero'>('nav');
+  const [activeTab, setActiveTab] = useState<'homepage' | 'nav' | 'social' | 'hero'>('homepage');
   
   const location = useLocation();
 
@@ -69,6 +78,10 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
     }
   }, [setTabHintVariant]);
 
+  const handleHomepageChange = useCallback((v: HomepageVariant) => {
+    setHomepageVariant(v);
+  }, [setHomepageVariant]);
+
   // Extract navigation variant number (e.g., "1" from "1. Original (Status Quo)")
   const getNavVariantNumber = () => {
     if (!navVariant?.name) return '1';
@@ -78,6 +91,7 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
 
   const currentSPInfo = socialProofVariants[spVariant] || socialProofVariants.A;
   const currentTabHintInfo = tabHintVariants[tabHintVariant] || tabHintVariants.default;
+  const currentHomepageInfo = homepageVariants[homepageVariant] || homepageVariants.C;
   const navVariantNumber = getNavVariantNumber();
 
   // Only show in development/preview mode, never in production
@@ -137,21 +151,68 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
               </div>
 
               {/* Tabs */}
-              <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as 'nav' | 'social' | 'hero')} className="w-full">
-                <TabsList className="w-full grid grid-cols-3 p-1 m-3 mb-0 bg-muted/50">
-                  <TabsTrigger value="nav" className="gap-1.5 text-xs">
-                    <Navigation className="w-3.5 h-3.5" />
-                    Navigation
+              <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as 'homepage' | 'nav' | 'social' | 'hero')} className="w-full">
+                <TabsList className="w-full grid grid-cols-4 p-1 m-3 mb-0 bg-muted/50">
+                  <TabsTrigger value="homepage" className="gap-1 text-[10px] px-1">
+                    <LayoutTemplate className="w-3 h-3" />
+                    Hero
                   </TabsTrigger>
-                  <TabsTrigger value="social" className="gap-1.5 text-xs">
-                    <Sparkles className="w-3.5 h-3.5" />
+                  <TabsTrigger value="nav" className="gap-1 text-[10px] px-1">
+                    <Navigation className="w-3 h-3" />
+                    Nav
+                  </TabsTrigger>
+                  <TabsTrigger value="social" className="gap-1 text-[10px] px-1">
+                    <Sparkles className="w-3 h-3" />
                     Social
                   </TabsTrigger>
-                  <TabsTrigger value="hero" className="gap-1.5 text-xs">
-                    <MousePointerClick className="w-3.5 h-3.5" />
-                    Hero Tabs
+                  <TabsTrigger value="hero" className="gap-1 text-[10px] px-1">
+                    <MousePointerClick className="w-3 h-3" />
+                    Tabs
                   </TabsTrigger>
                 </TabsList>
+
+                {/* Homepage Hero Variants - NEW */}
+                <TabsContent value="homepage" className="p-3 pt-2 max-h-[50vh] overflow-y-auto">
+                  <div className="space-y-2">
+                    {(Object.keys(homepageVariants) as HomepageVariant[]).map((hv) => {
+                      const info = homepageVariants[hv];
+                      const isActive = homepageVariant === hv;
+                      return (
+                        <button
+                          key={hv}
+                          onClick={() => handleHomepageChange(hv)}
+                          className={cn(
+                            "w-full py-2.5 px-3 rounded-lg font-medium text-sm transition-all flex items-center justify-between",
+                            isActive 
+                              ? `${info.color} text-white shadow-lg` 
+                              : "bg-muted/50 text-foreground hover:bg-muted"
+                          )}
+                        >
+                          <span className="flex items-center gap-2">
+                            <span className={cn(
+                              "w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold",
+                              isActive ? "bg-white/20" : "bg-muted"
+                            )}>
+                              {info.label}
+                            </span>
+                            <div className="text-left">
+                              <div>{info.title}</div>
+                              <div className="text-[10px] opacity-70">{info.description}</div>
+                            </div>
+                          </span>
+                          {isActive && <Check className="w-4 h-4" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  
+                  {/* Legend */}
+                  <div className="mt-4 p-3 bg-muted/30 rounded-lg text-xs text-muted-foreground space-y-1">
+                    <div><strong>A:</strong> Original - Split mit Formular rechts (Screenshot)</div>
+                    <div><strong>B:</strong> Premium - 4 Tabs (Formular/Video/Chat/WA)</div>
+                    <div><strong>C:</strong> SmartRouter - PLZ-first Wizard</div>
+                  </div>
+                </TabsContent>
 
                 {/* Navigation Variants */}
                 <TabsContent value="nav" className="p-3 pt-2 max-h-[50vh] overflow-y-auto">
@@ -275,11 +336,11 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
         )}
       </AnimatePresence>
       
-      {/* Floating Toggle Button - Shows N (Nav), SP (Social Proof), and TH (Tab Hint) variants */}
+      {/* Floating Toggle Button - Shows Hero, N (Nav), SP (Social Proof), and TH (Tab Hint) variants */}
       <motion.button
         onClick={() => setIsExpanded(!isExpanded)}
         className={cn(
-          "flex items-center gap-1.5 px-3 py-2.5 rounded-full shadow-2xl border-2 text-white font-bold transition-all",
+          "flex items-center gap-1 px-2.5 py-2 rounded-full shadow-2xl border-2 text-white font-bold transition-all",
           "bg-gradient-to-r from-primary to-primary/80 border-white/30 hover:scale-105"
         )}
         whileTap={{ scale: 0.95 }}
@@ -287,12 +348,12 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
           boxShadow: '0 4px 20px rgba(0,0,0,0.3), 0 0 0 2px rgba(255,255,255,0.2)'
         }}
       >
-        <FlaskConical className="w-4 h-4 flex-shrink-0" />
-        <span className="text-xs whitespace-nowrap">N{navVariantNumber}</span>
-        <span className="text-white/50">|</span>
-        <span className="text-xs whitespace-nowrap">SP{currentSPInfo.label}</span>
-        <span className="text-white/50">|</span>
-        <span className="text-xs whitespace-nowrap">TH{currentTabHintInfo.label}</span>
+        <FlaskConical className="w-3.5 h-3.5 flex-shrink-0" />
+        <span className="text-[10px] whitespace-nowrap">H{currentHomepageInfo.label}</span>
+        <span className="text-white/40">·</span>
+        <span className="text-[10px] whitespace-nowrap">N{navVariantNumber}</span>
+        <span className="text-white/40">·</span>
+        <span className="text-[10px] whitespace-nowrap">S{currentSPInfo.label}</span>
       </motion.button>
     </div>
   );

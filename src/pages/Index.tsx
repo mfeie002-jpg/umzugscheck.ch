@@ -11,15 +11,14 @@ import { HotjarScript } from "@/components/analytics/HotjarScript";
 // A/B Testing for Social Proof sections
 import { SocialProofABProvider } from "@/contexts/SocialProofABContext";
 import { TabHintABProvider } from "@/contexts/TabHintABContext";
+import { HomepageABProvider } from "@/contexts/HomepageABContext";
 import { UnifiedABToggle } from "@/components/homepage/UnifiedABToggle";
 // Conversion & Analytics
-// ExitIntentPopup & RealtimeSocialProof intentionally disabled (too intrusive during iteration)
 import { ScrollDepthTracker } from "@/components/conversion/ScrollDepthTracker";
 import { initMetrics } from "@/lib/realtime-metrics";
 import { trackPageView } from "@/lib/conversion-events";
-// Smart Router V10 - PLZ-first, then method selection (Hick's Law optimized)
-import { SmartRouterWizard } from "@/components/smart-router";
-import { GoldenSocialProof, GoldenTrustBadges } from "@/components/golden";
+// Homepage Hero A/B - Renders variant A, B, or C
+import { HomepageHeroAB } from "@/components/homepage/HomepageHeroAB";
 
 // CLS-optimized skeletons for zero layout shift
 import { 
@@ -84,6 +83,7 @@ const Index = () => {
   };
 
   return (
+    <HomepageABProvider>
     <TabHintABProvider>
     <SocialProofABProvider>
     <ErrorBoundary>
@@ -118,16 +118,8 @@ const Index = () => {
         <ScrollDepthTracker />
 
         <main id="main-content" role="main">
-          {/* 1. Smart Router V10 - PLZ-first approach (Hick's Law) */}
-          <section className="relative bg-gradient-to-b from-background to-muted/30 py-8 sm:py-12">
-            <div className="container mx-auto px-4">
-              {/* Social Proof Strip */}
-              <GoldenSocialProof variant="strip" className="mb-6" />
-              
-              {/* Smart Router Wizard - Minimal first step, then method selection */}
-              <SmartRouterWizard />
-            </div>
-          </section>
+          {/* 1. Homepage Hero A/B - Variant A, B, or C */}
+          <HomepageHeroAB />
           
           {/* 2. TRUST RIBBON - BEKANNT AUS + 15'000+ Stats (A/B TESTED) */}
           <Suspense fallback={<TrustSkeleton />}>
@@ -211,11 +203,13 @@ const Index = () => {
           <CookieConsentBanner />
         </Suspense>
         
-        {/* UnifiedABToggle disabled during UX iteration */}
+        {/* A/B Testing Toggle (dev only) */}
+        <UnifiedABToggle />
       </div>
     </ErrorBoundary>
     </SocialProofABProvider>
     </TabHintABProvider>
+    </HomepageABProvider>
   );
 };
 
