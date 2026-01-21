@@ -122,12 +122,12 @@ const content = {
   }
 };
 
-// Real emotional moving images - happy families, new beginnings
+// Real moving images - people actively moving, packing boxes, carrying furniture
 const heroImages = {
-  de: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=1400&q=90", // Happy family with moving boxes
-  bg: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1400&q=90", // Beautiful new home
-  it: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1400&q=90", // Couple celebrating in new apartment
-  fallback: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1400&q=90", // Joyful family unpacking
+  de: "https://images.unsplash.com/photo-1600585152915-d208bec867a1?w=1400&q=90", // Couple carrying moving boxes
+  bg: "https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=1400&q=90", // Professional movers with boxes
+  it: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=1400&q=90", // Family moving day with boxes
+  fallback: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1400&q=90", // Moving truck and boxes
 };
 
 export const VisionEmotionalHero = memo(({ language, variant = 'full' }: VisionEmotionalHeroProps) => {
