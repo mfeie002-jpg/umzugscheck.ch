@@ -80,8 +80,13 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
   const currentTabHintInfo = tabHintVariants[tabHintVariant] || tabHintVariants.default;
   const navVariantNumber = getNavVariantNumber();
 
-  // Only show on homepage
-  if (location.pathname !== '/') {
+  // Only show in development/preview mode, never in production
+  const isProduction = window.location.hostname === 'umzugscheck.ch' || 
+                       window.location.hostname === 'www.umzugscheck.ch' ||
+                       window.location.hostname === 'umzugscheckv2.lovable.app';
+  
+  // Only show on homepage AND only in development
+  if (location.pathname !== '/' || isProduction) {
     return null;
   }
 
