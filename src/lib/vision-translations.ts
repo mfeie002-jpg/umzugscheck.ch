@@ -415,9 +415,9 @@ const de: VisionTranslations = {
           "✅ Final Security Review",
           "✅ Provider Onboarding System",
           "✅ Google Ads Kampagnen-Manager",
-          "🔄 Soft Launch (Beta-Kunden)",
-          "⏳ Press Kit & PR Vorbereitung",
-          "⏳ Go-Live 🚀"
+          "✅ Soft Launch / Beta Program",
+          "🔄 Press Kit & PR Vorbereitung",
+          "🔄 Go-Live 🚀"
         ]
       }
     ],
@@ -433,7 +433,7 @@ const de: VisionTranslations = {
         "26 Städte mit Neighborhood-Daten",
         "30+ Umzugsfirmen im System",
         "5-stufiger Lead-Funnel gebaut",
-        "18+ Extended Features implementiert",
+        "19+ Extended Features implementiert",
         "AI Cost Predictor mit CH-Daten",
         "WhatsApp-First Integration",
         "Capacity Radar (Live-Verfügbarkeit)",
