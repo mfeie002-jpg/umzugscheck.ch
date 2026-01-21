@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SEOHead } from "@/components/SEOHead";
 import { Vision10PillarSection } from "@/components/homepage/Vision10PillarSection";
 import { CustomerUSPVisualCards } from "@/components/homepage/CustomerUSPVisualCards";
@@ -31,6 +31,10 @@ import { VisionIconFeatures } from "@/components/vision/VisionIconFeatures";
 import { VisionVisualDivider } from "@/components/vision/VisionVisualDivider";
 import { VisionSalesFunnelDiagram } from "@/components/vision/VisionSalesFunnelDiagram";
 import { VisionSystemDiagram } from "@/components/vision/VisionSystemDiagram";
+import { VisionContactCTA } from "@/components/vision/VisionContactCTA";
+import { VisionLiveStats } from "@/components/vision/VisionLiveStats";
+import { VisionProgressIndicator } from "@/components/vision/VisionProgressIndicator";
+import { VisionScrollTracker, useScrollDepthTracking } from "@/components/vision/VisionScrollTracker";
 import { getVisionTranslation, type VisionLanguage } from "@/lib/vision-translations";
 
 export default function VisionPage() {
@@ -83,8 +87,14 @@ export default function VisionPage() {
     }
   };
 
+  // Enable scroll depth tracking
+  useScrollDepthTracking();
+
   return (
     <div className="min-h-screen bg-background">
+      {/* Progress Indicator */}
+      <VisionProgressIndicator />
+      
       <SEOHead
         pageType="home"
         url="https://umzugscheck.ch/vision"
@@ -148,9 +158,16 @@ export default function VisionPage() {
       <VisionStickyNav language={language} />
 
       {/* 1. HERO - Homepage Style with Full-Width Image */}
-      <VisionEmotionalHero language={language} variant="full" />
+      <VisionScrollTracker sectionId="hero" sectionName="Hero">
+        <VisionEmotionalHero language={language} variant="full" />
+      </VisionScrollTracker>
 
-      {/* 2. QUICK STATS - Icon-focused grid */}
+      {/* 2. LIVE STATS - Animated counters */}
+      <VisionScrollTracker sectionId="live-stats" sectionName="Live Stats">
+        <VisionLiveStats language={language} variant="full" />
+      </VisionScrollTracker>
+
+      {/* 3. QUICK STATS - Icon-focused grid */}
       <VisionQuickStats language={language} variant="full" />
 
       {/* 3. AUDIENCE SWITCHER */}
@@ -296,9 +313,11 @@ export default function VisionPage() {
 
       {/* EXIT TIMELINE */}
       <div id="vision-exit">
-        <ScrollReveal>
-          <ExitTimeline language={language} />
-        </ScrollReveal>
+        <VisionScrollTracker sectionId="exit" sectionName="Exit Timeline">
+          <ScrollReveal>
+            <ExitTimeline language={language} />
+          </ScrollReveal>
+        </VisionScrollTracker>
       </div>
 
       {/* FOOTER CTA */}
@@ -329,6 +348,9 @@ export default function VisionPage() {
           </div>
         </div>
       </section>
+
+      {/* Floating Contact CTA */}
+      <VisionContactCTA language={language} variant="full" />
     </div>
   );
 }

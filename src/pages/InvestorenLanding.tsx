@@ -19,6 +19,9 @@ import { VisionQuickStats } from "@/components/vision/VisionQuickStats";
 import { VisionVisualDivider } from "@/components/vision/VisionVisualDivider";
 import { VisionLanguageSwitcher } from "@/components/vision/VisionLanguageSwitcher";
 import { ExpandAllToggle } from "@/components/vision/ExpandAllToggle";
+import { VisionContactCTA } from "@/components/vision/VisionContactCTA";
+import { VisionLiveStats } from "@/components/vision/VisionLiveStats";
+import { VisionProgressIndicator } from "@/components/vision/VisionProgressIndicator";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, TrendingUp } from "lucide-react";
@@ -108,6 +111,9 @@ export default function InvestorenLanding() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Progress Indicator */}
+      <VisionProgressIndicator />
+      
       <SEOHead
         pageType="home"
         url="https://umzugscheck.ch/investoren"
@@ -153,10 +159,13 @@ export default function InvestorenLanding() {
       {/* 1. HERO - Investor variant */}
       <VisionEmotionalHero language={language} variant="investor" />
 
-      {/* 2. QUICK STATS - Investor-focused metrics */}
+      {/* 2. LIVE STATS - Animated investor metrics */}
+      <VisionLiveStats language={language} variant="investor" />
+
+      {/* 3. QUICK STATS - Investor-focused metrics */}
       <VisionQuickStats language={language} variant="investor" />
 
-      {/* 3. VISUAL DIVIDER */}
+      {/* 4. VISUAL DIVIDER */}
       <VisionVisualDivider language={language} variant="business" />
 
       {/* 4. PROFITABILITY ROADMAP */}
@@ -277,6 +286,9 @@ export default function InvestorenLanding() {
           </div>
         </div>
       </section>
+
+      {/* Floating Contact CTA */}
+      <VisionContactCTA language={language} variant="investor" />
     </div>
   );
 }
