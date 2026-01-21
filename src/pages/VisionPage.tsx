@@ -14,6 +14,7 @@ import { VisionRoadmapTimeline } from "@/components/vision/VisionRoadmapTimeline
 import { RevenueStreamExamples } from "@/components/vision/RevenueStreamExamples";
 import { UnitEconomicsDetailed } from "@/components/vision/UnitEconomicsDetailed";
 import { ExitTimeline } from "@/components/vision/ExitTimeline";
+import { MarketPotentialSection } from "@/components/vision/MarketPotentialSection";
 import { getVisionTranslation, type VisionLanguage } from "@/lib/vision-translations";
 
 export default function VisionPage() {
@@ -174,6 +175,13 @@ export default function VisionPage() {
       <div id="vision-unit-economics">
         <ScrollReveal>
           <UnitEconomicsDetailed />
+        </ScrollReveal>
+      </div>
+
+      {/* NEW: Marktpotenzial Schweiz */}
+      <div id="vision-market-potential">
+        <ScrollReveal>
+          <MarketPotentialSection />
         </ScrollReveal>
       </div>
 
