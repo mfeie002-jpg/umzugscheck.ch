@@ -29,6 +29,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import type { VisionLanguage } from "@/lib/vision-translations";
+import { StakeholderJokeBanner, StakeholderJokesGrid } from "@/components/stakeholder/StakeholderJokeBanner";
 
 // Translations
 const translations: Record<'de' | 'bg' | 'it', {
@@ -265,6 +266,18 @@ export default function InvestorenLanding() {
         <ExitTimeline language={language} />
       </ScrollReveal>
 
+      {/* JOKES SECTION - Only for BG/IT */}
+      {(language === 'bg' || language === 'it') && (
+        <section className="py-12 bg-muted/10">
+          <div className="container mx-auto px-4">
+            <h3 className="text-xl font-bold text-center mb-6 text-foreground/80">
+              {language === 'bg' ? '🌿 Зелена Мъдрост за Инвеститори' : '🌿 Saggezza Verde per Investitori'}
+            </h3>
+            <StakeholderJokesGrid language={language} count={6} />
+          </div>
+        </section>
+      )}
+
       {/* FOOTER CTA */}
       <section className="py-12 bg-primary/5">
         <div className="container mx-auto px-4 text-center">
@@ -289,6 +302,11 @@ export default function InvestorenLanding() {
 
       {/* Floating Contact CTA */}
       <VisionContactCTA language={language} variant="investor" />
+
+      {/* FLOATING JOKE - Only for BG/IT */}
+      {(language === 'bg' || language === 'it') && (
+        <StakeholderJokeBanner language={language} variant="floating" />
+      )}
     </div>
   );
 }
