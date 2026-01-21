@@ -3227,6 +3227,7 @@ export type Database = {
           id: string
           lead_id: string | null
           photos: string[] | null
+          provider_id: string | null
           rating: number
           service_ratings: Json | null
           title: string
@@ -3242,6 +3243,7 @@ export type Database = {
           id?: string
           lead_id?: string | null
           photos?: string[] | null
+          provider_id?: string | null
           rating: number
           service_ratings?: Json | null
           title: string
@@ -3257,6 +3259,7 @@ export type Database = {
           id?: string
           lead_id?: string | null
           photos?: string[] | null
+          provider_id?: string | null
           rating?: number
           service_ratings?: Json | null
           title?: string
@@ -3277,6 +3280,20 @@ export type Database = {
             columns: ["lead_id"]
             isOneToOne: false
             referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers_public"
             referencedColumns: ["id"]
           },
           {
