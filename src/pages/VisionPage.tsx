@@ -106,8 +106,8 @@ export default function VisionPage() {
         url="https://umzugscheck.ch/vision"
       />
 
-      {/* Sticky Header with Download Buttons */}
-      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b">
+      {/* NON-Sticky Header with Download Buttons - Removed sticky to prevent conflict with StickyNav */}
+      <div className="bg-background border-b border-[#8B0000]/20">
         <div className="container mx-auto px-3 md:px-4 py-2 md:py-3">
           <div className="flex items-center justify-between gap-2">
             <Link to="/">
@@ -140,7 +140,7 @@ export default function VisionPage() {
               <Button 
                 onClick={handleExportPDF}
                 disabled={isExporting}
-                className="relative touch-manipulation min-h-[40px] px-3 md:px-4 bg-[#E32026] hover:bg-[#c91c21] text-white whitespace-nowrap"
+                className="relative touch-manipulation min-h-[40px] px-3 md:px-4 bg-[#8B0000] hover:bg-[#6B0000] text-white whitespace-nowrap"
                 size="sm"
               >
                 {isExporting ? (

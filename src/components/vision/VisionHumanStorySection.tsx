@@ -130,7 +130,7 @@ export const VisionHumanStorySection = ({ language = 'de' }: VisionHumanStorySec
           className="text-center mb-16"
         >
           <Badge variant="outline" className="mb-4 px-4 py-2">
-            <Heart className="w-4 h-4 mr-2 text-[#E32026]" />
+            <Heart className="w-4 h-4 mr-2 text-[#8B0000]" />
             {t.badge}
           </Badge>
           <h2 className="text-3xl md:text-5xl font-bold mb-4 leading-tight">
