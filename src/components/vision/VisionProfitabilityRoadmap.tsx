@@ -23,8 +23,8 @@ const content = {
   de: {
     badge: "Execution Roadmap 2025",
     title: "Der Weg zum Marktführer",
-    subtitle: "12-Monats-Plan: Vom Launch zur Profitabilität – und darüber hinaus",
-    currentPhase: "Phase 3/6",
+    subtitle: "Website fertig → Ads starten → Backlinks aufbauen → Content erstellen → Profitable bis August",
+    currentPhase: "Phase 2/5",
     
     milestones: [
       {
@@ -37,40 +37,32 @@ const content = {
       },
       {
         month: "Jan 25",
-        title: "🚀 Go-Live",
-        description: "Plattform live – Erste Kunden",
+        title: "🚀 Website fertig",
+        description: "Plattform live – bereit für Traffic",
         icon: "check",
         status: "completed",
         highlight: true
       },
       {
         month: "Feb–Mar",
-        title: "First Revenue",
-        description: "Provider zahlen für Premium-Leads",
+        title: "Ads & Traffic",
+        description: "Google Ads starten, erste Kampagnen optimieren",
         icon: "target",
         status: "current",
         highlight: true
       },
       {
         month: "Apr–Jun",
-        title: "Market Traction",
-        description: "50+ Provider, 1'000+ Leads/Monat",
+        title: "Scale & Optimize",
+        description: "Backlinks kaufen, Content erstellen, USP-Kampagnen testen",
         icon: "trending",
         status: "upcoming",
         highlight: false
       },
       {
-        month: "Jul–Sep",
-        title: "Break-Even",
-        description: "Einnahmen > Kosten. Wachstum beschleunigen.",
-        icon: "target",
-        status: "upcoming",
-        highlight: false
-      },
-      {
-        month: "Okt–Dez",
-        title: "💰 Profitable",
-        description: "Nachhaltige Gewinne. Expansion ready.",
+        month: "Aug 25",
+        title: "💰 Profitabel",
+        description: "Spätestens Ende August – nachhaltig profitabel",
         icon: "dollar",
         status: "upcoming",
         highlight: true
@@ -80,13 +72,13 @@ const content = {
     progressLabel: "Gesamtfortschritt",
     monthsLeft: "Monate bis Profitabilität",
     todayLabel: "Heute",
-    onTrack: "On Track für Dominanz"
+    onTrack: "Ziel: Profitabel bis Ende August"
   },
   bg: {
     badge: "Пътна карта за изпълнение 2025",
     title: "Пътят към лидерство на пазара",
-    subtitle: "12-месечен план: От стартиране до рентабилност – и нататък",
-    currentPhase: "Фаза 3/6",
+    subtitle: "Сайтът готов → Реклами стартират → Backlinks → Съдържание → Рентабилни до Август",
+    currentPhase: "Фаза 2/5",
     
     milestones: [
       {
@@ -99,40 +91,32 @@ const content = {
       },
       {
         month: "Ян 25",
-        title: "🚀 Go-Live",
-        description: "Платформата е активна – Първи клиенти",
+        title: "🚀 Сайтът готов",
+        description: "Платформата активна – готови за трафик",
         icon: "check",
         status: "completed",
         highlight: true
       },
       {
         month: "Фев–Мар",
-        title: "Първи приходи",
-        description: "Доставчиците плащат за премиум leads",
+        title: "Реклами & Трафик",
+        description: "Google Ads стартират, първи кампании оптимизират",
         icon: "target",
         status: "current",
         highlight: true
       },
       {
         month: "Апр–Юни",
-        title: "Пазарен Traction",
-        description: "50+ доставчици, 1'000+ leads/месец",
+        title: "Scale & Optimize",
+        description: "Backlinks, съдържание, USP кампании тестват",
         icon: "trending",
         status: "upcoming",
         highlight: false
       },
       {
-        month: "Юли–Сеп",
-        title: "Break-Even",
-        description: "Приходи > Разходи. Ускоряване на растежа.",
-        icon: "target",
-        status: "upcoming",
-        highlight: false
-      },
-      {
-        month: "Окт–Дек",
+        month: "Авг 25",
         title: "💰 Рентабилен",
-        description: "Устойчиви печалби. Готови за разширяване.",
+        description: "Най-късно края на Август – устойчиво рентабилни",
         icon: "dollar",
         status: "upcoming",
         highlight: true
@@ -142,13 +126,13 @@ const content = {
     progressLabel: "Общ напредък",
     monthsLeft: "месеца до рентабилност",
     todayLabel: "Днес",
-    onTrack: "По план за доминация"
+    onTrack: "Цел: Рентабилни до края на Август"
   },
   it: {
     badge: "Roadmap di Esecuzione 2025",
     title: "La Strada verso la Leadership di Mercato",
-    subtitle: "Piano 12 mesi: Dal lancio alla redditività – e oltre",
-    currentPhase: "Fase 3/6",
+    subtitle: "Sito pronto → Ads attivi → Backlinks → Contenuti → Redditizio entro Agosto",
+    currentPhase: "Fase 2/5",
     
     milestones: [
       {
@@ -161,40 +145,32 @@ const content = {
       },
       {
         month: "Gen 25",
-        title: "🚀 Go-Live",
-        description: "Piattaforma attiva – Primi clienti",
+        title: "🚀 Sito pronto",
+        description: "Piattaforma attiva – pronta per il traffico",
         icon: "check",
         status: "completed",
         highlight: true
       },
       {
         month: "Feb–Mar",
-        title: "Primi Ricavi",
-        description: "I provider pagano per lead premium",
+        title: "Ads & Traffico",
+        description: "Google Ads attivi, prime campagne ottimizzate",
         icon: "target",
         status: "current",
         highlight: true
       },
       {
         month: "Apr–Giu",
-        title: "Trazione di Mercato",
-        description: "50+ provider, 1'000+ lead/mese",
+        title: "Scale & Optimize",
+        description: "Backlinks, contenuti, test campagne USP",
         icon: "trending",
         status: "upcoming",
         highlight: false
       },
       {
-        month: "Lug–Set",
-        title: "Break-Even",
-        description: "Ricavi > Costi. Accelerare la crescita.",
-        icon: "target",
-        status: "upcoming",
-        highlight: false
-      },
-      {
-        month: "Ott–Dic",
+        month: "Ago 25",
         title: "💰 Redditizio",
-        description: "Profitti sostenibili. Pronti per l'espansione.",
+        description: "Entro fine Agosto – profitti sostenibili",
         icon: "dollar",
         status: "upcoming",
         highlight: true
@@ -204,7 +180,7 @@ const content = {
     progressLabel: "Progresso Totale",
     monthsLeft: "mesi alla redditività",
     todayLabel: "Oggi",
-    onTrack: "In linea per il dominio"
+    onTrack: "Obiettivo: Redditizio entro fine Agosto"
   }
 };
 
@@ -222,9 +198,9 @@ const getIcon = (iconName: string, className: string) => {
 export const VisionProfitabilityRoadmap = memo(({ language }: VisionProfitabilityRoadmapProps) => {
   const t = content[language] || content.de;
   
-  // Calculate progress (we're at milestone 3 of 6 = ~33%, but more realistically ~25% through the year)
-  const progress = 33;
-  const monthsRemaining = 9;
+  // Calculate progress (we're at milestone 2 of 5 = ~40%, target August = ~6 months away)
+  const progress = 40;
+  const monthsRemaining = 6;
   
   return (
     <section className="py-8 md:py-12 bg-gradient-to-br from-primary/5 via-background to-secondary/5">
@@ -279,7 +255,7 @@ export const VisionProfitabilityRoadmap = memo(({ language }: VisionProfitabilit
             {/* Horizontal line for desktop */}
             <div className="hidden md:block absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-primary via-primary/50 to-muted -translate-y-1/2" />
             
-            <div className="grid md:grid-cols-6 gap-4 md:gap-2">
+            <div className="grid md:grid-cols-5 gap-4 md:gap-2">
               {t.milestones.map((milestone, i) => (
                 <motion.div
                   key={i}

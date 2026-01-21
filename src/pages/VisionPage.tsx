@@ -137,18 +137,18 @@ export default function VisionPage() {
               <Button 
                 onClick={handleExportPDF}
                 disabled={isExporting}
-                className="relative touch-manipulation min-h-[40px] px-2 md:px-3"
+                className="relative touch-manipulation min-h-[40px] px-3 md:px-4 bg-[#E32026] hover:bg-[#c91c21] text-white whitespace-nowrap"
                 size="sm"
               >
                 {isExporting ? (
                   <>
-                    <Loader2 className="w-4 h-4 md:mr-2 animate-spin" />
+                    <Loader2 className="w-4 h-4 shrink-0 md:mr-2 animate-spin" />
                     <span className="hidden md:inline">{exportProgress}%</span>
                   </>
                 ) : (
                   <>
-                    <Download className="w-4 h-4 md:mr-2" />
-                    <span className="hidden md:inline">{t.page.downloadPdf}</span>
+                    <Download className="w-4 h-4 shrink-0 md:mr-2" />
+                    <span className="hidden md:inline truncate">{t.page.downloadPdf}</span>
                   </>
                 )}
               </Button>
