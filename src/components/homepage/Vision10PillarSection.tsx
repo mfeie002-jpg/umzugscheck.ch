@@ -5,7 +5,7 @@
  * Enhanced with visual comparisons and revenue stacking
  */
 
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Video, Shield, FileText, Sparkles, Recycle, 
@@ -17,6 +17,10 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+
+interface Vision10PillarSectionProps {
+  allExpanded?: boolean;
+}
 
 // ============================================
 // LISTE 1: 10 USPs FÜR KUNDEN
@@ -590,9 +594,7 @@ const KeyStatsBar = memo(({ type }: { type: "customer" | "investor" }) => {
 KeyStatsBar.displayName = 'KeyStatsBar';
 
 // Main Component
-export const Vision10PillarSection = memo(() => {
-  const [allExpanded, setAllExpanded] = useState(false);
-
+export const Vision10PillarSection = memo(({ allExpanded = false }: Vision10PillarSectionProps) => {
   return (
     <section className="py-16 md:py-24 bg-gradient-to-b from-background via-muted/20 to-background overflow-hidden">
       <div className="container mx-auto px-4">
@@ -617,19 +619,6 @@ export const Vision10PillarSection = memo(() => {
             95% Künstliche Intelligenz. 100% Sorgenfrei. <br className="hidden md:block" />
             Wir sind das <span className="font-semibold text-foreground">Betriebssystem für den Wohnortswechsel.</span>
           </p>
-          
-          {/* Expand All Button - Prominent for Screenshots */}
-          <div className="mt-8 flex justify-center">
-            <Button 
-              variant={allExpanded ? "default" : "outline"}
-              size="lg"
-              onClick={() => setAllExpanded(!allExpanded)}
-              className={`gap-3 font-bold shadow-lg ${allExpanded ? 'bg-primary text-primary-foreground' : 'border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground'}`}
-            >
-              <ChevronRight className={`w-5 h-5 transition-transform duration-300 ${allExpanded ? 'rotate-90' : ''}`} />
-              {allExpanded ? '✅ Alle Details sichtbar' : '📸 Alle Details anzeigen (für Screenshot)'}
-            </Button>
-          </div>
         </motion.div>
 
         {/* SECTION 1: Customer USPs - "Für Sie" */}

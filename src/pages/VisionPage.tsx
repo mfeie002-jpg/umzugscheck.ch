@@ -5,7 +5,7 @@ import { CustomerUSPVisualCards } from "@/components/homepage/CustomerUSPVisualC
 import { FamilySummary } from "@/components/homepage/FamilySummary";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Download, FileText, Loader2 } from "lucide-react";
+import { ArrowLeft, Download, FileText, Loader2, Eye, EyeOff } from "lucide-react";
 import { Link } from "react-router-dom";
 import { exportVisionToPDF, exportVisionAsTextPDF } from "@/lib/vision-pdf-export";
 import { useToast } from "@/hooks/use-toast";
@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 export default function VisionPage() {
   const [isExporting, setIsExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
+  const [allExpanded, setAllExpanded] = useState(false);
   const { toast } = useToast();
 
   const handleExportPDF = async () => {
@@ -75,6 +76,15 @@ export default function VisionPage() {
           
           <div className="flex flex-wrap items-center gap-2">
             <Button 
+              variant={allExpanded ? "default" : "outline"}
+              size="sm"
+              onClick={() => setAllExpanded(!allExpanded)}
+              className="gap-2"
+            >
+              {allExpanded ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              {allExpanded ? 'Details verbergen' : 'Alle Details anzeigen'}
+            </Button>
+            <Button 
               variant="outline" 
               size="sm"
               onClick={handleExportTextPDF}
@@ -130,7 +140,7 @@ export default function VisionPage() {
       {/* Vision 10 Pillars - Kunden & Investoren USPs (Tabs) */}
       <div id="vision-investor-pillars">
         <ScrollReveal>
-          <Vision10PillarSection />
+          <Vision10PillarSection allExpanded={allExpanded} />
         </ScrollReveal>
       </div>
 
