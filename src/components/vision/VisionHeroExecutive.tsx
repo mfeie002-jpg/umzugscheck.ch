@@ -23,9 +23,9 @@ interface VisionHeroExecutiveProps {
 
 const content = {
   de: {
-    badge: "🌍 Weltweit einzigartig",
-    headline: "Wir werden die Nr. 1 der Schweizer Umzugsbranche",
-    subheadline: "Das weltweit erste Umzugs-Ökosystem mit 10 Einnahmequellen, KI-Automatisierung und Fintech-Layer. Ein Unikat – global ohne Vergleich.",
+    badge: "🇨🇭 Made in Switzerland",
+    headline: "Umziehen in der Schweiz – endlich einfach.",
+    subheadline: "Wir haben einen fragmentierten, stressigen Prozess in eine transparente Plattform verwandelt. Faire Preise, geprüfte Firmen, ein Klick – fertig.",
     
     // 3 CTAs
     ctas: {
@@ -37,7 +37,7 @@ const content = {
       contactSub: "15 Min. Call"
     },
     
-    // Key Stats (Uniqueness-focused)
+    // Key Stats (Value-focused)
     stats: [
       { value: "Weltweit", label: "Einzigartig", icon: Globe, color: "text-primary" },
       { value: "553 CHF", label: "Revenue/Kunde", icon: DollarSign, color: "text-primary" },
@@ -45,21 +45,21 @@ const content = {
       { value: "10×", label: "Revenue Streams", icon: TrendingUp, color: "text-primary" }
     ],
     
-    // Why unique
+    // What we built
     whyUnique: {
-      title: "Warum weltweit einzigartig?",
+      title: "Was haben wir gebaut?",
       points: [
-        "Kein anderes Unternehmen kombiniert 10 Revenue Streams in einer Plattform",
-        "Erstes Umzugs-Ökosystem mit integriertem Fintech (Escrow-Zahlungen)",
-        "95% KI-Automatisierung ermöglicht Margen, die kein Wettbewerber erreicht",
-        "Computer Vision für automatische Inventar-Erkennung – weltweit Pionier"
+        "Eine Plattform, die Kunden, Firmen und Markt gleichzeitig gewinnen lässt",
+        "Transparenz wo vorher Chaos war – faire Preise, echte Bewertungen",
+        "10 Einnahmequellen in einem Ökosystem – weltweit einzigartig",
+        "95% KI-Automatisierung – skaliert ohne proportionale Kosten"
       ]
     }
   },
   bg: {
-    badge: "🌍 Световен уникат",
-    headline: "Ще станем №1 в швейцарската индустрия за преместване",
-    subheadline: "Първата в света екосистема за преместване с 10 източника на приходи, AI автоматизация и fintech слой. Уникат – без аналог в света.",
+    badge: "🇨🇭 Made in Switzerland",
+    headline: "Преместване в Швейцария – най-накрая лесно.",
+    subheadline: "Превърнахме фрагментиран, стресиращ процес в прозрачна платформа. Честни цени, проверени фирми, един клик – готово.",
     
     ctas: {
       demo: "Гледай демо",
@@ -78,19 +78,19 @@ const content = {
     ],
     
     whyUnique: {
-      title: "Защо сме световен уникат?",
+      title: "Какво създадохме?",
       points: [
-        "Никоя друга компания не комбинира 10 revenue streams в една платформа",
-        "Първата екосистема за преместване с интегриран fintech (escrow плащания)",
-        "95% AI автоматизация позволява маржове, които никой конкурент не достига",
-        "Computer Vision за автоматично разпознаване на инвентар – световен пионер"
+        "Платформа, която печели за клиенти, фирми и пазара едновременно",
+        "Прозрачност там, където преди имаше хаос – честни цени, истински отзиви",
+        "10 източника на приходи в една екосистема – световен уникат",
+        "95% AI автоматизация – мащабира без пропорционални разходи"
       ]
     }
   },
   it: {
-    badge: "🌍 Unico al mondo",
-    headline: "Diventeremo il Nr. 1 nel settore traslochi svizzero",
-    subheadline: "Il primo ecosistema di traslochi al mondo con 10 flussi di entrate, automazione AI e layer fintech. Un unicum – senza paragoni a livello globale.",
+    badge: "🇨🇭 Made in Switzerland",
+    headline: "Traslocare in Svizzera – finalmente semplice.",
+    subheadline: "Abbiamo trasformato un processo frammentato e stressante in una piattaforma trasparente. Prezzi equi, aziende verificate, un click – fatto.",
     
     ctas: {
       demo: "Guarda demo",
@@ -109,12 +109,12 @@ const content = {
     ],
     
     whyUnique: {
-      title: "Perché unico al mondo?",
+      title: "Cosa abbiamo costruito?",
       points: [
-        "Nessun'altra azienda combina 10 flussi di entrate in una sola piattaforma",
-        "Primo ecosistema di traslochi con fintech integrato (pagamenti escrow)",
-        "95% automazione AI permette margini che nessun concorrente può raggiungere",
-        "Computer Vision per riconoscimento automatico inventario – pionieri mondiali"
+        "Una piattaforma che fa vincere clienti, aziende e mercato contemporaneamente",
+        "Trasparenza dove prima c'era caos – prezzi equi, recensioni vere",
+        "10 flussi di entrate in un ecosistema – unico al mondo",
+        "95% automazione AI – scala senza costi proporzionali"
       ]
     }
   }
