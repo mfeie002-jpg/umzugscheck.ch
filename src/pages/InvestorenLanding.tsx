@@ -15,6 +15,9 @@ import { VisionUniqueness } from "@/components/vision/VisionUniqueness";
 import { VisionProgressMilestones } from "@/components/vision/VisionProgressMilestones";
 import { ContributionBreakdown } from "@/components/vision/ContributionBreakdown";
 import { VisionTractionDashboard } from "@/components/vision/VisionTractionDashboard";
+import { VisionProfitabilityRoadmap } from "@/components/vision/VisionProfitabilityRoadmap";
+import { VisionEmotionalHero } from "@/components/vision/VisionEmotionalHero";
+import { VisionMovingMoments } from "@/components/vision/VisionMovingMoments";
 import { VisionLanguageSwitcher } from "@/components/vision/VisionLanguageSwitcher";
 import { ExpandAllToggle } from "@/components/vision/ExpandAllToggle";
 import { Button } from "@/components/ui/button";
@@ -129,28 +132,8 @@ export default function InvestorenLanding() {
         </div>
       </div>
 
-      {/* Hero Section */}
-      <section className="py-12 md:py-20 bg-gradient-to-b from-primary/5 to-background">
-        <div className="container mx-auto px-4 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/10 text-primary text-sm font-bold mb-6">
-              <TrendingUp className="w-4 h-4" />
-              {t.badge}
-            </span>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-foreground mb-6">
-              <span className="text-primary">{t.title}</span>
-              <br />
-              {t.subtitle}
-            </h1>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              {t.description}
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      {/* Emotional Hero - Investor variant */}
+      <VisionEmotionalHero language={language} variant="investor" />
 
       {/* Key Metrics Banner */}
       <section className="py-8 border-b bg-card">
@@ -178,6 +161,12 @@ export default function InvestorenLanding() {
           </div>
         </div>
       </section>
+
+      {/* Moving Moments - Show emotional impact for investors */}
+      <VisionMovingMoments language={language} />
+
+      {/* Profitability Roadmap - 12 Month Timeline */}
+      <VisionProfitabilityRoadmap language={language} />
 
       {/* Traction Dashboard */}
       <VisionTractionDashboard language={language} />

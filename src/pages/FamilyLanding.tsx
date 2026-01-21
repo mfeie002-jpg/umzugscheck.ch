@@ -17,6 +17,9 @@ import { CustomerUSPVisualCards } from "@/components/homepage/CustomerUSPVisualC
 import { FamilySummary } from "@/components/homepage/FamilySummary";
 import { FamilyLanguageSwitcher } from "@/components/family/FamilyLanguageSwitcher";
 import { VisionTractionDashboard } from "@/components/vision/VisionTractionDashboard";
+import { VisionProfitabilityRoadmap } from "@/components/vision/VisionProfitabilityRoadmap";
+import { VisionEmotionalHero } from "@/components/vision/VisionEmotionalHero";
+import { VisionMovingMoments } from "@/components/vision/VisionMovingMoments";
 import { ExpandAllToggle } from "@/components/vision/ExpandAllToggle";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Heart, Users, Sparkles, Home, CheckCircle2, Rocket } from "lucide-react";
@@ -96,26 +99,8 @@ export default function FamilyLanding() {
         </div>
       </div>
 
-      {/* Hero Section - Mobile Responsive */}
-      <section className="py-8 sm:py-12 md:py-20 bg-gradient-to-b from-primary/5 to-background">
-        <div className="container mx-auto px-4 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <span className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-primary/10 text-primary text-xs sm:text-sm font-bold mb-4 sm:mb-6">
-              <Heart className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
-              {t.hero.badge}
-            </span>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-foreground mb-4 sm:mb-6 leading-tight">
-              {t.hero.title} <span className="text-primary">{t.hero.titleHighlight}</span> 🚀
-            </h1>
-            <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed px-2">
-              {t.hero.subtitle}
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      {/* Emotional Hero - Human Side */}
+      <VisionEmotionalHero language={lang} variant="family" />
 
       {/* Quick Facts - Mobile Grid with proper touch targets */}
       <section className="py-6 sm:py-8 border-b">
@@ -137,6 +122,12 @@ export default function FamilyLanding() {
           </div>
         </div>
       </section>
+
+      {/* Moving Moments Gallery - Emotional Photos */}
+      <VisionMovingMoments language={lang} />
+
+      {/* Profitability Roadmap - 12 Month Timeline */}
+      <VisionProfitabilityRoadmap language={lang} />
 
       {/* Traction Dashboard - Progress & Milestones */}
       <VisionTractionDashboard language={lang} />
