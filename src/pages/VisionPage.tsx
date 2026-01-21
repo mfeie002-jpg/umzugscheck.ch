@@ -28,6 +28,7 @@ import { VisionComplianceSection } from "@/components/vision/VisionComplianceSec
 import { VisionProfitabilityRoadmap } from "@/components/vision/VisionProfitabilityRoadmap";
 import { VisionEmotionalHero } from "@/components/vision/VisionEmotionalHero";
 import { VisionMovingMoments } from "@/components/vision/VisionMovingMoments";
+import { VisionSalesFunnelDiagram } from "@/components/vision/VisionSalesFunnelDiagram";
 import { getVisionTranslation, type VisionLanguage } from "@/lib/vision-translations";
 
 export default function VisionPage() {
@@ -192,6 +193,11 @@ export default function VisionPage() {
 
       {/* NEW: Comparison Matrix (Unfair Advantage) */}
       <VisionComparisonMatrix language={language} />
+
+      {/* NEW: Sales Funnel Diagram - Complete Revenue Map */}
+      <div id="vision-sales-funnel">
+        <VisionSalesFunnelDiagram language={language} />
+      </div>
 
       {/* COLLAPSIBLE SECTIONS */}
       <div className="max-w-6xl mx-auto">
