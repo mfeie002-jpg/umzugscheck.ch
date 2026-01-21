@@ -45,14 +45,16 @@ const content = {
       { value: "10×", label: "Revenue Streams", icon: TrendingUp, color: "text-primary" }
     ],
     
-    // What we built
+    // What we built - detailed uniqueness
     whyUnique: {
-      title: "Was haben wir gebaut?",
+      title: "Warum weltweit einzigartig?",
       points: [
-        "Eine Plattform, die Kunden, Firmen und Markt gleichzeitig gewinnen lässt",
-        "Transparenz wo vorher Chaos war – faire Preise, echte Bewertungen",
-        "10 Einnahmequellen in einem Ökosystem – weltweit einzigartig",
-        "95% KI-Automatisierung – skaliert ohne proportionale Kosten"
+        "«Invisible Move»: Kein Rechner, keine Formulare – KI übernimmt",
+        "Digitaler Zwilling: Video-Scan als Single Source of Truth",
+        "Schweizer Recht integriert: Mietrecht, Fristen, eGov-Schnittstellen",
+        "Trust-Architektur: Escrow, Fixpreis, dokumentierte Schäden",
+        "10 Revenue Streams: Logistik bis Micro-Insurance in einem System",
+        "Generative UI: Flow passt sich dem Nutzer-Typ an"
       ]
     }
   },
@@ -78,12 +80,14 @@ const content = {
     ],
     
     whyUnique: {
-      title: "Какво създадохме?",
+      title: "Защо сме световен уникат?",
       points: [
-        "Платформа, която печели за клиенти, фирми и пазара едновременно",
-        "Прозрачност там, където преди имаше хаос – честни цени, истински отзиви",
-        "10 източника на приходи в една екосистема – световен уникат",
-        "95% AI автоматизация – мащабира без пропорционални разходи"
+        "«Invisible Move»: Без калкулатори, без формуляри – AI поема всичко",
+        "Дигитален близнак: Видео сканиране като единствен източник на истина",
+        "Швейцарско право интегрирано: Наемно право, срокове, eGov връзки",
+        "Trust архитектура: Escrow, фиксирана цена, документирани щети",
+        "10 източника на приходи: Логистика до микро-застраховка в една система",
+        "Генеративен UI: Flow се адаптира към типа потребител"
       ]
     }
   },
@@ -109,12 +113,14 @@ const content = {
     ],
     
     whyUnique: {
-      title: "Cosa abbiamo costruito?",
+      title: "Perché unici al mondo?",
       points: [
-        "Una piattaforma che fa vincere clienti, aziende e mercato contemporaneamente",
-        "Trasparenza dove prima c'era caos – prezzi equi, recensioni vere",
-        "10 flussi di entrate in un ecosistema – unico al mondo",
-        "95% automazione AI – scala senza costi proporzionali"
+        "«Invisible Move»: Niente calcolatori, niente moduli – l'AI fa tutto",
+        "Gemello digitale: Video-scan come unica fonte di verità",
+        "Diritto svizzero integrato: Affitto, scadenze, interfacce eGov",
+        "Architettura Trust: Escrow, prezzo fisso, danni documentati",
+        "10 flussi di entrate: Logistica a micro-assicurazione in un sistema",
+        "UI Generativa: Il flusso si adatta al tipo di utente"
       ]
     }
   }
