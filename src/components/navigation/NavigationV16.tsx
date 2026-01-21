@@ -326,7 +326,7 @@ export const NavigationV16 = () => {
           <div className="flex items-center gap-1.5 sm:gap-2 xl:gap-3 flex-shrink-0">
             {/* Desktop CTA - Context-Aware (xl+) */}
             <div className="hidden xl:flex flex-col items-end flex-shrink-0">
-              <Button asChild className="h-11 px-6 font-bold gap-2 rounded-xl bg-gradient-to-r from-secondary via-secondary to-secondary/90 hover:from-secondary/90 hover:to-secondary shadow-lg shadow-secondary/20 hover:shadow-xl hover:shadow-secondary/30 transition-all hover:scale-105">
+              <Button asChild className="h-11 px-6 font-bold gap-2 rounded-xl bg-gradient-to-r from-primary via-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all hover:scale-105">
                 <Link to={flowPath}>
                   <Zap className="w-4 h-4" />
                   {getCtaLabel()}
@@ -336,16 +336,16 @@ export const NavigationV16 = () => {
             </div>
 
             {/* Tablet CTA (lg only) - Compact but visible */}
-            <Button asChild className="hidden lg:flex xl:hidden h-10 px-4 font-semibold gap-1.5 rounded-lg bg-gradient-to-r from-secondary to-secondary/90 text-secondary-foreground shadow-md shadow-secondary/20">
+            <Button asChild className="hidden lg:flex xl:hidden h-10 px-4 font-semibold gap-1.5 rounded-lg bg-gradient-to-r from-primary to-primary/90 text-primary-foreground shadow-md shadow-primary/20">
               <Link to={flowPath}>
                 <Zap className="w-4 h-4" />
                 Offerte
               </Link>
             </Button>
 
-            {/* Mobile CTA - RED (secondary) for maximum visibility */}
+            {/* Mobile CTA - PRIMARY (blue) for brand consistency */}
             <Link to={flowPath}>
-              <Button size="sm" className="lg:hidden h-9 px-2.5 font-semibold gap-1 rounded-lg bg-gradient-to-r from-secondary to-secondary/90 text-secondary-foreground shadow-md shadow-secondary/20 hover:shadow-secondary/30 text-xs sm:text-sm">
+              <Button size="sm" className="lg:hidden h-9 px-2.5 font-semibold gap-1 rounded-lg bg-gradient-to-r from-primary to-primary/90 text-primary-foreground shadow-md shadow-primary/20 hover:shadow-primary/30 text-xs sm:text-sm">
                 <Zap className="w-3.5 h-3.5 flex-shrink-0" />
                 <span className="truncate">Offerten</span>
               </Button>

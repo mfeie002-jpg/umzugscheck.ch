@@ -497,7 +497,7 @@ const AppRouterContent = () => {
     <MainLayout>
       <Suspense fallback={<PageLoadingFallback />}>
         <AnimatedRoutes>
-          <Route path="/" element={<IndexPremium />} />
+          <Route path="/" element={<Suspense fallback={<PageLoadingFallback />}><Index /></Suspense>} />
           <Route path="/landing" element={<LandingPage />} />
           <Route path="/vision" element={<VisionPage />} />
           <Route path="/family" element={<FamilyLanding />} />

@@ -197,7 +197,7 @@ export const NavigationV15 = () => {
           <div className="hidden lg:flex items-center gap-2 2xl:gap-3 flex-shrink-0">
             <Button
               asChild
-              className="h-10 font-semibold gap-2 bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-md shadow-secondary/20 text-xs lg:text-sm px-3 lg:px-4 whitespace-nowrap"
+              className="h-10 font-semibold gap-2 bg-primary hover:bg-primary/90 text-primary-foreground shadow-md shadow-primary/20 text-xs lg:text-sm px-3 lg:px-4 whitespace-nowrap"
             >
               <Link to={flowPath}>
                 <span className="hidden 2xl:inline">Kostenlos Offerten erhalten</span>
@@ -209,7 +209,7 @@ export const NavigationV15 = () => {
 
           {/* Mobile CTA + Menu Button - pushed to right */}
           <div className="lg:hidden flex items-center gap-2 ml-auto">
-            <Button asChild size="sm" className="h-9 px-3 font-semibold gap-1.5 rounded-lg bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-md shadow-secondary/20">
+            <Button asChild size="sm" className="h-9 px-3 font-semibold gap-1.5 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground shadow-md shadow-primary/20">
               <Link to={flowPath}>
                 <Zap className="w-4 h-4" />
                 Offerten
