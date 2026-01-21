@@ -686,6 +686,150 @@ export type Database = {
           },
         ]
       }
+      escrow_events: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          escrow_id: string
+          event_data: Json | null
+          event_type: string
+          id: string
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          escrow_id: string
+          event_data?: Json | null
+          event_type: string
+          id?: string
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          escrow_id?: string
+          event_data?: Json | null
+          event_type?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "escrow_events_escrow_id_fkey"
+            columns: ["escrow_id"]
+            isOneToOne: false
+            referencedRelation: "escrow_transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      escrow_transactions: {
+        Row: {
+          created_at: string | null
+          currency: string | null
+          customer_confirmed: boolean | null
+          customer_email: string
+          customer_name: string
+          dispute_reason: string | null
+          dispute_resolution: string | null
+          disputed_at: string | null
+          funded_at: string | null
+          id: string
+          lead_id: string | null
+          platform_fee: number | null
+          provider_confirmed: boolean | null
+          provider_id: string | null
+          provider_payout: number
+          released_at: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          service_completed_at: string | null
+          service_date: string | null
+          service_description: string | null
+          service_type: string | null
+          status: string | null
+          stripe_payment_intent_id: string | null
+          stripe_transfer_id: string | null
+          total_amount: number
+        }
+        Insert: {
+          created_at?: string | null
+          currency?: string | null
+          customer_confirmed?: boolean | null
+          customer_email: string
+          customer_name: string
+          dispute_reason?: string | null
+          dispute_resolution?: string | null
+          disputed_at?: string | null
+          funded_at?: string | null
+          id?: string
+          lead_id?: string | null
+          platform_fee?: number | null
+          provider_confirmed?: boolean | null
+          provider_id?: string | null
+          provider_payout: number
+          released_at?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          service_completed_at?: string | null
+          service_date?: string | null
+          service_description?: string | null
+          service_type?: string | null
+          status?: string | null
+          stripe_payment_intent_id?: string | null
+          stripe_transfer_id?: string | null
+          total_amount: number
+        }
+        Update: {
+          created_at?: string | null
+          currency?: string | null
+          customer_confirmed?: boolean | null
+          customer_email?: string
+          customer_name?: string
+          dispute_reason?: string | null
+          dispute_resolution?: string | null
+          disputed_at?: string | null
+          funded_at?: string | null
+          id?: string
+          lead_id?: string | null
+          platform_fee?: number | null
+          provider_confirmed?: boolean | null
+          provider_id?: string | null
+          provider_payout?: number
+          released_at?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          service_completed_at?: string | null
+          service_date?: string | null
+          service_description?: string | null
+          service_type?: string | null
+          status?: string | null
+          stripe_payment_intent_id?: string | null
+          stripe_transfer_id?: string | null
+          total_amount?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "escrow_transactions_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "escrow_transactions_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "escrow_transactions_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       estimate_sessions: {
         Row: {
           created_at: string | null
