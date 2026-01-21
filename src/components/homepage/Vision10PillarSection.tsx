@@ -15,7 +15,6 @@ import {
   Users, ChevronRight, Check, X, Zap, Target,
   ArrowRight, Star, Trophy, Rocket, Heart
 } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -592,7 +591,7 @@ KeyStatsBar.displayName = 'KeyStatsBar';
 
 // Main Component
 export const Vision10PillarSection = memo(() => {
-  const [activeTab, setActiveTab] = useState("customers");
+  const [allExpanded, setAllExpanded] = useState(false);
 
   return (
     <section className="py-16 md:py-24 bg-gradient-to-b from-background via-muted/20 to-background overflow-hidden">
@@ -618,136 +617,150 @@ export const Vision10PillarSection = memo(() => {
             95% Künstliche Intelligenz. 100% Sorgenfrei. <br className="hidden md:block" />
             Wir sind das <span className="font-semibold text-foreground">Betriebssystem für den Wohnortswechsel.</span>
           </p>
+          
+          {/* Expand All Button */}
+          <div className="mt-6">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => setAllExpanded(!allExpanded)}
+              className="gap-2"
+            >
+              <ChevronRight className={`w-4 h-4 transition-transform ${allExpanded ? 'rotate-90' : ''}`} />
+              {allExpanded ? 'Alle Details verbergen' : 'Alle Details anzeigen (für Screenshot)'}
+            </Button>
+          </div>
         </motion.div>
 
-        {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-10 h-14 p-1 bg-muted/50 border border-border">
-            <TabsTrigger 
-              value="customers" 
-              className="text-sm md:text-base font-semibold rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-violet-600 data-[state=active]:text-white data-[state=active]:shadow-lg h-12 transition-all"
+        {/* SECTION 1: Customer USPs - "Für Sie" */}
+        <div className="mb-16">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.3 }}
+          >
+            {/* Section Header */}
+            <div className="flex items-center justify-center gap-3 mb-8">
+              <div className="h-14 w-14 rounded-2xl bg-gradient-to-r from-primary to-violet-600 flex items-center justify-center shadow-lg">
+                <Heart className="w-7 h-7 text-white" />
+              </div>
+              <h3 className="text-2xl md:text-3xl font-bold">Für Sie (Kunden)</h3>
+            </div>
+            
+            {/* Intro */}
+            <div className="bg-gradient-to-r from-blue-50 to-violet-50 dark:from-blue-950/30 dark:to-violet-950/30 border border-blue-200 dark:border-blue-800 rounded-2xl p-6 mb-8 text-center">
+              <p className="text-muted-foreground max-w-3xl mx-auto">
+                <span className="font-bold text-foreground text-lg">Für Menschen, die Sicherheit wollen:</span>
+                <br className="hidden md:block" />
+                Stellen Sie sich vor, Sie ziehen um, aber müssen <span className="text-primary font-semibold">keine Kisten zählen</span>, 
+                <span className="text-primary font-semibold"> keine Formulare ausfüllen</span> und 
+                <span className="text-primary font-semibold"> keinem Handwerker hinterhertelefonieren.</span>
+              </p>
+            </div>
+            
+            {/* Stats Bar */}
+            <KeyStatsBar type="customer" />
+            
+            {/* Comparison Table */}
+            <ComparisonTable />
+            
+            {/* USP Grid */}
+            <div className="grid md:grid-cols-2 gap-5">
+              {customerUSPs.map((usp, index) => (
+                <CustomerUSPCard key={usp.id} usp={usp} index={index} />
+              ))}
+            </div>
+
+            {/* CTA */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mt-12 text-center"
             >
-              <Heart className="w-4 h-4 mr-2" />
-              Für Sie
-            </TabsTrigger>
-            <TabsTrigger 
-              value="investors"
-              className="text-sm md:text-base font-semibold rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-violet-600 data-[state=active]:text-white data-[state=active]:shadow-lg h-12 transition-all"
+              <Link to="/umzugsofferten">
+                <Button size="lg" className="h-14 px-10 text-base font-bold bg-gradient-to-r from-primary to-violet-600 hover:from-primary/90 hover:to-violet-600/90 shadow-xl">
+                  Jetzt Offerten vergleichen
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+              <p className="text-sm text-muted-foreground mt-3">
+                100% kostenlos & unverbindlich
+              </p>
+            </motion.div>
+          </motion.div>
+        </div>
+
+        {/* Divider */}
+        <div className="flex items-center gap-4 my-16">
+          <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+          <div className="px-6 py-3 rounded-full bg-muted border border-border">
+            <span className="text-sm font-semibold text-muted-foreground">+ Investor Perspektive</span>
+          </div>
+          <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+        </div>
+
+        {/* SECTION 2: Investor Pillars - "Für Investoren" */}
+        <div>
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.3 }}
+          >
+            {/* Section Header */}
+            <div className="flex items-center justify-center gap-3 mb-8">
+              <div className="h-14 w-14 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-600 flex items-center justify-center shadow-lg">
+                <TrendingUp className="w-7 h-7 text-white" />
+              </div>
+              <h3 className="text-2xl md:text-3xl font-bold">Für Investoren</h3>
+            </div>
+            
+            {/* Intro */}
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border border-green-200 dark:border-green-800 rounded-2xl p-6 mb-8 text-center">
+              <p className="text-muted-foreground max-w-3xl mx-auto">
+                <span className="font-bold text-foreground text-lg">Für Investoren:</span>
+                <br className="hidden md:block" />
+                Wir transformieren einen <span className="text-green-600 font-semibold">fragmentierten Low-Tech Markt</span> in ein 
+                <span className="text-green-600 font-semibold"> hochprofitables Data- & Fintech-Ökosystem.</span>
+                <br className="hidden md:block" />
+                Unser Asset ist die <span className="font-bold text-foreground">Datenhoheit über den Lebenswechsel.</span>
+              </p>
+            </div>
+            
+            {/* Stats Bar */}
+            <KeyStatsBar type="investor" />
+            
+            {/* Pillar Grid */}
+            <div className="grid md:grid-cols-2 gap-5 mb-10">
+              {investorPillars.map((pillar, index) => (
+                <InvestorPillarCard key={pillar.id} pillar={pillar} index={index} />
+              ))}
+            </div>
+
+            {/* Revenue Stacking */}
+            <RevenueStackingCard />
+
+            {/* CTA */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mt-12 text-center"
             >
-              <TrendingUp className="w-4 h-4 mr-2" />
-              Für Investoren
-            </TabsTrigger>
-          </TabsList>
-
-          <AnimatePresence mode="wait">
-            {/* Customer USPs */}
-            <TabsContent value="customers" className="mt-0 focus-visible:outline-none">
-              <motion.div
-                key="customers"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                transition={{ duration: 0.3 }}
-              >
-                {/* Intro */}
-                <div className="bg-gradient-to-r from-blue-50 to-violet-50 dark:from-blue-950/30 dark:to-violet-950/30 border border-blue-200 dark:border-blue-800 rounded-2xl p-6 mb-8 text-center">
-                  <p className="text-muted-foreground max-w-3xl mx-auto">
-                    <span className="font-bold text-foreground text-lg">Für Menschen, die Sicherheit wollen:</span>
-                    <br className="hidden md:block" />
-                    Stellen Sie sich vor, Sie ziehen um, aber müssen <span className="text-primary font-semibold">keine Kisten zählen</span>, 
-                    <span className="text-primary font-semibold"> keine Formulare ausfüllen</span> und 
-                    <span className="text-primary font-semibold"> keinem Handwerker hinterhertelefonieren.</span>
-                  </p>
-                </div>
-                
-                {/* Stats Bar */}
-                <KeyStatsBar type="customer" />
-                
-                {/* Comparison Table */}
-                <ComparisonTable />
-                
-                {/* USP Grid */}
-                <div className="grid md:grid-cols-2 gap-5">
-                  {customerUSPs.map((usp, index) => (
-                    <CustomerUSPCard key={usp.id} usp={usp} index={index} />
-                  ))}
-                </div>
-
-                {/* CTA */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  className="mt-12 text-center"
-                >
-                  <Link to="/umzugsofferten">
-                    <Button size="lg" className="h-14 px-10 text-base font-bold bg-gradient-to-r from-primary to-violet-600 hover:from-primary/90 hover:to-violet-600/90 shadow-xl">
-                      Jetzt Offerten vergleichen
-                      <ArrowRight className="ml-2 h-5 w-5" />
-                    </Button>
-                  </Link>
-                  <p className="text-sm text-muted-foreground mt-3">
-                    100% kostenlos & unverbindlich
-                  </p>
-                </motion.div>
-              </motion.div>
-            </TabsContent>
-
-            {/* Investor Pillars */}
-            <TabsContent value="investors" className="mt-0 focus-visible:outline-none">
-              <motion.div
-                key="investors"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
-              >
-                {/* Intro */}
-                <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border border-green-200 dark:border-green-800 rounded-2xl p-6 mb-8 text-center">
-                  <p className="text-muted-foreground max-w-3xl mx-auto">
-                    <span className="font-bold text-foreground text-lg">Für Investoren:</span>
-                    <br className="hidden md:block" />
-                    Wir transformieren einen <span className="text-green-600 font-semibold">fragmentierten Low-Tech Markt</span> in ein 
-                    <span className="text-green-600 font-semibold"> hochprofitables Data- & Fintech-Ökosystem.</span>
-                    <br className="hidden md:block" />
-                    Unser Asset ist die <span className="font-bold text-foreground">Datenhoheit über den Lebenswechsel.</span>
-                  </p>
-                </div>
-                
-                {/* Stats Bar */}
-                <KeyStatsBar type="investor" />
-                
-                {/* Pillar Grid */}
-                <div className="grid md:grid-cols-2 gap-5 mb-10">
-                  {investorPillars.map((pillar, index) => (
-                    <InvestorPillarCard key={pillar.id} pillar={pillar} index={index} />
-                  ))}
-                </div>
-
-                {/* Revenue Stacking */}
-                <RevenueStackingCard />
-
-                {/* CTA */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  className="mt-12 text-center"
-                >
-                  <Link to="/fuer-firmen">
-                    <Button size="lg" variant="outline" className="h-14 px-10 text-base font-bold border-2 border-primary hover:bg-primary hover:text-white transition-all">
-                      Partner werden
-                      <ArrowRight className="ml-2 h-5 w-5" />
-                    </Button>
-                  </Link>
-                  <p className="text-sm text-muted-foreground mt-3">
-                    Werden Sie Teil des Ökosystems
-                  </p>
-                </motion.div>
-              </motion.div>
-            </TabsContent>
-          </AnimatePresence>
-        </Tabs>
+              <Link to="/fuer-firmen">
+                <Button size="lg" variant="outline" className="h-14 px-10 text-base font-bold border-2 border-primary hover:bg-primary hover:text-white transition-all">
+                  Partner werden
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+              <p className="text-sm text-muted-foreground mt-3">
+                Werden Sie Teil des Ökosystems
+              </p>
+            </motion.div>
+          </motion.div>
+        </div>
       </div>
     </section>
   );
