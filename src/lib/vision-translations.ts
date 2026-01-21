@@ -399,7 +399,8 @@ const de: VisionTranslations = {
           "✅ Behörden-API Integration",
           "✅ Partner Operating System (SaaS)",
           "✅ Micro-Insurance Module",
-          "✅ AI Video Inventory (Computer Vision)"
+          "✅ AI Video Inventory (Computer Vision)",
+          "✅ Verpackungsservice-Modul (Upsell)"
         ]
       }
     ],
@@ -408,20 +409,21 @@ const de: VisionTranslations = {
       subtitle: "Tag und Nacht gearbeitet – hier ist das Ergebnis",
       months: "3+ Monate intensive Arbeit",
       items: [
-        "290+ React Komponenten entwickelt",
-        "80+ Seiten und Routes erstellt",
-        "34+ Datenbank-Tabellen designt",
+        "300+ React Komponenten entwickelt",
+        "85+ Seiten und Routes erstellt",
+        "35+ Datenbank-Tabellen designt",
         "10 verschiedene Rechner implementiert",
         "26 Städte mit Neighborhood-Daten",
         "30+ Umzugsfirmen im System",
         "5-stufiger Lead-Funnel gebaut",
-        "10+ Extended Features implementiert",
+        "12+ Extended Features implementiert",
         "AI Cost Predictor mit CH-Daten",
         "WhatsApp-First Integration",
         "Capacity Radar (Live-Verfügbarkeit)",
         "Buddy Matching für LKW-Sharing",
         "AR Inventory Scanner",
         "AI Video Inventory (Computer Vision)",
+        "Verpackungsservice-Modul (Upsell)",
         "Provider Live-Chat System",
         "Lead Bidding System (Auktionen)",
         "Escrow/Treuhand System",
