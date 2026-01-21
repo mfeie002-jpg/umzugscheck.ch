@@ -18,8 +18,8 @@ import { RealtimeSocialProof } from "@/components/conversion/RealtimeSocialProof
 import { ScrollDepthTracker } from "@/components/conversion/ScrollDepthTracker";
 import { initMetrics } from "@/lib/realtime-metrics";
 import { trackPageView } from "@/lib/conversion-events";
-// Golden Flow V10 - The Main Conversion Funnel
-import { GoldenFlowWizard } from "@/components/golden-flow";
+// Smart Router V10 - PLZ-first, then method selection (Hick's Law optimized)
+import { SmartRouterWizard } from "@/components/smart-router";
 import { GoldenSocialProof, GoldenTrustBadges } from "@/components/golden";
 
 // CLS-optimized skeletons for zero layout shift
@@ -121,24 +121,14 @@ const Index = () => {
         <RealtimeSocialProof position="bottom-left" />
 
         <main id="main-content" role="main">
-          {/* 1. Golden Flow V10 Hero - The Main Conversion Funnel */}
+          {/* 1. Smart Router V10 - PLZ-first approach (Hick's Law) */}
           <section className="relative bg-gradient-to-b from-background to-muted/30 py-8 sm:py-12">
             <div className="container mx-auto px-4">
               {/* Social Proof Strip */}
               <GoldenSocialProof variant="strip" className="mb-6" />
               
-              {/* Hero Headline */}
-              <div className="text-center mb-8">
-                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-3">
-                  Umzugsofferten vergleichen – in 2 Minuten
-                </h1>
-                <p className="text-muted-foreground text-sm sm:text-base max-w-xl mx-auto">
-                  Kostenlos, unverbindlich und ohne Werbeanrufe. KI-gestützte Präzision für Ihren Umzug.
-                </p>
-              </div>
-              
-              {/* Golden Flow Wizard */}
-              <GoldenFlowWizard />
+              {/* Smart Router Wizard - Minimal first step, then method selection */}
+              <SmartRouterWizard />
             </div>
           </section>
           
