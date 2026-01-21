@@ -54,9 +54,9 @@ export default function FamilyLanding() {
         url="https://umzugscheck.ch/family"
       />
 
-      {/* Sticky Header - Mobile Optimized with safe-area */}
+      {/* Header - NON-Sticky to prevent conflict */}
       <div 
-        className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b"
+        className="bg-background border-b border-[#8B0000]/20"
         style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
       >
         <div className="container mx-auto px-4 py-2 sm:py-3">
@@ -73,7 +73,7 @@ export default function FamilyLanding() {
             </Link>
             
             {/* Center badge - visible on larger screens */}
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-bold">
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#8B0000]/10 text-[#8B0000] text-xs font-bold">
               <Heart className="w-3.5 h-3.5" />
               {t.header.forFamily}
             </div>
@@ -89,7 +89,7 @@ export default function FamilyLanding() {
                 <Button 
                   variant="outline" 
                   size="sm"
-                  className="min-h-[44px] px-3 sm:px-4 text-xs sm:text-sm active:scale-[0.98]"
+                  className="min-h-[44px] px-3 sm:px-4 text-xs sm:text-sm active:scale-[0.98] border-[#8B0000]/20 hover:bg-[#8B0000]/5"
                 >
                   {t.header.fullVision}
                 </Button>

@@ -141,12 +141,12 @@ export default function InvestorenLanding() {
         url="https://umzugscheck.ch/investoren"
       />
 
-      {/* Header */}
-      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b">
+      {/* Header - NON-Sticky to prevent conflict with page scrolling */}
+      <div className="bg-background border-b border-[#8B0000]/20">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <Link to="/">
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" className="min-h-[44px]">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 {t.back}
               </Button>
@@ -162,7 +162,7 @@ export default function InvestorenLanding() {
                 onLanguageChange={setLanguage} 
               />
               <Link to="/vision">
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" className="min-h-[44px] border-[#8B0000]/20 hover:bg-[#8B0000]/5">
                   {t.fullVision}
                 </Button>
               </Link>
