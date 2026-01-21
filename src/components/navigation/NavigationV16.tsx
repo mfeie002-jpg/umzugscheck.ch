@@ -170,11 +170,15 @@ export const NavigationV16 = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-[9998] w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 overflow-x-clip">
-        {/* Brand accent line - Primary Blue via Secondary Red to Primary */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#0050A8] via-[#E32026] to-[#0050A8]" />
+      <header className="sticky top-0 z-[9998] w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 overflow-x-clip pt-1">
+        {/* Brand accent line (NO gradient blending to avoid purple) */}
+        <div className="absolute top-0 left-0 right-0 h-1 flex">
+          <div className="flex-1 bg-primary" />
+          <div className="w-24 bg-secondary" />
+          <div className="flex-1 bg-primary" />
+        </div>
         
-        <div className="mx-auto flex h-16 w-full max-w-[1440px] items-center justify-between px-4 sm:px-5 xl:px-6 pl-[calc(1rem+env(safe-area-inset-left))] pr-[calc(1.5rem+env(safe-area-inset-right))]">
+        <div className="mx-auto flex h-[60px] w-full max-w-[1440px] items-center justify-between px-4 sm:px-5 xl:px-6 pl-[calc(1rem+env(safe-area-inset-left))] pr-[calc(1.5rem+env(safe-area-inset-right))]">
           {/* Logo */}
           <HeaderLogo size="md" showTagline={true} className="group xl:hidden" />
           <HeaderLogo size="md" showTagline={true} className="group hidden xl:flex" />
@@ -216,7 +220,7 @@ export const NavigationV16 = () => {
                       />
                       
                       {/* Dropdown */}
-                      <motion.div
+                       <motion.div
                         initial={{ opacity: 0, y: 10, scale: 0.98 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 5, scale: 0.98 }}
@@ -224,8 +228,12 @@ export const NavigationV16 = () => {
                         className="absolute top-full left-1/2 -translate-x-1/2 pt-3 z-[9999]"
                       >
                         <div className="w-[420px] bg-background rounded-2xl shadow-2xl border border-border/50 overflow-hidden">
-                          {/* Gradient accent - Brand colors */}
-                          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#0050A8] via-[#E32026] to-[#0050A8]" />
+                           {/* Brand accent line (no blending) */}
+                           <div className="absolute top-0 left-0 right-0 h-1 flex">
+                             <div className="flex-1 bg-primary" />
+                             <div className="w-20 bg-secondary" />
+                             <div className="flex-1 bg-primary" />
+                           </div>
                           
                           {/* Trust micro-bar */}
                           <div className="border-b border-border/50 bg-muted/30">
