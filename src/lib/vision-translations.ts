@@ -413,9 +413,9 @@ const de: VisionTranslations = {
           "✅ Golden Flow Conversion-Optimierung",
           "✅ Performance & Lighthouse Audit",
           "✅ Final Security Review",
-          "🔄 Provider Onboarding (erste 10 Partner)",
+          "✅ Provider Onboarding System",
           "🔄 Google Ads Kampagnen",
-          "⏳ Soft Launch (Beta-Kunden)",
+          "🔄 Soft Launch (Beta-Kunden)",
           "⏳ Press Kit & PR Vorbereitung",
           "⏳ Go-Live 🚀"
         ]
@@ -426,14 +426,14 @@ const de: VisionTranslations = {
       subtitle: "Tag und Nacht gearbeitet – hier ist das Ergebnis",
       months: "3+ Monate intensive Arbeit",
       items: [
-        "340+ React Komponenten entwickelt",
+        "345+ React Komponenten entwickelt",
         "105+ Seiten und Routes erstellt",
         "38+ Datenbank-Tabellen designt",
         "10 verschiedene Rechner implementiert",
         "26 Städte mit Neighborhood-Daten",
         "30+ Umzugsfirmen im System",
         "5-stufiger Lead-Funnel gebaut",
-        "17+ Extended Features implementiert",
+        "18+ Extended Features implementiert",
         "AI Cost Predictor mit CH-Daten",
         "WhatsApp-First Integration",
         "Capacity Radar (Live-Verfügbarkeit)",
