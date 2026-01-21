@@ -2089,6 +2089,7 @@ export type Database = {
           status: string | null
           to_city: string
           to_postal: string
+          winning_provider_id: string | null
         }
         Insert: {
           assigned_provider_ids?: string[] | null
@@ -2116,6 +2117,7 @@ export type Database = {
           status?: string | null
           to_city: string
           to_postal: string
+          winning_provider_id?: string | null
         }
         Update: {
           assigned_provider_ids?: string[] | null
@@ -2143,6 +2145,7 @@ export type Database = {
           status?: string | null
           to_city?: string
           to_postal?: string
+          winning_provider_id?: string | null
         }
         Relationships: [
           {
@@ -2157,6 +2160,20 @@ export type Database = {
             columns: ["estimate_session_id"]
             isOneToOne: false
             referencedRelation: "estimate_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_winning_provider_id_fkey"
+            columns: ["winning_provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_winning_provider_id_fkey"
+            columns: ["winning_provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers_public"
             referencedColumns: ["id"]
           },
         ]
