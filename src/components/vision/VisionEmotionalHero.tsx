@@ -11,10 +11,10 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import type { VisionLanguage } from "@/lib/vision-translations";
 
-// Import high-quality hero images
-import heroFamilyNewHome from "@/assets/vision/hero-family-new-home.jpg";
-import heroMovingSwitzerland from "@/assets/vision/hero-moving-switzerland.jpg";
-import heroInvestorMeeting from "@/assets/vision/hero-investor-meeting.jpg";
+// Import new high-quality hero images - unique per variant
+import heroVisionMain from "@/assets/vision/hero-vision-main.jpg";
+import heroFamilyMain from "@/assets/vision/hero-family-main.jpg";
+import heroInvestorMain from "@/assets/vision/hero-investor-main.jpg";
 
 interface VisionEmotionalHeroProps {
   language: VisionLanguage;
@@ -93,11 +93,11 @@ const content = {
   }
 };
 
-// Variant-specific images
+// Variant-specific images - unique per page
 const variantImages = {
-  family: heroFamilyNewHome,
-  investor: heroInvestorMeeting,
-  full: heroMovingSwitzerland,
+  family: heroFamilyMain,
+  investor: heroInvestorMain,
+  full: heroVisionMain,
 };
 
 export const VisionEmotionalHero = memo(({ language, variant = 'full' }: VisionEmotionalHeroProps) => {
