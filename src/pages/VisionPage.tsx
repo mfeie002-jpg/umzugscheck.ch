@@ -37,6 +37,11 @@ import { VisionProgressIndicator } from "@/components/vision/VisionProgressIndic
 import { VisionScrollTracker, useScrollDepthTracking } from "@/components/vision/VisionScrollTracker";
 import { getVisionTranslation, type VisionLanguage } from "@/lib/vision-translations";
 import { StakeholderJokeBanner, StakeholderJokesMarquee, StakeholderJokesGrid } from "@/components/stakeholder/StakeholderJokeBanner";
+import { usePersona } from "@/hooks/usePersona";
+import { FunNarrator } from "@/components/persona/FunNarrator";
+import { FunInterruptCard } from "@/components/persona/FunInterruptCard";
+import { FunSectionIntro } from "@/components/persona/FunSectionIntro";
+import { FunCTA } from "@/components/persona/FunCTA";
 
 export default function VisionPage() {
   const [isExporting, setIsExporting] = useState(false);
@@ -46,6 +51,7 @@ export default function VisionPage() {
   const { toast } = useToast();
   
   const t = getVisionTranslation(language);
+  const { persona, isPersonalized } = usePersona(language);
 
   const handleExportPDF = async () => {
     setIsExporting(true);
@@ -163,6 +169,11 @@ export default function VisionPage() {
         <VisionEmotionalHero language={language} variant="full" />
       </VisionScrollTracker>
 
+      {/* PERSONA SECTION INTRO - Hero */}
+      {isPersonalized && (
+        <FunSectionIntro persona={persona} page="vision" sectionId="hero" />
+      )}
+
       {/* WEED JOKES MARQUEE - Only for BG/IT */}
       {(language === 'bg' || language === 'it') && (
         <StakeholderJokesMarquee language={language} />
@@ -176,11 +187,21 @@ export default function VisionPage() {
       {/* 3. QUICK STATS - Icon-focused grid */}
       <VisionQuickStats language={language} variant="full" />
 
+      {/* PERSONA INTERRUPT CARD */}
+      {isPersonalized && (
+        <FunInterruptCard persona={persona} page="vision" afterSection="stats" />
+      )}
+
       {/* 3. AUDIENCE SWITCHER */}
       <VisionAudienceSwitcher language={language} />
 
       {/* 4. ICON FEATURES - Visual grid of capabilities */}
       <VisionIconFeatures language={language} />
+
+      {/* PERSONA SECTION INTRO - Features */}
+      {isPersonalized && (
+        <FunSectionIntro persona={persona} page="vision" sectionId="features" />
+      )}
 
       {/* 5. VISUAL DIVIDER - Emotional break */}
       <VisionVisualDivider language={language} variant="journey" />
@@ -193,6 +214,11 @@ export default function VisionPage() {
         <VisionProfitabilityRoadmap language={language} />
       </div>
 
+      {/* PERSONA INTERRUPT CARD */}
+      {isPersonalized && (
+        <FunInterruptCard persona={persona} page="vision" afterSection="roadmap" />
+      )}
+
       {/* 8. VISUAL DIVIDER - Business */}
       <VisionVisualDivider language={language} variant="business" />
 
@@ -204,6 +230,11 @@ export default function VisionPage() {
       {/* 10. COMPARISON MATRIX */}
       <VisionComparisonMatrix language={language} />
 
+      {/* PERSONA SECTION INTRO - Comparison */}
+      {isPersonalized && (
+        <FunSectionIntro persona={persona} page="vision" sectionId="comparison" />
+      )}
+
       {/* 11. VISUAL DIVIDER - Family */}
       <VisionVisualDivider language={language} variant="family" />
 
@@ -211,6 +242,11 @@ export default function VisionPage() {
       <div id="vision-sales-funnel">
         <VisionSalesFunnelDiagram language={language} />
       </div>
+
+      {/* PERSONA INTERRUPT CARD */}
+      {isPersonalized && (
+        <FunInterruptCard persona={persona} page="vision" afterSection="funnel" />
+      )}
 
       {/* 13. SYSTEM DIAGRAM */}
       <div id="vision-system">
@@ -245,6 +281,11 @@ export default function VisionPage() {
             <Vision10PillarSection allExpanded={allExpanded} language={language} />
           </div>
         </VisionCollapsibleSection>
+
+        {/* PERSONA SECTION INTRO - Pillars */}
+        {isPersonalized && (
+          <FunSectionIntro persona={persona} page="vision" sectionId="pillars" />
+        )}
         
         <VisionCollapsibleSection
           title={language === 'de' ? "Einfach erklärt für die Familie" : language === 'it' ? "Spiegato Semplicemente per la Famiglia" : "Обяснено просто за семейството"}
@@ -271,6 +312,11 @@ export default function VisionPage() {
             <RevenueStreamExamples language={language} />
           </div>
         </VisionCollapsibleSection>
+
+        {/* PERSONA INTERRUPT CARD */}
+        {isPersonalized && (
+          <FunInterruptCard persona={persona} page="vision" afterSection="revenue" />
+        )}
         
         <VisionCollapsibleSection
           title={language === 'de' ? "Unit Economics: Contribution Margin" : language === 'it' ? "Unit Economics: Contribution Margin" : "Unit Economics: Contribution Margin"}
@@ -330,6 +376,11 @@ export default function VisionPage() {
         </ScrollReveal>
       </div>
 
+      {/* PERSONA SECTION INTRO - Team */}
+      {isPersonalized && (
+        <FunSectionIntro persona={persona} page="vision" sectionId="team" />
+      )}
+
       {/* UNIQUENESS */}
       <div id="vision-uniqueness">
         <ScrollReveal>
@@ -346,37 +397,48 @@ export default function VisionPage() {
         </VisionScrollTracker>
       </div>
 
-      {/* FOOTER CTA */}
+      {/* FOOTER CTA - With Persona Variant */}
       <section className="py-8 md:py-12 bg-primary/5">
         <div className="container mx-auto px-4 text-center">
           <p className="text-sm md:text-base text-muted-foreground mb-4">
             {t.footer.questions}
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4">
-            <Button 
-              variant="outline"
-              onClick={handleExportPDF}
-              disabled={isExporting}
-              className="w-full sm:w-auto min-h-[48px] touch-manipulation"
-            >
-              {isExporting ? (
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              ) : (
-                <Download className="w-4 h-4 mr-2" />
-              )}
-              {t.footer.downloadPdf}
-            </Button>
-            <Link to="/" className="w-full sm:w-auto">
-              <Button size="lg" className="w-full min-h-[48px] touch-manipulation">
-                {t.footer.toMainPage}
+          
+          {/* Persona CTA */}
+          {isPersonalized ? (
+            <FunCTA persona={persona} page="vision" index={0} />
+          ) : (
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4">
+              <Button 
+                variant="outline"
+                onClick={handleExportPDF}
+                disabled={isExporting}
+                className="w-full sm:w-auto min-h-[48px] touch-manipulation"
+              >
+                {isExporting ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <Download className="w-4 h-4 mr-2" />
+                )}
+                {t.footer.downloadPdf}
               </Button>
-            </Link>
-          </div>
+              <Link to="/" className="w-full sm:w-auto">
+                <Button size="lg" className="w-full min-h-[48px] touch-manipulation">
+                  {t.footer.toMainPage}
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
       </section>
 
       {/* Floating Contact CTA */}
       <VisionContactCTA language={language} variant="full" />
+
+      {/* Persona Narrator - Floating */}
+      {isPersonalized && (
+        <FunNarrator persona={persona} page="vision" />
+      )}
     </div>
   );
 }

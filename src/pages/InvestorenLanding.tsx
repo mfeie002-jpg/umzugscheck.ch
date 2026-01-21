@@ -30,6 +30,11 @@ import { motion } from "framer-motion";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import type { VisionLanguage } from "@/lib/vision-translations";
 import { StakeholderJokeBanner, StakeholderJokesGrid } from "@/components/stakeholder/StakeholderJokeBanner";
+import { usePersona } from "@/hooks/usePersona";
+import { FunNarrator } from "@/components/persona/FunNarrator";
+import { FunInterruptCard } from "@/components/persona/FunInterruptCard";
+import { FunSectionIntro } from "@/components/persona/FunSectionIntro";
+import { FunCTA } from "@/components/persona/FunCTA";
 
 // Translations
 const translations: Record<'de' | 'bg' | 'it', {
@@ -109,6 +114,7 @@ export default function InvestorenLanding() {
   const [language, setLanguage] = useState<VisionLanguage>('de');
   const [allExpanded, setAllExpanded] = useState(false);
   const t = translations[language];
+  const { persona, isPersonalized } = usePersona(language);
 
   return (
     <div className="min-h-screen bg-background">
@@ -160,8 +166,18 @@ export default function InvestorenLanding() {
       {/* 1. HERO - Investor variant */}
       <VisionEmotionalHero language={language} variant="investor" />
 
+      {/* PERSONA SECTION INTRO - Hero */}
+      {isPersonalized && (
+        <FunSectionIntro persona={persona} page="investoren" sectionId="hero" />
+      )}
+
       {/* 2. LIVE STATS - Animated investor metrics */}
       <VisionLiveStats language={language} variant="investor" />
+
+      {/* PERSONA INTERRUPT CARD */}
+      {isPersonalized && (
+        <FunInterruptCard persona={persona} page="investoren" afterSection="stats" />
+      )}
 
       {/* 3. QUICK STATS - Investor-focused metrics */}
       <VisionQuickStats language={language} variant="investor" />
@@ -172,8 +188,18 @@ export default function InvestorenLanding() {
       {/* 4. PROFITABILITY ROADMAP */}
       <VisionProfitabilityRoadmap language={language} />
 
+      {/* PERSONA SECTION INTRO - Roadmap */}
+      {isPersonalized && (
+        <FunSectionIntro persona={persona} page="investoren" sectionId="roadmap" />
+      )}
+
       {/* 5. TRACTION DASHBOARD */}
       <VisionTractionDashboard language={language} />
+
+      {/* PERSONA INTERRUPT CARD */}
+      {isPersonalized && (
+        <FunInterruptCard persona={persona} page="investoren" afterSection="traction" />
+      )}
 
       {/* 6. VISUAL DIVIDER */}
       <VisionVisualDivider language={language} variant="journey" />
@@ -199,6 +225,11 @@ export default function InvestorenLanding() {
         </div>
       </section>
 
+      {/* PERSONA SECTION INTRO - Pillars */}
+      {isPersonalized && (
+        <FunSectionIntro persona={persona} page="investoren" sectionId="pillars" />
+      )}
+
       {/* 8. REVENUE STREAMS */}
       <section className="py-12">
         <div className="container mx-auto px-4">
@@ -216,6 +247,11 @@ export default function InvestorenLanding() {
           <RevenueStreamExamples language={language} />
         </div>
       </section>
+
+      {/* PERSONA INTERRUPT CARD */}
+      {isPersonalized && (
+        <FunInterruptCard persona={persona} page="investoren" afterSection="revenue" />
+      )}
 
       {/* 9. VISUAL DIVIDER */}
       <VisionVisualDivider language={language} variant="family" />
@@ -238,6 +274,11 @@ export default function InvestorenLanding() {
         </div>
       </section>
 
+      {/* PERSONA SECTION INTRO - Economics */}
+      {isPersonalized && (
+        <FunSectionIntro persona={persona} page="investoren" sectionId="economics" />
+      )}
+
       {/* 11. MARKET POTENTIAL */}
       <section className="py-12">
         <div className="container mx-auto px-4">
@@ -255,6 +296,11 @@ export default function InvestorenLanding() {
           <MarketPotentialSection language={language} />
         </div>
       </section>
+
+      {/* PERSONA INTERRUPT CARD */}
+      {isPersonalized && (
+        <FunInterruptCard persona={persona} page="investoren" afterSection="market" />
+      )}
 
       {/* 12. UNIQUENESS */}
       <ScrollReveal>
@@ -285,18 +331,24 @@ export default function InvestorenLanding() {
           <p className="text-muted-foreground mb-6 max-w-xl mx-auto">
             {t.footer.cta}
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <Link to="/vision">
-              <Button size="lg">
-                {t.footer.visionBtn}
-              </Button>
-            </Link>
-            <Link to="/family">
-              <Button variant="outline" size="lg">
-                {t.footer.familyBtn}
-              </Button>
-            </Link>
-          </div>
+          
+          {/* Persona CTA */}
+          {isPersonalized ? (
+            <FunCTA persona={persona} page="investoren" index={0} />
+          ) : (
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              <Link to="/vision">
+                <Button size="lg">
+                  {t.footer.visionBtn}
+                </Button>
+              </Link>
+              <Link to="/family">
+                <Button variant="outline" size="lg">
+                  {t.footer.familyBtn}
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
       </section>
 
@@ -306,6 +358,11 @@ export default function InvestorenLanding() {
       {/* FLOATING JOKE - Only for BG/IT */}
       {(language === 'bg' || language === 'it') && (
         <StakeholderJokeBanner language={language} variant="floating" />
+      )}
+
+      {/* Persona Narrator - Floating */}
+      {isPersonalized && (
+        <FunNarrator persona={persona} page="investoren" />
       )}
     </div>
   );

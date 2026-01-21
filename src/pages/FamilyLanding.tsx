@@ -23,6 +23,11 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { getFamilyTranslation, type FamilyLanguage } from "@/lib/family-translations";
 import { StakeholderJokeBanner, StakeholderJokesGrid } from "@/components/stakeholder/StakeholderJokeBanner";
+import { usePersona } from "@/hooks/usePersona";
+import { FunNarrator } from "@/components/persona/FunNarrator";
+import { FunInterruptCard } from "@/components/persona/FunInterruptCard";
+import { FunSectionIntro } from "@/components/persona/FunSectionIntro";
+import { FunCTA } from "@/components/persona/FunCTA";
 
 export default function FamilyLanding() {
   const [lang, setLang] = useState<FamilyLanguage>(() => {
@@ -32,6 +37,7 @@ export default function FamilyLanding() {
   const [allExpanded, setAllExpanded] = useState(false);
   
   const t = getFamilyTranslation(lang);
+  const { persona, isPersonalized } = usePersona(lang);
 
   useEffect(() => {
     localStorage.setItem('family-lang', lang);
@@ -95,6 +101,11 @@ export default function FamilyLanding() {
       {/* 1. HERO - Family variant with emotional image */}
       <VisionEmotionalHero language={lang} variant="family" />
 
+      {/* PERSONA SECTION INTRO - Hero */}
+      {isPersonalized && (
+        <FunSectionIntro persona={persona} page="family" sectionId="hero" />
+      )}
+
       {/* WEED JOKES BANNER - Only for BG/IT */}
       {(lang === 'bg' || lang === 'it') && (
         <div className="container mx-auto px-4 py-4">
@@ -105,11 +116,21 @@ export default function FamilyLanding() {
       {/* 2. LIVE STATS - Animated family-focused metrics */}
       <VisionLiveStats language={lang} variant="family" />
 
+      {/* PERSONA INTERRUPT CARD */}
+      {isPersonalized && (
+        <FunInterruptCard persona={persona} page="family" afterSection="stats" />
+      )}
+
       {/* 3. QUICK STATS - Family-focused */}
       <VisionQuickStats language={lang} variant="family" />
 
       {/* 4. ICON FEATURES - What makes us unique */}
       <VisionIconFeatures language={lang} />
+
+      {/* PERSONA SECTION INTRO - Features */}
+      {isPersonalized && (
+        <FunSectionIntro persona={persona} page="family" sectionId="features" />
+      )}
 
       {/* 4. VISUAL DIVIDER */}
       <VisionVisualDivider language={lang} variant="family" />
@@ -117,8 +138,18 @@ export default function FamilyLanding() {
       {/* 5. PROFITABILITY ROADMAP */}
       <VisionProfitabilityRoadmap language={lang} />
 
+      {/* PERSONA INTERRUPT CARD */}
+      {isPersonalized && (
+        <FunInterruptCard persona={persona} page="family" afterSection="roadmap" />
+      )}
+
       {/* 6. FAMILY SUMMARY - Simple explanation */}
       <FamilySummary language={lang} />
+
+      {/* PERSONA SECTION INTRO - Summary */}
+      {isPersonalized && (
+        <FunSectionIntro persona={persona} page="family" sectionId="summary" />
+      )}
 
       {/* 7. VISUAL DIVIDER */}
       <VisionVisualDivider language={lang} variant="journey" />
@@ -143,6 +174,11 @@ export default function FamilyLanding() {
         </div>
       </section>
 
+      {/* PERSONA INTERRUPT CARD */}
+      {isPersonalized && (
+        <FunInterruptCard persona={persona} page="family" afterSection="benefits" />
+      )}
+
       {/* JOKES GRID - Only for BG/IT */}
       {(lang === 'bg' || lang === 'it') && (
         <section className="py-8 sm:py-12 bg-muted/10">
@@ -164,32 +200,43 @@ export default function FamilyLanding() {
           <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6">
             {t.footer.moreDetails}
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
-            <Link to="/vision" className="w-full sm:w-auto touch-manipulation">
-              <Button 
-                size="lg" 
-                className="w-full sm:w-auto min-h-[48px] sm:min-h-[52px] text-sm sm:text-base font-bold active:scale-[0.98]"
-              >
-                <Rocket className="w-4 h-4 mr-2" />
-                {t.footer.fullVision}
-              </Button>
-            </Link>
-            <Link to="/" className="w-full sm:w-auto touch-manipulation">
-              <Button 
-                variant="outline" 
-                size="lg"
-                className="w-full sm:w-auto min-h-[48px] sm:min-h-[52px] text-sm sm:text-base active:scale-[0.98]"
-              >
-                {t.footer.mainPage}
-              </Button>
-            </Link>
-          </div>
+          
+          {/* Persona CTA */}
+          {isPersonalized ? (
+            <FunCTA persona={persona} page="family" index={0} />
+          ) : (
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+              <Link to="/vision" className="w-full sm:w-auto touch-manipulation">
+                <Button 
+                  size="lg" 
+                  className="w-full sm:w-auto min-h-[48px] sm:min-h-[52px] text-sm sm:text-base font-bold active:scale-[0.98]"
+                >
+                  <Rocket className="w-4 h-4 mr-2" />
+                  {t.footer.fullVision}
+                </Button>
+              </Link>
+              <Link to="/" className="w-full sm:w-auto touch-manipulation">
+                <Button 
+                  variant="outline" 
+                  size="lg"
+                  className="w-full sm:w-auto min-h-[48px] sm:min-h-[52px] text-sm sm:text-base active:scale-[0.98]"
+                >
+                  {t.footer.mainPage}
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
       </section>
 
       {/* FLOATING JOKE - Only for BG/IT */}
       {(lang === 'bg' || lang === 'it') && (
         <StakeholderJokeBanner language={lang} variant="floating" />
+      )}
+
+      {/* Persona Narrator - Floating */}
+      {isPersonalized && (
+        <FunNarrator persona={persona} page="family" />
       )}
     </div>
   );
