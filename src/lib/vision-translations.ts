@@ -385,7 +385,7 @@ const de: VisionTranslations = {
           "✅ Stripe Payment Integration",
           "✅ SEO Hub-and-Spoke Strategie",
           "✅ A/B Testing Framework",
-          "🔄 Google Ads Kampagnen"
+          "✅ Google Ads Kampagnen-Manager"
         ]
       },
       {
@@ -424,10 +424,10 @@ const de: VisionTranslations = {
     workDone: {
       title: "Was in 3+ Monaten entstanden ist",
       subtitle: "Tag und Nacht gearbeitet – hier ist das Ergebnis",
-      months: "3+ Monate intensive Arbeit",
+      months: "3+ Monate intensive Arbeit (2'000+ Stunden)",
       items: [
-        "360+ React Komponenten entwickelt",
-        "120+ Seiten und Routes erstellt",
+        "365+ React Komponenten entwickelt",
+        "125+ Seiten und Routes erstellt",
         "38+ Datenbank-Tabellen designt",
         "10 verschiedene Rechner implementiert",
         "26 Städte mit Neighborhood-Daten",
