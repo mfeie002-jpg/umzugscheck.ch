@@ -11,6 +11,9 @@ import { exportVisionToPDF, exportVisionAsTextPDF } from "@/lib/vision-pdf-expor
 import { useToast } from "@/hooks/use-toast";
 import { VisionLanguageSwitcher } from "@/components/vision/VisionLanguageSwitcher";
 import { VisionRoadmapTimeline } from "@/components/vision/VisionRoadmapTimeline";
+import { RevenueStreamExamples } from "@/components/vision/RevenueStreamExamples";
+import { UnitEconomicsDetailed } from "@/components/vision/UnitEconomicsDetailed";
+import { ExitTimeline } from "@/components/vision/ExitTimeline";
 import { getVisionTranslation, type VisionLanguage } from "@/lib/vision-translations";
 
 export default function VisionPage() {
@@ -160,10 +163,31 @@ export default function VisionPage() {
         </ScrollReveal>
       </div>
 
+      {/* NEW: Detaillierte Revenue Stream Beispiele */}
+      <div id="vision-revenue-examples">
+        <ScrollReveal>
+          <RevenueStreamExamples />
+        </ScrollReveal>
+      </div>
+
+      {/* NEW: Unit Economics Detailed */}
+      <div id="vision-unit-economics">
+        <ScrollReveal>
+          <UnitEconomicsDetailed />
+        </ScrollReveal>
+      </div>
+
       {/* Roadmap Timeline - Der Weg zum Marktführer */}
       <div id="vision-roadmap">
         <ScrollReveal>
           <VisionRoadmapTimeline t={t} />
+        </ScrollReveal>
+      </div>
+
+      {/* NEW: Exit Timeline mit Bewertungen */}
+      <div id="vision-exit">
+        <ScrollReveal>
+          <ExitTimeline />
         </ScrollReveal>
       </div>
 
