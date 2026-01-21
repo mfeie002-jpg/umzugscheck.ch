@@ -3,19 +3,20 @@
  * 
  * Goal: Get user started in <5 seconds with instant price preview
  * Features AI Video USP prominently as unique differentiator
+ * Phase 3: Enhanced with psychological triggers
  */
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, ArrowRight, Sparkles, Video } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { cn } from '@/lib/utils';
 import { GoldenFlowData, GoldenFlowPriceEstimate } from '../types';
-import { SWISS_POSTAL_CODES, BASE_PRICES } from '../constants';
+import { SWISS_POSTAL_CODES } from '../constants';
 import { GoldenFlowTrustBar } from '../components/GoldenFlowTrustBar';
 import { GoldenFlowPricePreview } from '../components/GoldenFlowPricePreview';
+import { LiveActivityIndicator, FreeBadge, UrgencyBanner } from '../components/PsychologicalTriggers';
 
 interface GoldenFlowStep1Props {
   formData: GoldenFlowData;
@@ -78,6 +79,12 @@ export function GoldenFlowStep1({ formData, priceEstimate, onUpdate, onNext }: G
       exit={{ opacity: 0, y: -20 }}
       className="space-y-6"
     >
+      {/* Live Activity + Free Badge */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
+        <LiveActivityIndicator />
+        <FreeBadge />
+      </div>
+      
       {/* Hero text */}
       <div className="text-center mb-6">
         <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
@@ -217,7 +224,10 @@ export function GoldenFlowStep1({ formData, priceEstimate, onUpdate, onNext }: G
       
       {/* Price preview (shows after both PLZs entered) */}
       {priceEstimate && (
-        <GoldenFlowPricePreview estimate={priceEstimate} />
+        <>
+          <GoldenFlowPricePreview estimate={priceEstimate} />
+          <UrgencyBanner availableSlots={5} deadline="diese Woche" />
+        </>
       )}
       
       {/* CTA Button */}
