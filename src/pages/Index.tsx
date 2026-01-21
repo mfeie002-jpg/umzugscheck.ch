@@ -8,9 +8,6 @@ import { ErrorBoundary } from "@/components/homepage/ErrorBoundary";
 import { ScrollProgress } from "@/components/ui/scroll-progress";
 import { FloatingWhatsApp } from "@/components/ui/FloatingWhatsApp";
 import { HotjarScript } from "@/components/analytics/HotjarScript";
-// Core Components (not lazy - above the fold)
-import { EnhancedConversionHero } from "@/components/homepage/EnhancedConversionHero";
-import { MobileStickyBar } from "@/components/homepage/MobileStickyBar";
 // A/B Testing for Social Proof sections
 import { SocialProofABProvider } from "@/contexts/SocialProofABContext";
 import { TabHintABProvider } from "@/contexts/TabHintABContext";
@@ -21,6 +18,9 @@ import { RealtimeSocialProof } from "@/components/conversion/RealtimeSocialProof
 import { ScrollDepthTracker } from "@/components/conversion/ScrollDepthTracker";
 import { initMetrics } from "@/lib/realtime-metrics";
 import { trackPageView } from "@/lib/conversion-events";
+// Golden Flow V10 - The Main Conversion Funnel
+import { GoldenFlowWizard } from "@/components/golden-flow";
+import { GoldenSocialProof, GoldenTrustBadges } from "@/components/golden";
 
 // CLS-optimized skeletons for zero layout shift
 import { 
@@ -43,11 +43,21 @@ const EnhancedFAQ = lazy(() => import("@/components/homepage/EnhancedFAQ").then(
 const EnhancedFinalCTA = lazy(() => import("@/components/homepage/EnhancedFinalCTA").then(m => ({ default: m.EnhancedFinalCTA })));
 const CookieConsentBanner = lazy(() => import("@/components/CookieConsentBanner").then(m => ({ default: m.CookieConsentBanner })));
 const AlternativeContactSection = lazy(() => import("@/components/homepage/AlternativeContactSection").then(m => ({ default: m.AlternativeContactSection })));
+// Lazy load mobile sticky bar
+const MobileStickyBar = lazy(() => import("@/components/homepage/MobileStickyBar").then(m => ({ default: m.MobileStickyBar })));
 
 // Legacy skeleton import (for fallback)
 import { SectionSkeleton, TestimonialsSkeleton } from "@/components/ui/skeleton-section";
 
 const Index = () => {
+  // Initialize metrics tracking & page view - MUST be before any early returns
+  useEffect(() => {
+    if (!isScreenshotRenderMode()) {
+      initMetrics();
+      trackPageView('homepage', { variant: 'index' });
+    }
+  }, []);
+
   if (isScreenshotRenderMode()) {
     return <IndexPremiumScreenshot />;
   }
@@ -73,12 +83,6 @@ const Index = () => {
       { "@type": "Service", "name": "Umzugsvergleich Schweiz", "provider": { "@type": "Organization", "name": "Umzugscheck.ch" }, "serviceType": "Moving Quote Comparison", "areaServed": { "@type": "Country", "name": "Switzerland" }, "description": "Kostenloser Vergleich von über 200 Schweizer Umzugsfirmen" }
     ]
   };
-
-  // Initialize metrics tracking & page view
-  useEffect(() => {
-    initMetrics();
-    trackPageView('homepage', { variant: 'index' });
-  }, []);
 
   return (
     <TabHintABProvider>
@@ -117,8 +121,26 @@ const Index = () => {
         <RealtimeSocialProof position="bottom-left" />
 
         <main id="main-content" role="main">
-          {/* 1. Hero with Multi-Step Form + Visual Element */}
-          <EnhancedConversionHero />
+          {/* 1. Golden Flow V10 Hero - The Main Conversion Funnel */}
+          <section className="relative bg-gradient-to-b from-background to-muted/30 py-8 sm:py-12">
+            <div className="container mx-auto px-4">
+              {/* Social Proof Strip */}
+              <GoldenSocialProof variant="strip" className="mb-6" />
+              
+              {/* Hero Headline */}
+              <div className="text-center mb-8">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-3">
+                  Umzugsofferten vergleichen – in 2 Minuten
+                </h1>
+                <p className="text-muted-foreground text-sm sm:text-base max-w-xl mx-auto">
+                  Kostenlos, unverbindlich und ohne Werbeanrufe. KI-gestützte Präzision für Ihren Umzug.
+                </p>
+              </div>
+              
+              {/* Golden Flow Wizard */}
+              <GoldenFlowWizard />
+            </div>
+          </section>
           
           {/* 2. TRUST RIBBON - BEKANNT AUS + 15'000+ Stats (A/B TESTED) */}
           <Suspense fallback={<TrustSkeleton />}>
@@ -183,8 +205,10 @@ const Index = () => {
 
         <SimplifiedFooter />
         
-        {/* Single mobile CTA approach */}
-        <MobileStickyBar />
+        {/* Single mobile CTA approach - lazy loaded */}
+        <Suspense fallback={null}>
+          <MobileStickyBar />
+        </Suspense>
         
         {/* WhatsApp floating button - appears after 30 seconds */}
         <FloatingWhatsApp 
