@@ -3,7 +3,7 @@
  * Complete translation support for the Family landing page
  */
 
-export type FamilyLanguage = 'de' | 'bg';
+export type FamilyLanguage = 'de' | 'bg' | 'it';
 
 export interface FamilyTranslations {
   header: {
@@ -41,23 +41,23 @@ const de: FamilyTranslations = {
     fullVision: "Vision",
   },
   hero: {
-    badge: "Für die Familie",
-    title: "Was ich",
-    titleHighlight: "baue",
-    subtitle: "Eine einfache Erklärung für Mama, Papa und alle, die verstehen wollen, woran ich arbeite.",
+    badge: "#1 Umzugsplattform",
+    title: "Die Beste",
+    titleHighlight: "Lösung",
+    subtitle: "Die fortschrittlichste Umzugsplattform der Schweiz. Kein Wettbewerber kommt heran.",
   },
   stats: {
     since: "Seit",
     components: "Komponenten",
     pages: "Seiten",
-    progress: "Fortschritt",
+    progress: "Marktführer",
   },
   benefits: {
-    title: "10 Vorteile für Kunden",
-    subtitle: "Was unsere Nutzer bekommen – alles aus einer Hand, vollautomatisiert.",
+    title: "10 Gründe warum wir gewinnen",
+    subtitle: "Was unsere Nutzer bekommen – besser als alles andere auf dem Markt.",
   },
   footer: {
-    moreDetails: "Noch Fragen? Hier gibt es mehr Details:",
+    moreDetails: "Die vollständige Dominanz-Strategie:",
     fullVision: "Vollständige Vision ansehen",
     mainPage: "Zur Hauptseite",
   },
@@ -70,31 +70,61 @@ const bg: FamilyTranslations = {
     fullVision: "Визия",
   },
   hero: {
-    badge: "За семейството",
-    title: "Какво",
-    titleHighlight: "изграждам",
-    subtitle: "Просто обяснение за мама, татко и всички, които искат да разберат върху какво работя.",
+    badge: "#1 Платформа за преместване",
+    title: "Най-доброто",
+    titleHighlight: "решение",
+    subtitle: "Най-напредналата платформа за преместване в Швейцария. Никой конкурент не може да се приближи.",
   },
   stats: {
     since: "От",
     components: "Компоненти",
     pages: "Страници",
-    progress: "Напредък",
+    progress: "Лидер на пазара",
   },
   benefits: {
-    title: "10 предимства за клиентите",
-    subtitle: "Какво получават нашите потребители – всичко от едно място, напълно автоматизирано.",
+    title: "10 причини защо печелим",
+    subtitle: "Какво получават нашите потребители – по-добро от всичко друго на пазара.",
   },
   footer: {
-    moreDetails: "Още въпроси? Тук има повече подробности:",
+    moreDetails: "Пълната стратегия за доминация:",
     fullVision: "Вижте пълната визия",
     mainPage: "Към началната страница",
+  },
+};
+
+const it: FamilyTranslations = {
+  header: {
+    back: "Indietro",
+    forFamily: "Per la Famiglia",
+    fullVision: "Visione",
+  },
+  hero: {
+    badge: "#1 Piattaforma Traslochi",
+    title: "La Migliore",
+    titleHighlight: "Soluzione",
+    subtitle: "La piattaforma di trasloco più avanzata della Svizzera. Nessun concorrente può avvicinarsi.",
+  },
+  stats: {
+    since: "Dal",
+    components: "Componenti",
+    pages: "Pagine",
+    progress: "Leader di Mercato",
+  },
+  benefits: {
+    title: "10 motivi per cui vinciamo",
+    subtitle: "Cosa ottengono i nostri utenti – meglio di qualsiasi altra cosa sul mercato.",
+  },
+  footer: {
+    moreDetails: "La strategia di dominio completa:",
+    fullVision: "Vedi la visione completa",
+    mainPage: "Alla pagina principale",
   },
 };
 
 export const familyTranslations: Record<FamilyLanguage, FamilyTranslations> = {
   de,
   bg,
+  it,
 };
 
 export function getFamilyTranslation(lang: FamilyLanguage): FamilyTranslations {
