@@ -4,6 +4,7 @@
  */
 
 import { motion } from 'framer-motion';
+import { Clock, ListChecks, Mail } from 'lucide-react';
 import { SWISS_TRUST_BADGES, HEADLINE_VARIANTS } from '../constants';
 
 interface SmartRouterHeroProps {
@@ -58,6 +59,28 @@ export function SmartRouterHero({
             <span className="font-medium text-muted-foreground">{badge.label}</span>
           </motion.div>
         ))}
+      </motion.div>
+
+      {/* Fast USP line (time + steps) */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.28 }}
+        className="mt-6 flex flex-wrap items-center justify-center gap-2"
+        aria-label="Kurzvorteile"
+      >
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted/50 text-sm">
+          <Clock className="w-4 h-4 text-primary" aria-hidden="true" />
+          <span className="text-muted-foreground">~2 Minuten</span>
+        </div>
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted/50 text-sm">
+          <ListChecks className="w-4 h-4 text-primary" aria-hidden="true" />
+          <span className="text-muted-foreground">3 Schritte</span>
+        </div>
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted/50 text-sm">
+          <Mail className="w-4 h-4 text-primary" aria-hidden="true" />
+          <span className="text-muted-foreground">Offerten in 24h</span>
+        </div>
       </motion.div>
     </div>
   );

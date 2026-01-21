@@ -13,8 +13,7 @@ import { SocialProofABProvider } from "@/contexts/SocialProofABContext";
 import { TabHintABProvider } from "@/contexts/TabHintABContext";
 import { UnifiedABToggle } from "@/components/homepage/UnifiedABToggle";
 // Conversion & Analytics
-import { ExitIntentPopup } from "@/components/conversion/ExitIntentPopup";
-import { RealtimeSocialProof } from "@/components/conversion/RealtimeSocialProof";
+// ExitIntentPopup & RealtimeSocialProof intentionally disabled (too intrusive during iteration)
 import { ScrollDepthTracker } from "@/components/conversion/ScrollDepthTracker";
 import { initMetrics } from "@/lib/realtime-metrics";
 import { trackPageView } from "@/lib/conversion-events";
@@ -115,10 +114,8 @@ const Index = () => {
         <ScrollProgress />
         <SkipToContent />
         
-        {/* NEW: World-class conversion tools */}
+        {/* Conversion tracking (no intrusive popups) */}
         <ScrollDepthTracker />
-        <ExitIntentPopup />
-        <RealtimeSocialProof position="bottom-left" />
 
         <main id="main-content" role="main">
           {/* 1. Smart Router V10 - PLZ-first approach (Hick's Law) */}
@@ -214,8 +211,7 @@ const Index = () => {
           <CookieConsentBanner />
         </Suspense>
         
-        {/* Unified A/B Toggle for Navigation + Social Proof */}
-        <UnifiedABToggle />
+        {/* UnifiedABToggle disabled during UX iteration */}
       </div>
     </ErrorBoundary>
     </SocialProofABProvider>

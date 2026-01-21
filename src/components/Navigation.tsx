@@ -105,7 +105,7 @@ export const Navigation = () => {
   return (
     <header className="sticky top-0 z-50 w-full overflow-x-hidden">
       {/* Warm accent line at very top */}
-      <div className="h-1 bg-gradient-to-r from-primary via-emerald-500 to-secondary" />
+      <div className="h-1 bg-gradient-to-r from-primary to-secondary" />
       
       <nav 
         className={cn(
@@ -171,7 +171,7 @@ export const Navigation = () => {
               <HeaderCallButton className="flex-shrink-0" />
 
               <div className="hidden 2xl:flex items-center gap-1.5 text-xs text-muted-foreground flex-shrink-0 whitespace-nowrap">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
+                <span className="w-2 h-2 rounded-full bg-primary animate-pulse flex-shrink-0" />
                 <span className="font-medium">Gratis & unverbindlich</span>
               </div>
 
