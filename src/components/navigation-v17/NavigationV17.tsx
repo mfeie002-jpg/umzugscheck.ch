@@ -197,7 +197,7 @@ export const NavigationV17 = () => {
             <div className="flex xl:hidden items-center gap-1.5 sm:gap-2 flex-shrink-0">
               <Link
                 to={flowPath}
-                className="flex items-center justify-center gap-1 bg-secondary text-secondary-foreground text-[11px] sm:text-xs font-bold px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg shadow-md shadow-secondary/20 active:scale-95 transition-all min-h-[40px] sm:min-h-[44px] touch-manipulation"
+                className="flex items-center justify-center gap-1 bg-primary text-primary-foreground text-[11px] sm:text-xs font-bold px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg shadow-md shadow-primary/20 active:scale-95 transition-all min-h-[40px] sm:min-h-[44px] touch-manipulation"
                 aria-label="Offerten erhalten"
               >
                 <Zap className="w-3.5 h-3.5" />
@@ -238,7 +238,7 @@ export const NavigationV17 = () => {
               <Link to="/video-offerte" aria-label="Video-Offerte starten - Kostenlos" className="flex-shrink-0">
                 <Button
                   size="lg"
-                  className="group bg-gradient-to-r from-secondary via-secondary to-secondary/90 hover:from-secondary/90 hover:via-secondary hover:to-secondary text-secondary-foreground font-bold shadow-[0_4px_20px_rgba(220,38,38,0.35)] hover:shadow-[0_8px_30px_rgba(220,38,38,0.45)] transition-all text-sm px-3 xl:px-4 2xl:px-6 whitespace-nowrap"
+                  className="group bg-gradient-to-r from-primary via-primary to-primary/90 hover:from-primary/90 hover:via-primary hover:to-primary text-primary-foreground font-bold shadow-[0_4px_20px_hsl(var(--primary)/0.35)] hover:shadow-[0_8px_30px_hsl(var(--primary)/0.45)] transition-all text-sm px-3 xl:px-4 2xl:px-6 whitespace-nowrap"
                 >
                   <span className="hidden 2xl:inline">🎥 Video-Offerte</span>
                   <span className="2xl:hidden">Video</span>

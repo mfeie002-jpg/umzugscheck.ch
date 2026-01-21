@@ -252,7 +252,7 @@ export const Header = () => {
             <Button
               asChild
               size="lg"
-              className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold shadow-[0_4px_20px_rgba(220,38,38,0.4)] hover:shadow-[0_6px_25px_rgba(220,38,38,0.5)] transition-all"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-[0_4px_20px_hsl(var(--primary)/0.4)] hover:shadow-[0_6px_25px_hsl(var(--primary)/0.5)] transition-all"
             >
               <Link to={flowPath}>
                 Kostenlos Offerten erhalten
