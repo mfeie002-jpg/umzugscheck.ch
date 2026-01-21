@@ -115,7 +115,7 @@ export const MiniCalculator = () => {
               value={fromQuery}
               onChange={(e) => handleFromChange(e.target.value)}
               list="fromPostalList"
-              className="pl-10 h-12 bg-white border-border text-foreground placeholder:text-muted-foreground"
+              className="pl-10 h-12 md:h-14 text-base bg-white border-border text-foreground placeholder:text-muted-foreground touch-manipulation"
               required
             />
             <datalist id="fromPostalList">
@@ -149,7 +149,7 @@ export const MiniCalculator = () => {
               value={toQuery}
               onChange={(e) => handleToChange(e.target.value)}
               list="toPostalList"
-              className="pl-10 h-12 bg-white border-border text-foreground placeholder:text-muted-foreground"
+              className="pl-10 h-12 md:h-14 text-base bg-white border-border text-foreground placeholder:text-muted-foreground touch-manipulation"
               required
             />
             <datalist id="toPostalList">
@@ -176,7 +176,7 @@ export const MiniCalculator = () => {
           <Button 
             type="submit" 
             size="lg" 
-            className="w-full h-14 gradient-cta text-white font-bold shadow-accent text-lg hover:scale-105 transition-all"
+            className="w-full h-14 md:h-16 gradient-cta text-white font-bold shadow-accent text-base md:text-lg hover:scale-[1.02] active:scale-[0.98] transition-all touch-manipulation"
           >
             Jetzt vergleichen
             <ArrowRight className="ml-2 h-5 w-5" />
