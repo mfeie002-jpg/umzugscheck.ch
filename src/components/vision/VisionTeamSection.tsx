@@ -1,6 +1,7 @@
 /**
  * Team/Founder Section for Vision Page
  * Shows the person behind Umzugscheck.ch
+ * Updated: 13.5h/day average since 31.10.2024
  */
 
 import { memo } from "react";
@@ -15,14 +16,30 @@ import {
   Github,
   Mail,
   MapPin,
-  GraduationCap,
-  Briefcase
+  Calendar
 } from "lucide-react";
 import type { VisionLanguage } from "@/lib/vision-translations";
+
+// Import background image
+import youngProfessionalUnpacking from "@/assets/vision/young-professional-unpacking.jpg";
 
 interface VisionTeamSectionProps {
   language: VisionLanguage;
 }
+
+// Calculate days since start (31.10.2024)
+const getProjectDays = () => {
+  const startDate = new Date('2024-10-31');
+  const today = new Date();
+  const diffTime = Math.abs(today.getTime() - startDate.getTime());
+  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+};
+
+// Calculate total hours (13.5h average per day)
+const getTotalHours = () => {
+  const days = getProjectDays();
+  return Math.round(days * 13.5);
+};
 
 const translations = {
   de: {
@@ -31,14 +48,14 @@ const translations = {
     subtitle: "Ein Ein-Mann-Projekt mit der Power eines 10-köpfigen Teams – dank KI",
     role: "Gründer & Entwickler",
     location: "Schweiz",
-    bio: "Full-Stack Entwickler mit Leidenschaft für AI-gestützte Lösungen. Ich baue Umzugscheck.ch als Solo-Founder mit intensivem Einsatz: 14-15 Stunden täglich, 7 Tage die Woche.",
+    bio: `Full-Stack Entwickler mit Leidenschaft für AI-gestützte Lösungen. Ich baue Umzugscheck.ch als Solo-Founder mit intensivem Einsatz: durchschnittlich 13.5 Stunden täglich, 7 Tage die Woche, seit dem 31. Oktober 2024.`,
     stats: {
-      hours: "2'100+",
+      hours: `${getTotalHours().toLocaleString('de-CH')}+`,
       hoursLabel: "Entwicklungsstunden",
-      daily: "14-15h",
-      dailyLabel: "pro Tag",
-      components: "1'000+",
-      componentsLabel: "Komponenten",
+      daily: "13.5h",
+      dailyLabel: "Ø pro Tag",
+      days: getProjectDays().toString(),
+      daysLabel: "Tage seit Start",
       aiRatio: "95%",
       aiRatioLabel: "KI-Automatisierung"
     },
@@ -54,7 +71,8 @@ const translations = {
       "Moderne No-Code/Low-Code Tools beschleunigen die Entwicklung",
       "Fokus auf Automatisierung statt manuelle Prozesse",
       "Lean Startup Methodik: Schnell iterieren, kein Overhead"
-    ]
+    ],
+    startDate: "Start: 31. Oktober 2024"
   },
   bg: {
     badge: "Екипът",
@@ -62,14 +80,14 @@ const translations = {
     subtitle: "Проект на един човек със силата на 10-членен екип – благодарение на AI",
     role: "Основател & Разработчик",
     location: "Швейцария",
-    bio: "Full-Stack разработчик със страст към AI решения. Изграждам Umzugscheck.ch като соло основател с интензивна работа: 14-15 часа дневно, 7 дни в седмицата.",
+    bio: `Full-Stack разработчик със страст към AI решения. Изграждам Umzugscheck.ch като соло основател с интензивна работа: средно 13.5 часа дневно, 7 дни в седмицата, от 31 октомври 2024.`,
     stats: {
-      hours: "2'100+",
+      hours: `${getTotalHours().toLocaleString('de-CH')}+`,
       hoursLabel: "Часове разработка",
-      daily: "14-15ч",
-      dailyLabel: "на ден",
-      components: "1'000+",
-      componentsLabel: "Компоненти",
+      daily: "13.5ч",
+      dailyLabel: "Ø на ден",
+      days: getProjectDays().toString(),
+      daysLabel: "Дни от старта",
       aiRatio: "95%",
       aiRatioLabel: "AI автоматизация"
     },
@@ -85,16 +103,60 @@ const translations = {
       "Модерни No-Code/Low-Code инструменти ускоряват разработката",
       "Фокус върху автоматизация вместо ръчни процеси",
       "Lean Startup методология: Бърза итерация, без overhead"
-    ]
+    ],
+    startDate: "Старт: 31 октомври 2024"
+  },
+  it: {
+    badge: "Il Team",
+    title: "La mente dietro Umzugscheck.ch",
+    subtitle: "Un progetto di una persona con la forza di un team di 10 – grazie all'AI",
+    role: "Fondatore & Sviluppatore",
+    location: "Svizzera",
+    bio: `Sviluppatore Full-Stack con passione per soluzioni AI. Costruisco Umzugscheck.ch come fondatore singolo con impegno intenso: in media 13.5 ore al giorno, 7 giorni alla settimana, dal 31 ottobre 2024.`,
+    stats: {
+      hours: `${getTotalHours().toLocaleString('de-CH')}+`,
+      hoursLabel: "Ore di sviluppo",
+      daily: "13.5h",
+      dailyLabel: "Ø al giorno",
+      days: getProjectDays().toString(),
+      daysLabel: "Giorni dall'inizio",
+      aiRatio: "95%",
+      aiRatioLabel: "Automazione AI"
+    },
+    commitment: {
+      title: "Impegno",
+      text: "Questo progetto non è solo una startup – è la mia missione. Ogni giorno programmo per la visione di rivoluzionare l'industria dei traslochi svizzera."
+    },
+    skills: ["React/TypeScript", "Supabase", "AI/ML", "UX Design", "SEO", "Fintech"],
+    contactTitle: "Contatto",
+    whyOnePersonTitle: "Perché funziona con una persona?",
+    whyOnePersonReasons: [
+      "95% del lavoro viene svolto da strumenti AI (Copilot, ChatGPT, Claude)",
+      "Strumenti No-Code/Low-Code moderni accelerano lo sviluppo",
+      "Focus sull'automazione invece di processi manuali",
+      "Metodologia Lean Startup: iterazione rapida, nessun overhead"
+    ],
+    startDate: "Inizio: 31 ottobre 2024"
   }
 };
 
 export const VisionTeamSection = memo(({ language }: VisionTeamSectionProps) => {
-  const t = translations[language];
+  const t = translations[language] || translations.de;
   
   return (
-    <section id="vision-team" className="py-12 md:py-16 bg-gradient-to-b from-background to-primary/5">
-      <div className="container mx-auto px-4">
+    <section id="vision-team" className="py-12 md:py-16 relative overflow-hidden">
+      {/* Background Image */}
+      <div className="absolute inset-0 z-0">
+        <img
+          src={youngProfessionalUnpacking}
+          alt="Working hard"
+          className="w-full h-full object-cover opacity-10"
+          loading="lazy"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-primary/5 to-background" />
+      </div>
+      
+      <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-10">
           <Badge variant="secondary" className="mb-3">
             {t.badge}
@@ -108,7 +170,7 @@ export const VisionTeamSection = memo(({ language }: VisionTeamSectionProps) => 
         </div>
 
         <div className="max-w-4xl mx-auto">
-          <Card className="overflow-hidden">
+          <Card className="overflow-hidden bg-background/95 backdrop-blur-sm">
             <CardContent className="p-0">
               <div className="grid md:grid-cols-5 gap-0">
                 {/* Left: Avatar & Basic Info */}
@@ -121,9 +183,14 @@ export const VisionTeamSection = memo(({ language }: VisionTeamSectionProps) => 
                   <h3 className="text-xl font-bold mb-1">Dimitar Zlatkov</h3>
                   <p className="text-muted-foreground text-sm mb-2">{t.role}</p>
                   
-                  <div className="flex items-center gap-1 text-sm text-muted-foreground mb-4">
+                  <div className="flex items-center gap-1 text-sm text-muted-foreground mb-2">
                     <MapPin className="w-3.5 h-3.5" />
                     {t.location}
+                  </div>
+                  
+                  <div className="flex items-center gap-1 text-xs text-primary font-medium mb-4">
+                    <Calendar className="w-3 h-3" />
+                    {t.startDate}
                   </div>
                   
                   {/* Social Links */}
@@ -146,7 +213,7 @@ export const VisionTeamSection = memo(({ language }: VisionTeamSectionProps) => 
                     {t.bio}
                   </p>
                   
-                  {/* Stats Grid */}
+                  {/* Stats Grid - Updated with accurate data */}
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                     <div className="text-center p-3 rounded-lg bg-muted/50">
                       <div className="text-xl md:text-2xl font-bold text-primary">{t.stats.hours}</div>
@@ -157,8 +224,8 @@ export const VisionTeamSection = memo(({ language }: VisionTeamSectionProps) => 
                       <div className="text-xs text-muted-foreground">{t.stats.dailyLabel}</div>
                     </div>
                     <div className="text-center p-3 rounded-lg bg-muted/50">
-                      <div className="text-xl md:text-2xl font-bold text-primary">{t.stats.components}</div>
-                      <div className="text-xs text-muted-foreground">{t.stats.componentsLabel}</div>
+                      <div className="text-xl md:text-2xl font-bold text-primary">{t.stats.days}</div>
+                      <div className="text-xs text-muted-foreground">{t.stats.daysLabel}</div>
                     </div>
                     <div className="text-center p-3 rounded-lg bg-muted/50">
                       <div className="text-xl md:text-2xl font-bold text-primary">{t.stats.aiRatio}</div>
@@ -191,7 +258,7 @@ export const VisionTeamSection = memo(({ language }: VisionTeamSectionProps) => 
           </Card>
 
           {/* Why One Person Works */}
-          <Card className="mt-6">
+          <Card className="mt-6 bg-background/95 backdrop-blur-sm">
             <CardContent className="p-6">
               <h4 className="font-semibold mb-4 flex items-center gap-2">
                 <Brain className="w-5 h-5 text-primary" />

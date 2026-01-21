@@ -1,7 +1,7 @@
 /**
- * VisionEmotionalHero - Aspirational Hero Section with Unique Images
+ * VisionEmotionalHero - Aspirational Hero Section with Moving Transport Images
  * Win-Win-Win positioning: simple, transparent, fair
- * Now with language-specific unique hero images
+ * Corporate Identity matching /umzugsfirmen/zug style
  */
 
 import { memo } from "react";
@@ -11,10 +11,10 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import type { VisionLanguage } from "@/lib/vision-translations";
 
-// Unique hero images
-import heroSwissPanorama from "@/assets/vision/hero-swiss-panorama.jpg";
-import investorMeeting from "@/assets/vision/investor-meeting.jpg";
-import momentNewBeginning from "@/assets/vision/moment-new-beginning.jpg";
+// Import unique moving transport images
+import movingTruckSwiss from "@/assets/vision/moving-truck-swiss.jpg";
+import familyMovingHome from "@/assets/vision/family-moving-home.jpg";
+import investorMeetingRoom from "@/assets/vision/investor-meeting-room.jpg";
 
 interface VisionEmotionalHeroProps {
   language: VisionLanguage;
@@ -126,11 +126,11 @@ const content = {
   }
 };
 
-// Variant-specific images
+// Variant-specific images - Real moving transport images
 const variantImages = {
-  family: momentNewBeginning,
-  investor: investorMeeting,
-  full: heroSwissPanorama,
+  family: familyMovingHome,
+  investor: investorMeetingRoom,
+  full: movingTruckSwiss,
 };
 
 export const VisionEmotionalHero = memo(({ language, variant = 'full' }: VisionEmotionalHeroProps) => {
@@ -140,15 +140,15 @@ export const VisionEmotionalHero = memo(({ language, variant = 'full' }: VisionE
   
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-secondary/5">
-      {/* Background with variant-specific image */}
+      {/* Background with variant-specific moving image - more visible */}
       <div className="absolute inset-0 z-0">
         <img
           src={currentImage}
-          alt="Vision Hero"
-          className="w-full h-full object-cover opacity-30"
+          alt="Umzug Schweiz"
+          className="w-full h-full object-cover opacity-40"
           loading="eager"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/85 to-background/75" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/75 to-background/60" />
       </div>
       
       <div className="container mx-auto px-4 py-12 md:py-20 lg:py-28 relative z-10">
@@ -214,7 +214,7 @@ export const VisionEmotionalHero = memo(({ language, variant = 'full' }: VisionE
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.4 + i * 0.1 }}
-                className="text-center p-4 rounded-2xl bg-card/80 backdrop-blur-sm border-2 border-primary/20 shadow-lg"
+                className="text-center p-4 rounded-2xl bg-card/90 backdrop-blur-sm border-2 border-primary/20 shadow-lg"
               >
                 <p className="text-2xl md:text-3xl font-black text-primary">{stat.value}</p>
                 <p className="text-xs md:text-sm text-muted-foreground font-medium">{stat.label}</p>
@@ -237,7 +237,7 @@ export const VisionEmotionalHero = memo(({ language, variant = 'full' }: VisionE
               </Button>
             </Link>
             <Link to="/">
-              <Button variant="outline" size="lg" className="w-full sm:w-auto min-h-[52px] text-base font-bold px-8 border-2">
+              <Button variant="outline" size="lg" className="w-full sm:w-auto min-h-[52px] text-base font-bold px-8 border-2 bg-background/80 backdrop-blur-sm">
                 <Zap className="w-5 h-5 mr-2" />
                 {t.cta.secondary}
               </Button>

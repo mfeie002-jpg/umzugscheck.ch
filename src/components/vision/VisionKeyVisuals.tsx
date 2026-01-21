@@ -1,20 +1,25 @@
 /**
- * VisionKeyVisuals - Additional visual sections for /vision page
- * Adds more emotional imagery between text-heavy sections
+ * VisionKeyVisuals - Unique Visual Sections for /vision, /family, /investoren
+ * Each variant uses a unique, contextual image
+ * Full DE/BG/IT translation support
  */
 
 import { memo } from "react";
 import { motion } from "framer-motion";
-import { Shield, Zap, Heart, TrendingUp } from "lucide-react";
+import { Shield, Zap, Heart, TrendingUp, Users, Truck, Home, FileCheck } from "lucide-react";
 import type { VisionLanguage } from "@/lib/vision-translations";
 
-// Import unique images
-import aiTechnology from "@/assets/vision/ai-technology.jpg";
-import customerHappyCall from "@/assets/vision/customer-happy-call.jpg";
+// Import unique images for each variant
+import movingTruckSwiss from "@/assets/vision/moving-truck-swiss.jpg";
+import familyMovingHome from "@/assets/vision/family-moving-home.jpg";
+import professionalMovers from "@/assets/vision/professional-movers.jpg";
+import seniorCoupleKeys from "@/assets/vision/senior-couple-keys.jpg";
+import youngProfessionalUnpacking from "@/assets/vision/young-professional-unpacking.jpg";
+import investorMeetingRoom from "@/assets/vision/investor-meeting-room.jpg";
 
 interface VisionKeyVisualsProps {
   language: VisionLanguage;
-  variant: 'ai' | 'customer' | 'trust';
+  variant: 'ai' | 'customer' | 'trust' | 'family' | 'investor' | 'service';
 }
 
 const content = {
@@ -22,64 +27,121 @@ const content = {
     ai: {
       title: "KI, die versteht",
       description: "Unsere KI analysiert Umzugsvideos, erkennt Volumen und Komplexität – in Sekunden statt Stunden.",
-      image: aiTechnology,
+      image: movingTruckSwiss,
+      icon: Zap,
     },
     customer: {
       title: "Zufriedene Kunden",
       description: "Ein Anruf genügt: Offerten verglichen, beste Firma gefunden, Termin gebucht.",
-      image: customerHappyCall,
+      image: familyMovingHome,
+      icon: Heart,
     },
     trust: {
       title: "Schweizer Vertrauen",
       description: "Escrow-Schutz, geprüfte Partner, transparente Preise. Sicherheit auf höchstem Niveau.",
-      image: customerHappyCall,
+      image: seniorCoupleKeys,
+      icon: Shield,
+    },
+    family: {
+      title: "Familien in Bewegung",
+      description: "Jeder Umzug ist ein neues Kapitel. Wir sorgen dafür, dass es ein gutes wird.",
+      image: familyMovingHome,
+      icon: Users,
+    },
+    investor: {
+      title: "Profitables Wachstum",
+      description: "10 Einnahmequellen, 90%+ Marge, skalierbare Technologie. Die Zahlen sprechen für sich.",
+      image: investorMeetingRoom,
+      icon: TrendingUp,
+    },
+    service: {
+      title: "Professioneller Service",
+      description: "Geprüfte Umzugsfirmen, erfahrene Teams, zuverlässige Ausführung – garantiert.",
+      image: professionalMovers,
+      icon: Truck,
     },
   },
   bg: {
     ai: {
       title: "AI, който разбира",
       description: "Нашият AI анализира видеоклипове за преместване, разпознава обем и сложност – за секунди.",
-      image: aiTechnology,
+      image: movingTruckSwiss,
+      icon: Zap,
     },
     customer: {
       title: "Доволни клиенти",
       description: "Едно обаждане е достатъчно: оферти сравнени, най-добрата фирма намерена, среща резервирана.",
-      image: customerHappyCall,
+      image: familyMovingHome,
+      icon: Heart,
     },
     trust: {
       title: "Швейцарско доверие",
       description: "Escrow защита, проверени партньори, прозрачни цени. Сигурност на най-високо ниво.",
-      image: customerHappyCall,
+      image: seniorCoupleKeys,
+      icon: Shield,
+    },
+    family: {
+      title: "Семейства в движение",
+      description: "Всяко преместване е нова глава. Ние се грижим тя да бъде добра.",
+      image: familyMovingHome,
+      icon: Users,
+    },
+    investor: {
+      title: "Печелещ растеж",
+      description: "10 източника на приходи, 90%+ марж, скалируема технология. Цифрите говорят сами.",
+      image: investorMeetingRoom,
+      icon: TrendingUp,
+    },
+    service: {
+      title: "Професионална услуга",
+      description: "Проверени фирми за преместване, опитни екипи, надеждно изпълнение – гарантирано.",
+      image: professionalMovers,
+      icon: Truck,
     },
   },
   it: {
     ai: {
       title: "AI che capisce",
       description: "La nostra AI analizza video di trasloco, riconosce volume e complessità – in secondi.",
-      image: aiTechnology,
+      image: movingTruckSwiss,
+      icon: Zap,
     },
     customer: {
       title: "Clienti soddisfatti",
       description: "Una chiamata basta: preventivi confrontati, migliore azienda trovata, appuntamento prenotato.",
-      image: customerHappyCall,
+      image: familyMovingHome,
+      icon: Heart,
     },
     trust: {
       title: "Fiducia svizzera",
       description: "Protezione Escrow, partner verificati, prezzi trasparenti. Sicurezza al massimo livello.",
-      image: customerHappyCall,
+      image: seniorCoupleKeys,
+      icon: Shield,
+    },
+    family: {
+      title: "Famiglie in movimento",
+      description: "Ogni trasloco è un nuovo capitolo. Ci assicuriamo che sia uno buono.",
+      image: familyMovingHome,
+      icon: Users,
+    },
+    investor: {
+      title: "Crescita redditizia",
+      description: "10 fonti di reddito, margine 90%+, tecnologia scalabile. I numeri parlano da soli.",
+      image: investorMeetingRoom,
+      icon: TrendingUp,
+    },
+    service: {
+      title: "Servizio professionale",
+      description: "Aziende di trasloco verificate, team esperti, esecuzione affidabile – garantita.",
+      image: professionalMovers,
+      icon: Truck,
     },
   }
 };
 
-const icons = {
-  ai: Zap,
-  customer: Heart,
-  trust: Shield,
-};
-
 export const VisionKeyVisuals = memo(({ language, variant }: VisionKeyVisualsProps) => {
   const t = content[language]?.[variant] || content.de[variant];
-  const Icon = icons[variant];
+  const Icon = t.icon;
   
   return (
     <section className="py-12 md:py-16">

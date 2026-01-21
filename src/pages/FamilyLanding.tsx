@@ -55,8 +55,7 @@ export default function FamilyLanding() {
         url="https://umzugscheck.ch/family"
       />
 
-      {/* Sticky CTA for mobile */}
-      <VisionStickyCTA />
+      {/* VisionStickyCTA removed - not needed for internal family page */}
 
       {/* Header - NON-Sticky to prevent conflict */}
       <div 
