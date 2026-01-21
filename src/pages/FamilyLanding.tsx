@@ -16,6 +16,7 @@ import { SEOHead } from "@/components/SEOHead";
 import { CustomerUSPVisualCards } from "@/components/homepage/CustomerUSPVisualCards";
 import { FamilySummary } from "@/components/homepage/FamilySummary";
 import { FamilyLanguageSwitcher } from "@/components/family/FamilyLanguageSwitcher";
+import { VisionTractionDashboard } from "@/components/vision/VisionTractionDashboard";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Heart, Users, Sparkles, Home, CheckCircle2, Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -129,6 +130,9 @@ export default function FamilyLanding() {
           </div>
         </div>
       </section>
+
+      {/* Traction Dashboard - Progress & Milestones */}
+      <VisionTractionDashboard language={lang} />
 
       {/* Family Summary - Main Content */}
       <FamilySummary language={lang} />
