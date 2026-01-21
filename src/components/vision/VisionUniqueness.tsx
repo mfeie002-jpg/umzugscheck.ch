@@ -286,12 +286,12 @@ export const VisionUniqueness = memo(({ language }: VisionUniquenessProps) => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          <Card className="max-w-3xl mx-auto p-5 bg-gradient-to-r from-primary/20 to-blue-500/20 border-primary/50">
+          <Card className="max-w-3xl mx-auto p-5 bg-slate-800 border-primary/50">
             <div className="flex items-start gap-3">
               <Sparkles className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
               <div>
-                <h4 className="font-bold text-white mb-2">{t.conclusion.title}</h4>
-                <p className="text-sm text-slate-300 leading-relaxed">
+                <h4 className="font-bold text-primary mb-2">{t.conclusion.title}</h4>
+                <p className="text-sm text-white leading-relaxed">
                   {t.conclusion.text}
                 </p>
               </div>
