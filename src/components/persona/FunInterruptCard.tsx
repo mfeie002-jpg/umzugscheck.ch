@@ -5,21 +5,28 @@
 import { memo } from 'react';
 import { motion } from 'framer-motion';
 import { Card } from '@/components/ui/card';
-import type { InterruptCard } from '@/lib/persona-types';
+import type { PersonaKey, PageKey } from '@/lib/persona-types';
+import { getInterruptCard } from '@/content/persona-content-index';
 
 interface FunInterruptCardProps {
-  card: InterruptCard;
+  persona: PersonaKey;
+  page: PageKey;
+  afterSection: string;
 }
 
-export const FunInterruptCard = memo(function FunInterruptCard({ card }: FunInterruptCardProps) {
+export const FunInterruptCard = memo(function FunInterruptCard({ persona, page, afterSection }: FunInterruptCardProps) {
+  const card = getInterruptCard(persona, page, afterSection);
+  
+  if (!card) return null;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className="my-6"
+      className="container mx-auto px-4 py-4"
     >
-      <Card className="p-4 bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/20">
+      <Card className="max-w-2xl mx-auto p-4 bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/20">
         <div className="flex items-start gap-3">
           <span className="text-2xl">{card.emoji}</span>
           <div className="flex-1">

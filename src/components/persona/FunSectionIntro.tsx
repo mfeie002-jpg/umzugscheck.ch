@@ -4,23 +4,30 @@
 
 import { memo } from 'react';
 import { motion } from 'framer-motion';
-import type { SectionOpener } from '@/lib/persona-types';
+import type { PersonaKey, PageKey } from '@/lib/persona-types';
+import { getSectionOpener } from '@/content/persona-content-index';
 
 interface FunSectionIntroProps {
-  opener: SectionOpener | undefined;
+  persona: PersonaKey;
+  page: PageKey;
+  sectionId: string;
 }
 
-export const FunSectionIntro = memo(function FunSectionIntro({ opener }: FunSectionIntroProps) {
+export const FunSectionIntro = memo(function FunSectionIntro({ persona, page, sectionId }: FunSectionIntroProps) {
+  const opener = getSectionOpener(persona, page, sectionId);
+  
   if (!opener) return null;
 
   return (
-    <motion.p
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="text-sm text-primary font-medium mb-2"
+      className="container mx-auto px-4 py-2"
     >
-      {opener.emoji && <span className="mr-1">{opener.emoji}</span>}
-      {opener.text}
-    </motion.p>
+      <p className="text-sm text-primary font-medium text-center">
+        {opener.emoji && <span className="mr-1">{opener.emoji}</span>}
+        {opener.text}
+      </p>
+    </motion.div>
   );
 });

@@ -6,28 +6,30 @@ import { memo, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import type { NarratorLine } from '@/lib/persona-types';
+import type { PersonaKey, PageKey } from '@/lib/persona-types';
+import { getNarratorLines } from '@/content/persona-content-index';
 
 interface FunNarratorProps {
-  lines: NarratorLine[];
-  isActive: boolean;
+  persona: PersonaKey;
+  page: PageKey;
 }
 
-export const FunNarrator = memo(function FunNarrator({ lines, isActive }: FunNarratorProps) {
+export const FunNarrator = memo(function FunNarrator({ persona, page }: FunNarratorProps) {
+  const lines = getNarratorLines(persona, page);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isDismissed, setIsDismissed] = useState(false);
 
   useEffect(() => {
-    if (!isActive || isDismissed || lines.length === 0) return;
+    if (isDismissed || lines.length === 0) return;
 
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % lines.length);
     }, 8000);
 
     return () => clearInterval(interval);
-  }, [isActive, isDismissed, lines.length]);
+  }, [isDismissed, lines.length]);
 
-  if (!isActive || isDismissed || lines.length === 0) return null;
+  if (isDismissed || lines.length === 0) return null;
 
   const currentLine = lines[currentIndex];
 
