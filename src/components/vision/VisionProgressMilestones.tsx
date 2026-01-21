@@ -352,7 +352,7 @@ export const VisionProgressMilestones = memo(({ language }: VisionProgressMilest
                 whileInView={{ width: `${overallProgress}%` }}
                 viewport={{ once: true }}
                 transition={{ duration: 1, ease: "easeOut" }}
-                className="h-full bg-gradient-to-r from-green-500 via-blue-500 to-primary rounded-full"
+                className="h-full bg-gradient-to-r from-primary/60 via-primary to-primary rounded-full"
               />
             </div>
             
@@ -399,12 +399,12 @@ export const VisionProgressMilestones = memo(({ language }: VisionProgressMilest
           <Card className="overflow-hidden">
             <button
               onClick={() => setExpandedPast(!expandedPast)}
-              className="w-full p-4 flex items-center justify-between bg-green-50 dark:bg-green-950/30 hover:bg-green-100 dark:hover:bg-green-950/50 transition-colors"
+              className="w-full p-4 flex items-center justify-between bg-primary/10 hover:bg-primary/20 transition-colors"
             >
               <div className="flex items-center gap-3">
-                <Trophy className="w-5 h-5 text-green-600" />
-                <span className="font-bold text-green-800 dark:text-green-300">{t.pastMilestonesTitle}</span>
-                <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
+                <Trophy className="w-5 h-5 text-primary" />
+                <span className="font-bold text-primary">{t.pastMilestonesTitle}</span>
+                <Badge variant="secondary" className="bg-primary/20 text-primary">
                   {t.pastMilestones.length} {language === 'de' ? 'abgeschlossen' : 'завършени'}
                 </Badge>
               </div>
@@ -423,7 +423,7 @@ export const VisionProgressMilestones = memo(({ language }: VisionProgressMilest
                     {t.pastMilestones.map((milestone, idx) => (
                       <div key={milestone.id} className="border rounded-lg p-4 bg-card">
                         <div className="flex items-center gap-2 mb-2">
-                          <CheckCircle2 className="w-5 h-5 text-green-600" />
+                          <CheckCircle2 className="w-5 h-5 text-primary" />
                           <span className="font-bold">{milestone.name}</span>
                         </div>
                         <p className="text-sm text-muted-foreground mb-2">
@@ -432,7 +432,7 @@ export const VisionProgressMilestones = memo(({ language }: VisionProgressMilest
                         <p className="text-sm mb-3">{milestone.summary}</p>
                         <div className="flex flex-wrap gap-1.5">
                           {milestone.achievements.map((item, i) => (
-                            <Badge key={i} variant="outline" className="text-xs bg-green-50 dark:bg-green-950/30">
+                            <Badge key={i} variant="outline" className="text-xs bg-primary/10">
                               ✓ {item}
                             </Badge>
                           ))}
@@ -475,11 +475,11 @@ export const VisionProgressMilestones = memo(({ language }: VisionProgressMilest
               </p>
               
               <div className="grid md:grid-cols-3 gap-3">
-                <div className="bg-green-100 dark:bg-green-900/40 rounded-lg p-3">
-                  <p className="text-xs font-bold text-green-700 dark:text-green-300 mb-2">✅ {language === 'de' ? 'Fertig' : 'Готово'}</p>
+                <div className="bg-primary/20 rounded-lg p-3">
+                  <p className="text-xs font-bold text-primary mb-2">✅ {language === 'de' ? 'Fertig' : 'Готово'}</p>
                   <ul className="text-xs space-y-1">
                     {t.currentMilestone.completed.map((item, i) => (
-                      <li key={i} className="text-green-800 dark:text-green-300">• {item}</li>
+                      <li key={i} className="text-primary">• {item}</li>
                     ))}
                   </ul>
                 </div>
