@@ -5,13 +5,11 @@ import { CustomerUSPVisualCards } from "@/components/homepage/CustomerUSPVisualC
 import { FamilySummary } from "@/components/homepage/FamilySummary";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Download, FileText, Loader2, Users, TrendingUp, Sparkles, DollarSign, Target, Globe, Rocket, Heart } from "lucide-react";
+import { ArrowLeft, Download, FileText, Loader2, Users, TrendingUp, Sparkles, DollarSign, Target, Globe, Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
 import { exportVisionToPDF, exportVisionAsTextPDF } from "@/lib/vision-pdf-export";
 import { useToast } from "@/hooks/use-toast";
 import { VisionLanguageSwitcher } from "@/components/vision/VisionLanguageSwitcher";
-import { VisionProgressMilestones } from "@/components/vision/VisionProgressMilestones";
-import { ContributionBreakdown } from "@/components/vision/ContributionBreakdown";
 import { RevenueStreamExamples } from "@/components/vision/RevenueStreamExamples";
 import { UnitEconomicsDetailed } from "@/components/vision/UnitEconomicsDetailed";
 import { ExitTimeline } from "@/components/vision/ExitTimeline";
@@ -20,33 +18,10 @@ import { VisionUniqueness } from "@/components/vision/VisionUniqueness";
 import { VisionCollapsibleSection } from "@/components/vision/VisionCollapsibleSection";
 import { VisionStickyNav } from "@/components/vision/VisionStickyNav";
 import { VisionTeamSection } from "@/components/vision/VisionTeamSection";
+import { VisionHeroExecutive } from "@/components/vision/VisionHeroExecutive";
+import { VisionAudienceSwitcher } from "@/components/vision/VisionAudienceSwitcher";
+import { VisionTractionDashboard } from "@/components/vision/VisionTractionDashboard";
 import { getVisionTranslation, type VisionLanguage } from "@/lib/vision-translations";
-
-// Mission statement translations
-const missionTranslations = {
-  de: {
-    tagline: "Die Mission",
-    headline: "Wir revolutionieren, wie die Schweiz umzieht",
-    subheadline: "Eine KI-gestützte Plattform, die den gesamten Umzugsprozess automatisiert – von der Offerte bis zur Schlüsselübergabe.",
-    stats: [
-      { value: "95%", label: "KI-Automatisierung" },
-      { value: "553 CHF", label: "Umsatz pro Kunde" },
-      { value: "90%+", label: "Profit-Marge" },
-      { value: "10", label: "Einnahmequellen" },
-    ]
-  },
-  bg: {
-    tagline: "Мисията",
-    headline: "Революционизираме начина, по който Швейцария се мести",
-    subheadline: "AI платформа, която автоматизира целия процес на преместване – от офертата до предаването на ключовете.",
-    stats: [
-      { value: "95%", label: "AI автоматизация" },
-      { value: "553 CHF", label: "Приход на клиент" },
-      { value: "90%+", label: "Марж на печалба" },
-      { value: "10", label: "Източници на приходи" },
-    ]
-  }
-};
 
 export default function VisionPage() {
   const [isExporting, setIsExporting] = useState(false);
@@ -55,7 +30,6 @@ export default function VisionPage() {
   const { toast } = useToast();
   
   const t = getVisionTranslation(language);
-  const mission = missionTranslations[language];
 
   const handleExportPDF = async () => {
     setIsExporting(true);
@@ -96,6 +70,22 @@ export default function VisionPage() {
         variant: "destructive",
       });
     }
+  };
+
+  // CTA Handlers
+  const handleDemoClick = () => {
+    toast({
+      title: language === 'de' ? "Demo Video" : "Демо видео",
+      description: language === 'de' ? "Coming soon! Kontaktiere uns für eine Live-Demo." : "Скоро! Свържи се с нас за live demo.",
+    });
+  };
+
+  const handlePitchDeckClick = () => {
+    handleExportPDF();
+  };
+
+  const handleContactClick = () => {
+    window.location.href = "mailto:info@umzugscheck.ch?subject=Umzugscheck.ch%20-%20Gespräch%20anfragen";
   };
 
   return (
@@ -153,61 +143,23 @@ export default function VisionPage() {
         </div>
       </div>
 
-      {/* IMPROVEMENT #2: Sticky Navigation */}
+      {/* Sticky Navigation */}
       <VisionStickyNav language={language} />
 
-      {/* IMPROVEMENT #1: Mission Statement Hero */}
-      <section id="vision-hero" className="py-12 md:py-16 bg-gradient-to-b from-primary/10 via-primary/5 to-background">
-        <div className="container mx-auto px-4">
-          <div className="text-center max-w-4xl mx-auto">
-            {/* Mission Badge */}
-            <span className="inline-block px-4 py-1.5 rounded-full bg-primary/20 text-primary text-sm font-semibold mb-6">
-              {mission.tagline}
-            </span>
-            
-            {/* Main Headline - The Mission */}
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight">
-              {mission.headline}
-            </h1>
-            
-            {/* Sub-headline */}
-            <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              {mission.subheadline}
-            </p>
-            
-            {/* Key Stats Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
-              {mission.stats.map((stat, i) => (
-                <div key={i} className="p-4 rounded-xl bg-background border shadow-sm">
-                  <div className="text-2xl md:text-3xl font-bold text-primary">{stat.value}</div>
-                  <div className="text-xs md:text-sm text-muted-foreground">{stat.label}</div>
-                </div>
-              ))}
-            </div>
-            
-            {/* Quick Links to Dedicated Pages */}
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <Link to="/family">
-                <Button variant="outline" size="sm" className="gap-2">
-                  <Heart className="w-4 h-4" />
-                  {language === 'de' ? 'Für Familie' : 'За семейството'}
-                </Button>
-              </Link>
-              <Link to="/investoren">
-                <Button variant="outline" size="sm" className="gap-2">
-                  <TrendingUp className="w-4 h-4" />
-                  {language === 'de' ? 'Für Investoren' : 'За инвеститори'}
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* 1. EXECUTIVE SUMMARY HERO (ChatGPT Priority #1) */}
+      <VisionHeroExecutive 
+        language={language}
+        onDemoClick={handleDemoClick}
+        onPitchDeckClick={handlePitchDeckClick}
+        onContactClick={handleContactClick}
+      />
 
-      {/* Progress Milestones */}
+      {/* 2. AUDIENCE SWITCHER (ChatGPT Priority #2) */}
+      <VisionAudienceSwitcher language={language} />
+
+      {/* 3. TRACTION DASHBOARD (ChatGPT Priority #4) */}
       <div id="vision-progress">
-        <VisionProgressMilestones language={language} />
-        <ContributionBreakdown language={language} />
+        <VisionTractionDashboard language={language} />
       </div>
 
       {/* COLLAPSIBLE SECTIONS */}
@@ -265,11 +217,11 @@ export default function VisionPage() {
           </div>
         </VisionCollapsibleSection>
         
-        {/* Unit Economics */}
+        {/* Unit Economics (ChatGPT Priority #3 - already has CAC breakdown) */}
         <VisionCollapsibleSection
-          title={language === 'de' ? "Unit Economics: Wie wir Geld verdienen" : "Unit Economics: Как печелим пари"}
+          title={language === 'de' ? "Unit Economics: Contribution Margin" : "Unit Economics: Contribution Margin"}
           icon={<Target className="w-5 h-5" />}
-          badge={language === 'de' ? "90%+ Marge" : "90%+ марж"}
+          badge={language === 'de' ? "CAC + Ops getrennt" : "CAC + Ops отделно"}
           defaultOpen={false}
           language={language}
         >
@@ -293,7 +245,7 @@ export default function VisionPage() {
         
       </div>
 
-      {/* IMPROVEMENT #3: Team Section */}
+      {/* Team Section */}
       <ScrollReveal>
         <VisionTeamSection language={language} />
       </ScrollReveal>
