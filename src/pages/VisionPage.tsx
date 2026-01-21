@@ -184,7 +184,7 @@ export default function VisionPage() {
           language={language}
         >
           <div id="vision-customer-usps">
-            <CustomerUSPVisualCards />
+            <CustomerUSPVisualCards language={language} />
           </div>
         </VisionCollapsibleSection>
         
@@ -197,7 +197,7 @@ export default function VisionPage() {
           language={language}
         >
           <div id="vision-investor-pillars">
-            <Vision10PillarSection allExpanded={false} />
+            <Vision10PillarSection allExpanded={false} language={language} />
           </div>
         </VisionCollapsibleSection>
         
