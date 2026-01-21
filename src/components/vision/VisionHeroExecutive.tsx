@@ -45,16 +45,21 @@ const content = {
       { value: "10×", label: "Revenue Streams", icon: TrendingUp, color: "text-primary" }
     ],
     
-    // What we built - detailed uniqueness
+    // What we built - FULL STACK uniqueness based on ChatGPT competitive analysis
     whyUnique: {
-      title: "Warum weltweit einzigartig?",
+      title: "Warum weltweit führend?",
+      subtitle: "Nicht einzelne Features – sondern die KOMPLETTE Full-Stack-Kombi macht uns einzigartig:",
       points: [
-        "«Invisible Move»: Kein Rechner, keine Formulare – KI übernimmt",
-        "Digitaler Zwilling: Video-Scan als Single Source of Truth",
-        "Schweizer Recht integriert: Mietrecht, Fristen, eGov-Schnittstellen",
-        "Trust-Architektur: Escrow, Fixpreis, dokumentierte Schäden",
-        "10 Revenue Streams: Logistik bis Micro-Insurance in einem System",
-        "Generative UI: Flow passt sich dem Nutzer-Typ an"
+        { title: "«Invisible Move»", desc: "Kein Rechner, keine Formulare – KI übernimmt alles. Paradigmenwechsel statt Feature." },
+        { title: "Digitaler Zwilling (Video-Inventar)", desc: "AI Video-Scan als Single Source of Truth → Offerten in ~60 Sekunden." },
+        { title: "Fintech-Layer (Escrow/Treuhand)", desc: "Wir kontrollieren den Geldfluss. Trust, Float, Fees – nicht nur Lead-Broker." },
+        { title: "10 Revenue Streams gestapelt", desc: "Logistik + Telco + Cleaning + Insurance + SaaS + B2B HR – pro Kunde statt 1×." },
+        { title: "Bürokratie-Autopilot", desc: "eGov-Schnittstellen, Adresswechsel, Provider – automatisiert, nicht nur Checkliste." },
+        { title: "Micro-Insurance + Video-Beweis", desc: "Claims-Handling integriert. Versicherung, die wirklich zahlt." },
+        { title: "Partner OS (SaaS für Mover)", desc: "Vendor Lock-in. Supply-Seite gebunden → bessere Preise/Qualität/Verfügbarkeit." },
+        { title: "Relocation Data Intelligence", desc: "Life-Transition Graph. System of Record fürs Umziehen → Cross-Sell + Forecasting." },
+        { title: "Circular Economy Hub", desc: "Entsorgung/Resale im Flow. Zusätzliche GMV, ESG-Boost, weniger Pain." },
+        { title: "95% KI-Automatisierung", desc: "Kostenstruktur-Vorteil vs. Callcenter-Modelle. Die Marge macht den Bass." }
       ]
     }
   },
@@ -80,14 +85,19 @@ const content = {
     ],
     
     whyUnique: {
-      title: "Защо сме световен уникат?",
+      title: "Защо сме световни лидери?",
+      subtitle: "Не отделни функции – а ПЪЛНИЯТ Full-Stack ни прави уникални:",
       points: [
-        "«Invisible Move»: Без калкулатори, без формуляри – AI поема всичко",
-        "Дигитален близнак: Видео сканиране като единствен източник на истина",
-        "Швейцарско право интегрирано: Наемно право, срокове, eGov връзки",
-        "Trust архитектура: Escrow, фиксирана цена, документирани щети",
-        "10 източника на приходи: Логистика до микро-застраховка в една система",
-        "Генеративен UI: Flow се адаптира към типа потребител"
+        { title: "«Invisible Move»", desc: "Без калкулатори, без формуляри – AI поема всичко. Смяна на парадигмата." },
+        { title: "Дигитален близнак (видео инвентар)", desc: "AI видео сканиране като единствен източник → оферти за ~60 секунди." },
+        { title: "Fintech слой (Escrow)", desc: "Контролираме паричния поток. Trust, Float, Fees – не просто lead брокер." },
+        { title: "10 приходни потока натрупани", desc: "Логистика + Телеком + Почистване + Застраховка + SaaS + B2B HR – на клиент." },
+        { title: "Бюрократичен автопилот", desc: "eGov интерфейси, смяна на адрес – автоматизирано, не само чеклист." },
+        { title: "Микро-застраховка + видео доказателство", desc: "Claims интегрирани. Застраховка, която наистина плаща." },
+        { title: "Partner OS (SaaS за преместващи)", desc: "Vendor Lock-in. Supply страна обвързана → по-добри цени/качество." },
+        { title: "Relocation Data Intelligence", desc: "Life-Transition Graph. System of Record → Cross-Sell + Прогнози." },
+        { title: "Circular Economy Hub", desc: "Изхвърляне/препродажба във flow. Допълнителен GMV, ESG boost." },
+        { title: "95% AI автоматизация", desc: "Разходна структура предимство vs. кол център модели." }
       ]
     }
   },
@@ -113,14 +123,19 @@ const content = {
     ],
     
     whyUnique: {
-      title: "Perché unici al mondo?",
+      title: "Perché leader mondiali?",
+      subtitle: "Non singole funzionalità – ma la COMPLETA combinazione Full-Stack ci rende unici:",
       points: [
-        "«Invisible Move»: Niente calcolatori, niente moduli – l'AI fa tutto",
-        "Gemello digitale: Video-scan come unica fonte di verità",
-        "Diritto svizzero integrato: Affitto, scadenze, interfacce eGov",
-        "Architettura Trust: Escrow, prezzo fisso, danni documentati",
-        "10 flussi di entrate: Logistica a micro-assicurazione in un sistema",
-        "UI Generativa: Il flusso si adatta al tipo di utente"
+        { title: "«Invisible Move»", desc: "Niente calcolatori, niente moduli – l'AI fa tutto. Cambio di paradigma." },
+        { title: "Gemello digitale (video inventario)", desc: "AI video scan come unica fonte di verità → preventivi in ~60 secondi." },
+        { title: "Layer Fintech (Escrow)", desc: "Controlliamo il flusso di denaro. Trust, Float, Fees – non solo lead broker." },
+        { title: "10 flussi di entrate impilati", desc: "Logistica + Telco + Pulizia + Assicurazione + SaaS + B2B HR – per cliente." },
+        { title: "Autopilota burocrazia", desc: "Interfacce eGov, cambio indirizzo – automatizzato, non solo checklist." },
+        { title: "Micro-assicurazione + prova video", desc: "Claims integrati. Assicurazione che paga davvero." },
+        { title: "Partner OS (SaaS per traslochi)", desc: "Vendor Lock-in. Lato supply legato → migliori prezzi/qualità." },
+        { title: "Relocation Data Intelligence", desc: "Life-Transition Graph. System of Record → Cross-Sell + Previsioni." },
+        { title: "Circular Economy Hub", desc: "Smaltimento/rivendita nel flusso. GMV aggiuntivo, boost ESG." },
+        { title: "95% automazione AI", desc: "Vantaggio di struttura dei costi vs. modelli call center." }
       ]
     }
   }
@@ -248,22 +263,26 @@ export const VisionHeroExecutive = memo(({
             </Button>
           </motion.div>
           
-          {/* Why Unique Box */}
+          {/* Why Unique Box - Full Stack Differentiation */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
             className="bg-white/10 backdrop-blur-md rounded-xl p-5 border border-white/20"
           >
-            <h3 className="font-bold text-lg mb-4 flex items-center gap-2 text-white">
+            <h3 className="font-bold text-lg mb-2 flex items-center gap-2 text-white">
               <Globe className="w-5 h-5 text-primary" />
               {t.whyUnique.title}
             </h3>
-            <ul className="grid gap-2 md:grid-cols-2">
+            <p className="text-sm text-white/70 mb-4">{t.whyUnique.subtitle}</p>
+            <ul className="grid gap-3 md:grid-cols-2">
               {t.whyUnique.points.map((point, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-white/80">
-                  <span className="text-primary mt-0.5 flex-shrink-0">✓</span>
-                  <span>{point}</span>
+                <li key={i} className="flex items-start gap-2 text-sm">
+                  <span className="text-primary mt-0.5 flex-shrink-0 font-bold">✓</span>
+                  <div>
+                    <span className="font-semibold text-white">{point.title}:</span>{' '}
+                    <span className="text-white/75">{point.desc}</span>
+                  </div>
                 </li>
               ))}
             </ul>

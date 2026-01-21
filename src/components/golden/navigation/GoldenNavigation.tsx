@@ -86,25 +86,25 @@ export const GoldenNavigation = memo(() => {
           {/* Right Side: CTA + Mobile Menu */}
           <div className="flex items-center gap-1.5 sm:gap-2 xl:gap-3 flex-shrink-0">
             {/* Desktop CTA - Context-Aware (xl+) */}
-            <div className="hidden xl:flex flex-col items-end flex-shrink-0">
+            <div className="hidden xl:flex flex-col items-center flex-shrink-0">
               <Button 
                 asChild 
-                className="h-10 px-5 font-bold gap-2 rounded-xl bg-gradient-to-r from-secondary via-secondary to-secondary/90 hover:from-secondary/90 hover:to-secondary shadow-lg shadow-secondary/20 hover:shadow-xl hover:shadow-secondary/30 transition-all hover:scale-[1.02]"
+                className="h-10 px-5 font-bold gap-2 rounded-xl bg-[#E32026] hover:bg-[#c91c21] text-white shadow-lg shadow-[#E32026]/20 hover:shadow-xl hover:shadow-[#E32026]/30 transition-all hover:scale-[1.02]"
               >
                 <Link to={flowPath}>
                   <Zap className="w-4 h-4" />
                   {getCtaLabel()}
                 </Link>
               </Button>
-              <span className="text-[10px] text-muted-foreground mt-0.5 font-medium">
-                ✓ Kostenlos & unverbindlich
+              <span className="text-[10px] text-muted-foreground mt-1 font-medium">
+                Gratis & unverbindlich
               </span>
             </div>
 
             {/* Mobile CTA (below xl) */}
             <Button 
               asChild 
-              className="xl:hidden h-9 px-3 sm:px-4 font-bold gap-1.5 rounded-lg bg-secondary hover:bg-secondary/90 text-sm whitespace-nowrap"
+              className="xl:hidden h-9 px-3 sm:px-4 font-bold gap-1.5 rounded-lg bg-[#E32026] hover:bg-[#c91c21] text-white text-sm whitespace-nowrap"
             >
               <Link to={flowPath}>
                 <Zap className="w-4 h-4" />
