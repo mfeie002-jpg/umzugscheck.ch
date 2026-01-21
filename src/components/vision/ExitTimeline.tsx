@@ -260,38 +260,38 @@ export const ExitTimeline = memo(() => {
                   <Star className="w-7 h-7 text-white" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-lg text-white mb-2">
+                <h4 className="font-bold text-lg text-white mb-2">
                     MOVU → Baloise (2017): Der relevanteste Vergleich
                   </h4>
-                  <p className="text-slate-300 text-sm leading-relaxed mb-4">
-                    <strong className="text-white">MOVU</strong> wurde 2017 von der Baloise Gruppe übernommen – 
+                  <p className="text-white/90 text-sm leading-relaxed mb-4">
+                    <strong className="text-white font-bold">MOVU</strong> wurde 2017 von der Baloise Gruppe übernommen – 
                     die grösste digitale Umzugsplattform der Schweiz zu dem Zeitpunkt.
-                    Der Kaufpreis wurde nicht veröffentlicht, wird aber auf <strong className="text-white">5-10 Mio CHF</strong> geschätzt.
+                    Der Kaufpreis wurde nicht veröffentlicht, wird aber auf <strong className="text-white font-bold">5-10 Mio CHF</strong> geschätzt.
                   </p>
                   
-                  <div className="bg-white/10 rounded-xl p-4">
-                    <p className="text-sm text-white font-bold mb-2">Warum wir mehr wert sein werden:</p>
-                    <ul className="space-y-1 text-sm text-slate-300">
+                  <div className="bg-slate-800/80 rounded-xl p-4 border border-slate-600">
+                    <p className="text-sm text-white font-bold mb-3">Warum wir mehr wert sein werden:</p>
+                    <ul className="space-y-2 text-sm">
                       <li className="flex items-center gap-2">
                         <CheckIcon />
-                        <span><strong className="text-white">10 Revenue Streams</strong> statt nur Lead-Verkauf</span>
+                        <span className="text-white"><strong className="font-bold text-primary">10 Revenue Streams</strong> statt nur Lead-Verkauf</span>
                       </li>
                       <li className="flex items-center gap-2">
                         <CheckIcon />
-                        <span><strong className="text-white">KI-Technologie</strong> (Video, Automation) – MOVU hatte das nicht</span>
+                        <span className="text-white"><strong className="font-bold text-primary">KI-Technologie</strong> (Video, Automation) – MOVU hatte das nicht</span>
                       </li>
                       <li className="flex items-center gap-2">
                         <CheckIcon />
-                        <span><strong className="text-white">Fintech-Layer</strong> (Escrow) – höhere Stickiness</span>
+                        <span className="text-white"><strong className="font-bold text-primary">Fintech-Layer</strong> (Escrow) – höhere Stickiness</span>
                       </li>
                       <li className="flex items-center gap-2">
                         <CheckIcon />
-                        <span><strong className="text-white">90%+ Marge</strong> vs. klassische 20-30%</span>
+                        <span className="text-white"><strong className="font-bold text-primary">90%+ Marge</strong> vs. klassische 20-30%</span>
                       </li>
                     </ul>
                   </div>
                   
-                  <p className="mt-4 text-primary font-bold">
+                  <p className="mt-4 text-primary font-bold text-base">
                     → Bei vergleichbarer Grösse: 3-5× höhere Bewertung möglich durch Tech + Moats
                   </p>
                 </div>
