@@ -5,7 +5,7 @@
  * Now supports DE/BG translations
  */
 
-import { memo, useState } from "react";
+import { memo, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Check, Star, Rocket, ArrowRight, ChevronDown, Sparkles, 
@@ -29,6 +29,7 @@ import uspHandyman from "@/assets/usp/usp-10-handyman.jpg";
 
 interface CustomerUSPVisualCardsProps {
   language?: VisionLanguage;
+  allExpanded?: boolean;
 }
 
 // USP images array
@@ -57,16 +58,25 @@ const VisualUSPCard = memo(({
   index, 
   style, 
   image,
-  language 
+  language,
+  forceExpanded
 }: { 
   usp: any; 
   index: number; 
   style: typeof cardStyles[0];
   image: string;
   language: VisionLanguage;
+  forceExpanded?: boolean;
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const t = getVisionTranslation(language);
+  
+  // Sync with external forceExpanded control
+  useEffect(() => {
+    if (forceExpanded !== undefined) {
+      setIsExpanded(forceExpanded);
+    }
+  }, [forceExpanded]);
 
   return (
     <motion.div
@@ -254,7 +264,7 @@ const VisualUSPCard = memo(({
 VisualUSPCard.displayName = 'VisualUSPCard';
 
 // Main Section Component - Mobile Optimized
-export const CustomerUSPVisualCards = memo(({ language = 'de' }: CustomerUSPVisualCardsProps) => {
+export const CustomerUSPVisualCards = memo(({ language = 'de', allExpanded = false }: CustomerUSPVisualCardsProps) => {
   const t = getVisionTranslation(language);
   const usps = t.customerUsps.items;
 
@@ -326,6 +336,7 @@ export const CustomerUSPVisualCards = memo(({ language = 'de' }: CustomerUSPVisu
               style={cardStyles[idx]} 
               image={uspImages[idx]}
               language={language}
+              forceExpanded={allExpanded}
             />
           ))}
         </div>

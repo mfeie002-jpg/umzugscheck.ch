@@ -1,9 +1,10 @@
 /**
  * Collapsible Section Wrapper for Vision Page
  * Makes sections expandable/collapsible to reduce page length
+ * Supports external control via forceOpen prop for "expand all" functionality
  */
 
-import { memo, useState, ReactNode } from "react";
+import { memo, useState, useEffect, ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -12,6 +13,7 @@ interface VisionCollapsibleSectionProps {
   title: string;
   icon?: ReactNode;
   defaultOpen?: boolean;
+  forceOpen?: boolean; // External control - when true, section is forced open
   badge?: string;
   children: ReactNode;
   className?: string;
@@ -23,6 +25,7 @@ export const VisionCollapsibleSection = memo(({
   title,
   icon,
   defaultOpen = false,
+  forceOpen,
   badge,
   children,
   className,
@@ -30,6 +33,13 @@ export const VisionCollapsibleSection = memo(({
   language = 'de'
 }: VisionCollapsibleSectionProps) => {
   const [isOpen, setIsOpen] = useState(defaultOpen);
+  
+  // Sync with external forceOpen control
+  useEffect(() => {
+    if (forceOpen !== undefined) {
+      setIsOpen(forceOpen);
+    }
+  }, [forceOpen]);
   
   const collapseLabel = language === 'de' ? 'Einklappen' : 'Свий';
   const expandLabel = language === 'de' ? 'Ausklappen' : 'Разгъни';

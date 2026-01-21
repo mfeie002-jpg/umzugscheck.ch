@@ -17,6 +17,7 @@ import { CustomerUSPVisualCards } from "@/components/homepage/CustomerUSPVisualC
 import { FamilySummary } from "@/components/homepage/FamilySummary";
 import { FamilyLanguageSwitcher } from "@/components/family/FamilyLanguageSwitcher";
 import { VisionTractionDashboard } from "@/components/vision/VisionTractionDashboard";
+import { ExpandAllToggle } from "@/components/vision/ExpandAllToggle";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Heart, Users, Sparkles, Home, CheckCircle2, Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -28,6 +29,7 @@ export default function FamilyLanding() {
     const stored = localStorage.getItem('family-lang');
     return (stored === 'bg' || stored === 'de') ? stored : 'de';
   });
+  const [allExpanded, setAllExpanded] = useState(false);
   
   const t = getFamilyTranslation(lang);
 
@@ -74,6 +76,11 @@ export default function FamilyLanding() {
             </div>
             
             <div className="flex items-center gap-2">
+              <ExpandAllToggle
+                isExpanded={allExpanded}
+                onToggle={() => setAllExpanded(!allExpanded)}
+                language={lang}
+              />
               <FamilyLanguageSwitcher currentLang={lang} onLanguageChange={setLang} />
               <Link to="/vision" className="touch-manipulation hidden sm:block">
                 <Button 
@@ -148,7 +155,7 @@ export default function FamilyLanding() {
               {t.benefits.subtitle}
             </p>
           </div>
-          <CustomerUSPVisualCards language={lang} />
+          <CustomerUSPVisualCards language={lang} allExpanded={allExpanded} />
         </div>
       </section>
 
