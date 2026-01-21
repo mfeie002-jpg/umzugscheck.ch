@@ -3,7 +3,7 @@
  */
 
 import { motion } from 'framer-motion';
-import { CheckCircle, Clock, Phone, Mail, PartyPopper, ArrowRight } from 'lucide-react';
+import { CheckCircle, Clock, Phone, Mail, PartyPopper, ArrowRight, Building2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { GoldenFlowData, GoldenFlowPriceEstimate } from '../types';
@@ -11,9 +11,11 @@ import { GoldenFlowData, GoldenFlowPriceEstimate } from '../types';
 interface GoldenFlowSuccessProps {
   formData: GoldenFlowData;
   priceEstimate: GoldenFlowPriceEstimate | null;
+  leadId?: string | null;
+  matchedCompanies?: number;
 }
 
-export function GoldenFlowSuccess({ formData, priceEstimate }: GoldenFlowSuccessProps) {
+export function GoldenFlowSuccess({ formData, priceEstimate, leadId, matchedCompanies = 0 }: GoldenFlowSuccessProps) {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
@@ -49,6 +51,19 @@ export function GoldenFlowSuccess({ formData, priceEstimate }: GoldenFlowSuccess
           Vielen Dank, {formData.name.split(' ')[0]}! Ihre Umzugsanfrage wurde an unsere Partner übermittelt.
         </motion.p>
       </div>
+
+      {/* Matched companies badge */}
+      {matchedCompanies > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.45 }}
+          className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full font-medium"
+        >
+          <Building2 className="h-4 w-4" />
+          {matchedCompanies} passende Umzugsfirmen gefunden
+        </motion.div>
+      )}
       
       {/* Summary card */}
       <motion.div
@@ -77,6 +92,12 @@ export function GoldenFlowSuccess({ formData, priceEstimate }: GoldenFlowSuccess
               <span className="text-primary">
                 CHF {priceEstimate.min.toLocaleString()} – {priceEstimate.max.toLocaleString()}
               </span>
+            </div>
+          )}
+          {leadId && (
+            <div className="flex justify-between pt-2 border-t text-xs">
+              <span className="text-muted-foreground">Referenz:</span>
+              <span className="font-mono">{leadId.substring(0, 8).toUpperCase()}</span>
             </div>
           )}
         </div>
