@@ -2,13 +2,19 @@
  * VisionHumanStorySection - Emotional Human-Centered Visual Section
  * 
  * Shows the human side of moving with emotional imagery and relatable stories.
- * Designed to break up text-heavy sections with visual storytelling.
+ * Each story has a unique image to match the persona.
  */
 
 import { motion } from "framer-motion";
-import { Heart, Home, Users, Sparkles, ArrowRight, CheckCircle2 } from "lucide-react";
+import { Heart, ArrowRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Link } from "react-router-dom";
+
+// Unique images per story
+import storyYoungFamily from "@/assets/vision/story-young-family.jpg";
+import storySenior from "@/assets/vision/story-senior.jpg";
+import storyYoungProfessional from "@/assets/vision/story-young-professional.jpg";
 
 interface VisionHumanStorySectionProps {
   language?: 'de' | 'it' | 'bg';
@@ -21,25 +27,25 @@ const TRANSLATIONS = {
     subtitle: "Es ist ein Neuanfang. Ein Kapitel, das endet. Eines, das beginnt.",
     stories: [
       {
-        emoji: "👨‍👩‍👧",
         title: "Die junge Familie",
         story: "Laura und Marco erwarten ihr zweites Kind. Die 2-Zimmer-Wohnung wird zu eng. Sie brauchen mehr Platz – aber weniger Stress.",
         solution: "Mit Umzugscheck: 3 Offerten in 24h, Escrow-Schutz, ein Klick zur Traumwohnung.",
+        image: storyYoungFamily,
       },
       {
-        emoji: "👴",
         title: "Der Senior",
         story: "Herr Müller, 78, zieht nach 40 Jahren ins betreute Wohnen. Der Hausstand eines Lebens. Die Überforderung ist real.",
         solution: "Full-Service-Umzug mit Entrümpelung, Reinigung, allem. Er muss nur zusehen.",
+        image: storySenior,
       },
       {
-        emoji: "💼",
         title: "Die Berufseinsteigerin",
         story: "Sarah hat ihren Traumjob in Zürich. In 3 Wochen muss sie da sein. Budget: knapp. Zeit: keine.",
         solution: "Preisrechner zeigt: 890 CHF. Studentenrabatt. Termin steht.",
+        image: storyYoungProfessional,
       },
     ],
-    cta: "Für wen ziehen Sie um?",
+    cta: "Starten Sie Ihren Umzug",
     stats: [
       { value: "450'000", label: "Umzüge pro Jahr in der Schweiz" },
       { value: "5.2h", label: "Durchschnittliche Recherchezeit" },
@@ -52,25 +58,25 @@ const TRANSLATIONS = {
     subtitle: "È un nuovo inizio. Un capitolo che finisce. Uno che inizia.",
     stories: [
       {
-        emoji: "👨‍👩‍👧",
         title: "La giovane famiglia",
         story: "Laura e Marco aspettano il secondo figlio. L'appartamento di 2 stanze diventa stretto.",
         solution: "Con Umzugscheck: 3 preventivi in 24h, protezione Escrow, un clic per la casa dei sogni.",
+        image: storyYoungFamily,
       },
       {
-        emoji: "👴",
         title: "Il senior",
         story: "Il signor Müller, 78 anni, si trasferisce in una casa di cura dopo 40 anni.",
         solution: "Trasloco full-service con sgombero, pulizia, tutto. Deve solo guardare.",
+        image: storySenior,
       },
       {
-        emoji: "💼",
         title: "La neolaureata",
         story: "Sarah ha il lavoro dei suoi sogni a Zurigo. Deve essere lì in 3 settimane.",
         solution: "Il calcolatore mostra: 890 CHF. Sconto studenti. Appuntamento confermato.",
+        image: storyYoungProfessional,
       },
     ],
-    cta: "Per chi traslochi?",
+    cta: "Inizia il tuo trasloco",
     stats: [
       { value: "450'000", label: "Traslochi all'anno in Svizzera" },
       { value: "5.2h", label: "Tempo medio di ricerca" },
@@ -83,25 +89,25 @@ const TRANSLATIONS = {
     subtitle: "Това е ново начало. Глава, която свършва. Друга, която започва.",
     stories: [
       {
-        emoji: "👨‍👩‍👧",
         title: "Младото семейство",
         story: "Лаура и Марко очакват второто си дете. Двустайният апартамент става тесен.",
         solution: "С Umzugscheck: 3 оферти за 24 часа, Escrow защита, един клик до мечтания дом.",
+        image: storyYoungFamily,
       },
       {
-        emoji: "👴",
         title: "Пенсионерът",
         story: "Господин Мюлер, 78 години, се премества след 40 години в дом за възрастни.",
         solution: "Пълно обслужване с почистване, изхвърляне, всичко. Той само гледа.",
+        image: storySenior,
       },
       {
-        emoji: "💼",
         title: "Младият специалист",
         story: "Сара има работата на мечтите си в Цюрих. Трябва да е там след 3 седмици.",
         solution: "Калкулаторът показва: 890 CHF. Студентска отстъпка. Датата е потвърдена.",
+        image: storyYoungProfessional,
       },
     ],
-    cta: "За кого се местите?",
+    cta: "Започнете вашето преместване",
     stats: [
       { value: "450'000", label: "Премествания годишно в Швейцария" },
       { value: "5.2h", label: "Средно време за проучване" },
@@ -118,7 +124,7 @@ export const VisionHumanStorySection = ({ language = 'de' }: VisionHumanStorySec
       {/* Decorative Background */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-20 left-10 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/5 rounded-full blur-3xl" />
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
@@ -129,11 +135,11 @@ export const VisionHumanStorySection = ({ language = 'de' }: VisionHumanStorySec
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <Badge variant="outline" className="mb-4 px-4 py-2">
-            <Heart className="w-4 h-4 mr-2 text-[#8B0000]" />
+          <Badge variant="outline" className="mb-4 px-4 py-2 border-secondary/30">
+            <Heart className="w-4 h-4 mr-2 text-secondary" />
             {t.badge}
           </Badge>
-          <h2 className="text-3xl md:text-5xl font-bold mb-4 leading-tight">
+          <h2 className="text-3xl md:text-5xl font-black mb-4 leading-tight">
             {t.title}
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto italic">
@@ -141,7 +147,7 @@ export const VisionHumanStorySection = ({ language = 'de' }: VisionHumanStorySec
           </p>
         </motion.div>
 
-        {/* Story Cards */}
+        {/* Story Cards with Images */}
         <div className="grid md:grid-cols-3 gap-8 mb-16">
           {t.stories.map((story, index) => (
             <motion.div
@@ -149,26 +155,34 @@ export const VisionHumanStorySection = ({ language = 'de' }: VisionHumanStorySec
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.2 }}
+              transition={{ delay: index * 0.15 }}
               className="group"
             >
-              <div className="bg-card rounded-2xl p-6 md:p-8 shadow-lg border hover:shadow-xl transition-all duration-300 hover:-translate-y-1 h-full flex flex-col">
-                {/* Emoji Avatar */}
-                <div className="text-5xl mb-4">{story.emoji}</div>
+              <div className="bg-card rounded-2xl overflow-hidden shadow-lg border hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 h-full flex flex-col">
+                {/* Story Image */}
+                <div className="aspect-[4/3] overflow-hidden relative">
+                  <img
+                    src={story.image}
+                    alt={story.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  <h3 className="absolute bottom-4 left-4 text-xl font-bold text-white">{story.title}</h3>
+                </div>
                 
-                {/* Title */}
-                <h3 className="text-xl font-bold mb-3">{story.title}</h3>
-                
-                {/* Story */}
-                <p className="text-muted-foreground mb-4 flex-grow leading-relaxed">
-                  {story.story}
-                </p>
-                
-                {/* Solution */}
-                <div className="bg-primary/5 rounded-lg p-4 border-l-4 border-primary">
-                  <div className="flex items-start gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                    <p className="text-sm font-medium">{story.solution}</p>
+                <div className="p-6 flex flex-col flex-grow">
+                  {/* Story */}
+                  <p className="text-muted-foreground mb-4 flex-grow leading-relaxed">
+                    {story.story}
+                  </p>
+                  
+                  {/* Solution */}
+                  <div className="bg-primary/5 rounded-xl p-4 border-l-4 border-primary">
+                    <div className="flex items-start gap-2">
+                      <CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                      <p className="text-sm font-medium">{story.solution}</p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -184,8 +198,8 @@ export const VisionHumanStorySection = ({ language = 'de' }: VisionHumanStorySec
           className="grid grid-cols-3 gap-4 md:gap-8 max-w-3xl mx-auto mb-12"
         >
           {t.stats.map((stat, index) => (
-            <div key={index} className="text-center">
-              <div className="text-2xl md:text-4xl font-bold text-primary mb-1">
+            <div key={index} className="text-center p-4 rounded-xl bg-card border">
+              <div className="text-2xl md:text-4xl font-black text-primary mb-1">
                 {stat.value}
               </div>
               <div className="text-xs md:text-sm text-muted-foreground">
@@ -202,10 +216,12 @@ export const VisionHumanStorySection = ({ language = 'de' }: VisionHumanStorySec
           viewport={{ once: true }}
           className="text-center"
         >
-          <Button size="lg" className="min-h-[56px] px-8 text-lg group">
-            {t.cta}
-            <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-          </Button>
+          <Link to="/umzugsofferten">
+            <Button size="lg" className="min-h-[56px] px-8 text-lg group bg-secondary hover:bg-secondary/90">
+              {t.cta}
+              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </Link>
         </motion.div>
       </div>
     </section>
