@@ -40,6 +40,8 @@ const HomePage = lazy(() => import("./pages/HomePage").then(m => ({ default: m.H
 const HomeOptimized = lazy(() => import("./pages/HomeOptimized"));
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 const VisionPage = lazy(() => import("./pages/VisionPage"));
+const FamilyLanding = lazy(() => import("./pages/FamilyLanding"));
+const InvestorenLanding = lazy(() => import("./pages/InvestorenLanding"));
 const AdminInternResults = lazy(() => import("./pages/AdminInternResults"));
 const ExportDownload = lazy(() => import("./pages/ExportDownload"));
 
@@ -493,6 +495,8 @@ const AppRouterContent = () => {
           <Route path="/" element={<IndexPremium />} />
           <Route path="/landing" element={<LandingPage />} />
           <Route path="/vision" element={<VisionPage />} />
+          <Route path="/family" element={<FamilyLanding />} />
+          <Route path="/investoren" element={<InvestorenLanding />} />
           <Route path="/old-home" element={<Index />} />
           <Route path="/v2" element={<HomeOptimized />} />
           <Route path="/v3" element={<NewIndex />} />
