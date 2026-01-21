@@ -7,10 +7,10 @@ import { memo } from "react";
 import { motion } from "framer-motion";
 import type { VisionLanguage } from "@/lib/vision-translations";
 
-// Import section-specific images
-import heroFamilyNewHome from "@/assets/vision/hero-family-new-home.jpg";
-import heroMovingSwitzerland from "@/assets/vision/hero-moving-switzerland.jpg";
-import heroInvestorMeeting from "@/assets/vision/hero-investor-meeting.jpg";
+// Import new section-specific images
+import heroVisionMain from "@/assets/vision/hero-vision-main.jpg";
+import heroFamilyMain from "@/assets/vision/hero-family-main.jpg";
+import heroInvestorMain from "@/assets/vision/hero-investor-main.jpg";
 
 interface VisionVisualDividerProps {
   language: VisionLanguage;
@@ -37,9 +37,9 @@ const quotes = {
 };
 
 const images = {
-  family: heroFamilyNewHome,
-  business: heroInvestorMeeting,
-  journey: heroMovingSwitzerland
+  family: heroFamilyMain,
+  business: heroInvestorMain,
+  journey: heroVisionMain
 };
 
 export const VisionVisualDivider = memo(({ 
