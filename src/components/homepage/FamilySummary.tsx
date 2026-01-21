@@ -52,30 +52,30 @@ const milestones = [
 
 export const FamilySummary = memo(() => {
   return (
-    <section className="py-20 md:py-28 bg-gradient-to-b from-background via-primary/5 to-background relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0 opacity-30 pointer-events-none">
+    <section className="py-12 sm:py-16 md:py-28 bg-gradient-to-b from-background via-primary/5 to-background relative overflow-hidden">
+      {/* Background decoration - Hidden on mobile for performance */}
+      <div className="absolute inset-0 opacity-30 pointer-events-none hidden sm:block">
         <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl" />
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-primary/10 to-transparent rounded-full blur-3xl" />
       </div>
 
       <div className="container mx-auto px-4 relative">
-        {/* Header */}
+        {/* Header - Mobile Optimized */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-10 sm:mb-16"
         >
-          <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/10 text-primary text-sm font-bold mb-6">
-            <Heart className="w-4 h-4" />
+          <span className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-primary/10 text-primary text-xs sm:text-sm font-bold mb-4 sm:mb-6">
+            <Heart className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
             Für die Familie erklärt
           </span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-foreground mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-foreground mb-4 sm:mb-6 leading-tight">
             Was ich <span className="text-primary">baue</span> 🚀
           </h2>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed px-2">
             Eine einfache Zusammenfassung für Mama, Papa und alle, die verstehen wollen, 
             <br className="hidden md:block" />
             <span className="font-semibold text-foreground">woran ich arbeite und warum es einzigartig ist.</span>
@@ -87,22 +87,22 @@ export const FamilySummary = memo(() => {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="max-w-4xl mx-auto mb-16"
+          className="max-w-4xl mx-auto mb-10 sm:mb-16"
         >
-          <div className="bg-red-50 dark:bg-red-950/30 border-2 border-red-200 dark:border-red-800 rounded-3xl p-8">
-            <div className="flex items-start gap-4 mb-6">
-              <div className="w-14 h-14 rounded-2xl bg-red-500 flex items-center justify-center flex-shrink-0">
-                <span className="text-3xl">😫</span>
+          <div className="bg-red-50 dark:bg-red-950/30 border-2 border-red-200 dark:border-red-800 rounded-2xl sm:rounded-3xl p-5 sm:p-8">
+            <div className="flex items-start gap-3 sm:gap-4 mb-4 sm:mb-6">
+              <div className="w-11 sm:w-14 h-11 sm:h-14 rounded-xl sm:rounded-2xl bg-red-500 flex items-center justify-center flex-shrink-0">
+                <span className="text-2xl sm:text-3xl">😫</span>
               </div>
               <div>
-                <h3 className="text-2xl font-black text-red-700 dark:text-red-400 mb-2">Das Problem heute</h3>
-                <p className="text-red-600 dark:text-red-300 text-lg">
+                <h3 className="text-xl sm:text-2xl font-black text-red-700 dark:text-red-400 mb-1 sm:mb-2">Das Problem heute</h3>
+                <p className="text-red-600 dark:text-red-300 text-sm sm:text-lg">
                   Umziehen in der Schweiz ist <strong>Stress pur</strong>
                 </p>
               </div>
             </div>
             
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-4">
               {[
                 "Keine Ahnung, welche Firma seriös ist",
                 "Preise variieren wild (1'000 – 5'000 CHF)",
@@ -111,9 +111,9 @@ export const FamilySummary = memo(() => {
                 "Angst vor Betrug und versteckten Kosten",
                 "Nach dem Umzug: fremd in neuer Gegend"
               ].map((pain, idx) => (
-                <div key={idx} className="flex items-center gap-3 text-red-700 dark:text-red-300">
-                  <span className="text-xl">❌</span>
-                  <span className="text-sm font-medium">{pain}</span>
+                <div key={idx} className="flex items-center gap-2.5 sm:gap-3 text-red-700 dark:text-red-300">
+                  <span className="text-lg sm:text-xl flex-shrink-0">❌</span>
+                  <span className="text-xs sm:text-sm font-medium">{pain}</span>
                 </div>
               ))}
             </div>
@@ -125,33 +125,33 @@ export const FamilySummary = memo(() => {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="max-w-4xl mx-auto mb-16"
+          className="max-w-4xl mx-auto mb-10 sm:mb-16"
         >
-          <div className="bg-green-50 dark:bg-green-950/30 border-2 border-green-200 dark:border-green-800 rounded-3xl p-8">
-            <div className="flex items-start gap-4 mb-6">
-              <div className="w-14 h-14 rounded-2xl bg-green-500 flex items-center justify-center flex-shrink-0">
-                <span className="text-3xl">✨</span>
+          <div className="bg-green-50 dark:bg-green-950/30 border-2 border-green-200 dark:border-green-800 rounded-2xl sm:rounded-3xl p-5 sm:p-8">
+            <div className="flex items-start gap-3 sm:gap-4 mb-4 sm:mb-6">
+              <div className="w-11 sm:w-14 h-11 sm:h-14 rounded-xl sm:rounded-2xl bg-green-500 flex items-center justify-center flex-shrink-0">
+                <span className="text-2xl sm:text-3xl">✨</span>
               </div>
               <div>
-                <h3 className="text-2xl font-black text-green-700 dark:text-green-400 mb-2">Meine Lösung: Umzugscheck.ch</h3>
-                <p className="text-green-600 dark:text-green-300 text-lg">
+                <h3 className="text-lg sm:text-2xl font-black text-green-700 dark:text-green-400 mb-1 sm:mb-2 leading-tight">Meine Lösung: Umzugscheck.ch</h3>
+                <p className="text-green-600 dark:text-green-300 text-sm sm:text-lg">
                   Die <strong>intelligenteste Umzugs-Plattform</strong> der Schweiz
                 </p>
               </div>
             </div>
             
-            <p className="text-foreground text-lg leading-relaxed mb-6">
+            <p className="text-foreground text-sm sm:text-lg leading-relaxed mb-4 sm:mb-6">
               Ich baue eine Plattform, die den gesamten Umzugsprozess digitalisiert und automatisiert. 
               Mit <strong>Künstlicher Intelligenz</strong> analysieren wir Videos, berechnen Preise, 
               organisieren alles – vom ersten Klick bis zum Schlüsselabgabe.
             </p>
 
-            <div className="bg-white dark:bg-black/30 rounded-2xl p-6 border border-green-300 dark:border-green-700">
-              <p className="text-sm font-bold text-green-600 dark:text-green-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-                <Lightbulb className="w-4 h-4" />
+            <div className="bg-white dark:bg-black/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-green-300 dark:border-green-700">
+              <p className="text-xs sm:text-sm font-bold text-green-600 dark:text-green-400 uppercase tracking-wider mb-2 sm:mb-4 flex items-center gap-2">
+                <Lightbulb className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
                 Einfach erklärt
               </p>
-              <p className="text-foreground text-lg font-medium">
+              <p className="text-foreground text-sm sm:text-lg font-medium leading-relaxed">
                 Stell dir vor: Du filmst deine Wohnung mit dem Handy → 
                 Die KI erkennt alle Möbel → Du bekommst 5 faire Preise → 
                 Ein Klick und <strong>alles wird organisiert</strong>: 
@@ -166,17 +166,18 @@ export const FamilySummary = memo(() => {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mb-16"
+          className="mb-10 sm:mb-16"
         >
-          <div className="text-center mb-8">
-            <h3 className="text-2xl md:text-3xl font-black text-foreground mb-3 flex items-center justify-center gap-3">
-              <Users className="w-8 h-8 text-primary" />
+          <div className="text-center mb-6 sm:mb-8">
+            <h3 className="text-xl sm:text-2xl md:text-3xl font-black text-foreground mb-2 sm:mb-3 flex items-center justify-center gap-2 sm:gap-3">
+              <Users className="w-6 sm:w-8 h-6 sm:h-8 text-primary" />
               10 Vorteile für Familien
             </h3>
-            <p className="text-muted-foreground">Was Kunden bei uns bekommen – alles aus einer Hand</p>
+            <p className="text-sm sm:text-base text-muted-foreground px-2">Was Kunden bei uns bekommen – alles aus einer Hand</p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 max-w-5xl mx-auto">
+          {/* Mobile: 2 columns, Desktop: 5 columns */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5 sm:gap-4 max-w-5xl mx-auto">
             {customerBenefitsSummary.map((benefit, idx) => (
               <motion.div
                 key={benefit.title}
@@ -184,11 +185,11 @@ export const FamilySummary = memo(() => {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.05 }}
-                className="bg-white dark:bg-slate-800/50 border border-border rounded-2xl p-4 text-center hover:shadow-lg hover:border-primary/50 transition-all duration-300"
+                className="bg-white dark:bg-slate-800/50 border border-border rounded-xl sm:rounded-2xl p-3 sm:p-4 text-center hover:shadow-lg hover:border-primary/50 transition-all duration-300 touch-manipulation"
               >
-                <span className="text-3xl mb-2 block">{benefit.emoji}</span>
-                <p className="text-sm font-bold text-foreground mb-1">{benefit.title}</p>
-                <p className="text-xs text-muted-foreground">{benefit.short}</p>
+                <span className="text-2xl sm:text-3xl mb-1.5 sm:mb-2 block">{benefit.emoji}</span>
+                <p className="text-xs sm:text-sm font-bold text-foreground mb-0.5 sm:mb-1 line-clamp-1">{benefit.title}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground line-clamp-2">{benefit.short}</p>
               </motion.div>
             ))}
           </div>

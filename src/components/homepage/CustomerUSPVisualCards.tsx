@@ -209,7 +209,7 @@ const customerUSPsVisual = [
   }
 ];
 
-// Premium Visual USP Card Component
+// Premium Visual USP Card Component - Mobile Optimized
 const VisualUSPCard = memo(({ usp, index }: { usp: typeof customerUSPsVisual[0]; index: number }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -219,13 +219,13 @@ const VisualUSPCard = memo(({ usp, index }: { usp: typeof customerUSPsVisual[0];
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ delay: index * 0.06, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className={`group relative rounded-[2rem] overflow-hidden border-2 ${usp.borderColor} ${usp.bgColor} hover:shadow-2xl hover:shadow-primary/10 transition-all duration-700 hover:-translate-y-2`}
+      className={`group relative rounded-2xl sm:rounded-[2rem] overflow-hidden border-2 ${usp.borderColor} ${usp.bgColor} hover:shadow-2xl hover:shadow-primary/10 transition-all duration-700 hover:-translate-y-2`}
     >
-      {/* Decorative corner accent */}
-      <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl ${usp.color} opacity-20 blur-2xl`} />
+      {/* Decorative corner accent - Hidden on mobile for performance */}
+      <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl ${usp.color} opacity-20 blur-2xl hidden sm:block`} />
       
-      {/* Image Header with premium overlay */}
-      <div className="relative h-56 overflow-hidden">
+      {/* Image Header with premium overlay - Smaller on mobile */}
+      <div className="relative h-40 sm:h-56 overflow-hidden">
         <img 
           src={usp.image} 
           alt={usp.title}
@@ -236,66 +236,67 @@ const VisualUSPCard = memo(({ usp, index }: { usp: typeof customerUSPsVisual[0];
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10" />
         <div className={`absolute inset-0 bg-gradient-to-br ${usp.color} opacity-30 mix-blend-overlay`} />
         
-        {/* Premium number badge */}
+        {/* Premium number badge - Smaller on mobile */}
         <motion.div 
           initial={{ scale: 0, rotate: -180 }}
           whileInView={{ scale: 1, rotate: 0 }}
           viewport={{ once: true }}
           transition={{ delay: index * 0.06 + 0.3, type: "spring", stiffness: 200 }}
-          className={`absolute top-4 left-4 w-14 h-14 rounded-2xl bg-gradient-to-br ${usp.color} flex items-center justify-center shadow-xl ring-4 ring-white/20`}
+          className={`absolute top-3 sm:top-4 left-3 sm:left-4 w-10 sm:w-14 h-10 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br ${usp.color} flex items-center justify-center shadow-xl ring-2 sm:ring-4 ring-white/20`}
         >
-          <span className="font-black text-2xl text-white drop-shadow-md">{usp.id}</span>
+          <span className="font-black text-lg sm:text-2xl text-white drop-shadow-md">{usp.id}</span>
         </motion.div>
         
-        {/* Tagline badge with glow */}
-        <div className="absolute top-4 right-4">
-          <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/95 dark:bg-black/80 text-xs font-bold ${usp.accentColor} shadow-lg backdrop-blur-sm`}>
-            <Sparkles className="w-3.5 h-3.5" />
-            {usp.tagline}
+        {/* Tagline badge with glow - Smaller on mobile */}
+        <div className="absolute top-3 sm:top-4 right-3 sm:right-4">
+          <span className={`inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/95 dark:bg-black/80 text-[10px] sm:text-xs font-bold ${usp.accentColor} shadow-lg backdrop-blur-sm`}>
+            <Sparkles className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
+            <span className="hidden xs:inline">{usp.tagline}</span>
+            <span className="xs:hidden">{usp.tagline.split(' ')[0]}</span>
           </span>
         </div>
         
-        {/* Stats badge - bottom right */}
-        <div className="absolute bottom-4 right-4">
-          <div className={`px-4 py-2 rounded-xl bg-gradient-to-r ${usp.color} shadow-lg`}>
-            <p className="text-xl font-black text-white">{usp.stats.value}</p>
-            <p className="text-[10px] text-white/80 font-medium uppercase tracking-wider">{usp.stats.label}</p>
+        {/* Stats badge - bottom right - Compact on mobile */}
+        <div className="absolute bottom-3 sm:bottom-4 right-3 sm:right-4">
+          <div className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl bg-gradient-to-r ${usp.color} shadow-lg`}>
+            <p className="text-base sm:text-xl font-black text-white">{usp.stats.value}</p>
+            <p className="text-[8px] sm:text-[10px] text-white/80 font-medium uppercase tracking-wider">{usp.stats.label}</p>
           </div>
         </div>
         
         {/* Title section on image */}
-        <div className="absolute bottom-0 left-0 right-20 p-6">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-3xl drop-shadow-lg">{usp.emoji}</span>
-            <span className="text-xs text-white/90 font-bold bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm border border-white/20">
+        <div className="absolute bottom-0 left-0 right-16 sm:right-20 p-4 sm:p-6">
+          <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
+            <span className="text-xl sm:text-3xl drop-shadow-lg">{usp.emoji}</span>
+            <span className="text-[10px] sm:text-xs text-white/90 font-bold bg-white/20 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full backdrop-blur-sm border border-white/20 line-clamp-1">
               {usp.subtitle}
             </span>
           </div>
-          <h3 className="text-2xl md:text-3xl font-black text-white leading-tight drop-shadow-xl">
+          <h3 className="text-lg sm:text-2xl md:text-3xl font-black text-white leading-tight drop-shadow-xl line-clamp-2">
             {usp.title}
           </h3>
         </div>
       </div>
       
-      {/* Content */}
-      <div className="p-6 md:p-7">
+      {/* Content - Mobile Optimized */}
+      <div className="p-4 sm:p-6 md:p-7">
         {/* Simple explanation with icon */}
-        <div className="flex items-start gap-3 mb-6">
-          <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${usp.color} flex items-center justify-center flex-shrink-0 shadow-md`}>
-            <Zap className="w-5 h-5 text-white" />
+        <div className="flex items-start gap-2.5 sm:gap-3 mb-4 sm:mb-6">
+          <div className={`w-8 sm:w-10 h-8 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br ${usp.color} flex items-center justify-center flex-shrink-0 shadow-md`}>
+            <Zap className="w-4 sm:w-5 h-4 sm:h-5 text-white" />
           </div>
-          <p className="text-base font-medium text-foreground leading-relaxed">
+          <p className="text-sm sm:text-base font-medium text-foreground leading-relaxed">
             {usp.simpleExplanation}
           </p>
         </div>
         
-        {/* Visual workflow - 3 steps */}
-        <div className="bg-white/80 dark:bg-black/40 rounded-2xl p-5 mb-6 border border-border/50 shadow-inner">
-          <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4 flex items-center gap-2">
-            <ArrowRight className="w-4 h-4" />
+        {/* Visual workflow - 3 steps - Responsive */}
+        <div className="bg-white/80 dark:bg-black/40 rounded-xl sm:rounded-2xl p-3.5 sm:p-5 mb-4 sm:mb-6 border border-border/50 shadow-inner">
+          <p className="text-[10px] sm:text-xs font-bold text-muted-foreground uppercase tracking-widest mb-3 sm:mb-4 flex items-center gap-1.5 sm:gap-2">
+            <ArrowRight className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
             So funktioniert's
           </p>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-2 sm:gap-4">
             {usp.howItWorks.map((step, idx) => (
               <motion.div 
                 key={idx} 
@@ -305,39 +306,39 @@ const VisualUSPCard = memo(({ usp, index }: { usp: typeof customerUSPsVisual[0];
                 transition={{ delay: index * 0.06 + idx * 0.1 + 0.4 }}
                 className="text-center"
               >
-                <div className={`w-10 h-10 mx-auto mb-3 rounded-full bg-gradient-to-br ${usp.color} flex items-center justify-center text-white font-bold text-sm shadow-lg ring-4 ring-white/50 dark:ring-black/50`}>
+                <div className={`w-7 sm:w-10 h-7 sm:h-10 mx-auto mb-2 sm:mb-3 rounded-full bg-gradient-to-br ${usp.color} flex items-center justify-center text-white font-bold text-xs sm:text-sm shadow-lg ring-2 sm:ring-4 ring-white/50 dark:ring-black/50`}>
                   {idx + 1}
                 </div>
-                <p className="text-xs font-semibold text-foreground leading-tight">{step}</p>
+                <p className="text-[10px] sm:text-xs font-semibold text-foreground leading-tight">{step}</p>
               </motion.div>
             ))}
           </div>
         </div>
         
-        {/* Benefit highlight - main message */}
-        <div className={`flex items-start gap-4 p-5 rounded-2xl border-2 ${usp.borderColor} bg-white dark:bg-black/50 mb-5 shadow-sm`}>
-          <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${usp.color} flex items-center justify-center flex-shrink-0 shadow-md`}>
-            <Check className="w-5 h-5 text-white" />
+        {/* Benefit highlight - main message - Responsive */}
+        <div className={`flex items-start gap-3 sm:gap-4 p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border-2 ${usp.borderColor} bg-white dark:bg-black/50 mb-4 sm:mb-5 shadow-sm`}>
+          <div className={`w-8 sm:w-10 h-8 sm:h-10 rounded-full bg-gradient-to-br ${usp.color} flex items-center justify-center flex-shrink-0 shadow-md`}>
+            <Check className="w-4 sm:w-5 h-4 sm:h-5 text-white" />
           </div>
           <div>
-            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Ihr Vorteil</p>
-            <p className={`text-sm font-bold ${usp.accentColor} leading-relaxed`}>
+            <p className="text-[10px] sm:text-xs font-bold text-muted-foreground uppercase tracking-wider mb-0.5 sm:mb-1">Ihr Vorteil</p>
+            <p className={`text-xs sm:text-sm font-bold ${usp.accentColor} leading-relaxed`}>
               {usp.benefit}
             </p>
           </div>
         </div>
 
-        {/* Expandable before/after section */}
+        {/* Expandable before/after section - Touch optimized */}
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="w-full flex items-center justify-between text-sm text-muted-foreground hover:text-foreground transition-colors py-3 px-4 rounded-xl hover:bg-muted/50"
+          className="w-full flex items-center justify-between text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg sm:rounded-xl hover:bg-muted/50 touch-manipulation min-h-[44px] active:scale-[0.98]"
         >
-          <span className="font-medium flex items-center gap-2">
-            <ThumbsUp className="w-4 h-4" />
-            Vorher vs. Nachher anzeigen
+          <span className="font-medium flex items-center gap-1.5 sm:gap-2">
+            <ThumbsUp className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
+            Vorher vs. Nachher
           </span>
           <motion.div animate={{ rotate: isExpanded ? 180 : 0 }} transition={{ duration: 0.3 }}>
-            <ChevronDown className="w-5 h-5" />
+            <ChevronDown className="w-4 sm:w-5 h-4 sm:h-5" />
           </motion.div>
         </button>
         
@@ -389,88 +390,95 @@ const VisualUSPCard = memo(({ usp, index }: { usp: typeof customerUSPsVisual[0];
 
 VisualUSPCard.displayName = 'VisualUSPCard';
 
-// Main Section Component
+// Main Section Component - Mobile Optimized
 export const CustomerUSPVisualCards = memo(() => {
   return (
-    <section className="py-24 md:py-32 bg-gradient-to-b from-background via-muted/20 to-background relative overflow-hidden">
-      {/* Premium background decoration */}
-      <div className="absolute inset-0 pointer-events-none">
+    <section className="py-12 sm:py-24 md:py-32 bg-gradient-to-b from-background via-muted/20 to-background relative overflow-hidden">
+      {/* Premium background decoration - Hidden on mobile for performance */}
+      <div className="absolute inset-0 pointer-events-none hidden sm:block">
         <div className="absolute top-20 left-10 w-96 h-96 bg-primary/10 rounded-full blur-[100px]" />
         <div className="absolute bottom-20 right-10 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[120px]" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-violet-500/5 to-transparent rounded-full" />
       </div>
 
       <div className="container mx-auto px-4 relative">
-        {/* Premium Header */}
+        {/* Premium Header - Mobile Responsive */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-20"
+          className="text-center mb-10 sm:mb-20"
         >
           <motion.span 
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary/10 text-primary text-sm font-bold mb-8 border border-primary/20"
+            className="inline-flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-primary/10 text-primary text-xs sm:text-sm font-bold mb-4 sm:mb-8 border border-primary/20"
           >
-            <Heart className="w-5 h-5" />
-            10 Vorteile für Schweizer Familien
-            <Heart className="w-5 h-5" />
+            <Heart className="w-4 sm:w-5 h-4 sm:h-5" />
+            <span className="hidden xs:inline">10 Vorteile für Schweizer Familien</span>
+            <span className="xs:hidden">10 Vorteile</span>
+            <Heart className="w-4 sm:w-5 h-4 sm:h-5" />
           </motion.span>
           
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-foreground mb-6 leading-tight">
+          <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-foreground mb-4 sm:mb-6 leading-tight px-2">
             Warum <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-blue-500 to-violet-500">Umzugscheck.ch?</span>
           </h2>
           
-          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-8">
+          <p className="text-sm sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-6 sm:mb-8 px-2">
             Einfach erklärt – wie in einem Schulbuch. Jeder Vorteil auf den Punkt gebracht.
           </p>
 
-          <div className="flex flex-wrap justify-center gap-4">
-            <div className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 text-sm font-bold border border-green-200 dark:border-green-700">
-              <Shield className="w-4 h-4" />
-              100% Gratis & Unverbindlich
+          {/* Trust badges - Horizontal scroll on mobile */}
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-4 px-2">
+            <div className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-full bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 text-xs sm:text-sm font-bold border border-green-200 dark:border-green-700">
+              <Shield className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
+              <span className="hidden xs:inline">100% Gratis & Unverbindlich</span>
+              <span className="xs:hidden">Gratis</span>
             </div>
-            <div className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 text-sm font-bold border border-amber-200 dark:border-amber-700">
-              <Star className="w-4 h-4" />
-              4.9/5 Sterne Bewertung
+            <div className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 text-xs sm:text-sm font-bold border border-amber-200 dark:border-amber-700">
+              <Star className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
+              4.9/5 Sterne
             </div>
-            <div className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 text-sm font-bold border border-blue-200 dark:border-blue-700">
-              <Users className="w-4 h-4" />
-              25'000+ zufriedene Kunden
+            <div className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 text-xs sm:text-sm font-bold border border-blue-200 dark:border-blue-700">
+              <Users className="w-3.5 sm:w-4 h-3.5 sm:h-4" />
+              <span className="hidden xs:inline">25'000+ Kunden</span>
+              <span className="xs:hidden">25k+</span>
             </div>
           </div>
         </motion.div>
         
-        {/* USP Cards Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+        {/* USP Cards Grid - Single column on small mobile */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 max-w-7xl mx-auto">
           {customerUSPsVisual.map((usp, idx) => (
             <VisualUSPCard key={usp.id} usp={usp} index={idx} />
           ))}
         </div>
         
-        {/* Bottom CTA */}
+        {/* Bottom CTA - Mobile Optimized */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mt-20 text-center"
+          className="mt-12 sm:mt-20 text-center"
         >
-          <div className="inline-flex flex-col items-center gap-6 p-8 md:p-10 rounded-3xl bg-gradient-to-br from-primary/10 via-blue-500/10 to-violet-500/10 border-2 border-primary/20">
-            <div className="flex items-center gap-3">
-              <Gift className="w-8 h-8 text-primary" />
-              <span className="text-2xl md:text-3xl font-black text-foreground">
+          <div className="inline-flex flex-col items-center gap-4 sm:gap-6 p-5 sm:p-8 md:p-10 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-primary/10 via-blue-500/10 to-violet-500/10 border-2 border-primary/20 w-full sm:w-auto max-w-xl mx-auto">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <Gift className="w-6 sm:w-8 h-6 sm:h-8 text-primary flex-shrink-0" />
+              <span className="text-lg sm:text-2xl md:text-3xl font-black text-foreground text-left sm:text-center">
                 Bereit für Ihren stressfreien Umzug?
               </span>
             </div>
-            <p className="text-muted-foreground text-lg max-w-xl">
+            <p className="text-muted-foreground text-sm sm:text-lg max-w-xl">
               Alle 10 Vorteile – kostenlos und unverbindlich. Jetzt in 2 Minuten Offerten erhalten.
             </p>
-            <Link to="/umzugsofferten">
-              <Button size="lg" className="h-14 px-10 text-lg font-bold shadow-xl shadow-primary/25 hover:shadow-primary/40 transition-all">
-                <Rocket className="w-5 h-5 mr-2" />
+            <Link to="/umzugsofferten" className="w-full sm:w-auto touch-manipulation">
+              <Button 
+                size="lg" 
+                className="w-full sm:w-auto h-12 sm:h-14 px-6 sm:px-10 text-sm sm:text-lg font-bold shadow-xl shadow-primary/25 hover:shadow-primary/40 transition-all active:scale-[0.98]"
+              >
+                <Rocket className="w-4 sm:w-5 h-4 sm:h-5 mr-2" />
                 JETZT GRATIS OFFERTEN ERHALTEN
               </Button>
             </Link>
