@@ -279,6 +279,27 @@ const navStructure: NavItem[] = [
     icon: Clock 
   },
   
+  // ========== PHASE 6: GROWTH ==========
+  { type: "divider", title: "🚀 Phase 6: Growth" },
+  { 
+    title: "Post-Launch", 
+    href: "/admin/post-launch", 
+    icon: TrendingUp,
+    highlight: true,
+    badge: "LIVE"
+  },
+  { 
+    title: "Phase 6 Features", 
+    href: "/admin/phase-6", 
+    icon: Sparkles,
+    badge: "NEU"
+  },
+  { 
+    title: "Go-Live Checklist", 
+    href: "/admin/go-live", 
+    icon: Rocket
+  },
+  
   // ========== SETTINGS ==========
   { type: "divider", title: "🔧 Settings & Admin" },
   { 
