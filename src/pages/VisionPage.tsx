@@ -210,7 +210,7 @@ export default function VisionPage() {
           language={language}
         >
           <div id="vision-family-summary">
-            <FamilySummary />
+            <FamilySummary language={language} />
           </div>
         </VisionCollapsibleSection>
         
