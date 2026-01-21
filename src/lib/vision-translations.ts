@@ -416,7 +416,7 @@ const de: VisionTranslations = {
           "✅ Provider Onboarding System",
           "✅ Google Ads Kampagnen-Manager",
           "✅ Soft Launch / Beta Program",
-          "🔄 Press Kit & PR Vorbereitung",
+          "✅ Press Kit & PR System",
           "🔄 Go-Live 🚀"
         ]
       }
@@ -426,8 +426,8 @@ const de: VisionTranslations = {
       subtitle: "Tag und Nacht gearbeitet – hier ist das Ergebnis",
       months: "3+ Monate intensive Arbeit",
       items: [
-        "350+ React Komponenten entwickelt",
-        "110+ Seiten und Routes erstellt",
+        "355+ React Komponenten entwickelt",
+        "115+ Seiten und Routes erstellt",
         "38+ Datenbank-Tabellen designt",
         "10 verschiedene Rechner implementiert",
         "26 Städte mit Neighborhood-Daten",
