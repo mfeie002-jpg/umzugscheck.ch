@@ -12,6 +12,10 @@ import { Helmet } from 'react-helmet';
 import { CITIES_MAP, getCity } from '@/data/locations';
 import { getRegionImage } from '@/data/region-images';
 import { NeighborhoodQuickFacts } from '@/components/NeighborhoodQuickFacts';
+import { NeighborhoodGuideSection, getDefaultGuide } from '@/components/neighborhood/NeighborhoodGuideSection';
+import { CityMovingChecklist } from '@/components/neighborhood/CityMovingChecklist';
+import { LocalBusinessSchema, poiToLocalBusiness } from '@/components/seo/LocalBusinessSchema';
+import { usePOIsByCity } from '@/hooks/useNeighborhoods';
 
 // City to Canton Code mapping for neighborhood data
 const CITY_TO_CANTON_CODE: Record<string, string> = {
@@ -472,6 +476,9 @@ export default function CityMovers() {
   const cityInfo = citySlug ? getCity(citySlug) : null;
   const cityData = cityInfo ? (cityDatabase[citySlug] ?? buildGenericCityData(cityInfo)) : null;
 
+  // Fetch POIs for Schema.org markup
+  const { data: pois } = usePOIsByCity(cityData?.displayName || '');
+
   const relatedCities = cityInfo
     ? Object.values(CITIES_MAP)
         .filter((c) => c.cantonSlug === cityInfo.cantonSlug && c.slug !== cityInfo.slug)
@@ -699,6 +706,21 @@ export default function CityMovers() {
           </script>
         ))}
       </Helmet>
+
+      {/* Schema.org LocalBusiness markup for POIs */}
+      {pois && pois.length > 0 && (
+        <LocalBusinessSchema 
+          businesses={pois.slice(0, 10).map(poi => poiToLocalBusiness({
+            name: poi.name,
+            poi_type: poi.poi_type,
+            city_name: poi.city_name,
+            canton_code: poi.canton_code,
+            latitude: poi.latitude ?? undefined,
+            longitude: poi.longitude ?? undefined,
+            rating: poi.rating ?? undefined,
+          }))}
+        />
+      )}
 
       {/* NEW: Breadcrumb UI */}
       <RegionBreadcrumb 
@@ -980,6 +1002,25 @@ export default function CityMovers() {
           </div>
         </section>
       )}
+
+      {/* Newcomer Guide Section - Tabbed content for Families/Professionals/Expats */}
+      <NeighborhoodGuideSection 
+        cityName={cityData.displayName}
+        guide={getDefaultGuide(cityData.displayName)}
+      />
+
+      {/* City Moving Checklist with localStorage persistence */}
+      <section className="py-16 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto">
+            <CityMovingChecklist 
+              citySlug={citySlug || 'default'}
+              cityName={cityData.displayName}
+              variant="full"
+            />
+          </div>
+        </div>
+      </section>
 
       {/* NEW: Why Save Block */}
       <RegionWhySave regionName={cityData.displayName} />
