@@ -8,8 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { MovingCostIndex } from '@/components/data-journalism/MovingCostIndex';
 import { MovingStatisticsDashboard } from '@/components/data-journalism/MovingStatisticsDashboard';
 import { LivingCostComparison } from '@/components/data-journalism/LivingCostComparison';
-import Navigation from '@/components/Navigation';
-import Footer from '@/components/Footer';
+import { Navigation } from '@/components/Navigation';
+import { Footer } from '@/components/Footer';
 
 export default function DataJournalismPage() {
   return (
