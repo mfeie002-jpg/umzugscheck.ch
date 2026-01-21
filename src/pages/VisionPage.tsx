@@ -36,6 +36,7 @@ import { VisionLiveStats } from "@/components/vision/VisionLiveStats";
 import { VisionProgressIndicator } from "@/components/vision/VisionProgressIndicator";
 import { VisionScrollTracker, useScrollDepthTracking } from "@/components/vision/VisionScrollTracker";
 import { getVisionTranslation, type VisionLanguage } from "@/lib/vision-translations";
+import { StakeholderJokeBanner, StakeholderJokesMarquee, StakeholderJokesGrid } from "@/components/stakeholder/StakeholderJokeBanner";
 
 export default function VisionPage() {
   const [isExporting, setIsExporting] = useState(false);
@@ -161,6 +162,11 @@ export default function VisionPage() {
       <VisionScrollTracker sectionId="hero" sectionName="Hero">
         <VisionEmotionalHero language={language} variant="full" />
       </VisionScrollTracker>
+
+      {/* WEED JOKES MARQUEE - Only for BG/IT */}
+      {(language === 'bg' || language === 'it') && (
+        <StakeholderJokesMarquee language={language} />
+      )}
 
       {/* 2. LIVE STATS - Animated counters */}
       <VisionScrollTracker sectionId="live-stats" sectionName="Live Stats">
@@ -293,6 +299,26 @@ export default function VisionPage() {
         </VisionCollapsibleSection>
         
       </div>
+
+      {/* JOKES SECTION - Only for BG/IT */}
+      {(language === 'bg' || language === 'it') && (
+        <section className="py-12 bg-muted/10">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-8">
+              <h3 className="text-2xl font-bold text-foreground/80 mb-2">
+                {language === 'bg' ? '🌿 Зелена Мъдрост за Визионери' : '🌿 Saggezza Verde per Visionari'}
+              </h3>
+              <p className="text-muted-foreground">
+                {language === 'bg' ? '60 вица за добро настроение' : '60 battute per buon umore'}
+              </p>
+            </div>
+            <StakeholderJokesGrid language={language} count={9} />
+            <div className="mt-6 max-w-md mx-auto">
+              <StakeholderJokeBanner language={language} variant="compact" />
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* COMPLIANCE */}
       <VisionComplianceSection language={language} />

@@ -22,6 +22,7 @@ import { ArrowLeft, Heart, Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { getFamilyTranslation, type FamilyLanguage } from "@/lib/family-translations";
+import { StakeholderJokeBanner, StakeholderJokesGrid } from "@/components/stakeholder/StakeholderJokeBanner";
 
 export default function FamilyLanding() {
   const [lang, setLang] = useState<FamilyLanguage>(() => {
@@ -94,6 +95,13 @@ export default function FamilyLanding() {
       {/* 1. HERO - Family variant with emotional image */}
       <VisionEmotionalHero language={lang} variant="family" />
 
+      {/* WEED JOKES BANNER - Only for BG/IT */}
+      {(lang === 'bg' || lang === 'it') && (
+        <div className="container mx-auto px-4 py-4">
+          <StakeholderJokeBanner language={lang} variant="full" />
+        </div>
+      )}
+
       {/* 2. LIVE STATS - Animated family-focused metrics */}
       <VisionLiveStats language={lang} variant="family" />
 
@@ -135,6 +143,18 @@ export default function FamilyLanding() {
         </div>
       </section>
 
+      {/* JOKES GRID - Only for BG/IT */}
+      {(lang === 'bg' || lang === 'it') && (
+        <section className="py-8 sm:py-12 bg-muted/10">
+          <div className="container mx-auto px-4">
+            <h3 className="text-xl font-bold text-center mb-6 text-foreground/80">
+              {lang === 'bg' ? '🌿 Още Зелена Мъдрост' : '🌿 Altra Saggezza Verde'}
+            </h3>
+            <StakeholderJokesGrid language={lang} count={6} />
+          </div>
+        </section>
+      )}
+
       {/* FOOTER CTA */}
       <section 
         className="py-8 sm:py-12 bg-primary/5"
@@ -166,6 +186,11 @@ export default function FamilyLanding() {
           </div>
         </div>
       </section>
+
+      {/* FLOATING JOKE - Only for BG/IT */}
+      {(lang === 'bg' || lang === 'it') && (
+        <StakeholderJokeBanner language={lang} variant="floating" />
+      )}
     </div>
   );
 }
