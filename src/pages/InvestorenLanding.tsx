@@ -1,7 +1,7 @@
 /**
  * Investoren Landing Page
- * Dedizierte Seite für Investoren - Business-fokussiert
- * Mit DE/BG Language Support
+ * Business-focused page with visual impact
+ * Clean metrics, minimal text, strong visuals
  */
 
 import { useState } from "react";
@@ -12,120 +12,91 @@ import { UnitEconomicsDetailed } from "@/components/vision/UnitEconomicsDetailed
 import { MarketPotentialSection } from "@/components/vision/MarketPotentialSection";
 import { ExitTimeline } from "@/components/vision/ExitTimeline";
 import { VisionUniqueness } from "@/components/vision/VisionUniqueness";
-import { VisionProgressMilestones } from "@/components/vision/VisionProgressMilestones";
-import { ContributionBreakdown } from "@/components/vision/ContributionBreakdown";
 import { VisionTractionDashboard } from "@/components/vision/VisionTractionDashboard";
 import { VisionProfitabilityRoadmap } from "@/components/vision/VisionProfitabilityRoadmap";
 import { VisionEmotionalHero } from "@/components/vision/VisionEmotionalHero";
-import { VisionMovingMoments } from "@/components/vision/VisionMovingMoments";
+import { VisionQuickStats } from "@/components/vision/VisionQuickStats";
+import { VisionVisualDivider } from "@/components/vision/VisionVisualDivider";
 import { VisionLanguageSwitcher } from "@/components/vision/VisionLanguageSwitcher";
 import { ExpandAllToggle } from "@/components/vision/ExpandAllToggle";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, TrendingUp, Target, DollarSign, Rocket, Building2 } from "lucide-react";
+import { ArrowLeft, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import type { VisionLanguage } from "@/lib/vision-translations";
-import { VisionStickyCTA } from "@/components/vision/VisionStickyCTA";
 
-// Translations mit Italienisch
+// Translations
 const translations: Record<'de' | 'bg' | 'it', {
   back: string;
   fullVision: string;
   badge: string;
-  title: string;
-  subtitle: string;
-  description: string;
-  metrics: { revenue: string; margin: string; streams: string; automation: string; market: string };
-  sections: { businessModel: string; pillarsTitle: string; pillarsSubtitle: string; revenueTitle: string; unitTitle: string; marketTitle: string };
+  sections: { 
+    businessModel: string; 
+    pillarsTitle: string; 
+    pillarsSubtitle: string; 
+    revenueTitle: string; 
+    unitTitle: string; 
+    marketTitle: string 
+  };
   footer: { interested: string; cta: string; visionBtn: string; familyBtn: string };
 }> = {
   de: {
     back: "Zurück",
     fullVision: "Vollständige Vision",
     badge: "Investor Hub",
-    title: "Umzugscheck.ch",
-    subtitle: "Investment Opportunity",
-    description: "Die intelligenteste Umzugs-Plattform der Schweiz mit 10 Einnahmequellen, 90%+ Marge und First-Mover-Advantage.",
-    metrics: {
-      revenue: "Revenue/Kunde",
-      margin: "Contribution Margin",
-      streams: "Revenue Streams",
-      automation: "Automatisierung",
-      market: "Marktpotenzial"
-    },
     sections: {
       businessModel: "Business Model",
       pillarsTitle: "10 Strategische Säulen",
-      pillarsSubtitle: "Jede Säule ist ein eigenständiger Profit Center mit klarer Unit Economics.",
-      revenueTitle: "10 Einnahmequellen im Detail",
-      unitTitle: "Unit Economics: Wie wir Geld verdienen",
-      marketTitle: "Marktpotenzial Schweiz"
+      pillarsSubtitle: "Jede Säule ist ein eigenständiger Profit Center.",
+      revenueTitle: "10 Einnahmequellen",
+      unitTitle: "Unit Economics",
+      marketTitle: "Marktpotenzial"
     },
     footer: {
       interested: "Interessiert?",
-      cta: "Wir sind offen für Gespräche über strategische Partnerschaften und Investments.",
-      visionBtn: "Vollständige Vision ansehen",
-      familyBtn: "Einfache Erklärung (Familie)"
+      cta: "Offen für strategische Partnerschaften und Investments.",
+      visionBtn: "Vollständige Vision",
+      familyBtn: "Einfache Erklärung"
     }
   },
   bg: {
     back: "Назад",
     fullVision: "Пълна визия",
     badge: "Investor Hub",
-    title: "Umzugscheck.ch",
-    subtitle: "Инвестиционна възможност",
-    description: "Най-интелигентната платформа за преместване в Швейцария с 10 източника на приходи, 90%+ марж и предимство на първия.",
-    metrics: {
-      revenue: "Приход/клиент",
-      margin: "Contribution Margin",
-      streams: "Източници на приходи",
-      automation: "Автоматизация",
-      market: "Пазарен потенциал"
-    },
     sections: {
       businessModel: "Бизнес модел",
       pillarsTitle: "10 Стратегически стълба",
-      pillarsSubtitle: "Всеки стълб е самостоятелен Profit Center с ясна Unit Economics.",
-      revenueTitle: "10 източника на приходи в детайли",
-      unitTitle: "Unit Economics: Как печелим пари",
-      marketTitle: "Пазарен потенциал Швейцария"
+      pillarsSubtitle: "Всеки стълб е самостоятелен Profit Center.",
+      revenueTitle: "10 източници на приходи",
+      unitTitle: "Unit Economics",
+      marketTitle: "Пазарен потенциал"
     },
     footer: {
       interested: "Заинтересовани?",
-      cta: "Отворени сме за разговори относно стратегически партньорства и инвестиции.",
-      visionBtn: "Вижте пълната визия",
-      familyBtn: "Просто обяснение (семейство)"
+      cta: "Отворени за стратегически партньорства и инвестиции.",
+      visionBtn: "Пълна визия",
+      familyBtn: "Просто обяснение"
     }
   },
   it: {
     back: "Indietro",
     fullVision: "Visione Completa",
     badge: "Investor Hub",
-    title: "Umzugscheck.ch",
-    subtitle: "Opportunità di Investimento",
-    description: "La piattaforma di trasloco più intelligente della Svizzera con 10 fonti di reddito, margine 90%+ e vantaggio del first-mover.",
-    metrics: {
-      revenue: "Revenue/Cliente",
-      margin: "Contribution Margin",
-      streams: "Flussi di Entrate",
-      automation: "Automazione",
-      market: "Potenziale di Mercato"
-    },
     sections: {
       businessModel: "Business Model",
       pillarsTitle: "10 Pilastri Strategici",
-      pillarsSubtitle: "Ogni pilastro è un Profit Center autonomo con Unit Economics chiare.",
-      revenueTitle: "10 Fonti di Reddito in Dettaglio",
-      unitTitle: "Unit Economics: Come Guadagniamo",
-      marketTitle: "Potenziale di Mercato Svizzera"
+      pillarsSubtitle: "Ogni pilastro è un Profit Center autonomo.",
+      revenueTitle: "10 Fonti di Reddito",
+      unitTitle: "Unit Economics",
+      marketTitle: "Potenziale di Mercato"
     },
     footer: {
       interested: "Interessati?",
-      cta: "Siamo aperti a discussioni su partnership strategiche e investimenti.",
-      visionBtn: "Vedi la Visione Completa",
-      familyBtn: "Spiegazione Semplice (Famiglia)"
+      cta: "Aperti a partnership strategiche e investimenti.",
+      visionBtn: "Visione Completa",
+      familyBtn: "Spiegazione Semplice"
     }
   }
 };
@@ -136,16 +107,14 @@ export default function InvestorenLanding() {
   const t = translations[language];
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen bg-background">
       <SEOHead
         pageType="home"
         url="https://umzugscheck.ch/investoren"
       />
 
-      {/* VisionStickyCTA removed - not needed for internal investor page */}
-
-      {/* Header - NON-Sticky to prevent conflict with page scrolling */}
-      <div className="bg-background border-b border-[#8B0000]/20">
+      {/* Compact Header */}
+      <div className="bg-background border-b border-secondary/20">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <Link to="/">
@@ -154,6 +123,13 @@ export default function InvestorenLanding() {
                 {t.back}
               </Button>
             </Link>
+            
+            {/* Badge */}
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-bold">
+              <TrendingUp className="w-3.5 h-3.5" />
+              {t.badge}
+            </div>
+            
             <div className="flex items-center gap-2">
               <ExpandAllToggle
                 isExpanded={allExpanded}
@@ -165,7 +141,7 @@ export default function InvestorenLanding() {
                 onLanguageChange={setLanguage} 
               />
               <Link to="/vision">
-                <Button variant="outline" size="sm" className="min-h-[44px] border-[#8B0000]/20 hover:bg-[#8B0000]/5">
+                <Button variant="outline" size="sm" className="min-h-[44px] border-secondary/20 hover:bg-secondary/5">
                   {t.fullVision}
                 </Button>
               </Link>
@@ -174,55 +150,33 @@ export default function InvestorenLanding() {
         </div>
       </div>
 
-      {/* Emotional Hero - Investor variant */}
+      {/* 1. HERO - Investor variant */}
       <VisionEmotionalHero language={language} variant="investor" />
 
-      {/* Key Metrics Banner */}
-      <section className="py-8 border-b bg-card">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 max-w-5xl mx-auto">
-            {[
-              { icon: DollarSign, label: t.metrics.revenue, value: "553 CHF" },
-              { icon: Target, label: t.metrics.margin, value: ">90%" },
-              { icon: Building2, label: t.metrics.streams, value: "10" },
-              { icon: Rocket, label: t.metrics.automation, value: "95%" },
-              { icon: TrendingUp, label: t.metrics.market, value: "450k/" + (language === 'de' ? 'Jahr' : language === 'it' ? 'Anno' : 'год') },
-            ].map((stat, i) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-                className="bg-background border rounded-xl p-4 text-center"
-              >
-                <stat.icon className="w-6 h-6 text-primary mx-auto mb-2" />
-                <p className="text-xl md:text-2xl font-black text-primary">{stat.value}</p>
-                <p className="text-xs text-muted-foreground">{stat.label}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* 2. QUICK STATS - Investor-focused metrics */}
+      <VisionQuickStats language={language} variant="investor" />
 
-      {/* Moving Moments - Show emotional impact for investors */}
-      <VisionMovingMoments language={language} />
+      {/* 3. VISUAL DIVIDER */}
+      <VisionVisualDivider language={language} variant="business" />
 
-      {/* Profitability Roadmap - 12 Month Timeline */}
+      {/* 4. PROFITABILITY ROADMAP */}
       <VisionProfitabilityRoadmap language={language} />
 
-      {/* Traction Dashboard */}
+      {/* 5. TRACTION DASHBOARD */}
       <VisionTractionDashboard language={language} />
 
-      {/* Progress Section */}
-      <section className="py-12">
-        <VisionProgressMilestones language={language} />
-        <ContributionBreakdown language={language} />
-      </section>
+      {/* 6. VISUAL DIVIDER */}
+      <VisionVisualDivider language={language} variant="journey" />
 
-      {/* 10 Business Pillars */}
+      {/* 7. 10 BUSINESS PILLARS */}
       <section className="py-12 bg-muted/30">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-10">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-10"
+          >
             <Badge className="mb-4 bg-primary/10 text-primary">{t.sections.businessModel}</Badge>
             <h2 className="text-3xl md:text-4xl font-black text-foreground mb-4">
               {t.sections.pillarsTitle}
@@ -230,61 +184,79 @@ export default function InvestorenLanding() {
             <p className="text-muted-foreground max-w-2xl mx-auto">
               {t.sections.pillarsSubtitle}
             </p>
-          </div>
+          </motion.div>
           <Vision10PillarSection allExpanded={allExpanded} language={language} />
         </div>
       </section>
 
-      {/* Revenue Streams */}
+      {/* 8. REVENUE STREAMS */}
       <section className="py-12">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-10">
-            <Badge className="mb-4 bg-primary/10 text-primary">553 CHF/{language === 'de' ? 'Kunde' : language === 'it' ? 'Cliente' : 'клиент'}</Badge>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-10"
+          >
+            <Badge className="mb-4 bg-secondary/10 text-secondary">553 CHF</Badge>
             <h2 className="text-3xl md:text-4xl font-black text-foreground mb-4">
               {t.sections.revenueTitle}
             </h2>
-          </div>
+          </motion.div>
           <RevenueStreamExamples language={language} />
         </div>
       </section>
 
-      {/* Unit Economics */}
+      {/* 9. VISUAL DIVIDER */}
+      <VisionVisualDivider language={language} variant="family" />
+
+      {/* 10. UNIT ECONOMICS */}
       <section className="py-12 bg-muted/30">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-10">
-            <Badge className="mb-4 bg-primary/10 text-primary">90%+ {language === 'de' ? 'Marge' : language === 'it' ? 'Margine' : 'Марж'}</Badge>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-10"
+          >
+            <Badge className="mb-4 bg-primary/10 text-primary">90%+ Marge</Badge>
             <h2 className="text-3xl md:text-4xl font-black text-foreground mb-4">
               {t.sections.unitTitle}
             </h2>
-          </div>
+          </motion.div>
           <UnitEconomicsDetailed language={language} />
         </div>
       </section>
 
-      {/* Market Potential */}
+      {/* 11. MARKET POTENTIAL */}
       <section className="py-12">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-10">
-            <Badge className="mb-4 bg-primary/10 text-primary">450k {language === 'de' ? 'Umzüge/Jahr' : language === 'it' ? 'Traslochi/Anno' : 'премествания/год'}</Badge>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-10"
+          >
+            <Badge className="mb-4 bg-secondary/10 text-secondary">450k</Badge>
             <h2 className="text-3xl md:text-4xl font-black text-foreground mb-4">
               {t.sections.marketTitle}
             </h2>
-          </div>
+          </motion.div>
           <MarketPotentialSection language={language} />
         </div>
       </section>
 
-      {/* Uniqueness */}
+      {/* 12. UNIQUENESS */}
       <ScrollReveal>
         <VisionUniqueness language={language} />
       </ScrollReveal>
 
-      {/* Exit Timeline */}
+      {/* 13. EXIT TIMELINE */}
       <ScrollReveal>
         <ExitTimeline language={language} />
       </ScrollReveal>
 
-      {/* Footer CTA */}
+      {/* FOOTER CTA */}
       <section className="py-12 bg-primary/5">
         <div className="container mx-auto px-4 text-center">
           <h3 className="text-2xl font-bold mb-4">{t.footer.interested}</h3>
