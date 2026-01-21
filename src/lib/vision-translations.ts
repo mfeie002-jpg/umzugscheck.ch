@@ -422,9 +422,9 @@ const de: VisionTranslations = {
       }
     ],
     workDone: {
-      title: "Was in 3+ Monaten entstanden ist",
+      title: "Was in 5+ Monaten entstanden ist",
       subtitle: "Tag und Nacht gearbeitet – hier ist das Ergebnis",
-      months: "3+ Monate intensive Arbeit (2'000+ Stunden)",
+      months: "5+ Monate intensive Arbeit (2'100+ Stunden)",
       items: [
         "365+ React Komponenten entwickelt",
         "125+ Seiten und Routes erstellt",

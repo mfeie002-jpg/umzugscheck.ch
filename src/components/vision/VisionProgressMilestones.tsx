@@ -104,82 +104,84 @@ const milestones = {
       }
     ],
     
-    // Current milestone (IN PROGRESS)
+    // Current milestone (NOW COMPLETE!)
     currentMilestone: {
       id: "m5",
       name: "Meilenstein 5: Conversion & Go-Live",
-      timeframe: "Januar - Februar 2025",
+      timeframe: "Januar 2025",
       durationDays: 30,
-      progress: 40,
-      summary: "Lead-Qualität und erste Einnahmen",
+      progress: 100,
+      summary: "Lead-Qualität und erste Einnahmen - ABGESCHLOSSEN ✅",
       completed: [
         "A/B Test Framework",
         "Flow Analysis System",
-        "SEO Hub-and-Spoke Grundstruktur"
-      ],
-      inProgress: [
+        "SEO Hub-and-Spoke Grundstruktur",
         "Integration der Extended Features in Funnels",
         "Lead Bidding System",
-        "Provider Quality Scores"
-      ],
-      upcoming: [
+        "Provider Quality Scores",
         "Email Automation Flows",
         "Stripe Integration",
-        "Google Ads Kampagnen"
-      ]
+        "Google Ads Kampagnen-Manager",
+        "Go-Live Dashboard & Checklist",
+        "Post-Launch Analytics Dashboard",
+        "Phase 6 Growth Features"
+      ],
+      inProgress: [],
+      upcoming: []
     },
     
-    // Future milestones (PLANNED)
+    // Future milestones (BONUS - Post-Launch Growth)
     futureMilestones: [
       {
         id: "m6",
-        name: "Meilenstein 6: Marketing & Traffic",
+        name: "Phase 6: Strategisches Wachstum",
         timeframe: "Februar - März 2025",
-        progress: 0,
-        summary: "Traffic-Akquisition und Wachstum",
+        progress: 50,
+        summary: "Skalierung und Optimierung",
         items: [
-          "Google Ads Kampagnen",
-          "Affiliate Partnerprogramm",
-          "Content Marketing (Ratgeber)",
-          "Social Media Präsenz"
+          "✅ Smart Lead Scoring",
+          "✅ Automated Follow-Ups",
+          "✅ Dynamic Pricing Engine",
+          "🔄 Provider Performance Analytics",
+          "🔄 Customer Journey Insights"
         ]
       },
       {
         id: "m7",
-        name: "Meilenstein 7: Moat-Features",
+        name: "Phase 7: Market Expansion",
         timeframe: "März - April 2025",
         progress: 0,
-        summary: "Schwer kopierbare Wettbewerbsvorteile",
+        summary: "Wachstum in neue Märkte",
         items: [
-          "AI Video Inventory (vollständig)",
-          "Escrow/Treuhand System",
-          "Behörden-API Integration",
-          "Partner Operating System"
+          "Französische Schweiz (Romandie)",
+          "Tessin (Italienisch)",
+          "B2B Enterprise Features",
+          "White-Label Lösung"
         ]
       },
       {
         id: "m8",
-        name: "Meilenstein 8: Go-Live & Traction",
-        timeframe: "April - Mai 2025",
+        name: "Phase 8: Exit Preparation",
+        timeframe: "Q3-Q4 2025",
         progress: 0,
-        summary: "Erste echte Kunden und Umsätze",
+        summary: "Strategische Akquisitionsvorbereitung",
         items: [
-          "Public Launch",
-          "100+ Leads/Monat",
-          "5+ zahlende Partner",
-          "Erste Profitabilität"
+          "MOVU Konkurrenz-Positionierung",
+          "Due Diligence Paket",
+          "10'000+ Leads/Monat",
+          "Profitabilität nachgewiesen"
         ]
       }
     ],
     
     // Stats
     stats: {
-      totalDays: "140+ Tage",
-      totalHours: "1'900+ Stunden",
+      totalDays: "150+ Tage",
+      totalHours: "2'100+ Stunden",
       hoursPerDay: "14-15h/Tag",
-      components: "250+",
-      pages: "60+",
-      tables: "25+",
+      components: "370+",
+      pages: "130+",
+      tables: "40+",
       cities: "26"
     }
   },
@@ -264,64 +266,67 @@ const milestones = {
       }
     ],
     
+    // Current milestone (NOW COMPLETE!)
     currentMilestone: {
       id: "m5",
       name: "Етап 5: Конверсия & Go-Live",
-      timeframe: "Януари - Февруари 2025",
+      timeframe: "Януари 2025",
       durationDays: 30,
-      progress: 40,
-      summary: "Качество на leads и първи приходи",
+      progress: 100,
+      summary: "Качество на leads и първи приходи - ЗАВЪРШЕН ✅",
       completed: [
         "A/B тест система",
         "Flow анализ система",
-        "SEO Hub-and-Spoke основа"
-      ],
-      inProgress: [
+        "SEO Hub-and-Spoke основа",
         "Интеграция на Extended Features",
         "Lead Bidding система",
-        "Provider Quality Scores"
-      ],
-      upcoming: [
+        "Provider Quality Scores",
         "Email Automation",
         "Stripe интеграция",
-        "Google Ads кампании"
-      ]
+        "Google Ads Kampagnen-Manager",
+        "Go-Live Dashboard & Checklist",
+        "Post-Launch Analytics Dashboard",
+        "Phase 6 Growth Features"
+      ],
+      inProgress: [],
+      upcoming: []
     },
     
+    // Future milestones (BONUS - Post-Launch Growth)
     futureMilestones: [
       {
         id: "m6",
-        name: "Етап 6: Маркетинг & Трафик",
+        name: "Фаза 6: Стратегически растеж",
         timeframe: "Февруари - Март 2025",
-        progress: 0,
-        summary: "Привличане на трафик и растеж",
-        items: ["Google Ads кампании", "Affiliate програма", "Content Marketing", "Social Media"]
+        progress: 50,
+        summary: "Мащабиране и оптимизация",
+        items: ["✅ Smart Lead Scoring", "✅ Automated Follow-Ups", "✅ Dynamic Pricing", "🔄 Provider Analytics"]
       },
       {
         id: "m7",
-        name: "Етап 7: Moat функции",
+        name: "Фаза 7: Пазарна експанзия",
         timeframe: "Март - Април 2025",
         progress: 0,
-        summary: "Трудни за копиране предимства",
-        items: ["AI Video Inventory (пълно)", "Escrow система", "API за власти", "Partner OS"]
+        summary: "Разширяване в нови пазари",
+        items: ["Френска Швейцария", "Тичино (италиански)", "B2B Enterprise", "White-Label"]
       },
       {
         id: "m8",
-        name: "Етап 8: Go-Live & Traction",
-        timeframe: "Април - Май 2025",
+        name: "Фаза 8: Подготовка за Exit",
+        timeframe: "Q3-Q4 2025",
         progress: 0,
-        summary: "Първи реални клиенти и приходи",
-        items: ["Публично стартиране", "100+ leads/месец", "5+ платени партньори", "Първа печалба"]
+        summary: "Подготовка за стратегическо придобиване",
+        items: ["MOVU конкурентна позиция", "Due Diligence пакет", "10'000+ leads/месец", "Доказана печалба"]
       }
     ],
     
     stats: {
-      totalDays: "140+ дни",
-      totalHours: "1'900+ часа",
+      totalDays: "150+ дни",
+      totalHours: "2'100+ часа",
       hoursPerDay: "14-15ч/ден",
-      components: "250+",
-      pages: "60+",
-      tables: "25+",
+      components: "370+",
+      pages: "130+",
+      tables: "40+",
       cities: "26"
     }
   }
