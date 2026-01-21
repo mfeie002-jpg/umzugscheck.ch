@@ -131,7 +131,7 @@ export default function FamilyLanding() {
       </section>
 
       {/* Family Summary - Main Content */}
-      <FamilySummary />
+      <FamilySummary language={lang} />
 
       {/* 10 Customer Benefits */}
       <section className="py-8 sm:py-12 bg-muted/30">
@@ -144,7 +144,7 @@ export default function FamilyLanding() {
               {t.benefits.subtitle}
             </p>
           </div>
-          <CustomerUSPVisualCards />
+          <CustomerUSPVisualCards language={lang} />
         </div>
       </section>
 
