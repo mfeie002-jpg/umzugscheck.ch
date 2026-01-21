@@ -15,6 +15,7 @@ import { NeighborhoodQuickFacts } from '@/components/NeighborhoodQuickFacts';
 
 // City to Canton Code mapping for neighborhood data
 const CITY_TO_CANTON_CODE: Record<string, string> = {
+  // Kanton Zug
   zug: 'ZG',
   baar: 'ZG',
   cham: 'ZG',
@@ -26,8 +27,23 @@ const CITY_TO_CANTON_CODE: Record<string, string> = {
   menzingen: 'ZG',
   walchwil: 'ZG',
   neuheim: 'ZG',
+  // Kanton Zürich
   zuerich: 'ZH',
   winterthur: 'ZH',
+  uster: 'ZH',
+  duebendorf: 'ZH',
+  dietikon: 'ZH',
+  waedenswil: 'ZH',
+  horgen: 'ZH',
+  thalwil: 'ZH',
+  kloten: 'ZH',
+  wetzikon: 'ZH',
+  buelach: 'ZH',
+  meilen: 'ZH',
+  kuesnacht: 'ZH',
+  zollikon: 'ZH',
+  adliswil: 'ZH',
+  // Weitere Kantone (Platzhalter für später)
   bern: 'BE',
   basel: 'BS',
   genf: 'GE',
