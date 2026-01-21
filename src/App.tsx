@@ -202,6 +202,7 @@ const ProviderProfile = lazy(() => import("./pages/ProviderProfile"));
 const ProviderPricing = lazy(() => import("./pages/ProviderPricing"));
 const MobileProviderApp = lazy(() => import("./pages/MobileProviderApp"));
 const ProviderSignupNew = lazy(() => import("./pages/provider/ProviderSignup"));
+const LeadMarketplace = lazy(() => import("./pages/LeadMarketplace"));
 
 // Other pages
 const Umzugsofferten = lazy(() => import("./pages/Umzugsofferten"));
@@ -607,6 +608,7 @@ const AppRouterContent = () => {
           <Route path="/anbieter/dashboard" element={<ProviderDashboard />} />
           <Route path="/anbieter/profil" element={<ProviderProfile />} />
           <Route path="/anbieter/preise" element={<ProviderPricing />} />
+          <Route path="/anbieter/marktplatz" element={<LeadMarketplace />} />
           <Route path="/anbieter/portal" element={<ProviderPortal />} />
           <Route path="/umzugsofferten" element={<Umzugsofferten />} />
           <Route path="/umzugsofferten-baseline" element={<UmzugsoffertenBaseline />} />
