@@ -104,13 +104,13 @@ const milestones = {
       }
     ],
     
-    // Current milestone (Phase 6 - Strategic Growth - 90% complete!)
+    // Current milestone (Phase 6 - Strategic Growth - 100% complete!)
     currentMilestone: {
       id: "m6",
       name: "Phase 6: Strategisches Wachstum",
       timeframe: "Januar - Februar 2025",
       durationDays: 45,
-      progress: 90,
+      progress: 100,
       summary: "Skalierung, Automation & Optimierung",
       completed: [
         "Smart Lead Scoring System",
@@ -123,11 +123,10 @@ const milestones = {
         "Admin Dashboard Components",
         "Admin Routes registriert",
         "Provider Performance Analytics",
-        "Customer Journey Insights"
-      ],
-      inProgress: [
+        "Customer Journey Insights",
         "Mobile UX Final Polish"
       ],
+      inProgress: [],
       upcoming: [
         "Go-Live Deployment"
       ]
@@ -269,13 +268,13 @@ const milestones = {
       }
     ],
     
-    // Current milestone (Phase 6 - 90% complete!)
+    // Current milestone (Phase 6 - 100% complete!)
     currentMilestone: {
       id: "m6",
       name: "Фаза 6: Стратегически растеж",
       timeframe: "Януари - Февруари 2025",
       durationDays: 45,
-      progress: 90,
+      progress: 100,
       summary: "Мащабиране, автоматизация и оптимизация",
       completed: [
         "Smart Lead Scoring система",
@@ -288,11 +287,10 @@ const milestones = {
         "Admin Dashboard компоненти",
         "Admin Routes регистрирани",
         "Provider Performance Analytics",
-        "Customer Journey Insights"
-      ],
-      inProgress: [
+        "Customer Journey Insights",
         "Mobile UX финален полиш"
       ],
+      inProgress: [],
       upcoming: [
         "Go-Live внедряване"
       ]

@@ -66,20 +66,20 @@ export const StickyMobileCTA = memo(({ placeName, placeKind }: StickyMobileCTAPr
               <span className="text-sm font-medium">bis 40% sparen</span>
             </div>
 
-            {/* Buttons */}
+            {/* Buttons - min 44px touch target */}
             <div className="flex-1 flex gap-2">
               <Button
                 size="sm"
                 variant="outline"
                 onClick={scrollToPreise}
-                className="flex-1 h-10"
+                className="flex-1 h-11 min-h-[44px] touch-manipulation active:scale-95 transition-transform"
               >
                 Preise
               </Button>
               <Button
                 size="sm"
                 onClick={scrollToForm}
-                className="flex-1 h-10"
+                className="flex-1 h-11 min-h-[44px] touch-manipulation active:scale-95 transition-transform"
               >
                 Offerten
                 <ArrowRight className="ml-1 w-4 h-4" />
