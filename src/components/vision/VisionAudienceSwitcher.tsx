@@ -19,17 +19,18 @@ interface VisionAudienceSwitcherProps {
 
 const content = {
   de: {
-    title: "Wähle deine Perspektive",
-    subtitle: "Diese Seite zeigt alles – oder springe direkt zu deinem Fokus:",
+    // Gemini Feedback: "Für wen ist diese Seite?" statt "Wähle deine Perspektive"
+    title: "Für wen ist diese Seite?",
+    subtitle: "Wähle deine Perspektive – oder scrolle für die vollständige Übersicht:",
     
     audiences: [
       {
         id: "family",
         icon: Heart,
-        title: "Für Familie",
-        description: "Einfach erklärt: Warum wir die #1 sind",
+        title: "Für die Familie",
+        description: "Einfach erklärt: Was wir bauen und warum es funktioniert",
         link: "/family",
-        color: "border-red-200 hover:border-red-400 hover:bg-red-50/50",
+        color: "border-red-200 hover:border-red-400 hover:bg-red-50/50 dark:border-red-800 dark:hover:border-red-600",
         iconColor: "text-red-500",
         badge: "Einfach"
       },
@@ -37,7 +38,7 @@ const content = {
         id: "investors",
         icon: TrendingUp,
         title: "Für Investoren",
-        description: "Unit Economics, 10 Revenue Streams, Exit Potenzial",
+        description: "Unit Economics, 10 Revenue Streams, Exit-Potenzial",
         link: "/investoren",
         color: "border-primary/30 hover:border-primary hover:bg-primary/5",
         iconColor: "text-primary",
@@ -47,10 +48,10 @@ const content = {
         id: "partners",
         icon: Building2,
         title: "Für Partner",
-        description: "Umzugsfirmen: Premium-Leads, Bidding & Wachstum",
+        description: "Premium-Leads, Bidding-System & Tools für Wachstum",
         link: "/fuer-firmen",
-        color: "border-slate-200 hover:border-slate-400 hover:bg-slate-50/50",
-        iconColor: "text-slate-600",
+        color: "border-muted-foreground/30 hover:border-muted-foreground hover:bg-muted/50",
+        iconColor: "text-muted-foreground",
         badge: "B2B"
       }
     ],
@@ -58,17 +59,17 @@ const content = {
     continueHere: "Oder scrolle weiter für die vollständige Übersicht"
   },
   bg: {
-    title: "Избери своята перспектива",
-    subtitle: "Тази страница показва всичко – или скочи директно към твоя фокус:",
+    title: "За кого е тази страница?",
+    subtitle: "Избери своята перспектива – или скролни за пълния преглед:",
     
     audiences: [
       {
         id: "family",
         icon: Heart,
         title: "За семейството",
-        description: "Просто обяснено: Защо сме #1",
+        description: "Просто обяснено: Какво строим и защо работи",
         link: "/family",
-        color: "border-red-200 hover:border-red-400 hover:bg-red-50/50",
+        color: "border-red-200 hover:border-red-400 hover:bg-red-50/50 dark:border-red-800 dark:hover:border-red-600",
         iconColor: "text-red-500",
         badge: "Просто"
       },
@@ -86,10 +87,10 @@ const content = {
         id: "partners",
         icon: Building2,
         title: "За партньори",
-        description: "Фирми за преместване: Premium-Leads, Bidding & растеж",
+        description: "Premium-Leads, Bidding система & инструменти за растеж",
         link: "/fuer-firmen",
-        color: "border-slate-200 hover:border-slate-400 hover:bg-slate-50/50",
-        iconColor: "text-slate-600",
+        color: "border-muted-foreground/30 hover:border-muted-foreground hover:bg-muted/50",
+        iconColor: "text-muted-foreground",
         badge: "B2B"
       }
     ],
@@ -97,17 +98,17 @@ const content = {
     continueHere: "Или продължи да скролиш за пълния преглед"
   },
   it: {
-    title: "Scegli la tua prospettiva",
-    subtitle: "Questa pagina mostra tutto – o salta direttamente al tuo focus:",
+    title: "Per chi è questa pagina?",
+    subtitle: "Scegli la tua prospettiva – o scorri per la panoramica completa:",
     
     audiences: [
       {
         id: "family",
         icon: Heart,
         title: "Per la Famiglia",
-        description: "Spiegato semplicemente: Perché siamo #1",
+        description: "Spiegato semplicemente: Cosa costruiamo e perché funziona",
         link: "/family",
-        color: "border-red-200 hover:border-red-400 hover:bg-red-50/50",
+        color: "border-red-200 hover:border-red-400 hover:bg-red-50/50 dark:border-red-800 dark:hover:border-red-600",
         iconColor: "text-red-500",
         badge: "Semplice"
       },
@@ -125,10 +126,10 @@ const content = {
         id: "partners",
         icon: Building2,
         title: "Per Partner",
-        description: "Aziende di trasloco: Lead Premium, Bidding & Crescita",
+        description: "Lead Premium, sistema Bidding & strumenti per crescita",
         link: "/fuer-firmen",
-        color: "border-slate-200 hover:border-slate-400 hover:bg-slate-50/50",
-        iconColor: "text-slate-600",
+        color: "border-muted-foreground/30 hover:border-muted-foreground hover:bg-muted/50",
+        iconColor: "text-muted-foreground",
         badge: "B2B"
       }
     ],
