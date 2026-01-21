@@ -28,8 +28,18 @@ import { motion } from "framer-motion";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import type { VisionLanguage } from "@/lib/vision-translations";
 
-// Translations
-const translations = {
+// Translations mit Italienisch
+const translations: Record<'de' | 'bg' | 'it', {
+  back: string;
+  fullVision: string;
+  badge: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  metrics: { revenue: string; margin: string; streams: string; automation: string; market: string };
+  sections: { businessModel: string; pillarsTitle: string; pillarsSubtitle: string; revenueTitle: string; unitTitle: string; marketTitle: string };
+  footer: { interested: string; cta: string; visionBtn: string; familyBtn: string };
+}> = {
   de: {
     back: "Zurück",
     fullVision: "Vollständige Vision",
@@ -86,6 +96,35 @@ const translations = {
       cta: "Отворени сме за разговори относно стратегически партньорства и инвестиции.",
       visionBtn: "Вижте пълната визия",
       familyBtn: "Просто обяснение (семейство)"
+    }
+  },
+  it: {
+    back: "Indietro",
+    fullVision: "Visione Completa",
+    badge: "Investor Hub",
+    title: "Umzugscheck.ch",
+    subtitle: "Opportunità di Investimento",
+    description: "La piattaforma di trasloco più intelligente della Svizzera con 10 fonti di reddito, margine 90%+ e vantaggio del first-mover.",
+    metrics: {
+      revenue: "Revenue/Cliente",
+      margin: "Contribution Margin",
+      streams: "Flussi di Entrate",
+      automation: "Automazione",
+      market: "Potenziale di Mercato"
+    },
+    sections: {
+      businessModel: "Business Model",
+      pillarsTitle: "10 Pilastri Strategici",
+      pillarsSubtitle: "Ogni pilastro è un Profit Center autonomo con Unit Economics chiare.",
+      revenueTitle: "10 Fonti di Reddito in Dettaglio",
+      unitTitle: "Unit Economics: Come Guadagniamo",
+      marketTitle: "Potenziale di Mercato Svizzera"
+    },
+    footer: {
+      interested: "Interessati?",
+      cta: "Siamo aperti a discussioni su partnership strategiche e investimenti.",
+      visionBtn: "Vedi la Visione Completa",
+      familyBtn: "Spiegazione Semplice (Famiglia)"
     }
   }
 };
@@ -144,7 +183,7 @@ export default function InvestorenLanding() {
               { icon: Target, label: t.metrics.margin, value: ">90%" },
               { icon: Building2, label: t.metrics.streams, value: "10" },
               { icon: Rocket, label: t.metrics.automation, value: "95%" },
-              { icon: TrendingUp, label: t.metrics.market, value: "450k/" + (language === 'de' ? 'Jahr' : 'год') },
+              { icon: TrendingUp, label: t.metrics.market, value: "450k/" + (language === 'de' ? 'Jahr' : language === 'it' ? 'Anno' : 'год') },
             ].map((stat, i) => (
               <motion.div
                 key={stat.label}
@@ -197,7 +236,7 @@ export default function InvestorenLanding() {
       <section className="py-12">
         <div className="container mx-auto px-4">
           <div className="text-center mb-10">
-            <Badge className="mb-4 bg-primary/10 text-primary">553 CHF/{language === 'de' ? 'Kunde' : 'клиент'}</Badge>
+            <Badge className="mb-4 bg-primary/10 text-primary">553 CHF/{language === 'de' ? 'Kunde' : language === 'it' ? 'Cliente' : 'клиент'}</Badge>
             <h2 className="text-3xl md:text-4xl font-black text-foreground mb-4">
               {t.sections.revenueTitle}
             </h2>
@@ -210,7 +249,7 @@ export default function InvestorenLanding() {
       <section className="py-12 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-10">
-            <Badge className="mb-4 bg-primary/10 text-primary">90%+ {language === 'de' ? 'Marge' : 'Марж'}</Badge>
+            <Badge className="mb-4 bg-primary/10 text-primary">90%+ {language === 'de' ? 'Marge' : language === 'it' ? 'Margine' : 'Марж'}</Badge>
             <h2 className="text-3xl md:text-4xl font-black text-foreground mb-4">
               {t.sections.unitTitle}
             </h2>
@@ -223,7 +262,7 @@ export default function InvestorenLanding() {
       <section className="py-12">
         <div className="container mx-auto px-4">
           <div className="text-center mb-10">
-            <Badge className="mb-4 bg-primary/10 text-primary">450k {language === 'de' ? 'Umzüge/Jahr' : 'премествания/год'}</Badge>
+            <Badge className="mb-4 bg-primary/10 text-primary">450k {language === 'de' ? 'Umzüge/Jahr' : language === 'it' ? 'Traslochi/Anno' : 'премествания/год'}</Badge>
             <h2 className="text-3xl md:text-4xl font-black text-foreground mb-4">
               {t.sections.marketTitle}
             </h2>
