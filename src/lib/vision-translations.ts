@@ -396,8 +396,8 @@ const de: VisionTranslations = {
           "✅ AR Inventory Scanner (Raum-für-Raum)",
           "✅ Escrow/Treuhand System",
           "✅ Quality Badge System",
+          "✅ Behörden-API Integration",
           "🔄 AI Video Inventory (Computer Vision)",
-          "⏳ Behörden-API Integration",
           "⏳ Partner Operating System",
           "⏳ Micro-Insurance Module"
         ]
@@ -408,9 +408,9 @@ const de: VisionTranslations = {
       subtitle: "Tag und Nacht gearbeitet – hier ist das Ergebnis",
       months: "3+ Monate intensive Arbeit",
       items: [
-        "250+ React Komponenten entwickelt",
-        "60+ Seiten und Routes erstellt",
-        "25+ Datenbank-Tabellen designt",
+        "260+ React Komponenten entwickelt",
+        "65+ Seiten und Routes erstellt",
+        "28+ Datenbank-Tabellen designt",
         "10 verschiedene Rechner implementiert",
         "26 Städte mit Neighborhood-Daten",
         "30+ Umzugsfirmen im System",
@@ -426,6 +426,7 @@ const de: VisionTranslations = {
         "Escrow/Treuhand System",
         "Email Automation Framework",
         "Stripe Payment Integration",
+        "Behörden-API (11 Services)",
         "Post-Move Checklist (7 Kategorien)",
         "Neighborhood Comparison (11 Metriken)",
         "Vision Page für Stakeholder",
