@@ -14,6 +14,8 @@ import { VisionEmotionalHero } from "@/components/vision/VisionEmotionalHero";
 import { VisionQuickStats } from "@/components/vision/VisionQuickStats";
 import { VisionIconFeatures } from "@/components/vision/VisionIconFeatures";
 import { VisionVisualDivider } from "@/components/vision/VisionVisualDivider";
+import { VisionLiveStats } from "@/components/vision/VisionLiveStats";
+import { VisionProgressIndicator } from "@/components/vision/VisionProgressIndicator";
 import { ExpandAllToggle } from "@/components/vision/ExpandAllToggle";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Heart, Rocket } from "lucide-react";
@@ -36,6 +38,9 @@ export default function FamilyLanding() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Progress Indicator */}
+      <VisionProgressIndicator />
+      
       <SEOHead
         pageType="home"
         url="https://umzugscheck.ch/family"
@@ -89,10 +94,13 @@ export default function FamilyLanding() {
       {/* 1. HERO - Family variant with emotional image */}
       <VisionEmotionalHero language={lang} variant="family" />
 
-      {/* 2. QUICK STATS - Family-focused */}
+      {/* 2. LIVE STATS - Animated family-focused metrics */}
+      <VisionLiveStats language={lang} variant="family" />
+
+      {/* 3. QUICK STATS - Family-focused */}
       <VisionQuickStats language={lang} variant="family" />
 
-      {/* 3. ICON FEATURES - What makes us unique */}
+      {/* 4. ICON FEATURES - What makes us unique */}
       <VisionIconFeatures language={lang} />
 
       {/* 4. VISUAL DIVIDER */}
