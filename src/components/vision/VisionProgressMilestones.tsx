@@ -24,7 +24,7 @@ interface VisionProgressMilestonesProps {
 const milestones = {
   de: {
     title: "Projekt-Fortschritt",
-    subtitle: "3 Monate intensive Arbeit – hier ist was wir erreicht haben und was noch kommt",
+    subtitle: "3+ Monate intensive Arbeit – hier ist was wir erreicht haben und was noch kommt",
     pastMilestonesTitle: "✅ Abgeschlossene Meilensteine",
     currentMilestoneTitle: "🔄 Aktueller Meilenstein",
     futureMilestonesTitle: "⏳ Kommende Meilensteine",
@@ -83,65 +83,83 @@ const milestones = {
           "Bulgarisch/Deutsch Übersetzungen",
           "Dark Mode Support"
         ]
+      },
+      {
+        id: "m4",
+        name: "Meilenstein 4: Extended Features",
+        timeframe: "Januar 2025",
+        durationDays: 20,
+        progress: 100,
+        summary: "10 Conversion-Boosting Features",
+        achievements: [
+          "AI Cost Predictor (CH-Preise)",
+          "WhatsApp-First Integration",
+          "Capacity Radar (Live-Verfügbarkeit)",
+          "Buddy Matching (LKW-Sharing)",
+          "AR Inventory Scanner",
+          "Provider Live-Chat Widget",
+          "Post-Move Checklist (7 Kategorien)",
+          "Neighborhood Comparison (11 Metriken)"
+        ]
       }
     ],
     
     // Current milestone (IN PROGRESS)
     currentMilestone: {
-      id: "m4",
-      name: "Meilenstein 4: Conversion & Monetarisierung",
+      id: "m5",
+      name: "Meilenstein 5: Conversion & Go-Live",
       timeframe: "Januar - Februar 2025",
-      durationDays: 45,
-      progress: 35,
+      durationDays: 30,
+      progress: 40,
       summary: "Lead-Qualität und erste Einnahmen",
       completed: [
-        "Golden Flow Konsolidierung",
         "A/B Test Framework",
-        "Flow Analysis System"
+        "Flow Analysis System",
+        "SEO Hub-and-Spoke Grundstruktur"
       ],
       inProgress: [
+        "Integration der Extended Features in Funnels",
         "Lead Bidding System",
-        "Provider Quality Scores",
-        "Dynamic Pricing Engine"
+        "Provider Quality Scores"
       ],
       upcoming: [
         "Email Automation Flows",
         "Stripe Integration",
-        "First Revenue Tests"
+        "Google Ads Kampagnen"
       ]
     },
     
     // Future milestones (PLANNED)
     futureMilestones: [
       {
-        id: "m5",
-        name: "Meilenstein 5: Scale & Traffic",
+        id: "m6",
+        name: "Meilenstein 6: Marketing & Traffic",
         timeframe: "Februar - März 2025",
         progress: 0,
-        summary: "SEO Hub-and-Spoke + Marketing",
+        summary: "Traffic-Akquisition und Wachstum",
         items: [
-          "Programmatic SEO Pages",
           "Google Ads Kampagnen",
           "Affiliate Partnerprogramm",
-          "Content Marketing (Ratgeber)"
+          "Content Marketing (Ratgeber)",
+          "Social Media Präsenz"
         ]
       },
       {
-        id: "m6",
-        name: "Meilenstein 6: Moat-Features",
+        id: "m7",
+        name: "Meilenstein 7: Moat-Features",
         timeframe: "März - April 2025",
         progress: 0,
         summary: "Schwer kopierbare Wettbewerbsvorteile",
         items: [
-          "AI Video Inventory Scanner",
+          "AI Video Inventory (vollständig)",
           "Escrow/Treuhand System",
           "Behörden-API Integration",
           "Partner Operating System"
         ]
       },
       {
-        id: "m7",
-        name: "Meilenstein 7: Go-Live & Traction",
+        id: "m8",
+        name: "Meilenstein 8: Go-Live & Traction",
         timeframe: "April - Mai 2025",
         progress: 0,
         summary: "Erste echte Kunden und Umsätze",
@@ -156,18 +174,18 @@ const milestones = {
     
     // Stats
     stats: {
-      totalDays: "120+ Tage",
-      totalHours: "1'680+ Stunden",
+      totalDays: "140+ Tage",
+      totalHours: "1'900+ Stunden",
       hoursPerDay: "14-15h/Tag",
-      components: "200+",
-      pages: "50+",
-      tables: "20+",
+      components: "250+",
+      pages: "60+",
+      tables: "25+",
       cities: "26"
     }
   },
   bg: {
     title: "Напредък на проекта",
-    subtitle: "3 месеца интензивна работа – ето какво постигнахме и какво предстои",
+    subtitle: "3+ месеца интензивна работа – ето какво постигнахме и какво предстои",
     pastMilestonesTitle: "✅ Завършени етапи",
     currentMilestoneTitle: "🔄 Текущ етап",
     futureMilestonesTitle: "⏳ Предстоящи етапи",
@@ -225,53 +243,71 @@ const milestones = {
           "Български/Немски преводи",
           "Dark Mode поддръжка"
         ]
+      },
+      {
+        id: "m4",
+        name: "Етап 4: Extended Features",
+        timeframe: "Януари 2025",
+        durationDays: 20,
+        progress: 100,
+        summary: "10 Conversion-Boosting функции",
+        achievements: [
+          "AI Cost Predictor (CH цени)",
+          "WhatsApp-First интеграция",
+          "Capacity Radar (реално време)",
+          "Buddy Matching (споделяне на камион)",
+          "AR Inventory Scanner",
+          "Provider Live-Chat Widget",
+          "Post-Move чеклист (7 категории)",
+          "Сравнение на квартали (11 метрики)"
+        ]
       }
     ],
     
     currentMilestone: {
-      id: "m4",
-      name: "Етап 4: Конверсия & Монетизация",
+      id: "m5",
+      name: "Етап 5: Конверсия & Go-Live",
       timeframe: "Януари - Февруари 2025",
-      durationDays: 45,
-      progress: 35,
+      durationDays: 30,
+      progress: 40,
       summary: "Качество на leads и първи приходи",
       completed: [
-        "Golden Flow консолидация",
         "A/B тест система",
-        "Flow анализ система"
+        "Flow анализ система",
+        "SEO Hub-and-Spoke основа"
       ],
       inProgress: [
+        "Интеграция на Extended Features",
         "Lead Bidding система",
-        "Provider Quality Scores",
-        "Dynamic Pricing Engine"
+        "Provider Quality Scores"
       ],
       upcoming: [
         "Email Automation",
         "Stripe интеграция",
-        "Първи тестове за приходи"
+        "Google Ads кампании"
       ]
     },
     
     futureMilestones: [
       {
-        id: "m5",
-        name: "Етап 5: Скалиране & Трафик",
+        id: "m6",
+        name: "Етап 6: Маркетинг & Трафик",
         timeframe: "Февруари - Март 2025",
         progress: 0,
-        summary: "SEO Hub-and-Spoke + Маркетинг",
-        items: ["Programmatic SEO страници", "Google Ads кампании", "Affiliate програма", "Content Marketing"]
-      },
-      {
-        id: "m6",
-        name: "Етап 6: Moat функции",
-        timeframe: "Март - Април 2025",
-        progress: 0,
-        summary: "Трудни за копиране предимства",
-        items: ["AI Video Scanner", "Escrow система", "API за власти", "Partner OS"]
+        summary: "Привличане на трафик и растеж",
+        items: ["Google Ads кампании", "Affiliate програма", "Content Marketing", "Social Media"]
       },
       {
         id: "m7",
-        name: "Етап 7: Go-Live & Traction",
+        name: "Етап 7: Moat функции",
+        timeframe: "Март - Април 2025",
+        progress: 0,
+        summary: "Трудни за копиране предимства",
+        items: ["AI Video Inventory (пълно)", "Escrow система", "API за власти", "Partner OS"]
+      },
+      {
+        id: "m8",
+        name: "Етап 8: Go-Live & Traction",
         timeframe: "Април - Май 2025",
         progress: 0,
         summary: "Първи реални клиенти и приходи",
@@ -280,12 +316,12 @@ const milestones = {
     ],
     
     stats: {
-      totalDays: "120+ дни",
-      totalHours: "1'680+ часа",
+      totalDays: "140+ дни",
+      totalHours: "1'900+ часа",
       hoursPerDay: "14-15ч/ден",
-      components: "200+",
-      pages: "50+",
-      tables: "20+",
+      components: "250+",
+      pages: "60+",
+      tables: "25+",
       cities: "26"
     }
   }
