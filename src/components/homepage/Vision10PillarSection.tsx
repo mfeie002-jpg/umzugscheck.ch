@@ -276,11 +276,11 @@ const comparisonData = [
 
 // Revenue Stacking Data
 const revenueStack = [
-  { label: "Basis-Provision", value: 225, color: "bg-blue-500" },
-  { label: "Escrow/Fintech", value: 30, color: "bg-green-500" },
-  { label: "Versicherung", value: 99, color: "bg-violet-500" },
-  { label: "Bürokratie", value: 49, color: "bg-pink-500" },
-  { label: "Lead-Verkauf", value: 100, color: "bg-amber-500" },
+  { label: "Basis-Provision (Umzug)", value: 225, color: "bg-blue-500" },
+  { label: "Escrow / Fintech-Fee", value: 30, color: "bg-green-500" },
+  { label: "Versicherung (Micro)", value: 99, color: "bg-violet-500" },
+  { label: "Bürokratie-Autopilot", value: 49, color: "bg-pink-500" },
+  { label: "Lead-Verkauf (Telco/Energie)", value: 100, color: "bg-amber-500" },
   { label: "Circular Economy", value: 50, color: "bg-emerald-500" }
 ];
 
@@ -506,10 +506,10 @@ const RevenueStackingCard = memo(() => (
           >
             <div 
               className={`h-10 ${item.color} rounded-lg flex items-center justify-between px-4 text-white text-sm font-medium shadow-md`}
-              style={{ width: `${(item.value / totalRevenue) * 100}%`, minWidth: "180px" }}
+              style={{ width: `${Math.max((item.value / totalRevenue) * 100, 50)}%`, minWidth: "220px" }}
             >
-              <span className="truncate">{item.label}</span>
-              <span className="font-bold">+{item.value} CHF</span>
+              <span className="whitespace-nowrap">{item.label}</span>
+              <span className="font-bold whitespace-nowrap ml-2">+{item.value} CHF</span>
             </div>
           </motion.div>
         ))}
