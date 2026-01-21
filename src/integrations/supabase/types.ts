@@ -2264,6 +2264,93 @@ export type Database = {
         }
         Relationships: []
       }
+      neighborhood_profiles: {
+        Row: {
+          avg_age: number | null
+          avg_rent_3room: number | null
+          avg_rent_4room: number | null
+          canton_code: string
+          city_name: string
+          commuter_score: number | null
+          created_at: string
+          description: string | null
+          expat_score: number | null
+          family_score: number | null
+          foreigner_percent: number | null
+          highlights: string[] | null
+          highway_distance_km: number | null
+          id: string
+          nature_score: number | null
+          nightlife_score: number | null
+          population: number | null
+          population_growth_percent: number | null
+          postal_code: string | null
+          property_price_sqm: number | null
+          quiet_score: number | null
+          tax_rate_family: number | null
+          tax_rate_single: number | null
+          train_station_distance_km: number | null
+          updated_at: string
+          zurich_commute_minutes: number | null
+        }
+        Insert: {
+          avg_age?: number | null
+          avg_rent_3room?: number | null
+          avg_rent_4room?: number | null
+          canton_code: string
+          city_name: string
+          commuter_score?: number | null
+          created_at?: string
+          description?: string | null
+          expat_score?: number | null
+          family_score?: number | null
+          foreigner_percent?: number | null
+          highlights?: string[] | null
+          highway_distance_km?: number | null
+          id?: string
+          nature_score?: number | null
+          nightlife_score?: number | null
+          population?: number | null
+          population_growth_percent?: number | null
+          postal_code?: string | null
+          property_price_sqm?: number | null
+          quiet_score?: number | null
+          tax_rate_family?: number | null
+          tax_rate_single?: number | null
+          train_station_distance_km?: number | null
+          updated_at?: string
+          zurich_commute_minutes?: number | null
+        }
+        Update: {
+          avg_age?: number | null
+          avg_rent_3room?: number | null
+          avg_rent_4room?: number | null
+          canton_code?: string
+          city_name?: string
+          commuter_score?: number | null
+          created_at?: string
+          description?: string | null
+          expat_score?: number | null
+          family_score?: number | null
+          foreigner_percent?: number | null
+          highlights?: string[] | null
+          highway_distance_km?: number | null
+          id?: string
+          nature_score?: number | null
+          nightlife_score?: number | null
+          population?: number | null
+          population_growth_percent?: number | null
+          postal_code?: string | null
+          property_price_sqm?: number | null
+          quiet_score?: number | null
+          tax_rate_family?: number | null
+          tax_rate_single?: number | null
+          train_station_distance_km?: number | null
+          updated_at?: string
+          zurich_commute_minutes?: number | null
+        }
+        Relationships: []
+      }
       newsletter_subscribers: {
         Row: {
           email: string
@@ -2386,6 +2473,71 @@ export type Database = {
           total_revenue?: number | null
         }
         Relationships: []
+      }
+      pois: {
+        Row: {
+          address: string | null
+          canton_code: string
+          city_name: string
+          created_at: string
+          distance_from_center_km: number | null
+          id: string
+          latitude: number | null
+          longitude: number | null
+          name: string
+          neighborhood_id: string | null
+          opening_hours: Json | null
+          phone: string | null
+          poi_type: string
+          rating: number | null
+          review_count: number | null
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          canton_code: string
+          city_name: string
+          created_at?: string
+          distance_from_center_km?: number | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          name: string
+          neighborhood_id?: string | null
+          opening_hours?: Json | null
+          phone?: string | null
+          poi_type: string
+          rating?: number | null
+          review_count?: number | null
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          canton_code?: string
+          city_name?: string
+          created_at?: string
+          distance_from_center_km?: number | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          name?: string
+          neighborhood_id?: string | null
+          opening_hours?: Json | null
+          phone?: string | null
+          poi_type?: string
+          rating?: number | null
+          review_count?: number | null
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pois_neighborhood_id_fkey"
+            columns: ["neighborhood_id"]
+            isOneToOne: false
+            referencedRelation: "neighborhood_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       price_alerts: {
         Row: {
