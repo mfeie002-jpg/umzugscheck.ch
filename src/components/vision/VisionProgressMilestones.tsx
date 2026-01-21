@@ -104,30 +104,36 @@ const milestones = {
       }
     ],
     
-    // Current milestone (NOW COMPLETE!)
+    // Current milestone (Phase 6 - Strategic Growth)
     currentMilestone: {
-      id: "m5",
-      name: "Meilenstein 5: Conversion & Go-Live",
-      timeframe: "Januar 2025",
-      durationDays: 30,
-      progress: 100,
-      summary: "Lead-Qualität und erste Einnahmen - ABGESCHLOSSEN ✅",
+      id: "m6",
+      name: "Phase 6: Strategisches Wachstum",
+      timeframe: "Januar - Februar 2025",
+      durationDays: 45,
+      progress: 60,
+      summary: "Skalierung, Automation & Optimierung",
       completed: [
-        "A/B Test Framework",
-        "Flow Analysis System",
-        "SEO Hub-and-Spoke Grundstruktur",
-        "Integration der Extended Features in Funnels",
-        "Lead Bidding System",
-        "Provider Quality Scores",
-        "Email Automation Flows",
-        "Stripe Integration",
-        "Google Ads Kampagnen-Manager",
-        "Go-Live Dashboard & Checklist",
-        "Post-Launch Analytics Dashboard",
-        "Phase 6 Growth Features"
+        "Smart Lead Scoring System",
+        "Automated Follow-Up Sequences",
+        "Dynamic Pricing Engine",
+        "Email Template System (10 Templates)",
+        "Mock Data Framework",
+        "Multi-Language Support (DE/FR/IT)",
+        "Platform Documentation",
+        "Admin Dashboard Components"
       ],
-      inProgress: [],
-      upcoming: []
+      inProgress: [
+        "Provider Performance Analytics",
+        "Customer Journey Insights",
+        "Conversion Funnel Optimierung",
+        "Mobile UX Final Polish"
+      ],
+      upcoming: [
+        "Live Traffic Monitoring",
+        "A/B Test Auswertung",
+        "SEO Ranking Tracking",
+        "Revenue Attribution"
+      ]
     },
     
     // Future milestones (BONUS - Post-Launch Growth)
