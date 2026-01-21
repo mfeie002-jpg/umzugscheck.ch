@@ -142,8 +142,7 @@ export default function InvestorenLanding() {
         url="https://umzugscheck.ch/investoren"
       />
 
-      {/* Sticky CTA for mobile */}
-      <VisionStickyCTA />
+      {/* VisionStickyCTA removed - not needed for internal investor page */}
 
       {/* Header - NON-Sticky to prevent conflict with page scrolling */}
       <div className="bg-background border-b border-[#8B0000]/20">

@@ -167,8 +167,7 @@ export default function VisionPage() {
       {/* Sticky Navigation */}
       <VisionStickyNav language={language} />
 
-      {/* Always-visible conversion CTA for /vision */}
-      <VisionStickyCTA />
+      {/* VisionStickyCTA removed - not needed for internal stakeholder pages */}
 
       {/* 0. EMOTIONAL HERO - Human Side of Moving */}
       <VisionEmotionalHero language={language} variant="full" />
