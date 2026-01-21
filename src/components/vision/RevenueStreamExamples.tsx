@@ -40,9 +40,9 @@ export const RevenueStreamExamples = memo(({ language }: RevenueStreamExamplesPr
   
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case "quick": return "bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300";
-      case "medium": return "bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300";
-      case "complex": return "bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300";
+      case "quick": return "bg-primary/20 text-primary dark:bg-primary/30 dark:text-primary";
+      case "medium": return "bg-primary/40 text-primary dark:bg-primary/40 dark:text-primary";
+      case "complex": return "bg-primary/60 text-primary dark:bg-primary/50 dark:text-primary";
       default: return "bg-muted text-muted-foreground";
     }
   };
@@ -87,20 +87,20 @@ export const RevenueStreamExamples = memo(({ language }: RevenueStreamExamplesPr
           viewport={{ once: true }}
           className="grid grid-cols-3 gap-4 max-w-2xl mx-auto mb-10"
         >
-          <div className="text-center p-4 bg-green-50 dark:bg-green-950/30 rounded-xl border border-green-200 dark:border-green-800">
-            <Zap className="w-5 h-5 mx-auto mb-1 text-green-600" />
-            <p className="text-2xl font-bold text-green-700 dark:text-green-400">2</p>
-            <p className="text-xs text-green-600">{t.revenueExamples.quickWins}</p>
+          <div className="text-center p-4 bg-primary/10 dark:bg-primary/20 rounded-xl border border-primary/30 dark:border-primary/40">
+            <Zap className="w-5 h-5 mx-auto mb-1 text-primary" />
+            <p className="text-2xl font-bold text-primary">2</p>
+            <p className="text-xs text-primary/80">{t.revenueExamples.quickWins}</p>
           </div>
-          <div className="text-center p-4 bg-blue-50 dark:bg-blue-950/30 rounded-xl border border-blue-200 dark:border-blue-800">
-            <Clock className="w-5 h-5 mx-auto mb-1 text-blue-600" />
-            <p className="text-2xl font-bold text-blue-700 dark:text-blue-400">3</p>
-            <p className="text-xs text-blue-600">{t.revenueExamples.standard}</p>
+          <div className="text-center p-4 bg-primary/20 dark:bg-primary/30 rounded-xl border border-primary/40 dark:border-primary/50">
+            <Clock className="w-5 h-5 mx-auto mb-1 text-primary" />
+            <p className="text-2xl font-bold text-primary">3</p>
+            <p className="text-xs text-primary/80">{t.revenueExamples.standard}</p>
           </div>
-          <div className="text-center p-4 bg-purple-50 dark:bg-purple-950/30 rounded-xl border border-purple-200 dark:border-purple-800">
-            <Star className="w-5 h-5 mx-auto mb-1 text-purple-600" />
-            <p className="text-2xl font-bold text-purple-700 dark:text-purple-400">5</p>
-            <p className="text-xs text-purple-600">{t.revenueExamples.complex}</p>
+          <div className="text-center p-4 bg-primary/30 dark:bg-primary/40 rounded-xl border border-primary/50 dark:border-primary/60">
+            <Star className="w-5 h-5 mx-auto mb-1 text-primary" />
+            <p className="text-2xl font-bold text-primary">5</p>
+            <p className="text-xs text-primary/80">{t.revenueExamples.complex}</p>
           </div>
         </motion.div>
 
@@ -186,9 +186,9 @@ export const RevenueStreamExamples = memo(({ language }: RevenueStreamExamplesPr
                                 <p className="text-lg font-bold">{stream.customerPays} CHF</p>
                               </div>
                             )}
-                            <div className="bg-green-50 dark:bg-green-950/30 rounded-xl p-3 text-center border border-green-200 dark:border-green-800">
-                              <p className="text-xs text-green-600 mb-1">{t.revenueExamples.weGet}</p>
-                              <p className="text-lg font-bold text-green-700 dark:text-green-400">
+                            <div className="bg-primary/10 dark:bg-primary/20 rounded-xl p-3 text-center border border-primary/30 dark:border-primary/40">
+                              <p className="text-xs text-primary mb-1">{t.revenueExamples.weGet}</p>
+                              <p className="text-lg font-bold text-primary">
                                 +{stream.ourCut} CHF
                               </p>
                             </div>
@@ -218,11 +218,11 @@ export const RevenueStreamExamples = memo(({ language }: RevenueStreamExamplesPr
                           </div>
                           
                           {/* Why Valuable */}
-                          <div className="bg-amber-50 dark:bg-amber-950/30 rounded-xl p-3 border border-amber-200 dark:border-amber-800">
-                            <p className="text-xs font-bold text-amber-700 dark:text-amber-400 mb-1">
+                          <div className="bg-primary/10 dark:bg-primary/20 rounded-xl p-3 border border-primary/30 dark:border-primary/40">
+                            <p className="text-xs font-bold text-primary mb-1">
                               💡 {t.revenueExamples.whyValuable}
                             </p>
-                            <p className="text-sm text-amber-800 dark:text-amber-300">
+                            <p className="text-sm text-foreground">
                               {streamTranslation.whyValuable}
                             </p>
                           </div>
