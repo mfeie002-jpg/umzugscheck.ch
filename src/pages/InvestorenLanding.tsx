@@ -27,6 +27,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import type { VisionLanguage } from "@/lib/vision-translations";
+import { VisionStickyCTA } from "@/components/vision/VisionStickyCTA";
 
 // Translations mit Italienisch
 const translations: Record<'de' | 'bg' | 'it', {
@@ -135,11 +136,14 @@ export default function InvestorenLanding() {
   const t = translations[language];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-24">
       <SEOHead
         pageType="home"
         url="https://umzugscheck.ch/investoren"
       />
+
+      {/* Sticky CTA for mobile */}
+      <VisionStickyCTA />
 
       {/* Header - NON-Sticky to prevent conflict with page scrolling */}
       <div className="bg-background border-b border-[#8B0000]/20">

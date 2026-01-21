@@ -4,12 +4,16 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 /**
- * Always-visible conversion CTA for /vision.
+ * Always-visible conversion CTA for stakeholder pages.
  * Mobile-first: fixed bottom bar, min-h-44 touch target, safe-area padding.
+ * Uses secondary (red) color per brand guidelines.
  */
 export const VisionStickyCTA = memo(function VisionStickyCTA() {
   const location = useLocation();
-  if (location.pathname !== "/vision") return null;
+  
+  // Only show on stakeholder pages
+  const stakeholderRoutes = ['/vision', '/family', '/investoren'];
+  if (!stakeholderRoutes.includes(location.pathname)) return null;
 
   return (
     <div
@@ -18,10 +22,13 @@ export const VisionStickyCTA = memo(function VisionStickyCTA() {
       aria-label="Offerten CTA"
     >
       <div className="bg-background/95 backdrop-blur-md border-t border-border">
-        <div className="container mx-auto px-4 py-3" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
+        <div 
+          className="container mx-auto px-4 py-3" 
+          style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 0.75rem)" }}
+        >
           <Link to="/umzugsofferten" className="block">
             <Button
-              className="w-full min-h-[44px] touch-manipulation font-bold"
+              className="w-full min-h-[44px] touch-manipulation font-bold bg-secondary hover:bg-secondary/90 text-secondary-foreground"
               size="lg"
             >
               Offerten erhalten

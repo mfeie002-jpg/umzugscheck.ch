@@ -26,6 +26,7 @@ import { ArrowLeft, Heart, Users, Sparkles, Home, CheckCircle2, Rocket } from "l
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { getFamilyTranslation, type FamilyLanguage } from "@/lib/family-translations";
+import { VisionStickyCTA } from "@/components/vision/VisionStickyCTA";
 
 export default function FamilyLanding() {
   const [lang, setLang] = useState<FamilyLanguage>(() => {
@@ -48,11 +49,14 @@ export default function FamilyLanding() {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-24">
       <SEOHead
         pageType="home"
         url="https://umzugscheck.ch/family"
       />
+
+      {/* Sticky CTA for mobile */}
+      <VisionStickyCTA />
 
       {/* Header - NON-Sticky to prevent conflict */}
       <div 
