@@ -30,7 +30,7 @@ import { getFamilyTranslation, type FamilyLanguage } from "@/lib/family-translat
 export default function FamilyLanding() {
   const [lang, setLang] = useState<FamilyLanguage>(() => {
     const stored = localStorage.getItem('family-lang');
-    return (stored === 'bg' || stored === 'de') ? stored : 'de';
+    return (stored === 'bg' || stored === 'de' || stored === 'it') ? stored as FamilyLanguage : 'de';
   });
   const [allExpanded, setAllExpanded] = useState(false);
   

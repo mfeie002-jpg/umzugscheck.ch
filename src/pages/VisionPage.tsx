@@ -49,13 +49,13 @@ export default function VisionPage() {
       });
       
       toast({
-        title: language === 'de' ? "PDF erstellt! ✅" : "PDF създаден! ✅",
-        description: language === 'de' ? "Die Vision-Präsentation wurde heruntergeladen." : "Презентацията е изтеглена.",
+        title: language === 'de' ? "PDF erstellt! ✅" : language === 'it' ? "PDF creato! ✅" : "PDF създаден! ✅",
+        description: language === 'de' ? "Die Vision-Präsentation wurde heruntergeladen." : language === 'it' ? "La presentazione è stata scaricata." : "Презентацията е изтеглена.",
       });
     } catch (error) {
       toast({
-        title: language === 'de' ? "Fehler" : "Грешка",
-        description: language === 'de' ? "PDF konnte nicht erstellt werden." : "PDF не можа да бъде създаден.",
+        title: language === 'de' ? "Fehler" : language === 'it' ? "Errore" : "Грешка",
+        description: language === 'de' ? "PDF konnte nicht erstellt werden." : language === 'it' ? "Impossibile creare il PDF." : "PDF не можа да бъде създаден.",
         variant: "destructive",
       });
     } finally {
@@ -68,13 +68,13 @@ export default function VisionPage() {
     try {
       exportVisionAsTextPDF();
       toast({
-        title: language === 'de' ? "Text-PDF erstellt! ✅" : "Текстов PDF създаден! ✅",
-        description: language === 'de' ? "Die kompakte Version wurde heruntergeladen." : "Компактната версия е изтеглена.",
+        title: language === 'de' ? "Text-PDF erstellt! ✅" : language === 'it' ? "PDF testuale creato! ✅" : "Текстов PDF създаден! ✅",
+        description: language === 'de' ? "Die kompakte Version wurde heruntergeladen." : language === 'it' ? "La versione compatta è stata scaricata." : "Компактната версия е изтеглена.",
       });
     } catch (error) {
       toast({
-        title: language === 'de' ? "Fehler" : "Грешка",
-        description: language === 'de' ? "PDF konnte nicht erstellt werden." : "PDF не можа да бъде създаден.",
+        title: language === 'de' ? "Fehler" : language === 'it' ? "Errore" : "Грешка",
+        description: language === 'de' ? "PDF konnte nicht erstellt werden." : language === 'it' ? "Impossibile creare il PDF." : "PDF не можа да бъде създаден.",
         variant: "destructive",
       });
     }
@@ -83,8 +83,8 @@ export default function VisionPage() {
   // CTA Handlers
   const handleDemoClick = () => {
     toast({
-      title: language === 'de' ? "Demo Video" : "Демо видео",
-      description: language === 'de' ? "Coming soon! Kontaktiere uns für eine Live-Demo." : "Скоро! Свържи се с нас за live demo.",
+      title: language === 'de' ? "Demo Video" : language === 'it' ? "Video Demo" : "Демо видео",
+      description: language === 'de' ? "Coming soon! Kontaktiere uns für eine Live-Demo." : language === 'it' ? "Prossimamente! Contattaci per una demo dal vivo." : "Скоро! Свържи се с нас за live demo.",
     });
   };
 
@@ -198,9 +198,9 @@ export default function VisionPage() {
         
         {/* Customer USPs - Changed "Magic" to "Systemvorteile" */}
         <VisionCollapsibleSection
-          title={language === 'de' ? "10 Kunden-Vorteile" : "10 клиентски предимства"}
+          title={language === 'de' ? "10 Kunden-Vorteile" : language === 'it' ? "10 Vantaggi Clienti" : "10 клиентски предимства"}
           icon={<Users className="w-5 h-5" />}
-          badge={language === 'de' ? "Systemvorteile" : "Системни предимства"}
+          badge={language === 'de' ? "Systemvorteile" : language === 'it' ? "Vantaggi di Sistema" : "Системни предимства"}
           defaultOpen={false}
           forceOpen={allExpanded}
           language={language}
@@ -212,9 +212,9 @@ export default function VisionPage() {
         
         {/* Investor Pillars */}
         <VisionCollapsibleSection
-          title={language === 'de' ? "10 Investoren-Säulen" : "10 инвеститорски стълба"}
+          title={language === 'de' ? "10 Investoren-Säulen" : language === 'it' ? "10 Pilastri Investitori" : "10 инвеститорски стълба"}
           icon={<TrendingUp className="w-5 h-5" />}
-          badge={language === 'de' ? "Business Model" : "Бизнес модел"}
+          badge={language === 'de' ? "Business Model" : language === 'it' ? "Modello di Business" : "Бизнес модел"}
           defaultOpen={false}
           forceOpen={allExpanded}
           language={language}
@@ -226,9 +226,9 @@ export default function VisionPage() {
         
         {/* Family Summary */}
         <VisionCollapsibleSection
-          title={language === 'de' ? "Einfach erklärt für die Familie" : "Обяснено просто за семейството"}
+          title={language === 'de' ? "Einfach erklärt für die Familie" : language === 'it' ? "Spiegato Semplicemente per la Famiglia" : "Обяснено просто за семейството"}
           icon={<Sparkles className="w-5 h-5" />}
-          badge={language === 'de' ? "Für Eltern" : "За родители"}
+          badge={language === 'de' ? "Für Eltern" : language === 'it' ? "Per i Genitori" : "За родители"}
           defaultOpen={false}
           forceOpen={allExpanded}
           language={language}
@@ -240,9 +240,9 @@ export default function VisionPage() {
         
         {/* Revenue Streams */}
         <VisionCollapsibleSection
-          title={language === 'de' ? "10 Einnahmequellen im Detail" : "10 източника на приходи"}
+          title={language === 'de' ? "10 Einnahmequellen im Detail" : language === 'it' ? "10 Fonti di Ricavo in Dettaglio" : "10 източника на приходи"}
           icon={<DollarSign className="w-5 h-5" />}
-          badge={language === 'de' ? "553 CHF/Kunde" : "553 CHF/клиент"}
+          badge={language === 'de' ? "553 CHF/Kunde" : language === 'it' ? "553 CHF/Cliente" : "553 CHF/клиент"}
           defaultOpen={false}
           forceOpen={allExpanded}
           language={language}
@@ -254,9 +254,9 @@ export default function VisionPage() {
         
         {/* Unit Economics (ChatGPT Priority #3 - already has CAC breakdown) */}
         <VisionCollapsibleSection
-          title={language === 'de' ? "Unit Economics: Contribution Margin" : "Unit Economics: Contribution Margin"}
+          title={language === 'de' ? "Unit Economics: Contribution Margin" : language === 'it' ? "Unit Economics: Contribution Margin" : "Unit Economics: Contribution Margin"}
           icon={<Target className="w-5 h-5" />}
-          badge={language === 'de' ? "CAC + Ops getrennt" : "CAC + Ops отделно"}
+          badge={language === 'de' ? "CAC + Ops getrennt" : language === 'it' ? "CAC + Ops separati" : "CAC + Ops отделно"}
           defaultOpen={false}
           forceOpen={allExpanded}
           language={language}
@@ -268,9 +268,9 @@ export default function VisionPage() {
         
         {/* Market Potential */}
         <VisionCollapsibleSection
-          title={language === 'de' ? "Marktpotenzial Schweiz" : "Пазарен потенциал Швейцария"}
+          title={language === 'de' ? "Marktpotenzial Schweiz" : language === 'it' ? "Potenziale di Mercato Svizzera" : "Пазарен потенциал Швейцария"}
           icon={<Rocket className="w-5 h-5" />}
-          badge={language === 'de' ? "450'000 Umzüge/Jahr" : "450'000 преместванията/год"}
+          badge={language === 'de' ? "450'000 Umzüge/Jahr" : language === 'it' ? "450'000 Traslochi/Anno" : "450'000 преместванията/год"}
           defaultOpen={false}
           forceOpen={allExpanded}
           language={language}

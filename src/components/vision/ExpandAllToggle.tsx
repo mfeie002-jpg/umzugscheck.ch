@@ -22,7 +22,7 @@ export const ExpandAllToggle = memo(({
   language = 'de',
   className 
 }: ExpandAllToggleProps) => {
-  const labels = {
+  const labels: Record<VisionLanguage, { expand: string; collapse: string }> = {
     de: {
       expand: "Alle öffnen",
       collapse: "Alle schliessen"
@@ -30,6 +30,10 @@ export const ExpandAllToggle = memo(({
     bg: {
       expand: "Отвори всички",
       collapse: "Затвори всички"
+    },
+    it: {
+      expand: "Apri tutto",
+      collapse: "Chiudi tutto"
     }
   };
   
