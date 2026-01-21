@@ -152,6 +152,7 @@ export default function VisionPage() {
           icon={<Users className="w-5 h-5" />}
           badge={language === 'de' ? "Magic für Familien" : "Магия за семейства"}
           defaultOpen={false}
+          language={language}
         >
           <div id="vision-customer-usps">
             <CustomerUSPVisualCards />
@@ -164,6 +165,7 @@ export default function VisionPage() {
           icon={<TrendingUp className="w-5 h-5" />}
           badge={language === 'de' ? "Business Model" : "Бизнес модел"}
           defaultOpen={false}
+          language={language}
         >
           <div id="vision-investor-pillars">
             <Vision10PillarSection allExpanded={false} />
@@ -176,6 +178,7 @@ export default function VisionPage() {
           icon={<Sparkles className="w-5 h-5" />}
           badge={language === 'de' ? "Für Eltern" : "За родители"}
           defaultOpen={true}
+          language={language}
         >
           <div id="vision-family-summary">
             <FamilySummary />
@@ -188,6 +191,7 @@ export default function VisionPage() {
           icon={<DollarSign className="w-5 h-5" />}
           badge={language === 'de' ? "553 CHF/Kunde" : "553 CHF/клиент"}
           defaultOpen={false}
+          language={language}
         >
           <div id="vision-revenue-examples">
             <RevenueStreamExamples language={language} />
@@ -200,6 +204,7 @@ export default function VisionPage() {
           icon={<Target className="w-5 h-5" />}
           badge={language === 'de' ? "90%+ Marge" : "90%+ марж"}
           defaultOpen={false}
+          language={language}
         >
           <div id="vision-unit-economics">
             <UnitEconomicsDetailed language={language} />
@@ -212,6 +217,7 @@ export default function VisionPage() {
           icon={<Rocket className="w-5 h-5" />}
           badge={language === 'de' ? "450k Umzüge/Jahr" : "450k преместванията/год"}
           defaultOpen={false}
+          language={language}
         >
           <div id="vision-market-potential">
             <MarketPotentialSection language={language} />
@@ -231,7 +237,7 @@ export default function VisionPage() {
       {/* 9. Exit Timeline (Full section, important) */}
       <div id="vision-exit">
         <ScrollReveal>
-          <ExitTimeline />
+          <ExitTimeline language={language} />
         </ScrollReveal>
       </div>
 

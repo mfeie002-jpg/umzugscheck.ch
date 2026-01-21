@@ -16,6 +16,7 @@ interface VisionCollapsibleSectionProps {
   children: ReactNode;
   className?: string;
   headerClassName?: string;
+  language?: 'de' | 'bg';
 }
 
 export const VisionCollapsibleSection = memo(({
@@ -25,9 +26,13 @@ export const VisionCollapsibleSection = memo(({
   badge,
   children,
   className,
-  headerClassName
+  headerClassName,
+  language = 'de'
 }: VisionCollapsibleSectionProps) => {
   const [isOpen, setIsOpen] = useState(defaultOpen);
+  
+  const collapseLabel = language === 'de' ? 'Einklappen' : 'Свий';
+  const expandLabel = language === 'de' ? 'Ausklappen' : 'Разгъни';
   
   return (
     <div className={cn("border-b border-border", className)}>
@@ -50,7 +55,7 @@ export const VisionCollapsibleSection = memo(({
         </div>
         <div className="flex items-center gap-2">
           <span className="text-xs text-muted-foreground hidden sm:inline">
-            {isOpen ? 'Einklappen' : 'Ausklappen'}
+            {isOpen ? collapseLabel : expandLabel}
           </span>
           {isOpen ? (
             <ChevronUp className="w-5 h-5 text-muted-foreground" />
