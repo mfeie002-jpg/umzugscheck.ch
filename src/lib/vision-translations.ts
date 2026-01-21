@@ -414,7 +414,7 @@ const de: VisionTranslations = {
           "✅ Performance & Lighthouse Audit",
           "✅ Final Security Review",
           "✅ Provider Onboarding System",
-          "🔄 Google Ads Kampagnen",
+          "✅ Google Ads Kampagnen-Manager",
           "🔄 Soft Launch (Beta-Kunden)",
           "⏳ Press Kit & PR Vorbereitung",
           "⏳ Go-Live 🚀"
@@ -426,8 +426,8 @@ const de: VisionTranslations = {
       subtitle: "Tag und Nacht gearbeitet – hier ist das Ergebnis",
       months: "3+ Monate intensive Arbeit",
       items: [
-        "345+ React Komponenten entwickelt",
-        "105+ Seiten und Routes erstellt",
+        "350+ React Komponenten entwickelt",
+        "110+ Seiten und Routes erstellt",
         "38+ Datenbank-Tabellen designt",
         "10 verschiedene Rechner implementiert",
         "26 Städte mit Neighborhood-Daten",
