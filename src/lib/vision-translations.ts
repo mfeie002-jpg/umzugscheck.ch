@@ -398,8 +398,8 @@ const de: VisionTranslations = {
           "✅ Quality Badge System",
           "✅ Behörden-API Integration",
           "✅ Partner Operating System (SaaS)",
-          "🔄 AI Video Inventory (Computer Vision)",
-          "⏳ Micro-Insurance Module"
+          "✅ Micro-Insurance Module",
+          "🔄 AI Video Inventory (Computer Vision)"
         ]
       }
     ],
@@ -408,9 +408,9 @@ const de: VisionTranslations = {
       subtitle: "Tag und Nacht gearbeitet – hier ist das Ergebnis",
       months: "3+ Monate intensive Arbeit",
       items: [
-        "270+ React Komponenten entwickelt",
-        "70+ Seiten und Routes erstellt",
-        "30+ Datenbank-Tabellen designt",
+        "280+ React Komponenten entwickelt",
+        "75+ Seiten und Routes erstellt",
+        "32+ Datenbank-Tabellen designt",
         "10 verschiedene Rechner implementiert",
         "26 Städte mit Neighborhood-Daten",
         "30+ Umzugsfirmen im System",
@@ -428,6 +428,7 @@ const de: VisionTranslations = {
         "Stripe Payment Integration",
         "Behörden-API (11 Services)",
         "Partner OS (Mover SaaS)",
+        "Micro-Insurance (4 Tarife)",
         "Post-Move Checklist (7 Kategorien)",
         "Neighborhood Comparison (11 Metriken)",
         "Vision Page für Stakeholder",
