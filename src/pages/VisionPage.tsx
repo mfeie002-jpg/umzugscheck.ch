@@ -5,7 +5,7 @@ import { CustomerUSPVisualCards } from "@/components/homepage/CustomerUSPVisualC
 import { FamilySummary } from "@/components/homepage/FamilySummary";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Download, FileText, Loader2, Eye, EyeOff, Users, TrendingUp, Sparkles, DollarSign, Target, Crown, Globe, Rocket } from "lucide-react";
+import { ArrowLeft, Download, FileText, Loader2, Users, TrendingUp, Sparkles, DollarSign, Target, Globe, Rocket, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { exportVisionToPDF, exportVisionAsTextPDF } from "@/lib/vision-pdf-export";
 import { useToast } from "@/hooks/use-toast";
@@ -18,7 +18,35 @@ import { ExitTimeline } from "@/components/vision/ExitTimeline";
 import { MarketPotentialSection } from "@/components/vision/MarketPotentialSection";
 import { VisionUniqueness } from "@/components/vision/VisionUniqueness";
 import { VisionCollapsibleSection } from "@/components/vision/VisionCollapsibleSection";
+import { VisionStickyNav } from "@/components/vision/VisionStickyNav";
+import { VisionTeamSection } from "@/components/vision/VisionTeamSection";
 import { getVisionTranslation, type VisionLanguage } from "@/lib/vision-translations";
+
+// Mission statement translations
+const missionTranslations = {
+  de: {
+    tagline: "Die Mission",
+    headline: "Wir revolutionieren, wie die Schweiz umzieht",
+    subheadline: "Eine KI-gestützte Plattform, die den gesamten Umzugsprozess automatisiert – von der Offerte bis zur Schlüsselübergabe.",
+    stats: [
+      { value: "95%", label: "KI-Automatisierung" },
+      { value: "553 CHF", label: "Umsatz pro Kunde" },
+      { value: "90%+", label: "Profit-Marge" },
+      { value: "10", label: "Einnahmequellen" },
+    ]
+  },
+  bg: {
+    tagline: "Мисията",
+    headline: "Революционизираме начина, по който Швейцария се мести",
+    subheadline: "AI платформа, която автоматизира целия процес на преместване – от офертата до предаването на ключовете.",
+    stats: [
+      { value: "95%", label: "AI автоматизация" },
+      { value: "553 CHF", label: "Приход на клиент" },
+      { value: "90%+", label: "Марж на печалба" },
+      { value: "10", label: "Източници на приходи" },
+    ]
+  }
+};
 
 export default function VisionPage() {
   const [isExporting, setIsExporting] = useState(false);
@@ -27,6 +55,7 @@ export default function VisionPage() {
   const { toast } = useToast();
   
   const t = getVisionTranslation(language);
+  const mission = missionTranslations[language];
 
   const handleExportPDF = async () => {
     setIsExporting(true);
@@ -124,31 +153,67 @@ export default function VisionPage() {
         </div>
       </div>
 
-      {/* Compact Hero */}
-      <section id="vision-hero" className="py-8 md:py-12 bg-gradient-to-b from-primary/5 to-background">
-        <div className="container mx-auto px-4 text-center">
-          <span className="inline-block px-3 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
-            {t.page.badge}
-          </span>
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-            {t.page.title}
-          </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            {t.page.subtitle}
-          </p>
+      {/* IMPROVEMENT #2: Sticky Navigation */}
+      <VisionStickyNav language={language} />
+
+      {/* IMPROVEMENT #1: Mission Statement Hero */}
+      <section id="vision-hero" className="py-12 md:py-16 bg-gradient-to-b from-primary/10 via-primary/5 to-background">
+        <div className="container mx-auto px-4">
+          <div className="text-center max-w-4xl mx-auto">
+            {/* Mission Badge */}
+            <span className="inline-block px-4 py-1.5 rounded-full bg-primary/20 text-primary text-sm font-semibold mb-6">
+              {mission.tagline}
+            </span>
+            
+            {/* Main Headline - The Mission */}
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight">
+              {mission.headline}
+            </h1>
+            
+            {/* Sub-headline */}
+            <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+              {mission.subheadline}
+            </p>
+            
+            {/* Key Stats Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
+              {mission.stats.map((stat, i) => (
+                <div key={i} className="p-4 rounded-xl bg-background border shadow-sm">
+                  <div className="text-2xl md:text-3xl font-bold text-primary">{stat.value}</div>
+                  <div className="text-xs md:text-sm text-muted-foreground">{stat.label}</div>
+                </div>
+              ))}
+            </div>
+            
+            {/* Quick Links to Dedicated Pages */}
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <Link to="/family">
+                <Button variant="outline" size="sm" className="gap-2">
+                  <Heart className="w-4 h-4" />
+                  {language === 'de' ? 'Für Familie' : 'За семейството'}
+                </Button>
+              </Link>
+              <Link to="/investoren">
+                <Button variant="outline" size="sm" className="gap-2">
+                  <TrendingUp className="w-4 h-4" />
+                  {language === 'de' ? 'Für Investoren' : 'За инвеститори'}
+                </Button>
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* 1. PROGRESS MILESTONES (Always visible - shows the 3 months of work) */}
+      {/* Progress Milestones */}
       <div id="vision-progress">
         <VisionProgressMilestones language={language} />
         <ContributionBreakdown language={language} />
       </div>
 
-      {/* COLLAPSIBLE SECTIONS START */}
+      {/* COLLAPSIBLE SECTIONS */}
       <div className="max-w-6xl mx-auto">
         
-        {/* 2. Customer USPs (Collapsible) */}
+        {/* Customer USPs */}
         <VisionCollapsibleSection
           title={language === 'de' ? "10 Kunden-Vorteile" : "10 клиентски предимства"}
           icon={<Users className="w-5 h-5" />}
@@ -161,7 +226,7 @@ export default function VisionPage() {
           </div>
         </VisionCollapsibleSection>
         
-        {/* 3. Investor Pillars (Collapsible) */}
+        {/* Investor Pillars */}
         <VisionCollapsibleSection
           title={language === 'de' ? "10 Investoren-Säulen" : "10 инвеститорски стълба"}
           icon={<TrendingUp className="w-5 h-5" />}
@@ -174,12 +239,12 @@ export default function VisionPage() {
           </div>
         </VisionCollapsibleSection>
         
-        {/* 4. Family Summary (Collapsible but important) */}
+        {/* Family Summary */}
         <VisionCollapsibleSection
           title={language === 'de' ? "Einfach erklärt für die Familie" : "Обяснено просто за семейството"}
           icon={<Sparkles className="w-5 h-5" />}
           badge={language === 'de' ? "Für Eltern" : "За родители"}
-          defaultOpen={true}
+          defaultOpen={false}
           language={language}
         >
           <div id="vision-family-summary">
@@ -187,7 +252,7 @@ export default function VisionPage() {
           </div>
         </VisionCollapsibleSection>
         
-        {/* 5. Revenue Streams (Collapsible) */}
+        {/* Revenue Streams */}
         <VisionCollapsibleSection
           title={language === 'de' ? "10 Einnahmequellen im Detail" : "10 източника на приходи"}
           icon={<DollarSign className="w-5 h-5" />}
@@ -200,7 +265,7 @@ export default function VisionPage() {
           </div>
         </VisionCollapsibleSection>
         
-        {/* 6. Unit Economics (Collapsible) */}
+        {/* Unit Economics */}
         <VisionCollapsibleSection
           title={language === 'de' ? "Unit Economics: Wie wir Geld verdienen" : "Unit Economics: Как печелим пари"}
           icon={<Target className="w-5 h-5" />}
@@ -213,11 +278,11 @@ export default function VisionPage() {
           </div>
         </VisionCollapsibleSection>
         
-        {/* 7. Market Potential (Collapsible) */}
+        {/* Market Potential */}
         <VisionCollapsibleSection
           title={language === 'de' ? "Marktpotenzial Schweiz" : "Пазарен потенциал Швейцария"}
           icon={<Rocket className="w-5 h-5" />}
-          badge={language === 'de' ? "450k Umzüge/Jahr" : "450k преместванията/год"}
+          badge={language === 'de' ? "450'000 Umzüge/Jahr" : "450'000 преместванията/год"}
           defaultOpen={false}
           language={language}
         >
@@ -227,16 +292,20 @@ export default function VisionPage() {
         </VisionCollapsibleSection>
         
       </div>
-      {/* COLLAPSIBLE SECTIONS END */}
 
-      {/* 8. UNIQUENESS - Why this doesn't exist (Full section, not collapsible) */}
+      {/* IMPROVEMENT #3: Team Section */}
+      <ScrollReveal>
+        <VisionTeamSection language={language} />
+      </ScrollReveal>
+
+      {/* Uniqueness */}
       <div id="vision-uniqueness">
         <ScrollReveal>
           <VisionUniqueness language={language} />
         </ScrollReveal>
       </div>
 
-      {/* 9. Exit Timeline (Full section, important) */}
+      {/* Exit Timeline */}
       <div id="vision-exit">
         <ScrollReveal>
           <ExitTimeline language={language} />
