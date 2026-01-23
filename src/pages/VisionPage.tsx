@@ -47,7 +47,28 @@ import { VIPWelcomeBanner } from "@/components/persona/VIPWelcomeBanner";
 export default function VisionPage() {
   const [isExporting, setIsExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
-  const [language, setLanguage] = useState<VisionLanguage>('de');
+  const [language, setLanguage] = useState<VisionLanguage>(() => {
+    const params = new URLSearchParams(window.location.search);
+    
+    // 1. Priority: URL lang parameter
+    const urlLang = params.get('lang');
+    if (urlLang === 'bg' || urlLang === 'de' || urlLang === 'it') {
+      return urlLang as VisionLanguage;
+    }
+    
+    // 2. Auto-detect language from persona
+    const urlPersona = params.get('persona');
+    if (urlPersona && ['bg1', 'bg2', 'bg3'].includes(urlPersona)) {
+      return 'bg';
+    }
+    if (urlPersona === 'it') {
+      return 'it';
+    }
+    
+    // 3. Fallback: localStorage or default
+    const stored = localStorage.getItem('vision-lang');
+    return (stored === 'bg' || stored === 'de' || stored === 'it') ? stored as VisionLanguage : 'de';
+  });
   const [allExpanded, setAllExpanded] = useState(false);
   const { toast } = useToast();
   

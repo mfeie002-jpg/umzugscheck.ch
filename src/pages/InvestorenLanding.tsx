@@ -112,7 +112,27 @@ const translations: Record<'de' | 'bg' | 'it', {
 };
 
 export default function InvestorenLanding() {
-  const [language, setLanguage] = useState<VisionLanguage>('de');
+  const [language, setLanguage] = useState<VisionLanguage>(() => {
+    const params = new URLSearchParams(window.location.search);
+    
+    // 1. Priority: URL lang parameter
+    const urlLang = params.get('lang');
+    if (urlLang === 'bg' || urlLang === 'de' || urlLang === 'it') {
+      return urlLang as VisionLanguage;
+    }
+    
+    // 2. Auto-detect language from persona
+    const urlPersona = params.get('persona');
+    if (urlPersona && ['bg1', 'bg2', 'bg3'].includes(urlPersona)) {
+      return 'bg';
+    }
+    if (urlPersona === 'it') {
+      return 'it';
+    }
+    
+    // 3. Fallback: default
+    return 'de';
+  });
   const [allExpanded, setAllExpanded] = useState(false);
   const t = translations[language];
   const { persona, isPersonalized } = usePersona(language);
