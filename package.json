@@ -95,5 +95,13 @@
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.38.0",
     "vite": "^5.4.19"
-  }
+  },
+  "description": "> **Das Vorzeigemodell der Schweizer Umzugsbranche.**   > Der Archetyp, an dem sich alle anderen orientieren werden.",
+  "main": "eslint.config.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
