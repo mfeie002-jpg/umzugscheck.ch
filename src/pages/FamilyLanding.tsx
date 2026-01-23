@@ -45,8 +45,12 @@ export default function FamilyLanding() {
     if (urlPersona && ['bg1', 'bg2', 'bg3'].includes(urlPersona)) {
       return 'bg';
     }
+    // 3. Auto-detect IT when persona=it
+    if (urlPersona === 'it') {
+      return 'it';
+    }
     
-    // 3. Fallback: localStorage
+    // 4. Fallback: localStorage
     const stored = localStorage.getItem('family-lang');
     return (stored === 'bg' || stored === 'de' || stored === 'it') ? stored : 'de';
   });
