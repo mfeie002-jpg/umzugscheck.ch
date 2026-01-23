@@ -67,7 +67,9 @@ export function usePersona(language: VisionLanguage) {
   }, []);
 
   // Get effective persona based on language
+  // Respect URL persona (bg1/bg2/bg3/it) even when language differs
   const effectivePersona: PersonaKey = 
+    ['bg1', 'bg2', 'bg3', 'it'].includes(persona) ? persona :
     language === 'de' ? 'bg0' :
     language === 'it' ? (funMode ? 'it' : 'bg0') :
     persona;

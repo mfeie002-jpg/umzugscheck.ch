@@ -32,8 +32,23 @@ import { VIPWelcomeBanner } from "@/components/persona/VIPWelcomeBanner";
 
 export default function FamilyLanding() {
   const [lang, setLang] = useState<FamilyLanguage>(() => {
+    const params = new URLSearchParams(window.location.search);
+    
+    // 1. Priority: URL lang parameter
+    const urlLang = params.get('lang');
+    if (urlLang === 'bg' || urlLang === 'de' || urlLang === 'it') {
+      return urlLang as FamilyLanguage;
+    }
+    
+    // 2. Auto-detect BG when persona=bg1/bg2/bg3
+    const urlPersona = params.get('persona');
+    if (urlPersona && ['bg1', 'bg2', 'bg3'].includes(urlPersona)) {
+      return 'bg';
+    }
+    
+    // 3. Fallback: localStorage
     const stored = localStorage.getItem('family-lang');
-    return (stored === 'bg' || stored === 'de' || stored === 'it') ? stored as FamilyLanguage : 'de';
+    return (stored === 'bg' || stored === 'de' || stored === 'it') ? stored : 'de';
   });
   const [allExpanded, setAllExpanded] = useState(false);
   
