@@ -178,8 +178,9 @@ export const Navigation = () => {
                   <span className="w-2 h-2 rounded-full bg-primary animate-pulse flex-shrink-0" />
                   <span className="font-medium">Gratis & unverbindlich</span>
                 </div>
+              </div>
 
-              <Link to={flowPath} aria-label="Kostenlose Umzugsofferten vergleichen" className="flex-shrink-0">
+              <Link to={flowPath} aria-label="Kostenlose Umzugsofferten vergleichen" className="shrink-0">
                 <Button
                   size="lg"
                   className="group inline-flex items-center justify-center bg-gradient-to-r from-secondary via-secondary to-secondary/90 hover:from-secondary/90 hover:via-secondary hover:to-secondary text-secondary-foreground font-bold shadow-[0_4px_20px_rgba(220,38,38,0.35)] hover:shadow-[0_8px_30px_rgba(220,38,38,0.45)] transition-all text-sm xl:text-base px-4 xl:px-6 whitespace-nowrap gap-2"
