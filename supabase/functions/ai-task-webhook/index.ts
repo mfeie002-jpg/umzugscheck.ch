@@ -189,15 +189,112 @@ Deno.serve(async (req) => {
         })
       }
       
-      // Unterstützt beide Formate:
+      // Unterstützt mehrere Formate:
       // Format 1: { raw_output: "JSON string from ChatGPT", zapier_run_id }
       // Format 2: { codex_task, copilot_task, summary, zapier_run_id }
+      // Format 3: OpenAI Completion API { choices: [{ text: "JSON string" }] }
+      // Format 4: { action: "create", task: { agent, title, prompt, ... } }
       
       let codex_task, copilot_task, summary
       const { zapier_run_id } = body
       
-      if (body.raw_output) {
-        // Parse raw ChatGPT output (could be string or already parsed)
+      // Helper to extract JSON from various text formats
+      function extractJsonFromText(text: string): unknown | null {
+        // Try direct parse first
+        try {
+          return JSON.parse(text)
+        } catch {
+          // Try to find JSON object in text
+          const jsonMatch = text.match(/\{[\s\S]*"codex_task"[\s\S]*\}/)
+          if (jsonMatch) {
+            try {
+              return JSON.parse(jsonMatch[0])
+            } catch {
+              return null
+            }
+          }
+          return null
+        }
+      }
+
+      // Format 4: Direct task creation (for scheduled tasks / direct API)
+      if (body.action === 'create' && body.task) {
+        const task = body.task
+        if (!task.agent || !['codex', 'copilot'].includes(task.agent)) {
+          return new Response(JSON.stringify({ error: 'task.agent must be codex or copilot' }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          })
+        }
+        if (!task.title || !task.prompt) {
+          return new Response(JSON.stringify({ error: 'task.title and task.prompt are required' }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          })
+        }
+
+        const { data, error } = await supabase
+          .from('ai_task_queue')
+          .insert({
+            agent: task.agent,
+            title: task.title,
+            description: task.description || null,
+            prompt: task.prompt,
+            target_files: task.target_files || task.files || [],
+            priority: task.priority || 5,
+            source: task.source || 'api',
+            zapier_run_id: zapier_run_id || null,
+          })
+          .select()
+          .single()
+
+        if (error) throw error
+
+        return new Response(JSON.stringify({
+          success: true,
+          task_id: data.id,
+          message: `Task für ${task.agent} erstellt`
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        })
+      }
+
+      // Format 3: OpenAI Completion API format { choices: [{ text: "..." }] }
+      if (body.choices && Array.isArray(body.choices) && body.choices[0]?.text) {
+        console.log('Detected OpenAI Completion format')
+        const rawText = body.choices[0].text
+        
+        // OpenAI might return multiple JSON objects, take the first valid one
+        const allJsonMatches = rawText.match(/\{[^{}]*"codex_task"[^{}]*(?:\{[^{}]*\}[^{}]*)*\}/g) || []
+        
+        let parsed = null
+        for (const match of allJsonMatches) {
+          parsed = extractJsonFromText(match)
+          if (parsed && (parsed as Record<string, unknown>).codex_task) break
+        }
+        
+        // Fallback: try entire text
+        if (!parsed) {
+          parsed = extractJsonFromText(rawText)
+        }
+        
+        if (parsed && typeof parsed === 'object') {
+          codex_task = (parsed as Record<string, unknown>).codex_task
+          copilot_task = (parsed as Record<string, unknown>).copilot_task
+          summary = (parsed as Record<string, unknown>).summary
+        } else {
+          await logWebhook('/ai-task-webhook', 'POST', body, false, 'Could not parse JSON from OpenAI choices.text')
+          return new Response(JSON.stringify({
+            error: 'Could not parse JSON from choices.text',
+            hint: 'Ensure ChatGPT outputs valid JSON with codex_task and copilot_task',
+            received_preview: rawText.substring(0, 500)
+          }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          })
+        }
+      } else if (body.raw_output) {
+        // Format 1: Parse raw ChatGPT output (could be string or already parsed)
         try {
           const parsed = typeof body.raw_output === 'string' 
             ? JSON.parse(body.raw_output) 
@@ -217,7 +314,7 @@ Deno.serve(async (req) => {
           })
         }
       } else {
-        // Direct format
+        // Format 2: Direct format
         codex_task = body.codex_task
         copilot_task = body.copilot_task
         summary = body.summary
