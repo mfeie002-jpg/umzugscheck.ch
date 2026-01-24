@@ -12,7 +12,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useAITasks, useWebhookLogs, useCreateTask, useUpdateTaskStatus, useDeleteTask, useTaskStats, AITask, WebhookLog } from "@/hooks/useAITaskQueue";
-import { Plus, RefreshCw, Check, Trash2, Play, Copy, Clock, AlertCircle, CheckCircle, Code, Palette, ExternalLink, Zap, Radio } from "lucide-react";
+import { Plus, RefreshCw, Check, Trash2, Play, Copy, Clock, AlertCircle, CheckCircle, Code, Palette, ExternalLink, Zap, Radio, Brain, Sparkles, TrendingDown, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import { useToast } from "@/hooks/use-toast";
@@ -56,6 +56,22 @@ export default function TaskQueue() {
   const [agentRunnerLoading, setAgentRunnerLoading] = useState<"codex" | "copilot" | null>(null);
   const [autoLoadEnabled, setAutoLoadEnabled] = useState(true);
   const [realtimeConnected, setRealtimeConnected] = useState(false);
+  
+  // Task Generator State
+  const [founderNotes, setFounderNotes] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generatorResult, setGeneratorResult] = useState<{
+    success: boolean;
+    tasks_created: number;
+    summary?: string;
+    priority_reasoning?: string;
+    context_used?: {
+      flows_analyzed: number;
+      issues_considered: number;
+      low_score_alerts: number;
+      founder_notes_included: boolean;
+    };
+  } | null>(null);
 
   const [newTask, setNewTask] = useState({
     agent: "codex",
@@ -471,7 +487,131 @@ export default function TaskQueue() {
           )}
         </TabsContent>
 
-        <TabsContent value="agent" className="mt-4">
+        <TabsContent value="agent" className="mt-4 space-y-4">
+          {/* Task Generator Section */}
+          <Card className="border-2 border-dashed border-primary/30 bg-primary/5">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Brain className="h-5 w-5 text-primary" />
+                🧠 Task Generator (Hybrid-Modus)
+              </CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Generiert automatisch CODEX + COPILOT Tasks basierend auf Flow-Analysen, Issues und deinen Notes
+              </p>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="founder-notes" className="flex items-center gap-2">
+                  <Sparkles className="h-4 w-4 text-amber-500" />
+                  Founder Notes (optional, wird priorisiert)
+                </Label>
+                <Textarea
+                  id="founder-notes"
+                  value={founderNotes}
+                  onChange={(e) => setFounderNotes(e.target.value)}
+                  placeholder="z.B. 'Focus auf Mobile CTA-Button', 'Trust-Signale auf Homepage verbessern', 'Firmenumzug-Flow optimieren'..."
+                  rows={3}
+                />
+              </div>
+              
+              <div className="flex items-center gap-4">
+                <Button
+                  size="lg"
+                  className="flex-1"
+                  disabled={isGenerating}
+                  onClick={async () => {
+                    setIsGenerating(true);
+                    setGeneratorResult(null);
+                    try {
+                      const { data, error } = await supabase.functions.invoke("generate-ai-tasks", {
+                        body: { founder_notes: founderNotes || undefined },
+                      });
+
+                      if (error) throw error;
+                      
+                      setGeneratorResult(data);
+                      if (data.success && data.tasks_created > 0) {
+                        toast({
+                          title: "🎉 Tasks generiert!",
+                          description: `${data.tasks_created} neue Tasks wurden erstellt.`,
+                        });
+                        refetch();
+                      } else {
+                        toast({
+                          title: "Keine Tasks erstellt",
+                          description: data.error || "ChatGPT konnte keine Tasks generieren.",
+                          variant: "destructive",
+                        });
+                      }
+                    } catch (e) {
+                      const message = e instanceof Error ? e.message : "Unbekannter Fehler";
+                      toast({ title: "Fehler", description: message, variant: "destructive" });
+                    } finally {
+                      setIsGenerating(false);
+                    }
+                  }}
+                >
+                  {isGenerating ? (
+                    <>
+                      <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                      ChatGPT analysiert...
+                    </>
+                  ) : (
+                    <>
+                      <Brain className="h-5 w-5 mr-2" />
+                      🚀 Tasks generieren
+                    </>
+                  )}
+                </Button>
+              </div>
+
+              {/* Generator Result */}
+              {generatorResult && (
+                <Card className={generatorResult.success ? "border-green-500/30 bg-green-500/5" : "border-red-500/30 bg-red-500/5"}>
+                  <CardContent className="p-4 space-y-3">
+                    <div className="flex items-center gap-2">
+                      {generatorResult.success ? (
+                        <CheckCircle className="h-5 w-5 text-green-600" />
+                      ) : (
+                        <AlertCircle className="h-5 w-5 text-red-600" />
+                      )}
+                      <span className="font-semibold">
+                        {generatorResult.tasks_created} Tasks erstellt
+                      </span>
+                    </div>
+                    
+                    {generatorResult.summary && (
+                      <p className="text-sm">{generatorResult.summary}</p>
+                    )}
+                    
+                    {generatorResult.priority_reasoning && (
+                      <div className="text-sm text-muted-foreground bg-muted p-3 rounded-lg">
+                        <strong>Begründung:</strong> {generatorResult.priority_reasoning}
+                      </div>
+                    )}
+
+                    {generatorResult.context_used && (
+                      <div className="flex flex-wrap gap-2 text-xs">
+                        <Badge variant="outline">📊 {generatorResult.context_used.flows_analyzed} Flows</Badge>
+                        <Badge variant="outline">🐛 {generatorResult.context_used.issues_considered} Issues</Badge>
+                        {generatorResult.context_used.low_score_alerts > 0 && (
+                          <Badge variant="destructive" className="flex items-center gap-1">
+                            <TrendingDown className="h-3 w-3" />
+                            {generatorResult.context_used.low_score_alerts} Low-Score Alerts
+                          </Badge>
+                        )}
+                        {generatorResult.context_used.founder_notes_included && (
+                          <Badge className="bg-amber-500/20 text-amber-700 border-amber-500/30">✨ Founder Notes</Badge>
+                        )}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Agent Runner Section */}
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
@@ -500,7 +640,7 @@ export default function TaskQueue() {
               </div>
               {autoLoadEnabled && (
                 <p className="text-sm text-muted-foreground mt-1">
-                  Nach "Done" wird automatisch der nächste Task geladen
+                  Nach "Done" wird automatisch der nächste Task vom gleichen Agent geladen
                 </p>
               )}
             </CardHeader>
