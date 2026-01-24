@@ -11,17 +11,37 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders })
   }
 
+  const supabaseUrl = Deno.env.get('SUPABASE_URL')!
+  const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+  const supabase = createClient(supabaseUrl, supabaseKey)
+
+  const url = new URL(req.url)
+  const action = url.pathname.split('/').pop()
+  
+  // Helper to log webhook calls
+  async function logWebhook(endpoint: string, method: string, payload: unknown, success: boolean, errorMessage?: string, responseData?: unknown) {
+    try {
+      await supabase.from('ai_task_webhook_logs').insert({
+        endpoint,
+        method,
+        payload: payload as Record<string, unknown>,
+        success,
+        error_message: errorMessage || null,
+        response_data: responseData as Record<string, unknown> || null,
+        source_ip: req.headers.get('x-forwarded-for') || req.headers.get('cf-connecting-ip') || null,
+      })
+    } catch (e) {
+      console.error('Failed to log webhook:', e)
+    }
+  }
+
   try {
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!
-    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-    const supabase = createClient(supabaseUrl, supabaseKey)
-
-    const url = new URL(req.url)
-    const action = url.pathname.split('/').pop()
-
     // POST /ai-task-webhook - Zapier sendet neue Tasks
     if (req.method === 'POST' && (!action || action === 'ai-task-webhook')) {
       const body = await req.json()
+      
+      // Log incoming request
+      await logWebhook('/ai-task-webhook', 'POST', body, true)
       
       // Unterstützt beide Formate:
       // Format 1: { raw_output: "JSON string from ChatGPT", zapier_run_id }
@@ -41,6 +61,7 @@ Deno.serve(async (req) => {
           summary = parsed.summary
         } catch (e) {
           console.error('Failed to parse raw_output:', e)
+          await logWebhook('/ai-task-webhook', 'POST', body, false, 'Invalid JSON in raw_output')
           return new Response(JSON.stringify({ 
             error: 'Invalid JSON in raw_output',
             received: body.raw_output 
@@ -90,24 +111,35 @@ Deno.serve(async (req) => {
           .insert(tasksToInsert)
           .select()
 
-        if (error) throw error
+        if (error) {
+          await logWebhook('/ai-task-webhook', 'POST', body, false, error.message)
+          throw error
+        }
 
-        return new Response(JSON.stringify({ 
+        const response = { 
           success: true, 
           tasks_created: data.length,
           task_ids: data.map(t => t.id),
           summary: summary || null
-        }), {
+        }
+        
+        await logWebhook('/ai-task-webhook', 'POST', body, true, undefined, response)
+
+        return new Response(JSON.stringify(response), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         })
       }
 
-      return new Response(JSON.stringify({ 
+      const response = { 
         success: true, 
         tasks_created: 0,
         message: 'No valid tasks in payload',
         received_keys: Object.keys(body)
-      }), {
+      }
+      
+      await logWebhook('/ai-task-webhook', 'POST', body, true, undefined, response)
+
+      return new Response(JSON.stringify(response), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       })
     }
@@ -209,7 +241,48 @@ Deno.serve(async (req) => {
       })
     }
 
-    return new Response(JSON.stringify({ error: 'Unknown action' }), {
+    // GET /ai-task-webhook/debug-last - Last 5 webhook calls for debugging
+    if (req.method === 'GET' && action === 'debug-last') {
+      const { data, error } = await supabase
+        .from('ai_task_webhook_logs')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(5)
+
+      if (error) throw error
+
+      return new Response(JSON.stringify({
+        message: 'Letzte 5 Webhook-Aufrufe',
+        logs: data,
+        hint: 'Schau dir payload und error_message an um Zapier-Probleme zu debuggen'
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      })
+    }
+
+    // GET /ai-task-webhook/stats - Quick stats
+    if (req.method === 'GET' && action === 'stats') {
+      const { data: tasks, error } = await supabase
+        .from('ai_task_queue')
+        .select('agent, status')
+
+      if (error) throw error
+
+      const stats = {
+        total: tasks.length,
+        pending: tasks.filter(t => t.status === 'pending').length,
+        in_progress: tasks.filter(t => t.status === 'in_progress').length,
+        done: tasks.filter(t => t.status === 'done').length,
+        codex_pending: tasks.filter(t => t.agent === 'codex' && t.status === 'pending').length,
+        copilot_pending: tasks.filter(t => t.agent === 'copilot' && t.status === 'pending').length,
+      }
+
+      return new Response(JSON.stringify(stats), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      })
+    }
+
+    return new Response(JSON.stringify({ error: 'Unknown action', available: ['POST /', 'GET /next?agent=', 'POST /complete', 'GET /pending', 'GET /debug-last', 'GET /stats'] }), {
       status: 404,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     })
