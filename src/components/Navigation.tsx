@@ -115,7 +115,7 @@ export const Navigation = () => {
         aria-label="Hauptnavigation"
       >
         <div className="w-full max-w-[1440px] mx-auto px-3 sm:px-4 lg:px-6">
-          <div className="w-full flex items-center justify-between flex-wrap xl:flex-nowrap gap-2 lg:gap-4 h-14 sm:h-16 lg:h-20">
+          <div className="w-full flex items-center justify-between flex-wrap xl:flex-nowrap gap-2 lg:gap-4 min-h-14 sm:min-h-16 lg:min-h-20">
             {/* Logo + Left Section */}
             <div className="flex items-center gap-2 min-w-0 flex-1">
               <div className="flex-shrink-0">
@@ -170,8 +170,8 @@ export const Navigation = () => {
             </div>
 
             {/* CTA Button - Desktop - RECHTS ALIGNED */}
-            <div className="hidden xl:flex flex-col items-center justify-center gap-0.5 xl:gap-1 shrink-0 flex-none w-auto">
-              <div className="flex items-center gap-2 xl:gap-3">
+            <div className="hidden xl:flex self-stretch flex-col items-center justify-center gap-0.5 xl:gap-1 shrink-0 flex-none w-auto">
+              <div className="flex items-center gap-2 xl:gap-3 justify-center">
                 <HeaderCallButton className="shrink-0" />
 
                 <div className="hidden 2xl:flex items-center gap-1.5 text-xs text-muted-foreground flex-shrink-0 whitespace-nowrap">
@@ -180,7 +180,7 @@ export const Navigation = () => {
                 </div>
               </div>
 
-              <Link to={flowPath} aria-label="Kostenlose Umzugsofferten vergleichen" className="shrink-0">
+              <Link to={flowPath} aria-label="Kostenlose Umzugsofferten vergleichen" className="shrink-0 w-full xl:w-auto flex justify-center">
                 <Button
                   size="lg"
                   className="group inline-flex items-center justify-center bg-gradient-to-r from-secondary via-secondary to-secondary/90 hover:from-secondary/90 hover:via-secondary hover:to-secondary text-secondary-foreground font-bold shadow-[0_4px_20px_rgba(220,38,38,0.35)] hover:shadow-[0_8px_30px_rgba(220,38,38,0.45)] transition-all text-sm xl:text-base px-4 xl:px-6 whitespace-nowrap gap-2"
