@@ -102,9 +102,29 @@ export default function TaskQueue() {
     });
   };
 
-  const copyPrompt = (prompt: string) => {
-    navigator.clipboard.writeText(prompt);
-    toast({ title: "Prompt kopiert", description: "In Zwischenablage kopiert" });
+  const copyPrompt = (prompt: string, title?: string, agent?: string) => {
+    // Format for VS Code Copilot Chat
+    const formattedPrompt = title && agent 
+      ? `[${agent.toUpperCase()} TASK] ${title}\n\n${prompt}`
+      : prompt;
+    navigator.clipboard.writeText(formattedPrompt);
+    toast({ 
+      title: "📋 Prompt kopiert!", 
+      description: "Jetzt in VS Code Copilot Chat (Cmd+I) einfügen" 
+    });
+  };
+
+  const copyPromptForVSCode = (task: { prompt: string; title: string; agent: string; target_files?: string[] | null }) => {
+    const header = `# ${task.agent.toUpperCase()} TASK: ${task.title}`;
+    const files = task.target_files?.length 
+      ? `\n\n## Target Files:\n${task.target_files.map(f => `- ${f}`).join('\n')}`
+      : '';
+    const formattedPrompt = `${header}${files}\n\n## Instructions:\n${task.prompt}`;
+    navigator.clipboard.writeText(formattedPrompt);
+    toast({ 
+      title: "🚀 VS Code Ready!", 
+      description: "Paste in Copilot Chat (Cmd+I / Ctrl+I)" 
+    });
   };
 
   const fetchNextTask = useCallback(async (agent: "codex" | "copilot", silent = false) => {
@@ -459,9 +479,14 @@ export default function TaskQueue() {
                           <ExternalLink className="h-4 w-4 mr-1" />
                           Details
                         </Button>
-                        <Button size="sm" variant="outline" onClick={() => copyPrompt(task.prompt)}>
+                        <Button 
+                          size="sm" 
+                          variant="default"
+                          className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                          onClick={() => copyPromptForVSCode(task)}
+                        >
                           <Copy className="h-4 w-4 mr-1" />
-                          Prompt
+                          → VS Code
                         </Button>
                         {task.status === "pending" && (
                           <Button size="sm" variant="default" onClick={() => updateStatus.mutate({ taskId: task.id, status: "in_progress" })}>
@@ -708,13 +733,22 @@ export default function TaskQueue() {
                         ) : null}
                       </div>
                       <div className="flex flex-col gap-2">
-                        <Button variant="outline" onClick={() => copyPrompt(agentRunnerResult.prompt)}>
+                        <Button 
+                          size="lg"
+                          className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold"
+                          onClick={() => copyPromptForVSCode({
+                            prompt: agentRunnerResult.prompt,
+                            title: agentRunnerResult.title,
+                            agent: agentRunnerResult.agent,
+                            target_files: agentRunnerResult.target_files,
+                          })}
+                        >
                           <Copy className="h-4 w-4 mr-2" />
-                          Prompt kopieren
+                          📋 Copy für VS Code
                         </Button>
-                        <Button onClick={markRunnerTaskDone}>
+                        <Button variant="outline" onClick={markRunnerTaskDone}>
                           <Check className="h-4 w-4 mr-2" />
-                          Als done markieren
+                          ✅ Done & Nächster
                         </Button>
                       </div>
                     </div>
