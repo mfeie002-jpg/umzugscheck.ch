@@ -298,22 +298,22 @@ export default function TaskQueue() {
         <TabsContent value="tasks" className="mt-4">
           {/* Filters */}
           <div className="flex gap-4 mb-4">
-            <Select value={agentFilter} onValueChange={setAgentFilter}>
+            <Select value={agentFilter || "all"} onValueChange={(v) => setAgentFilter(v === "all" ? "" : v)}>
               <SelectTrigger className="w-[150px]">
                 <SelectValue placeholder="Alle Agents" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Alle Agents</SelectItem>
+                <SelectItem value="all">Alle Agents</SelectItem>
                 <SelectItem value="codex">🔵 CODEX</SelectItem>
                 <SelectItem value="copilot">🟣 COPILOT</SelectItem>
               </SelectContent>
             </Select>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <Select value={statusFilter || "all"} onValueChange={(v) => setStatusFilter(v === "all" ? "" : v)}>
               <SelectTrigger className="w-[150px]">
                 <SelectValue placeholder="Alle Status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Alle Status</SelectItem>
+                <SelectItem value="all">Alle Status</SelectItem>
                 <SelectItem value="pending">⏳ Pending</SelectItem>
                 <SelectItem value="in_progress">▶️ In Progress</SelectItem>
                 <SelectItem value="done">✅ Done</SelectItem>
