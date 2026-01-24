@@ -173,11 +173,6 @@ export const Navigation = () => {
             <div className="hidden xl:flex self-stretch flex-col items-center justify-center gap-0.5 xl:gap-1 shrink-0 flex-none w-auto">
               <div className="flex items-center gap-2 xl:gap-3 justify-center">
                 <HeaderCallButton className="shrink-0" />
-
-                <div className="hidden 2xl:flex items-center gap-1.5 text-xs text-muted-foreground flex-shrink-0 whitespace-nowrap">
-                  <span className="w-2 h-2 rounded-full bg-primary animate-pulse flex-shrink-0" />
-                  <span className="font-medium">Gratis & unverbindlich</span>
-                </div>
               </div>
 
               <Link to={flowPath} aria-label="Kostenlose Umzugsofferten vergleichen" className="shrink-0 w-full xl:w-auto flex justify-center">
