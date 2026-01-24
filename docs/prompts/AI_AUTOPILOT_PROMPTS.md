@@ -6,41 +6,58 @@
 
 ## 📋 Inhaltsverzeichnis
 
-1. [Zapier ChatGPT Prompt](#1-zapier-chatgpt-prompt)
-2. [Zapier Webhook URL](#2-zapier-webhook-url)
-3. [CODEX Agent Prompt](#3-codex-agent-prompt)
-4. [COPILOT Agent Prompt](#4-copilot-agent-prompt)
-5. [Task abholen (für Agents)](#5-task-abholen)
+1. [Zapier ChatGPT Prompt (V2)](#1-zapier-chatgpt-prompt-v2)
+2. [Zapier JSON Parse Step](#2-zapier-json-parse-step)
+3. [Zapier Webhook URL](#3-zapier-webhook-url)
+4. [CODEX Agent Prompt](#4-codex-agent-prompt)
+5. [COPILOT Agent Prompt](#5-copilot-agent-prompt)
+6. [Task Endpoints](#6-task-endpoints)
 
 ---
 
-## 1. Zapier ChatGPT Prompt
+## 1. Zapier ChatGPT Prompt (V2)
 
 **Kopiere diesen Prompt in deinen Zapier ChatGPT Step (Step 3):**
 
 ```
-Du bist ein Projektmanager für Schweizer Web-Projekte.
+Du bist ein Projektmanager + UX/CRO Lead für Schweizer Dienstleistungs-Websites (Telefon-first).
 
-PROJEKT: umzugscheck.ch (Umzugsvergleichsportal)
+PROJEKT:
+- Seite: umzugscheck.ch (Umzugsvergleichsportal, Schweiz)
+- Ziel: mehr QUALITATIVE Leads (Offerten-Anfragen), sekundär Telefonanrufe
+- Tonalität: seriös, ruhig, vertrauenswürdig, detailorientiert (de-CH, CHF)
 
-INPUT DATEN:
+INPUT:
 - Analytics: {{step2__analytics}}
 - Funnel Status: {{step2__funnel}}
-- Aktuelle Steps: {{step2__steps}}
+- Aktuelle Steps/Seiten: {{step2__steps}}
 
 AUFGABE:
-Analysiere die Daten und generiere Tasks für zwei AI-Agenten.
+Erstelle Aufgaben für zwei Agenten, die die bestehende Website iterativ verbessern (nicht neu bauen).
 
-REGELN:
-1. CODEX erstellt neue Dateien (src/components/, hooks/, lib/, pages/, supabase/functions/)
-2. COPILOT ändert nur bestehende Styling-Dateien (index.css, ui/, tailwind.config.ts)
-3. Maximal 2 Tasks pro Agent
-4. Swiss-Markt beachten (CHF, de-CH, ASTAG)
-5. Archetypen: Sicherheitssucher, Effizienz-Profi, Preisoptimierer, Überforderter Umzieher
+REGELN (hart):
+1) CODEX: darf neue Dateien erstellen und Logik ergänzen.
+   Erlaubte Orte: src/components/, src/pages/, src/lib/, src/hooks/, supabase/functions/
+   Beispiele: neue Section-Komponenten, CTA-Logik, Tracking Events, FAQ/Trust Sections.
 
-ANTWORTE NUR MIT DIESEM JSON FORMAT (keine anderen Zeichen!):
+2) COPILOT: ändert NUR bestehende Dateien / Styling / Layout / Copy in bestehenden Komponenten.
+   Erlaubt: index.css, tailwind.config.*, src/components/ui/*, bestehende Page/Section-Dateien.
+   Nicht erlaubt: neue Dateien erstellen, große Refactors.
 
-{"codex_task":{"title":"Titel hier","description":"Was zu tun ist","files":["src/path/file.ts"]},"copilot_task":{"title":"Titel hier","description":"Was zu tun ist","files":["src/components/ui/file.tsx"]},"summary":"Ein Satz Sprint-Zusammenfassung"}
+3) Max 2 Tasks pro Agent.
+4) Priorität: CTA-Klarheit + Trust-Signale + Mobile Thumb Zone + "5-Sekunden-Klarheit".
+5) Schweizer Kontext: de-CH, CHF, ASTAG, lokale Vertrauenssignale.
+
+ARCHETYPEN (für UX-Entscheidungen):
+- Sicherheitssucher: Vertrauen, Zertifikate, Garantien
+- Effizienz-Profi: Schnell, klar, keine Ablenkung
+- Preisoptimierer: Vergleiche, Transparenz, Einsparungen
+- Überforderter Umzieher: Einfach, geführt, beruhigend
+
+OUTPUT:
+Antworte NUR mit gültigem JSON (keine anderen Zeichen, kein Markdown):
+
+{"codex_task":{"title":"Kurz und klar","description":"Was genau zu tun ist, inkl. Akzeptanzkriterien","files":["src/path/file.tsx"]},"copilot_task":{"title":"Kurz und klar","description":"Was genau zu tun ist, inkl. Akzeptanzkriterien","files":["src/path/existing.tsx"]},"summary":"1 Satz Sprint-Zusammenfassung"}
 ```
 
 **Einstellungen:**
@@ -49,26 +66,69 @@ ANTWORTE NUR MIT DIESEM JSON FORMAT (keine anderen Zeichen!):
 
 ---
 
-## 2. Zapier Webhook URL
+## 2. Zapier JSON Parse Step
 
-**Füge diesen Webhook als Step nach ChatGPT hinzu:**
+**WICHTIG: Füge zwischen ChatGPT (Step 3) und Webhook (Step 4) einen Parse-Step hinzu!**
+
+### Option A: Formatter → Utilities → "Text to JSON"
+1. Input: `{{step3__choices__text}}` (oder deine ChatGPT Step-ID)
+2. Zapier parsed automatisch und gibt dir Felder:
+   - `codex_task.title`
+   - `codex_task.description`
+   - `codex_task.files`
+   - `copilot_task.title`
+   - `copilot_task.description`
+   - `copilot_task.files`
+   - `summary`
+
+### Option B: Code by Zapier (JavaScript)
+Falls "Text to JSON" Probleme macht:
+
+**Input Data:**
+- `raw`: `{{step3__choices__text}}`
+
+**Code:**
+```javascript
+const data = JSON.parse(inputData.raw);
+return {
+  codex_task: JSON.stringify(data.codex_task),
+  copilot_task: JSON.stringify(data.copilot_task),
+  summary: data.summary
+};
+```
+
+---
+
+## 3. Zapier Webhook URL
+
+**Step 4: Webhooks by Zapier → POST**
 
 ```
 https://vgitgdvxanodfgokokix.supabase.co/functions/v1/ai-task-webhook
 ```
 
-**Body (JSON):**
-Ersetze `340319113` mit deiner ChatGPT Step-ID:
+### Payload Option 1: Mit vorherigem Parse-Step
 ```json
 {
-  "raw_output": {{340319113__choices__text}},
+  "codex_task": {{step_parse__codex_task}},
+  "copilot_task": {{step_parse__copilot_task}},
+  "summary": "{{step_parse__summary}}",
   "zapier_run_id": "{{zap__id}}"
 }
 ```
 
+### Payload Option 2: Raw Output (Edge Function parsed selbst)
+```json
+{
+  "raw_output": {{step3__choices__text}},
+  "zapier_run_id": "{{zap__id}}"
+}
+```
+> Die Edge Function kann beides verarbeiten!
+
 ---
 
-## 3. CODEX Agent Prompt
+## 4. CODEX Agent Prompt
 
 **Kopiere diesen Prompt in deinen CODEX Agent (VS Code links / Lovable Tab 1):**
 
@@ -118,7 +178,7 @@ Antworte mit: TASK_COMPLETE: [Zusammenfassung was du gemacht hast]
 
 ---
 
-## 4. COPILOT Agent Prompt
+## 5. COPILOT Agent Prompt
 
 **Kopiere diesen Prompt in deinen COPILOT Agent (VS Code rechts / Lovable Tab 2):**
 
@@ -169,23 +229,27 @@ Antworte mit: TASK_COMPLETE: [Zusammenfassung was du gemacht hast]
 
 ---
 
-## 5. Task abholen
-
-**Für manuelle Task-Abholung (falls Agents nicht automatisch fetchen):**
+## 6. Task Endpoints
 
 ### CODEX nächster Task:
 ```
-https://vgitgdvxanodfgokokix.supabase.co/functions/v1/ai-task-webhook/next?agent=codex
+GET https://vgitgdvxanodfgokokix.supabase.co/functions/v1/ai-task-webhook/next?agent=codex
 ```
 
 ### COPILOT nächster Task:
 ```
-https://vgitgdvxanodfgokokix.supabase.co/functions/v1/ai-task-webhook/next?agent=copilot
+GET https://vgitgdvxanodfgokokix.supabase.co/functions/v1/ai-task-webhook/next?agent=copilot
 ```
 
-### Alle pending Tasks sehen:
+### Alle pending Tasks anzeigen:
 ```
-https://vgitgdvxanodfgokokix.supabase.co/functions/v1/ai-task-webhook/pending
+GET https://vgitgdvxanodfgokokix.supabase.co/functions/v1/ai-task-webhook/pending
+```
+
+### Task als erledigt markieren:
+```
+POST https://vgitgdvxanodfgokokix.supabase.co/functions/v1/ai-task-webhook/complete
+Body: { "task_id": "uuid", "output_summary": "Was gemacht wurde" }
 ```
 
 ---
@@ -193,7 +257,7 @@ https://vgitgdvxanodfgokokix.supabase.co/functions/v1/ai-task-webhook/pending
 ## 🔄 Täglicher Workflow
 
 1. **08:00** - Zapier läuft automatisch, generiert Tasks
-2. **08:05** - Tasks sind in Supabase gespeichert
+2. **08:05** - Tasks sind in der Queue gespeichert
 3. **08:10** - Du öffnest 2 Browser-Tabs/VS Code Fenster
 4. **Tab 1** - Paste CODEX Prompt → Agent arbeitet
 5. **Tab 2** - Paste COPILOT Prompt → Agent arbeitet
@@ -202,10 +266,28 @@ https://vgitgdvxanodfgokokix.supabase.co/functions/v1/ai-task-webhook/pending
 
 ---
 
-## ⚡ Quick Start (3 Schritte)
+## ⚡ Quick Start (4 Schritte)
 
-1. **Zapier:** Paste den ChatGPT Prompt in Step 3
-2. **Zapier:** Füge Webhook Step hinzu mit der URL oben
-3. **Lovable/VS Code:** Paste CODEX + COPILOT Prompts in separate Tabs
+1. **Zapier Step 3:** Paste den ChatGPT Prompt (V2) oben
+2. **Zapier Step 3.5:** Füge "Formatter → Text to JSON" Step hinzu (optional aber empfohlen)
+3. **Zapier Step 4:** Webhook POST mit Payload (Option 1 oder 2)
+4. **Lovable/VS Code:** Paste CODEX + COPILOT Prompts in separate Tabs
 
 **Das wars. Die KI macht den Rest.** 🚀
+
+---
+
+## 🛠️ Troubleshooting
+
+**Problem: "Keine pending Tasks"**
+- Prüfe ob Zapier-Webhook erfolgreich war (Status 200)
+- Öffne `/pending` Endpoint im Browser
+- Check ob `raw_output` richtig geparsed wird
+
+**Problem: Tasks werden doppelt erstellt**
+- Nutze den Parse-Step um `codex_task` und `copilot_task` sauber zu trennen
+- Alternativ: `raw_output` Format nutzen (Edge Function parsed selbst)
+
+**Problem: Agent findet Task nicht**
+- Stelle sicher dass `?agent=codex` oder `?agent=copilot` korrekt ist
+- Check ob Task-Status noch `pending` ist (nicht `in_progress`)
