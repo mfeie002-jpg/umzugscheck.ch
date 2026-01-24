@@ -173,7 +173,7 @@ export const MobileMenuNew = ({ isOpen, onClose }: MobileMenuNewProps) => {
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9990] lg:hidden"
             onClick={onClose}
             aria-hidden="true"
           />
@@ -186,7 +186,7 @@ export const MobileMenuNew = ({ isOpen, onClose }: MobileMenuNewProps) => {
             exit="exit"
             className={cn(
               "fixed inset-y-0 right-0 w-full max-w-[360px]",
-              "bg-gradient-to-b from-background via-background to-primary/5 z-50 lg:hidden",
+              "bg-gradient-to-b from-background via-background to-primary/5 z-[9995] lg:hidden",
               "flex flex-col",
               "shadow-2xl"
             )}
