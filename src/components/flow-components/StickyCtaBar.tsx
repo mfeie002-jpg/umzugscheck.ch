@@ -97,7 +97,7 @@ export const StickyCtaBar = memo(function StickyCtaBar({
               variant="outline"
               size="lg"
               onClick={onBack}
-              className="h-12 sm:h-14 px-4 shrink-0"
+              className="min-h-[44px] h-12 sm:h-14 px-4 shrink-0 touch-manipulation"
               disabled={isLoading}
             >
               <ArrowLeft className="h-5 w-5" />
@@ -111,7 +111,7 @@ export const StickyCtaBar = memo(function StickyCtaBar({
             disabled={disabled || isLoading}
             className={cn(
               "flex-1 h-12 sm:h-14 text-base sm:text-lg font-semibold gap-2",
-              "min-h-[48px]", // WCAG touch target
+              "min-h-[48px] touch-manipulation", // WCAG touch target
               variant === 'primary' && "bg-secondary hover:bg-secondary/90 text-secondary-foreground shadow-cta",
               variant === 'secondary' && "bg-primary hover:bg-primary/90"
             )}

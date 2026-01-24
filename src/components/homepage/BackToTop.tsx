@@ -31,7 +31,7 @@ export const BackToTop = () => {
         >
           <Button
             size="icon"
-            className="rounded-full w-12 h-12 bg-card text-foreground border border-border shadow-medium hover:shadow-lift relative overflow-hidden"
+            className="rounded-full min-w-[44px] min-h-[44px] w-12 h-12 bg-card text-foreground border border-border shadow-medium hover:shadow-lift relative overflow-hidden touch-manipulation"
             onClick={scrollToTop}
           >
             {/* Progress Ring */}

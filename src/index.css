@@ -27,8 +27,18 @@ a[href*="lovable.dev"]:not([href*="docs.lovable.dev"]):is([style*="position: fix
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Mobile touch targets - min 48px for accessibility */
+/* Mobile touch targets - WCAG 2.1 AA minimum (44x44px) */
+:root {
+  --touch-target-min: 44px;
+}
+
 .touch-target {
+  min-height: var(--touch-target-min);
+  min-width: var(--touch-target-min);
+}
+
+/* Legacy 48px class for stricter compliance */
+.touch-target-large {
   min-height: 48px;
   min-width: 48px;
 }
