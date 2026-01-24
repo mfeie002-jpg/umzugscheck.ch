@@ -42,6 +42,152 @@ Deno.serve(async (req) => {
       
       // Log incoming request
       await logWebhook('/ai-task-webhook', 'POST', body, true)
+
+      // Allow invoking actions via POST body (frontend-friendly)
+      // Example: { action: 'next', agent: 'codex' }
+      if (body?.action) {
+        const requestedAction = String(body.action)
+
+        if (requestedAction === 'next') {
+          const agent = body.agent
+
+          if (!agent || !['codex', 'copilot'].includes(agent)) {
+            return new Response(JSON.stringify({ error: 'agent must be codex or copilot' }), {
+              status: 400,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            })
+          }
+
+          const { data, error } = await supabase
+            .from('ai_task_queue')
+            .select('*')
+            .eq('agent', agent)
+            .eq('status', 'pending')
+            .order('priority', { ascending: false })
+            .order('created_at', { ascending: true })
+            .limit(1)
+            .single()
+
+          if (error && error.code !== 'PGRST116') throw error
+
+          if (!data) {
+            return new Response(JSON.stringify({
+              message: `Keine pending Tasks für ${agent}`,
+              prompt: null,
+            }), {
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            })
+          }
+
+          await supabase
+            .from('ai_task_queue')
+            .update({ status: 'in_progress', started_at: new Date().toISOString() })
+            .eq('id', data.id)
+
+          return new Response(JSON.stringify({
+            task_id: data.id,
+            title: data.title,
+            prompt: data.prompt,
+            target_files: data.target_files,
+            message: 'Kopiere den Prompt und füge ihn in den Agent ein',
+          }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          })
+        }
+
+        if (requestedAction === 'complete') {
+          const { task_id, output_summary, files_changed } = body
+
+          if (!task_id) {
+            return new Response(JSON.stringify({ error: 'task_id required' }), {
+              status: 400,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            })
+          }
+
+          const { error } = await supabase
+            .from('ai_task_queue')
+            .update({
+              status: 'done',
+              completed_at: new Date().toISOString(),
+              output_summary: output_summary || null,
+              files_changed: files_changed || [],
+            })
+            .eq('id', task_id)
+
+          if (error) throw error
+
+          return new Response(JSON.stringify({ success: true, task_id }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          })
+        }
+
+        if (requestedAction === 'pending') {
+          const { data, error } = await supabase
+            .from('ai_task_queue')
+            .select('id, agent, title, priority, created_at')
+            .eq('status', 'pending')
+            .order('priority', { ascending: false })
+            .order('created_at', { ascending: true })
+
+          if (error) throw error
+
+          return new Response(JSON.stringify({
+            count: data.length,
+            codex: data.filter(t => t.agent === 'codex'),
+            copilot: data.filter(t => t.agent === 'copilot'),
+          }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          })
+        }
+
+        if (requestedAction === 'debug-last') {
+          const { data, error } = await supabase
+            .from('ai_task_webhook_logs')
+            .select('*')
+            .order('created_at', { ascending: false })
+            .limit(5)
+
+          if (error) throw error
+
+          return new Response(JSON.stringify({
+            message: 'Letzte 5 Webhook-Aufrufe',
+            logs: data,
+            hint: 'Schau dir payload und error_message an um Zapier-Probleme zu debuggen',
+          }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          })
+        }
+
+        if (requestedAction === 'stats') {
+          const { data: tasks, error } = await supabase
+            .from('ai_task_queue')
+            .select('agent, status')
+
+          if (error) throw error
+
+          const stats = {
+            total: tasks.length,
+            pending: tasks.filter(t => t.status === 'pending').length,
+            in_progress: tasks.filter(t => t.status === 'in_progress').length,
+            done: tasks.filter(t => t.status === 'done').length,
+            codex_pending: tasks.filter(t => t.agent === 'codex' && t.status === 'pending').length,
+            copilot_pending: tasks.filter(t => t.agent === 'copilot' && t.status === 'pending').length,
+          }
+
+          return new Response(JSON.stringify(stats), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          })
+        }
+
+        return new Response(JSON.stringify({
+          error: 'Unknown action',
+          available_actions: ['next', 'complete', 'pending', 'debug-last', 'stats'],
+        }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        })
+      }
       
       // Unterstützt beide Formate:
       // Format 1: { raw_output: "JSON string from ChatGPT", zapier_run_id }
