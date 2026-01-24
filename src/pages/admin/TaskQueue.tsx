@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,8 +9,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { useAITasks, useWebhookLogs, useCreateTask, useUpdateTaskStatus, useDeleteTask, useTaskStats, AITask, WebhookLog } from "@/hooks/useAITaskQueue";
-import { Plus, RefreshCw, Check, Trash2, Play, Copy, Clock, AlertCircle, CheckCircle, Code, Palette, ExternalLink } from "lucide-react";
+import { Plus, RefreshCw, Check, Trash2, Play, Copy, Clock, AlertCircle, CheckCircle, Code, Palette, ExternalLink, Zap, Radio } from "lucide-react";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import { useToast } from "@/hooks/use-toast";
@@ -52,6 +54,8 @@ export default function TaskQueue() {
     target_files: string[] | null;
   } | null>(null);
   const [agentRunnerLoading, setAgentRunnerLoading] = useState<"codex" | "copilot" | null>(null);
+  const [autoLoadEnabled, setAutoLoadEnabled] = useState(true);
+  const [realtimeConnected, setRealtimeConnected] = useState(false);
 
   const [newTask, setNewTask] = useState({
     agent: "codex",
@@ -87,7 +91,7 @@ export default function TaskQueue() {
     toast({ title: "Prompt kopiert", description: "In Zwischenablage kopiert" });
   };
 
-  const fetchNextTask = async (agent: "codex" | "copilot") => {
+  const fetchNextTask = useCallback(async (agent: "codex" | "copilot", silent = false) => {
     setAgentRunnerLoading(agent);
     try {
       const { data, error } = await supabase.functions.invoke("ai-task-webhook", {
@@ -96,12 +100,14 @@ export default function TaskQueue() {
 
       if (error) throw error;
       if (!data?.task_id || !data?.prompt) {
-        toast({
-          title: "Keine pending Tasks",
-          description: data?.message || `Keine pending Tasks für ${agent}.`,
-        });
+        if (!silent) {
+          toast({
+            title: "Keine pending Tasks",
+            description: data?.message || `Keine pending Tasks für ${agent}.`,
+          });
+        }
         setAgentRunnerResult(null);
-        return;
+        return false;
       }
 
       setAgentRunnerResult({
@@ -111,17 +117,24 @@ export default function TaskQueue() {
         prompt: data.prompt,
         target_files: data.target_files ?? null,
       });
-      toast({ title: "Task geladen", description: `Nächster ${agent.toUpperCase()} Task ist bereit.` });
+      if (!silent) {
+        toast({ title: "Task geladen", description: `Nächster ${agent.toUpperCase()} Task ist bereit.` });
+      }
+      return true;
     } catch (e) {
       const message = e instanceof Error ? e.message : "Unbekannter Fehler";
-      toast({ title: "Fehler", description: message, variant: "destructive" });
+      if (!silent) {
+        toast({ title: "Fehler", description: message, variant: "destructive" });
+      }
+      return false;
     } finally {
       setAgentRunnerLoading(null);
     }
-  };
+  }, [toast]);
 
   const markRunnerTaskDone = async () => {
     if (!agentRunnerResult?.task_id) return;
+    const currentAgent = agentRunnerResult.agent;
     try {
       const { error } = await supabase.functions.invoke("ai-task-webhook", {
         body: { action: "complete", task_id: agentRunnerResult.task_id },
@@ -131,11 +144,63 @@ export default function TaskQueue() {
       toast({ title: "Task abgeschlossen", description: "Status wurde auf done gesetzt." });
       setAgentRunnerResult(null);
       refetch();
+      
+      // Auto-load next task if enabled
+      if (autoLoadEnabled) {
+        setTimeout(() => {
+          fetchNextTask(currentAgent, true).then((hasTask) => {
+            if (hasTask) {
+              toast({ 
+                title: "🚀 Nächster Task geladen", 
+                description: `Auto-Load: ${currentAgent.toUpperCase()} Task bereit.` 
+              });
+            }
+          });
+        }, 500);
+      }
     } catch (e) {
       const message = e instanceof Error ? e.message : "Unbekannter Fehler";
       toast({ title: "Fehler", description: message, variant: "destructive" });
     }
   };
+
+  // Realtime subscription for task updates
+  useEffect(() => {
+    const channel = supabase
+      .channel('ai-task-queue-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'ai_task_queue',
+        },
+        (payload) => {
+          console.log('[Realtime] Task change:', payload);
+          refetch();
+          
+          // If a task was just marked done and auto-load is on, we already handle it in markRunnerTaskDone
+          // This catches external changes (e.g., from Zapier or direct DB edits)
+          if (payload.eventType === 'INSERT' && autoLoadEnabled) {
+            const newTask = payload.new as AITask;
+            if (newTask.status === 'pending' && !agentRunnerResult) {
+              toast({
+                title: "📥 Neuer Task eingegangen",
+                description: `${newTask.agent.toUpperCase()}: ${newTask.title}`,
+              });
+            }
+          }
+        }
+      )
+      .subscribe((status) => {
+        setRealtimeConnected(status === 'SUBSCRIBED');
+        console.log('[Realtime] Status:', status);
+      });
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [autoLoadEnabled, agentRunnerResult, refetch, toast]);
 
   return (
     <div className="container mx-auto py-8 px-4">
@@ -409,7 +474,35 @@ export default function TaskQueue() {
         <TabsContent value="agent" className="mt-4">
           <Card>
             <CardHeader>
-              <CardTitle>Agent Runner (ohne externe URL)</CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  Agent Runner
+                  {realtimeConnected && (
+                    <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-500/30 animate-pulse">
+                      <Radio className="h-3 w-3 mr-1" />
+                      Live
+                    </Badge>
+                  )}
+                </CardTitle>
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
+                    <Switch
+                      id="auto-load"
+                      checked={autoLoadEnabled}
+                      onCheckedChange={setAutoLoadEnabled}
+                    />
+                    <Label htmlFor="auto-load" className="text-sm flex items-center gap-1">
+                      <Zap className="h-4 w-4 text-amber-500" />
+                      Auto-Load
+                    </Label>
+                  </div>
+                </div>
+              </div>
+              {autoLoadEnabled && (
+                <p className="text-sm text-muted-foreground mt-1">
+                  Nach "Done" wird automatisch der nächste Task geladen
+                </p>
+              )}
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-3 md:grid-cols-2">
