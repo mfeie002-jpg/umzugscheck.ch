@@ -109,15 +109,15 @@ export const Navigation = () => {
       
       <nav 
         className={cn(
-          "bg-gradient-to-b from-background to-background/98 backdrop-blur-md border-b border-primary/10 relative transition-shadow duration-300 w-full",
+          "bg-gradient-to-b from-background to-background/98 backdrop-blur-md border-b border-primary/10 relative transition-shadow duration-300",
           scrolled ? "shadow-lg shadow-primary/5" : "shadow-soft"
         )} 
         aria-label="Hauptnavigation"
       >
         <div className="w-full max-w-[1440px] mx-auto px-3 sm:px-4 lg:px-6">
-          <div className="flex items-center justify-between gap-2 lg:gap-4 h-14 sm:h-16 lg:h-20">
+          <div className="w-full flex items-center justify-between flex-wrap xl:flex-nowrap gap-2 lg:gap-4 h-14 sm:h-16 lg:h-20">
             {/* Logo + Left Section */}
-            <div className="flex items-center gap-2 min-w-0">
+            <div className="flex items-center gap-2 min-w-0 flex-1">
               <div className="flex-shrink-0">
                 <Logo size="xl" className="hidden 2xl:flex" />
                 <Logo size="lg" className="hidden lg:flex 2xl:hidden" />
@@ -126,7 +126,7 @@ export const Navigation = () => {
               </div>
 
               {/* Desktop Navigation - show from xl to avoid overlap on mid screens */}
-              <nav className="hidden xl:flex items-center gap-0.5 xl:gap-1 min-w-0" role="navigation">
+              <nav className="hidden xl:flex items-center gap-0.5 xl:gap-1 min-w-0 overflow-hidden" role="navigation">
                 <NavButton dropdown="umzug-planen">{navVariant.labels.preisrechner}</NavButton>
                 <NavButton dropdown="umzugsfirma-finden">{navVariant.labels.firmen}</NavButton>
                 <NavButton dropdown="services">{navVariant.labels.services}</NavButton>
@@ -170,13 +170,14 @@ export const Navigation = () => {
             </div>
 
             {/* CTA Button - Desktop - RECHTS ALIGNED */}
-            <div className="hidden xl:flex items-center gap-2 xl:gap-3 shrink-0">
-              <HeaderCallButton className="flex-shrink-0" />
+            <div className="hidden xl:flex flex-col items-center justify-center gap-0.5 xl:gap-1 shrink-0 flex-none w-auto">
+              <div className="flex items-center gap-2 xl:gap-3">
+                <HeaderCallButton className="shrink-0" />
 
-              <div className="hidden 2xl:flex items-center gap-1.5 text-xs text-muted-foreground flex-shrink-0 whitespace-nowrap">
-                <span className="w-2 h-2 rounded-full bg-primary animate-pulse flex-shrink-0" />
-                <span className="font-medium">Gratis & unverbindlich</span>
-              </div>
+                <div className="hidden 2xl:flex items-center gap-1.5 text-xs text-muted-foreground flex-shrink-0 whitespace-nowrap">
+                  <span className="w-2 h-2 rounded-full bg-primary animate-pulse flex-shrink-0" />
+                  <span className="font-medium">Gratis & unverbindlich</span>
+                </div>
 
               <Link to={flowPath} aria-label="Kostenlose Umzugsofferten vergleichen" className="flex-shrink-0">
                 <Button
