@@ -149,22 +149,23 @@ export const Navigation = () => {
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 className={cn(
-                  "relative z-50 flex items-center justify-center",
-                  "w-10 h-10 rounded-lg",
+                  "relative z-[9999] flex items-center justify-center",
+                  "w-10 h-10 min-h-[44px] min-w-[44px] rounded-lg",
                   "bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20",
                   "hover:from-primary/15 hover:to-primary/10 hover:border-primary/30",
                   "active:scale-95 transition-all touch-manipulation",
-                  "flex-shrink-0",
+                  "flex-shrink-0 cursor-pointer select-none",
                   isMobileMenuOpen && "bg-primary/15 border-primary/30"
                 )}
                 aria-label={isMobileMenuOpen ? "Menü schließen" : "Menü öffnen"}
                 aria-expanded={isMobileMenuOpen}
                 aria-controls="mobile-menu"
+                type="button"
               >
                 {isMobileMenuOpen ? (
-                  <X className="w-5 h-5 text-primary" aria-hidden="true" />
+                  <X className="w-5 h-5 text-primary pointer-events-none" aria-hidden="true" />
                 ) : (
-                  <Menu className="w-5 h-5 text-primary" aria-hidden="true" />
+                  <Menu className="w-5 h-5 text-primary pointer-events-none" aria-hidden="true" />
                 )}
               </button>
             </div>
