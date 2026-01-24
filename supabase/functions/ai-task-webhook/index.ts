@@ -1,0 +1,282 @@
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+}
+
+Deno.serve(async (req) => {
+  // Handle CORS preflight
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders })
+  }
+
+  try {
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!
+    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+    const supabase = createClient(supabaseUrl, supabaseKey)
+
+    const url = new URL(req.url)
+    const action = url.pathname.split('/').pop()
+
+    // POST /ai-task-webhook - Zapier sendet neue Tasks
+    if (req.method === 'POST' && (!action || action === 'ai-task-webhook')) {
+      const body = await req.json()
+      
+      // Zapier sendet: { codex_task, copilot_task, summary, zapier_run_id }
+      const { codex_task, copilot_task, summary, zapier_run_id } = body
+      
+      const tasksToInsert = []
+      
+      if (codex_task?.title) {
+        tasksToInsert.push({
+          agent: 'codex',
+          title: codex_task.title,
+          description: codex_task.description || summary,
+          prompt: generateCodexPrompt(codex_task),
+          target_files: codex_task.files || [],
+          priority: 5,
+          source: 'zapier',
+          zapier_run_id: zapier_run_id || null,
+        })
+      }
+      
+      if (copilot_task?.title) {
+        tasksToInsert.push({
+          agent: 'copilot',
+          title: copilot_task.title,
+          description: copilot_task.description || summary,
+          prompt: generateCopilotPrompt(copilot_task),
+          target_files: copilot_task.files || [],
+          priority: 5,
+          source: 'zapier',
+          zapier_run_id: zapier_run_id || null,
+        })
+      }
+
+      if (tasksToInsert.length > 0) {
+        const { data, error } = await supabase
+          .from('ai_task_queue')
+          .insert(tasksToInsert)
+          .select()
+
+        if (error) throw error
+
+        return new Response(JSON.stringify({ 
+          success: true, 
+          tasks_created: data.length,
+          task_ids: data.map(t => t.id)
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        })
+      }
+
+      return new Response(JSON.stringify({ success: true, tasks_created: 0 }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      })
+    }
+
+    // GET /ai-task-webhook/next?agent=codex|copilot
+    if (req.method === 'GET' && action === 'next') {
+      const agent = url.searchParams.get('agent')
+      
+      if (!agent || !['codex', 'copilot'].includes(agent)) {
+        return new Response(JSON.stringify({ error: 'agent must be codex or copilot' }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        })
+      }
+
+      const { data, error } = await supabase
+        .from('ai_task_queue')
+        .select('*')
+        .eq('agent', agent)
+        .eq('status', 'pending')
+        .order('priority', { ascending: false })
+        .order('created_at', { ascending: true })
+        .limit(1)
+        .single()
+
+      if (error && error.code !== 'PGRST116') throw error
+
+      if (!data) {
+        return new Response(JSON.stringify({ 
+          message: `Keine pending Tasks für ${agent}`,
+          prompt: null 
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        })
+      }
+
+      // Mark as in_progress
+      await supabase
+        .from('ai_task_queue')
+        .update({ status: 'in_progress', started_at: new Date().toISOString() })
+        .eq('id', data.id)
+
+      return new Response(JSON.stringify({
+        task_id: data.id,
+        title: data.title,
+        prompt: data.prompt,
+        target_files: data.target_files,
+        message: 'Kopiere den Prompt und füge ihn in den Agent ein'
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      })
+    }
+
+    // POST /ai-task-webhook/complete
+    if (req.method === 'POST' && action === 'complete') {
+      const { task_id, output_summary, files_changed } = await req.json()
+
+      if (!task_id) {
+        return new Response(JSON.stringify({ error: 'task_id required' }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        })
+      }
+
+      const { error } = await supabase
+        .from('ai_task_queue')
+        .update({ 
+          status: 'done', 
+          completed_at: new Date().toISOString(),
+          output_summary: output_summary || null,
+          files_changed: files_changed || []
+        })
+        .eq('id', task_id)
+
+      if (error) throw error
+
+      return new Response(JSON.stringify({ success: true, task_id }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      })
+    }
+
+    // GET /ai-task-webhook/pending - Alle pending Tasks
+    if (req.method === 'GET' && action === 'pending') {
+      const { data, error } = await supabase
+        .from('ai_task_queue')
+        .select('id, agent, title, priority, created_at')
+        .eq('status', 'pending')
+        .order('priority', { ascending: false })
+        .order('created_at', { ascending: true })
+
+      if (error) throw error
+
+      return new Response(JSON.stringify({ 
+        count: data.length,
+        codex: data.filter(t => t.agent === 'codex'),
+        copilot: data.filter(t => t.agent === 'copilot')
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      })
+    }
+
+    return new Response(JSON.stringify({ error: 'Unknown action' }), {
+      status: 404,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    })
+
+  } catch (error) {
+    console.error('Error:', error)
+    const message = error instanceof Error ? error.message : 'Unknown error'
+    return new Response(JSON.stringify({ error: message }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    })
+  }
+})
+
+// Generiert den vollständigen CODEX Prompt
+function generateCodexPrompt(task: { title: string; description?: string; files?: string[] }): string {
+  return `Du bist CODEX für umzugscheck.ch - ein Schweizer Umzugsvergleichsportal.
+
+DEINE ROLLE: Architekt - Neue Features & komplexe Logik
+
+## AKTUELLE AUFGABE
+**${task.title}**
+${task.description || ''}
+
+${task.files?.length ? `**Zieldateien:** ${task.files.join(', ')}` : ''}
+
+## KONTEXT-DATEIEN (lies diese zuerst)
+- docs/strategic-analysis-v9-archetyp.md (Archetypen & Swiss-Markt)
+- ARCHITECTURE.md (Tech-Stack)
+- docs/prompts/CODEX_COPILOT_WORKFLOW.md (Arbeitsteilung)
+
+## DEIN ARBEITSBEREICH
+✅ src/components/ (neue Komponenten erstellen)
+✅ src/hooks/ (Custom Hooks)
+✅ src/lib/ (Business Logic)
+✅ src/pages/ (neue Seiten)
+✅ supabase/functions/ (Edge Functions)
+
+🚫 NICHT ANFASSEN:
+- src/components/ui/ (Copilot-Bereich)
+- index.css, tailwind.config.ts
+- Bestehende Styling-Fixes
+
+## REGELN
+1. Neue Dateien erstellen, nicht bestehende editieren (außer eigene)
+2. Immer TypeScript mit strikten Typen
+3. Komponenten klein & fokussiert halten
+4. Semantic Tokens aus Tailwind verwenden (keine hardcoded Farben)
+5. Swiss-Markt beachten: ASTAG, DSG, de-CH Locale
+
+## ARCHETYPEN (für UX-Entscheidungen)
+- Sicherheitssucher: Vertrauen, Zertifikate, Garantien
+- Effizienz-Profi: Schnell, klar, keine Ablenkung
+- Preisoptimierer: Vergleiche, Transparenz, Einsparungen
+- Überforderter Umzieher: Einfach, geführt, beruhigend
+
+## WENN FERTIG
+Antworte mit: TASK_COMPLETE: [Zusammenfassung was du gemacht hast]`
+}
+
+// Generiert den vollständigen COPILOT Prompt
+function generateCopilotPrompt(task: { title: string; description?: string; files?: string[] }): string {
+  return `Du bist COPILOT für umzugscheck.ch - ein Schweizer Umzugsvergleichsportal.
+
+DEINE ROLLE: Polierer - Styling, Fixes, Optimierungen
+
+## AKTUELLE AUFGABE
+**${task.title}**
+${task.description || ''}
+
+${task.files?.length ? `**Zieldateien:** ${task.files.join(', ')}` : ''}
+
+## KONTEXT-DATEIEN
+- PRODUCTION_CHECKLIST.md (Was ist done)
+- docs/prompts/CODEX_COPILOT_WORKFLOW.md (Arbeitsteilung)
+
+## DEIN ARBEITSBEREICH
+✅ index.css (Design Tokens, CSS Variablen)
+✅ tailwind.config.ts (Theme-Erweiterungen)
+✅ src/components/ui/ (Shadcn-Anpassungen)
+✅ Bestehende Komponenten: NUR Styling-Fixes
+✅ TypeScript-Typen verbessern
+
+🚫 NICHT ANFASSEN:
+- Neue Dateien erstellen (Codex-Bereich)
+- Business Logic ändern
+- src/hooks/, src/lib/ Logik
+- Edge Functions
+
+## REGELN
+1. Nur in bestehenden Dateien arbeiten
+2. Semantic Tokens verwenden: --primary, --background, --muted etc.
+3. Alle Farben als HSL in index.css
+4. Mobile-first (min-h-[44px] Touch Targets)
+5. WCAG 2.1 AA Kontraste einhalten
+
+## DESIGN-SYSTEM
+- Primärfarbe: Swiss Blue
+- Trust-Signale: Grün für Verified, Gold für Premium
+- Spacing: 4px Basis-Grid
+- Border-Radius: rounded-lg Standard
+- Immer Dark Mode mitdenken!
+
+## WENN FERTIG
+Antworte mit: TASK_COMPLETE: [Zusammenfassung was du gemacht hast]`
+}

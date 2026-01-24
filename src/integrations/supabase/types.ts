@@ -160,6 +160,60 @@ export type Database = {
           },
         ]
       }
+      ai_task_queue: {
+        Row: {
+          agent: string
+          completed_at: string | null
+          created_at: string | null
+          description: string | null
+          files_changed: string[] | null
+          id: string
+          output_summary: string | null
+          priority: number | null
+          prompt: string
+          source: string | null
+          started_at: string | null
+          status: string | null
+          target_files: string[] | null
+          title: string
+          zapier_run_id: string | null
+        }
+        Insert: {
+          agent: string
+          completed_at?: string | null
+          created_at?: string | null
+          description?: string | null
+          files_changed?: string[] | null
+          id?: string
+          output_summary?: string | null
+          priority?: number | null
+          prompt: string
+          source?: string | null
+          started_at?: string | null
+          status?: string | null
+          target_files?: string[] | null
+          title: string
+          zapier_run_id?: string | null
+        }
+        Update: {
+          agent?: string
+          completed_at?: string | null
+          created_at?: string | null
+          description?: string | null
+          files_changed?: string[] | null
+          id?: string
+          output_summary?: string | null
+          priority?: number | null
+          prompt?: string
+          source?: string | null
+          started_at?: string | null
+          status?: string | null
+          target_files?: string[] | null
+          title?: string
+          zapier_run_id?: string | null
+        }
+        Relationships: []
+      }
       analysis_reports: {
         Row: {
           categories: Json
