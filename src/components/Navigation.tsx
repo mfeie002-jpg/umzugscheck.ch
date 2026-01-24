@@ -109,13 +109,13 @@ export const Navigation = () => {
       
       <nav 
         className={cn(
-          "bg-gradient-to-b from-background to-background/98 backdrop-blur-md border-b border-primary/10 relative transition-shadow duration-300",
+          "bg-gradient-to-b from-background to-background/98 backdrop-blur-md border-b border-primary/10 relative transition-shadow duration-300 h-14 sm:h-16 lg:h-20",
           scrolled ? "shadow-lg shadow-primary/5" : "shadow-soft"
         )} 
         aria-label="Hauptnavigation"
       >
-        <div className="w-full max-w-[1440px] mx-auto px-3 sm:px-4 lg:px-6">
-          <div className="w-full flex items-center justify-between flex-wrap xl:flex-nowrap gap-2 lg:gap-4 h-14 sm:h-16 lg:h-20">
+        <div className="w-full max-w-[1440px] mx-auto px-3 sm:px-4 lg:px-6 h-full">
+          <div className="w-full flex items-center justify-between flex-wrap xl:flex-nowrap gap-2 lg:gap-4 h-full">
             {/* Logo + Left Section */}
             <div className="flex items-center gap-2 min-w-0 flex-1">
               <div className="flex-shrink-0">
@@ -171,25 +171,23 @@ export const Navigation = () => {
             </div>
 
             {/* CTA Button - Desktop - RECHTS ALIGNED */}
-            <div className="hidden xl:flex flex-col items-center justify-center gap-0.5 xl:gap-1 shrink-0 flex-none w-auto">
-              <div className="flex items-center gap-2 xl:gap-3">
-                <HeaderCallButton className="shrink-0" />
+            <div className="hidden xl:flex items-center justify-center gap-2 xl:gap-3 shrink-0 flex-none w-auto">
+              <HeaderCallButton className="shrink-0" />
 
-                <div className="hidden 2xl:flex items-center gap-1.5 text-xs text-muted-foreground flex-shrink-0 whitespace-nowrap">
-                  <span className="w-2 h-2 rounded-full bg-primary animate-pulse flex-shrink-0" />
-                  <span className="font-medium">Gratis & unverbindlich</span>
-                </div>
+              <div className="relative flex items-center">
+                <Link to={flowPath} aria-label="Kostenlose Umzugsofferten vergleichen" className="shrink-0">
+                  <Button
+                    size="lg"
+                    className="group inline-flex items-center justify-center bg-gradient-to-r from-secondary via-secondary to-secondary/90 hover:from-secondary/90 hover:via-secondary hover:to-secondary text-secondary-foreground font-bold shadow-[0_4px_20px_rgba(220,38,38,0.35)] hover:shadow-[0_8px_30px_rgba(220,38,38,0.45)] transition-all text-sm xl:text-base px-4 xl:px-6 whitespace-nowrap gap-2"
+                  >
+                    {navVariant.labels.cta}
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform flex-shrink-0" />
+                  </Button>
+                </Link>
+                <span className="absolute top-full mt-1 w-full text-center text-xs text-muted-foreground">
+                  Gratis & unverbindlich
+                </span>
               </div>
-
-              <Link to={flowPath} aria-label="Kostenlose Umzugsofferten vergleichen" className="shrink-0">
-                <Button
-                  size="lg"
-                  className="group inline-flex items-center justify-center bg-gradient-to-r from-secondary via-secondary to-secondary/90 hover:from-secondary/90 hover:via-secondary hover:to-secondary text-secondary-foreground font-bold shadow-[0_4px_20px_rgba(220,38,38,0.35)] hover:shadow-[0_8px_30px_rgba(220,38,38,0.45)] transition-all text-sm xl:text-base px-4 xl:px-6 whitespace-nowrap gap-2"
-                >
-                  {navVariant.labels.cta}
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform flex-shrink-0" />
-                </Button>
-              </Link>
             </div>
           </div>
         </div>
