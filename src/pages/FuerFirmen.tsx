@@ -16,8 +16,10 @@ import {
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { ROICalculator } from "@/components/ROICalculator";
+import { TrustROICalculator } from "@/components/business/TrustROICalculator";
 import { BusinessAnalysisReport } from "@/components/business/BusinessAnalysisReport";
+import { TrustTriumvirateCard } from "@/components/trust/TrustTriumvirateCard";
+import { calculateTrustTriumvirate, type ProviderTrustData } from "@/lib/trust-triumvirate";
 
 const FuerFirmen = () => {
   const [formData, setFormData] = useState({
@@ -280,14 +282,72 @@ const FuerFirmen = () => {
                 </div>
               </ScrollReveal>
               <ScrollReveal delay={0.1}>
-                <ROICalculator onGetStarted={() => document.getElementById('bewerbung')?.scrollIntoView({ behavior: 'smooth' })} />
+                <TrustROICalculator onGetStarted={() => document.getElementById('bewerbung')?.scrollIntoView({ behavior: 'smooth' })} />
+              </ScrollReveal>
+            </div>
+          </div>
+        </section>
+
+        {/* Trust Triumvirate Demo */}
+        <section className="py-16 md:py-24 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <div className="max-w-5xl mx-auto grid lg:grid-cols-2 gap-12 items-start">
+              <ScrollReveal>
+                <div>
+                  <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                    Das Swiss Trust Triumvirate
+                  </h2>
+                  <p className="text-lg text-muted-foreground mb-6">
+                    Unser bewährtes 3-Säulen Framework für maximale Kundenvertrauen und höhere Conversion.
+                  </p>
+                  <ul className="space-y-3 mb-6">
+                    <li className="flex items-center gap-2 text-sm">
+                      <Building2 className="w-4 h-4 text-blue-600" />
+                      <span><strong>Institutional Trust:</strong> Rechtliche Legitimität & Permanenz</span>
+                    </li>
+                    <li className="flex items-center gap-2 text-sm">
+                      <Users className="w-4 h-4 text-amber-600" />
+                      <span><strong>Social Trust:</strong> Kollektive Erfahrungen & Reputation</span>
+                    </li>
+                    <li className="flex items-center gap-2 text-sm">
+                      <CheckCircle2 className="w-4 h-4 text-green-600" />
+                      <span><strong>Process Trust:</strong> Transparenz & Methodenkompetenz</span>
+                    </li>
+                  </ul>
+                  <p className="text-sm text-muted-foreground">
+                    Jeder Partner erhält ein kostenloses Trust-Audit mit konkreten Verbesserungsvorschlägen.
+                  </p>
+                </div>
+              </ScrollReveal>
+              <ScrollReveal delay={0.1}>
+                <TrustTriumvirateCard 
+                  trustData={calculateTrustTriumvirate({
+                    uidVerified: true,
+                    insuranceCertified: true,
+                    membershipVerified: null,
+                    hasLandline: false,
+                    hasDedicatedDomain: true,
+                    googleReviewCount: 12,
+                    averageRating: 4.6,
+                    hasTeamPhotos: false,
+                    hasCaseStudies: false,
+                    hasVideoTestimonials: false,
+                    hasHowItWorksSection: true,
+                    guaranteesVisible: false,
+                    transparentPricing: true,
+                    responseTimeHours: 8,
+                    hasGuaranteeBadges: false,
+                    hasAbgabegarantie: false,
+                  })}
+                  showGapAnalysis={true}
+                />
               </ScrollReveal>
             </div>
           </div>
         </section>
 
         {/* Business Analysis Report - Full Analysis */}
-        <section className="py-16 md:py-24 bg-muted/30">
+        <section className="py-16 md:py-24">
           <div className="container mx-auto px-4">
             <BusinessAnalysisReport />
           </div>
