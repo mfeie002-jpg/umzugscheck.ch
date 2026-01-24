@@ -58,11 +58,10 @@ https://vgitgdvxanodfgokokix.supabase.co/functions/v1/ai-task-webhook
 ```
 
 **Body (JSON):**
+Ersetze `340319113` mit deiner ChatGPT Step-ID:
 ```json
 {
-  "codex_task": {{step3__codex_task}},
-  "copilot_task": {{step3__copilot_task}},
-  "summary": "{{step3__summary}}",
+  "raw_output": {{340319113__choices__text}},
   "zapier_run_id": "{{zap__id}}"
 }
 ```

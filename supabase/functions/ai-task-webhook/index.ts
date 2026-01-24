@@ -23,8 +23,38 @@ Deno.serve(async (req) => {
     if (req.method === 'POST' && (!action || action === 'ai-task-webhook')) {
       const body = await req.json()
       
-      // Zapier sendet: { codex_task, copilot_task, summary, zapier_run_id }
-      const { codex_task, copilot_task, summary, zapier_run_id } = body
+      // Unterstützt beide Formate:
+      // Format 1: { raw_output: "JSON string from ChatGPT", zapier_run_id }
+      // Format 2: { codex_task, copilot_task, summary, zapier_run_id }
+      
+      let codex_task, copilot_task, summary
+      const { zapier_run_id } = body
+      
+      if (body.raw_output) {
+        // Parse raw ChatGPT output (could be string or already parsed)
+        try {
+          const parsed = typeof body.raw_output === 'string' 
+            ? JSON.parse(body.raw_output) 
+            : body.raw_output
+          codex_task = parsed.codex_task
+          copilot_task = parsed.copilot_task
+          summary = parsed.summary
+        } catch (e) {
+          console.error('Failed to parse raw_output:', e)
+          return new Response(JSON.stringify({ 
+            error: 'Invalid JSON in raw_output',
+            received: body.raw_output 
+          }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          })
+        }
+      } else {
+        // Direct format
+        codex_task = body.codex_task
+        copilot_task = body.copilot_task
+        summary = body.summary
+      }
       
       const tasksToInsert = []
       
@@ -65,13 +95,19 @@ Deno.serve(async (req) => {
         return new Response(JSON.stringify({ 
           success: true, 
           tasks_created: data.length,
-          task_ids: data.map(t => t.id)
+          task_ids: data.map(t => t.id),
+          summary: summary || null
         }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         })
       }
 
-      return new Response(JSON.stringify({ success: true, tasks_created: 0 }), {
+      return new Response(JSON.stringify({ 
+        success: true, 
+        tasks_created: 0,
+        message: 'No valid tasks in payload',
+        received_keys: Object.keys(body)
+      }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       })
     }
