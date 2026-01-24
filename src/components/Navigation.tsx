@@ -103,7 +103,7 @@ export const Navigation = () => {
   );
 
   return (
-    <header className="sticky top-0 z-50 w-full overflow-x-hidden">
+    <header className="sticky top-0 z-50 w-full">
       {/* Warm accent line at very top */}
       <div className="h-1 bg-gradient-to-r from-primary to-secondary" />
       
@@ -115,31 +115,33 @@ export const Navigation = () => {
         aria-label="Hauptnavigation"
       >
         <div className="w-full max-w-[1440px] mx-auto px-3 sm:px-4 lg:px-6">
-          <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20 gap-2 lg:gap-4 min-w-0">
-            {/* Logo - Always visible (no nested links) */}
-            <div className="flex-shrink-0">
-              <Logo size="xl" className="hidden 2xl:flex" />
-              <Logo size="lg" className="hidden lg:flex 2xl:hidden" />
-              {/* Mobile */}
-              <Logo size="md" className="flex lg:hidden" />
+          <div className="flex items-center justify-between gap-2 lg:gap-4 h-14 sm:h-16 lg:h-20">
+            {/* Logo + Left Section */}
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="flex-shrink-0">
+                <Logo size="xl" className="hidden 2xl:flex" />
+                <Logo size="lg" className="hidden lg:flex 2xl:hidden" />
+                {/* Mobile */}
+                <Logo size="md" className="flex lg:hidden" />
+              </div>
+
+              {/* Desktop Navigation - show from xl to avoid overlap on mid screens */}
+              <nav className="hidden xl:flex items-center gap-0.5 xl:gap-1 min-w-0" role="navigation">
+                <NavButton dropdown="umzug-planen">{navVariant.labels.preisrechner}</NavButton>
+                <NavButton dropdown="umzugsfirma-finden">{navVariant.labels.firmen}</NavButton>
+                <NavButton dropdown="services">{navVariant.labels.services}</NavButton>
+                <NavButton dropdown="ratgeber">{navVariant.labels.ratgeber}</NavButton>
+                <NavButton dropdown="fuer-firmen">{navVariant.labels.fuerFirmen}</NavButton>
+              </nav>
             </div>
 
-            {/* Desktop Navigation - show from xl to avoid overlap on mid screens */}
-            <nav className="hidden xl:flex items-center flex-1 justify-center gap-0.5 xl:gap-1 min-w-0 overflow-hidden" role="navigation">
-              <NavButton dropdown="umzug-planen">{navVariant.labels.preisrechner}</NavButton>
-              <NavButton dropdown="umzugsfirma-finden">{navVariant.labels.firmen}</NavButton>
-              <NavButton dropdown="services">{navVariant.labels.services}</NavButton>
-              <NavButton dropdown="ratgeber">{navVariant.labels.ratgeber}</NavButton>
-              <NavButton dropdown="fuer-firmen">{navVariant.labels.fuerFirmen}</NavButton>
-            </nav>
-
             {/* Mobile/Tablet: Menu button + Call + mini CTA */}
-            <div className="flex xl:hidden items-center gap-1.5 sm:gap-2 flex-shrink-0">
+            <div className="flex xl:hidden items-center gap-1.5 sm:gap-2 shrink-0">
               <MobileHeaderCallButton />
 
               <Link
                 to={flowPath}
-                className="flex items-center gap-1 bg-secondary text-secondary-foreground text-xs font-bold px-2.5 sm:px-3 py-2 sm:py-2.5 rounded-lg shadow-md shadow-secondary/20 active:scale-95 transition-all min-h-[40px] touch-manipulation"
+                className="flex items-center justify-center gap-1 bg-secondary text-secondary-foreground text-xs font-bold px-2.5 sm:px-3 py-2 sm:py-2.5 rounded-lg shadow-md shadow-secondary/20 active:scale-95 transition-all touch-manipulation"
               >
                 <span>Offerten</span>
               </Link>
@@ -152,6 +154,7 @@ export const Navigation = () => {
                   "bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20",
                   "hover:from-primary/15 hover:to-primary/10 hover:border-primary/30",
                   "active:scale-95 transition-all touch-manipulation",
+                  "flex-shrink-0",
                   isMobileMenuOpen && "bg-primary/15 border-primary/30"
                 )}
                 aria-label={isMobileMenuOpen ? "Menü schließen" : "Menü öffnen"}
@@ -166,8 +169,8 @@ export const Navigation = () => {
               </button>
             </div>
 
-            {/* CTA Button - Desktop */}
-            <div className="hidden xl:flex items-center flex-shrink-0 gap-2 xl:gap-3 min-w-0">
+            {/* CTA Button - Desktop - RECHTS ALIGNED */}
+            <div className="hidden xl:flex items-center gap-2 xl:gap-3 shrink-0">
               <HeaderCallButton className="flex-shrink-0" />
 
               <div className="hidden 2xl:flex items-center gap-1.5 text-xs text-muted-foreground flex-shrink-0 whitespace-nowrap">
@@ -178,10 +181,10 @@ export const Navigation = () => {
               <Link to={flowPath} aria-label="Kostenlose Umzugsofferten vergleichen" className="flex-shrink-0">
                 <Button
                   size="lg"
-                  className="group bg-gradient-to-r from-secondary via-secondary to-secondary/90 hover:from-secondary/90 hover:via-secondary hover:to-secondary text-secondary-foreground font-bold shadow-[0_4px_20px_rgba(220,38,38,0.35)] hover:shadow-[0_8px_30px_rgba(220,38,38,0.45)] transition-all text-sm xl:text-base px-4 xl:px-6 whitespace-nowrap"
+                  className="group inline-flex items-center justify-center bg-gradient-to-r from-secondary via-secondary to-secondary/90 hover:from-secondary/90 hover:via-secondary hover:to-secondary text-secondary-foreground font-bold shadow-[0_4px_20px_rgba(220,38,38,0.35)] hover:shadow-[0_8px_30px_rgba(220,38,38,0.45)] transition-all text-sm xl:text-base px-4 xl:px-6 whitespace-nowrap gap-2"
                 >
                   {navVariant.labels.cta}
-                  <ArrowRight className="w-4 h-4 ml-1.5 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform flex-shrink-0" />
                 </Button>
               </Link>
             </div>
