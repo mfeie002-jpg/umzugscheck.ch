@@ -14,6 +14,7 @@ import { Plus, RefreshCw, Check, Trash2, Play, Copy, Clock, AlertCircle, CheckCi
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const STATUS_COLORS: Record<string, string> = {
   pending: "bg-amber-500/20 text-amber-700 border-amber-500/30",
@@ -42,6 +43,15 @@ export default function TaskQueue() {
   const updateStatus = useUpdateTaskStatus();
   const deleteTask = useDeleteTask();
   const { toast } = useToast();
+
+  const [agentRunnerResult, setAgentRunnerResult] = useState<{
+    agent: "codex" | "copilot";
+    task_id: string;
+    title: string;
+    prompt: string;
+    target_files: string[] | null;
+  } | null>(null);
+  const [agentRunnerLoading, setAgentRunnerLoading] = useState<"codex" | "copilot" | null>(null);
 
   const [newTask, setNewTask] = useState({
     agent: "codex",
@@ -75,6 +85,56 @@ export default function TaskQueue() {
   const copyPrompt = (prompt: string) => {
     navigator.clipboard.writeText(prompt);
     toast({ title: "Prompt kopiert", description: "In Zwischenablage kopiert" });
+  };
+
+  const fetchNextTask = async (agent: "codex" | "copilot") => {
+    setAgentRunnerLoading(agent);
+    try {
+      const { data, error } = await supabase.functions.invoke("ai-task-webhook", {
+        body: { action: "next", agent },
+      });
+
+      if (error) throw error;
+      if (!data?.task_id || !data?.prompt) {
+        toast({
+          title: "Keine pending Tasks",
+          description: data?.message || `Keine pending Tasks für ${agent}.`,
+        });
+        setAgentRunnerResult(null);
+        return;
+      }
+
+      setAgentRunnerResult({
+        agent,
+        task_id: data.task_id,
+        title: data.title,
+        prompt: data.prompt,
+        target_files: data.target_files ?? null,
+      });
+      toast({ title: "Task geladen", description: `Nächster ${agent.toUpperCase()} Task ist bereit.` });
+    } catch (e) {
+      const message = e instanceof Error ? e.message : "Unbekannter Fehler";
+      toast({ title: "Fehler", description: message, variant: "destructive" });
+    } finally {
+      setAgentRunnerLoading(null);
+    }
+  };
+
+  const markRunnerTaskDone = async () => {
+    if (!agentRunnerResult?.task_id) return;
+    try {
+      const { error } = await supabase.functions.invoke("ai-task-webhook", {
+        body: { action: "complete", task_id: agentRunnerResult.task_id },
+      });
+      if (error) throw error;
+
+      toast({ title: "Task abgeschlossen", description: "Status wurde auf done gesetzt." });
+      setAgentRunnerResult(null);
+      refetch();
+    } catch (e) {
+      const message = e instanceof Error ? e.message : "Unbekannter Fehler";
+      toast({ title: "Fehler", description: message, variant: "destructive" });
+    }
   };
 
   return (
@@ -231,6 +291,7 @@ export default function TaskQueue() {
       <Tabs defaultValue="tasks">
         <TabsList>
           <TabsTrigger value="tasks">📋 Tasks</TabsTrigger>
+          <TabsTrigger value="agent">🧩 Agent Runner</TabsTrigger>
           <TabsTrigger value="logs">📝 Webhook Logs</TabsTrigger>
         </TabsList>
 
@@ -343,6 +404,93 @@ export default function TaskQueue() {
               ))}
             </div>
           )}
+        </TabsContent>
+
+        <TabsContent value="agent" className="mt-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Agent Runner (ohne externe URL)</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid gap-3 md:grid-cols-2">
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">{AGENT_ICONS.codex} <span className="ml-1">CODEX</span></Badge>
+                        <span className="text-sm text-muted-foreground">Nächsten Task holen</span>
+                      </div>
+                      <Button
+                        onClick={() => fetchNextTask("codex")}
+                        disabled={agentRunnerLoading !== null}
+                      >
+                        {agentRunnerLoading === "codex" ? "Lade..." : "Next"}
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="bg-secondary text-secondary-foreground border-border">{AGENT_ICONS.copilot} <span className="ml-1">COPILOT</span></Badge>
+                        <span className="text-sm text-muted-foreground">Nächsten Task holen</span>
+                      </div>
+                      <Button
+                        onClick={() => fetchNextTask("copilot")}
+                        disabled={agentRunnerLoading !== null}
+                      >
+                        {agentRunnerLoading === "copilot" ? "Lade..." : "Next"}
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {agentRunnerResult && (
+                <Card className="border-dashed">
+                  <CardContent className="p-4 space-y-3">
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <Badge
+                            variant="outline"
+                            className={
+                              agentRunnerResult.agent === "codex"
+                                ? "bg-primary/10 text-primary border-primary/20"
+                                : "bg-secondary text-secondary-foreground border-border"
+                            }
+                          >
+                            {AGENT_ICONS[agentRunnerResult.agent]} <span className="ml-1 uppercase">{agentRunnerResult.agent}</span>
+                          </Badge>
+                          <Badge variant="outline" className="font-mono text-xs">{agentRunnerResult.task_id}</Badge>
+                        </div>
+                        <h3 className="font-semibold mt-2">{agentRunnerResult.title}</h3>
+                        {agentRunnerResult.target_files?.length ? (
+                          <div className="flex flex-wrap gap-1 mt-2">
+                            {agentRunnerResult.target_files.map((f, i) => (
+                              <Badge key={i} variant="outline" className="text-xs font-mono">{f}</Badge>
+                            ))}
+                          </div>
+                        ) : null}
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <Button variant="outline" onClick={() => copyPrompt(agentRunnerResult.prompt)}>
+                          <Copy className="h-4 w-4 mr-2" />
+                          Prompt kopieren
+                        </Button>
+                        <Button onClick={markRunnerTaskDone}>
+                          <Check className="h-4 w-4 mr-2" />
+                          Als done markieren
+                        </Button>
+                      </div>
+                    </div>
+                    <pre className="bg-muted p-4 rounded-lg text-sm overflow-x-auto whitespace-pre-wrap">{agentRunnerResult.prompt}</pre>
+                  </CardContent>
+                </Card>
+              )}
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="logs" className="mt-4">
