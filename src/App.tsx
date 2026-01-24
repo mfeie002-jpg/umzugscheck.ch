@@ -300,6 +300,7 @@ const VideoAnalysisResult = lazy(() => import("./pages/VideoAnalysisResult"));
 const PostLaunch = lazy(() => import("./pages/admin/PostLaunch"));
 const Phase6Admin = lazy(() => import("./pages/admin/Phase6"));
 const GoLive = lazy(() => import("./pages/admin/GoLive"));
+const TaskQueue = lazy(() => import("./pages/admin/TaskQueue"));
 
 // ChatGPT Flow pages
 const ChatGPTFlow1 = lazy(() => import("./pages/ChatGPTFlow1"));
@@ -447,7 +448,8 @@ const AdminRoutes = () => (
       <Route path="/admin/availability" element={<ProviderAvailability />} />
       <Route path="/admin/code-export" element={<CodeExport />} />
       <Route path="/admin/tools" element={<AdminTools />} />
-      <Route path="/admin/screenshots" element={<AdminScreenshots />} />
+          <Route path="/admin/screenshots" element={<AdminScreenshots />} />
+          <Route path="/admin/task-queue" element={<TaskQueue />} />
       <Route path="/admin/screenshot-review" element={<AllFlowsScreenshotReview />} />
       <Route path="/all-flows-review" element={<AllFlowsScreenshotReview />} />
       <Route path="/admin/ai-export" element={<AdminAIExport />} />

@@ -86,3 +86,6 @@ verify_jwt = false
 
 [functions.analyze-video]
 verify_jwt = false
+
+[functions.ai-task-webhook]
+verify_jwt = false

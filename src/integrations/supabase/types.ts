@@ -214,6 +214,42 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_task_webhook_logs: {
+        Row: {
+          created_at: string
+          endpoint: string
+          error_message: string | null
+          id: string
+          method: string
+          payload: Json | null
+          response_data: Json | null
+          source_ip: string | null
+          success: boolean
+        }
+        Insert: {
+          created_at?: string
+          endpoint: string
+          error_message?: string | null
+          id?: string
+          method: string
+          payload?: Json | null
+          response_data?: Json | null
+          source_ip?: string | null
+          success?: boolean
+        }
+        Update: {
+          created_at?: string
+          endpoint?: string
+          error_message?: string | null
+          id?: string
+          method?: string
+          payload?: Json | null
+          response_data?: Json | null
+          source_ip?: string | null
+          success?: boolean
+        }
+        Relationships: []
+      }
       analysis_reports: {
         Row: {
           categories: Json
