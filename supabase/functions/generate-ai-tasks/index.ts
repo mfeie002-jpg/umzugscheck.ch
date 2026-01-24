@@ -259,12 +259,117 @@ Generiere jetzt die optimalen CODEX und COPILOT Tasks basierend auf diesen Daten
       }
     }
 
+    // 9. Sync pending tasks to GitHub as Markdown
+    let githubSyncResult = { synced: false, error: null as string | null }
+    const githubToken = Deno.env.get('GITHUB_TOKEN')
+    
+    if (githubToken && insertedTasks.length > 0) {
+      try {
+        // Fetch all pending tasks for markdown export
+        const { data: pendingTasks, error: pendingError } = await supabase
+          .from('ai_task_queue')
+          .select('*')
+          .eq('status', 'pending')
+          .order('priority', { ascending: false })
+          .order('created_at', { ascending: true })
+
+        if (!pendingError && pendingTasks) {
+          const codexTasks = pendingTasks.filter(t => t.agent === 'codex')
+          const copilotTasks = pendingTasks.filter(t => t.agent === 'copilot')
+
+          // Generate markdown content
+          const now = new Date().toISOString()
+          
+          const generateMarkdown = (tasks: typeof pendingTasks, agentName: string) => {
+            if (tasks.length === 0) return `# 🤖 Pending ${agentName.toUpperCase()} Tasks\n\nGenerated: ${now}\n\n---\n\n_No pending tasks._\n`
+            
+            let md = `# 🤖 Pending ${agentName.toUpperCase()} Tasks\n\nGenerated: ${now}\n\n---\n\n`
+            
+            tasks.forEach((task, index) => {
+              md += `## Task ${index + 1}: ${task.title}\n\n`
+              md += `**Priority**: ${task.priority || 'normal'}\n\n`
+              if (task.target_files?.length) {
+                md += `**Target Files:**\n${task.target_files.map((f: string) => `- \`${f}\``).join('\n')}\n\n`
+              }
+              md += `### Instructions:\n\n${task.prompt}\n\n---\n\n`
+            })
+            
+            return md
+          }
+
+          const codexMarkdown = generateMarkdown(codexTasks, 'CODEX')
+          const copilotMarkdown = generateMarkdown(copilotTasks, 'COPILOT')
+
+          // Push to GitHub
+          const owner = 'manuelfafl'
+          const repo = 'umzugscheck.ch'
+          const branch = 'main'
+
+          const pushToGitHub = async (path: string, content: string) => {
+            // First, try to get existing file SHA
+            const getResponse = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`, {
+              headers: {
+                'Authorization': `Bearer ${githubToken}`,
+                'Accept': 'application/vnd.github.v3+json',
+                'User-Agent': 'Lovable-AI-Task-Sync',
+              },
+            })
+
+            let sha: string | undefined
+            if (getResponse.ok) {
+              const existing = await getResponse.json()
+              sha = existing.sha
+            }
+
+            // Create or update file
+            const putResponse = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+              method: 'PUT',
+              headers: {
+                'Authorization': `Bearer ${githubToken}`,
+                'Accept': 'application/vnd.github.v3+json',
+                'User-Agent': 'Lovable-AI-Task-Sync',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                message: `🤖 Auto-sync: Update ${path.split('/').pop()}`,
+                content: btoa(unescape(encodeURIComponent(content))),
+                branch,
+                ...(sha ? { sha } : {}),
+              }),
+            })
+
+            if (!putResponse.ok) {
+              const errorText = await putResponse.text()
+              throw new Error(`GitHub API error: ${putResponse.status} - ${errorText}`)
+            }
+
+            return true
+          }
+
+          await Promise.all([
+            pushToGitHub('docs/tasks/PENDING_CODEX.md', codexMarkdown),
+            pushToGitHub('docs/tasks/PENDING_COPILOT.md', copilotMarkdown),
+          ])
+
+          githubSyncResult = { synced: true, error: null }
+          console.log('✅ Successfully synced tasks to GitHub')
+        }
+      } catch (syncError) {
+        console.error('GitHub sync error:', syncError)
+        githubSyncResult = { 
+          synced: false, 
+          error: syncError instanceof Error ? syncError.message : 'Unknown sync error' 
+        }
+      }
+    }
+
     return new Response(JSON.stringify({
       success: true,
       tasks_created: insertedTasks.length,
       task_ids: insertedTasks,
       summary: parsedTasks.summary,
       priority_reasoning: parsedTasks.priority_reasoning,
+      github_sync: githubSyncResult,
       context_used: {
         flows_analyzed: analysisContext.flows.length,
         issues_considered: analysisContext.issues.length,
