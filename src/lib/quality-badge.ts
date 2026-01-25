@@ -1,8 +1,30 @@
 /**
  * Provider Quality Badge System
  * Verified badges and trust indicators for moving companies
- * Integrated with Trust Triumvirate Framework
+ * Fully integrated with Trust Triumvirate Framework (Institutional, Social, Process Trust)
  */
+
+// Re-export Trust Triumvirate types and functions for unified API
+export {
+  type TrustFactor,
+  type TrustPillar,
+  type TrustTriumvirate,
+  type TrustGap,
+  type ProviderTrustData,
+  TRUST_WEIGHTS,
+  PILLAR_CONFIG,
+  calculateTrustTriumvirate,
+  getTrustScoreLabel,
+  getTrustScoreColor,
+  getPillarProgressColor,
+} from './trust-triumvirate';
+
+// Import for internal use
+import { 
+  calculateTrustTriumvirate as calcTrust,
+  type ProviderTrustData as TrustData,
+  type TrustTriumvirate as TrustResult,
+} from './trust-triumvirate';
 
 export type BadgeLevel = 'none' | 'verified' | 'premium' | 'elite';
 
@@ -414,4 +436,216 @@ export function getBadgeProgress(currentScore: number): {
     progressToNext: Math.min(100, Math.max(0, progressPercent)),
     pointsToNext: Math.max(0, nextThreshold - currentScore),
   };
+}
+
+// ============= Trust Triumvirate Deep Integration =============
+
+/**
+ * Extended provider data including Trust Triumvirate factors
+ */
+export interface ExtendedProviderData {
+  // Basic metrics
+  id: string;
+  rating?: number;
+  reviewCount?: number;
+  isVerified?: boolean;
+  responseTimeHours?: number;
+  successRate?: number;
+  profileCompleteness?: number;
+  yearsInBusiness?: number;
+  
+  // Trust Triumvirate specific data
+  trustData?: TrustData;
+}
+
+/**
+ * Complete badge data with Trust Triumvirate breakdown
+ */
+export interface CompleteBadgeData extends ProviderBadgeData {
+  trustTriumvirate?: TrustResult;
+  institutionalScore: number;
+  socialScore: number;
+  processScore: number;
+}
+
+/**
+ * Calculate complete badge with Trust Triumvirate breakdown
+ * This is the primary function to use for full trust analysis
+ */
+export function calculateCompleteBadge(provider: ExtendedProviderData): CompleteBadgeData {
+  let trustTriumvirate: TrustResult | undefined;
+  let trustScore: number;
+  let institutionalScore = 0;
+  let socialScore = 0;
+  let processScore = 0;
+
+  // If we have full trust data, calculate Trust Triumvirate
+  if (provider.trustData) {
+    trustTriumvirate = calcTrust(provider.trustData);
+    trustScore = trustTriumvirate.overallScore;
+    institutionalScore = trustTriumvirate.institutional.score;
+    socialScore = trustTriumvirate.social.score;
+    processScore = trustTriumvirate.process.score;
+  } else {
+    // Estimate from basic metrics
+    trustScore = estimateTrustScore(provider);
+    
+    // Estimate pillar scores from basic data
+    const estimates = estimatePillarScores(provider);
+    institutionalScore = estimates.institutional;
+    socialScore = estimates.social;
+    processScore = estimates.process;
+  }
+
+  // Get base badge data
+  const baseBadge = getProviderBadge({
+    ...provider,
+    trustTriumvirateScore: trustScore,
+  });
+
+  return {
+    ...baseBadge,
+    trustTriumvirate,
+    institutionalScore,
+    socialScore,
+    processScore,
+    trustTriumvirateScore: trustScore,
+  };
+}
+
+/**
+ * Estimate pillar scores from basic provider metrics
+ */
+function estimatePillarScores(provider: ExtendedProviderData): {
+  institutional: number;
+  social: number;
+  process: number;
+} {
+  // Institutional: based on verification and profile completeness
+  let institutional = 0;
+  if (provider.isVerified) institutional += 45; // UID + Insurance approximation
+  institutional += Math.min(35, (provider.profileCompleteness || 0) * 0.35);
+  institutional += provider.yearsInBusiness && provider.yearsInBusiness >= 5 ? 20 : 0;
+
+  // Social: based on reviews and ratings
+  let social = 0;
+  const reviews = provider.reviewCount || 0;
+  social += Math.min(30, reviews >= 20 ? 30 : reviews * 1.5);
+  const rating = provider.rating || 0;
+  social += rating >= 4.5 ? 25 : rating >= 4.0 ? 15 : rating >= 3.5 ? 8 : 0;
+  social += Math.min(30, reviews >= 100 ? 30 : reviews * 0.3);
+
+  // Process: based on response time and profile completeness
+  let process = 0;
+  const response = provider.responseTimeHours || 48;
+  process += response <= 2 ? 25 : response <= 6 ? 18 : response <= 12 ? 12 : response <= 24 ? 5 : 0;
+  if ((provider.profileCompleteness || 0) >= 70) process += 25;
+  process += (provider.successRate || 0) >= 85 ? 25 : (provider.successRate || 0) >= 70 ? 15 : 0;
+
+  return {
+    institutional: Math.min(100, Math.round(institutional)),
+    social: Math.min(100, Math.round(social)),
+    process: Math.min(100, Math.round(process)),
+  };
+}
+
+/**
+ * Get improvement recommendations based on current scores
+ */
+export function getImprovementRecommendations(badge: CompleteBadgeData): {
+  priority: 'high' | 'medium' | 'low';
+  pillar: 'institutional' | 'social' | 'process';
+  recommendation: string;
+  impact: number;
+}[] {
+  const recommendations: {
+    priority: 'high' | 'medium' | 'low';
+    pillar: 'institutional' | 'social' | 'process';
+    recommendation: string;
+    impact: number;
+  }[] = [];
+
+  // Institutional recommendations
+  if (badge.institutionalScore < 50) {
+    recommendations.push({
+      priority: 'high',
+      pillar: 'institutional',
+      recommendation: 'UID im Zefix verifizieren und Versicherungsnachweis hochladen',
+      impact: 15,
+    });
+  }
+
+  // Social recommendations
+  if (badge.socialScore < 50) {
+    recommendations.push({
+      priority: 'high',
+      pillar: 'social',
+      recommendation: 'Google Bewertungen aktiv sammeln (Ziel: 20+)',
+      impact: 12,
+    });
+    if (badge.socialScore < 30) {
+      recommendations.push({
+        priority: 'medium',
+        pillar: 'social',
+        recommendation: 'Team-Fotos und Fallstudien hinzufügen',
+        impact: 8,
+      });
+    }
+  }
+
+  // Process recommendations
+  if (badge.processScore < 50) {
+    recommendations.push({
+      priority: 'high',
+      pillar: 'process',
+      recommendation: '"So funktioniert\'s" Sektion und transparente Preise hinzufügen',
+      impact: 15,
+    });
+  }
+  if ((badge.processScore >= 50 && badge.processScore < 70)) {
+    recommendations.push({
+      priority: 'medium',
+      pillar: 'process',
+      recommendation: 'Antwortzeit auf unter 12 Stunden optimieren',
+      impact: 6,
+    });
+  }
+
+  // Sort by impact
+  return recommendations.sort((a, b) => b.impact - a.impact);
+}
+
+/**
+ * Calculate potential score increase from meeting a specific requirement
+ */
+export function calculatePotentialIncrease(
+  currentScore: number,
+  pillar: 'institutional' | 'social' | 'process',
+  requirement: string
+): number {
+  const impactMap: Record<string, number> = {
+    // Institutional
+    uid: 7,
+    insurance: 8,
+    membership: 7,
+    landline: 6,
+    domain: 7,
+    // Social
+    reviews: 8,
+    rating: 6,
+    team_photos: 5,
+    case_studies: 6,
+    video_testimonials: 5,
+    // Process
+    how_it_works: 8,
+    abgabegarantie: 8,
+    pricing: 7,
+    response_time: 6,
+    guarantee_badges: 6,
+  };
+
+  const weights = { institutional: 0.35, social: 0.30, process: 0.35 };
+  const impact = impactMap[requirement] || 5;
+  
+  return Math.round(impact * weights[pillar]);
 }
