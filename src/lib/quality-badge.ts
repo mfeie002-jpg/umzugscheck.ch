@@ -1,6 +1,7 @@
 /**
  * Provider Quality Badge System
  * Verified badges and trust indicators for moving companies
+ * Integrated with Trust Triumvirate Framework
  */
 
 export type BadgeLevel = 'none' | 'verified' | 'premium' | 'elite';
@@ -30,6 +31,7 @@ export interface ProviderBadgeData {
   earnedAt?: Date;
   verificationsComplete: string[];
   pendingVerifications: string[];
+  trustTriumvirateScore?: number; // Integration point
 }
 
 /**
@@ -67,6 +69,26 @@ export const BADGE_DEFINITIONS: Record<BadgeLevel, Omit<QualityBadge, 'requireme
 };
 
 /**
+ * Score thresholds for badge levels (integrated with Trust Triumvirate)
+ */
+export const BADGE_SCORE_THRESHOLDS = {
+  none: { min: 0, max: 39 },
+  verified: { min: 40, max: 59 },
+  premium: { min: 60, max: 79 },
+  elite: { min: 80, max: 100 },
+} as const;
+
+/**
+ * Get badge level from Trust Triumvirate overall score
+ */
+export function getBadgeLevelFromScore(score: number): BadgeLevel {
+  if (score >= 80) return 'elite';
+  if (score >= 60) return 'premium';
+  if (score >= 40) return 'verified';
+  return 'none';
+}
+
+/**
  * Calculate provider badge level based on metrics
  */
 export function calculateBadgeLevel(provider: {
@@ -77,7 +99,13 @@ export function calculateBadgeLevel(provider: {
   successRate?: number;
   profileCompleteness?: number;
   yearsInBusiness?: number;
+  trustTriumvirateScore?: number; // Optional integration
 }): BadgeLevel {
+  // If Trust Triumvirate score is provided, use it directly
+  if (typeof provider.trustTriumvirateScore === 'number') {
+    return getBadgeLevelFromScore(provider.trustTriumvirateScore);
+  }
+
   const {
     rating = 0,
     reviewCount = 0,
@@ -122,6 +150,40 @@ export function calculateBadgeLevel(provider: {
 }
 
 /**
+ * Calculate estimated Trust Triumvirate score from basic provider metrics
+ * This provides a rough estimate when full Trust Triumvirate data isn't available
+ */
+export function estimateTrustScore(provider: {
+  rating?: number;
+  reviewCount?: number;
+  isVerified?: boolean;
+  responseTimeHours?: number;
+  profileCompleteness?: number;
+}): number {
+  let score = 0;
+  
+  // Institutional factors (max ~35 points)
+  if (provider.isVerified) score += 15; // UID + Insurance approximation
+  if ((provider.profileCompleteness || 0) >= 80) score += 10;
+  score += Math.min(10, (provider.profileCompleteness || 0) / 10);
+  
+  // Social factors (max ~30 points)
+  const reviews = provider.reviewCount || 0;
+  score += Math.min(8, reviews >= 20 ? 8 : reviews / 2.5);
+  const rating = provider.rating || 0;
+  score += rating >= 4.5 ? 6 : rating >= 4.0 ? 4 : rating >= 3.5 ? 2 : 0;
+  score += Math.min(10, reviews >= 50 ? 10 : reviews / 5);
+  
+  // Process factors (max ~35 points)
+  const response = provider.responseTimeHours || 48;
+  score += response <= 2 ? 12 : response <= 6 ? 8 : response <= 12 ? 5 : response <= 24 ? 2 : 0;
+  if ((provider.profileCompleteness || 0) >= 70) score += 8; // Assumes "how it works" etc.
+  score += Math.min(10, (provider.profileCompleteness || 0) / 10);
+  
+  return Math.min(100, Math.round(score));
+}
+
+/**
  * Get full badge data with requirements
  */
 export function getProviderBadge(provider: {
@@ -133,6 +195,7 @@ export function getProviderBadge(provider: {
   successRate?: number;
   profileCompleteness?: number;
   yearsInBusiness?: number;
+  trustTriumvirateScore?: number;
 }): ProviderBadgeData {
   const level = calculateBadgeLevel(provider);
   const requirements = getRequirementsForLevel(provider, level);
@@ -185,6 +248,7 @@ export function getProviderBadge(provider: {
     verificationsComplete,
     pendingVerifications,
     earnedAt: level !== 'none' ? new Date() : undefined,
+    trustTriumvirateScore: provider.trustTriumvirateScore || estimateTrustScore(provider),
   };
 }
 
@@ -310,4 +374,44 @@ export function getBadgeColorClasses(level: BadgeLevel): {
         border: 'border-border',
       };
   }
+}
+
+/**
+ * Get badge progress towards next level
+ */
+export function getBadgeProgress(currentScore: number): {
+  currentLevel: BadgeLevel;
+  nextLevel: BadgeLevel | null;
+  progressToNext: number;
+  pointsToNext: number;
+} {
+  const currentLevel = getBadgeLevelFromScore(currentScore);
+  const thresholds = BADGE_SCORE_THRESHOLDS;
+  
+  const levelOrder: BadgeLevel[] = ['none', 'verified', 'premium', 'elite'];
+  const currentIndex = levelOrder.indexOf(currentLevel);
+  
+  if (currentIndex >= levelOrder.length - 1) {
+    return {
+      currentLevel,
+      nextLevel: null,
+      progressToNext: 100,
+      pointsToNext: 0,
+    };
+  }
+  
+  const nextLevel = levelOrder[currentIndex + 1];
+  const nextThreshold = thresholds[nextLevel].min;
+  const currentThreshold = thresholds[currentLevel].min;
+  
+  const rangeSize = nextThreshold - currentThreshold;
+  const progress = currentScore - currentThreshold;
+  const progressPercent = Math.round((progress / rangeSize) * 100);
+  
+  return {
+    currentLevel,
+    nextLevel,
+    progressToNext: Math.min(100, Math.max(0, progressPercent)),
+    pointsToNext: Math.max(0, nextThreshold - currentScore),
+  };
 }
