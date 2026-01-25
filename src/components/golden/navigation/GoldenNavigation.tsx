@@ -102,16 +102,21 @@ export const GoldenNavigation = memo(() => {
             </div>
 
             {/* Mobile CTA (below xl) */}
-            <Button 
-              asChild 
-              className="xl:hidden h-9 px-3 sm:px-4 font-bold gap-1.5 rounded-lg bg-[#E32026] hover:bg-[#c91c21] text-white text-sm whitespace-nowrap"
-            >
-              <Link to={flowPath}>
-                <Zap className="w-4 h-4" />
-                <span className="hidden sm:inline">{GOLDEN_NAV_CONFIG.labels.cta}</span>
-                <span className="sm:hidden">{GOLDEN_NAV_CONFIG.labels.ctaShort}</span>
-              </Link>
-            </Button>
+            <div className="xl:hidden flex flex-col items-center">
+              <Button 
+                asChild 
+                className="h-9 px-3 sm:px-4 font-bold gap-1.5 rounded-lg bg-[#E32026] hover:bg-[#c91c21] text-white text-sm whitespace-nowrap"
+              >
+                <Link to={flowPath}>
+                  <Zap className="w-4 h-4" />
+                  <span className="hidden sm:inline">{GOLDEN_NAV_CONFIG.labels.cta}</span>
+                  <span className="sm:hidden">{GOLDEN_NAV_CONFIG.labels.ctaShort}</span>
+                </Link>
+              </Button>
+              <span className="text-[9px] sm:text-[10px] text-muted-foreground mt-0.5 font-medium">
+                Gratis & unverbindlich
+              </span>
+            </div>
 
             {/* Mobile Menu Toggle */}
             <Button
