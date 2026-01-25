@@ -2644,6 +2644,129 @@ export type Database = {
         }
         Relationships: []
       }
+      move_projects: {
+        Row: {
+          assigned_provider_id: string | null
+          completed_at: string | null
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          created_at: string
+          distance_km: number | null
+          estimated_price_max: number | null
+          estimated_price_min: number | null
+          events: Json | null
+          final_price: number | null
+          flexible_dates: boolean | null
+          from_address: string | null
+          from_city: string | null
+          from_floor: number | null
+          from_has_elevator: boolean | null
+          from_postal: string | null
+          id: string
+          inventory_data: Json | null
+          preferred_date: string | null
+          progress_percentage: number
+          provider_confirmed: boolean | null
+          started_at: string | null
+          status: Database["public"]["Enums"]["move_project_status"]
+          to_address: string | null
+          to_city: string | null
+          to_floor: number | null
+          to_has_elevator: boolean | null
+          to_postal: string | null
+          total_items: number | null
+          total_volume_m3: number | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          assigned_provider_id?: string | null
+          completed_at?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          distance_km?: number | null
+          estimated_price_max?: number | null
+          estimated_price_min?: number | null
+          events?: Json | null
+          final_price?: number | null
+          flexible_dates?: boolean | null
+          from_address?: string | null
+          from_city?: string | null
+          from_floor?: number | null
+          from_has_elevator?: boolean | null
+          from_postal?: string | null
+          id?: string
+          inventory_data?: Json | null
+          preferred_date?: string | null
+          progress_percentage?: number
+          provider_confirmed?: boolean | null
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["move_project_status"]
+          to_address?: string | null
+          to_city?: string | null
+          to_floor?: number | null
+          to_has_elevator?: boolean | null
+          to_postal?: string | null
+          total_items?: number | null
+          total_volume_m3?: number | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          assigned_provider_id?: string | null
+          completed_at?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          distance_km?: number | null
+          estimated_price_max?: number | null
+          estimated_price_min?: number | null
+          events?: Json | null
+          final_price?: number | null
+          flexible_dates?: boolean | null
+          from_address?: string | null
+          from_city?: string | null
+          from_floor?: number | null
+          from_has_elevator?: boolean | null
+          from_postal?: string | null
+          id?: string
+          inventory_data?: Json | null
+          preferred_date?: string | null
+          progress_percentage?: number
+          provider_confirmed?: boolean | null
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["move_project_status"]
+          to_address?: string | null
+          to_city?: string | null
+          to_floor?: number | null
+          to_has_elevator?: boolean | null
+          to_postal?: string | null
+          total_items?: number | null
+          total_volume_m3?: number | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "move_projects_assigned_provider_id_fkey"
+            columns: ["assigned_provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "move_projects_assigned_provider_id_fkey"
+            columns: ["assigned_provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       movescan_hard_truth: {
         Row: {
           actual_crew_size: number | null
@@ -3108,6 +3231,73 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      project_bids: {
+        Row: {
+          bid_amount: number
+          created_at: string
+          estimated_duration_hours: number | null
+          expires_at: string | null
+          id: string
+          includes_materials: boolean | null
+          includes_packing: boolean | null
+          message: string | null
+          project_id: string
+          provider_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          bid_amount: number
+          created_at?: string
+          estimated_duration_hours?: number | null
+          expires_at?: string | null
+          id?: string
+          includes_materials?: boolean | null
+          includes_packing?: boolean | null
+          message?: string | null
+          project_id: string
+          provider_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          bid_amount?: number
+          created_at?: string
+          estimated_duration_hours?: number | null
+          expires_at?: string | null
+          id?: string
+          includes_materials?: boolean | null
+          includes_packing?: boolean | null
+          message?: string | null
+          project_id?: string
+          provider_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_bids_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "move_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_bids_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_bids_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers_public"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       provider_availability: {
         Row: {
@@ -5111,6 +5301,13 @@ export type Database = {
     Enums: {
       account_status: "active" | "inactive"
       app_role: "admin" | "user"
+      move_project_status:
+        | "route"
+        | "inventory"
+        | "quote"
+        | "booking"
+        | "moving"
+        | "complete"
       price_level: "günstig" | "fair" | "premium"
       verification_status: "pending" | "approved" | "rejected"
     }
@@ -5242,6 +5439,14 @@ export const Constants = {
     Enums: {
       account_status: ["active", "inactive"],
       app_role: ["admin", "user"],
+      move_project_status: [
+        "route",
+        "inventory",
+        "quote",
+        "booking",
+        "moving",
+        "complete",
+      ],
       price_level: ["günstig", "fair", "premium"],
       verification_status: ["pending", "approved", "rejected"],
     },
