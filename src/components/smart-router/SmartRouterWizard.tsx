@@ -3,6 +3,9 @@
  * Implements "Smart Router" pattern from Gemini UX Audit
  * 
  * Flow: PLZ → Qualification → Routing (Video/Form) → Contact → Success
+ * 
+ * Now integrated with MoveProject for end-to-end journey orchestration.
+ * @see docs/strategy/INVISIBLE_MOVE_IMPLEMENTATION.md
  */
 
 import { useState, useEffect, useCallback } from 'react';
@@ -19,6 +22,8 @@ import { RoutingStep } from './steps/RoutingStep';
 import { ContactStep } from './steps/ContactStep';
 import { SuccessStep } from './steps/SuccessStep';
 import { GoldenFlowLaborIllusion } from '@/components/golden-flow/components/GoldenFlowLaborIllusion';
+import { useMoveProject } from '@/hooks/useMoveProject';
+import { trackMoveEvent } from '@/lib/move-project';
 
 const getInitialFormData = (): SmartRouterData => {
   try {
@@ -78,6 +83,17 @@ export function SmartRouterWizard() {
   
   const [estimateSessionId, setEstimateSessionId] = useState<string | null>(null);
   const [matchedCompanyIds, setMatchedCompanyIds] = useState<string[]>([]);
+  
+  // Move Project integration for journey orchestration
+  const { 
+    project, 
+    createProject, 
+    setOrigin, 
+    setDestination, 
+    setMoveDate,
+    trackEvent,
+    phaseProgress 
+  } = useMoveProject();
 
   // Calculate price when qualification data changes
   useEffect(() => {
@@ -96,11 +112,40 @@ export function SmartRouterWizard() {
   }, [formData]);
 
   const updateFormData = useCallback((updates: Partial<SmartRouterData>) => {
-    setFormData(prev => ({ ...prev, ...updates }));
-  }, []);
+    setFormData(prev => {
+      const newData = { ...prev, ...updates };
+      
+      // Sync with MoveProject orchestrator
+      if (updates.fromPLZ && project) {
+        setOrigin({ postalCode: updates.fromPLZ, city: updates.fromCity || '' });
+      }
+      if (updates.toPLZ && project) {
+        setDestination({ postalCode: updates.toPLZ, city: updates.toCity || '' });
+      }
+      if (updates.moveDate && project) {
+        setMoveDate(updates.moveDate);
+      }
+      
+      return newData;
+    });
+  }, [project, setOrigin, setDestination, setMoveDate]);
+
+  // Initialize MoveProject on first interaction
+  const initializeProject = useCallback(async () => {
+    if (!project) {
+      const newProject = await createProject('homepage');
+      if (newProject) {
+        console.log('[SmartRouter] MoveProject initialized:', newProject.id);
+      }
+    }
+  }, [project, createProject]);
 
   // Navigation handlers
-  const goToQualification = useCallback(() => setCurrentStep('qualification'), []);
+  const goToQualification = useCallback(() => {
+    initializeProject();
+    trackEvent('address_entered');
+    setCurrentStep('qualification');
+  }, [initializeProject, trackEvent]);
   const goToRouting = useCallback(() => setCurrentStep('routing'), []);
   const goToContact = useCallback(() => setCurrentStep('contact'), []);
   const goBack = useCallback(() => {
