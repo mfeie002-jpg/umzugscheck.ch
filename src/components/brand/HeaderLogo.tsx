@@ -71,7 +71,7 @@ export function HeaderLogo({ className, size = "md", onClick, showTagline = true
         >
           <tspan fill="#0050A8">Umzugs</tspan>
           <tspan fill="#E32026">check</tspan>
-          <tspan fill="#0050A8" fontWeight="600">.ch</tspan>
+          <tspan fill="#0050A8" fontWeight="700">.ch</tspan>
         </text>
       </svg>
       

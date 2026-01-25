@@ -110,7 +110,9 @@ export const Logo = ({ className = "", size = "lg", iconOnly = false }: LogoProp
           fontSize="26" 
           fontWeight="700"
         >
-          <tspan fill="#1a1a1a">Umzugs</tspan><tspan fill="#dc2626">check</tspan><tspan fill="#64748b" fontWeight="500">.ch</tspan>
+          <tspan fill="#1a1a1a" fontWeight="700">Umzugs</tspan>
+          <tspan fill="#dc2626" fontWeight="700">check</tspan>
+          <tspan fill="#1a1a1a" fontWeight="700" fontSize="26">.ch</tspan>
         </text>
       </svg>
       {/* Slogan under logo - visible from sm breakpoint */}

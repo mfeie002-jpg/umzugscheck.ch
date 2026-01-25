@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Star, CheckCircle2, Sparkles, Upload } from "lucide-react";
+import { ArrowRight, Star, CheckCircle2, Sparkles, Phone, PhoneCall } from "lucide-react";
 import { Link } from "react-router-dom";
 import { AICalculator } from "./calculator/AICalculator";
 import { useHaptic } from "@/hooks/use-haptic";
@@ -9,6 +9,33 @@ import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
 
 export const Hero = () => {
+  const PHONE_DISPLAY = "044 500 12 34";
+  const PHONE_TEL = "+41445001234";
+  const trustBadges = [
+    "Familienbetrieb seit 1980",
+    "5.0★ Google",
+    "Versichert bis CHF 1 Mio.",
+    "Region Zug & Zürich"
+  ];
+  const faqs = [
+    {
+      q: "Sind wir versichert?",
+      a: "Ja, Transport- und Haftpflichtversicherung bis CHF 1 Mio."
+    },
+    {
+      q: "Gibt es Festpreise?",
+      a: "Wir bestätigen nach kurzem Telefonat einen verbindlichen Preis."
+    },
+    {
+      q: "Können wir kurzfristig?",
+      a: "Oft noch Slots in 24-48h. Am schnellsten kurz anrufen."
+    },
+    {
+      q: "Schwere oder sensible Güter?",
+      a: "Erfahrene Teams für Flügel, Safe, Keller/Attika, Server."
+    }
+  ];
+
   const { trigger } = useHaptic();
   const [heroImage, setHeroImage] = useState<string | null>(null);
 
@@ -75,7 +102,7 @@ export const Hero = () => {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.6 }}
               >
-                Ihr Umzug zum<br />besten Preis.
+                Feierabend beginnt,<br />sobald wir da sind.
               </motion.h1>
 
               {/* Subline */}
@@ -85,7 +112,7 @@ export const Hero = () => {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
-                In 2 Minuten Angebote vergleichen<br />und bis zu 40% sparen.
+                Familiengeführter Umzugspartner für Zug & Zürich. Pünktlich, erreichbar, versichert.
               </motion.p>
 
               {/* CTAs */}
@@ -95,55 +122,40 @@ export const Hero = () => {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
               >
-                <Link to="/firmen" className="w-full">
-                  <Button 
-                    size="lg" 
-                    className="w-full text-base sm:text-lg h-14 bg-accent hover:bg-accent/90 shadow-xl"
-                    onClick={() => trigger('medium')}
-                  >
-                    Jetzt vergleichen
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
-                </Link>
-                <button
-                  onClick={() => {
-                    const calcSection = document.querySelector('#ki-rechner-section');
-                    calcSection?.scrollIntoView({ behavior: 'smooth' });
-                    trigger('light');
-                  }}
-                  className="w-full"
+                <Button 
+                  size="lg"
+                  className="w-full text-base sm:text-lg min-h-[44px] h-14 bg-accent hover:bg-accent/90 shadow-xl"
+                  onClick={() => trigger('medium')}
+                  asChild
                 >
+                  <a href={`tel:${PHONE_TEL}`} aria-label={`Jetzt anrufen ${PHONE_DISPLAY}`}>
+                    <Phone className="mr-2 h-5 w-5" /> Jetzt anrufen · {PHONE_DISPLAY}
+                  </a>
+                </Button>
+                <Link to="/contact" className="w-full">
                   <Button 
                     size="lg" 
                     variant="ghost"
-                    className="w-full text-base sm:text-lg h-14 bg-white/10 hover:bg-white/20 text-white border-2 border-white/30 backdrop-blur-sm"
+                    className="w-full text-base sm:text-lg min-h-[44px] h-14 bg-white/10 hover:bg-white/20 text-white border-2 border-white/30 backdrop-blur-sm"
                   >
-                    Kosten berechnen
+                    Rückruf anfordern
                   </Button>
-                </button>
+                </Link>
+                <p className="text-sm text-white/80">2 Minuten klären – wir übernehmen den Rest.</p>
               </motion.div>
 
-              {/* Social Proof Badges */}
+              {/* Trust Pills */}
               <motion.div 
-                className="flex flex-col gap-3 pt-4"
+                className="flex flex-wrap items-center justify-center gap-2 pt-4"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.6, delay: 0.6 }}
               >
-                <div className="flex items-center justify-center gap-6 text-sm">
-                  <div className="flex items-center gap-1">
-                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                    <span className="font-semibold">4.8/5</span>
-                  </div>
-                  <div className="h-4 w-px bg-white/30" />
-                  <div className="font-semibold">
-                    15'000+ Umzüge
-                  </div>
-                </div>
-                <div className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-xs border border-white/20">
-                  <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                  <span>LIVE: Neue Anfrage aus Zürich</span>
-                </div>
+                {trustBadges.map((item) => (
+                  <span key={item} className="px-3 py-1 rounded-full bg-white/10 border border-white/20 text-sm">
+                    {item}
+                  </span>
+                ))}
               </motion.div>
             </div>
           </div>
@@ -159,66 +171,67 @@ export const Hero = () => {
               <div className="space-y-8 text-left">
                 <div className="space-y-4">
                   <h1 className="text-5xl lg:text-6xl font-bold text-foreground leading-tight">
-                    Ihr Umzug. Unser Vergleich. <span className="text-primary">Ihre Ersparnis.</span>
+                    Feierabend beginnt,<br className="hidden lg:block" /> sobald wir da sind.
                   </h1>
                   <p className="text-xl text-muted-foreground leading-relaxed">
-                    Finden Sie in 2 Minuten die bestbewerteten Umzugsfirmen der Schweiz. Vergleichen Sie Preise, Bewertungen und Services – kostenlos, unverbindlich und perfekt auf Ihren Umzug abgestimmt.
+                    Familiengeführter Umzugspartner für Zug & Zürich. Pünktlich, versichert und telefonisch sofort erreichbar.
                   </p>
-                  <p className="text-lg text-foreground/70 italic font-medium">
-                    Damit Ihr Umzug nicht Stress bedeutet, sondern ein neuer Anfang.
+                  <p className="text-lg text-foreground/70 font-medium">
+                    Wir klären Ihren Umzug in 2 Minuten am Telefon – damit Ihr Abend wirklich frei bleibt.
                   </p>
                 </div>
                 
-                {/* Live Trust Element */}
-                <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-full text-sm">
-                  <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                  <span className="text-green-800 font-medium">LIVE – Kunde aus Zürich hat vor 3 Minuten verglichen.</span>
+                <div className="flex flex-wrap items-center gap-2">
+                  {trustBadges.map((item) => (
+                    <span key={item} className="px-3 py-1 rounded-full bg-muted text-sm text-foreground/80">
+                      {item}
+                    </span>
+                  ))}
                 </div>
 
                 <div className="grid grid-cols-3 gap-4">
                   <div className="text-left">
                     <div className="flex items-center gap-2 mb-1">
                       <CheckCircle2 className="h-5 w-5 text-accent flex-shrink-0" />
-                      <p className="text-3xl font-bold text-foreground">40%</p>
+                      <p className="text-3xl font-bold text-foreground">40+</p>
                     </div>
-                    <p className="text-sm text-muted-foreground">günstiger dank Vergleich</p>
+                    <p className="text-sm text-muted-foreground">Jahre Erfahrung</p>
                   </div>
                   <div className="text-left">
                     <div className="flex items-center gap-2 mb-1">
                       <Star className="h-5 w-5 text-yellow-400 flex-shrink-0 fill-yellow-400" />
-                      <p className="text-3xl font-bold text-foreground">4.8/5</p>
+                      <p className="text-3xl font-bold text-foreground">5.0</p>
                     </div>
-                    <p className="text-sm text-muted-foreground">Zufriedenheit</p>
+                    <p className="text-sm text-muted-foreground">Kundenbewertungen</p>
                   </div>
                   <div className="text-left">
                     <div className="flex items-center gap-2 mb-1">
                       <CheckCircle2 className="h-5 w-5 text-success flex-shrink-0" />
-                      <p className="text-3xl font-bold text-foreground">15'000+</p>
+                      <p className="text-3xl font-bold text-foreground">24/7</p>
                     </div>
-                    <p className="text-sm text-muted-foreground">Umzüge</p>
+                    <p className="text-sm text-muted-foreground">Telefonisch erreichbar</p>
                   </div>
                 </div>
 
-                <div className="flex gap-4">
-                  <Link to="/firmen" className="flex-1">
-                    <Button 
-                      size="lg" 
-                      className="w-full text-base px-8 bg-destructive hover:bg-destructive/90 shadow-lg"
-                      onClick={() => trigger('medium')}
-                    >
-                      Jetzt Umzugsfirmen vergleichen
-                      <ArrowRight className="ml-2 h-5 w-5" />
-                    </Button>
-                  </Link>
-                  <Link to="/rechner" className="flex-1">
+                <div className="flex gap-4 flex-wrap">
+                  <Button 
+                    size="lg" 
+                    className="flex-1 text-base px-8 min-h-[44px] bg-accent hover:bg-accent/90 shadow-lg"
+                    onClick={() => trigger('medium')}
+                    asChild
+                  >
+                    <a href={`tel:${PHONE_TEL}`} aria-label={`Jetzt anrufen ${PHONE_DISPLAY}`} className="flex items-center justify-center">
+                      <PhoneCall className="mr-2 h-5 w-5" /> Jetzt anrufen · {PHONE_DISPLAY}
+                    </a>
+                  </Button>
+                  <Link to="/contact" className="flex-1 min-w-[220px]">
                     <Button 
                       size="lg" 
                       variant="outline"
-                      className="w-full text-base px-8 bg-white hover:bg-gray-50 border-2"
+                      className="w-full text-base px-8 min-h-[44px]"
                       onClick={() => trigger('light')}
                     >
-                      <Sparkles className="mr-2 h-4 w-4" />
-                      KI-Umzugsrechner benutzen
+                      Rückruf anfordern
                     </Button>
                   </Link>
                 </div>
@@ -253,6 +266,99 @@ export const Hero = () => {
           </div>
         </div>
       </section>
+
+      {/* Credibility Strip */}
+      <section className="bg-white border-t border-b border-border/60">
+        <div className="container mx-auto px-4 py-6 flex flex-col lg:flex-row items-start lg:items-center gap-4">
+          <div className="flex-1">
+            <p className="text-sm text-muted-foreground">Warum Familien uns anrufen</p>
+            <h3 className="text-xl font-semibold text-foreground">Eigene Teams, versichert, erreichbar – Zug & Zürich</h3>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {trustBadges.map((item) => (
+              <span key={item} className="px-3 py-1 rounded-full bg-muted text-sm text-foreground/80">
+                {item}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Family Proof Block */}
+      <section className="bg-muted/40 border-b border-border/60">
+        <div className="container mx-auto px-4 py-8 grid lg:grid-cols-3 gap-6 items-center">
+          <div className="lg:col-span-2 space-y-3">
+            <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground">Familienbetrieb</p>
+            <h3 className="text-2xl font-semibold text-foreground">Feierabend Familie – wir kommen selbst.</h3>
+            <p className="text-muted-foreground">Keine Subunternehmer. Eigene Teams, klarer Ansprechpartner, versichert bis CHF 1 Mio. Wir klären Ihren Umzug in wenigen Minuten am Telefon.</p>
+            <div className="flex gap-3 flex-wrap">
+              <Button size="lg" className="min-h-[44px]" asChild>
+                <a href={`tel:${PHONE_TEL}`} aria-label={`Jetzt anrufen ${PHONE_DISPLAY}`} className="flex items-center gap-2">
+                  <Phone className="h-5 w-5" /> Jetzt anrufen · {PHONE_DISPLAY}
+                </a>
+              </Button>
+              <Button size="lg" variant="outline" className="min-h-[44px]" asChild>
+                <Link to="/contact">Rückruf anfordern</Link>
+              </Button>
+            </div>
+          </div>
+          <div className="rounded-2xl overflow-hidden border border-border/70 bg-white shadow-sm min-h-[220px] flex items-center justify-center">
+            {heroImage ? (
+              <img src={heroImage} alt="Familie Feierabend" className="w-full h-full object-cover" />
+            ) : (
+              <div className="p-6 text-center text-muted-foreground">
+                <p className="font-semibold">Familie Feierabend</p>
+                <p className="text-sm">Zug & Zürich – eigene Teams</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Objection-killer FAQ */}
+      <section className="bg-white border-b border-border/60">
+        <div className="container mx-auto px-4 py-10 space-y-6">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <div>
+              <p className="text-sm text-muted-foreground">Schnell geklärt</p>
+              <h3 className="text-2xl font-semibold text-foreground">Häufige Fragen, sofort beantwortet</h3>
+            </div>
+            <Button size="lg" className="min-h-[44px]" asChild>
+              <a href={`tel:${PHONE_TEL}`} aria-label={`Jetzt anrufen ${PHONE_DISPLAY}`} className="flex items-center gap-2">
+                <PhoneCall className="h-5 w-5" /> Jetzt anrufen · {PHONE_DISPLAY}
+              </a>
+            </Button>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            {faqs.map((item) => (
+              <div key={item.q} className="rounded-xl border border-border/60 bg-muted/30 p-4 space-y-1">
+                <p className="font-semibold text-foreground">{item.q}</p>
+                <p className="text-sm text-muted-foreground">{item.a}</p>
+                <a href={`tel:${PHONE_TEL}`} className="text-sm text-primary font-medium hover:underline">Am schnellsten klären wir das telefonisch.</a>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Sticky Mobile Phone CTA */}
+      <div className="fixed inset-x-0 bottom-0 z-40 md:hidden">
+        <div className="bg-background/95 backdrop-blur border-t border-border shadow-lg pb-[env(safe-area-inset-bottom)]">
+          <Button
+            size="lg"
+            className="w-full justify-center gap-2 rounded-none min-h-[44px] py-3"
+            asChild
+          >
+            <a href={`tel:${PHONE_TEL}`} aria-label={`Jetzt anrufen ${PHONE_DISPLAY}`}>
+              <Phone className="h-5 w-5" /> Jetzt anrufen · {PHONE_DISPLAY}
+            </a>
+          </Button>
+          <Link to="/contact" className="block w-full text-center text-sm py-2 text-muted-foreground hover:text-primary">
+            Rückruf anfordern
+          </Link>
+        </div>
+      </div>
 
       {/* KI-RECHNER SECTION - Full Width Card Below Hero */}
       <section id="ki-rechner-section" className="bg-white py-8 sm:py-12">

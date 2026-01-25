@@ -278,6 +278,7 @@ const AdminLogin = lazy(() => import("./pages/admin/Login"));
 const AdminTools = lazy(() => import("./pages/admin/Tools"));
 const AdminScreenshots = lazy(() => import("./pages/admin/Screenshots"));
 const AdminAIExport = lazy(() => import("./pages/admin/AIExport"));
+const AdminTaskQueue = lazy(() => import("./pages/admin/TaskQueue"));
 const AdminListings = lazy(() => import("./pages/admin/Listings"));
 const ChatGPTOverview = lazy(() => import("./pages/admin/ChatGPTOverview"));
 const AICommandCenter = lazy(() => import("./pages/admin/AICommandCenter"));
@@ -453,6 +454,7 @@ const AdminRoutes = () => (
       <Route path="/admin/screenshot-review" element={<AllFlowsScreenshotReview />} />
       <Route path="/all-flows-review" element={<AllFlowsScreenshotReview />} />
       <Route path="/admin/ai-export" element={<AdminAIExport />} />
+      <Route path="/admin/task-queue" element={<AdminTaskQueue />} />
       <Route path="/admin/chatgpt-export" element={<LandingPageChatGPTExport />} />
       <Route path="/admin/listings" element={<AdminListings />} />
       <Route path="/admin/chatgpt" element={<ChatGPTOverview />} />

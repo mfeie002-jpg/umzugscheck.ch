@@ -106,6 +106,12 @@ const navStructure: NavItem[] = [
     href: "/admin/ai-export", 
     icon: Copy
   },
+  { 
+    title: "Task Queue",
+    href: "/admin/task-queue",
+    icon: Bot,
+    badge: "AI"
+  },
   
   // ========== CAPTURE & EVIDENCE ==========
   { type: "divider", title: "📸 Capture & Evidence" },
