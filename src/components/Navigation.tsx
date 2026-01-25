@@ -139,12 +139,15 @@ export const Navigation = () => {
             <div className="flex xl:hidden items-center gap-1.5 sm:gap-2 shrink-0">
               <MobileHeaderCallButton />
 
-              <Link
-                to={flowPath}
-                className="flex items-center justify-center gap-1 bg-secondary text-secondary-foreground text-xs font-bold px-2.5 sm:px-3 py-2 sm:py-2.5 rounded-lg shadow-md shadow-secondary/20 active:scale-95 transition-all touch-manipulation"
-              >
-                <span>Offerten</span>
-              </Link>
+              <div className="flex flex-col items-center leading-tight">
+                <Link
+                  to={flowPath}
+                  className="flex items-center justify-center gap-1 bg-secondary text-secondary-foreground text-xs font-bold px-2.5 sm:px-3 py-2 sm:py-2.5 rounded-lg shadow-md shadow-secondary/20 active:scale-95 transition-all touch-manipulation"
+                >
+                  <span>Offerten</span>
+                </Link>
+                <span className="mt-1 text-[11px] text-muted-foreground hidden sm:block">Gratis & unverbindlich</span>
+              </div>
 
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -184,7 +187,7 @@ export const Navigation = () => {
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform flex-shrink-0" />
                   </Button>
                 </Link>
-                <span className="absolute top-full mt-1 w-full text-center text-xs text-muted-foreground">
+                <span className="absolute top-full mt-1 left-0 text-left text-xs text-muted-foreground whitespace-nowrap">
                   Gratis & unverbindlich
                 </span>
               </div>

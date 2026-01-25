@@ -313,7 +313,7 @@ export const PremiumHeroSection = () => {
       <GridPattern className="hidden md:block" size={32} fade />
       
       {/* Content Container - Minimal top padding on mobile for above-the-fold CTA */}
-      <div className="container mx-auto px-3 sm:px-6 pt-0 pb-3 sm:py-6 md:py-20 lg:py-24 relative z-10">
+      <div className="container mx-auto px-3 sm:px-6 pt-0 pb-2 sm:py-5 md:py-10 lg:py-12 relative z-10">
         {/* Mobile: Form first, Desktop: Text first */}
         <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-12 items-start lg:items-center">
           

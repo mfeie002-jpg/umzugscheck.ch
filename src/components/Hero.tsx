@@ -74,7 +74,7 @@ export const Hero = () => {
       {/* MOBILE-FIRST HERO SECTION */}
       <section className="relative overflow-x-hidden">
         {/* Mobile Hero with Background Image */}
-        <div className="lg:hidden relative h-[85vh] max-h-screen flex items-center">
+        <div className="lg:hidden relative h-[78vh] max-h-screen flex items-center">
           {/* Background Image with Dark Overlay */}
           <div className="absolute inset-0 z-0">
             {heroImage ? (
@@ -93,8 +93,8 @@ export const Hero = () => {
           </div>
 
           {/* Content */}
-          <div className="container mx-auto px-4 py-8 relative z-10">
-            <div className="text-center text-white space-y-5 max-w-2xl mx-auto">
+          <div className="container mx-auto px-4 py-6 relative z-10">
+            <div className="text-center text-white space-y-4 max-w-2xl mx-auto">
               {/* Headline - Max 3 Lines */}
               <motion.h1 
                 className="text-4xl sm:text-5xl font-bold leading-tight"
@@ -117,7 +117,7 @@ export const Hero = () => {
 
               {/* CTAs */}
               <motion.div 
-                className="flex flex-col gap-3 pt-3"
+                className="flex flex-col gap-2 pt-2"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
@@ -165,11 +165,11 @@ export const Hero = () => {
         <div className="hidden lg:block relative bg-gradient-to-br from-blue-50 via-white to-blue-50">
           <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-white" />
           
-          <div className="container mx-auto px-4 py-16 lg:py-20 relative z-10">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="container mx-auto px-4 py-12 lg:py-16 relative z-10">
+            <div className="grid lg:grid-cols-2 gap-10 items-center">
               {/* LEFT COLUMN - Text Content */}
-              <div className="space-y-8 text-left">
-                <div className="space-y-4">
+              <div className="space-y-6 text-left">
+                <div className="space-y-3">
                   <h1 className="text-5xl lg:text-6xl font-bold text-foreground leading-tight">
                     Feierabend beginnt,<br className="hidden lg:block" /> sobald wir da sind.
                   </h1>
@@ -189,7 +189,7 @@ export const Hero = () => {
                   ))}
                 </div>
 
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-3 gap-3">
                   <div className="text-left">
                     <div className="flex items-center gap-2 mb-1">
                       <CheckCircle2 className="h-5 w-5 text-accent flex-shrink-0" />
@@ -213,7 +213,7 @@ export const Hero = () => {
                   </div>
                 </div>
 
-                <div className="flex gap-4 flex-wrap">
+                <div className="flex gap-3 flex-wrap">
                   <Button 
                     size="lg" 
                     className="flex-1 text-base px-8 min-h-[44px] bg-accent hover:bg-accent/90 shadow-lg"
@@ -269,7 +269,7 @@ export const Hero = () => {
 
       {/* Credibility Strip */}
       <section className="bg-white border-t border-b border-border/60">
-        <div className="container mx-auto px-4 py-6 flex flex-col lg:flex-row items-start lg:items-center gap-4">
+        <div className="container mx-auto px-4 py-5 flex flex-col lg:flex-row items-start lg:items-center gap-3">
           <div className="flex-1">
             <p className="text-sm text-muted-foreground">Warum Familien uns anrufen</p>
             <h3 className="text-xl font-semibold text-foreground">Eigene Teams, versichert, erreichbar – Zug & Zürich</h3>
@@ -286,7 +286,7 @@ export const Hero = () => {
 
       {/* Family Proof Block */}
       <section className="bg-muted/40 border-b border-border/60">
-        <div className="container mx-auto px-4 py-8 grid lg:grid-cols-3 gap-6 items-center">
+        <div className="container mx-auto px-4 py-7 grid lg:grid-cols-3 gap-5 items-center">
           <div className="lg:col-span-2 space-y-3">
             <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground">Familienbetrieb</p>
             <h3 className="text-2xl font-semibold text-foreground">Feierabend Familie – wir kommen selbst.</h3>
@@ -317,8 +317,8 @@ export const Hero = () => {
 
       {/* Objection-killer FAQ */}
       <section className="bg-white border-b border-border/60">
-        <div className="container mx-auto px-4 py-10 space-y-6">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <div className="container mx-auto px-4 py-8 space-y-5">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
             <div>
               <p className="text-sm text-muted-foreground">Schnell geklärt</p>
               <h3 className="text-2xl font-semibold text-foreground">Häufige Fragen, sofort beantwortet</h3>
@@ -330,7 +330,7 @@ export const Hero = () => {
             </Button>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-2 gap-3">
             {faqs.map((item) => (
               <div key={item.q} className="rounded-xl border border-border/60 bg-muted/30 p-4 space-y-1">
                 <p className="font-semibold text-foreground">{item.q}</p>
@@ -361,11 +361,11 @@ export const Hero = () => {
       </div>
 
       {/* KI-RECHNER SECTION - Full Width Card Below Hero */}
-      <section id="ki-rechner-section" className="bg-white py-8 sm:py-12">
+      <section id="ki-rechner-section" className="bg-white py-7 sm:py-10">
         <div className="container mx-auto px-4">
-          <div className="bg-gradient-to-br from-primary/5 to-accent/5 rounded-2xl shadow-lg p-6 sm:p-8 border border-primary/10">
+          <div className="bg-gradient-to-br from-primary/5 to-accent/5 rounded-2xl shadow-lg p-6 sm:p-7 border border-primary/10">
             {/* Header */}
-            <div className="text-center mb-6">
+            <div className="text-center mb-5">
               <Badge className="mb-3 bg-accent/10 text-accent border-accent/20">
                 <Sparkles className="w-3 h-3 mr-1" />
                 Erster KI-Rechner der Schweiz
@@ -382,7 +382,7 @@ export const Hero = () => {
             <AICalculator />
             
             {/* Trust Badges Below Calculator */}
-            <div className="flex flex-wrap items-center justify-center gap-4 mt-6 pt-6 border-t border-primary/10">
+            <div className="flex flex-wrap items-center justify-center gap-4 mt-5 pt-5 border-t border-primary/10">
               <Badge variant="outline" className="text-xs">
                 <CheckCircle2 className="w-3 h-3 mr-1 text-success" />
                 Kostenlos
