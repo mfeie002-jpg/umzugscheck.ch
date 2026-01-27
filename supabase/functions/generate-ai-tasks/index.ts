@@ -33,7 +33,7 @@ serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-    const openaiKey = Deno.env.get('OPENAI_API_KEY')
+    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY')
     
     const supabase = createClient(supabaseUrl, supabaseKey)
     
@@ -78,7 +78,7 @@ serve(async (req) => {
       console.error('Feature scores error:', scoresError)
     }
 
-    // 4. Build context for ChatGPT
+    // 4. Build context for AI
     const analysisContext = {
       flows: (flowAnalyses || []).map((f: FlowAnalysis) => ({
         name: f.flow_name,
@@ -97,7 +97,7 @@ serve(async (req) => {
       low_score_flows: (flowAnalyses || []).filter((f: FlowAnalysis) => f.overall_score < 80),
     }
 
-    // 5. Build the ChatGPT prompt
+    // 5. Build the AI prompt
     const systemPrompt = `Du bist ein Projektmanager + UX/CRO Lead für umzugscheck.ch (Schweizer Umzugsvergleichsportal).
 
 ZIEL: Generiere konkrete, ausführbare Tasks für zwei AI-Agenten basierend auf den Analytics-Daten.
@@ -138,25 +138,25 @@ ${founder_notes}` : ''}
 
 Generiere jetzt die optimalen CODEX und COPILOT Tasks basierend auf diesen Daten.`
 
-    // 6. Call OpenAI
-    if (!openaiKey) {
+    // 6. Call Lovable AI Gateway (instead of OpenAI directly)
+    if (!lovableApiKey) {
       return new Response(JSON.stringify({
-        error: 'OpenAI API key not configured',
-        context: analysisContext, // Return context for debugging
+        error: 'LOVABLE_API_KEY not configured',
+        context: analysisContext,
       }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       })
     }
 
-    const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+    const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openaiKey}`,
+        'Authorization': `Bearer ${lovableApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
+        model: 'google/gemini-2.5-flash',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt },
@@ -166,11 +166,30 @@ Generiere jetzt die optimalen CODEX und COPILOT Tasks basierend auf diesen Daten
       }),
     })
 
-    if (!openaiResponse.ok) {
-      const errorText = await openaiResponse.text()
-      console.error('OpenAI error:', errorText)
+    if (!aiResponse.ok) {
+      const errorText = await aiResponse.text()
+      console.error('Lovable AI error:', errorText)
+      
+      if (aiResponse.status === 429) {
+        return new Response(JSON.stringify({
+          error: 'Rate limit erreicht. Bitte versuche es in einer Minute erneut.',
+        }), {
+          status: 429,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        })
+      }
+      
+      if (aiResponse.status === 402) {
+        return new Response(JSON.stringify({
+          error: 'AI-Guthaben erschöpft. Bitte Lovable Credits aufladen.',
+        }), {
+          status: 402,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        })
+      }
+      
       return new Response(JSON.stringify({
-        error: 'OpenAI API error',
+        error: 'AI API error',
         details: errorText,
       }), {
         status: 500,
@@ -178,10 +197,10 @@ Generiere jetzt die optimalen CODEX und COPILOT Tasks basierend auf diesen Daten
       })
     }
 
-    const openaiData = await openaiResponse.json()
-    const rawContent = openaiData.choices?.[0]?.message?.content || ''
+    const aiData = await aiResponse.json()
+    const rawContent = aiData.choices?.[0]?.message?.content || ''
     
-    console.log('OpenAI raw response:', rawContent)
+    console.log('AI raw response:', rawContent)
 
     // 7. Parse the response
     let parsedTasks: {
@@ -202,7 +221,7 @@ Generiere jetzt die optimalen CODEX und COPILOT Tasks basierend auf diesen Daten
     } catch (parseError) {
       console.error('Parse error:', parseError)
       return new Response(JSON.stringify({
-        error: 'Failed to parse ChatGPT response',
+        error: 'Failed to parse AI response',
         raw_response: rawContent,
       }), {
         status: 400,
