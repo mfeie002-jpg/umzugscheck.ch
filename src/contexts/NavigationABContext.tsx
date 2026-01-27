@@ -52,10 +52,16 @@ export const NavigationABProvider = ({ children }: { children: ReactNode }) => {
     
     window.addEventListener('popstate', handleChange);
     window.addEventListener('ab-state-changed', handleChange);
+    // Backwards-compat: some older switchers only dispatch this event
+    window.addEventListener('nav-variant-changed', handleChange as EventListener);
+    // Also react to direct localStorage edits (e.g. devtools or other tabs)
+    window.addEventListener('storage', handleChange);
     
     return () => {
       window.removeEventListener('popstate', handleChange);
       window.removeEventListener('ab-state-changed', handleChange);
+      window.removeEventListener('nav-variant-changed', handleChange as EventListener);
+      window.removeEventListener('storage', handleChange);
     };
   }, []);
 
