@@ -103,7 +103,7 @@ export const EnhancedHowItWorks = memo(function EnhancedHowItWorks() {
           </motion.p>
         </div>
 
-        {/* Mobile Carousel */}
+        {/* Mobile Carousel with Images */}
         <div className="md:hidden">
           {/* Step Indicators */}
           <div className="flex items-center justify-center gap-2 mb-6">
@@ -123,7 +123,7 @@ export const EnhancedHowItWorks = memo(function EnhancedHowItWorks() {
             ))}
           </div>
 
-          {/* Swipeable Card */}
+          {/* Swipeable Card WITH IMAGE */}
           <div {...swipeHandlers} className="relative px-4 touch-pan-y">
             <AnimatePresence mode="wait">
               <motion.div
@@ -132,36 +132,47 @@ export const EnhancedHowItWorks = memo(function EnhancedHowItWorks() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -50 }}
                 transition={{ duration: 0.2 }}
-                className="bg-card rounded-2xl border border-border p-6 text-center relative shadow-soft"
+                className="bg-card rounded-2xl border border-border overflow-hidden shadow-soft"
               >
-                {/* Step Number Badge */}
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className={cn(
-                    "inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold",
-                    steps[activeStep].bg, steps[activeStep].color
-                  )}>
-                    {steps[activeStep].number}
-                  </span>
+                {/* Image Container */}
+                <div className="relative aspect-[16/10] overflow-hidden bg-muted">
+                  <img 
+                    src={steps[activeStep].image} 
+                    alt={steps[activeStep].title}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                  
+                  {/* Step Number Badge - Top Left */}
+                  <div className="absolute top-3 left-3 w-10 h-10 rounded-lg bg-foreground/90 text-background text-lg font-bold flex items-center justify-center shadow-lg">
+                    {activeStep + 1}
+                  </div>
+
+                  {/* Highlight Badge - Bottom Right */}
+                  <div className="absolute bottom-3 right-3">
+                    <div className="bg-white/95 backdrop-blur-sm rounded-full px-3 py-1.5 flex items-center gap-1.5 shadow-lg">
+                      {(() => {
+                        const BadgeIcon = steps[activeStep].badgeIcon;
+                        return <BadgeIcon className="h-3.5 w-3.5 text-green-600" />;
+                      })()}
+                      <span className="text-foreground text-xs font-semibold">{steps[activeStep].badge}</span>
+                    </div>
+                  </div>
                 </div>
                 
-                {/* Icon */}
-                <div className={cn(
-                  "w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center",
-                  steps[activeStep].bg
-                )}>
-                  {(() => {
-                    const IconComponent = steps[activeStep].icon;
-                    return <IconComponent className={cn("w-8 h-8", steps[activeStep].color)} />;
-                  })()}
+                {/* Content */}
+                <div className="p-5 text-center">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">
+                    Schritt {activeStep + 1}
+                  </p>
+                  <h3 className="text-lg font-bold mb-2">{steps[activeStep].title}</h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">
+                    {steps[activeStep].description}
+                  </p>
                 </div>
-                
-                <h3 className="text-xl font-semibold mb-2">{steps[activeStep].title}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  {steps[activeStep].description}
-                </p>
 
                 {/* Navigation Arrows */}
-                <div className="flex items-center justify-between mt-6">
+                <div className="flex items-center justify-between px-5 pb-5">
                   <button
                     onClick={() => goToStep(activeStep - 1)}
                     disabled={activeStep === 0}
