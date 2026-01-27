@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Menu, X, ChevronDown, ArrowRight, Zap } from "lucide-react";
 import { useState, useRef, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { MobileMenuNew } from "@/components/MobileMenuNew";
+import { DynamicMobileMenu } from "@/hooks/useDynamicMobileMenu";
 import { useFlowPath } from "@/hooks/useUnifiedAB";
 import { Logo } from "@/components/Logo";
 import { cn } from "@/lib/utils";
@@ -282,8 +282,8 @@ export const NavigationV17 = () => {
         </div>
       </nav>
 
-      {/* Mobile Menu */}
-      <MobileMenuNew 
+      {/* Mobile Menu - Dynamic based on A/B variant */}
+      <DynamicMobileMenu 
         isOpen={isMobileMenuOpen} 
         onClose={() => setIsMobileMenuOpen(false)} 
       />

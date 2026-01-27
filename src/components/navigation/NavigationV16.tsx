@@ -21,11 +21,7 @@ import { Button } from "@/components/ui/button";
 import { HeaderLogo } from "@/components/brand/HeaderLogo";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import { MobileMenuV11 } from "./MobileMenuV11";
-import { MobileMenuV12 } from "./MobileMenuV12";
-import { MobileMenuV13 } from "./MobileMenuV13";
-import { MobileMenuV16 } from "./MobileMenuV16";
-import { MobileMenuNew } from "@/components/MobileMenuNew";
+import { DynamicMobileMenu } from "@/hooks/useDynamicMobileMenu";
 import { VARIANT_P } from "@/lib/navigation-variants";
 import { useNavigationVariant } from "@/hooks/useNavigationVariant";
 import { useFlowPath } from "@/hooks/useUnifiedAB";
@@ -132,41 +128,7 @@ export const NavigationV16 = () => {
     return VARIANT_P.labels.cta;
   };
 
-  // Render the appropriate mobile menu based on active variant
-  const renderMobileMenu = () => {
-    const variantId = navVariant.id;
-    
-    // Map variants to their dedicated mobile menus
-    // Varianten 1-10 (ultimate, variant-b bis variant-j) -> MobileMenuNew (dynamischer Content)
-    // Diese nutzen MobileMenuVariantContent für variantenspezifischen Inhalt
-    if (['ultimate', 'variant-b', 'variant-c', 'variant-d', 'variant-e', 
-         'variant-f', 'variant-g', 'variant-h', 'variant-i', 'variant-j'].includes(variantId)) {
-      return <MobileMenuNew isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />;
-    }
-    
-    // variant-k (11. Simpel & Clean) -> MobileMenuV11
-    if (variantId === 'variant-k') {
-      return <MobileMenuV11 isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />;
-    }
-    // variant-l (12. Best-of-Breed) -> MobileMenuV12
-    if (variantId === 'variant-l') {
-      return <MobileMenuV12 isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />;
-    }
-    // variant-m (13. Progressive Disclosure) -> MobileMenuV13
-    if (variantId === 'variant-m') {
-      return <MobileMenuV13 isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />;
-    }
-    // variant-n (14. Aggressive Funnel) -> MobileMenuNew (dynamic content)
-    if (variantId === 'variant-n') {
-      return <MobileMenuNew isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />;
-    }
-    // variant-o (15. Swiss Premium) -> MobileMenuNew (dynamic content)
-    if (variantId === 'variant-o') {
-      return <MobileMenuNew isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />;
-    }
-    // Default: MobileMenuV16 for variant-p (16. SEO-Optimiert)
-    return <MobileMenuV16 isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />;
-  };
+  // Mobile menu is now handled by DynamicMobileMenu component
 
   return (
     <>
@@ -388,8 +350,11 @@ export const NavigationV16 = () => {
         </div>
       </header>
 
-      {/* Mobile Menu - Dynamic based on variant */}
-      {renderMobileMenu()}
+      {/* Mobile Menu - Dynamic based on A/B variant */}
+      <DynamicMobileMenu 
+        isOpen={mobileMenuOpen} 
+        onClose={() => setMobileMenuOpen(false)} 
+      />
     </>
   );
 };

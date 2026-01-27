@@ -25,7 +25,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { HeaderLogo } from "@/components/brand/HeaderLogo";
 import { cn } from "@/lib/utils";
-import { MobileMenuNew } from "@/components/MobileMenuNew";
+import { DynamicMobileMenu } from "@/hooks/useDynamicMobileMenu";
 import { useFlowPath } from "@/hooks/useUnifiedAB";
 
 interface NavItem {
@@ -228,8 +228,8 @@ export const NavigationV15 = () => {
         </div>
       </header>
 
-      {/* Mobile Menu - uses dynamic MobileMenuNew for A/B variant consistency */}
-      <MobileMenuNew
+      {/* Mobile Menu - Dynamic based on A/B variant */}
+      <DynamicMobileMenu
         isOpen={mobileMenuOpen}
         onClose={() => setMobileMenuOpen(false)}
       />
