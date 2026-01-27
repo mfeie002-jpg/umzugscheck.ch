@@ -21,7 +21,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, RefreshCw } from "lucide-react";
+import { Loader2, RefreshCw, Brain, Sparkles } from "lucide-react";
 
 type AgentType = "codex" | "copilot";
 
@@ -99,6 +99,7 @@ const AgentQueueCard = ({
 const TaskQueue = () => {
   const [queueData, setQueueData] = useState<PendingQueuePayload | null>(null);
   const [queueLoading, setQueueLoading] = useState(false);
+  const [generateLoading, setGenerateLoading] = useState(false);
   const [agent, setAgent] = useState<AgentType>("codex");
   const [currentTask, setCurrentTask] = useState<AgentRunnerTask | null>(null);
   const [runnerMessage, setRunnerMessage] = useState("");
@@ -123,6 +124,24 @@ const TaskQueue = () => {
       setQueueLoading(false);
     }
   }, []);
+
+  const handleGenerateTasks = useCallback(async () => {
+    setGenerateLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-ai-tasks", {
+        method: "POST"
+      });
+      if (error) throw error;
+      const count = data?.tasks_created ?? 0;
+      toast.success(`${count} neue Tasks generiert!`);
+      fetchQueue();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Task-Generierung fehlgeschlagen";
+      toast.error(message);
+    } finally {
+      setGenerateLoading(false);
+    }
+  }, [fetchQueue]);
 
   useEffect(() => {
     fetchQueue();
@@ -223,22 +242,32 @@ const TaskQueue = () => {
 
           <TabsContent value="queue">
             <Card className="border">
-              <CardHeader className="flex items-center justify-between gap-4">
+              <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
                   <CardTitle>Queue Überblick</CardTitle>
                   <CardDescription>
                     Insgesamt {queueData?.count ?? "–"} offene Tasks. Aktualisiert bei Tab-Wechsel.
                   </CardDescription>
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={fetchQueue}
-                  disabled={queueLoading}
-                >
-                  {queueLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCw className="mr-2 h-4 w-4" />}
-                  Aktualisieren
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button
+                    onClick={handleGenerateTasks}
+                    disabled={generateLoading}
+                    className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white"
+                  >
+                    {generateLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Brain className="mr-2 h-4 w-4" />}
+                    🧠 Tasks generieren
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={fetchQueue}
+                    disabled={queueLoading}
+                  >
+                    {queueLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCw className="mr-2 h-4 w-4" />}
+                    Aktualisieren
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="grid gap-4 sm:grid-cols-2">
