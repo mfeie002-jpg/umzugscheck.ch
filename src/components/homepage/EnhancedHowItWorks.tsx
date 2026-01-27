@@ -1,10 +1,14 @@
 import { memo, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ClipboardList, Search, BadgeCheck, ArrowRight, ChevronLeft, ChevronRight, Users, Star, Shield } from 'lucide-react';
+import { ClipboardList, Search, BadgeCheck, ArrowRight, ChevronLeft, ChevronRight, Users, Star, Shield, Clock, CheckCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { useSwipeable } from 'react-swipeable';
+// Step screenshots
+import step1Img from '@/assets/step-1-form.jpg';
+import step2Img from '@/assets/step-2-analysis.jpg';
+import step3Img from '@/assets/step-3-choose.jpg';
 
 const steps = [
   {
@@ -15,6 +19,9 @@ const steps = [
     color: 'text-primary',
     bg: 'bg-primary/10',
     borderColor: 'border-primary/30',
+    image: step1Img,
+    badge: 'Nur 2 Minuten',
+    badgeIcon: Clock,
   },
   {
     number: '02',
@@ -24,6 +31,9 @@ const steps = [
     color: 'text-secondary',
     bg: 'bg-secondary/10',
     borderColor: 'border-secondary/30',
+    image: step2Img,
+    badge: '200+ Firmen gecheckt',
+    badgeIcon: CheckCircle,
   },
   {
     number: '03',
@@ -33,6 +43,9 @@ const steps = [
     color: 'text-green-600',
     bg: 'bg-green-500/10',
     borderColor: 'border-green-500/30',
+    image: step3Img,
+    badge: 'Bis 40% sparen',
+    badgeIcon: CheckCircle,
   },
 ];
 
@@ -214,10 +227,7 @@ export const EnhancedHowItWorks = memo(function EnhancedHowItWorks() {
 
         {/* Desktop Grid */}
         <div className="hidden md:block relative">
-          {/* Connection Line */}
-          <div className="absolute top-24 left-1/2 -translate-x-1/2 w-2/3 h-0.5 bg-gradient-to-r from-primary/20 via-secondary/20 to-green-500/20" />
-          
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
             {steps.map((step, index) => (
               <motion.div
                 key={step.number}
@@ -225,38 +235,51 @@ export const EnhancedHowItWorks = memo(function EnhancedHowItWorks() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.15 }}
-                className="relative"
+                className="relative group"
               >
                 {/* Arrow between cards */}
                 {index < steps.length - 1 && (
-                  <div className="hidden md:block absolute top-24 -right-3 z-10">
-                    <ArrowRight className="w-5 h-5 text-muted-foreground" />
+                  <div className="hidden lg:flex absolute top-1/3 -right-4 z-10 w-8 h-8 rounded-full bg-secondary items-center justify-center shadow-lg">
+                    <ArrowRight className="w-4 h-4 text-white" />
                   </div>
                 )}
                 
-                <div className="bg-card rounded-2xl border border-border p-6 md:p-8 text-center relative hover:shadow-medium transition-shadow h-full">
-                  {/* Step Number */}
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className={cn(
-                      "inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold",
-                      step.bg, step.color
-                    )}>
-                      {step.number}
-                    </span>
+                <div className="bg-card rounded-2xl border border-border overflow-hidden hover:shadow-xl transition-all duration-300 h-full flex flex-col">
+                  {/* Image Container */}
+                  <div className="relative aspect-[4/3] overflow-hidden">
+                    <img 
+                      src={step.image} 
+                      alt={step.title}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                    
+                    {/* Step Number Badge - Top Left */}
+                    <div className="absolute top-3 left-3 w-10 h-10 rounded-lg bg-foreground/90 text-background text-xl font-bold flex items-center justify-center shadow-lg">
+                      {index + 1}
+                    </div>
+
+                    {/* Highlight Badge - Bottom Right */}
+                    <div className="absolute bottom-3 right-3">
+                      <div className="bg-white/95 backdrop-blur-sm rounded-full px-3 py-1.5 flex items-center gap-1.5 shadow-lg">
+                        <step.badgeIcon className="h-3.5 w-3.5 text-green-600" />
+                        <span className="text-foreground text-xs font-semibold">{step.badge}</span>
+                      </div>
+                    </div>
                   </div>
-                  
-                  {/* Icon */}
-                  <div className={cn(
-                    "w-16 h-16 rounded-2xl mx-auto mb-5 flex items-center justify-center",
-                    step.bg
-                  )}>
-                    <step.icon className={cn("w-8 h-8", step.color)} />
+
+                  {/* Content */}
+                  <div className="p-5 flex flex-col flex-grow">
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">
+                      Schritt {index + 1}
+                    </p>
+                    <h3 className="text-lg font-bold mb-2 text-foreground group-hover:text-primary transition-colors">
+                      {step.title}
+                    </h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      {step.description}
+                    </p>
                   </div>
-                  
-                  <h3 className="text-xl font-semibold mb-3">{step.title}</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    {step.description}
-                  </p>
                 </div>
               </motion.div>
             ))}
