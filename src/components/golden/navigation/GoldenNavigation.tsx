@@ -86,7 +86,7 @@ export const GoldenNavigation = memo(() => {
           {/* Right Side: CTA + Mobile Menu */}
           <div className="flex items-center gap-1.5 sm:gap-2 xl:gap-3 flex-shrink-0">
             {/* Desktop CTA - Context-Aware (xl+) */}
-            <div className="hidden xl:flex flex-col items-center flex-shrink-0">
+            <div className="hidden xl:flex items-center gap-3 flex-shrink-0">
               <Button 
                 asChild 
                 className="h-10 px-5 font-bold gap-2 rounded-xl bg-[#E32026] hover:bg-[#c91c21] text-white shadow-lg shadow-[#E32026]/20 hover:shadow-xl hover:shadow-[#E32026]/30 transition-all hover:scale-[1.02]"
@@ -96,7 +96,7 @@ export const GoldenNavigation = memo(() => {
                   {getCtaLabel()}
                 </Link>
               </Button>
-              <span className="text-[10px] text-muted-foreground mt-1 font-medium">
+              <span className="text-[10px] text-muted-foreground font-medium whitespace-nowrap">
                 Gratis & unverbindlich
               </span>
             </div>
