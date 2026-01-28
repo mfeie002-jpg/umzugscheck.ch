@@ -33,7 +33,7 @@ const ORGANIZATION_SCHEMA = {
   ]
 };
 
-export const Footer = () => {
+const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
@@ -286,5 +286,7 @@ export const Footer = () => {
         </div>
       </div>
     </footer>
-  );
 };
+
+export { Footer };
+export default Footer;

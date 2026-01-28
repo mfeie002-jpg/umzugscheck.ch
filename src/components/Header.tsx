@@ -74,7 +74,7 @@ const Header = () => {
         <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <Link to="/" className="flex-shrink-0 group">
-              <Logo variant="badge" size="md" showIcon className="group-hover:opacity-90 transition-opacity" />
+              <Logo size="md" className="group-hover:opacity-90 transition-opacity" />
             </Link>
             <a href={`tel:${CONTACT_PHONE_E164}`} className="flex items-center gap-2">
               <Button size="sm" className="bg-gradient-brand text-primary-foreground shadow-soft min-h-[48px]">
@@ -128,7 +128,7 @@ const Header = () => {
         <div className="flex h-16 lg:h-18 items-center justify-between">
           {/* Logo - Using unified Logo component with icon */}
           <Link to="/" className="flex-shrink-0 group">
-            <Logo variant="badge" size="md" showIcon className="group-hover:opacity-90 transition-opacity" />
+            <Logo size="md" className="group-hover:opacity-90 transition-opacity" />
           </Link>
 
           {/* Desktop Navigation */}

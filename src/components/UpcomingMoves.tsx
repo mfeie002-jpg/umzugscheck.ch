@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -24,28 +23,11 @@ export default function UpcomingMoves() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchMoves = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        setLoading(false);
-        return;
-      }
-
-      const { data } = await supabase
-        .from("moves")
-        .select("*")
-        .eq("user_id", user.id)
-        .gte("moving_date", new Date().toISOString().split("T")[0])
-        .order("moving_date", { ascending: true })
-        .limit(3);
-
-      if (data) {
-        setMoves(data);
-      }
+    // Mock data - moves table not available
+    setTimeout(() => {
+      setMoves([]);
       setLoading(false);
-    };
-
-    fetchMoves();
+    }, 300);
   }, []);
 
   const getDaysUntil = (date: string) => {

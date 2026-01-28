@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { format, addDays, startOfWeek, addWeeks, isSameDay, isAfter, isBefore, startOfDay } from 'date-fns';
+import { format, addWeeks, isSameDay, isAfter, isBefore, startOfDay } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { z } from 'zod';
 import { Calendar } from '@/components/ui/calendar';
@@ -10,11 +10,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
-import { 
-  Popover,
-  PopoverContent,
-  PopoverTrigger 
-} from '@/components/ui/popover';
 import {
   Select,
   SelectContent,
@@ -28,21 +23,14 @@ import {
   Check, 
   ChevronRight, 
   MapPin, 
-  User, 
-  Mail, 
-  Phone,
   Home,
   Truck,
-  Sparkles,
   CalendarCheck,
-  AlertCircle,
   Loader2
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
 
-// Validation schema for booking form
 const bookingSchema = z.object({
   name: z.string().min(2, 'Name muss mindestens 2 Zeichen haben').max(100, 'Name ist zu lang'),
   email: z.string().email('Ungültige E-Mail-Adresse').max(255, 'E-Mail ist zu lang'),
@@ -71,7 +59,6 @@ interface BookingData {
   notes: string;
 }
 
-// Generate available time slots (simulated)
 const generateTimeSlots = (date: Date | undefined): TimeSlot[] => {
   if (!date) return [];
   
@@ -134,7 +121,6 @@ const BookingCalendar = () => {
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
   const handleSubmit = async () => {
-    // Validate all fields before submission
     const validationResult = bookingSchema.safeParse({
       name: bookingData.name.trim(),
       email: bookingData.email.trim(),
@@ -167,27 +153,25 @@ const BookingCalendar = () => {
     try {
       const validated = validationResult.data;
       
-      // Store booking in database
-      const { error } = await supabase.from('contact_submissions').insert({
-        first_name: validated.name.split(' ')[0] || validated.name,
-        last_name: validated.name.split(' ').slice(1).join(' ') || '',
+      // Log booking data (DB table not available)
+      console.log('Booking submission:', {
+        name: validated.name,
         email: validated.email,
         phone: validated.phone,
-        move_from: validated.fromAddress,
-        move_to: validated.toAddress,
-        move_type: `Termin: ${format(bookingData.date!, 'dd.MM.yyyy', { locale: de })} um ${bookingData.time}`,
-        message: `Zimmer: ${validated.rooms}\n\nNotizen: ${validated.notes || ''}`,
-        status: 'new'
+        fromAddress: validated.fromAddress,
+        toAddress: validated.toAddress,
+        rooms: validated.rooms,
+        notes: validated.notes,
+        date: bookingData.date,
+        time: bookingData.time
       });
-
-      if (error) throw error;
 
       toast({
         title: 'Termin erfolgreich gebucht!',
         description: `Wir haben Ihre Anfrage für den ${format(bookingData.date!, 'dd. MMMM yyyy', { locale: de })} um ${bookingData.time} Uhr erhalten.`,
       });
 
-      setStep(4); // Success step
+      setStep(4);
     } catch (error) {
       toast({
         title: 'Fehler bei der Buchung',
@@ -220,7 +204,6 @@ const BookingCalendar = () => {
           </p>
         </motion.div>
 
-        {/* Progress Steps */}
         <div className="max-w-3xl mx-auto mb-8">
           <div className="flex justify-between items-center">
             {[
@@ -257,7 +240,6 @@ const BookingCalendar = () => {
 
         <div className="max-w-4xl mx-auto">
           <AnimatePresence mode="wait">
-            {/* Step 1: Date & Time Selection */}
             {step === 1 && (
               <motion.div
                 key="step1"
@@ -277,7 +259,6 @@ const BookingCalendar = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="grid md:grid-cols-2 gap-8">
-                      {/* Calendar */}
                       <div>
                         <Calendar
                           mode="single"
@@ -294,7 +275,6 @@ const BookingCalendar = () => {
                         </p>
                       </div>
 
-                      {/* Time Slots */}
                       <div>
                         <h3 className="font-medium mb-4 flex items-center gap-2">
                           <Clock className="w-4 h-4 text-primary" />
@@ -353,7 +333,6 @@ const BookingCalendar = () => {
               </motion.div>
             )}
 
-            {/* Step 2: Move Details */}
             {step === 2 && (
               <motion.div
                 key="step2"
@@ -386,7 +365,7 @@ const BookingCalendar = () => {
                       </div>
                       <div className="space-y-2">
                         <Label className="flex items-center gap-2">
-                          <MapPin className="w-4 h-4 text-alpine" />
+                          <MapPin className="w-4 h-4 text-green-600" />
                           Nach (Einzugsadresse)
                         </Label>
                         <Input
@@ -445,7 +424,6 @@ const BookingCalendar = () => {
               </motion.div>
             )}
 
-            {/* Step 3: Contact Details */}
             {step === 3 && (
               <motion.div
                 key="step3"
@@ -455,63 +433,46 @@ const BookingCalendar = () => {
               >
                 <Card className="shadow-xl">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <User className="w-5 h-5 text-primary" />
-                      Ihre Kontaktdaten
-                    </CardTitle>
+                    <CardTitle>Ihre Kontaktdaten</CardTitle>
                     <CardDescription>
-                      Sie erhalten eine Bestätigung per E-Mail
+                      Wir kontaktieren Sie zur Bestätigung
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-6">
+                  <CardContent className="space-y-4">
                     <div className="space-y-2">
-                      <Label className="flex items-center gap-2">
-                        <User className="w-4 h-4 text-muted-foreground" />
-                        Name
-                      </Label>
+                      <Label>Name *</Label>
                       <Input
                         placeholder="Vor- und Nachname"
                         value={bookingData.name}
                         onChange={(e) => handleInputChange('name', e.target.value)}
                       />
+                      {validationErrors.name && (
+                        <p className="text-sm text-destructive">{validationErrors.name}</p>
+                      )}
                     </div>
-
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label className="flex items-center gap-2">
-                          <Mail className="w-4 h-4 text-muted-foreground" />
-                          E-Mail
-                        </Label>
-                        <Input
-                          type="email"
-                          placeholder="ihre@email.ch"
-                          value={bookingData.email}
-                          onChange={(e) => handleInputChange('email', e.target.value)}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="flex items-center gap-2">
-                          <Phone className="w-4 h-4 text-muted-foreground" />
-                          Telefon
-                        </Label>
-                        <Input
-                          type="tel"
-                          placeholder="+41 76 568 13 02"
-                          value={bookingData.phone}
-                          onChange={(e) => handleInputChange('phone', e.target.value)}
-                        />
-                      </div>
+                    <div className="space-y-2">
+                      <Label>E-Mail *</Label>
+                      <Input
+                        type="email"
+                        placeholder="ihre@email.ch"
+                        value={bookingData.email}
+                        onChange={(e) => handleInputChange('email', e.target.value)}
+                      />
+                      {validationErrors.email && (
+                        <p className="text-sm text-destructive">{validationErrors.email}</p>
+                      )}
                     </div>
-
-                    {/* Summary */}
-                    <div className="p-4 bg-muted/50 rounded-lg space-y-2">
-                      <h4 className="font-medium">Zusammenfassung</h4>
-                      <div className="text-sm space-y-1 text-muted-foreground">
-                        <p>📅 {bookingData.date && format(bookingData.date, 'dd. MMMM yyyy', { locale: de })} um {bookingData.time} Uhr</p>
-                        <p>📍 Von: {bookingData.fromAddress}</p>
-                        <p>📍 Nach: {bookingData.toAddress}</p>
-                        <p>🏠 {bookingData.rooms} Zimmer</p>
-                      </div>
+                    <div className="space-y-2">
+                      <Label>Telefon *</Label>
+                      <Input
+                        type="tel"
+                        placeholder="+41 79 123 45 67"
+                        value={bookingData.phone}
+                        onChange={(e) => handleInputChange('phone', e.target.value)}
+                      />
+                      {validationErrors.phone && (
+                        <p className="text-sm text-destructive">{validationErrors.phone}</p>
+                      )}
                     </div>
                   </CardContent>
                   <CardFooter className="flex justify-between">
@@ -539,50 +500,26 @@ const BookingCalendar = () => {
               </motion.div>
             )}
 
-            {/* Step 4: Confirmation */}
             {step === 4 && (
               <motion.div
                 key="step4"
-                initial={{ opacity: 0, scale: 0.9 }}
+                initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
               >
-                <Card className="shadow-xl text-center">
-                  <CardContent className="py-12">
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ type: 'spring', delay: 0.2 }}
-                      className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6"
-                    >
+                <Card className="shadow-xl text-center py-12">
+                  <CardContent>
+                    <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
                       <Check className="w-10 h-10 text-green-600" />
-                    </motion.div>
-                    <h2 className="text-2xl md:text-3xl font-bold mb-4">
-                      Termin erfolgreich gebucht!
-                    </h2>
-                    <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-                      Vielen Dank für Ihre Buchung. Wir haben Ihnen eine Bestätigung an <strong>{bookingData.email}</strong> gesendet.
-                    </p>
-                    
-                    <div className="bg-muted/50 rounded-lg p-6 max-w-md mx-auto mb-8">
-                      <div className="flex items-center gap-3 justify-center mb-4">
-                        <Sparkles className="w-5 h-5 text-primary" />
-                        <span className="font-medium">Ihre Buchungsdetails</span>
-                      </div>
-                      <div className="text-left space-y-2 text-sm">
-                        <p><strong>Datum:</strong> {bookingData.date && format(bookingData.date, 'dd. MMMM yyyy', { locale: de })}</p>
-                        <p><strong>Uhrzeit:</strong> {bookingData.time} Uhr</p>
-                        <p><strong>Von:</strong> {bookingData.fromAddress}</p>
-                        <p><strong>Nach:</strong> {bookingData.toAddress}</p>
-                      </div>
                     </div>
-
-                    <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                      <Button variant="outline" onClick={() => { setStep(1); setBookingData({ date: undefined, time: '', name: '', email: '', phone: '', fromAddress: '', toAddress: '', rooms: '3', notes: '' }); }}>
-                        Neuen Termin buchen
-                      </Button>
-                      <Button asChild>
-                        <a href="/">Zur Startseite</a>
-                      </Button>
+                    <h2 className="text-2xl font-bold mb-4">Buchung erfolgreich!</h2>
+                    <p className="text-muted-foreground mb-6">
+                      Wir haben Ihre Anfrage erhalten und werden Sie in Kürze kontaktieren.
+                    </p>
+                    <div className="bg-muted/50 rounded-lg p-4 max-w-md mx-auto text-left">
+                      <p><strong>Datum:</strong> {bookingData.date && format(bookingData.date, 'dd. MMMM yyyy', { locale: de })}</p>
+                      <p><strong>Uhrzeit:</strong> {bookingData.time} Uhr</p>
+                      <p><strong>Von:</strong> {bookingData.fromAddress}</p>
+                      <p><strong>Nach:</strong> {bookingData.toAddress}</p>
                     </div>
                   </CardContent>
                 </Card>

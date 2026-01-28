@@ -110,8 +110,7 @@ const HeroSection = () => {
                 <OptimizedImage
                   src={heroImage}
                   alt="Feierabend Umzüge Premium Umzugsservice - Professionelles Team mit gebrandetem Fahrzeug vor Schweizer Alpen"
-                  className="rounded-2xl object-cover"
-                  containerClassName="h-full shadow-strong rounded-2xl overflow-hidden"
+                  className="rounded-2xl object-cover h-full shadow-strong"
                   priority
                 />
                 {/* Subtle gradient overlay for depth */}
