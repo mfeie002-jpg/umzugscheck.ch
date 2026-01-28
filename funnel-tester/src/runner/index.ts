@@ -3,7 +3,7 @@ import fs from 'fs-extra';
 import path from 'path';
 import seedrandom from 'seedrandom';
 import { RunConfig, RunResult, StepLog, OutcomeDefinition } from '../shared/types';
-import { tenSecondTest, getCtaCandidates, detectSuccess, detectFriction } from './heuristics';
+import { tenSecondTest, getCtaCandidates, detectSuccess, detectFriction, dismissOverlays } from './heuristics';
 import { fillVisibleInputs } from './formFiller';
 import { scoreRun } from './scorecard';
 import { detectOffers, evaluateMarketingFit, extractTopOptions } from './marketing';
@@ -88,6 +88,7 @@ export class Runner {
       await page.goto(gateway.landing_url, { timeout: 20000, waitUntil: 'domcontentloaded' });
       steps.push(await this.captureStep(page, 0, 'landing'));
       tenSecond = await tenSecondTest(page);
+      await dismissOverlays(page);
 
       const rootDir = path.join(this.baseDir, '..', '..');
       const outcomesPath = path.join(rootDir, 'data', 'outcomes.json');
@@ -121,6 +122,7 @@ export class Runner {
         }
 
         await fillVisibleInputs(page);
+        await dismissOverlays(page);
 
         const ctas = await getCtaCandidates(page);
         if (ctas.length === 0) {
@@ -161,7 +163,11 @@ export class Runner {
     } catch (error: any) {
       verdict = 'BLOCKER';
       dropoffReason = error?.message || 'Unknown error';
-      await page.screenshot({ path: path.join(this.baseDir, 'error.png') });
+      try {
+        await page.screenshot({ path: path.join(this.baseDir, 'error.png') });
+      } catch {
+        // ignore screenshot failures when the page has crashed
+      }
     } finally {
       if (options.record_trace) {
         await context.tracing.stop({ path: path.join(this.baseDir, 'trace.zip') });

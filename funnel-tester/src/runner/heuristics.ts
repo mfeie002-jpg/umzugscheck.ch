@@ -97,6 +97,40 @@ export const detectFriction = async (page: Page): Promise<string[]> => {
   return points;
 };
 
+export const dismissOverlays = async (page: Page): Promise<void> => {
+  const closeTexts = [
+    'Akzeptieren',
+    'Alle akzeptieren',
+    'Zustimmen',
+    'OK',
+    'Okay',
+    'Einverstanden',
+    'Got it',
+    'Accept',
+    'Agree',
+    'Close',
+    'Schliessen',
+    'Schließen'
+  ];
+
+  for (const text of closeTexts) {
+    const btn = page.locator(`button:has-text("${text}")`).first();
+    if (await btn.isVisible().catch(() => false)) {
+      await btn.click({ timeout: 1500 }).catch(() => undefined);
+    }
+  }
+
+  const closeButtons = page.locator('[aria-label*="close" i], [aria-label*="schlie" i], [data-testid*="close" i]');
+  if (await closeButtons.count()) {
+    await closeButtons.first().click({ timeout: 1500 }).catch(() => undefined);
+  }
+
+  const dialogs = page.locator('[role="dialog"], [role="alertdialog"]');
+  if (await dialogs.count()) {
+    await page.keyboard.press('Escape').catch(() => undefined);
+  }
+};
+
 export const tenSecondTest = async (page: Page): Promise<{ title: string; h1: string; trust_signals: string[]; top_ctas: string[] }> => {
   const title = await page.title();
   const h1 = await getH1Text(page);

@@ -8,16 +8,18 @@ interface ReportInputs {
   reportsDir: string;
   gateways: Gateway[];
   personas: Persona[];
+  runPrefix?: string;
 }
 
 export const generateReports = (inputs: ReportInputs): void => {
-  const { runsDir, reportsDir, gateways, personas } = inputs;
+  const { runsDir, reportsDir, gateways, personas, runPrefix } = inputs;
   fs.ensureDirSync(reportsDir);
 
   const results: RunResult[] = [];
   const runDirs = fs.readdirSync(runsDir).filter((dir) => !dir.startsWith('_'));
 
   for (const run of runDirs) {
+    if (runPrefix && !run.startsWith(runPrefix)) continue;
     const resultPath = path.join(runsDir, run, 'result.json');
     if (fs.existsSync(resultPath)) {
       results.push(fs.readJSONSync(resultPath));
