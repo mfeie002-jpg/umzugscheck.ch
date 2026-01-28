@@ -1,10 +1,41 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { encodeHex } from "https://deno.land/std@0.224.0/encoding/hex.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+// Hash password using Web Crypto API (PBKDF2)
+async function hashPassword(password: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const saltHex = encodeHex(salt);
+  
+  const keyMaterial = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(password),
+    "PBKDF2",
+    false,
+    ["deriveBits"]
+  );
+  
+  const derivedBits = await crypto.subtle.deriveBits(
+    {
+      name: "PBKDF2",
+      salt: salt,
+      iterations: 100000,
+      hash: "SHA-256"
+    },
+    keyMaterial,
+    256
+  );
+  
+  const hashHex = encodeHex(new Uint8Array(derivedBits));
+  // Format: $pbkdf2$iterations$salt$hash
+  return `$pbkdf2$100000$${saltHex}$${hashHex}`;
+}
 
 // Validation helpers
 const isValidEmail = (email: string): boolean => {
@@ -194,9 +225,8 @@ serve(async (req) => {
       );
     }
 
-    // Hash password using bcrypt
-    const bcrypt = await import('https://deno.land/x/bcrypt@v0.4.1/mod.ts');
-    const passwordHash = await bcrypt.hash(password);
+    // Hash password using Web Crypto API (PBKDF2)
+    const passwordHash = await hashPassword(password);
 
     // Create service provider
     const { data: provider, error: insertError } = await supabase
