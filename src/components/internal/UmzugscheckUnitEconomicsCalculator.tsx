@@ -36,46 +36,46 @@ type Scenario = "conservative" | "base" | "aggressive";
 const SCENARIO_CONFIGS: Record<Scenario, { label: string; description: string; inputs: UmzugscheckInputs }> = {
   conservative: {
     label: "Konservativ",
-    description: "Niedrige Resale Rate, hohe CPL",
+    description: "Niedrige Resale Rate, hohe CPL, hohe Ops-Kosten",
     inputs: {
-      cplBuy: 65,
-      pricePerPartnerLead: 35,
-      avgBuyersPerLead: 1.8,
-      partnerCloseRate: 18,
-      estimatedBookingValue: 2200,
-      commissionPercentage: 8,
-      conciergeFee: 99,
-      supportCostPerLead: 12,
+      cplBuy: 65,                 // High CPL
+      pricePerPartnerLead: 25,    // CPL_SELL default
+      avgBuyersPerLead: 1.8,      // Low resale rate
+      partnerCloseRate: 15,       // PTR_CLOSE default
+      estimatedBookingValue: 1200,// EST_VAL default
+      commissionPercentage: 10,   // COMM_PCT default
+      conciergeFee: 49,           // FEE_CONC default
+      supportCostPerLead: 20,     // High ops cost
       conciergeActive: false,
     },
   },
   base: {
     label: "Base Case",
-    description: "Durchschnittswerte",
+    description: "Zielwerte",
     inputs: {
-      cplBuy: 45,
-      pricePerPartnerLead: 35,
-      avgBuyersPerLead: 2.5,
-      partnerCloseRate: 22,
-      estimatedBookingValue: 2200,
-      commissionPercentage: 8,
-      conciergeFee: 99,
-      supportCostPerLead: 8,
+      cplBuy: 45,                 // CPL_BUY default
+      pricePerPartnerLead: 25,    // CPL_SELL default
+      avgBuyersPerLead: 2.2,      // RESALE_RATE default
+      partnerCloseRate: 15,       // PTR_CLOSE default
+      estimatedBookingValue: 1200,// EST_VAL default
+      commissionPercentage: 10,   // COMM_PCT default
+      conciergeFee: 49,           // FEE_CONC default
+      supportCostPerLead: 15,     // COST_SUPP default
       conciergeActive: false,
     },
   },
   aggressive: {
     label: "Aggressiv",
-    description: "Hohe Resale Rate, niedrige Ops-Kosten",
+    description: "Hohe Resale Rate, niedrige CPL, niedrige Ops-Kosten",
     inputs: {
-      cplBuy: 35,
-      pricePerPartnerLead: 38,
-      avgBuyersPerLead: 3.2,
-      partnerCloseRate: 25,
-      estimatedBookingValue: 2400,
-      commissionPercentage: 10,
-      conciergeFee: 99,
-      supportCostPerLead: 5,
+      cplBuy: 35,                 // Low CPL
+      pricePerPartnerLead: 25,    // CPL_SELL default
+      avgBuyersPerLead: 3.0,      // High resale rate
+      partnerCloseRate: 15,       // PTR_CLOSE default
+      estimatedBookingValue: 1200,// EST_VAL default
+      commissionPercentage: 10,   // COMM_PCT default
+      conciergeFee: 49,           // FEE_CONC default
+      supportCostPerLead: 10,     // Low ops cost
       conciergeActive: true,
     },
   },
@@ -243,9 +243,11 @@ export function UmzugscheckUnitEconomicsCalculator() {
     };
   }, [inputs]);
 
-  const isProfitable = calculations.profitPerLead > 0;
+  // Status logic per spec: Green > 10, Yellow 0-9, Red < 0
+  const isProfitable = calculations.profitPerLead > 10;  // Green: Scale
+  const isYellow = calculations.profitPerLead >= 0 && calculations.profitPerLead <= 10;  // Yellow: Optimize
+  const isCritical = calculations.profitPerLead < 0;  // Red: Stop Ads
   const isAboveBreakeven = inputs.avgBuyersPerLead >= calculations.breakEvenResaleRate;
-  const isCritical = calculations.profitPerLead < -10;
 
   // Guardrail checks
   const alerts = useMemo(() => {
@@ -336,11 +338,11 @@ export function UmzugscheckUnitEconomicsCalculator() {
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-xs text-muted-foreground">Status</p>
+                <p className="text-xs text-muted-foreground">Status / Empfehlung</p>
                 <Badge className={cn(
                   isProfitable ? "bg-green-600" : isCritical ? "bg-red-600" : "bg-amber-500"
                 )}>
-                  {isProfitable ? "OK" : isCritical ? "KRITISCH" : "WARNUNG"}
+                  {isProfitable ? "SCALE" : isCritical ? "STOP ADS" : "OPTIMIZE"}
                 </Badge>
               </div>
             </div>
@@ -622,7 +624,9 @@ export function UmzugscheckUnitEconomicsCalculator() {
                   {(["conservative", "base", "aggressive"] as Scenario[]).map((scenario) => {
                     const config = SCENARIO_CONFIGS[scenario];
                     const metrics = calculateMetrics(config.inputs);
-                    const isProfitableScenario = metrics.profitPerLead > 0;
+                    const isProfitableScenario = metrics.profitPerLead > 10;  // > CHF 10 = GREEN
+                    const isYellowScenario = metrics.profitPerLead >= 0 && metrics.profitPerLead <= 10;  // 0-10 = YELLOW
+                    const isCriticalScenario = metrics.profitPerLead < 0;  // < 0 = RED
                     const isAboveBE = config.inputs.avgBuyersPerLead >= metrics.breakEvenResaleRate;
                     
                     return (
@@ -634,12 +638,12 @@ export function UmzugscheckUnitEconomicsCalculator() {
                           </div>
                         </td>
                         <td className="text-right py-3 px-2 font-mono">{formatCHF(config.inputs.cplBuy)}</td>
-                        <td className="text-right py-3 px-2 font-mono">{config.inputs.avgBuyersPerLead}×</td>
+                        <td className="text-right py-3 px-2 font-mono">{config.inputs.avgBuyersPerLead}x</td>
                         <td className="text-right py-3 px-2 font-mono">{formatCHF(config.inputs.supportCostPerLead)}</td>
                         <td className="text-right py-3 px-2 font-mono">{formatCHF(metrics.revenuePerLead)}</td>
                         <td className={cn(
                           "text-right py-3 px-2 font-mono font-bold",
-                          isProfitableScenario ? "text-green-600" : "text-red-600"
+                          isProfitableScenario ? "text-green-600" : isCriticalScenario ? "text-red-600" : "text-amber-600"
                         )}>
                           {formatCHF(metrics.profitPerLead)}
                         </td>
@@ -647,15 +651,15 @@ export function UmzugscheckUnitEconomicsCalculator() {
                           "text-right py-3 px-2 font-mono",
                           isAboveBE ? "text-green-600" : "text-red-600"
                         )}>
-                          {metrics.breakEvenResaleRate.toFixed(2)}×
+                          {metrics.breakEvenResaleRate.toFixed(2)}x
                         </td>
                         <td className="text-center py-3 px-2">
-                          {isProfitableScenario && isAboveBE ? (
-                            <Badge className="bg-green-600 text-white">🟢 SCALE</Badge>
-                          ) : !isProfitableScenario ? (
-                            <Badge className="bg-red-600 text-white">🔴 STOP</Badge>
+                          {isProfitableScenario ? (
+                            <Badge className="bg-green-600 text-white">SCALE</Badge>
+                          ) : isCriticalScenario ? (
+                            <Badge className="bg-red-600 text-white">STOP</Badge>
                           ) : (
-                            <Badge className="bg-amber-500 text-white">🟡 OPTIMIZE</Badge>
+                            <Badge className="bg-amber-500 text-white">OPTIMIZE</Badge>
                           )}
                         </td>
                       </tr>

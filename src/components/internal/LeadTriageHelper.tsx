@@ -72,9 +72,9 @@ const DEFAULT_INPUTS: TriageInputs = {
   urgency: 'medium',
 };
 
-// Minimum value thresholds
+// Minimum value thresholds (from spec)
 const MIN_DIRECT_VALUE = 1000; // Below this = reject for direct
-const MIN_WHALE_VALUE = 1800; // Below this = route to marketplace
+const MIN_WHALE_VALUE = 2200; // KEEP if >= CHF 2,200 (per spec)
 const TARGET_MARGIN = 400; // CHF minimum contribution margin
 
 export function LeadTriageHelper() {

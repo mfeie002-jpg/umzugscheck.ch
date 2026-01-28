@@ -500,7 +500,7 @@ const AdminRoutes = () => (
 const AppRouterContent = () => {
   const location = useLocation();
   const pathname = location.pathname.toLowerCase();
-  const isAdminRoute = pathname.startsWith('/admin') || pathname === '/all-flows-review';
+  const isAdminRoute = pathname.startsWith('/admin') || pathname.startsWith('/internal') || pathname === '/all-flows-review';
   const isFlowTester = pathname === '/flow-tester';
   const isStakeholderRoute = pathname === '/vision' || pathname === '/family' || pathname === '/investoren';
 

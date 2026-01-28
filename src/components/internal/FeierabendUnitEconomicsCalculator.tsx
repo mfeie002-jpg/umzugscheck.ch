@@ -38,48 +38,48 @@ const SCENARIO_CONFIGS: Record<Scenario, { label: string; description: string; i
     label: "Winter / Konservativ",
     description: "Niedrige Nachfrage, hohe CPL, schwache Conversion",
     inputs: {
-      avgOrderValue: 2400,
-      marketingCPL: 85,
-      salesCloseRate: 18,
-      salesTimePerLead: 35,
-      salesHourlyCost: 45,
-      crewSize: 3,
-      jobDuration: 6,
-      crewHourlyCost: 38,
-      vehicleFuelCost: 180,
-      materialsDisposalCost: 120,
+      avgOrderValue: 2200,       // Lower AOV
+      marketingCPL: 85,          // Higher CPL
+      salesCloseRate: 15,        // Lower close rate
+      salesTimePerLead: 45,      // TIME_SALES default
+      salesHourlyCost: 60,       // RATE_SALES default
+      crewSize: 3,               // CREW_COUNT default
+      jobDuration: 8,            // JOB_HOURS default
+      crewHourlyCost: 42,        // RATE_CREW default
+      vehicleFuelCost: 150,      // COST_FLEET default
+      materialsDisposalCost: 100,// COST_MATS default
     },
   },
   base: {
     label: "Base Case",
-    description: "Durchschnittswerte",
+    description: "Zielwerte",
     inputs: {
-      avgOrderValue: 2800,
-      marketingCPL: 60,
-      salesCloseRate: 22,
-      salesTimePerLead: 30,
-      salesHourlyCost: 45,
-      crewSize: 3,
-      jobDuration: 6,
-      crewHourlyCost: 38,
-      vehicleFuelCost: 180,
-      materialsDisposalCost: 120,
+      avgOrderValue: 2500,       // AOV_NET default
+      marketingCPL: 60,          // CPL_MKT default
+      salesCloseRate: 20,        // CR_SALES default
+      salesTimePerLead: 45,      // TIME_SALES default
+      salesHourlyCost: 60,       // RATE_SALES default
+      crewSize: 3,               // CREW_COUNT default
+      jobDuration: 8,            // JOB_HOURS default
+      crewHourlyCost: 42,        // RATE_CREW default
+      vehicleFuelCost: 150,      // COST_FLEET default
+      materialsDisposalCost: 100,// COST_MATS default
     },
   },
   aggressive: {
     label: "Sommer / Aggressiv",
     description: "Hohe Nachfrage, niedrige CPL, starke Conversion",
     inputs: {
-      avgOrderValue: 3200,
-      marketingCPL: 45,
-      salesCloseRate: 28,
-      salesTimePerLead: 25,
-      salesHourlyCost: 45,
-      crewSize: 3,
-      jobDuration: 6,
-      crewHourlyCost: 38,
-      vehicleFuelCost: 180,
-      materialsDisposalCost: 120,
+      avgOrderValue: 3000,       // Higher AOV
+      marketingCPL: 45,          // Lower CPL
+      salesCloseRate: 28,        // Higher close rate
+      salesTimePerLead: 45,      // TIME_SALES default
+      salesHourlyCost: 60,       // RATE_SALES default
+      crewSize: 3,               // CREW_COUNT default
+      jobDuration: 8,            // JOB_HOURS default
+      crewHourlyCost: 42,        // RATE_CREW default
+      vehicleFuelCost: 150,      // COST_FLEET default
+      materialsDisposalCost: 100,// COST_MATS default
     },
   },
 };
@@ -250,8 +250,10 @@ export function FeierabendUnitEconomicsCalculator() {
     };
   }, [inputs]);
 
-  const isHealthy = calculations.contributionMarginII >= TARGET_CM2;
-  const isCritical = calculations.contributionMarginII < 0;
+  // Status logic per spec: Green >= 400, Yellow 200-399, Red < 200
+  const isHealthy = calculations.contributionMarginII >= TARGET_CM2;  // Green: Scale Ads
+  const isYellow = calculations.contributionMarginII >= 200 && calculations.contributionMarginII < TARGET_CM2;  // Yellow: Optimize
+  const isCritical = calculations.contributionMarginII < 200;  // Red: Stop Ads
 
   // Guardrail checks
   const alerts = useMemo(() => {
@@ -342,11 +344,11 @@ export function FeierabendUnitEconomicsCalculator() {
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-xs text-muted-foreground">Status</p>
+                <p className="text-xs text-muted-foreground">Status / Empfehlung</p>
                 <Badge className={cn(
                   isHealthy ? "bg-green-600" : isCritical ? "bg-red-600" : "bg-amber-500"
                 )}>
-                  {isHealthy ? "OK" : isCritical ? "KRITISCH" : "WARNUNG"}
+                  {isHealthy ? "SCALE ADS" : isCritical ? "STOP ADS" : "OPTIMIZE"}
                 </Badge>
               </div>
             </div>
@@ -614,7 +616,8 @@ export function FeierabendUnitEconomicsCalculator() {
                     const config = SCENARIO_CONFIGS[scenario];
                     const metrics = calculateMetrics(config.inputs);
                     const isHealthyScenario = metrics.contributionMarginII >= TARGET_CM2;
-                    const isCriticalScenario = metrics.contributionMarginII < 0;
+                    const isYellowScenario = metrics.contributionMarginII >= 200 && metrics.contributionMarginII < TARGET_CM2;
+                    const isCriticalScenario = metrics.contributionMarginII < 200;
                     
                     return (
                       <tr key={scenario} className="border-b border-border/50 hover:bg-muted/30">
@@ -629,7 +632,7 @@ export function FeierabendUnitEconomicsCalculator() {
                         <td className="text-right py-3 px-2 font-mono">{config.inputs.salesCloseRate}%</td>
                         <td className="text-right py-3 px-2 font-mono">{formatCHF(metrics.cogs)}</td>
                         <td className="text-right py-3 px-2 font-mono">
-                          {metrics.totalCAC === Infinity ? "∞" : formatCHF(metrics.totalCAC)}
+                          {metrics.totalCAC === Infinity ? "-" : formatCHF(metrics.totalCAC)}
                         </td>
                         <td className={cn(
                           "text-right py-3 px-2 font-mono font-bold",
@@ -639,11 +642,11 @@ export function FeierabendUnitEconomicsCalculator() {
                         </td>
                         <td className="text-center py-3 px-2">
                           {isHealthyScenario ? (
-                            <Badge className="bg-green-600 text-white">🟢 SCALE</Badge>
+                            <Badge className="bg-green-600 text-white">SCALE</Badge>
                           ) : isCriticalScenario ? (
-                            <Badge className="bg-red-600 text-white">🔴 STOP</Badge>
+                            <Badge className="bg-red-600 text-white">STOP</Badge>
                           ) : (
-                            <Badge className="bg-amber-500 text-white">🟡 OPTIMIZE</Badge>
+                            <Badge className="bg-amber-500 text-white">OPTIMIZE</Badge>
                           )}
                         </td>
                       </tr>
