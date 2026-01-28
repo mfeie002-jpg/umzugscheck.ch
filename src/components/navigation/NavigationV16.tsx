@@ -88,40 +88,46 @@ const DROPDOWN_ITEMS = {
   ],
 };
 
+// Only variant-p (second-to-last, V16) shows emojis
+const EMOJI_VARIANT = 'variant-p';
+
 // Build nav sections dynamically based on the active variant's labels and microcopy
-// NavigationV16 always shows emojis for all variants
-const buildNavSections = (variant: NavConfig): NavSection[] => [
-  {
-    id: "preisrechner",
-    label: `📋 ${variant.labels.preisrechner}`,
-    tagline: variant.microcopy.preisrechner,
-    items: DROPDOWN_ITEMS.preisrechner,
-  },
-  {
-    id: "firmen",
-    label: `🔍 ${variant.labels.firmen}`,
-    tagline: variant.microcopy.firmen,
-    items: DROPDOWN_ITEMS.firmen,
-  },
-  {
-    id: "services",
-    label: `🛠️ ${variant.labels.services}`,
-    tagline: variant.microcopy.services,
-    items: DROPDOWN_ITEMS.services,
-  },
-  {
-    id: "ratgeber",
-    label: `📚 ${variant.labels.ratgeber}`,
-    tagline: variant.microcopy.ratgeber,
-    items: DROPDOWN_ITEMS.ratgeber,
-  },
-  {
-    id: "fuerFirmen",
-    label: `⭐ ${variant.labels.fuerFirmen}`,
-    tagline: variant.microcopy.fuerFirmen,
-    items: DROPDOWN_ITEMS.fuerFirmen,
-  },
-];
+const buildNavSections = (variant: NavConfig): NavSection[] => {
+  const useEmojis = variant.id === EMOJI_VARIANT;
+  
+  return [
+    {
+      id: "preisrechner",
+      label: useEmojis ? `📋 ${variant.labels.preisrechner}` : variant.labels.preisrechner,
+      tagline: variant.microcopy.preisrechner,
+      items: DROPDOWN_ITEMS.preisrechner,
+    },
+    {
+      id: "firmen",
+      label: useEmojis ? `🔍 ${variant.labels.firmen}` : variant.labels.firmen,
+      tagline: variant.microcopy.firmen,
+      items: DROPDOWN_ITEMS.firmen,
+    },
+    {
+      id: "services",
+      label: useEmojis ? `🛠️ ${variant.labels.services}` : variant.labels.services,
+      tagline: variant.microcopy.services,
+      items: DROPDOWN_ITEMS.services,
+    },
+    {
+      id: "ratgeber",
+      label: useEmojis ? `📚 ${variant.labels.ratgeber}` : variant.labels.ratgeber,
+      tagline: variant.microcopy.ratgeber,
+      items: DROPDOWN_ITEMS.ratgeber,
+    },
+    {
+      id: "fuerFirmen",
+      label: useEmojis ? `⭐ ${variant.labels.fuerFirmen}` : variant.labels.fuerFirmen,
+      tagline: variant.microcopy.fuerFirmen,
+      items: DROPDOWN_ITEMS.fuerFirmen,
+    },
+  ];
+};
 
 export const NavigationV16 = () => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
