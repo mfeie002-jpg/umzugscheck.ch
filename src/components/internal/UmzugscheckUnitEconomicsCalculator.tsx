@@ -247,9 +247,81 @@ export function UmzugscheckUnitEconomicsCalculator() {
   const isAboveBreakeven = inputs.avgBuyersPerLead >= calculations.breakEvenResaleRate;
   const isCritical = calculations.profitPerLead < -10;
 
+  // Guardrail checks
+  const alerts = useMemo(() => {
+    const warnings: { type: 'critical' | 'warning' | 'info'; title: string; message: string }[] = [];
+    
+    // Profit per Lead < 0 → STOP ADS
+    if (calculations.profitPerLead < 0) {
+      warnings.push({
+        type: 'critical',
+        title: '🛑 STOP ADS',
+        message: `Verlust von CHF ${Math.abs(calculations.profitPerLead).toFixed(2)} pro Lead – Werbung sofort pausieren!`
+      });
+    }
+    
+    // Resale Rate < 2.0 → CRITICAL WARNING
+    if (inputs.avgBuyersPerLead < 2.0) {
+      warnings.push({
+        type: 'critical',
+        title: '🚨 RESALE RATE KRITISCH',
+        message: `Nur ${inputs.avgBuyersPerLead}× Käufer pro Lead – Minimum 2.0× erforderlich für Profitabilität`
+      });
+    }
+    
+    // Below break-even
+    if (!isAboveBreakeven) {
+      warnings.push({
+        type: 'warning',
+        title: '⚠️ UNTER BREAK-EVEN',
+        message: `Break-even bei ${calculations.breakEvenResaleRate.toFixed(2)}× – aktuell ${inputs.avgBuyersPerLead}×`
+      });
+    }
+    
+    return warnings;
+  }, [calculations, inputs.avgBuyersPerLead, isAboveBreakeven]);
+
   return (
     <TooltipProvider>
       <div className="space-y-6">
+        {/* GUARDRAIL ALERTS - Top of Dashboard */}
+        {alerts.length > 0 && (
+          <div className="space-y-2">
+            {alerts.map((alert, idx) => (
+              <div 
+                key={idx}
+                className={cn(
+                  "p-4 rounded-lg border-2 flex items-start gap-3",
+                  alert.type === 'critical' 
+                    ? "bg-red-50 border-red-500 dark:bg-red-950/50" 
+                    : alert.type === 'warning'
+                    ? "bg-amber-50 border-amber-500 dark:bg-amber-950/50"
+                    : "bg-blue-50 border-blue-500 dark:bg-blue-950/50"
+                )}
+              >
+                <AlertCircle className={cn(
+                  "w-5 h-5 mt-0.5 flex-shrink-0",
+                  alert.type === 'critical' ? "text-red-600" : alert.type === 'warning' ? "text-amber-600" : "text-blue-600"
+                )} />
+                <div>
+                  <p className={cn(
+                    "font-bold",
+                    alert.type === 'critical' ? "text-red-800 dark:text-red-200" : alert.type === 'warning' ? "text-amber-800 dark:text-amber-200" : "text-blue-800 dark:text-blue-200"
+                  )}>
+                    {alert.title}
+                  </p>
+                  <p className={cn(
+                    "text-sm",
+                    alert.type === 'critical' ? "text-red-700 dark:text-red-300" : alert.type === 'warning' ? "text-amber-700 dark:text-amber-300" : "text-blue-700 dark:text-blue-300"
+                  )}>
+                    {alert.message}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* Header with Objective */}
         <Card className="border-primary/30 bg-primary/5">
           <CardContent className="p-4">
