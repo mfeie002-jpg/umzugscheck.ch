@@ -277,6 +277,7 @@ const AdminRankings = lazy(() => import("./pages/admin/Rankings"));
 const ConversionAnalytics = lazy(() => import("./pages/admin/ConversionAnalytics"));
 const EmailAutomation = lazy(() => import("./pages/admin/EmailAutomation"));
 const ABTesting = lazy(() => import("./pages/admin/ABTestingComplete"));
+const PaidMedia = lazy(() => import("./pages/admin/PaidMedia"));
 const LocalizedUmzugsofferten = lazy(() => import("./pages/LocalizedUmzugsofferten"));
 const ImageDownload = lazy(() => import("./pages/ImageDownload"));
 const ProviderAvailability = lazy(() => import("./pages/admin/ProviderAvailability"));
@@ -456,6 +457,7 @@ const AdminRoutes = () => (
       <Route path="/admin/conversion-analytics" element={<ConversionAnalytics />} />
       <Route path="/admin/email-automation" element={<EmailAutomation />} />
       <Route path="/admin/ab-testing" element={<ABTesting />} />
+      <Route path="/admin/paid-media" element={<PaidMedia />} />
       <Route path="/admin/availability" element={<ProviderAvailability />} />
       <Route path="/admin/code-export" element={<CodeExport />} />
       <Route path="/admin/tools" element={<AdminTools />} />
