@@ -28,7 +28,11 @@ export interface ExecutiveKPIs {
   partnerDisputeRatePercent: number;
 }
 
-export interface FeierabendInputs {
+/**
+ * Brand Unit Economics Inputs
+ * Used for Feierabend, Umzug Express, and Zügelhelden
+ */
+export interface BrandInputs {
   aovNet: number;
   cplMkt: number;
   closeRate: number;
@@ -40,6 +44,9 @@ export interface FeierabendInputs {
   fleetCost: number;
   materialsCost: number;
 }
+
+/** @deprecated Use BrandInputs instead */
+export type FeierabendInputs = BrandInputs;
 
 export interface MarketplaceInputs {
   cplBuy: number;
