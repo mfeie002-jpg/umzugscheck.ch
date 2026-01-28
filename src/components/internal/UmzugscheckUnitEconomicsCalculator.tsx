@@ -31,16 +31,70 @@ interface UmzugscheckInputs {
   conciergeActive: boolean;
 }
 
-const DEFAULT_INPUTS: UmzugscheckInputs = {
-  cplBuy: 45,
-  pricePerPartnerLead: 35,
-  avgBuyersPerLead: 2.5,
-  partnerCloseRate: 22,
-  estimatedBookingValue: 2200,
-  commissionPercentage: 8,
-  conciergeFee: 99,
-  supportCostPerLead: 8,
-  conciergeActive: false,
+type Scenario = "conservative" | "base" | "aggressive";
+
+const SCENARIO_CONFIGS: Record<Scenario, { label: string; description: string; inputs: UmzugscheckInputs }> = {
+  conservative: {
+    label: "🥶 Konservativ",
+    description: "Niedrigere Resale Rate, höhere CPL",
+    inputs: {
+      cplBuy: 65,
+      pricePerPartnerLead: 35,
+      avgBuyersPerLead: 1.8,
+      partnerCloseRate: 18,
+      estimatedBookingValue: 2200,
+      commissionPercentage: 8,
+      conciergeFee: 99,
+      supportCostPerLead: 12,
+      conciergeActive: false,
+    },
+  },
+  base: {
+    label: "📊 Base Case",
+    description: "Realistische Durchschnittswerte",
+    inputs: {
+      cplBuy: 45,
+      pricePerPartnerLead: 35,
+      avgBuyersPerLead: 2.5,
+      partnerCloseRate: 22,
+      estimatedBookingValue: 2200,
+      commissionPercentage: 8,
+      conciergeFee: 99,
+      supportCostPerLead: 8,
+      conciergeActive: false,
+    },
+  },
+  aggressive: {
+    label: "🚀 Aggressiv",
+    description: "Hohe Resale Rate, niedrige Ops-Kosten",
+    inputs: {
+      cplBuy: 35,
+      pricePerPartnerLead: 38,
+      avgBuyersPerLead: 3.2,
+      partnerCloseRate: 25,
+      estimatedBookingValue: 2400,
+      commissionPercentage: 10,
+      conciergeFee: 99,
+      supportCostPerLead: 5,
+      conciergeActive: true,
+    },
+  },
+};
+
+// Helper to calculate metrics for any input set
+const calculateMetrics = (inputs: UmzugscheckInputs) => {
+  const { cplBuy, pricePerPartnerLead, avgBuyersPerLead, partnerCloseRate, estimatedBookingValue, commissionPercentage, conciergeFee, supportCostPerLead, conciergeActive } = inputs;
+  
+  const resaleRevenue = pricePerPartnerLead * avgBuyersPerLead;
+  const closeRateDecimal = partnerCloseRate / 100;
+  const commissionDecimal = commissionPercentage / 100;
+  const commissionRevenue = estimatedBookingValue * closeRateDecimal * commissionDecimal * avgBuyersPerLead;
+  const conciergeRevenue = conciergeActive ? conciergeFee * closeRateDecimal * avgBuyersPerLead : 0;
+  const revenuePerLead = resaleRevenue + commissionRevenue + conciergeRevenue;
+  const profitPerLead = revenuePerLead - cplBuy - supportCostPerLead;
+  const breakEvenResaleRate = pricePerPartnerLead > 0 ? (cplBuy + supportCostPerLead) / pricePerPartnerLead : Infinity;
+  
+  return { revenuePerLead, profitPerLead, breakEvenResaleRate };
 };
 
 const formatCHF = (value: number) => {
@@ -138,7 +192,7 @@ const FormulaDisplay = ({
 };
 
 export function UmzugscheckUnitEconomicsCalculator() {
-  const [inputs, setInputs] = useState<UmzugscheckInputs>(DEFAULT_INPUTS);
+  const [inputs, setInputs] = useState<UmzugscheckInputs>(SCENARIO_CONFIGS.base.inputs);
 
   const updateInput = (key: keyof UmzugscheckInputs, value: number | boolean) => {
     setInputs(prev => ({ ...prev, [key]: value }));
@@ -468,6 +522,80 @@ export function UmzugscheckUnitEconomicsCalculator() {
             </CardContent>
           </Card>
         </div>
+
+        {/* SCENARIO COMPARISON TABLE */}
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
+              Szenario-Vergleich (Umzugscheck Marketplace)
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border">
+                    <th className="text-left py-3 px-2 font-medium text-muted-foreground">Szenario</th>
+                    <th className="text-right py-3 px-2 font-medium text-muted-foreground">CPL</th>
+                    <th className="text-right py-3 px-2 font-medium text-muted-foreground">Resale ×</th>
+                    <th className="text-right py-3 px-2 font-medium text-muted-foreground">Support</th>
+                    <th className="text-right py-3 px-2 font-medium text-muted-foreground">Revenue</th>
+                    <th className="text-right py-3 px-2 font-medium text-muted-foreground">Profit/Lead</th>
+                    <th className="text-right py-3 px-2 font-medium text-muted-foreground">Break-even</th>
+                    <th className="text-center py-3 px-2 font-medium text-muted-foreground">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(["conservative", "base", "aggressive"] as Scenario[]).map((scenario) => {
+                    const config = SCENARIO_CONFIGS[scenario];
+                    const metrics = calculateMetrics(config.inputs);
+                    const isProfitableScenario = metrics.profitPerLead > 0;
+                    const isAboveBE = config.inputs.avgBuyersPerLead >= metrics.breakEvenResaleRate;
+                    
+                    return (
+                      <tr key={scenario} className="border-b border-border/50 hover:bg-muted/30">
+                        <td className="py-3 px-2">
+                          <div>
+                            <p className="font-medium">{config.label}</p>
+                            <p className="text-xs text-muted-foreground">{config.description}</p>
+                          </div>
+                        </td>
+                        <td className="text-right py-3 px-2 font-mono">{formatCHF(config.inputs.cplBuy)}</td>
+                        <td className="text-right py-3 px-2 font-mono">{config.inputs.avgBuyersPerLead}×</td>
+                        <td className="text-right py-3 px-2 font-mono">{formatCHF(config.inputs.supportCostPerLead)}</td>
+                        <td className="text-right py-3 px-2 font-mono">{formatCHF(metrics.revenuePerLead)}</td>
+                        <td className={cn(
+                          "text-right py-3 px-2 font-mono font-bold",
+                          isProfitableScenario ? "text-green-600" : "text-red-600"
+                        )}>
+                          {formatCHF(metrics.profitPerLead)}
+                        </td>
+                        <td className={cn(
+                          "text-right py-3 px-2 font-mono",
+                          isAboveBE ? "text-green-600" : "text-red-600"
+                        )}>
+                          {metrics.breakEvenResaleRate.toFixed(2)}×
+                        </td>
+                        <td className="text-center py-3 px-2">
+                          {isProfitableScenario && isAboveBE ? (
+                            <Badge className="bg-green-600 text-white">🟢 SCALE</Badge>
+                          ) : !isProfitableScenario ? (
+                            <Badge className="bg-red-600 text-white">🔴 STOP</Badge>
+                          ) : (
+                            <Badge className="bg-amber-500 text-white">🟡 OPTIMIZE</Badge>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+            <p className="text-xs text-muted-foreground mt-4">
+              Ziel: Positive Marge pro Lead. Break-even = minimale Käufer pro Lead um Kosten zu decken.
+            </p>
+          </CardContent>
+        </Card>
 
         {/* Warning if below break-even */}
         {!isAboveBreakeven && (
