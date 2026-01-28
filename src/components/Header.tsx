@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Phone, ChevronDown, Shield, Star, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ThemeToggle from "@/components/ThemeToggle";
-import Logo from "@/components/Logo";
+import { Logo } from "@/components/Logo";
 import { usePaidModeContext } from "@/contexts/PaidModeContext";
 import { CONTACT_PHONE_E164, CONTACT_PHONE_DISPLAY } from "@/config/contact";
 import {

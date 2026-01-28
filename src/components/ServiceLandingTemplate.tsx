@@ -4,11 +4,11 @@ import { Phone, Star, Shield, Clock, CheckCircle, ArrowRight, Award, ChevronRigh
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Header from "./Header";
-import Footer from "./Footer";
+import { Footer } from "./Footer";
 import SEOHead from "./SEOHead";
 import AnimatedSection from "./AnimatedSection";
 import FAQSection from "./FAQSection";
-import CTASection from "./CTASection";
+import { CTASection } from "./CTASection";
 import ServiceCrossSelling from "./ServiceCrossSelling";
 
 interface ServiceLandingTemplateProps {
