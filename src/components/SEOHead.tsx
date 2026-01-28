@@ -3,14 +3,21 @@ import { generateMetaData, generateOGTags } from "@/lib/seo-meta";
 import { generatePageSchemas, generateSchemaScript } from "@/lib/schema-markup";
 import { getKeywordsForPage } from "@/lib/seo-keywords";
 
-interface SEOHeadProps {
-  pageType: 'home' | 'service' | 'city' | 'city-service' | 'main-page';
+export interface SEOHeadProps {
+  // New unified API
+  pageType?: 'home' | 'service' | 'city' | 'city-service' | 'main-page';
   city?: string;
   service?: string;
   pageName?: string;
-  url: string;
+  url?: string;
   faqs?: Array<{ question: string; answer: string }>;
   companies?: Array<{ name: string; rating?: number; reviewCount?: number }>;
+  // Legacy API support
+  title?: string;
+  description?: string;
+  canonical?: string;
+  keywords?: string;
+  structuredData?: any;
 }
 
 /**
@@ -23,35 +30,58 @@ interface SEOHeadProps {
  * - Keywords
  * - Canonical URL
  */
-export const SEOHead = ({ pageType, city, service, pageName, url, faqs, companies }: SEOHeadProps) => {
-  // Generate meta data
-  const metaData = generateMetaData({ 
-    type: pageType, 
-    city, 
-    service, 
-    pageName 
-  });
+export const SEOHead = ({ 
+  pageType = 'home', 
+  city, 
+  service, 
+  pageName, 
+  url, 
+  faqs, 
+  companies,
+  // Legacy props
+  title: legacyTitle,
+  description: legacyDescription,
+  canonical: legacyCanonical,
+  keywords: legacyKeywords,
+  structuredData: legacyStructuredData
+}: SEOHeadProps) => {
+  // Use legacy props if provided (backwards compatibility)
+  const effectiveUrl = url || legacyCanonical || 'https://umzugscheck.ch';
+  
+  // Generate meta data (or use legacy)
+  const metaData = legacyTitle 
+    ? { title: legacyTitle, description: legacyDescription || '' }
+    : generateMetaData({ 
+        type: pageType, 
+        city, 
+        service, 
+        pageName 
+      });
 
   // Generate OG tags
-  const ogTags = generateOGTags(metaData, url);
+  const ogTags = generateOGTags(metaData, effectiveUrl);
 
   // Generate keywords
-  const keywords = getKeywordsForPage(
-    pageType === 'main-page' ? pageName || 'home' : pageType,
-    city,
-    service
-  );
+  const keywordsArray = legacyKeywords 
+    ? legacyKeywords.split(',').map(k => k.trim())
+    : getKeywordsForPage(
+        pageType === 'main-page' ? pageName || 'home' : pageType,
+        city,
+        service
+      );
 
   // Generate structured data - map pageType for schema generation
   const schemaPageType = pageType === 'main-page' 
     ? (pageName as 'offerten' | 'preise' | 'vergleich' | 'faq' || 'home')
     : pageType as 'home' | 'service' | 'city' | 'city-service';
     
-  const schemas = generatePageSchemas(
-    { type: schemaPageType, city, service, url },
-    faqs,
-    companies
-  );
+  const schemas = legacyStructuredData 
+    ? (Array.isArray(legacyStructuredData) ? legacyStructuredData : [legacyStructuredData])
+    : generatePageSchemas(
+        { type: schemaPageType, city, service, url: effectiveUrl },
+        faqs,
+        companies
+      );
   const schemaScript = generateSchemaScript(schemas);
 
   return (
@@ -59,8 +89,8 @@ export const SEOHead = ({ pageType, city, service, pageName, url, faqs, companie
       {/* Basic Meta Tags */}
       <title>{metaData.title}</title>
       <meta name="description" content={metaData.description} />
-      <link rel="canonical" href={url} />
-      <meta name="keywords" content={keywords.join(', ')} />
+      <link rel="canonical" href={effectiveUrl} />
+      <meta name="keywords" content={keywordsArray.join(', ')} />
 
       {/* OpenGraph Tags */}
       <meta property="og:title" content={ogTags['og:title']} />

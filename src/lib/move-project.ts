@@ -238,8 +238,21 @@ export async function createMoveProject(params: {
 
   // Try Supabase first
   try {
+    // Map internal status to DB enum values
+    const statusMap: Record<MoveProjectStatus, string> = {
+      'draft': 'inventory',
+      'inventory_scan': 'inventory',
+      'quote_ready': 'quote',
+      'booking_pending': 'booking',
+      'booked': 'booking',
+      'scheduled': 'moving',
+      'in_transit': 'moving',
+      'completed': 'complete',
+      'closed': 'complete'
+    };
+    
     const dbData = {
-      status: project.status,
+      status: statusMap[project.status] as "booking" | "complete" | "inventory" | "moving" | "quote" | "route",
       source: project.source,
       origin_street: project.origin?.street,
       origin_postal_code: project.origin?.postalCode,

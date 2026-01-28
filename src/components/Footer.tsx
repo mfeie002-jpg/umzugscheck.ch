@@ -285,7 +285,8 @@ const Footer = () => {
           </div>
         </div>
       </div>
-    </footer>
+  </footer>
+  );
 };
 
 export { Footer };
