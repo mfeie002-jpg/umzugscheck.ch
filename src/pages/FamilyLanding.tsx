@@ -16,6 +16,8 @@ import { VisionIconFeatures } from "@/components/vision/VisionIconFeatures";
 import { VisionVisualDivider } from "@/components/vision/VisionVisualDivider";
 import { VisionLiveStats } from "@/components/vision/VisionLiveStats";
 import { VisionProgressIndicator } from "@/components/vision/VisionProgressIndicator";
+import { ReloOSJourneySection } from "@/components/vision/ReloOSJourneySection";
+import { ReloOSFeaturesGrid } from "@/components/vision/ReloOSFeaturesGrid";
 import { ExpandAllToggle } from "@/components/vision/ExpandAllToggle";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Heart, Rocket } from "lucide-react";
@@ -154,6 +156,12 @@ export default function FamilyLanding() {
       {isPersonalized && (
         <FunSectionIntro persona={persona} page="family" sectionId="features" />
       )}
+
+      {/* NEW: RELO-OS 6-PHASE JOURNEY - Family Variant */}
+      <ReloOSJourneySection language={lang} variant="family" />
+
+      {/* NEW: RELO-OS FEATURES - Compact for Family */}
+      <ReloOSFeaturesGrid language={lang} variant="compact" />
 
       {/* 4. VISUAL DIVIDER */}
       <VisionVisualDivider language={lang} variant="family" />
