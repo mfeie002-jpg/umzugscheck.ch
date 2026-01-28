@@ -21,9 +21,9 @@ interface VisionTractionDashboardProps {
   language: VisionLanguage;
 }
 
-// Calculate days since start (31.10.2024)
+// Calculate days since start (31.10.2026)
 const getProjectDays = () => {
-  const startDate = new Date('2024-10-31');
+  const startDate = new Date('2026-10-31');
   const today = new Date();
   const diffTime = Math.abs(today.getTime() - startDate.getTime());
   return Math.ceil(diffTime / (1000 * 60 * 60 * 24));

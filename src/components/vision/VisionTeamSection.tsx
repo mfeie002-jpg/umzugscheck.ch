@@ -27,9 +27,9 @@ interface VisionTeamSectionProps {
   language: VisionLanguage;
 }
 
-// Calculate days since start (31.10.2024)
+// Calculate days since start (31.10.2026)
 const getProjectDays = () => {
-  const startDate = new Date('2024-10-31');
+  const startDate = new Date('2026-10-31');
   const today = new Date();
   const diffTime = Math.abs(today.getTime() - startDate.getTime());
   return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -48,7 +48,7 @@ const translations = {
     subtitle: "Ein Ein-Mann-Projekt mit der Power eines 10-köpfigen Teams – dank KI",
     role: "Gründer & Entwickler",
     location: "Schweiz",
-    bio: `Full-Stack Entwickler mit Leidenschaft für AI-gestützte Lösungen. Ich baue Umzugscheck.ch als Solo-Founder mit intensivem Einsatz: durchschnittlich 13.5 Stunden täglich, 7 Tage die Woche, seit dem 31. Oktober 2024.`,
+    bio: `Full-Stack Entwickler mit Leidenschaft für AI-gestützte Lösungen. Ich baue Umzugscheck.ch als Solo-Founder mit intensivem Einsatz: durchschnittlich 13.5 Stunden täglich, 7 Tage die Woche, seit dem 31. Oktober 2026.`,
     stats: {
       hours: `${getTotalHours().toLocaleString('de-CH')}+`,
       hoursLabel: "Entwicklungsstunden",
@@ -72,7 +72,7 @@ const translations = {
       "Fokus auf Automatisierung statt manuelle Prozesse",
       "Lean Startup Methodik: Schnell iterieren, kein Overhead"
     ],
-    startDate: "Start: 31. Oktober 2024"
+    startDate: "Start: 31. Oktober 2026"
   },
   bg: {
     badge: "Екипът",
