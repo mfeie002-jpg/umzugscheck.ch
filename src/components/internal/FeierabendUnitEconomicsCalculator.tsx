@@ -253,9 +253,81 @@ export function FeierabendUnitEconomicsCalculator() {
   const isHealthy = calculations.contributionMarginII >= TARGET_CM2;
   const isCritical = calculations.contributionMarginII < 0;
 
+  // Guardrail checks
+  const alerts = useMemo(() => {
+    const warnings: { type: 'critical' | 'warning' | 'info'; title: string; message: string }[] = [];
+    
+    // Total CAC > CHF 450 → RED ALERT
+    if (calculations.totalCAC > 450 && calculations.totalCAC !== Infinity) {
+      warnings.push({
+        type: 'critical',
+        title: '🚨 CAC KRITISCH',
+        message: `Total CAC bei CHF ${calculations.totalCAC.toFixed(0)} – Maximum CHF 450 überschritten!`
+      });
+    }
+    
+    // Contribution Margin II < CHF 400 → WARNING
+    if (calculations.contributionMarginII < TARGET_CM2) {
+      warnings.push({
+        type: calculations.contributionMarginII < 0 ? 'critical' : 'warning',
+        title: calculations.contributionMarginII < 0 ? '🔴 NEGATIVE MARGE' : '⚠️ MARGE UNTER ZIEL',
+        message: `CM II bei CHF ${calculations.contributionMarginII.toFixed(0)} – Ziel CHF ${TARGET_CM2} nicht erreicht`
+      });
+    }
+    
+    // Close Rate < 15% → SALES ISSUE WARNING
+    if (inputs.salesCloseRate < 15) {
+      warnings.push({
+        type: 'warning',
+        title: '📉 SALES PROBLEM',
+        message: `Close Rate nur ${inputs.salesCloseRate}% – unter kritischer Schwelle von 15%`
+      });
+    }
+    
+    return warnings;
+  }, [calculations, inputs.salesCloseRate]);
+
   return (
     <TooltipProvider>
       <div className="space-y-6">
+        {/* GUARDRAIL ALERTS - Top of Dashboard */}
+        {alerts.length > 0 && (
+          <div className="space-y-2">
+            {alerts.map((alert, idx) => (
+              <div 
+                key={idx}
+                className={cn(
+                  "p-4 rounded-lg border-2 flex items-start gap-3",
+                  alert.type === 'critical' 
+                    ? "bg-red-50 border-red-500 dark:bg-red-950/50" 
+                    : alert.type === 'warning'
+                    ? "bg-amber-50 border-amber-500 dark:bg-amber-950/50"
+                    : "bg-blue-50 border-blue-500 dark:bg-blue-950/50"
+                )}
+              >
+                <AlertCircle className={cn(
+                  "w-5 h-5 mt-0.5 flex-shrink-0",
+                  alert.type === 'critical' ? "text-red-600" : alert.type === 'warning' ? "text-amber-600" : "text-blue-600"
+                )} />
+                <div>
+                  <p className={cn(
+                    "font-bold",
+                    alert.type === 'critical' ? "text-red-800 dark:text-red-200" : alert.type === 'warning' ? "text-amber-800 dark:text-amber-200" : "text-blue-800 dark:text-blue-200"
+                  )}>
+                    {alert.title}
+                  </p>
+                  <p className={cn(
+                    "text-sm",
+                    alert.type === 'critical' ? "text-red-700 dark:text-red-300" : alert.type === 'warning' ? "text-amber-700 dark:text-amber-300" : "text-blue-700 dark:text-blue-300"
+                  )}>
+                    {alert.message}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* Header with Target */}
         <Card className="border-primary/30 bg-primary/5">
           <CardContent className="p-4">
