@@ -2,15 +2,18 @@
  * Relo-OS Phases Dashboard
  * 
  * Admin overview page showing all 6 technical phases of the "Invisible Move" platform.
+ * Includes live statistics from the database.
  */
 
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Skeleton } from '@/components/ui/skeleton';
 import { 
   MapPin, 
   ScanLine, 
@@ -23,9 +26,14 @@ import {
   Clock,
   FileCode,
   ExternalLink,
-  Layers
+  Layers,
+  Database,
+  Activity,
+  TrendingUp,
+  Users
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
 import type { LucideIcon } from 'lucide-react';
 
 interface PhaseFeature {
@@ -44,6 +52,14 @@ interface ReloPhase {
   description: string;
   features: PhaseFeature[];
   keyFiles: string[];
+  dbStatuses?: string[]; // Status values from move_projects that belong to this phase
+}
+
+interface LiveStats {
+  total_projects: number;
+  by_status: Record<string, number>;
+  completed_this_month: number;
+  avg_progress: number;
 }
 
 const RELO_PHASES: ReloPhase[] = [
@@ -66,6 +82,7 @@ const RELO_PHASES: ReloPhase[] = [
       'src/hooks/useMoveProject.ts',
       'src/components/journey/MoveJourneyProgress.tsx',
     ],
+    dbStatuses: ['draft'],
   },
   {
     id: 2,
@@ -87,6 +104,7 @@ const RELO_PHASES: ReloPhase[] = [
       'supabase/functions/analyze-video/index.ts',
       'src/components/ai/VideoAnalysisResult.tsx',
     ],
+    dbStatuses: ['inventory_scan'],
   },
   {
     id: 3,
@@ -108,6 +126,7 @@ const RELO_PHASES: ReloPhase[] = [
       'src/lib/move-pricing-engine.ts',
       'src/components/journey/PriceBreakdown.tsx',
     ],
+    dbStatuses: ['quote_ready'],
   },
   {
     id: 4,
@@ -128,6 +147,7 @@ const RELO_PHASES: ReloPhase[] = [
       'src/lib/provider-matching.ts',
       'src/pages/ProviderDashboard.tsx',
     ],
+    dbStatuses: ['booking_pending', 'booked', 'scheduled'],
   },
   {
     id: 5,
@@ -147,6 +167,7 @@ const RELO_PHASES: ReloPhase[] = [
     keyFiles: [
       'src/lib/move-project.ts',
     ],
+    dbStatuses: ['in_transit'],
   },
   {
     id: 6,
@@ -166,21 +187,22 @@ const RELO_PHASES: ReloPhase[] = [
     keyFiles: [
       'src/components/journey/HandoverChecklist.tsx',
     ],
+    dbStatuses: ['completed', 'closed'],
   },
 ];
 
 const getStatusBadge = (status: ReloPhase['status']) => {
   switch (status) {
     case 'completed':
-      return <Badge className="bg-green-500/10 text-green-600 border-green-500/20">Implementiert</Badge>;
+      return <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20">Implementiert</Badge>;
     case 'in_progress':
-      return <Badge className="bg-orange-500/10 text-orange-600 border-orange-500/20">In Arbeit</Badge>;
+      return <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20">In Arbeit</Badge>;
     case 'planned':
       return <Badge className="bg-muted text-muted-foreground border-border">Geplant</Badge>;
   }
 };
 
-function PhaseCard({ phase }: { phase: ReloPhase }) {
+function PhaseCard({ phase, liveCount }: { phase: ReloPhase; liveCount?: number }) {
   const [isOpen, setIsOpen] = useState(false);
   const Icon = phase.icon;
   
@@ -190,8 +212,8 @@ function PhaseCard({ phase }: { phase: ReloPhase }) {
   return (
     <Card className={cn(
       "transition-all duration-200 hover:shadow-md",
-      phase.status === 'completed' && "border-green-500/30 bg-green-500/5",
-      phase.status === 'in_progress' && "border-orange-500/30 bg-orange-500/5"
+      phase.status === 'completed' && "border-emerald-500/30 bg-emerald-500/5",
+      phase.status === 'in_progress' && "border-amber-500/30 bg-amber-500/5"
     )}>
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <CardHeader className="pb-3">
@@ -199,8 +221,8 @@ function PhaseCard({ phase }: { phase: ReloPhase }) {
             <div className="flex items-center gap-3">
               <div className={cn(
                 "p-2.5 rounded-xl",
-                phase.status === 'completed' && "bg-green-500/20 text-green-600",
-                phase.status === 'in_progress' && "bg-orange-500/20 text-orange-600",
+                phase.status === 'completed' && "bg-emerald-500/20 text-emerald-600",
+                phase.status === 'in_progress' && "bg-amber-500/20 text-amber-600",
                 phase.status === 'planned' && "bg-muted text-muted-foreground"
               )}>
                 <Icon className="h-5 w-5" />
@@ -213,7 +235,15 @@ function PhaseCard({ phase }: { phase: ReloPhase }) {
                 <CardDescription className="text-xs mt-0.5">{phase.label}</CardDescription>
               </div>
             </div>
-            {getStatusBadge(phase.status)}
+            <div className="flex flex-col items-end gap-1">
+              {getStatusBadge(phase.status)}
+              {liveCount !== undefined && liveCount > 0 && (
+                <Badge variant="outline" className="text-xs gap-1">
+                  <Activity className="h-3 w-3" />
+                  {liveCount} aktiv
+                </Badge>
+              )}
+            </div>
           </div>
         </CardHeader>
         
@@ -252,7 +282,7 @@ function PhaseCard({ phase }: { phase: ReloPhase }) {
                 {phase.features.map((feature, idx) => (
                   <li key={idx} className="flex items-center gap-2 text-sm">
                     {feature.implemented ? (
-                      <Check className="h-3.5 w-3.5 text-green-500" />
+                      <Check className="h-3.5 w-3.5 text-emerald-500" />
                     ) : (
                       <Clock className="h-3.5 w-3.5 text-muted-foreground" />
                     )}
@@ -293,10 +323,52 @@ function PhaseCard({ phase }: { phase: ReloPhase }) {
 }
 
 export default function ReloOSPhases() {
+  // Fetch live statistics from move_projects table
+  const { data: liveStats, isLoading: statsLoading } = useQuery({
+    queryKey: ['move-projects-stats'],
+    queryFn: async (): Promise<LiveStats> => {
+      // Get total count and status breakdown
+      const { data: projects, error } = await supabase
+        .from('move_projects')
+        .select('status, progress_percentage, completed_at');
+      
+      if (error) throw error;
+      
+      const byStatus: Record<string, number> = {};
+      let totalProgress = 0;
+      let completedThisMonth = 0;
+      const now = new Date();
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      
+      (projects || []).forEach(p => {
+        byStatus[p.status] = (byStatus[p.status] || 0) + 1;
+        totalProgress += p.progress_percentage || 0;
+        
+        if (p.completed_at && new Date(p.completed_at) >= startOfMonth) {
+          completedThisMonth++;
+        }
+      });
+      
+      return {
+        total_projects: projects?.length || 0,
+        by_status: byStatus,
+        completed_this_month: completedThisMonth,
+        avg_progress: projects?.length ? Math.round(totalProgress / projects.length) : 0,
+      };
+    },
+    refetchInterval: 30000, // Refresh every 30 seconds
+  });
+
   const completedPhases = RELO_PHASES.filter(p => p.status === 'completed').length;
   const inProgressPhases = RELO_PHASES.filter(p => p.status === 'in_progress').length;
   const overallProgress = Math.round(RELO_PHASES.reduce((acc, p) => acc + p.progress, 0) / RELO_PHASES.length);
   
+  // Calculate live count per phase
+  const getPhaseCount = (phase: ReloPhase): number => {
+    if (!liveStats?.by_status || !phase.dbStatuses) return 0;
+    return phase.dbStatuses.reduce((sum, status) => sum + (liveStats.by_status[status] || 0), 0);
+  };
+
   return (
     <AdminLayout>
       <div className="p-6 space-y-6 max-w-7xl mx-auto">
@@ -320,27 +392,80 @@ export default function ReloOSPhases() {
           </div>
         </div>
         
+        {/* Live Stats from Database */}
+        <Card className="border-primary/20 bg-primary/5">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Database className="h-4 w-4 text-primary" />
+              Live Daten aus move_projects
+            </CardTitle>
+            <CardDescription>Echtzeitstatistiken aus der Datenbank</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {statsLoading ? (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[...Array(4)].map((_, i) => (
+                  <Skeleton key={i} className="h-16" />
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="text-center p-3 bg-background/50 rounded-lg">
+                  <div className="flex items-center justify-center gap-2 mb-1">
+                    <Users className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                  <p className="text-2xl font-bold">{liveStats?.total_projects || 0}</p>
+                  <p className="text-xs text-muted-foreground">Gesamt Projekte</p>
+                </div>
+                <div className="text-center p-3 bg-background/50 rounded-lg">
+                  <div className="flex items-center justify-center gap-2 mb-1">
+                    <Activity className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                  <p className="text-2xl font-bold">{liveStats?.avg_progress || 0}%</p>
+                  <p className="text-xs text-muted-foreground">Ø Fortschritt</p>
+                </div>
+                <div className="text-center p-3 bg-background/50 rounded-lg">
+                  <div className="flex items-center justify-center gap-2 mb-1">
+                    <Check className="h-4 w-4 text-emerald-500" />
+                  </div>
+                  <p className="text-2xl font-bold">{liveStats?.completed_this_month || 0}</p>
+                  <p className="text-xs text-muted-foreground">Abgeschlossen (Monat)</p>
+                </div>
+                <div className="text-center p-3 bg-background/50 rounded-lg">
+                  <div className="flex items-center justify-center gap-2 mb-1">
+                    <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                  <p className="text-2xl font-bold">
+                    {Object.keys(liveStats?.by_status || {}).length}
+                  </p>
+                  <p className="text-xs text-muted-foreground">Aktive Status</p>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+        
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="bg-green-500/5 border-green-500/20">
+          <Card className="bg-emerald-500/5 border-emerald-500/20">
             <CardContent className="pt-4 flex items-center gap-4">
-              <div className="p-2.5 rounded-xl bg-green-500/20">
-                <Check className="h-5 w-5 text-green-600" />
+              <div className="p-2.5 rounded-xl bg-emerald-500/20">
+                <Check className="h-5 w-5 text-emerald-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-green-600">{completedPhases}</p>
+                <p className="text-2xl font-bold text-emerald-600">{completedPhases}</p>
                 <p className="text-sm text-muted-foreground">Implementiert</p>
               </div>
             </CardContent>
           </Card>
           
-          <Card className="bg-orange-500/5 border-orange-500/20">
+          <Card className="bg-amber-500/5 border-amber-500/20">
             <CardContent className="pt-4 flex items-center gap-4">
-              <div className="p-2.5 rounded-xl bg-orange-500/20">
-                <Clock className="h-5 w-5 text-orange-600" />
+              <div className="p-2.5 rounded-xl bg-amber-500/20">
+                <Clock className="h-5 w-5 text-amber-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-orange-600">{inProgressPhases}</p>
+                <p className="text-2xl font-bold text-amber-600">{inProgressPhases}</p>
                 <p className="text-sm text-muted-foreground">In Arbeit</p>
               </div>
             </CardContent>
@@ -362,7 +487,11 @@ export default function ReloOSPhases() {
         {/* Phase Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {RELO_PHASES.map(phase => (
-            <PhaseCard key={phase.id} phase={phase} />
+            <PhaseCard 
+              key={phase.id} 
+              phase={phase} 
+              liveCount={getPhaseCount(phase)}
+            />
           ))}
         </div>
         
