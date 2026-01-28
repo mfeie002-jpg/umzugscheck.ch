@@ -661,6 +661,116 @@ export function FeierabendUnitEconomicsCalculator() {
           </CardContent>
         </Card>
 
+        {/* STRESS TEST TABLE - ChatGPT Analysis Insights */}
+        <Card className="border-red-200 dark:border-red-800">
+          <CardHeader className="pb-3 bg-red-50 dark:bg-red-950/30">
+            <CardTitle className="text-sm font-medium uppercase tracking-wide text-red-700 dark:text-red-400 flex items-center gap-2">
+              <AlertCircle className="w-4 h-4" />
+              Stress Tests (Worst-Case Szenarien)
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-4">
+            <p className="text-xs text-muted-foreground mb-4">
+              Basierend auf ChatGPT-Analyse: Szenarien mit +50% CPL, -50% Conversion, und kombinierte Worst-Cases.
+            </p>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border">
+                    <th className="text-left py-3 px-2 font-medium text-muted-foreground">Stress-Szenario</th>
+                    <th className="text-right py-3 px-2 font-medium text-muted-foreground">CPL</th>
+                    <th className="text-right py-3 px-2 font-medium text-muted-foreground">Close %</th>
+                    <th className="text-right py-3 px-2 font-medium text-muted-foreground">CAC</th>
+                    <th className="text-right py-3 px-2 font-medium text-muted-foreground">CM II</th>
+                    <th className="text-center py-3 px-2 font-medium text-muted-foreground">Überlebbar?</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {/* Current baseline */}
+                  {(() => {
+                    const baseMetrics = calculateMetrics(inputs);
+                    return (
+                      <tr className="border-b border-border/50 bg-muted/20">
+                        <td className="py-3 px-2 font-medium">Aktuell (Baseline)</td>
+                        <td className="text-right py-3 px-2 font-mono">{formatCHF(inputs.marketingCPL)}</td>
+                        <td className="text-right py-3 px-2 font-mono">{inputs.salesCloseRate}%</td>
+                        <td className="text-right py-3 px-2 font-mono">{formatCHF(baseMetrics.totalCAC)}</td>
+                        <td className="text-right py-3 px-2 font-mono font-bold">{formatCHF(baseMetrics.contributionMarginII)}</td>
+                        <td className="text-center py-3 px-2">
+                          <Badge className="bg-blue-600 text-white">BASELINE</Badge>
+                        </td>
+                      </tr>
+                    );
+                  })()}
+                  {/* CPL +50% */}
+                  {(() => {
+                    const stressInputs = { ...inputs, marketingCPL: inputs.marketingCPL * 1.5 };
+                    const stressMetrics = calculateMetrics(stressInputs);
+                    const survivable = stressMetrics.contributionMarginII > 0;
+                    return (
+                      <tr className="border-b border-border/50">
+                        <td className="py-3 px-2">CPL +50%</td>
+                        <td className="text-right py-3 px-2 font-mono text-red-600">{formatCHF(stressInputs.marketingCPL)}</td>
+                        <td className="text-right py-3 px-2 font-mono">{stressInputs.salesCloseRate}%</td>
+                        <td className="text-right py-3 px-2 font-mono">{formatCHF(stressMetrics.totalCAC)}</td>
+                        <td className={cn("text-right py-3 px-2 font-mono font-bold", survivable ? "text-amber-600" : "text-red-600")}>
+                          {formatCHF(stressMetrics.contributionMarginII)}
+                        </td>
+                        <td className="text-center py-3 px-2">
+                          <Badge className={survivable ? "bg-amber-500" : "bg-red-600"}>{survivable ? "KNAPP" : "NEIN"}</Badge>
+                        </td>
+                      </tr>
+                    );
+                  })()}
+                  {/* Conversion -50% */}
+                  {(() => {
+                    const stressInputs = { ...inputs, salesCloseRate: inputs.salesCloseRate * 0.5 };
+                    const stressMetrics = calculateMetrics(stressInputs);
+                    const survivable = stressMetrics.contributionMarginII > 0;
+                    return (
+                      <tr className="border-b border-border/50">
+                        <td className="py-3 px-2">Conversion -50%</td>
+                        <td className="text-right py-3 px-2 font-mono">{formatCHF(stressInputs.marketingCPL)}</td>
+                        <td className="text-right py-3 px-2 font-mono text-red-600">{stressInputs.salesCloseRate.toFixed(1)}%</td>
+                        <td className="text-right py-3 px-2 font-mono">{stressMetrics.totalCAC === Infinity ? "-" : formatCHF(stressMetrics.totalCAC)}</td>
+                        <td className={cn("text-right py-3 px-2 font-mono font-bold", survivable ? "text-amber-600" : "text-red-600")}>
+                          {formatCHF(stressMetrics.contributionMarginII)}
+                        </td>
+                        <td className="text-center py-3 px-2">
+                          <Badge className={survivable ? "bg-amber-500" : "bg-red-600"}>{survivable ? "KNAPP" : "NEIN"}</Badge>
+                        </td>
+                      </tr>
+                    );
+                  })()}
+                  {/* Combined worst case */}
+                  {(() => {
+                    const stressInputs = { ...inputs, marketingCPL: inputs.marketingCPL * 1.5, salesCloseRate: inputs.salesCloseRate * 0.5 };
+                    const stressMetrics = calculateMetrics(stressInputs);
+                    const survivable = stressMetrics.contributionMarginII > 0;
+                    return (
+                      <tr className="border-b border-border/50 bg-red-50 dark:bg-red-950/20">
+                        <td className="py-3 px-2 font-medium text-red-700 dark:text-red-400">WORST CASE (+50% CPL, -50% Conv)</td>
+                        <td className="text-right py-3 px-2 font-mono text-red-600">{formatCHF(stressInputs.marketingCPL)}</td>
+                        <td className="text-right py-3 px-2 font-mono text-red-600">{stressInputs.salesCloseRate.toFixed(1)}%</td>
+                        <td className="text-right py-3 px-2 font-mono">{stressMetrics.totalCAC === Infinity ? "-" : formatCHF(stressMetrics.totalCAC)}</td>
+                        <td className={cn("text-right py-3 px-2 font-mono font-bold", survivable ? "text-amber-600" : "text-red-600")}>
+                          {formatCHF(stressMetrics.contributionMarginII)}
+                        </td>
+                        <td className="text-center py-3 px-2">
+                          <Badge className={survivable ? "bg-amber-500" : "bg-red-600"}>{survivable ? "KNAPP" : "NEIN"}</Badge>
+                        </td>
+                      </tr>
+                    );
+                  })()}
+                </tbody>
+              </table>
+            </div>
+            <p className="text-xs text-muted-foreground mt-4">
+              Wichtig: Wenn Worst-Case nicht überlebbar ist, besteht signifikantes Risiko bei Marktveränderungen. Buffer aufbauen.
+            </p>
+          </CardContent>
+        </Card>
+
         {/* Quick Actions based on status */}
         {!isHealthy && (
           <Card className="border-amber-200 bg-amber-50 dark:bg-amber-950/30">

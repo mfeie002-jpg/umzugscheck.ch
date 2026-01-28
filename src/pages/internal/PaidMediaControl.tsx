@@ -16,14 +16,21 @@ import {
   Target,
   DollarSign,
   Users,
-  Zap
+  Zap,
+  Calculator, 
+  Filter,
+  Rocket,
+  Phone,
+  Activity
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { FeierabendUnitEconomicsCalculator } from "@/components/internal/FeierabendUnitEconomicsCalculator";
 import { UmzugscheckUnitEconomicsCalculator } from "@/components/internal/UmzugscheckUnitEconomicsCalculator";
 import { LeadTriageHelper } from "@/components/internal/LeadTriageHelper";
+import { ScalingDecisionPanel } from "@/components/internal/ScalingDecisionPanel";
+import { WeeklyRedFlagsPanel } from "@/components/internal/WeeklyRedFlagsPanel";
+import { PhoneSupportROIRules } from "@/components/internal/PhoneSupportROIRules";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calculator, Filter } from "lucide-react";
 
 type BusinessModel = "feierabend" | "umzugscheck";
 type Scenario = "conservative" | "base" | "aggressive";
@@ -426,16 +433,33 @@ export default function PaidMediaControl() {
         </header>
 
         <main className="max-w-7xl mx-auto px-6 py-6 space-y-6">
-          {/* Tabs for Calculator vs Triage */}
+          {/* Tabs for Calculator vs Triage vs Scaling vs Red Flags */}
           <Tabs defaultValue="calculator" className="w-full">
-            <TabsList className="grid w-full max-w-md grid-cols-2">
+            <TabsList className="grid w-full max-w-3xl grid-cols-5">
               <TabsTrigger value="calculator" className="gap-2">
                 <Calculator className="w-4 h-4" />
-                Unit Economics
+                <span className="hidden sm:inline">Unit Economics</span>
+                <span className="sm:hidden">Calc</span>
               </TabsTrigger>
               <TabsTrigger value="triage" className="gap-2">
                 <Filter className="w-4 h-4" />
-                Lead Triage
+                <span className="hidden sm:inline">Lead Triage</span>
+                <span className="sm:hidden">Triage</span>
+              </TabsTrigger>
+              <TabsTrigger value="scaling" className="gap-2">
+                <Rocket className="w-4 h-4" />
+                <span className="hidden sm:inline">Scaling Decision</span>
+                <span className="sm:hidden">Scale</span>
+              </TabsTrigger>
+              <TabsTrigger value="redflags" className="gap-2">
+                <Activity className="w-4 h-4" />
+                <span className="hidden sm:inline">Red Flags</span>
+                <span className="sm:hidden">Flags</span>
+              </TabsTrigger>
+              <TabsTrigger value="phone" className="gap-2">
+                <Phone className="w-4 h-4" />
+                <span className="hidden sm:inline">Phone ROI</span>
+                <span className="sm:hidden">Phone</span>
               </TabsTrigger>
             </TabsList>
 
@@ -452,6 +476,56 @@ export default function PaidMediaControl() {
 
             <TabsContent value="triage" className="mt-6">
               <LeadTriageHelper />
+            </TabsContent>
+
+            <TabsContent value="scaling" className="mt-6">
+              <ScalingDecisionPanel 
+                model={model}
+                criteria={{
+                  cacToRevenueRatio: model === 'feierabend' ? 18 : 12,
+                  conversionRateStability: 75,
+                  capacityUtilization: 72,
+                  cashRunwayMonths: 4,
+                  avgCloseRate: model === 'feierabend' ? 20 : 25,
+                  cmiiPerJob: model === 'feierabend' ? 450 : 15,
+                }}
+              />
+            </TabsContent>
+
+            <TabsContent value="redflags" className="mt-6">
+              <WeeklyRedFlagsPanel 
+                model={model}
+                metrics={{
+                  leadQualityScore: 72,
+                  leadQualityTrend: 'stable',
+                  invalidLeadRate: 12,
+                  currentCPL: model === 'feierabend' ? 65 : 48,
+                  baselineCPL: model === 'feierabend' ? 60 : 45,
+                  currentCPA: model === 'feierabend' ? 320 : 85,
+                  baselineCPA: model === 'feierabend' ? 300 : 80,
+                  avgCallDuration: 7,
+                  targetCallDuration: 6,
+                  callBacklog: 3,
+                  responseTimeHours: 1.2,
+                  currentConversionRate: model === 'feierabend' ? 19 : 23,
+                  baselineConversionRate: model === 'feierabend' ? 20 : 25,
+                  capacityUtilization: 72,
+                  customerSatisfactionScore: 88,
+                  complaintRate: 2,
+                }}
+              />
+            </TabsContent>
+
+            <TabsContent value="phone" className="mt-6">
+              <PhoneSupportROIRules 
+                metrics={{
+                  avgCallDuration: 7,
+                  callsPerDay: 25,
+                  conversionFromCall: model === 'feierabend' ? 22 : 8,
+                  costPerCallMinute: 1.5,
+                  avgJobValueFromCall: model === 'feierabend' ? 2500 : 55,
+                }}
+              />
             </TabsContent>
           </Tabs>
 
