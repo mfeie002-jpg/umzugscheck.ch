@@ -311,6 +311,53 @@ export async function resolveDispute(
 }
 
 /**
+ * Release escrow funds to provider after successful handover
+ */
+export async function releaseEscrowFunds(escrowId: string): Promise<boolean> {
+  // First verify escrow exists and is in funded status
+  const escrow = await getEscrowTransaction(escrowId);
+  if (!escrow) {
+    throw new Error('Escrow transaction not found');
+  }
+  
+  if (escrow.status !== 'funded') {
+    throw new Error(`Cannot release funds: escrow status is ${escrow.status}, expected 'funded'`);
+  }
+  
+  // Update escrow status to released
+  const { error } = await supabase
+    .from('escrow_transactions')
+    .update({
+      status: 'released',
+      released_at: new Date().toISOString(),
+      service_completed_at: new Date().toISOString(),
+    })
+    .eq('id', escrowId);
+  
+  if (error) {
+    console.error('Error releasing escrow funds:', error);
+    throw new Error('Failed to release escrow funds');
+  }
+  
+  // Log the release event
+  await supabase
+    .from('escrow_events')
+    .insert({
+      escrow_id: escrowId,
+      event_type: 'funds_released',
+      event_data: {
+        released_at: new Date().toISOString(),
+        provider_payout: escrow.provider_payout,
+      },
+    });
+  
+  // In production: trigger Stripe transfer to provider's connected account
+  // await stripeTransferToProvider(escrow.stripe_payment_intent_id, escrow.provider_payout);
+  
+  return true;
+}
+
+/**
  * Get escrow event history
  */
 export async function getEscrowEvents(escrowId: string): Promise<EscrowEvent[]> {

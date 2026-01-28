@@ -38,3 +38,4 @@ export { MovingOrchestrator } from './MovingOrchestrator';
 export { HandoverProtocol } from './HandoverProtocol';
 export type { HandoverRoom, HandoverCategory, HandoverProtocolProps } from './HandoverProtocol';
 export { DigitalSignaturePad } from './DigitalSignaturePad';
+export { CompleteOrchestrator } from './CompleteOrchestrator';
