@@ -12,7 +12,9 @@ export type { RouteInitializerProps } from './RouteInitializer';
 // Phase 2: Inventory (AI Video Scan / LiDAR)
 export { LiDARDepthScanner } from './LiDARDepthScanner';
 export type { LiDARScanResult } from './LiDARDepthScanner';
+export { EnhancedLiDARScanner } from './EnhancedLiDARScanner';
 export { DigitalTwinDisplay } from './DigitalTwinDisplay';
+export { InventoryOrchestrator } from './InventoryOrchestrator';
 
 // Phase 3: Quote (Dynamic Pricing + Guaranteed Fixed Price)
 export { ServiceTierSelector } from './ServiceTierSelector';
