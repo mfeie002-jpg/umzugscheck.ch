@@ -10,7 +10,6 @@ import { NAV_VARIANTS, type NavConfig, VARIANT_ULTIMATE } from '@/lib/navigation
 import { NavigationABContext, type NavigationABContextType } from '@/contexts/navigation-context';
 import { 
   getNavVariant, 
-  setNavVariant as setStoredNavVariant,
   AB_STORAGE_KEYS 
 } from '@/lib/unified-ab-config';
 
@@ -29,38 +28,49 @@ const getInitialVariant = (): NavConfig => {
 
 export const NavigationABProvider = ({ children }: { children: ReactNode }) => {
   const [variant, setVariantState] = useState<NavConfig>(getInitialVariant);
+  const [updateKey, setUpdateKey] = useState(0);
 
   const setVariant = useCallback((id: string) => {
     const found = NAV_VARIANTS.find(v => v.id === id);
     if (found) {
+      console.log('[NavigationAB] Setting variant to:', id, found.name);
+      
       // Update state FIRST so React re-renders immediately
       setVariantState(found);
       
-      // Persist to localStorage and dispatch events
-      setStoredNavVariant(id as any);
+      // Force re-render of consuming components
+      setUpdateKey(k => k + 1);
+      
+      // Persist to localStorage
+      localStorage.setItem(AB_STORAGE_KEYS.NAV_VARIANT, id);
       
       // Update URL without reload
       const url = new URL(window.location.href);
       url.searchParams.set('nav', id);
       window.history.replaceState({}, '', url.toString());
       
-      // Force a re-render by dispatching a custom event that all listeners can pick up
-      console.log('[NavigationAB] Variant changed to:', id, found.name);
+      // Dispatch events for other listeners
+      window.dispatchEvent(new CustomEvent('ab-state-changed', { detail: { type: 'nav', variantId: id } }));
+      window.dispatchEvent(new CustomEvent('nav-variant-changed', { detail: id }));
+      
+      console.log('[NavigationAB] Variant changed successfully to:', id);
+    } else {
+      console.warn('[NavigationAB] Variant not found:', id);
     }
   }, []);
 
-  // Listen for URL changes and ab-state-changed events
+  // Listen for external changes (URL, localStorage, other tabs)
   useEffect(() => {
     const handleChange = () => {
       const newVariant = getNavVariant();
+      console.log('[NavigationAB] External change detected, new variant:', newVariant.id);
       setVariantState(newVariant);
+      setUpdateKey(k => k + 1);
     };
     
     window.addEventListener('popstate', handleChange);
     window.addEventListener('ab-state-changed', handleChange);
-    // Backwards-compat: some older switchers only dispatch this event
     window.addEventListener('nav-variant-changed', handleChange as EventListener);
-    // Also react to direct localStorage edits (e.g. devtools or other tabs)
     window.addEventListener('storage', handleChange);
     
     return () => {
@@ -70,6 +80,11 @@ export const NavigationABProvider = ({ children }: { children: ReactNode }) => {
       window.removeEventListener('storage', handleChange);
     };
   }, []);
+
+  // Debug: Log current variant on mount and changes
+  useEffect(() => {
+    console.log('[NavigationAB] Current variant:', variant.id, variant.name, 'updateKey:', updateKey);
+  }, [variant, updateKey]);
 
   return (
     <NavigationABContext.Provider value={{ variant, setVariant }}>

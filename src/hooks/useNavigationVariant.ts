@@ -15,14 +15,16 @@ export const useNavigationVariant = (): NavConfig => {
   const context = useContext(NavigationABContext);
   
   // State for fallback when outside context
-  const [variant, setVariant] = useState<NavConfig>(getNavVariant);
+  const [variant, setVariant] = useState<NavConfig>(() => getNavVariant());
+  const [, forceUpdate] = useState(0);
   
-  // Listen for changes when outside context
+  // Listen for changes - ALWAYS listen, even with context, to catch external changes
   useEffect(() => {
-    if (context) return; // Don't need to listen if we have context
-
     const handleChange = () => {
-      setVariant(getNavVariant());
+      const newVariant = getNavVariant();
+      console.log('[useNavigationVariant] Change detected, variant:', newVariant.id);
+      setVariant(newVariant);
+      forceUpdate(n => n + 1);
     };
 
     window.addEventListener('ab-state-changed', handleChange);
@@ -36,9 +38,9 @@ export const useNavigationVariant = (): NavConfig => {
       window.removeEventListener('storage', handleChange);
       window.removeEventListener('popstate', handleChange);
     };
-  }, [context]);
+  }, []);
 
-  // If we're in the context, use it
+  // If we're in the context, use context variant (it should be in sync)
   if (context) {
     return context.variant;
   }
