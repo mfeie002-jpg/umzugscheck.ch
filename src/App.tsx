@@ -44,6 +44,7 @@ const FamilyLanding = lazy(() => import("./pages/FamilyLanding"));
 const InvestorenLanding = lazy(() => import("./pages/InvestorenLanding"));
 const AdminInternResults = lazy(() => import("./pages/AdminInternResults"));
 const PaidMediaControl = lazy(() => import("./pages/internal/PaidMediaControl"));
+const LaunchRoadmap = lazy(() => import("./pages/internal/LaunchRoadmap"));
 const ExportDownload = lazy(() => import("./pages/ExportDownload"));
 
 // Service pages
@@ -492,6 +493,7 @@ const AdminRoutes = () => (
       <Route path="/admin/documentation" element={<DocumentationBrowser />} />
       {/* Internal dashboards */}
       <Route path="/internal/paid-media-control" element={<PaidMediaControl />} />
+      <Route path="/internal/launch-roadmap" element={<LaunchRoadmap />} />
     </AnimatedRoutes>
   </Suspense>
 );
