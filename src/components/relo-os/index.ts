@@ -26,12 +26,13 @@ export { QuoteOrchestrator } from './QuoteOrchestrator';
 export { ProviderMatchCard } from './ProviderMatchCard';
 export { BookingOrchestrator } from './BookingOrchestrator';
 
-// Phase 5: Moving (GPS Tracking)
+// Phase 5: Moving (GPS Tracking + Notifications)
 export { SmartEscrowBooking } from './SmartEscrowBooking';
 export type { EscrowBookingData, SmartEscrowBookingProps } from './SmartEscrowBooking';
 export { LiveTrackingPanel } from './LiveTrackingPanel';
 export type { TrackingUpdate, CrewMember, LiveTrackingPanelProps } from './LiveTrackingPanel';
 export { GPSTrackingMap } from './GPSTrackingMap';
+export { MovingOrchestrator } from './MovingOrchestrator';
 
 // Phase 6: Complete (Swiss Handover Protocol + Digital Signatures)
 export { HandoverProtocol } from './HandoverProtocol';
