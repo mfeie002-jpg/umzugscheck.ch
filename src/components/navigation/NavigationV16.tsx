@@ -88,55 +88,40 @@ const DROPDOWN_ITEMS = {
   ],
 };
 
-// Emoji prefixes for variants that use them
-const EMOJI_PREFIXES = {
-  preisrechner: "📋",
-  firmen: "🔍",
-  services: "🛠️",
-  ratgeber: "📚",
-  fuerFirmen: "⭐",
-};
-
-// Variants that use emojis in their labels (only 2 out of 17)
-const EMOJI_VARIANTS = ['variant-o', 'variant-17'];
-
 // Build nav sections dynamically based on the active variant's labels and microcopy
-const buildNavSections = (variant: NavConfig): NavSection[] => {
-  const useEmojis = EMOJI_VARIANTS.includes(variant.id);
-  
-  return [
-    {
-      id: "preisrechner",
-      label: useEmojis ? `${EMOJI_PREFIXES.preisrechner} ${variant.labels.preisrechner}` : variant.labels.preisrechner,
-      tagline: variant.microcopy.preisrechner,
-      items: DROPDOWN_ITEMS.preisrechner,
-    },
-    {
-      id: "firmen",
-      label: useEmojis ? `${EMOJI_PREFIXES.firmen} ${variant.labels.firmen}` : variant.labels.firmen,
-      tagline: variant.microcopy.firmen,
-      items: DROPDOWN_ITEMS.firmen,
-    },
-    {
-      id: "services",
-      label: useEmojis ? `${EMOJI_PREFIXES.services} ${variant.labels.services}` : variant.labels.services,
-      tagline: variant.microcopy.services,
-      items: DROPDOWN_ITEMS.services,
-    },
-    {
-      id: "ratgeber",
-      label: useEmojis ? `${EMOJI_PREFIXES.ratgeber} ${variant.labels.ratgeber}` : variant.labels.ratgeber,
-      tagline: variant.microcopy.ratgeber,
-      items: DROPDOWN_ITEMS.ratgeber,
-    },
-    {
-      id: "fuerFirmen",
-      label: useEmojis ? `${EMOJI_PREFIXES.fuerFirmen} ${variant.labels.fuerFirmen}` : variant.labels.fuerFirmen,
-      tagline: variant.microcopy.fuerFirmen,
-      items: DROPDOWN_ITEMS.fuerFirmen,
-    },
-  ];
-};
+// NavigationV16 always shows emojis for all variants
+const buildNavSections = (variant: NavConfig): NavSection[] => [
+  {
+    id: "preisrechner",
+    label: `📋 ${variant.labels.preisrechner}`,
+    tagline: variant.microcopy.preisrechner,
+    items: DROPDOWN_ITEMS.preisrechner,
+  },
+  {
+    id: "firmen",
+    label: `🔍 ${variant.labels.firmen}`,
+    tagline: variant.microcopy.firmen,
+    items: DROPDOWN_ITEMS.firmen,
+  },
+  {
+    id: "services",
+    label: `🛠️ ${variant.labels.services}`,
+    tagline: variant.microcopy.services,
+    items: DROPDOWN_ITEMS.services,
+  },
+  {
+    id: "ratgeber",
+    label: `📚 ${variant.labels.ratgeber}`,
+    tagline: variant.microcopy.ratgeber,
+    items: DROPDOWN_ITEMS.ratgeber,
+  },
+  {
+    id: "fuerFirmen",
+    label: `⭐ ${variant.labels.fuerFirmen}`,
+    tagline: variant.microcopy.fuerFirmen,
+    items: DROPDOWN_ITEMS.fuerFirmen,
+  },
+];
 
 export const NavigationV16 = () => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
