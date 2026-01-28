@@ -402,23 +402,23 @@ export default function PaidMediaControl() {
     <TooltipProvider>
       <div className="min-h-screen bg-background">
         {/* TOP BAR */}
-        <header className="border-b border-border bg-muted/30 sticky top-0 z-10">
-          <div className="max-w-7xl mx-auto px-6 py-4">
+        <header className="border-b-2 border-border bg-card sticky top-0 z-10">
+          <div className="max-w-7xl mx-auto px-6 py-3">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">Internal Dashboard</p>
-                <h1 className="text-2xl font-bold text-foreground">Paid Media & Profitability Control Center</h1>
+                <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">INTERNAL / CFO-COO</p>
+                <h1 className="text-xl font-bold text-foreground tracking-tight">Unit Economics Control</h1>
               </div>
-              <div className="flex items-center gap-4 bg-card border border-border rounded-lg p-3">
-                <span className={cn("text-sm font-medium", model === "feierabend" ? "text-foreground" : "text-muted-foreground")}>
-                  Feierabendumzug (Direct)
+              <div className="flex items-center gap-3 bg-muted border border-border rounded p-2">
+                <span className={cn("text-xs font-mono", model === "feierabend" ? "text-foreground" : "text-muted-foreground")}>
+                  DIRECT
                 </span>
                 <Switch
                   checked={model === "umzugscheck"}
                   onCheckedChange={handleModelChange}
                 />
-                <span className={cn("text-sm font-medium", model === "umzugscheck" ? "text-foreground" : "text-muted-foreground")}>
-                  Umzugscheck (Marketplace)
+                <span className={cn("text-xs font-mono", model === "umzugscheck" ? "text-foreground" : "text-muted-foreground")}>
+                  MARKETPLACE
                 </span>
               </div>
             </div>

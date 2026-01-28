@@ -35,8 +35,8 @@ type Scenario = "conservative" | "base" | "aggressive";
 
 const SCENARIO_CONFIGS: Record<Scenario, { label: string; description: string; inputs: UmzugscheckInputs }> = {
   conservative: {
-    label: "🥶 Konservativ",
-    description: "Niedrigere Resale Rate, höhere CPL",
+    label: "Konservativ",
+    description: "Niedrige Resale Rate, hohe CPL",
     inputs: {
       cplBuy: 65,
       pricePerPartnerLead: 35,
@@ -50,8 +50,8 @@ const SCENARIO_CONFIGS: Record<Scenario, { label: string; description: string; i
     },
   },
   base: {
-    label: "📊 Base Case",
-    description: "Realistische Durchschnittswerte",
+    label: "Base Case",
+    description: "Durchschnittswerte",
     inputs: {
       cplBuy: 45,
       pricePerPartnerLead: 35,
@@ -65,7 +65,7 @@ const SCENARIO_CONFIGS: Record<Scenario, { label: string; description: string; i
     },
   },
   aggressive: {
-    label: "🚀 Aggressiv",
+    label: "Aggressiv",
     description: "Hohe Resale Rate, niedrige Ops-Kosten",
     inputs: {
       cplBuy: 35,
@@ -255,8 +255,8 @@ export function UmzugscheckUnitEconomicsCalculator() {
     if (calculations.profitPerLead < 0) {
       warnings.push({
         type: 'critical',
-        title: '🛑 STOP ADS',
-        message: `Verlust von CHF ${Math.abs(calculations.profitPerLead).toFixed(2)} pro Lead – Werbung sofort pausieren!`
+        title: 'STOP ADS',
+        message: `Verlust: CHF ${Math.abs(calculations.profitPerLead).toFixed(2)} pro Lead`
       });
     }
     
@@ -264,8 +264,8 @@ export function UmzugscheckUnitEconomicsCalculator() {
     if (inputs.avgBuyersPerLead < 2.0) {
       warnings.push({
         type: 'critical',
-        title: '🚨 RESALE RATE KRITISCH',
-        message: `Nur ${inputs.avgBuyersPerLead}× Käufer pro Lead – Minimum 2.0× erforderlich für Profitabilität`
+        title: 'RESALE RATE KRITISCH',
+        message: `Aktuell: ${inputs.avgBuyersPerLead}x | Minimum: 2.0x`
       });
     }
     
@@ -273,8 +273,8 @@ export function UmzugscheckUnitEconomicsCalculator() {
     if (!isAboveBreakeven) {
       warnings.push({
         type: 'warning',
-        title: '⚠️ UNTER BREAK-EVEN',
-        message: `Break-even bei ${calculations.breakEvenResaleRate.toFixed(2)}× – aktuell ${inputs.avgBuyersPerLead}×`
+        title: 'UNTER BREAK-EVEN',
+        message: `Break-even: ${calculations.breakEvenResaleRate.toFixed(2)}x | Aktuell: ${inputs.avgBuyersPerLead}x`
       });
     }
     
@@ -323,64 +323,65 @@ export function UmzugscheckUnitEconomicsCalculator() {
         )}
 
         {/* Header with Objective */}
-        <Card className="border-primary/30 bg-primary/5">
+        <Card className="border-border bg-muted/30">
           <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <Calculator className="w-5 h-5 text-primary" />
-              <div>
-                <p className="font-semibold">Umzugscheck Lead Arbitrage</p>
-                <p className="text-sm text-muted-foreground">
-                  Ziel: Lead-Arbitrage muss nach Support-Kosten profitabel bleiben.
-                </p>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Calculator className="w-5 h-5 text-muted-foreground" />
+                <div>
+                  <p className="font-semibold text-sm">MARKETPLACE MODEL</p>
+                  <p className="text-xs text-muted-foreground">
+                    Ziel: Positive Marge nach Support-Kosten
+                  </p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-xs text-muted-foreground">Status</p>
+                <Badge className={cn(
+                  isProfitable ? "bg-green-600" : isCritical ? "bg-red-600" : "bg-amber-500"
+                )}>
+                  {isProfitable ? "OK" : isCritical ? "KRITISCH" : "WARNUNG"}
+                </Badge>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Status Indicator */}
-        <Card className={cn(
-          "border-2",
-          isProfitable ? "border-green-500 bg-green-50 dark:bg-green-950/30" : 
-          isCritical ? "border-red-500 bg-red-50 dark:bg-red-950/30" : 
-          "border-amber-500 bg-amber-50 dark:bg-amber-950/30"
-        )}>
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              {isProfitable ? (
-                <>
-                  <CheckCircle2 className="w-12 h-12 text-green-600" />
-                  <div>
-                    <p className="text-2xl font-bold text-green-700">PROFITABEL</p>
-                    <p className="text-sm text-green-600">Arbitrage-Marge ist positiv – Skalierung möglich</p>
-                  </div>
-                </>
-              ) : isCritical ? (
-                <>
-                  <TrendingDown className="w-12 h-12 text-red-600" />
-                  <div>
-                    <p className="text-2xl font-bold text-red-700">VERLUST</p>
-                    <p className="text-sm text-red-600">Negative Marge – CPL senken oder Resale Rate erhöhen</p>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <AlertCircle className="w-12 h-12 text-amber-600" />
-                  <div>
-                    <p className="text-2xl font-bold text-amber-700">MARGINAL</p>
-                    <p className="text-sm text-amber-600">Geringe Marge – Optimierung empfohlen</p>
-                  </div>
-                </>
-              )}
-              <div className="ml-auto text-right">
-                <p className="text-xs text-muted-foreground">Profit pro Lead</p>
-                <p className={cn(
-                  "text-4xl font-bold tabular-nums",
+        {/* KPI Summary Table */}
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs font-mono uppercase tracking-wide text-muted-foreground">
+              KPI Übersicht
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <table className="w-full text-sm">
+              <tbody>
+                <tr className="border-b">
+                  <td className="py-2 text-muted-foreground">CPL (Einkauf)</td>
+                  <td className="py-2 text-right font-mono font-medium">{formatCHF(inputs.cplBuy)}</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="py-2 text-muted-foreground">Revenue pro Lead</td>
+                  <td className="py-2 text-right font-mono font-medium">{formatCHF(calculations.revenuePerLead)}</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="py-2 text-muted-foreground">Support Kosten</td>
+                  <td className="py-2 text-right font-mono font-medium">{formatCHF(inputs.supportCostPerLead)}</td>
+                </tr>
+                <tr className={cn(
+                  "font-bold",
                   isProfitable ? "text-green-700" : isCritical ? "text-red-700" : "text-amber-700"
                 )}>
-                  {formatCHF(calculations.profitPerLead)}
-                </p>
-              </div>
-            </div>
+                  <td className="py-2">Profit pro Lead</td>
+                  <td className="py-2 text-right font-mono">{formatCHF(calculations.profitPerLead)}</td>
+                </tr>
+                <tr className="border-t">
+                  <td className="py-2 text-muted-foreground">Break-even Rate</td>
+                  <td className="py-2 text-right font-mono font-medium">{calculations.breakEvenResaleRate.toFixed(2)}x</td>
+                </tr>
+              </tbody>
+            </table>
           </CardContent>
         </Card>
 

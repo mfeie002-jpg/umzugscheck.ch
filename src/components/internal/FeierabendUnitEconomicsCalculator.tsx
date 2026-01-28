@@ -35,8 +35,8 @@ type Scenario = "conservative" | "base" | "aggressive";
 
 const SCENARIO_CONFIGS: Record<Scenario, { label: string; description: string; inputs: FeierabendInputs }> = {
   conservative: {
-    label: "🥶 Winter (Konservativ)",
-    description: "Niedrigere Nachfrage, höhere CPL, schwächere Conversion",
+    label: "Winter / Konservativ",
+    description: "Niedrige Nachfrage, hohe CPL, schwache Conversion",
     inputs: {
       avgOrderValue: 2400,
       marketingCPL: 85,
@@ -51,8 +51,8 @@ const SCENARIO_CONFIGS: Record<Scenario, { label: string; description: string; i
     },
   },
   base: {
-    label: "📊 Base Case",
-    description: "Realistische Durchschnittswerte",
+    label: "Base Case",
+    description: "Durchschnittswerte",
     inputs: {
       avgOrderValue: 2800,
       marketingCPL: 60,
@@ -67,8 +67,8 @@ const SCENARIO_CONFIGS: Record<Scenario, { label: string; description: string; i
     },
   },
   aggressive: {
-    label: "☀️ Sommer (Aggressiv)",
-    description: "Hohe Nachfrage, bessere CPL, starke Conversion",
+    label: "Sommer / Aggressiv",
+    description: "Hohe Nachfrage, niedrige CPL, starke Conversion",
     inputs: {
       avgOrderValue: 3200,
       marketingCPL: 45,
@@ -261,8 +261,8 @@ export function FeierabendUnitEconomicsCalculator() {
     if (calculations.totalCAC > 450 && calculations.totalCAC !== Infinity) {
       warnings.push({
         type: 'critical',
-        title: '🚨 CAC KRITISCH',
-        message: `Total CAC bei CHF ${calculations.totalCAC.toFixed(0)} – Maximum CHF 450 überschritten!`
+        title: 'CAC KRITISCH',
+        message: `Total CAC: CHF ${calculations.totalCAC.toFixed(0)} | Limit: CHF 450`
       });
     }
     
@@ -270,8 +270,8 @@ export function FeierabendUnitEconomicsCalculator() {
     if (calculations.contributionMarginII < TARGET_CM2) {
       warnings.push({
         type: calculations.contributionMarginII < 0 ? 'critical' : 'warning',
-        title: calculations.contributionMarginII < 0 ? '🔴 NEGATIVE MARGE' : '⚠️ MARGE UNTER ZIEL',
-        message: `CM II bei CHF ${calculations.contributionMarginII.toFixed(0)} – Ziel CHF ${TARGET_CM2} nicht erreicht`
+        title: calculations.contributionMarginII < 0 ? 'NEGATIVE MARGE' : 'MARGE UNTER ZIEL',
+        message: `CM II: CHF ${calculations.contributionMarginII.toFixed(0)} | Ziel: CHF ${TARGET_CM2}`
       });
     }
     
@@ -279,8 +279,8 @@ export function FeierabendUnitEconomicsCalculator() {
     if (inputs.salesCloseRate < 15) {
       warnings.push({
         type: 'warning',
-        title: '📉 SALES PROBLEM',
-        message: `Close Rate nur ${inputs.salesCloseRate}% – unter kritischer Schwelle von 15%`
+        title: 'SALES WARNUNG',
+        message: `Close Rate: ${inputs.salesCloseRate}% | Minimum: 15%`
       });
     }
     
@@ -329,64 +329,63 @@ export function FeierabendUnitEconomicsCalculator() {
         )}
 
         {/* Header with Target */}
-        <Card className="border-primary/30 bg-primary/5">
+        <Card className="border-border bg-muted/30">
           <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <Calculator className="w-5 h-5 text-primary" />
-              <div>
-                <p className="font-semibold">Feierabendumzug Unit Economics</p>
-                <p className="text-sm text-muted-foreground">
-                  Ziel: Jeder Auftrag muss mindestens <strong className="text-primary">CHF 400 Contribution Margin II</strong> beitragen.
-                </p>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Calculator className="w-5 h-5 text-muted-foreground" />
+                <div>
+                  <p className="font-semibold text-sm">FEIERABEND DIRECT MODEL</p>
+                  <p className="text-xs text-muted-foreground">
+                    Ziel CM II: min. CHF 400 pro Auftrag
+                  </p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-xs text-muted-foreground">Status</p>
+                <Badge className={cn(
+                  isHealthy ? "bg-green-600" : isCritical ? "bg-red-600" : "bg-amber-500"
+                )}>
+                  {isHealthy ? "OK" : isCritical ? "KRITISCH" : "WARNUNG"}
+                </Badge>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Status Indicator */}
-        <Card className={cn(
-          "border-2",
-          isHealthy ? "border-green-500 bg-green-50 dark:bg-green-950/30" : 
-          isCritical ? "border-red-500 bg-red-50 dark:bg-red-950/30" : 
-          "border-amber-500 bg-amber-50 dark:bg-amber-950/30"
-        )}>
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
-              {isHealthy ? (
-                <>
-                  <CheckCircle2 className="w-12 h-12 text-green-600" />
-                  <div>
-                    <p className="text-2xl font-bold text-green-700">PROFITABEL</p>
-                    <p className="text-sm text-green-600">CM2 ≥ CHF 400 – Aufträge können skaliert werden</p>
-                  </div>
-                </>
-              ) : isCritical ? (
-                <>
-                  <TrendingDown className="w-12 h-12 text-red-600" />
-                  <div>
-                    <p className="text-2xl font-bold text-red-700">VERLUST</p>
-                    <p className="text-sm text-red-600">Negative Marge – Preise oder Kosten anpassen</p>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <AlertCircle className="w-12 h-12 text-amber-600" />
-                  <div>
-                    <p className="text-2xl font-bold text-amber-700">UNTER ZIEL</p>
-                    <p className="text-sm text-amber-600">CM2 unter CHF 400 – Optimierung erforderlich</p>
-                  </div>
-                </>
-              )}
-              <div className="ml-auto text-right">
-                <p className="text-xs text-muted-foreground">Contribution Margin II</p>
-                <p className={cn(
-                  "text-4xl font-bold tabular-nums",
+        {/* KPI Summary Table */}
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs font-mono uppercase tracking-wide text-muted-foreground">
+              KPI Übersicht
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <table className="w-full text-sm">
+              <tbody>
+                <tr className="border-b">
+                  <td className="py-2 text-muted-foreground">AOV (netto)</td>
+                  <td className="py-2 text-right font-mono font-medium">{formatCHF(inputs.avgOrderValue)}</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="py-2 text-muted-foreground">COGS</td>
+                  <td className="py-2 text-right font-mono font-medium">{formatCHF(calculations.cogs)}</td>
+                </tr>
+                <tr className="border-b">
+                  <td className="py-2 text-muted-foreground">Total CAC</td>
+                  <td className="py-2 text-right font-mono font-medium">
+                    {calculations.totalCAC === Infinity ? "-" : formatCHF(calculations.totalCAC)}
+                  </td>
+                </tr>
+                <tr className={cn(
+                  "font-bold",
                   isHealthy ? "text-green-700" : isCritical ? "text-red-700" : "text-amber-700"
                 )}>
-                  {formatCHF(calculations.contributionMarginII)}
-                </p>
-              </div>
-            </div>
+                  <td className="py-2">CM II</td>
+                  <td className="py-2 text-right font-mono">{formatCHF(calculations.contributionMarginII)}</td>
+                </tr>
+              </tbody>
+            </table>
           </CardContent>
         </Card>
 
@@ -545,9 +544,9 @@ export function FeierabendUnitEconomicsCalculator() {
                 "flex items-center justify-between p-3 rounded-lg",
                 isHealthy ? "bg-green-100 dark:bg-green-900/30" : "bg-red-100 dark:bg-red-900/30"
               )}>
-                <span className="text-sm font-medium">Ziel: ≥ CHF 400</span>
+                <span className="text-sm font-medium">Ziel: min. CHF 400</span>
                 <Badge className={isHealthy ? "bg-green-600" : "bg-red-600"}>
-                  {isHealthy ? "✓ Erreicht" : `✗ ${formatCHF(TARGET_CM2 - calculations.contributionMarginII)} fehlen`}
+                  {isHealthy ? "OK" : `Delta: CHF ${(TARGET_CM2 - calculations.contributionMarginII).toFixed(0)}`}
                 </Badge>
               </div>
 
@@ -578,8 +577,8 @@ export function FeierabendUnitEconomicsCalculator() {
                   <span>Aktueller CPL: {formatCHF(inputs.marketingCPL)}</span>
                   <span className="font-medium">
                     {inputs.marketingCPL <= calculations.maxAllowableCPL 
-                      ? `✓ ${formatCHF(calculations.maxAllowableCPL - inputs.marketingCPL)} Spielraum`
-                      : `✗ ${formatCHF(inputs.marketingCPL - calculations.maxAllowableCPL)} zu hoch`
+                      ? `Spielraum: CHF ${(calculations.maxAllowableCPL - inputs.marketingCPL).toFixed(0)}`
+                      : `Überschuss: CHF ${(inputs.marketingCPL - calculations.maxAllowableCPL).toFixed(0)}`
                     }
                   </span>
                 </div>
