@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Home, RefreshCw, HelpCircle, AlertCircle, MessageSquare, Loader2, Search, ArrowRight, Calculator, Building2, MapPin, Sparkles, FileText, Phone } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { useFlowContext } from "@/hooks/useFlowContext";
+import { FlowProgressIndicator } from "@/components/FlowProgressIndicator";
 // Header & Footer removed - provided by MainLayout in App.tsx
 
 /**
@@ -40,6 +42,7 @@ const QUICK_SERVICES = [
 const NotFound = () => {
   const { pathname, search: searchQuery, hash } = useLocation();
   const navigate = useNavigate();
+  const flowContext = useFlowContext();
   const [isReporting, setIsReporting] = useState(false);
   const [reportSent, setReportSent] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -144,6 +147,20 @@ const NotFound = () => {
                     )}
                   </p>
                 </div>
+
+                {/* Flow Progress (if in flow context) */}
+                {flowContext.isInFlow && flowContext.currentStep && flowContext.totalSteps && (
+                  <div className="py-4 px-4 bg-muted/50 rounded-xl">
+                    <p className="text-sm text-muted-foreground mb-3 text-center">
+                      Sie waren im <strong className="text-foreground">{flowContext.flowName}</strong>
+                    </p>
+                    <FlowProgressIndicator
+                      currentStep={flowContext.currentStep}
+                      totalSteps={flowContext.totalSteps}
+                      className="mx-auto"
+                    />
+                  </div>
+                )}
 
                 {/* Search */}
                 <form onSubmit={handleSearch} className="relative">
