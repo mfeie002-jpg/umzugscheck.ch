@@ -130,25 +130,25 @@ export const NavigationV12 = () => {
               {/* 1. Hero: Preise & Kosten berechnen (mit Gratis Badge) */}
               <NavButton dropdown="kosten" badge="Gratis" isFilled>
                 <Calculator className="w-4 h-4 text-primary fill-primary/20" />
-                Preise berechnen
+                📋 Preise berechnen
               </NavButton>
               
               {/* 2. Umzugsfirma finden */}
               <NavButton dropdown="firmen">
                 <Search className="w-4 h-4" />
-                Firmen finden
+                🔍 Firmen finden
               </NavButton>
               
               {/* 3. Reinigung & Services */}
               <NavButton dropdown="reinigung">
                 <Sparkles className="w-4 h-4" />
-                Reinigung & Services
+                🛠️ Reinigung & Services
               </NavButton>
               
               {/* 4. Ratgeber */}
               <NavButton dropdown="ratgeber">
                 <BookOpen className="w-4 h-4" />
-                Ratgeber
+                📚 Ratgeber
               </NavButton>
             </nav>
 

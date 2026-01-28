@@ -119,26 +119,26 @@ export const NavigationV13 = () => {
               </div>
             </Link>
 
-            {/* Desktop Navigation - V13 Simplified Structure */}
+            {/* Desktop Navigation - V13 Simplified Structure with Emojis */}
             <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1">
               {/* 1. Plane deinen Umzug */}
               <NavButton dropdown="planen" icon={ClipboardList}>
-                Plane deinen Umzug
+                📋 Plane deinen Umzug
               </NavButton>
               
               {/* 2. Offerten vergleichen (Core Funnel) */}
               <NavButton dropdown="offerten" icon={Search}>
-                Offerten vergleichen
+                🔍 Offerten vergleichen
               </NavButton>
               
               {/* 3. So funktioniert's */}
               <NavButton dropdown="funktioniert" icon={Info}>
-                So funktioniert's
+                ⭐ So funktioniert's
               </NavButton>
               
               {/* 4. Hilfe & Kontakt */}
               <NavButton dropdown="hilfe" icon={HelpCircle}>
-                Hilfe & Kontakt
+                📞 Hilfe & Kontakt
               </NavButton>
             </nav>
 

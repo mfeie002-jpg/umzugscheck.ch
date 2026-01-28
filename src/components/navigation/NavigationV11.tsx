@@ -150,22 +150,22 @@ export const NavigationV11 = () => {
               <Logo size="sm" iconOnly className="flex lg:hidden" />
             </div>
 
-            {/* Desktop Navigation - #11 Structure */}
+            {/* Desktop Navigation - #11 Structure with Emojis */}
             <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
               {/* Umzug - Direct link (most important) */}
-              <NavLink to="/dienstleistungen/privatumzug">Umzug</NavLink>
+              <NavLink to="/dienstleistungen/privatumzug">📦 Umzug</NavLink>
               
               {/* Umzugsreinigung - Direct link */}
-              <NavLink to="/dienstleistungen/reinigung">Umzugsreinigung</NavLink>
+              <NavLink to="/dienstleistungen/reinigung">✨ Reinigung</NavLink>
               
               {/* Weitere Services - Dropdown */}
-              <NavButton dropdown="services">Weitere Services</NavButton>
+              <NavButton dropdown="services">🛠️ Services</NavButton>
               
               {/* Ratgeber - Dropdown */}
-              <NavButton dropdown="ratgeber">Ratgeber</NavButton>
+              <NavButton dropdown="ratgeber">📚 Ratgeber</NavButton>
               
               {/* So funktioniert's - Direct link */}
-              <NavLink to="/so-funktionierts">So funktioniert's</NavLink>
+              <NavLink to="/so-funktionierts">⭐ So funktioniert's</NavLink>
             </nav>
 
             {/* Spacer */}

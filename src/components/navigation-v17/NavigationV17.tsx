@@ -28,31 +28,31 @@ import { ServicesV17Dropdown } from "./dropdowns/ServicesV17Dropdown";
 import { RatgeberV17Dropdown } from "./dropdowns/RatgeberV17Dropdown";
 import { FuerFirmenV17Dropdown } from "./dropdowns/FuerFirmenV17Dropdown";
 
-// Build navigation items from active variant
+// Build navigation items from active variant with consistent emojis
 const buildNavItems = (variant: NavConfig) => [
   {
     id: 'kosten-planung' as const,
-    label: variant.labels.preisrechner,
+    label: `📋 ${variant.labels.preisrechner}`,
     microcopy: variant.microcopy.preisrechner,
   },
   {
     id: 'offerten-vergleichen' as const,
-    label: variant.labels.firmen,
+    label: `🔍 ${variant.labels.firmen}`,
     microcopy: variant.microcopy.firmen,
   },
   {
     id: 'services' as const,
-    label: variant.labels.services,
+    label: `🛠️ ${variant.labels.services}`,
     microcopy: variant.microcopy.services,
   },
   {
     id: 'ratgeber' as const,
-    label: variant.labels.ratgeber,
+    label: `📚 ${variant.labels.ratgeber}`,
     microcopy: variant.microcopy.ratgeber,
   },
   {
     id: 'fuer-firmen' as const,
-    label: variant.labels.fuerFirmen,
+    label: `⭐ ${variant.labels.fuerFirmen}`,
     microcopy: variant.microcopy.fuerFirmen,
   },
 ] as const;
