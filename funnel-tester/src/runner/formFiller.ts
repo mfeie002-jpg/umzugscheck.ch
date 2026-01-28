@@ -5,7 +5,7 @@ const fakeDataByField = (label: string, type: string): string => {
   if (normalized.includes('email')) return 'test.user@example.com';
   if (normalized.includes('phone') || normalized.includes('telefon')) return '+41 44 123 45 67';
   if (normalized.includes('zip') || normalized.includes('plz') || normalized.includes('postal')) return '8001';
-  if (normalized.includes('city') || normalized.includes('stadt')) return 'Z\u00fcrich';
+  if (normalized.includes('city') || normalized.includes('stadt')) return 'Zurich';
   if (normalized.includes('date') || normalized.includes('datum')) return '2026-02-15';
   if (normalized.includes('name')) return '[TEST] Alex Muster';
   if (normalized.includes('address') || normalized.includes('strasse') || normalized.includes('street')) return 'Teststrasse 1';
@@ -15,26 +15,35 @@ const fakeDataByField = (label: string, type: string): string => {
 };
 
 export const fillVisibleInputs = async (page: Page): Promise<number> => {
-  const inputs = page.locator('input:not([type="hidden"]), select, textarea');
-  const count = await inputs.count();
+  let handles: import('playwright').ElementHandle<Node>[] = [];
+  try {
+    handles = await page
+      .locator('input:not([type="hidden"]), select, textarea')
+      .elementHandles();
+  } catch {
+    return 0;
+  }
+
   let filled = 0;
 
-  for (let i = 0; i < count; i += 1) {
-    const input = inputs.nth(i);
-    if (!(await input.isVisible())) continue;
-    const type = (await input.getAttribute('type')) || '';
-    const name = (await input.getAttribute('name')) || '';
-    const aria = (await input.getAttribute('aria-label')) || '';
-    const placeholder = (await input.getAttribute('placeholder')) || '';
-    const label = [name, aria, placeholder].filter(Boolean).join(' ');
-
+  for (const handle of handles) {
     try {
+      if (!(await handle.isVisible())) continue;
+      const type = (await handle.getAttribute('type')) || '';
+      const name = (await handle.getAttribute('name')) || '';
+      const aria = (await handle.getAttribute('aria-label')) || '';
+      const placeholder = (await handle.getAttribute('placeholder')) || '';
+      const label = [name, aria, placeholder].filter(Boolean).join(' ');
+
       if (type === 'checkbox' || type === 'radio') {
-        await input.check({ force: true });
-      } else if (await input.evaluate((el) => el.tagName.toLowerCase() === 'select')) {
-        await input.selectOption({ index: 1 }).catch(() => input.selectOption({ index: 0 }));
+        await handle.check({ force: true });
       } else {
-        await input.fill(fakeDataByField(label, type));
+        const tag = await handle.evaluate((el) => (el as Element).tagName.toLowerCase());
+        if (tag === 'select') {
+          await handle.selectOption({ index: 1 }).catch(() => handle.selectOption({ index: 0 }));
+        } else {
+          await handle.fill(fakeDataByField(label, type));
+        }
       }
       filled += 1;
     } catch {
@@ -44,3 +53,6 @@ export const fillVisibleInputs = async (page: Page): Promise<number> => {
 
   return filled;
 };
+
+
+

@@ -61,6 +61,10 @@ export const getCtaCandidates = async (page: Page): Promise<
   for (let i = 0; i < count; i += 1) {
     const item = locator.nth(i);
     if (!(await item.isVisible())) continue;
+    const disabledAttr = await item.getAttribute('disabled');
+    if (disabledAttr !== null) continue;
+    const ariaDisabled = await item.getAttribute('aria-disabled');
+    if (ariaDisabled === 'true') continue;
     const textRaw = (await item.textContent()) || (await item.getAttribute('value')) || '';
     const text = textRaw.trim();
     if (!text) continue;
