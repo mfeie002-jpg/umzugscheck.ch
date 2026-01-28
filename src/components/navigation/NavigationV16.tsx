@@ -310,17 +310,12 @@ export const NavigationV16 = () => {
           <div className="flex items-center gap-1.5 sm:gap-2 xl:gap-3 flex-shrink-0">
             {/* Desktop CTA - Context-Aware (xl+) */}
             <div className="hidden xl:flex items-center flex-shrink-0">
-              <div className="relative flex items-center">
-                <Button asChild className="h-11 px-6 font-bold gap-2 rounded-xl bg-gradient-to-r from-primary via-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all hover:scale-105">
-                  <Link to={flowPath}>
-                    <Zap className="w-4 h-4" />
-                    {getCtaLabel()}
-                  </Link>
-                </Button>
-                <span className="absolute top-full mt-1 w-full text-center text-[10px] text-muted-foreground">
-                  Gratis & unverbindlich
-                </span>
-              </div>
+              <Button asChild className="h-11 px-6 font-bold gap-2 rounded-xl bg-gradient-to-r from-primary via-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all hover:scale-105">
+                <Link to={flowPath}>
+                  <Zap className="w-4 h-4" />
+                  {getCtaLabel()}
+                </Link>
+              </Button>
             </div>
 
             {/* Tablet CTA (lg only) - Compact but visible */}
