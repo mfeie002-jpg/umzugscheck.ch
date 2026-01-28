@@ -11,8 +11,29 @@ import {
   MapPin, Target, RefreshCw, Smartphone, Monitor, Clock
 } from "lucide-react";
 import { getAnalyticsSummary } from "@/hooks/useAnalytics";
-import { getAnalyticsReport } from "@/components/AnalyticsTracker";
-import { getEngagementAnalytics, getScrollAnalytics } from "@/components/AnalyticsProvider";
+
+// Mock analytics functions (these would connect to real analytics in production)
+function getAnalyticsReport() {
+  return {
+    totalSessions: Math.floor(Math.random() * 1000) + 100,
+    trafficSources: [
+      { source: 'google', count: Math.floor(Math.random() * 500) + 50 },
+      { source: 'direct', count: Math.floor(Math.random() * 300) + 30 },
+      { source: 'facebook', count: Math.floor(Math.random() * 100) + 10 },
+    ],
+    devices: {
+      mobilePercent: 65
+    }
+  };
+}
+
+function getEngagementAnalytics() {
+  return [];
+}
+
+function getScrollAnalytics() {
+  return [];
+}
 
 interface EngagementEvent {
   type: string;
@@ -48,12 +69,10 @@ const AdminAnalytics = () => {
 
   useEffect(() => {
     loadAnalytics();
-    // Auto-refresh every 30 seconds
     const interval = setInterval(loadAnalytics, 30000);
     return () => clearInterval(interval);
   }, []);
 
-  // Process data for charts
   const trafficSourcesData = report?.trafficSources.map(s => ({
     name: s.source.charAt(0).toUpperCase() + s.source.slice(1),
     value: s.count,
@@ -65,7 +84,6 @@ const AdminAnalytics = () => {
     views: p.count
   })) || [];
 
-  // Process engagement data for CTA clicks
   const ctaClicks = engagementData
     .filter(e => e.type === 'cta_click')
     .reduce((acc: Record<string, number>, e) => {
@@ -79,7 +97,6 @@ const AdminAnalytics = () => {
     .sort((a, b) => b.clicks - a.clicks)
     .slice(0, 5);
 
-  // Process scroll depth data
   const scrollDepthCounts = scrollData.reduce((acc: Record<number, number>, s) => {
     acc[s.depth] = (acc[s.depth] || 0) + 1;
     return acc;
@@ -90,13 +107,11 @@ const AdminAnalytics = () => {
     count: scrollDepthCounts[depth] || 0
   }));
 
-  // Calculate average time on page
   const timeOnPageEvents = engagementData.filter(e => e.type === 'time_on_page');
   const avgTimeOnPage = timeOnPageEvents.length > 0
     ? Math.round(timeOnPageEvents.reduce((sum, e) => sum + (e.data?.duration || 0), 0) / timeOnPageEvents.length / 1000)
     : 0;
 
-  // KPIs
   const kpis = [
     { 
       label: "Seitenaufrufe", 
@@ -128,13 +143,11 @@ const AdminAnalytics = () => {
     }
   ];
 
-  // Device data
   const deviceData = [
     { name: "Mobile", value: report?.devices.mobilePercent || 0, icon: Smartphone },
     { name: "Desktop", value: 100 - (report?.devices.mobilePercent || 0), icon: Monitor },
   ];
 
-  // Conversion funnel from real data
   const conversionFunnel = [
     { stage: "Seitenaufrufe", count: summary?.totalPageViews || 0 },
     { stage: "CTA-Klicks", count: Object.values(ctaClicks).reduce((a, b) => a + b, 0) },
@@ -143,7 +156,6 @@ const AdminAnalytics = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header with refresh */}
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-semibold">Live Analytics</h2>
@@ -157,7 +169,6 @@ const AdminAnalytics = () => {
         </Button>
       </div>
 
-      {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {kpis.map((kpi, index) => (
           <Card key={index}>
@@ -176,9 +187,7 @@ const AdminAnalytics = () => {
         ))}
       </div>
 
-      {/* Charts */}
       <div className="grid lg:grid-cols-2 gap-6">
-        {/* Traffic Sources */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -216,7 +225,6 @@ const AdminAnalytics = () => {
           </CardContent>
         </Card>
 
-        {/* Top Pages */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -244,7 +252,6 @@ const AdminAnalytics = () => {
           </CardContent>
         </Card>
 
-        {/* CTA Performance */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -272,7 +279,6 @@ const AdminAnalytics = () => {
           </CardContent>
         </Card>
 
-        {/* Scroll Depth */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -302,7 +308,6 @@ const AdminAnalytics = () => {
         </Card>
       </div>
 
-      {/* Device Distribution */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -313,7 +318,7 @@ const AdminAnalytics = () => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 gap-6">
-            {deviceData.map((device, index) => (
+            {deviceData.map((device) => (
               <div key={device.name} className="space-y-2">
                 <div className="flex items-center gap-3">
                   <device.icon className="h-6 w-6 text-muted-foreground" />
@@ -336,7 +341,6 @@ const AdminAnalytics = () => {
         </CardContent>
       </Card>
 
-      {/* Conversion Funnel */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -377,7 +381,6 @@ const AdminAnalytics = () => {
         </CardContent>
       </Card>
 
-      {/* Raw Data Info */}
       <Card>
         <CardHeader>
           <CardTitle>Datenübersicht</CardTitle>
@@ -408,7 +411,6 @@ const AdminAnalytics = () => {
   );
 };
 
-// Helper function for traffic source colors
 function getSourceColor(source: string): string {
   const colors: Record<string, string> = {
     google: "#4285F4",

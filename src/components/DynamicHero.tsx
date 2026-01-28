@@ -28,6 +28,9 @@ export function DynamicHero({
 }: DynamicHeroProps) {
   const dynamicContent = useDynamicContent();
   const paidMode = usePaidMode();
+  
+  const isPremiumMode = paidMode.isPremiumMode;
+  const wording = dynamicContent.wording;
 
   const headline = defaultHeadline || dynamicContent.headline;
   const subheadline = defaultSubheadline || dynamicContent.subheadline;
@@ -54,16 +57,16 @@ export function DynamicHero({
   };
 
   return (
-    <section className="relative bg-gradient-to-br from-feierabend-blue-50 via-white to-white overflow-hidden">
+    <section className="relative bg-gradient-to-br from-primary/5 via-background to-background overflow-hidden">
       <div className="container mx-auto px-4 py-12 md:py-20">
         <div className="max-w-4xl mx-auto">
           {/* Headline */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-feierabend-blue-900 mb-4 md:mb-6 leading-tight animate-in fade-in slide-in-from-bottom duration-700">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-foreground mb-4 md:mb-6 leading-tight animate-in fade-in slide-in-from-bottom duration-700">
             {headline}
           </h1>
 
           {/* Subheadline */}
-          <p className="text-lg md:text-xl text-gray-700 mb-6 md:mb-8 max-w-2xl animate-in fade-in slide-in-from-bottom duration-700 delay-100">
+          <p className="text-lg md:text-xl text-muted-foreground mb-6 md:mb-8 max-w-2xl animate-in fade-in slide-in-from-bottom duration-700 delay-100">
             {subheadline}
           </p>
 
@@ -77,12 +80,12 @@ export function DynamicHero({
               />
               <TrustBadge 
                 icon={<Building2 className="w-4 h-4" />}
-                text="Seit 1980"
+                text="Schweizer Qualität"
                 variant="default"
               />
               <TrustBadge 
                 icon={<Shield className="w-4 h-4" />}
-                text="CHF 2 Mio. versichert"
+                text="Versichert"
                 variant="success"
               />
               
@@ -90,7 +93,7 @@ export function DynamicHero({
               {isPremiumMode && (
                 <TrustBadge 
                   icon={<Star className="w-4 h-4" />}
-                  text="✨ Diskret • Full-Service"
+                  text="✨ Premium Service"
                   variant="default"
                 />
               )}
@@ -132,24 +135,20 @@ export function DynamicHero({
               icon={<ArrowRight className="w-5 h-5" />}
               onClick={handleQuoteClick}
             >
-              {ctaText || "Offerte in 60 Sek"}
+              {ctaText || "Offerte erhalten"}
             </FeierabendButton>
           </div>
 
           {/* Micro-copy */}
-          <p className="text-sm text-gray-600 mt-6 animate-in fade-in duration-700 delay-400">
-            <strong className="text-feierabend-blue-700">In 5-10 Minuten fix gebucht</strong> - Live am Telefon oder WhatsApp
-            <br />
-            <span className="text-xs text-gray-500">
-              Mo-Fr 08:00-19:00 Uhr - Sa 09:00-17:00 Uhr - 24/7 Rueckruf
-            </span>
+          <p className="text-sm text-muted-foreground mt-6 animate-in fade-in duration-700 delay-400">
+            <strong className="text-primary">Schnell & unkompliziert</strong> - Kostenlose Offerte in Minuten
           </p>
 
           {/* Premium info box */}
           {isPremiumMode && (
-            <div className="mt-6 p-4 bg-feierabend-blue-50 border border-feierabend-blue-200 rounded-xl animate-in fade-in zoom-in-95 duration-700 delay-500">
-              <p className="text-sm text-feierabend-blue-700">
-                <strong className="text-feierabend-blue-900">Premium Service:</strong> Diskrete
+            <div className="mt-6 p-4 bg-primary/5 border border-primary/20 rounded-xl animate-in fade-in zoom-in-95 duration-700 delay-500">
+              <p className="text-sm text-foreground">
+                <strong className="text-primary">Premium Service:</strong> Diskrete
                 Abwicklung, persönlicher Ansprechpartner, Full-Service inkl. Packing & Reinigung
               </p>
             </div>
