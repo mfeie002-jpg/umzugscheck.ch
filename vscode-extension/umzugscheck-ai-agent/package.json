@@ -1,0 +1,109 @@
+{
+  "name": "umzugscheck-ai-agent",
+  "displayName": "Umzugscheck AI Agent",
+  "description": "Automatisch AI-Tasks aus der Supabase Queue laden und in Copilot Chat einfügen",
+  "version": "1.0.0",
+  "publisher": "umzugscheck",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "umzugscheck.nextCodexTask",
+        "title": "🔵 Next CODEX Task",
+        "category": "Umzugscheck AI"
+      },
+      {
+        "command": "umzugscheck.nextCopilotTask",
+        "title": "🟢 Next COPILOT Task",
+        "category": "Umzugscheck AI"
+      },
+      {
+        "command": "umzugscheck.markDone",
+        "title": "✅ Mark Current Task Done",
+        "category": "Umzugscheck AI"
+      },
+      {
+        "command": "umzugscheck.showQueue",
+        "title": "📋 Show Task Queue",
+        "category": "Umzugscheck AI"
+      },
+      {
+        "command": "umzugscheck.generateTasks",
+        "title": "🧠 Generate New Tasks",
+        "category": "Umzugscheck AI"
+      }
+    ],
+    "configuration": {
+      "title": "Umzugscheck AI Agent",
+      "properties": {
+        "umzugscheck.supabaseUrl": {
+          "type": "string",
+          "default": "",
+          "description": "Supabase Project URL"
+        },
+        "umzugscheck.supabaseAnonKey": {
+          "type": "string",
+          "default": "",
+          "description": "Supabase Anon Key"
+        },
+        "umzugscheck.autoLoadNextTask": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically load next task after marking done"
+        },
+        "umzugscheck.showNotifications": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show notifications for task updates"
+        }
+      }
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "umzugscheck-ai",
+          "title": "Umzugscheck AI",
+          "icon": "resources/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "umzugscheck-ai": [
+        {
+          "id": "taskQueue",
+          "name": "Task Queue"
+        },
+        {
+          "id": "currentTask",
+          "name": "Current Task"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.0",
+    "@typescript-eslint/parser": "^6.13.0",
+    "eslint": "^8.54.0",
+    "typescript": "^5.3.2"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.38.0"
+  }
+}
