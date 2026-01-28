@@ -5,6 +5,7 @@ interface OptimizedImageProps {
   src: string;
   alt: string;
   className?: string;
+  containerClassName?: string; // Added for backwards compatibility
   width?: number;
   height?: number;
   priority?: boolean;
@@ -22,6 +23,7 @@ export const OptimizedImage = ({
   src,
   alt,
   className,
+  containerClassName, // accepted but merged into className
   width,
   height,
   priority = false,
@@ -29,6 +31,7 @@ export const OptimizedImage = ({
   sizes = '100vw',
   quality = 80
 }: OptimizedImageProps) => {
+  const combinedClassName = containerClassName ? `${className || ''} ${containerClassName}`.trim() : className;
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
 
@@ -98,7 +101,7 @@ export const OptimizedImage = ({
 
   return (
     <picture 
-      className={cn("relative overflow-hidden block", className)}
+      className={cn("relative overflow-hidden block", combinedClassName)}
       style={{ aspectRatio }}
     >
       {webpSrcSet && (
@@ -134,3 +137,5 @@ export const OptimizedImage = ({
     </picture>
   );
 };
+
+export default OptimizedImage;

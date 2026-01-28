@@ -78,9 +78,9 @@ const ChampionQuickFlow = () => {
 
             {/* Trust Badges Row */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
-              <TrustBadge icon={<Phone className="w-6 h-6" />} label="Live Hotline Mo–Fr 08–19 Uhr" />
-              <TrustBadge icon={<Shield className="w-6 h-6" />} label="100 % Kostenlos" />
-              <TrustBadge icon={<Zap className="w-6 h-6" />} label="Sofort Offertenvergleich" />
+              <TrustBadge icon={<Phone className="w-6 h-6" />} text="Live Hotline Mo–Fr 08–19 Uhr" />
+              <TrustBadge icon={<Shield className="w-6 h-6" />} text="100 % Kostenlos" />
+              <TrustBadge icon={<Zap className="w-6 h-6" />} text="Sofort Offertenvergleich" />
             </div>
           </div>
         </section>

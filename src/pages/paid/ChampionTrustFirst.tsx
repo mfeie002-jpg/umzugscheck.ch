@@ -108,9 +108,9 @@ const ChampionTrustFirst = () => {
 
             {/* Trust Badges */}
             <div className="grid md:grid-cols-3 gap-4">
-              <TrustBadge icon={<Award className="w-6 h-6" />} label="SSM Zertifiziert" />
-              <TrustBadge icon={<Users className="w-6 h-6" />} label="Professionelles Team" />
-              <TrustBadge icon={<MapPin className="w-6 h-6" />} label="Alle Kantone" />
+              <TrustBadge icon={<Award className="w-6 h-6" />} text="SSM Zertifiziert" />
+              <TrustBadge icon={<Users className="w-6 h-6" />} text="Professionelles Team" />
+              <TrustBadge icon={<MapPin className="w-6 h-6" />} text="Alle Kantone" />
             </div>
           </div>
         </section>

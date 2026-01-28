@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import { Footer } from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -79,17 +79,14 @@ export default function MyMoves() {
   };
 
   const fetchMoves = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    const { data, error } = await supabase
-      .from("moves")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false });
-
-    if (data) {
-      setMoves(data);
+    // Note: 'moves' table doesn't exist in schema yet - using localStorage fallback
+    try {
+      const storedMoves = localStorage.getItem('user_moves');
+      if (storedMoves) {
+        setMoves(JSON.parse(storedMoves));
+      }
+    } catch (e) {
+      console.warn('Could not load moves from localStorage');
     }
     setLoading(false);
   };
@@ -103,15 +100,16 @@ export default function MyMoves() {
       return;
     }
 
-    const { error } = await supabase.from("moves").insert({
-      user_id: user.id,
+    const newMove: Move = {
+      id: crypto.randomUUID(),
       ...formData,
-    });
+      status: 'pending',
+      created_at: new Date().toISOString(),
+    };
 
-    if (error) {
-      toast.error("Fehler beim Erstellen");
-      return;
-    }
+    const updatedMoves = [newMove, ...moves];
+    setMoves(updatedMoves);
+    localStorage.setItem('user_moves', JSON.stringify(updatedMoves));
 
     toast.success("Umzug erfolgreich erstellt");
     setDialogOpen(false);
@@ -122,17 +120,13 @@ export default function MyMoves() {
       moving_date: "",
       notes: "",
     });
-    fetchMoves();
   };
 
   const handleDelete = async (id: string) => {
-    const { error } = await supabase.from("moves").delete().eq("id", id);
-    if (error) {
-      toast.error("Fehler beim Löschen");
-      return;
-    }
+    const updatedMoves = moves.filter(m => m.id !== id);
+    setMoves(updatedMoves);
+    localStorage.setItem('user_moves', JSON.stringify(updatedMoves));
     toast.success("Umzug gelöscht");
-    fetchMoves();
   };
 
   return (
@@ -154,7 +148,7 @@ export default function MyMoves() {
             <motion.div
               animate={isRefreshing ? { rotate: 360 } : { rotate: pullDistance * 3 }}
               transition={isRefreshing ? { repeat: Infinity, duration: 1, ease: "linear" } : { duration: 0 }}
-              className="w-5 h-5 border-2 border-alpine border-t-transparent rounded-full"
+              className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full"
             />
             <span className="text-sm font-medium">
               {isRefreshing ? "Wird aktualisiert..." : pullDistance > 80 ? "Loslassen" : "Ziehen zum Aktualisieren"}

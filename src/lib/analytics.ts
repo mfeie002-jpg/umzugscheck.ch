@@ -426,4 +426,13 @@ export const useAnalytics = () => {
   };
 };
 
+// Named exports for backwards compatibility
+export const trackEvent = (event: AnalyticsEvent, properties?: Record<string, any>) => {
+  analytics.track(event, properties);
+};
+
+export const trackConversion = (conversionType: string, properties?: Record<string, any>) => {
+  analytics.track('lead_submitted', { conversion_type: conversionType, ...properties });
+};
+
 export default analytics;
