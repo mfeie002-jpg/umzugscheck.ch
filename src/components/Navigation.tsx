@@ -177,7 +177,7 @@ export const Navigation = () => {
             <div className="hidden xl:flex items-center justify-center gap-2 xl:gap-3 shrink-0 flex-none w-auto">
               <HeaderCallButton className="shrink-0" />
 
-              <div className="relative flex items-center">
+              <div className="flex items-center gap-3">
                 <Link to={flowPath} aria-label="Kostenlose Umzugsofferten vergleichen" className="shrink-0">
                   <Button
                     size="lg"
@@ -187,7 +187,7 @@ export const Navigation = () => {
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform flex-shrink-0" />
                   </Button>
                 </Link>
-                <span className="absolute top-full mt-1 left-0 text-left text-xs text-muted-foreground whitespace-nowrap">
+                <span className="hidden 2xl:block text-xs text-muted-foreground whitespace-nowrap">
                   Gratis & unverbindlich
                 </span>
               </div>
