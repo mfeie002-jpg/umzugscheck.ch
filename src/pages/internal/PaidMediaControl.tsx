@@ -21,6 +21,9 @@ import {
 import { cn } from "@/lib/utils";
 import { FeierabendUnitEconomicsCalculator } from "@/components/internal/FeierabendUnitEconomicsCalculator";
 import { UmzugscheckUnitEconomicsCalculator } from "@/components/internal/UmzugscheckUnitEconomicsCalculator";
+import { LeadTriageHelper } from "@/components/internal/LeadTriageHelper";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Calculator, Filter } from "lucide-react";
 
 type BusinessModel = "feierabend" | "umzugscheck";
 type Scenario = "conservative" | "base" | "aggressive";
@@ -423,14 +426,34 @@ export default function PaidMediaControl() {
         </header>
 
         <main className="max-w-7xl mx-auto px-6 py-6 space-y-6">
-          {/* Conditional Content based on Model */}
-          {model === "feierabend" ? (
-            /* FEIERABEND CALCULATOR */
-            <FeierabendUnitEconomicsCalculator />
-          ) : (
-            /* UMZUGSCHECK MARKETPLACE CALCULATOR */
-            <UmzugscheckUnitEconomicsCalculator />
-          )}
+          {/* Tabs for Calculator vs Triage */}
+          <Tabs defaultValue="calculator" className="w-full">
+            <TabsList className="grid w-full max-w-md grid-cols-2">
+              <TabsTrigger value="calculator" className="gap-2">
+                <Calculator className="w-4 h-4" />
+                Unit Economics
+              </TabsTrigger>
+              <TabsTrigger value="triage" className="gap-2">
+                <Filter className="w-4 h-4" />
+                Lead Triage
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="calculator" className="mt-6">
+              {/* Conditional Content based on Model */}
+              {model === "feierabend" ? (
+                /* FEIERABEND CALCULATOR */
+                <FeierabendUnitEconomicsCalculator />
+              ) : (
+                /* UMZUGSCHECK MARKETPLACE CALCULATOR */
+                <UmzugscheckUnitEconomicsCalculator />
+              )}
+            </TabsContent>
+
+            <TabsContent value="triage" className="mt-6">
+              <LeadTriageHelper />
+            </TabsContent>
+          </Tabs>
 
           {/* Footer */}
           <div className="text-center text-xs text-muted-foreground py-4 border-t border-border">
