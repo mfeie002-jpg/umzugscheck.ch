@@ -27,6 +27,8 @@ import { StepServices } from "./steps/StepServices";
 import { StepContact } from "./steps/StepContact";
 import { StepSummary } from "./steps/StepSummary";
 import { StepSuccess } from "./steps/StepSuccess";
+import { useInitialStep } from "@/hooks/use-initial-step";
+import { useCaptureMode } from "@/hooks/use-capture-mode";
 
 export interface UltimateFlowData {
   // Step 1: Addresses
@@ -79,8 +81,30 @@ const STEPS = [
 ];
 
 export function UltimateSwissFlow() {
-  const [step, setStep] = useState(1);
-  const [data, setData] = useState<UltimateFlowData>(INITIAL_DATA);
+  // Support screenshot automation via uc_step URL parameter
+  const initialStep = useInitialStep(1);
+  const { isCaptureMode, demoData } = useCaptureMode();
+  
+  const [step, setStep] = useState(initialStep);
+  const [data, setData] = useState<UltimateFlowData>(() => {
+    if (isCaptureMode) {
+      return {
+        ...INITIAL_DATA,
+        fromPostal: demoData.fromPostal,
+        fromCity: demoData.fromCity,
+        toPostal: demoData.toPostal,
+        toCity: demoData.toCity,
+        roomCount: '3.5',
+        moveDate: demoData.moveDate,
+        name: demoData.name,
+        email: demoData.email,
+        phone: demoData.phone,
+        services: ['umzug', 'einpacken'],
+        acceptPrivacy: true,
+      };
+    }
+    return INITIAL_DATA;
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
