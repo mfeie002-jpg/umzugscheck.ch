@@ -84,7 +84,20 @@ export const MiniCalculator = () => {
       : toQuery;
     
     if (fromAddress && toAddress) {
-      navigate(`/rechner?from=${encodeURIComponent(fromAddress)}&to=${encodeURIComponent(toAddress)}`);
+      // Save to uc_prefill for wizard prepopulation
+      try {
+        localStorage.setItem('uc_prefill', JSON.stringify({
+          from: fromAddress,
+          to: toAddress,
+          source: 'home-mini-calculator',
+          createdAt: Date.now(),
+          timestamp: Date.now(),
+        }));
+      } catch {
+        // Silent fail
+      }
+      
+      navigate(`/umzugsofferten?from=${encodeURIComponent(fromAddress)}&to=${encodeURIComponent(toAddress)}`);
     }
   };
 
