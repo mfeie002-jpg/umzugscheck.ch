@@ -284,7 +284,7 @@ const VariantPreview = ({
           {/* Navigation Preview */}
           <div className="mb-6">
             <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">
-              {viewMode === 'desktop' ? '🖥️ Desktop Navigation' : '📱 Mobile Menu'}
+              {viewMode === 'desktop' ? 'Desktop Navigation' : 'Mobile Menu'}
             </h4>
             
             {viewMode === 'desktop' ? (
@@ -323,7 +323,7 @@ const VariantPreview = ({
           {/* Microcopy */}
           <div className="mb-6">
             <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">
-              📝 Microcopy
+              Microcopy
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               {Object.entries(variant.microcopy).map(([key, text]) => (
@@ -341,7 +341,7 @@ const VariantPreview = ({
           {showDropdowns && (
             <div>
               <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">
-                📂 Dropdown Inhalte
+                Dropdown Inhalte
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {Object.entries(variant.dropdownTitles).map(([key, title]) => {
