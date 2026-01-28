@@ -7,6 +7,8 @@ import { Input } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
+import { useInitialStep } from '@/hooks/use-initial-step';
+import { useCaptureMode } from '@/hooks/use-capture-mode';
 
 // Types
 interface FlowData {
@@ -462,8 +464,30 @@ StepSuccess.displayName = 'StepSuccess';
 
 // Main Flow Component
 export const UltimateBest36Flow = memo(() => {
-  const [step, setStep] = useState(1);
-  const [data, setData] = useState<FlowData>(INITIAL_DATA);
+  // Support screenshot automation via uc_step URL parameter
+  const initialStep = useInitialStep(1);
+  const { isCaptureMode, demoData } = useCaptureMode();
+  
+  const [step, setStep] = useState(initialStep);
+  const [data, setData] = useState<FlowData>(() => {
+    // Pre-fill with demo data in capture mode for consistent screenshots
+    if (isCaptureMode) {
+      return {
+        fromZip: demoData.fromPostal,
+        toZip: demoData.toPostal,
+        propertyType: 'wohnung',
+        livingSpace: 75,
+        inventoryAmount: 'normal',
+        moveDate: demoData.moveDate,
+        floor: '2',
+        hasElevator: demoData.hasElevator,
+        name: demoData.name,
+        email: demoData.email,
+        phone: demoData.phone,
+      };
+    }
+    return INITIAL_DATA;
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 

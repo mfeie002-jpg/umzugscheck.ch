@@ -22,6 +22,8 @@ import {
   Clock, Phone, Mail, User, CheckCircle2
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useInitialStep } from '@/hooks/use-initial-step';
+import { useCaptureMode } from '@/hooks/use-capture-mode';
 
 // Types
 interface FormData {
@@ -538,23 +540,48 @@ const ConfirmationScreen: FC = () => (
 
 // Main Component
 export const UltimateSwissFlow: FC = () => {
-  const [currentStep, setCurrentStep] = useState(1);
+  // Support screenshot automation via uc_step URL parameter
+  const initialStep = useInitialStep(1);
+  const { isCaptureMode, demoData } = useCaptureMode();
+  
+  const [currentStep, setCurrentStep] = useState(initialStep);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState<FormData>({
-    addressFrom: '',
-    postalFrom: '',
-    addressTo: '',
-    postalTo: '',
-    estimateMethod: 'quick',
-    roomCount: 2.5,
-    floorFrom: 1,
-    floorTo: 1,
-    liftFrom: false,
-    liftTo: false,
-    moveDate: new Date().toISOString().split('T')[0],
-    dateIsFlexible: false,
-    services: { packing: false, cleaning: false, storage: false, furniture: false },
-    contact: { name: '', email: '', phone: '' },
+  const [formData, setFormData] = useState<FormData>(() => {
+    // Pre-fill with demo data in capture mode for consistent screenshots
+    if (isCaptureMode) {
+      return {
+        addressFrom: demoData.fromCity,
+        postalFrom: demoData.fromPostal,
+        addressTo: demoData.toCity,
+        postalTo: demoData.toPostal,
+        estimateMethod: 'quick',
+        roomCount: demoData.rooms,
+        floorFrom: demoData.floor,
+        floorTo: 1,
+        liftFrom: demoData.hasElevator,
+        liftTo: false,
+        moveDate: demoData.moveDate,
+        dateIsFlexible: false,
+        services: { packing: true, cleaning: true, storage: false, furniture: false },
+        contact: { name: demoData.name, email: demoData.email, phone: demoData.phone },
+      };
+    }
+    return {
+      addressFrom: '',
+      postalFrom: '',
+      addressTo: '',
+      postalTo: '',
+      estimateMethod: 'quick',
+      roomCount: 2.5,
+      floorFrom: 1,
+      floorTo: 1,
+      liftFrom: false,
+      liftTo: false,
+      moveDate: new Date().toISOString().split('T')[0],
+      dateIsFlexible: false,
+      services: { packing: false, cleaning: false, storage: false, furniture: false },
+      contact: { name: '', email: '', phone: '' },
+    };
   });
 
   const steps = ["Adressen", "Umfang", "Services", "Kontakt"];
