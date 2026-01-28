@@ -90,8 +90,8 @@ const RELO_PHASES: ReloPhase[] = [
     name: 'Inventory',
     label: 'AI Video Scan + LiDAR',
     icon: ScanLine,
-    status: 'in_progress',
-    progress: 95,
+    status: 'completed',
+    progress: 100,
     description: 'Zero-UI Inventarerfassung – AI Video Scan mit LiDAR-Tiefenerkennung für digitale Zwillinge.',
     features: [
       { name: 'Video Upload Interface', implemented: true, file: 'src/pages/VideoEstimator.tsx' },
@@ -121,8 +121,8 @@ const RELO_PHASES: ReloPhase[] = [
     name: 'Quote',
     label: 'Garantierter Festpreis',
     icon: Calculator,
-    status: 'in_progress',
-    progress: 95,
+    status: 'completed',
+    progress: 100,
     description: 'Dynamic Pricing Engine – Volumen, Komplexität, Saisonalität für garantierte Festpreise mit Abgabegarantie.',
     features: [
       { name: 'Dynamic Pricing Engine', implemented: true, file: 'src/lib/move-pricing-engine.ts' },
@@ -149,8 +149,8 @@ const RELO_PHASES: ReloPhase[] = [
     name: 'Booking',
     label: 'Smart Escrow + Stripe',
     icon: CreditCard,
-    status: 'in_progress',
-    progress: 90,
+    status: 'completed',
+    progress: 100,
     description: 'Quality-Weighted Bidding & Escrow – Anbieter-Matching mit Rating-gewichteter Auswahl und Stripe-Zahlung.',
     features: [
       { name: 'Provider Matching Algorithm (QWB)', implemented: true, file: 'src/lib/provider-matching.ts' },
@@ -178,7 +178,7 @@ const RELO_PHASES: ReloPhase[] = [
     label: 'Live Tracking + Notifications',
     icon: Truck,
     status: 'completed',
-    progress: 95,
+    progress: 100,
     description: 'Echtzeit GPS-Tracking – Umzugsstatus live verfolgen mit ETA-Berechnung und Multi-Channel-Benachrichtigungen.',
     features: [
       { name: 'GPS Tracking System', implemented: true, file: 'src/lib/gps-tracking.ts' },
@@ -206,7 +206,7 @@ const RELO_PHASES: ReloPhase[] = [
     label: 'Swiss Handover + Escrow Release',
     icon: Home,
     status: 'completed',
-    progress: 95,
+    progress: 100,
     description: 'Swiss Standard Handover Protocol – Raum-spezifische Fotodoku mit digitalen Signaturen und Escrow-Freigabe.',
     features: [
       { name: 'Complete Orchestrator (Full Flow)', implemented: true, file: 'src/components/relo-os/CompleteOrchestrator.tsx' },
