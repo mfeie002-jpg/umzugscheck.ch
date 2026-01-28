@@ -5,13 +5,19 @@
  * Uses the unified A/B config as source of truth
  */
 
-import { useContext, useState, useCallback, ReactNode, useEffect } from 'react';
+import { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react';
 import { NAV_VARIANTS, type NavConfig, VARIANT_ULTIMATE } from '@/lib/navigation-variants';
-import { NavigationABContext, type NavigationABContextType } from '@/contexts/navigation-context';
 import { 
   getNavVariant, 
   AB_STORAGE_KEYS 
 } from '@/lib/unified-ab-config';
+
+export interface NavigationABContextType {
+  variant: NavConfig;
+  setVariant: (id: string) => void;
+}
+
+export const NavigationABContext = createContext<NavigationABContextType | null>(null);
 
 export const useNavigationAB = (): NavigationABContextType => {
   const context = useContext(NavigationABContext);

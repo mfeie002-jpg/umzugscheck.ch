@@ -7,7 +7,7 @@
 
 import { useContext, useState, useEffect } from "react";
 import { type NavConfig } from "@/lib/navigation-variants";
-import { NavigationABContext } from "@/contexts/navigation-context";
+import { NavigationABContext } from "@/contexts/NavigationABContext";
 import { getNavVariant } from "@/lib/unified-ab-config";
 
 export const useNavigationVariant = (): NavConfig => {

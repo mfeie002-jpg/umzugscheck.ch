@@ -1,11 +1,11 @@
 /**
  * Navigation Comparison Page
  * 
- * Shows all 8 navigation variants side by side for easy comparison
+ * Shows all 17 navigation variants side by side for easy comparison
  * Similar to the flow comparison view
  */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import { 
@@ -31,6 +31,49 @@ export default function NavigationComparison() {
   const [expandedVariants, setExpandedVariants] = useState<string[]>(
     NAV_VARIANTS.map(v => v.id) // All expanded by default
   );
+  const [activeVariantId, setActiveVariantId] = useState<string>(() => {
+    // Get initial active variant from localStorage or URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlVariant = urlParams.get('nav');
+    if (urlVariant) return urlVariant;
+    
+    const stored = localStorage.getItem('nav-variant');
+    return stored || 'ultimate';
+  });
+
+  // Listen for variant changes
+  useEffect(() => {
+    const handleVariantChange = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      const newVariantId = customEvent.detail?.variantId || customEvent.detail;
+      if (newVariantId) {
+        setActiveVariantId(newVariantId);
+        console.log('[NavigationComparison] Variant changed to:', newVariantId);
+      }
+    };
+
+    window.addEventListener('nav-variant-changed', handleVariantChange);
+    window.addEventListener('ab-state-changed', handleVariantChange);
+
+    return () => {
+      window.removeEventListener('nav-variant-changed', handleVariantChange);
+      window.removeEventListener('ab-state-changed', handleVariantChange);
+    };
+  }, []);
+
+  const activateVariant = (variantId: string) => {
+    // Save to localStorage
+    localStorage.setItem('nav-variant', variantId);
+    
+    // Update state
+    setActiveVariantId(variantId);
+    
+    // Dispatch events for all components to update
+    window.dispatchEvent(new CustomEvent('nav-variant-changed', { detail: variantId }));
+    window.dispatchEvent(new CustomEvent('ab-state-changed', { detail: { type: 'nav', variantId } }));
+    
+    console.log('[NavigationComparison] Activated variant:', variantId);
+  };
 
   const toggleVariant = (id: string) => {
     setExpandedVariants(prev => 
@@ -136,6 +179,8 @@ export default function NavigationComparison() {
                 showDropdowns={showDropdowns}
                 isExpanded={expandedVariants.includes(variant.id)}
                 onToggle={() => toggleVariant(variant.id)}
+                isActive={activeVariantId === variant.id}
+                onActivate={() => activateVariant(variant.id)}
               />
             ))}
           </div>
@@ -152,6 +197,8 @@ interface VariantPreviewProps {
   showDropdowns: boolean;
   isExpanded: boolean;
   onToggle: () => void;
+  isActive: boolean;
+  onActivate: () => void;
 }
 
 const VariantPreview = ({ 
@@ -160,13 +207,16 @@ const VariantPreview = ({
   viewMode, 
   showDropdowns,
   isExpanded,
-  onToggle 
+  onToggle,
+  isActive,
+  onActivate
 }: VariantPreviewProps) => {
   const labels = Object.entries(variant.labels).filter(([k]) => k !== 'cta');
 
   return (
     <div className={cn(
       "border-2 rounded-xl overflow-hidden bg-background transition-all",
+      isActive ? "border-green-500 shadow-lg shadow-green-500/20" : 
       isExpanded ? "border-primary shadow-lg" : "border-border hover:border-primary/50"
     )}>
       {/* Header - Always visible */}
@@ -177,18 +227,39 @@ const VariantPreview = ({
         <div className="flex items-center gap-3">
           <div className={cn(
             "w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold",
+            isActive ? "bg-green-500 text-white" :
             isExpanded 
               ? "bg-primary text-primary-foreground" 
               : "bg-muted text-muted-foreground"
           )}>
-            {index}
+            {isActive ? <Check className="w-6 h-6" /> : index}
           </div>
           <div>
-            <h3 className="font-bold text-lg">{variant.name}</h3>
+            <div className="flex items-center gap-2">
+              <h3 className="font-bold text-lg">{variant.name}</h3>
+              {isActive && (
+                <Badge className="bg-green-500 text-white hover:bg-green-600">
+                  ✓ Aktiv
+                </Badge>
+              )}
+            </div>
             <p className="text-sm text-muted-foreground">{variant.description}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
+          {!isActive && (
+            <Button 
+              onClick={(e) => {
+                e.stopPropagation();
+                onActivate();
+              }}
+              size="sm" 
+              className="gap-2 bg-green-500 hover:bg-green-600 text-white"
+            >
+              <Check className="w-4 h-4" />
+              <span className="hidden sm:inline">Aktivieren</span>
+            </Button>
+          )}
           <Link 
             to={`/?nav=${variant.id}`}
             onClick={(e) => e.stopPropagation()}
@@ -196,7 +267,7 @@ const VariantPreview = ({
           >
             <Button variant="outline" size="sm" className="gap-2">
               <ExternalLink className="w-4 h-4" />
-              <span className="hidden sm:inline">Live testen</span>
+              <span className="hidden sm:inline">Öffnen</span>
             </Button>
           </Link>
           {isExpanded ? (
