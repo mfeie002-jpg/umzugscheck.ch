@@ -1,0 +1,59 @@
+name: Scheduled Lighthouse Audit
+
+on:
+  schedule:
+    # Run every Sunday at 2:00 AM UTC
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+
+jobs:
+  lighthouse-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Install Lighthouse CI
+        run: npm install -g @lhci/cli
+
+      - name: Run comprehensive Lighthouse audit
+        run: lhci autorun --config=lighthouserc.js
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+      - name: Upload Lighthouse report
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-weekly-report
+          path: .lighthouseci/
+          retention-days: 30
+
+      - name: Generate performance summary
+        run: |
+          echo "## Weekly Lighthouse Performance Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📊 **Report generated:** $(date -u)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Pages Tested:" >> $GITHUB_STEP_SUMMARY
+          echo "- Homepage (/)" >> $GITHUB_STEP_SUMMARY
+          echo "- Contact (/contact)" >> $GITHUB_STEP_SUMMARY
+          echo "- Calculator (/calculator)" >> $GITHUB_STEP_SUMMARY
+          echo "- Booking (/booking)" >> $GITHUB_STEP_SUMMARY
+          echo "- Services (/plan)" >> $GITHUB_STEP_SUMMARY
+          echo "- Zürich (/area/zurich)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📁 Full report available in artifacts" >> $GITHUB_STEP_SUMMARY
