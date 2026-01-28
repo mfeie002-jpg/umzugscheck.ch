@@ -67,6 +67,9 @@
 | **Trust Elements** | ✅ | Verified badges, price ranges shown |
 | **Mobile (not tested)** | — | Desktop only |
 
+#### Test Limitation
+- Final CTA **"Offerten erhalten"** would submit data. Test stopped before submission to avoid external action.
+
 #### Issues Found
 
 **Issue #2.1 - URL Parameter Prepopulation Not Working** 🔴 HIGH  

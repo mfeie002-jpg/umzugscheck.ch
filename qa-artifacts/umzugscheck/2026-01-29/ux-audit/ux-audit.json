@@ -1,0 +1,89 @@
+{
+  "runDate": "2026-01-29",
+  "results": [
+    {
+      "url": "https://umzugscheckv2.lovable.app/umzugsfirmen",
+      "route": "/umzugsfirmen",
+      "desktop": {
+        "h1": "Umzugsfirmen in der Schweiz",
+        "ctaText": "Firmen direkt vergleichen",
+        "ctaAboveFold": true,
+        "trustFound": true,
+        "formCount": 0,
+        "inputCount": 3,
+        "requiredCount": 0,
+        "hasProgress": false,
+        "screenshot": "C:\\Users\\Mo\\Documents\\GitHub\\umzugscheckv2-ce833634\\umzugscheck.ch\\qa-artifacts\\umzugscheck\\2026-01-29\\ux-audit\\umzugsfirmen_desktop.png"
+      },
+      "mobile": {
+        "touchOk": false,
+        "hasHScroll": false,
+        "stickyCTA": true,
+        "screenshot": "C:\\Users\\Mo\\Documents\\GitHub\\umzugscheckv2-ce833634\\umzugscheck.ch\\qa-artifacts\\umzugscheck\\2026-01-29\\ux-audit\\umzugsfirmen_mobile.png"
+      }
+    },
+    {
+      "url": "https://umzugscheckv2.lovable.app/beste-umzugsfirma",
+      "route": "/beste-umzugsfirma",
+      "desktop": {
+        "h1": "Beste Umzugsfirmen Schweiz 2025 | Bewertungen & Vergleich",
+        "ctaText": "Offerte anfordern",
+        "ctaAboveFold": false,
+        "trustFound": true,
+        "formCount": 0,
+        "inputCount": 20,
+        "requiredCount": 0,
+        "hasProgress": false,
+        "screenshot": "C:\\Users\\Mo\\Documents\\GitHub\\umzugscheckv2-ce833634\\umzugscheck.ch\\qa-artifacts\\umzugscheck\\2026-01-29\\ux-audit\\beste-umzugsfirma_desktop.png"
+      },
+      "mobile": {
+        "touchOk": false,
+        "hasHScroll": false,
+        "stickyCTA": true,
+        "screenshot": "C:\\Users\\Mo\\Documents\\GitHub\\umzugscheckv2-ce833634\\umzugscheck.ch\\qa-artifacts\\umzugscheck\\2026-01-29\\ux-audit\\beste-umzugsfirma_mobile.png"
+      }
+    },
+    {
+      "url": "https://umzugscheckv2.lovable.app/guenstige-umzugsfirma",
+      "route": "/guenstige-umzugsfirma",
+      "desktop": {
+        "h1": "Günstige Umzugsfirmen Schweiz | Preise vergleichen & sparen",
+        "ctaText": "Günstige Angebote sichern",
+        "ctaAboveFold": false,
+        "trustFound": true,
+        "formCount": 0,
+        "inputCount": 8,
+        "requiredCount": 0,
+        "hasProgress": false,
+        "screenshot": "C:\\Users\\Mo\\Documents\\GitHub\\umzugscheckv2-ce833634\\umzugscheck.ch\\qa-artifacts\\umzugscheck\\2026-01-29\\ux-audit\\guenstige-umzugsfirma_desktop.png"
+      },
+      "mobile": {
+        "touchOk": false,
+        "hasHScroll": false,
+        "stickyCTA": true,
+        "screenshot": "C:\\Users\\Mo\\Documents\\GitHub\\umzugscheckv2-ce833634\\umzugscheck.ch\\qa-artifacts\\umzugscheck\\2026-01-29\\ux-audit\\guenstige-umzugsfirma_mobile.png"
+      }
+    },
+    {
+      "url": "https://umzugscheckv2.lovable.app/firma/express-umzuege",
+      "route": "/firma/express-umzuege",
+      "desktop": {
+        "h1": "Firma nicht gefunden",
+        "ctaText": "Umzugscheck.chDer Schweizer Umzugsvergleich",
+        "ctaAboveFold": true,
+        "trustFound": true,
+        "formCount": 0,
+        "inputCount": 0,
+        "requiredCount": 0,
+        "hasProgress": false,
+        "screenshot": "C:\\Users\\Mo\\Documents\\GitHub\\umzugscheckv2-ce833634\\umzugscheck.ch\\qa-artifacts\\umzugscheck\\2026-01-29\\ux-audit\\firma_express-umzuege_desktop.png"
+      },
+      "mobile": {
+        "touchOk": false,
+        "hasHScroll": false,
+        "stickyCTA": false,
+        "screenshot": "C:\\Users\\Mo\\Documents\\GitHub\\umzugscheckv2-ce833634\\umzugscheck.ch\\qa-artifacts\\umzugscheck\\2026-01-29\\ux-audit\\firma_express-umzuege_mobile.png"
+      }
+    }
+  ]
+}
