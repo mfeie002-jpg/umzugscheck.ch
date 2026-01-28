@@ -311,6 +311,7 @@ const PostLaunch = lazy(() => import("./pages/admin/PostLaunch"));
 const Phase6Admin = lazy(() => import("./pages/admin/Phase6"));
 const GoLive = lazy(() => import("./pages/admin/GoLive"));
 const TaskQueue = lazy(() => import("./pages/admin/TaskQueue"));
+const AIAudit = lazy(() => import("./pages/admin/AIAudit"));
 
 // ChatGPT Flow pages
 const ChatGPTFlow1 = lazy(() => import("./pages/ChatGPTFlow1"));
@@ -465,6 +466,7 @@ const AdminRoutes = () => (
       <Route path="/admin/ai-export" element={<AdminAIExport />} />
       <Route path="/admin/task-queue" element={<AdminTaskQueue />} />
       <Route path="/admin/chatgpt-export" element={<LandingPageChatGPTExport />} />
+      <Route path="/admin/ai-audit" element={<AIAudit />} />
       <Route path="/admin/listings" element={<AdminListings />} />
       <Route path="/admin/chatgpt" element={<ChatGPTOverview />} />
       <Route path="/admin/ai-command" element={<AICommandCenter />} />
