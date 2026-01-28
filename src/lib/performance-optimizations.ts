@@ -136,47 +136,12 @@ export const deferNonCriticalJS = () => {
   });
 };
 
-// Register service worker
+// Register service worker - DEPRECATED: SW registration is now handled in main.tsx
+// This function is kept for backwards compatibility but does nothing
 export const registerServiceWorker = async () => {
-  // Never register SW during screenshot capture / render modes.
-  // Screenshot providers often reuse a browser profile; SW caching can cause build-mismatch and blank captures.
-  const isCaptureLike = (() => {
-    try {
-      const sp = new URLSearchParams(window.location.search);
-      return sp.get("uc_capture") === "1" || sp.get("uc_render") === "1" || sp.has("uc_step");
-    } catch {
-      return false;
-    }
-  })();
-
-  const isLovablePreview = (() => {
-    try {
-      return window.location.hostname.endsWith("lovableproject.com");
-    } catch {
-      return false;
-    }
-  })();
-
-  // In preview or capture modes we always disable SW to avoid cached build mismatches.
-  if ("serviceWorker" in navigator && (isCaptureLike || isLovablePreview)) {
-    try {
-      const regs = await navigator.serviceWorker.getRegistrations();
-      await Promise.all(regs.map((r) => r.unregister()));
-    } catch {
-      // ignore
-    }
-    return;
-  }
-
-  if ("serviceWorker" in navigator && process.env.NODE_ENV === "production") {
-    try {
-      const registration = await navigator.serviceWorker.register("/sw.js");
-      await registration.update().catch(() => {});
-      console.log("SW registered:", registration.scope);
-    } catch (error) {
-      console.log("SW registration failed:", error);
-    }
-  }
+  // SW registration moved to main.tsx with hostname-gating
+  // See setupServiceWorkerPolicy() in main.tsx
+  console.log("[Performance] SW registration handled by main.tsx");
 };
 
 // Optimize long tasks

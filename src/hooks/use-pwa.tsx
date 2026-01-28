@@ -1,53 +1,14 @@
 import { useEffect, useState } from "react";
 
+// ✅ Published hostname - SW only registers here
+const PUBLISHED_HOSTNAME = "umzugscheckv2.lovable.app";
+
 export const usePWA = () => {
   const [isInstallable, setIsInstallable] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
 
   useEffect(() => {
-    const isCaptureLike = (() => {
-      try {
-        const sp = new URLSearchParams(window.location.search);
-        return sp.get("uc_capture") === "1" || sp.get("uc_render") === "1" || sp.has("uc_step");
-      } catch {
-        return false;
-      }
-    })();
-
-    const isLovablePreview = (() => {
-      try {
-        return window.location.hostname.endsWith("lovableproject.com");
-      } catch {
-        return false;
-      }
-    })();
-
-    // In preview we always disable SW to avoid cached build mismatches / broken navigation.
-    // In capture mode we also remove any existing SWs.
-    if ("serviceWorker" in navigator && (isCaptureLike || isLovablePreview)) {
-      navigator.serviceWorker.getRegistrations().then((regs) => regs.forEach((r) => r.unregister()));
-    }
-
-    // Register service worker only in real production environments (not preview) and not in capture/render modes.
-    if (
-      "serviceWorker" in navigator &&
-      process.env.NODE_ENV === "production" &&
-      !isCaptureLike &&
-      !isLovablePreview
-    ) {
-      navigator.serviceWorker
-        .register("/sw.js")
-        .then((registration) => {
-          // Make sure we pick up the newest SW quickly.
-          registration.update().catch(() => {});
-          console.log("Service Worker registered:", registration);
-        })
-        .catch((error) => {
-          console.error("Service Worker registration failed:", error);
-        });
-    }
-
-    // Listen for install prompt
+    // Listen for install prompt (works regardless of SW status)
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e);
@@ -75,5 +36,12 @@ export const usePWA = () => {
     setIsInstallable(false);
   };
 
-  return { isInstallable, installPWA };
+  // Only show install option on published host
+  const isPublishedHost = typeof window !== "undefined" && 
+    window.location.hostname === PUBLISHED_HOSTNAME;
+
+  return { 
+    isInstallable: isInstallable && isPublishedHost, 
+    installPWA 
+  };
 };
