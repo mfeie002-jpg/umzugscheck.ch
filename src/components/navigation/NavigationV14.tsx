@@ -54,7 +54,7 @@ interface NavItem {
 
 const navStructure: NavItem[] = [
   {
-    label: "Umzug planen",
+    label: "📋 Umzug planen",
     tagline: "Tools, Tipps & Rechner für deinen Zügeltag",
     items: [
       { icon: ClipboardList, title: "Umzugscheckliste", href: "/checkliste" },
@@ -65,7 +65,7 @@ const navStructure: NavItem[] = [
     ]
   },
   {
-    label: "Umzugsfirmen",
+    label: "🔍 Umzugsfirmen",
     tagline: "200+ geprüfte Partner – Umzugsfirma finden & sparen",
     items: [
       { icon: MapPin, title: "Umzugsfirma Zürich", href: "/umzugsfirma-zuerich" },
@@ -76,7 +76,7 @@ const navStructure: NavItem[] = [
     ]
   },
   {
-    label: "Services",
+    label: "🛠️ Services",
     tagline: "Rundum-Service: Reinigung, Lagerung, Entsorgung & mehr",
     items: [
       { icon: Sparkles, title: "Umzugsreinigung (mit Abgabegarantie)", href: "/reinigung" },
@@ -87,7 +87,7 @@ const navStructure: NavItem[] = [
     ]
   },
   {
-    label: "Ratgeber",
+    label: "📚 Ratgeber",
     tagline: "Tipps & Tricks für einen stressfreien Umzug",
     items: [
       { icon: Baby, title: "Umziehen mit Kindern & Haustieren", href: "/ratgeber/kinder-haustiere" },
@@ -98,7 +98,7 @@ const navStructure: NavItem[] = [
     ]
   },
   {
-    label: "So funktioniert's",
+    label: "⭐ So funktioniert's",
     tagline: "Stressfrei in 3 Schritten – so funktioniert Umzugscheck",
     items: [
       { icon: HelpCircle, title: "So funktioniert Umzugscheck (Ablauf)", href: "/so-funktionierts" },
