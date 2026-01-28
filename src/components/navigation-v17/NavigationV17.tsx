@@ -230,10 +230,6 @@ export const NavigationV17 = () => {
             <div className="hidden xl:flex items-center flex-shrink-0 gap-2 xl:gap-3 min-w-0">
               <HeaderCallButton className="hidden 2xl:flex flex-shrink-0" />
 
-              <div className="hidden 2xl:flex items-center gap-1.5 text-xs text-muted-foreground flex-shrink-0 whitespace-nowrap">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
-                <span className="font-medium">Gratis & unverbindlich</span>
-              </div>
 
               <Link to="/video-offerte" aria-label="Video-Offerte starten - Kostenlos" className="flex-shrink-0">
                 <Button

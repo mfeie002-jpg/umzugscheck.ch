@@ -139,15 +139,12 @@ export const Navigation = () => {
             <div className="flex xl:hidden items-center gap-1.5 sm:gap-2 shrink-0">
               <MobileHeaderCallButton />
 
-              <div className="flex flex-col items-center leading-tight">
-                <Link
-                  to={flowPath}
-                  className="flex items-center justify-center gap-1 bg-secondary text-secondary-foreground text-xs font-bold px-2.5 sm:px-3 py-2 sm:py-2.5 rounded-lg shadow-md shadow-secondary/20 active:scale-95 transition-all touch-manipulation"
-                >
-                  <span>Offerten</span>
-                </Link>
-                <span className="mt-1 text-[11px] text-muted-foreground hidden sm:block">Gratis & unverbindlich</span>
-              </div>
+              <Link
+                to={flowPath}
+                className="flex items-center justify-center gap-1 bg-secondary text-secondary-foreground text-xs font-bold px-2.5 sm:px-3 py-2 sm:py-2.5 rounded-lg shadow-md shadow-secondary/20 active:scale-95 transition-all touch-manipulation"
+              >
+                <span>Offerten</span>
+              </Link>
 
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -177,20 +174,15 @@ export const Navigation = () => {
             <div className="hidden xl:flex items-center justify-center gap-2 xl:gap-3 shrink-0 flex-none w-auto">
               <HeaderCallButton className="shrink-0" />
 
-              <div className="flex items-center gap-3">
-                <Link to={flowPath} aria-label="Kostenlose Umzugsofferten vergleichen" className="shrink-0">
-                  <Button
-                    size="lg"
-                    className="group inline-flex items-center justify-center bg-gradient-to-r from-secondary via-secondary to-secondary/90 hover:from-secondary/90 hover:via-secondary hover:to-secondary text-secondary-foreground font-bold shadow-[0_4px_20px_rgba(220,38,38,0.35)] hover:shadow-[0_8px_30px_rgba(220,38,38,0.45)] transition-all text-sm xl:text-base px-4 xl:px-6 whitespace-nowrap gap-2"
-                  >
-                    {navVariant.labels.cta}
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform flex-shrink-0" />
-                  </Button>
-                </Link>
-                <span className="hidden 2xl:block text-xs text-muted-foreground whitespace-nowrap">
-                  Gratis & unverbindlich
-                </span>
-              </div>
+              <Link to={flowPath} aria-label="Kostenlose Umzugsofferten vergleichen" className="shrink-0">
+                <Button
+                  size="lg"
+                  className="group inline-flex items-center justify-center bg-gradient-to-r from-secondary via-secondary to-secondary/90 hover:from-secondary/90 hover:via-secondary hover:to-secondary text-secondary-foreground font-bold shadow-[0_4px_20px_rgba(220,38,38,0.35)] hover:shadow-[0_8px_30px_rgba(220,38,38,0.45)] transition-all text-sm xl:text-base px-4 xl:px-6 whitespace-nowrap gap-2"
+                >
+                  {navVariant.labels.cta}
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform flex-shrink-0" />
+                </Button>
+              </Link>
             </div>
           </div>
         </div>

@@ -96,9 +96,6 @@ export const GoldenNavigation = memo(() => {
                   {getCtaLabel()}
                 </Link>
               </Button>
-              <span className="text-[10px] text-muted-foreground font-medium whitespace-nowrap">
-                Gratis & unverbindlich
-              </span>
             </div>
 
             {/* Mobile CTA (below xl) */}
