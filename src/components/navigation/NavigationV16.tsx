@@ -98,7 +98,7 @@ const EMOJI_PREFIXES = {
 };
 
 // Variants that use emojis in their labels (only 2 out of 17)
-const EMOJI_VARIANTS = ['variant-k', 'variant-l'];
+const EMOJI_VARIANTS = ['variant-o', 'variant-17'];
 
 // Build nav sections dynamically based on the active variant's labels and microcopy
 const buildNavSections = (variant: NavConfig): NavSection[] => {
