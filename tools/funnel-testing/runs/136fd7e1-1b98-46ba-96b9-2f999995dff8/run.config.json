@@ -1,0 +1,64 @@
+{
+  "run_id": "136fd7e1-1b98-46ba-96b9-2f999995dff8",
+  "seed": "marketing_test_003",
+  "gateway": {
+    "gateway_id": "guenstiger-umzug",
+    "name": "Günstiger Umzug",
+    "landing_url": "https://www.umzugscheck.ch/guenstiger-umzug",
+    "language": "de",
+    "intent": "find_cheap_move",
+    "keyword_cluster": "günstiger umzug, billiger umzug, umzug preiswert, budget umzug",
+    "expected_ctas": [
+      "Budget-Offerte",
+      "Sparangebote"
+    ],
+    "traffic_volume": "high",
+    "primary_business_models": [
+      "umzug"
+    ],
+    "priority_weight": 9,
+    "enabled": true
+  },
+  "persona": {
+    "persona_id": "cleaning-only",
+    "name": "Cleaning-Only Customer (Lisa)",
+    "language": "de",
+    "first_name": "Lisa",
+    "last_name": "Keller",
+    "email_prefix": "lisa.keller",
+    "phone": "+41 79 100 0004",
+    "device": "desktop",
+    "traits": [
+      "deposit_focused",
+      "no_move_needed",
+      "quality_conscious"
+    ],
+    "budget": "medium",
+    "urgency": "high",
+    "trust_level": "high",
+    "goal": {
+      "primary": "book_cleaning_only",
+      "services_wanted": [
+        "reinigung"
+      ],
+      "description": "Not moving, but needs professional end-of-tenancy cleaning for deposit return.",
+      "must_have": [
+        "reinigung"
+      ],
+      "nice_to_have": []
+    },
+    "click_bias_weights": {
+      "main_cta": 0.8,
+      "secondary": 0.15,
+      "escape": 0.05
+    },
+    "enabled": true
+  },
+  "policy": "ChaosMonkey",
+  "timestamp": "2026-01-28T21:52:49.629Z",
+  "maxSteps": 20,
+  "maxTimeMs": 120000,
+  "dryRun": true,
+  "captureTrace": false,
+  "captureNetworkHar": false
+}

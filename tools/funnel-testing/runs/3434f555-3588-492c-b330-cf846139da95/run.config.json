@@ -1,0 +1,45 @@
+{
+  "run_id": "3434f555-3588-492c-b330-cf846139da95",
+  "seed": "test_002",
+  "gateway": {
+    "gateway_id": "umzug-winterthur",
+    "name": "Umzug Winterthur",
+    "landing_url": "https://www.umzugscheck.ch/umzug-winterthur",
+    "language": "de",
+    "intent": "Umzug Winterthur",
+    "keyword_cluster": "umzug winterthur, zügelfirma winterthur",
+    "priority_weight": 6,
+    "enabled": true
+  },
+  "persona": {
+    "persona_id": "green-conscious",
+    "name": "Green Conscious (Nina)",
+    "language": "de",
+    "first_name": "Nina",
+    "last_name": "Bauer",
+    "email_prefix": "nina.bauer",
+    "phone": "+41 79 888 7777",
+    "device": "desktop",
+    "traits": [
+      "eco_conscious",
+      "sustainability_focused",
+      "ethical_consumer"
+    ],
+    "budget": "medium",
+    "urgency": "low",
+    "trust_level": "high",
+    "click_bias_weights": {
+      "main_cta": 0.65,
+      "secondary": 0.28,
+      "escape": 0.07
+    },
+    "enabled": true
+  },
+  "policy": "StrictMain",
+  "timestamp": "2026-01-28T21:43:11.056Z",
+  "maxSteps": 20,
+  "maxTimeMs": 120000,
+  "dryRun": true,
+  "captureTrace": false,
+  "captureNetworkHar": false
+}

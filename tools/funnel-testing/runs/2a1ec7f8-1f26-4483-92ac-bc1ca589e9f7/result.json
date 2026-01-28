@@ -1,0 +1,64 @@
+{
+  "run_id": "2a1ec7f8-1f26-4483-92ac-bc1ca589e9f7",
+  "config": {
+    "run_id": "2a1ec7f8-1f26-4483-92ac-bc1ca589e9f7",
+    "seed": "production_test_001",
+    "gateway": {
+      "gateway_id": "demenagement-geneve",
+      "name": "Déménagement Genève",
+      "landing_url": "https://www.umzugscheck.ch/fr/demenagement-geneve",
+      "language": "fr",
+      "intent": "Déménagement Genève",
+      "keyword_cluster": "déménagement genève, déménageurs genève",
+      "priority_weight": 9,
+      "enabled": true
+    },
+    "persona": {
+      "persona_id": "francophone-professional",
+      "name": "Francophone Professional (Claire)",
+      "language": "fr",
+      "first_name": "Claire",
+      "last_name": "Laurent",
+      "email_prefix": "claire.laurent",
+      "phone": "+41 79 000 1122",
+      "device": "desktop",
+      "traits": [
+        "professional",
+        "quality_conscious",
+        "detail_oriented"
+      ],
+      "budget": "high",
+      "urgency": "medium",
+      "trust_level": "high",
+      "click_bias_weights": {
+        "main_cta": 0.75,
+        "secondary": 0.2,
+        "escape": 0.05
+      },
+      "enabled": true
+    },
+    "policy": "StrictMain",
+    "timestamp": "2026-01-28T21:41:20.776Z",
+    "maxSteps": 20,
+    "maxTimeMs": 120000,
+    "dryRun": true,
+    "captureTrace": false,
+    "captureNetworkHar": false
+  },
+  "steps": [
+    {
+      "stepNumber": 1,
+      "action": "fill",
+      "text": "Filled form fields with test data",
+      "timestamp": 6337,
+      "success": true
+    }
+  ],
+  "detectedCtAs": [],
+  "trustSignals": [],
+  "conversionConfidence": 10,
+  "verdict": "blocker",
+  "dropoffReason": "No clickable CTAs detected - Dead end",
+  "totalTimeMs": 6337,
+  "stepsCompleted": 1
+}

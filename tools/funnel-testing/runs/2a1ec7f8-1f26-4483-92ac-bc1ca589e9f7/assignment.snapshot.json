@@ -1,0 +1,37 @@
+{
+  "gateway": {
+    "gateway_id": "demenagement-geneve",
+    "name": "Déménagement Genève",
+    "landing_url": "https://www.umzugscheck.ch/fr/demenagement-geneve",
+    "language": "fr",
+    "intent": "Déménagement Genève",
+    "keyword_cluster": "déménagement genève, déménageurs genève",
+    "priority_weight": 9,
+    "enabled": true
+  },
+  "persona": {
+    "persona_id": "francophone-professional",
+    "name": "Francophone Professional (Claire)",
+    "language": "fr",
+    "first_name": "Claire",
+    "last_name": "Laurent",
+    "email_prefix": "claire.laurent",
+    "phone": "+41 79 000 1122",
+    "device": "desktop",
+    "traits": [
+      "professional",
+      "quality_conscious",
+      "detail_oriented"
+    ],
+    "budget": "high",
+    "urgency": "medium",
+    "trust_level": "high",
+    "click_bias_weights": {
+      "main_cta": 0.75,
+      "secondary": 0.2,
+      "escape": 0.05
+    },
+    "enabled": true
+  },
+  "policy": "StrictMain"
+}

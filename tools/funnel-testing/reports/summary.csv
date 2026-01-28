@@ -1,0 +1,5 @@
+Run ID,Gateway ID,Persona ID,Policy,Confidence %,Verdict,Steps,Dropoff Reason,Time (ms)
+2a1ec7f8-1f26-4483-92ac-bc1ca589e9f7,demenagement-geneve,francophone-professional,StrictMain,10,blocker,1,No clickable CTAs detected - Dead end,6337
+39ae421e-a1c6-41be-aa78-e09d47336473,umzug-basel,diy-helper,RealisticWeighted,10,blocker,1,No clickable CTAs detected - Dead end,6561
+ada3b97a-579a-4017-99b3-a741f68eeb55,guenstiger-umzug,comparison-queen,ChaosMonkey,10,blocker,1,No clickable CTAs detected - Dead end,8257
+cf21b36a-fbf4-422a-ba1b-e26a16724996,bueroumzug,skeptical-senior,StrictMain,10,blocker,1,No clickable CTAs detected - Dead end,4873

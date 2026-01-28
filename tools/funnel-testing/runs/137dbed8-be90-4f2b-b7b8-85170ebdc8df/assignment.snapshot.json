@@ -1,0 +1,21 @@
+{
+  "gateway": {
+    "gateway_id": "swiss-movers",
+    "name": "Swiss Movers",
+    "landing_url": "https://www.swissmovers.ch",
+    "language": "de",
+    "priority_weight": 1.2,
+    "enabled": true
+  },
+  "persona": {
+    "persona_id": "family-mover",
+    "name": "Family Mover (DE)",
+    "language": "de",
+    "first_name": "Anna",
+    "last_name": "Schmidt",
+    "email_prefix": "anna.schmidt",
+    "phone": "+41 79 234 5678",
+    "enabled": true
+  },
+  "policy": "RealisticWeighted"
+}

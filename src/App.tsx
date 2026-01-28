@@ -314,6 +314,7 @@ const Phase6Admin = lazy(() => import("./pages/admin/Phase6"));
 const GoLive = lazy(() => import("./pages/admin/GoLive"));
 const TaskQueue = lazy(() => import("./pages/admin/TaskQueue"));
 const AIAudit = lazy(() => import("./pages/admin/AIAudit"));
+const AdminHandbook = lazy(() => import("./pages/admin/AdminHandbook"));
 
 // ChatGPT Flow pages
 const ChatGPTFlow1 = lazy(() => import("./pages/ChatGPTFlow1"));
@@ -502,6 +503,7 @@ const AdminRoutes = () => (
       <Route path="/admin/email-templates" element={<EmailTemplatesAdmin />} />
       <Route path="/admin/mock-data" element={<MockDataDashboard />} />
       <Route path="/admin/documentation" element={<DocumentationBrowser />} />
+      <Route path="/admin/handbuch" element={<AdminHandbook />} />
       {/* Internal dashboards */}
       <Route path="/internal/paid-media-control" element={<PaidMediaControl />} />
       <Route path="/internal/launch-roadmap" element={<LaunchRoadmap />} />

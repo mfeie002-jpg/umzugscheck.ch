@@ -1,0 +1,62 @@
+{
+  "gateway": {
+    "gateway_id": "umzug-reinigung",
+    "name": "Umzug mit Reinigung",
+    "landing_url": "https://www.umzugscheck.ch/umzug-mit-reinigung",
+    "language": "de",
+    "intent": "book_move_plus_cleaning",
+    "keyword_cluster": "umzug mit reinigung, umzug und endreinigung, paketangebot umzug",
+    "expected_ctas": [
+      "Kombi-Offerte anfragen",
+      "Paketpreise"
+    ],
+    "traffic_volume": "high",
+    "primary_business_models": [
+      "umzug",
+      "reinigung"
+    ],
+    "priority_weight": 10,
+    "enabled": true
+  },
+  "persona": {
+    "persona_id": "office-mover",
+    "name": "Office Manager (Michael)",
+    "language": "de",
+    "first_name": "Michael",
+    "last_name": "Brunner",
+    "email_prefix": "michael.brunner",
+    "phone": "+41 79 100 0008",
+    "device": "desktop",
+    "traits": [
+      "b2b",
+      "professional",
+      "efficiency_focused",
+      "invoice_needed"
+    ],
+    "budget": "high",
+    "urgency": "high",
+    "trust_level": "high",
+    "goal": {
+      "primary": "book_office_move",
+      "services_wanted": [
+        "umzug",
+        "b2b"
+      ],
+      "description": "Moving office over weekend. Needs fast, professional service with minimal business disruption.",
+      "must_have": [
+        "umzug"
+      ],
+      "nice_to_have": [
+        "reinigung",
+        "it_support"
+      ]
+    },
+    "click_bias_weights": {
+      "main_cta": 0.85,
+      "secondary": 0.1,
+      "escape": 0.05
+    },
+    "enabled": true
+  },
+  "policy": "ChaosMonkey"
+}

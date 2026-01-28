@@ -1,0 +1,407 @@
+[
+  {
+    "persona_id": "full-service-mover",
+    "name": "Full Service Customer (Sarah)",
+    "language": "de",
+    "first_name": "Sarah",
+    "last_name": "Müller",
+    "email_prefix": "sarah.mueller",
+    "phone": "+41 79 111 2233",
+    "device": "desktop",
+    "traits": ["convenience_seeker", "busy_professional", "quality_over_price"],
+    "budget": "high",
+    "urgency": "medium",
+    "trust_level": "high",
+    "goal": {
+      "primary": "book_full_service",
+      "services_wanted": ["umzug", "reinigung", "entsorgung"],
+      "description": "Wants everything: move + cleaning + disposal. Will pay for convenience."
+    },
+    "click_bias_weights": {
+      "main_cta": 0.85,
+      "secondary": 0.12,
+      "escape": 0.03
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "anxious-student-mobile",
+    "name": "Anxious Student (Lukas)",
+    "language": "de",
+    "first_name": "Lukas",
+    "last_name": "Weber",
+    "email_prefix": "lukas.weber",
+    "phone": "+41 79 222 3344",
+    "device": "mobile",
+    "traits": ["anxious", "budget_conscious", "impatient"],
+    "budget": "low",
+    "urgency": "high",
+    "trust_level": "low",
+    "click_bias_weights": {
+      "main_cta": 0.45,
+      "secondary": 0.25,
+      "escape": 0.30
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "busy-professional-mobile",
+    "name": "Busy Professional (Sophie)",
+    "language": "de",
+    "first_name": "Sophie",
+    "last_name": "Müller",
+    "email_prefix": "sophie.mueller",
+    "phone": "+41 79 333 4455",
+    "device": "mobile",
+    "traits": ["time_pressed", "decisive", "quality_conscious"],
+    "budget": "high",
+    "urgency": "high",
+    "trust_level": "medium",
+    "click_bias_weights": {
+      "main_cta": 0.80,
+      "secondary": 0.15,
+      "escape": 0.05
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "skeptical-senior-desktop",
+    "name": "Skeptical Senior (Hans)",
+    "language": "de",
+    "first_name": "Hans",
+    "last_name": "Schmid",
+    "email_prefix": "hans.schmid",
+    "phone": "+41 79 444 5566",
+    "device": "desktop",
+    "traits": ["skeptical", "slow_reader", "detail_oriented"],
+    "budget": "medium",
+    "urgency": "low",
+    "trust_level": "low",
+    "click_bias_weights": {
+      "main_cta": 0.40,
+      "secondary": 0.35,
+      "escape": 0.25
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "busy-mom-mobile",
+    "name": "Busy Mom (Marie)",
+    "language": "fr",
+    "first_name": "Marie",
+    "last_name": "Dubois",
+    "email_prefix": "marie.dubois",
+    "phone": "+41 79 555 6677",
+    "device": "mobile",
+    "traits": ["multitasking", "family_focused", "practical"],
+    "budget": "medium",
+    "urgency": "high",
+    "trust_level": "medium",
+    "click_bias_weights": {
+      "main_cta": 0.70,
+      "secondary": 0.20,
+      "escape": 0.10
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "tech-savvy-millennial",
+    "name": "Tech-Savvy Millennial (Lena)",
+    "language": "de",
+    "first_name": "Lena",
+    "last_name": "Fischer",
+    "email_prefix": "lena.fischer",
+    "phone": "+41 79 666 7788",
+    "device": "mobile",
+    "traits": ["tech_savvy", "comparison_shopper", "reviews_focused"],
+    "budget": "medium",
+    "urgency": "medium",
+    "trust_level": "high",
+    "click_bias_weights": {
+      "main_cta": 0.60,
+      "secondary": 0.30,
+      "escape": 0.10
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "corporate-relocator",
+    "name": "Corporate Relocator (Thomas)",
+    "language": "en",
+    "first_name": "Thomas",
+    "last_name": "Anderson",
+    "email_prefix": "thomas.anderson",
+    "phone": "+41 79 777 8899",
+    "device": "desktop",
+    "traits": ["corporate", "process_driven", "vendor_vetted"],
+    "budget": "high",
+    "urgency": "medium",
+    "trust_level": "high",
+    "click_bias_weights": {
+      "main_cta": 0.75,
+      "secondary": 0.20,
+      "escape": 0.05
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "price-hunter-desktop",
+    "name": "Price Hunter (Stefan)",
+    "language": "de",
+    "first_name": "Stefan",
+    "last_name": "Meier",
+    "email_prefix": "stefan.meier",
+    "phone": "+41 79 888 9900",
+    "device": "desktop",
+    "traits": ["price_focused", "comparison_shopper", "coupon_seeker"],
+    "budget": "low",
+    "urgency": "low",
+    "trust_level": "medium",
+    "click_bias_weights": {
+      "main_cta": 0.50,
+      "secondary": 0.40,
+      "escape": 0.10
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "italian-speaker-mobile",
+    "name": "Italian Speaker (Giovanni)",
+    "language": "it",
+    "first_name": "Giovanni",
+    "last_name": "Rossi",
+    "email_prefix": "giovanni.rossi",
+    "phone": "+41 79 999 0011",
+    "device": "mobile",
+    "traits": ["language_preference", "community_focused"],
+    "budget": "medium",
+    "urgency": "medium",
+    "trust_level": "medium",
+    "click_bias_weights": {
+      "main_cta": 0.65,
+      "secondary": 0.25,
+      "escape": 0.10
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "francophone-professional",
+    "name": "Francophone Professional (Claire)",
+    "language": "fr",
+    "first_name": "Claire",
+    "last_name": "Laurent",
+    "email_prefix": "claire.laurent",
+    "phone": "+41 79 000 1122",
+    "device": "desktop",
+    "traits": ["professional", "quality_conscious", "detail_oriented"],
+    "budget": "high",
+    "urgency": "medium",
+    "trust_level": "high",
+    "click_bias_weights": {
+      "main_cta": 0.75,
+      "secondary": 0.20,
+      "escape": 0.05
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "chaos-bot",
+    "name": "Chaos Bot (Random)",
+    "language": "de",
+    "first_name": "Random",
+    "last_name": "Chaos",
+    "email_prefix": "chaos.bot",
+    "phone": "+41 79 111 0000",
+    "device": "desktop",
+    "traits": ["random", "unpredictable"],
+    "budget": "medium",
+    "urgency": "medium",
+    "trust_level": "medium",
+    "click_bias_weights": {
+      "main_cta": 0.33,
+      "secondary": 0.33,
+      "escape": 0.34
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "young-couple-mobile",
+    "name": "Young Couple (Anna & David)",
+    "language": "de",
+    "first_name": "Anna",
+    "last_name": "Schmidt",
+    "email_prefix": "anna.schmidt",
+    "phone": "+41 79 222 1111",
+    "device": "mobile",
+    "traits": ["first_time_movers", "budget_conscious", "optimistic"],
+    "budget": "low",
+    "urgency": "high",
+    "trust_level": "medium",
+    "click_bias_weights": {
+      "main_cta": 0.70,
+      "secondary": 0.20,
+      "escape": 0.10
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "executive-mover",
+    "name": "Executive Mover (Dr. Peter)",
+    "language": "de",
+    "first_name": "Peter",
+    "last_name": "Zimmermann",
+    "email_prefix": "peter.zimmermann",
+    "phone": "+41 79 333 2222",
+    "device": "desktop",
+    "traits": ["executive", "time_is_money", "premium_service"],
+    "budget": "high",
+    "urgency": "low",
+    "trust_level": "high",
+    "click_bias_weights": {
+      "main_cta": 0.90,
+      "secondary": 0.08,
+      "escape": 0.02
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "international-student",
+    "name": "International Student (Yuki)",
+    "language": "en",
+    "first_name": "Yuki",
+    "last_name": "Tanaka",
+    "email_prefix": "yuki.tanaka",
+    "phone": "+41 79 444 3333",
+    "device": "mobile",
+    "traits": ["international", "budget_limited", "unfamiliar_with_system"],
+    "budget": "low",
+    "urgency": "high",
+    "trust_level": "low",
+    "click_bias_weights": {
+      "main_cta": 0.55,
+      "secondary": 0.30,
+      "escape": 0.15
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "divorced-parent",
+    "name": "Divorced Parent (Sandra)",
+    "language": "de",
+    "first_name": "Sandra",
+    "last_name": "Keller",
+    "email_prefix": "sandra.keller",
+    "phone": "+41 79 555 4444",
+    "device": "mobile",
+    "traits": ["emotional_stress", "urgent_need", "support_seeking"],
+    "budget": "medium",
+    "urgency": "high",
+    "trust_level": "medium",
+    "click_bias_weights": {
+      "main_cta": 0.75,
+      "secondary": 0.18,
+      "escape": 0.07
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "retirement-mover",
+    "name": "Retirement Mover (Ursula)",
+    "language": "de",
+    "first_name": "Ursula",
+    "last_name": "Hofmann",
+    "email_prefix": "ursula.hofmann",
+    "phone": "+41 79 666 5555",
+    "device": "desktop",
+    "traits": ["senior", "downsizing", "needs_assistance"],
+    "budget": "medium",
+    "urgency": "low",
+    "trust_level": "medium",
+    "click_bias_weights": {
+      "main_cta": 0.60,
+      "secondary": 0.30,
+      "escape": 0.10
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "startup-founder",
+    "name": "Startup Founder (Laura)",
+    "language": "en",
+    "first_name": "Laura",
+    "last_name": "Chen",
+    "email_prefix": "laura.chen",
+    "phone": "+41 79 777 6666",
+    "device": "mobile",
+    "traits": ["entrepreneurial", "fast_decision", "risk_taker"],
+    "budget": "high",
+    "urgency": "high",
+    "trust_level": "medium",
+    "click_bias_weights": {
+      "main_cta": 0.85,
+      "secondary": 0.10,
+      "escape": 0.05
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "green-conscious",
+    "name": "Green Conscious (Nina)",
+    "language": "de",
+    "first_name": "Nina",
+    "last_name": "Bauer",
+    "email_prefix": "nina.bauer",
+    "phone": "+41 79 888 7777",
+    "device": "desktop",
+    "traits": ["eco_conscious", "sustainability_focused", "ethical_consumer"],
+    "budget": "medium",
+    "urgency": "low",
+    "trust_level": "high",
+    "click_bias_weights": {
+      "main_cta": 0.65,
+      "secondary": 0.28,
+      "escape": 0.07
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "last-minute-larry",
+    "name": "Last Minute Larry",
+    "language": "de",
+    "first_name": "Larry",
+    "last_name": "Hastig",
+    "email_prefix": "larry.hastig",
+    "phone": "+41 79 999 8888",
+    "device": "mobile",
+    "traits": ["procrastinator", "urgent", "stressed"],
+    "budget": "medium",
+    "urgency": "high",
+    "trust_level": "low",
+    "click_bias_weights": {
+      "main_cta": 0.80,
+      "secondary": 0.10,
+      "escape": 0.10
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "comparison-queen",
+    "name": "Comparison Queen (Sabrina)",
+    "language": "fr",
+    "first_name": "Sabrina",
+    "last_name": "Moreau",
+    "email_prefix": "sabrina.moreau",
+    "phone": "+41 79 000 9999",
+    "device": "desktop",
+    "traits": ["comparison_shopper", "review_reader", "deal_seeker"],
+    "budget": "medium",
+    "urgency": "low",
+    "trust_level": "medium",
+    "click_bias_weights": {
+      "main_cta": 0.45,
+      "secondary": 0.45,
+      "escape": 0.10
+    },
+    "enabled": true
+  }
+]

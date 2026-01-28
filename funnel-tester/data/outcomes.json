@@ -1,0 +1,200 @@
+[
+  {
+    "outcome_id": "move_only",
+    "name": "Umzug",
+    "language": "de",
+    "keywords": ["umzug", "umzugsfirma", "umziehen", "offerte umzug", "umzugsangebot"]
+  },
+  {
+    "outcome_id": "move_cleaning",
+    "name": "Umzug + Reinigung",
+    "language": "de",
+    "keywords": ["umzug+reinigung", "umzug und reinigung", "umzug & reinigung", "umzug mit reinigung"]
+  },
+  {
+    "outcome_id": "cleaning_only",
+    "name": "Reinigung",
+    "language": "de",
+    "keywords": ["reinigung", "endreinigung", "wohnungsreinigung"]
+  },
+  {
+    "outcome_id": "move_storage",
+    "name": "Umzug + Lagerung",
+    "language": "de",
+    "keywords": ["umzug+lager", "umzug+lagerung", "umzug mit lagerung", "zwischenlager"]
+  },
+  {
+    "outcome_id": "storage_only",
+    "name": "Lagerung",
+    "language": "de",
+    "keywords": ["lager", "lagerung", "einlagerung", "self storage"]
+  },
+  {
+    "outcome_id": "piano_transport",
+    "name": "Klaviertransport",
+    "language": "de",
+    "keywords": ["klaviertransport", "klavier umzug", "pianotransport"]
+  },
+  {
+    "outcome_id": "disposal",
+    "name": "Entsorgung",
+    "language": "de",
+    "keywords": ["entsorgung", "entruempelung", "sperrgut", "abfall"]
+  },
+  {
+    "outcome_id": "packing_service",
+    "name": "Verpackungsservice",
+    "language": "de",
+    "keywords": ["verpackungsservice", "packservice", "einpacken"]
+  },
+  {
+    "outcome_id": "packing_materials",
+    "name": "Verpackungsmaterial",
+    "language": "de",
+    "keywords": ["kartons", "verpackungsmaterial", "umzugskartons"]
+  },
+  {
+    "outcome_id": "furniture_assembly",
+    "name": "Moebelmontage",
+    "language": "de",
+    "keywords": ["moebelmontage", "montage", "demontage"]
+  },
+  {
+    "outcome_id": "handyman",
+    "name": "Handwerker",
+    "language": "de",
+    "keywords": ["handwerker", "reparatur", "renovation"]
+  },
+  {
+    "outcome_id": "office_move",
+    "name": "Bueroumzug",
+    "language": "de",
+    "keywords": ["bueroumzug", "office move", "firma umzug"]
+  },
+  {
+    "outcome_id": "international_move",
+    "name": "Internationaler Umzug",
+    "language": "de",
+    "keywords": ["international", "ausland", "grenzueberschreitend"]
+  },
+  {
+    "outcome_id": "senior_move",
+    "name": "Seniorenumzug",
+    "language": "de",
+    "keywords": ["seniorenumzug", "senioren umzug"]
+  },
+  {
+    "outcome_id": "vip_move",
+    "name": "VIP Umzug",
+    "language": "de",
+    "keywords": ["vip", "premium umzug", "luxus umzug"]
+  },
+  {
+    "outcome_id": "student_move",
+    "name": "Studentenumzug",
+    "language": "de",
+    "keywords": ["student", "studentenumzug"]
+  },
+  {
+    "outcome_id": "ladies_move",
+    "name": "Ladies Umzug",
+    "language": "de",
+    "keywords": ["ladies", "frauen umzug"]
+  },
+  {
+    "outcome_id": "pricing_compare",
+    "name": "Preisvergleich",
+    "language": "de",
+    "keywords": ["vergleich", "preise", "pricing"]
+  },
+  {
+    "outcome_id": "furniture_lift",
+    "name": "Moebellift",
+    "language": "de",
+    "keywords": ["moebellift", "moebel lift", "lift"]
+  },
+  {
+    "outcome_id": "move_only",
+    "name": "Moving",
+    "language": "en",
+    "keywords": ["moving", "move house", "moving company", "moving quote"]
+  },
+  {
+    "outcome_id": "move_cleaning",
+    "name": "Moving + Cleaning",
+    "language": "en",
+    "keywords": ["moving+cleaning", "move and cleaning", "move & cleaning", "moving with cleaning"]
+  },
+  {
+    "outcome_id": "cleaning_only",
+    "name": "Cleaning",
+    "language": "en",
+    "keywords": ["cleaning", "end of tenancy cleaning", "move-out cleaning"]
+  },
+  {
+    "outcome_id": "move_storage",
+    "name": "Moving + Storage",
+    "language": "en",
+    "keywords": ["moving+storage", "moving with storage", "storage while moving"]
+  },
+  {
+    "outcome_id": "storage_only",
+    "name": "Storage",
+    "language": "en",
+    "keywords": ["storage", "self storage", "warehouse"]
+  },
+  {
+    "outcome_id": "piano_transport",
+    "name": "Piano Transport",
+    "language": "en",
+    "keywords": ["piano transport", "piano moving"]
+  },
+  {
+    "outcome_id": "office_move",
+    "name": "Office Move",
+    "language": "en",
+    "keywords": ["office move", "business move"]
+  },
+  {
+    "outcome_id": "international_move",
+    "name": "International Move",
+    "language": "en",
+    "keywords": ["international", "cross-border"]
+  },
+  {
+    "outcome_id": "pricing_compare",
+    "name": "Price Comparison",
+    "language": "en",
+    "keywords": ["compare", "pricing"]
+  },
+  {
+    "outcome_id": "move_only",
+    "name": "Demenagement",
+    "language": "fr",
+    "keywords": ["demenagement", "entreprise de demenagement", "devis demenagement"]
+  },
+  {
+    "outcome_id": "move_cleaning",
+    "name": "Demenagement + Nettoyage",
+    "language": "fr",
+    "keywords": ["demenagement+nettoyage", "demenagement et nettoyage", "demenagement avec nettoyage"]
+  },
+  {
+    "outcome_id": "cleaning_only",
+    "name": "Nettoyage",
+    "language": "fr",
+    "keywords": ["nettoyage", "nettoyage de fin de bail", "nettoyage fin de bail"]
+  },
+  {
+    "outcome_id": "storage_only",
+    "name": "Stockage",
+    "language": "fr",
+    "keywords": ["stockage", "self storage", "garde-meuble"]
+  },
+  {
+    "outcome_id": "office_move",
+    "name": "Demenagement bureau",
+    "language": "fr",
+    "keywords": ["demenagement bureau", "bureau"]
+  }
+]

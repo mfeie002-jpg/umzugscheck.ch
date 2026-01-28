@@ -1,0 +1,59 @@
+{
+  "gateway": {
+    "gateway_id": "studentenumzug",
+    "name": "Studentenumzug",
+    "landing_url": "https://www.umzugscheck.ch/studentenumzug",
+    "language": "de",
+    "intent": "book_student_move",
+    "keyword_cluster": "studentenumzug, umzug student, wg umzug, günstiger studenten umzug",
+    "expected_ctas": [
+      "Studenten-Rabatt",
+      "Mini-Umzug"
+    ],
+    "traffic_volume": "medium",
+    "primary_business_models": [
+      "umzug"
+    ],
+    "priority_weight": 7,
+    "enabled": true
+  },
+  "persona": {
+    "persona_id": "storage-seeker",
+    "name": "Temporary Housing (Emma)",
+    "language": "de",
+    "first_name": "Emma",
+    "last_name": "Schmid",
+    "email_prefix": "emma.schmid",
+    "phone": "+41 79 100 0006",
+    "device": "mobile",
+    "traits": [
+      "temporary_situation",
+      "flexible",
+      "cost_aware"
+    ],
+    "budget": "medium",
+    "urgency": "medium",
+    "trust_level": "medium",
+    "goal": {
+      "primary": "book_storage",
+      "services_wanted": [
+        "lagerung",
+        "umzug"
+      ],
+      "description": "Between apartments. Needs furniture storage for 3-6 months + help moving into storage.",
+      "must_have": [
+        "lagerung"
+      ],
+      "nice_to_have": [
+        "umzug"
+      ]
+    },
+    "click_bias_weights": {
+      "main_cta": 0.65,
+      "secondary": 0.25,
+      "escape": 0.1
+    },
+    "enabled": true
+  },
+  "policy": "StrictMain"
+}

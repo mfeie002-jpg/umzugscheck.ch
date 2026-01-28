@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "RunConfig",
+  "type": "object",
+  "required": ["run_id", "seed", "created_at", "gateway", "persona", "policy", "mode", "options"],
+  "properties": {
+    "run_id": { "type": "string" },
+    "seed": { "type": "string" },
+    "created_at": { "type": "string" },
+    "gateway": {
+      "type": "object",
+      "required": ["gateway_id", "keyword_cluster", "landing_url", "intent", "language", "expected_outcomes", "top_user_intents"],
+      "properties": {
+        "gateway_id": { "type": "string" },
+        "keyword_cluster": { "type": "string" },
+        "landing_url": { "type": "string" },
+        "intent": { "type": "string" },
+        "language": { "type": "string", "enum": ["de", "en", "fr"] },
+        "expected_outcomes": { "type": "array", "items": { "type": "string" } },
+        "top_user_intents": { "type": "array", "items": { "type": "string" } },
+        "priority_weight": { "type": "number" },
+        "enabled": { "type": "boolean" }
+      }
+    },
+    "persona": {
+      "type": "object",
+      "required": ["persona_id", "name", "traits", "budget", "urgency", "trust_level", "device", "language", "click_bias_weights"],
+      "properties": {
+        "persona_id": { "type": "string" },
+        "name": { "type": "string" },
+        "traits": { "type": "array", "items": { "type": "string" } },
+        "budget": { "type": "string", "enum": ["low", "medium", "high"] },
+        "urgency": { "type": "string", "enum": ["low", "medium", "high"] },
+        "trust_level": { "type": "string", "enum": ["low", "medium", "high"] },
+        "device": { "type": "string", "enum": ["mobile", "desktop"] },
+        "language": { "type": "string", "enum": ["de", "en", "fr"] },
+        "click_bias_weights": {
+          "type": "object",
+          "required": ["main_cta", "secondary", "escape"],
+          "properties": {
+            "main_cta": { "type": "number" },
+            "secondary": { "type": "number" },
+            "escape": { "type": "number" }
+          }
+        },
+        "enabled": { "type": "boolean" }
+      }
+    },
+    "policy": { "type": "string", "enum": ["StrictMain", "RealisticWeighted", "ChaosMonkey"] },
+    "mode": { "type": "string", "enum": ["Deck", "Pure", "Weighted"] },
+    "options": {
+      "type": "object",
+      "required": ["max_steps", "max_time_ms", "dry_run", "headless", "record_trace", "record_har"],
+      "properties": {
+        "max_steps": { "type": "number" },
+        "max_time_ms": { "type": "number" },
+        "dry_run": { "type": "boolean" },
+        "headless": { "type": "boolean" },
+        "record_trace": { "type": "boolean" },
+        "record_har": { "type": "boolean" }
+      }
+    }
+  }
+}

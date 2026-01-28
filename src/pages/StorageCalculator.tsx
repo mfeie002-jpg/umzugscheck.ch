@@ -1,23 +1,15 @@
 import { OptimizedSEO } from "@/components/OptimizedSEO";
-import { ScrollReveal } from "@/components/ScrollReveal";
-import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
 import { Link } from "react-router-dom";
 import { Package, ArrowLeft, Clock } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { calculateStoragePrice, StorageCalculatorInput } from "@/lib/pricing";
+import { Checkbox } from "@/components/ui/checkbox";
+import { OffertenCTA } from "@/components/OffertenCTA";
+import { useStorageCalculator } from "@/hooks/calculators";
+import { AccessibleSlider } from "@/components/calculators";
 import { formatCurrency } from "@/lib/pricing";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
-import { CalculatorEvents, ConversionEvents, EngagementEvents } from "@/lib/analytics-tracking";
 import {
   Form,
   FormControl,
@@ -32,16 +24,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { OffertenCTA } from "@/components/OffertenCTA";
-
-const formSchema = z.object({
-  volumeM3: z.number().min(1).max(100),
-  duration: z.number().min(1).max(24),
-  climateControlled: z.boolean().default(false),
-  insurance: z.boolean().default(false),
-  accessFrequency: z.enum(['rare', 'monthly', 'weekly']),
-});
 
 const SERVICE_SCHEMA = {
   "@context": "https://schema.org",
@@ -72,87 +54,14 @@ const SERVICE_SCHEMA = {
 };
 
 const StorageCalculator = () => {
-  const navigate = useNavigate();
-  const [result, setResult] = useState<any>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Track calculator start
-  useEffect(() => {
-    CalculatorEvents.started('lagerrechner');
-  }, []);
-  
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      volumeM3: 10,
-      duration: 3,
-      climateControlled: false,
-      insurance: false,
-      accessFrequency: 'rare',
-    },
-  });
-
-  // Track slider changes
-  const handleSliderChange = (name: string, value: number) => {
-    EngagementEvents.sliderUsed({ sliderName: `storage_${name}`, value });
-  };
-
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    setIsSubmitting(true);
-    
-    try {
-      const calculation = calculateStoragePrice(values as StorageCalculatorInput);
-      setResult({ ...calculation, duration: values.duration });
-
-      // Track calculator completion
-      CalculatorEvents.priceShown({ 
-        version: 'lagerrechner', 
-        priceMin: calculation.priceRange.min, 
-        priceMax: calculation.priceRange.max 
-      });
-      ConversionEvents.calculatorCompleted({ 
-        version: 'lagerrechner', 
-        estimatedPrice: calculation.monthlyPrice 
-      });
-      
-      // Create estimate session
-      const { data: sessionData, error: sessionError } = await supabase.functions.invoke(
-        'create-estimate-session',
-        {
-          body: {
-            moveDetails: {
-              fromPostal: '8000',
-              fromCity: 'Zürich',
-              toPostal: '8000',
-              toCity: 'Zürich',
-              calculatorType: 'storage',
-              storageDetails: values,
-            },
-            estimate: {
-              priceMin: calculation.priceRange.min,
-              priceMax: calculation.priceRange.max,
-              volumeM3: values.volumeM3,
-              estimatedHours: 0,
-              distance: 0,
-            },
-          },
-        }
-      );
-
-      if (!sessionError && sessionData?.success) {
-        setTimeout(() => {
-          navigate(`/ergebnis/${sessionData.data.id}`);
-        }, 1500);
-        
-        toast.success("Kostenschätzung berechnet!");
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      toast.error("Fehler bei der Berechnung");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  const {
+    form,
+    result,
+    isSubmitting,
+    onSubmit,
+    handleSliderChange,
+    priceAnnouncement,
+  } = useStorageCalculator();
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -170,14 +79,14 @@ const StorageCalculator = () => {
             to="/umzugsofferten"
             className="inline-flex items-center gap-2 text-sm sm:text-base text-muted-foreground hover:text-primary transition-colors mb-6 sm:mb-8"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-4 h-4" aria-hidden="true" />
             Zurück zu allen Rechnern
           </Link>
 
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-6 sm:mb-8">
               <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary/10 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                <Package className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
+                <Package className="w-6 h-6 sm:w-8 sm:h-8 text-primary" aria-hidden="true" />
               </div>
               
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-2 sm:mb-3 px-4">
@@ -201,16 +110,20 @@ const StorageCalculator = () => {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="flex items-center gap-2">
-                            <Package className="w-4 h-4" />
+                            <Package className="w-4 h-4" aria-hidden="true" />
                             Volumen: {field.value} m³
                           </FormLabel>
                           <FormControl>
-                            <Slider
+                            <AccessibleSlider
                               min={1}
                               max={100}
                               step={1}
                               value={[field.value]}
                               onValueChange={(vals) => field.onChange(vals[0])}
+                              onValueChangeWithTracking={handleSliderChange}
+                              trackingName="volumeM3"
+                              label="Lagervolumen in Kubikmetern"
+                              unit="Kubikmeter"
                             />
                           </FormControl>
                         </FormItem>
@@ -224,16 +137,20 @@ const StorageCalculator = () => {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="flex items-center gap-2">
-                            <Clock className="w-4 h-4" />
+                            <Clock className="w-4 h-4" aria-hidden="true" />
                             Lagerdauer: {field.value} Monate
                           </FormLabel>
                           <FormControl>
-                            <Slider
+                            <AccessibleSlider
                               min={1}
                               max={24}
                               step={1}
                               value={[field.value]}
                               onValueChange={(vals) => field.onChange(vals[0])}
+                              onValueChangeWithTracking={handleSliderChange}
+                              trackingName="duration"
+                              label="Lagerdauer in Monaten"
+                              unit="Monate"
                             />
                           </FormControl>
                         </FormItem>
@@ -246,10 +163,10 @@ const StorageCalculator = () => {
                       name="accessFrequency"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Zugriffshäufigkeit</FormLabel>
+                          <FormLabel id="access-frequency-label">Zugriffshäufigkeit</FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
-                              <SelectTrigger>
+                              <SelectTrigger aria-labelledby="access-frequency-label">
                                 <SelectValue />
                               </SelectTrigger>
                             </FormControl>
@@ -264,8 +181,8 @@ const StorageCalculator = () => {
                     />
 
                     {/* Additional Options */}
-                    <div className="space-y-4">
-                      <Label className="text-base font-semibold">Zusätzliche Optionen</Label>
+                    <fieldset className="space-y-4">
+                      <legend className="text-base font-semibold">Zusätzliche Optionen</legend>
                       
                       <FormField
                         control={form.control}
@@ -276,9 +193,10 @@ const StorageCalculator = () => {
                               <Checkbox
                                 checked={field.value}
                                 onCheckedChange={field.onChange}
+                                id="climateControlled"
                               />
                             </FormControl>
-                            <FormLabel className="font-normal cursor-pointer">
+                            <FormLabel htmlFor="climateControlled" className="font-normal cursor-pointer">
                               Klimakontrolliert
                             </FormLabel>
                           </FormItem>
@@ -294,18 +212,25 @@ const StorageCalculator = () => {
                               <Checkbox
                                 checked={field.value}
                                 onCheckedChange={field.onChange}
+                                id="insurance"
                               />
                             </FormControl>
-                            <FormLabel className="font-normal cursor-pointer">
+                            <FormLabel htmlFor="insurance" className="font-normal cursor-pointer">
                               Versicherung
                             </FormLabel>
                           </FormItem>
                         )}
                       />
-                    </div>
+                    </fieldset>
 
-                    <Button type="submit" className="w-full" size="lg">
-                      Preis berechnen
+                    <Button 
+                      type="submit" 
+                      className="w-full" 
+                      size="lg"
+                      disabled={isSubmitting}
+                      aria-busy={isSubmitting}
+                    >
+                      {isSubmitting ? "Berechne..." : "Preis berechnen"}
                     </Button>
                   </form>
                 </Form>
@@ -314,7 +239,7 @@ const StorageCalculator = () => {
               {/* Results Card */}
               <Card className="p-6" variant="elevated">
                 {result ? (
-                  <div className="space-y-6">
+                  <div className="space-y-6" role="region" aria-label="Kostenschätzung Ergebnis" aria-live="polite">
                     <div>
                       <h3 className="text-2xl font-bold text-foreground mb-2">
                         Ihre Kostenschätzung
@@ -334,18 +259,18 @@ const StorageCalculator = () => {
                       </div>
                     </div>
 
-                    <div className="space-y-4">
-                      <div className="flex justify-between items-center pb-3 border-b border-border">
+                    <div className="space-y-4" role="list" aria-label="Preisaufschlüsselung">
+                      <div className="flex justify-between items-center pb-3 border-b border-border" role="listitem">
                         <span className="text-muted-foreground">Setup-Gebühr (einmalig)</span>
                         <span className="font-semibold">{formatCurrency(result.setupFee)}</span>
                       </div>
                       
-                      <div className="flex justify-between items-center pb-3 border-b border-border">
+                      <div className="flex justify-between items-center pb-3 border-b border-border" role="listitem">
                         <span className="text-muted-foreground">Erster Monat (Total)</span>
                         <span className="font-semibold">{formatCurrency(result.totalFirstMonth)}</span>
                       </div>
                       
-                      <div className="flex justify-between items-center pb-3 border-b border-border">
+                      <div className="flex justify-between items-center pb-3 border-b border-border" role="listitem">
                         <span className="text-muted-foreground">Total für {result.duration} Monate</span>
                         <span className="font-semibold text-lg text-primary">
                           {formatCurrency(result.setupFee + (result.monthlyPrice * result.duration))}
@@ -365,10 +290,15 @@ const StorageCalculator = () => {
                         Offerte anfragen
                       </Button>
                     </Link>
+
+                    {/* Screen reader announcement */}
+                    <div className="sr-only" role="status" aria-live="polite">
+                      {priceAnnouncement}
+                    </div>
                   </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center h-full text-center py-12">
-                    <Package className="w-16 h-16 text-muted-foreground/30 mb-4" />
+                    <Package className="w-16 h-16 text-muted-foreground/30 mb-4" aria-hidden="true" />
                     <h3 className="text-lg font-semibold text-foreground mb-2">
                       Bereit für Ihre Kostenschätzung
                     </h3>
@@ -410,6 +340,7 @@ const StorageCalculator = () => {
                     <li>✓ Versicherungsschutz verfügbar</li>
                     <li>✓ Transport zum/vom Lager organisierbar</li>
                   </ul>
+                </div>
               </div>
             </div>
 
@@ -422,7 +353,6 @@ const StorageCalculator = () => {
                 buttonLink="/umzugsofferten"
               />
             </div>
-          </div>
           </div>
         </div>
       </main>

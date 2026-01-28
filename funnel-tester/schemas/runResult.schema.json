@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "RunResult",
+  "type": "object",
+  "required": ["run_id", "config", "success", "verdict", "scores", "ten_second_test", "steps", "friction_points", "duration_ms"],
+  "properties": {
+    "run_id": { "type": "string" },
+    "config": { "$ref": "./runConfig.schema.json" },
+    "success": { "type": "boolean" },
+    "verdict": { "type": "string", "enum": ["WINNER", "PROMISING", "FAIL", "BLOCKER"] },
+    "scores": {
+      "type": "object",
+      "required": ["intent_match", "trust", "friction", "clarity", "mobile_usability", "conversion_confidence", "marketing_fit"],
+      "properties": {
+        "intent_match": { "type": "number" },
+        "trust": { "type": "number" },
+        "friction": { "type": "number" },
+        "clarity": { "type": "number" },
+        "mobile_usability": { "type": "number" },
+        "conversion_confidence": { "type": "number" },
+        "marketing_fit": { "type": "number" }
+      }
+    },
+    "ten_second_test": {
+      "type": "object",
+      "required": ["title", "h1", "trust_signals", "top_ctas"],
+      "properties": {
+        "title": { "type": "string" },
+        "h1": { "type": "string" },
+        "trust_signals": { "type": "array", "items": { "type": "string" } },
+        "top_ctas": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["step_number", "action", "url", "screenshot_path", "timestamp"],
+        "properties": {
+          "step_number": { "type": "number" },
+          "action": { "type": "string" },
+          "url": { "type": "string" },
+          "screenshot_path": { "type": "string" },
+          "timestamp": { "type": "string" }
+        }
+      }
+    },
+    "marketing": {
+      "type": "object",
+      "required": ["expected_outcomes", "detected_offers", "missing_offers", "unexpected_offers", "top_options", "notes"],
+      "properties": {
+        "expected_outcomes": { "type": "array", "items": { "type": "string" } },
+        "detected_offers": { "type": "array", "items": { "type": "string" } },
+        "missing_offers": { "type": "array", "items": { "type": "string" } },
+        "unexpected_offers": { "type": "array", "items": { "type": "string" } },
+        "top_options": { "type": "array", "items": { "type": "string" } },
+        "notes": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "friction_points": { "type": "array", "items": { "type": "string" } },
+    "dropoff_reason": { "type": "string" },
+    "fix_recommendation": { "type": "string" },
+    "duration_ms": { "type": "number" }
+  }
+}

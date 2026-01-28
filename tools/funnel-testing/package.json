@@ -1,0 +1,28 @@
+{
+  "name": "umzugscheck-funnel-testing-tool",
+  "version": "1.0.0",
+  "description": "Deterministic funnel testing tool with Playwright, reporting, and heatmaps",
+  "scripts": {
+    "dispatch": "npx tsx src/cli/dispatch.ts",
+    "run": "npx tsx src/cli/run.ts",
+    "report": "npx tsx src/cli/report.ts",
+    "build": "tsc",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^8.3.1",
+    "@types/node": "^20.10.6",
+    "csv-writer": "^1.6.0",
+    "openai": "^4.20.1",
+    "playwright": "^1.40.1",
+    "seedrandom": "^3.0.5",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3",
+    "zod": "^3.22.4",
+    "commander": "^11.1.0",
+    "chalk": "^4.1.2"
+  },
+  "devDependencies": {
+    "@types/seedrandom": "^3.0.8"
+  }
+}

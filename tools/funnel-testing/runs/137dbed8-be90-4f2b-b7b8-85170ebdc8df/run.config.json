@@ -1,0 +1,29 @@
+{
+  "run_id": "137dbed8-be90-4f2b-b7b8-85170ebdc8df",
+  "seed": 331008,
+  "gateway": {
+    "gateway_id": "swiss-movers",
+    "name": "Swiss Movers",
+    "landing_url": "https://www.swissmovers.ch",
+    "language": "de",
+    "priority_weight": 1.2,
+    "enabled": true
+  },
+  "persona": {
+    "persona_id": "family-mover",
+    "name": "Family Mover (DE)",
+    "language": "de",
+    "first_name": "Anna",
+    "last_name": "Schmidt",
+    "email_prefix": "anna.schmidt",
+    "phone": "+41 79 234 5678",
+    "enabled": true
+  },
+  "policy": "RealisticWeighted",
+  "timestamp": "2026-01-28T21:21:05.892Z",
+  "maxSteps": 20,
+  "maxTimeMs": 120000,
+  "dryRun": true,
+  "captureTrace": false,
+  "captureNetworkHar": false
+}

@@ -1,0 +1,27 @@
+{
+    "name":  "funnel-tester",
+    "version":  "1.0.0",
+    "private":  true,
+    "type":  "commonjs",
+    "main":  "dist/index.js",
+    "scripts":  {
+                    "build":  "tsc",
+                    "dispatch":  "ts-node src/cli/dispatch.ts",
+                    "run":  "ts-node src/cli/run.ts",
+                    "report":  "ts-node src/cli/report.ts"
+                },
+    "dependencies":  {
+                         "chalk":  "^4.1.2",
+                         "commander":  "^12.1.0",
+                         "fs-extra":  "^11.2.0",
+                         "playwright":  "^1.49.0",
+                         "seedrandom":  "^3.0.5"
+                     },
+    "devDependencies":  {
+                            "@types/fs-extra":  "^11.0.4",
+                            "@types/node":  "^20.11.30",
+                            "@types/seedrandom":  "^3.0.8",
+                            "ts-node":  "^10.9.2",
+                            "typescript":  "^5.4.5"
+                        }
+}

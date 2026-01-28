@@ -1,0 +1,58 @@
+{
+  "gateway": {
+    "gateway_id": "demenagement-geneve",
+    "name": "Déménagement Genève",
+    "landing_url": "https://www.umzugscheck.ch/fr/demenagement-geneve",
+    "language": "fr",
+    "intent": "book_move_geneva",
+    "keyword_cluster": "déménagement genève, déménageur genève, déménagement pas cher",
+    "expected_ctas": [
+      "Devis déménagement",
+      "Comparer prix"
+    ],
+    "traffic_volume": "high",
+    "primary_business_models": [
+      "umzug"
+    ],
+    "priority_weight": 9,
+    "enabled": true
+  },
+  "persona": {
+    "persona_id": "francophone-family",
+    "name": "Famille Romande (Claire)",
+    "language": "fr",
+    "first_name": "Claire",
+    "last_name": "Laurent",
+    "email_prefix": "claire.laurent",
+    "phone": "+41 79 100 0011",
+    "device": "mobile",
+    "traits": [
+      "french_speaking",
+      "family",
+      "geneva_area"
+    ],
+    "budget": "medium",
+    "urgency": "medium",
+    "trust_level": "medium",
+    "goal": {
+      "primary": "book_move_with_cleaning",
+      "services_wanted": [
+        "umzug",
+        "reinigung"
+      ],
+      "description": "Famille genevoise. Déménagement + nettoyage de fin de bail.",
+      "must_have": [
+        "umzug",
+        "reinigung"
+      ],
+      "nice_to_have": []
+    },
+    "click_bias_weights": {
+      "main_cta": 0.7,
+      "secondary": 0.22,
+      "escape": 0.08
+    },
+    "enabled": true
+  },
+  "policy": "StrictMain"
+}

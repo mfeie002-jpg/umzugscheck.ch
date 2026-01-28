@@ -1,0 +1,68 @@
+{
+  "run_id": "8e1262f1-db98-4b4a-a3bf-1ea25473fd04",
+  "seed": "test_weighted",
+  "gateway": {
+    "gateway_id": "umzug-reinigung",
+    "name": "Umzug mit Reinigung",
+    "landing_url": "https://www.umzugscheck.ch/umzug-mit-reinigung",
+    "language": "de",
+    "intent": "book_move_plus_cleaning",
+    "keyword_cluster": "umzug mit reinigung, umzug und endreinigung, paketangebot umzug",
+    "expected_ctas": [
+      "Kombi-Offerte anfragen",
+      "Paketpreise"
+    ],
+    "traffic_volume": "high",
+    "primary_business_models": [
+      "umzug",
+      "reinigung"
+    ],
+    "priority_weight": 10,
+    "enabled": true
+  },
+  "persona": {
+    "persona_id": "storage-seeker",
+    "name": "Temporary Housing (Emma)",
+    "language": "de",
+    "first_name": "Emma",
+    "last_name": "Schmid",
+    "email_prefix": "emma.schmid",
+    "phone": "+41 79 100 0006",
+    "device": "mobile",
+    "traits": [
+      "temporary_situation",
+      "flexible",
+      "cost_aware"
+    ],
+    "budget": "medium",
+    "urgency": "medium",
+    "trust_level": "medium",
+    "goal": {
+      "primary": "book_storage",
+      "services_wanted": [
+        "lagerung",
+        "umzug"
+      ],
+      "description": "Between apartments. Needs furniture storage for 3-6 months + help moving into storage.",
+      "must_have": [
+        "lagerung"
+      ],
+      "nice_to_have": [
+        "umzug"
+      ]
+    },
+    "click_bias_weights": {
+      "main_cta": 0.65,
+      "secondary": 0.25,
+      "escape": 0.1
+    },
+    "enabled": true
+  },
+  "policy": "RealisticWeighted",
+  "timestamp": "2026-01-28T21:58:48.871Z",
+  "maxSteps": 20,
+  "maxTimeMs": 120000,
+  "dryRun": true,
+  "captureTrace": false,
+  "captureNetworkHar": false
+}
