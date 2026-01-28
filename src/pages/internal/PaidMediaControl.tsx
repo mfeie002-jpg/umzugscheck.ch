@@ -30,7 +30,11 @@ import { LeadTriageHelper } from "@/components/internal/LeadTriageHelper";
 import { ScalingDecisionPanel } from "@/components/internal/ScalingDecisionPanel";
 import { WeeklyRedFlagsPanel } from "@/components/internal/WeeklyRedFlagsPanel";
 import { PhoneSupportROIRules } from "@/components/internal/PhoneSupportROIRules";
+import { GavLaborCalculator } from "@/components/internal/GavLaborCalculator";
+import { CherriesChaffRouter } from "@/components/internal/CherriesChaffRouter";
+import { SeasonalYieldManagement } from "@/components/internal/SeasonalYieldManagement";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Truck, Cherry, Calendar } from "lucide-react";
 
 type BusinessModel = "feierabend" | "umzugscheck";
 type Scenario = "conservative" | "base" | "aggressive";
@@ -433,35 +437,52 @@ export default function PaidMediaControl() {
         </header>
 
         <main className="max-w-7xl mx-auto px-6 py-6 space-y-6">
-          {/* Tabs for Calculator vs Triage vs Scaling vs Red Flags */}
+          {/* Tabs for all panels */}
           <Tabs defaultValue="calculator" className="w-full">
-            <TabsList className="grid w-full max-w-3xl grid-cols-5">
-              <TabsTrigger value="calculator" className="gap-2">
-                <Calculator className="w-4 h-4" />
-                <span className="hidden sm:inline">Unit Economics</span>
-                <span className="sm:hidden">Calc</span>
-              </TabsTrigger>
-              <TabsTrigger value="triage" className="gap-2">
-                <Filter className="w-4 h-4" />
-                <span className="hidden sm:inline">Lead Triage</span>
-                <span className="sm:hidden">Triage</span>
-              </TabsTrigger>
-              <TabsTrigger value="scaling" className="gap-2">
-                <Rocket className="w-4 h-4" />
-                <span className="hidden sm:inline">Scaling Decision</span>
-                <span className="sm:hidden">Scale</span>
-              </TabsTrigger>
-              <TabsTrigger value="redflags" className="gap-2">
-                <Activity className="w-4 h-4" />
-                <span className="hidden sm:inline">Red Flags</span>
-                <span className="sm:hidden">Flags</span>
-              </TabsTrigger>
-              <TabsTrigger value="phone" className="gap-2">
-                <Phone className="w-4 h-4" />
-                <span className="hidden sm:inline">Phone ROI</span>
-                <span className="sm:hidden">Phone</span>
-              </TabsTrigger>
-            </TabsList>
+            <div className="overflow-x-auto pb-2">
+              <TabsList className="inline-flex w-auto min-w-full md:grid md:grid-cols-8 gap-1">
+                <TabsTrigger value="calculator" className="gap-1 text-xs px-2">
+                  <Calculator className="w-3.5 h-3.5" />
+                  <span className="hidden lg:inline">Unit Economics</span>
+                  <span className="lg:hidden">Calc</span>
+                </TabsTrigger>
+                <TabsTrigger value="triage" className="gap-1 text-xs px-2">
+                  <Filter className="w-3.5 h-3.5" />
+                  <span className="hidden lg:inline">Triage</span>
+                  <span className="lg:hidden">Triage</span>
+                </TabsTrigger>
+                <TabsTrigger value="scaling" className="gap-1 text-xs px-2">
+                  <Rocket className="w-3.5 h-3.5" />
+                  <span className="hidden lg:inline">Scaling</span>
+                  <span className="lg:hidden">Scale</span>
+                </TabsTrigger>
+                <TabsTrigger value="redflags" className="gap-1 text-xs px-2">
+                  <Activity className="w-3.5 h-3.5" />
+                  <span className="hidden lg:inline">Red Flags</span>
+                  <span className="lg:hidden">Flags</span>
+                </TabsTrigger>
+                <TabsTrigger value="phone" className="gap-1 text-xs px-2">
+                  <Phone className="w-3.5 h-3.5" />
+                  <span className="hidden lg:inline">Phone ROI</span>
+                  <span className="lg:hidden">Phone</span>
+                </TabsTrigger>
+                <TabsTrigger value="gav" className="gap-1 text-xs px-2">
+                  <Truck className="w-3.5 h-3.5" />
+                  <span className="hidden lg:inline">GAV Labor</span>
+                  <span className="lg:hidden">GAV</span>
+                </TabsTrigger>
+                <TabsTrigger value="cherries" className="gap-1 text-xs px-2">
+                  <Cherry className="w-3.5 h-3.5" />
+                  <span className="hidden lg:inline">Cherries</span>
+                  <span className="lg:hidden">C&C</span>
+                </TabsTrigger>
+                <TabsTrigger value="yield" className="gap-1 text-xs px-2">
+                  <Calendar className="w-3.5 h-3.5" />
+                  <span className="hidden lg:inline">Yield</span>
+                  <span className="lg:hidden">Yield</span>
+                </TabsTrigger>
+              </TabsList>
+            </div>
 
             <TabsContent value="calculator" className="mt-6">
               {/* Conditional Content based on Model */}
@@ -526,6 +547,18 @@ export default function PaidMediaControl() {
                   avgJobValueFromCall: model === 'feierabend' ? 2500 : 55,
                 }}
               />
+            </TabsContent>
+
+            <TabsContent value="gav" className="mt-6">
+              <GavLaborCalculator />
+            </TabsContent>
+
+            <TabsContent value="cherries" className="mt-6">
+              <CherriesChaffRouter />
+            </TabsContent>
+
+            <TabsContent value="yield" className="mt-6">
+              <SeasonalYieldManagement />
             </TabsContent>
           </Tabs>
 
