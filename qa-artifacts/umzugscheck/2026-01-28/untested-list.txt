@@ -1,0 +1,11 @@
+/firma/:slug
+/umzug/:slug
+/umzugsfirmen/:slug
+/:city/umzug
+/:city/umzugsfirmen
+/region/:region
+/regionen/:slug
+/stadt/:slug
+/canton/:slug
+/kanton/:slug
+/:canton/vergleich
