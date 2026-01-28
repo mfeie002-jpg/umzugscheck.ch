@@ -806,6 +806,8 @@ const AppRouterContent = () => {
           <Route path="/flowtester" element={<RedirectWithQuery to="/flow-tester" />} />
           <Route path="/flow-tester/" element={<RedirectWithQuery to="/flow-tester" />} />
           <Route path="/umzugsofferten/bestaetigung" element={<UmzugsoffertenBestaetigung />} />
+          {/* Redirect common typo/alternate path */}
+          <Route path="/umzugsofferten-bestaetigung" element={<RedirectWithQuery to="/umzugsofferten/bestaetigung" />} />
           {/* Localized funnels - /umzugsofferten/zuerich, /umzugsofferten/bern, etc. */}
           <Route path="/umzugsofferten/:city" element={<LocalizedUmzugsofferten />} />
           <Route path="/preise" element={<Pricing />} />

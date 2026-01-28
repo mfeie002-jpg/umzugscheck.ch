@@ -20,19 +20,87 @@ export default function UmzugsoffertenBestaetigung() {
   const [listingId, setListingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Extract params
-  const submitOption = searchParams.get("submitOption") as "direct" | "publish" | "both" | null;
-  const name = searchParams.get("name") || "";
-  const email = searchParams.get("email") || "";
-  const phone = searchParams.get("phone") || "";
-  const fromLocation = searchParams.get("from") || "";
-  const toLocation = searchParams.get("to") || "";
-  const moveDate = searchParams.get("date") || "";
-  const apartmentSize = searchParams.get("size") || "";
-  const services = searchParams.get("services")?.split(",") || ["umzug"];
-  const companies = searchParams.get("companies")?.split(",").filter(Boolean) || [];
-  const priceMin = parseInt(searchParams.get("priceMin") || "0");
-  const priceMax = parseInt(searchParams.get("priceMax") || "0");
+  // Try to get data from URL params first, then fall back to localStorage
+  const getFormData = () => {
+    // Check URL params first (V1 flows)
+    const urlEmail = searchParams.get("email");
+    const urlFrom = searchParams.get("from");
+    const urlTo = searchParams.get("to");
+    
+    if (urlEmail && urlFrom && urlTo) {
+      return {
+        submitOption: searchParams.get("submitOption") as "direct" | "publish" | "both" | null,
+        name: searchParams.get("name") || "",
+        email: urlEmail,
+        phone: searchParams.get("phone") || "",
+        fromLocation: urlFrom,
+        toLocation: urlTo,
+        moveDate: searchParams.get("date") || "",
+        apartmentSize: searchParams.get("size") || "",
+        services: searchParams.get("services")?.split(",") || ["umzug"],
+        companies: searchParams.get("companies")?.split(",").filter(Boolean) || [],
+        priceMin: parseInt(searchParams.get("priceMin") || "0"),
+        priceMax: parseInt(searchParams.get("priceMax") || "0"),
+        source: "url" as const,
+      };
+    }
+    
+    // Fall back to localStorage (V2+ flows)
+    const storageKeys = [
+      "umzugscheck_premium_v2",
+      "umzugscheck_form_data",
+      "umzugscheck_calculator_variant",
+      "umzugscheck_god_mode",
+    ];
+    
+    for (const key of storageKeys) {
+      try {
+        const stored = localStorage.getItem(key);
+        if (stored) {
+          const data = JSON.parse(stored);
+          // Check if we have the minimum required fields
+          if (data.email && (data.fromLocation || data.from) && (data.toLocation || data.to)) {
+            return {
+              submitOption: data.submitOption || "both",
+              name: data.name || "",
+              email: data.email,
+              phone: data.phone || "",
+              fromLocation: data.fromLocation || data.from || "",
+              toLocation: data.toLocation || data.to || "",
+              moveDate: data.moveDate || data.date || "",
+              apartmentSize: data.apartmentSize || data.size || "",
+              services: data.selectedServices || data.services || ["umzug"],
+              companies: data.selectedCompanies || data.companies || [],
+              priceMin: data.priceMin || data.estimatedPrice?.min || 0,
+              priceMax: data.priceMax || data.estimatedPrice?.max || 0,
+              source: "localStorage" as const,
+              storageKey: key,
+            };
+          }
+        }
+      } catch (e) {
+        console.error(`Error reading ${key}:`, e);
+      }
+    }
+    
+    return null;
+  };
+
+  const formData = getFormData();
+  
+  // Extract values from formData
+  const submitOption = formData?.submitOption || null;
+  const name = formData?.name || "";
+  const email = formData?.email || "";
+  const phone = formData?.phone || "";
+  const fromLocation = formData?.fromLocation || "";
+  const toLocation = formData?.toLocation || "";
+  const moveDate = formData?.moveDate || "";
+  const apartmentSize = formData?.apartmentSize || "";
+  const services = formData?.services || ["umzug"];
+  const companies = formData?.companies || [];
+  const priceMin = formData?.priceMin || 0;
+  const priceMax = formData?.priceMax || 0;
 
   // Extract postal code and city
   const fromParts = fromLocation.split(" ");
@@ -45,7 +113,7 @@ export default function UmzugsoffertenBestaetigung() {
 
   useEffect(() => {
     const createLeadAndListing = async () => {
-      if (!email || !fromLocation || !toLocation) {
+      if (!formData || !email || !fromLocation || !toLocation) {
         setError("Fehlende Daten. Bitte füllen Sie das Formular erneut aus.");
         setIsSubmitting(false);
         return;
@@ -116,6 +184,16 @@ export default function UmzugsoffertenBestaetigung() {
             setListingId(listing.id);
           }
         }
+
+        // Clear localStorage after successful submission
+        const storageKeys = [
+          "umzugscheck_premium_v2",
+          "umzugscheck_form_data",
+          "umzugscheck_calculator_variant",
+          "umzugscheck_god_mode",
+          "umzugscheck_form_data_v1",
+        ];
+        storageKeys.forEach(key => localStorage.removeItem(key));
 
         toast.success("Anfrage erfolgreich gesendet!");
       } catch (err) {
