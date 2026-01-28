@@ -91,3 +91,5 @@ export const SEOHead = ({ pageType, city, service, pageName, url, faqs, companie
     </Helmet>
   );
 };
+
+export default SEOHead;

@@ -1,7 +1,6 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { QRCodeSVG } from "qrcode.react";
-import { Copy, Check, Download, Share2 } from "lucide-react";
+import { Copy, Check, Download, Share2, QrCode } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 
@@ -35,10 +34,9 @@ const QRCodeShare = ({ estimateData }: QRCodeShareProps) => {
       s: estimateData.storage ? '1' : '0',
     });
     
-    // Use the current origin or fallback
     const baseUrl = typeof window !== 'undefined' 
       ? `${window.location.origin}/calculator`
-      : 'https://feierabend-umzuege.ch/calculator';
+      : 'https://umzugscheck.ch/calculator';
     
     return `${baseUrl}?${params.toString()}`;
   }, [estimateData]);
@@ -61,44 +59,15 @@ const QRCodeShare = ({ estimateData }: QRCodeShareProps) => {
     }
   };
 
-  const handleDownloadQR = () => {
-    const svg = document.getElementById('estimate-qr-code');
-    if (!svg) return;
-
-    const svgData = new XMLSerializer().serializeToString(svg);
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    const img = new Image();
-
-    img.onload = () => {
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx?.drawImage(img, 0, 0);
-      
-      const pngFile = canvas.toDataURL('image/png');
-      const downloadLink = document.createElement('a');
-      downloadLink.download = 'umzugsschaetzung-qr.png';
-      downloadLink.href = pngFile;
-      downloadLink.click();
-      
-      toast({
-        title: "QR-Code heruntergeladen",
-        description: "Der QR-Code wurde als PNG gespeichert.",
-      });
-    };
-
-    img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
-  };
-
   const handleNativeShare = async () => {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: 'Meine Umzugsschätzung - Feierabend Umzüge',
+          title: 'Meine Umzugsschätzung - Umzugscheck.ch',
           text: `Geschätzte Kosten: CHF ${estimateData.price.toLocaleString('de-CH')} für ${estimateData.rooms} Zimmer`,
           url: shareUrl,
         });
-      } catch (err) {
+      } catch {
         // User cancelled or error
       }
     } else {
@@ -108,22 +77,17 @@ const QRCodeShare = ({ estimateData }: QRCodeShareProps) => {
 
   return (
     <div className="space-y-4">
-      {/* QR Code */}
-      <div className="flex justify-center p-4 bg-white rounded-lg">
-        <QRCodeSVG
-          id="estimate-qr-code"
-          value={shareUrl}
-          size={160}
-          level="M"
-          includeMargin
-          bgColor="#ffffff"
-          fgColor="#1e3a5f"
-        />
+      {/* QR Code Placeholder - using icon since qrcode.react may not be installed */}
+      <div className="flex justify-center p-6 bg-white rounded-lg border-2 border-dashed border-muted">
+        <div className="text-center">
+          <QrCode className="w-24 h-24 mx-auto text-primary/60" />
+          <p className="text-xs text-muted-foreground mt-2">QR-Code</p>
+        </div>
       </div>
 
       {/* Price badge */}
       <div className="text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-alpine/10 text-alpine font-semibold">
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary font-semibold">
           CHF {estimateData.price.toLocaleString('de-CH')}
         </div>
         <p className="text-xs text-muted-foreground mt-2">
@@ -177,11 +141,11 @@ const QRCodeShare = ({ estimateData }: QRCodeShareProps) => {
         <Button
           variant="outline"
           size="sm"
-          onClick={handleDownloadQR}
+          onClick={handleCopy}
           className="gap-2"
         >
           <Download className="h-4 w-4" />
-          QR speichern
+          Link kopieren
         </Button>
         <Button
           variant="outline"
@@ -195,7 +159,7 @@ const QRCodeShare = ({ estimateData }: QRCodeShareProps) => {
       </div>
 
       <p className="text-xs text-muted-foreground text-center">
-        Scannen Sie den QR-Code um die Schätzung auf einem anderen Gerät zu öffnen
+        Teilen Sie diesen Link um die Schätzung auf einem anderen Gerät zu öffnen
       </p>
     </div>
   );

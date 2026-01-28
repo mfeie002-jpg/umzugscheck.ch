@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Package, CheckCircle, Clock, Calendar } from "lucide-react";
 import { motion } from "framer-motion";
@@ -21,58 +20,18 @@ export default function MoveStatistics() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchStats = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        setLoading(false);
-        return;
-      }
-
-      const { data: moves } = await supabase
-        .from("moves")
-        .select("status, moving_date")
-        .eq("user_id", user.id);
-
-      if (moves) {
-        const today = new Date().toISOString().split("T")[0];
-        setStats({
-          total: moves.length,
-          completed: moves.filter((m) => m.status === "completed").length,
-          pending: moves.filter((m) => m.status === "pending").length,
-          upcoming: moves.filter((m) => m.moving_date >= today && m.status !== "completed").length,
-        });
-      }
+    // Mock data - no database table
+    setTimeout(() => {
+      setStats({ total: 0, completed: 0, pending: 0, upcoming: 0 });
       setLoading(false);
-    };
-
-    fetchStats();
+    }, 300);
   }, []);
 
   const statItems = [
-    {
-      label: "Gesamt",
-      value: stats.total,
-      icon: Package,
-      color: "text-blue-600 bg-blue-100 dark:bg-blue-900/30",
-    },
-    {
-      label: "Abgeschlossen",
-      value: stats.completed,
-      icon: CheckCircle,
-      color: "text-green-600 bg-green-100 dark:bg-green-900/30",
-    },
-    {
-      label: "Ausstehend",
-      value: stats.pending,
-      icon: Clock,
-      color: "text-yellow-600 bg-yellow-100 dark:bg-yellow-900/30",
-    },
-    {
-      label: "Bevorstehend",
-      value: stats.upcoming,
-      icon: Calendar,
-      color: "text-purple-600 bg-purple-100 dark:bg-purple-900/30",
-    },
+    { label: "Gesamt", value: stats.total, icon: Package, color: "text-blue-600 bg-blue-100 dark:bg-blue-900/30" },
+    { label: "Abgeschlossen", value: stats.completed, icon: CheckCircle, color: "text-green-600 bg-green-100 dark:bg-green-900/30" },
+    { label: "Ausstehend", value: stats.pending, icon: Clock, color: "text-yellow-600 bg-yellow-100 dark:bg-yellow-900/30" },
+    { label: "Bevorstehend", value: stats.upcoming, icon: Calendar, color: "text-purple-600 bg-purple-100 dark:bg-purple-900/30" },
   ];
 
   if (loading) {

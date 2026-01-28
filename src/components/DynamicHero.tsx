@@ -27,7 +27,7 @@ export function DynamicHero({
   whatsappLink = CONTACT_WHATSAPP_LINK,
 }: DynamicHeroProps) {
   const dynamicContent = useDynamicContent();
-  const { isPremiumMode, wording } = usePaidMode();
+  const paidMode = usePaidMode();
 
   const headline = defaultHeadline || dynamicContent.headline;
   const subheadline = defaultSubheadline || dynamicContent.subheadline;

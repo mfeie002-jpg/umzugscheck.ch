@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import AnimatedSection from "@/components/AnimatedSection";
 import FamilyBadge from "@/components/FamilyBadge";
 import FloatingElement from "@/components/FloatingElement";
-import OptimizedImage from "@/components/OptimizedImage";
+import { OptimizedImage } from "@/components/OptimizedImage";
 import heroImage from "@/assets/hero-truck-branded.jpg";
 import { trackCtaClick } from "@/hooks/useCtaTracking";
 

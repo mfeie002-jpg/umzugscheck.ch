@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet-async";
+import { Helmet } from "react-helmet";
 
 interface CitySchemaProps {
   cityName: string;
@@ -11,11 +11,11 @@ const CitySchema = ({ cityName, description, url }: CitySchemaProps) => {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     "@id": url,
-    "name": `Feierabend Umzüge ${cityName}`,
+    "name": `Umzugscheck ${cityName}`,
     "description": description,
     "url": url,
-    "telephone": "+41 76 568 13 02",
-    "email": "info@feierabend-umzuege.ch",
+    "telephone": "+41 44 567 89 00",
+    "email": "info@umzugscheck.ch",
     "address": {
       "@type": "PostalAddress",
       "addressLocality": cityName,
@@ -33,8 +33,8 @@ const CitySchema = ({ cityName, description, url }: CitySchemaProps) => {
     },
     "parentOrganization": {
       "@type": "MovingCompany",
-      "name": "Feierabend Umzüge",
-      "url": "https://feierabend-umzuege.ch"
+      "name": "Umzugscheck.ch",
+      "url": "https://umzugscheck.ch"
     }
   };
 
@@ -42,8 +42,8 @@ const CitySchema = ({ cityName, description, url }: CitySchemaProps) => {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://feierabend-umzuege.ch" },
-      { "@type": "ListItem", "position": 2, "name": "Standorte", "item": "https://feierabend-umzuege.ch/map" },
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://umzugscheck.ch" },
+      { "@type": "ListItem", "position": 2, "name": "Standorte", "item": "https://umzugscheck.ch/map" },
       { "@type": "ListItem", "position": 3, "name": cityName, "item": url }
     ]
   };

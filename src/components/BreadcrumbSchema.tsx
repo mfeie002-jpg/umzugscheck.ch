@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Helmet } from 'react-helmet-async';
+import { Helmet } from 'react-helmet';
 
 interface BreadcrumbItem {
   name: string;
@@ -11,7 +11,7 @@ interface BreadcrumbSchemaProps {
 }
 
 const BreadcrumbSchema = memo(({ items }: BreadcrumbSchemaProps) => {
-  const baseUrl = 'https://feierabend-umzuege.ch';
+  const baseUrl = 'https://umzugscheck.ch';
   
   const breadcrumbSchema = {
     "@context": "https://schema.org",

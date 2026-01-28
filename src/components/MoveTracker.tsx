@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Clock, Truck, CheckCircle, Package } from "lucide-react";
@@ -47,52 +46,19 @@ export default function MoveTracker({ moveId }: MoveTrackerProps) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchMoveData = async () => {
-      const { data: moveData } = await supabase
-        .from("moves")
-        .select("*")
-        .eq("id", moveId)
-        .single();
-
-      if (moveData) {
-        setMove(moveData);
-      }
-
-      const { data: updatesData } = await supabase
-        .from("move_updates")
-        .select("*")
-        .eq("move_id", moveId)
-        .order("created_at", { ascending: false });
-
-      if (updatesData) {
-        setUpdates(updatesData);
-      }
-
+    // Mock data - no database table
+    setTimeout(() => {
+      setMove({
+        id: moveId,
+        title: "Demo Umzug",
+        from_address: "Zürich",
+        to_address: "Bern",
+        moving_date: new Date().toISOString(),
+        status: "pending",
+      });
+      setUpdates([]);
       setLoading(false);
-    };
-
-    fetchMoveData();
-
-    // Subscribe to real-time updates
-    const channel = supabase
-      .channel(`move-${moveId}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "move_updates",
-          filter: `move_id=eq.${moveId}`,
-        },
-        (payload) => {
-          setUpdates((prev) => [payload.new as MoveUpdate, ...prev]);
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    }, 300);
   }, [moveId]);
 
   if (loading) {

@@ -4,13 +4,13 @@ import { MapPin, Phone, Star, Shield, Clock, CheckCircle, ArrowRight, Users, Tru
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Header from "./Header";
-import Footer from "./Footer";
+import { Footer } from "./Footer";
 import EnhancedSEO from "./EnhancedSEO";
 import BreadcrumbSchema from "./BreadcrumbSchema";
 import AnimatedSection from "./AnimatedSection";
 import InternalLinkingSection from "./InternalLinkingSection";
 import FAQSection from "./FAQSection";
-import CTASection from "./CTASection";
+import { CTASection } from "./CTASection";
 import { ExpressQuoteForm } from "@/components/ExpressQuoteForm";
 
 interface CityLandingTemplateProps {

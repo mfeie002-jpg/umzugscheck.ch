@@ -1,8 +1,8 @@
-import { Helmet } from 'react-helmet-async';
+import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import { Footer } from '@/components/Footer';
 import AnimatedSection from '@/components/AnimatedSection';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
