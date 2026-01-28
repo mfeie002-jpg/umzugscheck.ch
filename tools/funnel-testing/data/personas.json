@@ -1,0 +1,542 @@
+[
+  {
+    "persona_id": "full-service-pro",
+    "name": "Full Service Professional (Sarah)",
+    "language": "de",
+    "first_name": "Sarah",
+    "last_name": "Müller",
+    "email_prefix": "sarah.mueller",
+    "phone": "+41 79 100 0001",
+    "device": "desktop",
+    "traits": ["convenience_seeker", "busy_professional", "quality_over_price"],
+    "budget": "high",
+    "urgency": "medium",
+    "trust_level": "high",
+    "goal": {
+      "primary": "book_full_service",
+      "services_wanted": ["umzug", "reinigung", "entsorgung", "lagerung"],
+      "description": "Wants everything: move + cleaning + disposal + storage. Will pay for complete convenience.",
+      "must_have": ["umzug", "reinigung"],
+      "nice_to_have": ["entsorgung", "lagerung", "packmaterial"]
+    },
+    "click_bias_weights": {
+      "main_cta": 0.85,
+      "secondary": 0.12,
+      "escape": 0.03
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "move-cleaning-combo",
+    "name": "Busy Parent (Anna)",
+    "language": "de",
+    "first_name": "Anna",
+    "last_name": "Weber",
+    "email_prefix": "anna.weber",
+    "phone": "+41 79 100 0002",
+    "device": "mobile",
+    "traits": ["time_pressed", "family_focused", "deposit_concerned"],
+    "budget": "medium",
+    "urgency": "high",
+    "trust_level": "medium",
+    "goal": {
+      "primary": "book_move_with_cleaning",
+      "services_wanted": ["umzug", "reinigung"],
+      "description": "Family moving, needs move + end-of-tenancy cleaning to get deposit back. Time is critical.",
+      "must_have": ["umzug", "reinigung"],
+      "nice_to_have": ["entsorgung"]
+    },
+    "click_bias_weights": {
+      "main_cta": 0.75,
+      "secondary": 0.18,
+      "escape": 0.07
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "budget-student",
+    "name": "Budget Student (Lukas)",
+    "language": "de",
+    "first_name": "Lukas",
+    "last_name": "Fischer",
+    "email_prefix": "lukas.fischer",
+    "phone": "+41 79 100 0003",
+    "device": "mobile",
+    "traits": ["price_sensitive", "minimal_needs", "comparison_shopper"],
+    "budget": "low",
+    "urgency": "medium",
+    "trust_level": "medium",
+    "goal": {
+      "primary": "book_cheap_move_only",
+      "services_wanted": ["umzug"],
+      "description": "Cheapest move possible. No extras. Will compare prices extensively.",
+      "must_have": ["umzug"],
+      "nice_to_have": []
+    },
+    "click_bias_weights": {
+      "main_cta": 0.45,
+      "secondary": 0.38,
+      "escape": 0.17
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "cleaning-only",
+    "name": "Cleaning-Only Customer (Lisa)",
+    "language": "de",
+    "first_name": "Lisa",
+    "last_name": "Keller",
+    "email_prefix": "lisa.keller",
+    "phone": "+41 79 100 0004",
+    "device": "desktop",
+    "traits": ["deposit_focused", "no_move_needed", "quality_conscious"],
+    "budget": "medium",
+    "urgency": "high",
+    "trust_level": "high",
+    "goal": {
+      "primary": "book_cleaning_only",
+      "services_wanted": ["reinigung"],
+      "description": "Not moving, but needs professional end-of-tenancy cleaning for deposit return.",
+      "must_have": ["reinigung"],
+      "nice_to_have": []
+    },
+    "click_bias_weights": {
+      "main_cta": 0.80,
+      "secondary": 0.15,
+      "escape": 0.05
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "disposal-focused",
+    "name": "Downsizer (Hans)",
+    "language": "de",
+    "first_name": "Hans",
+    "last_name": "Meier",
+    "email_prefix": "hans.meier",
+    "phone": "+41 79 100 0005",
+    "device": "desktop",
+    "traits": ["downsizing", "eco_conscious", "decluttering"],
+    "budget": "medium",
+    "urgency": "low",
+    "trust_level": "medium",
+    "goal": {
+      "primary": "book_disposal_service",
+      "services_wanted": ["entsorgung"],
+      "description": "Downsizing home. Needs furniture disposal and junk removal. May need small move later.",
+      "must_have": ["entsorgung"],
+      "nice_to_have": ["umzug"]
+    },
+    "click_bias_weights": {
+      "main_cta": 0.70,
+      "secondary": 0.22,
+      "escape": 0.08
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "storage-seeker",
+    "name": "Temporary Housing (Emma)",
+    "language": "de",
+    "first_name": "Emma",
+    "last_name": "Schmid",
+    "email_prefix": "emma.schmid",
+    "phone": "+41 79 100 0006",
+    "device": "mobile",
+    "traits": ["temporary_situation", "flexible", "cost_aware"],
+    "budget": "medium",
+    "urgency": "medium",
+    "trust_level": "medium",
+    "goal": {
+      "primary": "book_storage",
+      "services_wanted": ["lagerung", "umzug"],
+      "description": "Between apartments. Needs furniture storage for 3-6 months + help moving into storage.",
+      "must_have": ["lagerung"],
+      "nice_to_have": ["umzug"]
+    },
+    "click_bias_weights": {
+      "main_cta": 0.65,
+      "secondary": 0.25,
+      "escape": 0.10
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "piano-owner",
+    "name": "Piano Owner (Thomas)",
+    "language": "de",
+    "first_name": "Thomas",
+    "last_name": "Zimmermann",
+    "email_prefix": "thomas.zimmermann",
+    "phone": "+41 79 100 0007",
+    "device": "desktop",
+    "traits": ["special_item", "risk_averse", "quality_focused"],
+    "budget": "high",
+    "urgency": "low",
+    "trust_level": "high",
+    "goal": {
+      "primary": "book_piano_transport",
+      "services_wanted": ["umzug", "special"],
+      "description": "Has grand piano. Needs specialist transport + regular household move.",
+      "must_have": ["umzug"],
+      "nice_to_have": ["reinigung"]
+    },
+    "click_bias_weights": {
+      "main_cta": 0.80,
+      "secondary": 0.15,
+      "escape": 0.05
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "office-mover",
+    "name": "Office Manager (Michael)",
+    "language": "de",
+    "first_name": "Michael",
+    "last_name": "Brunner",
+    "email_prefix": "michael.brunner",
+    "phone": "+41 79 100 0008",
+    "device": "desktop",
+    "traits": ["b2b", "professional", "efficiency_focused", "invoice_needed"],
+    "budget": "high",
+    "urgency": "high",
+    "trust_level": "high",
+    "goal": {
+      "primary": "book_office_move",
+      "services_wanted": ["umzug", "b2b"],
+      "description": "Moving office over weekend. Needs fast, professional service with minimal business disruption.",
+      "must_have": ["umzug"],
+      "nice_to_have": ["reinigung", "it_support"]
+    },
+    "click_bias_weights": {
+      "main_cta": 0.85,
+      "secondary": 0.10,
+      "escape": 0.05
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "comparison-queen",
+    "name": "Comparison Shopper (Julia)",
+    "language": "de",
+    "first_name": "Julia",
+    "last_name": "Steiner",
+    "email_prefix": "julia.steiner",
+    "phone": "+41 79 100 0009",
+    "device": "desktop",
+    "traits": ["research_heavy", "comparison_focused", "price_sensitive"],
+    "budget": "medium",
+    "urgency": "low",
+    "trust_level": "low",
+    "goal": {
+      "primary": "compare_options",
+      "services_wanted": ["umzug"],
+      "description": "Wants to compare at least 5 quotes before deciding. Exploring all options.",
+      "must_have": ["umzug"],
+      "nice_to_have": ["reinigung"]
+    },
+    "click_bias_weights": {
+      "main_cta": 0.40,
+      "secondary": 0.45,
+      "escape": 0.15
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "international-expat",
+    "name": "Expat (David)",
+    "language": "en",
+    "first_name": "David",
+    "last_name": "Thompson",
+    "email_prefix": "david.thompson",
+    "phone": "+41 79 100 0010",
+    "device": "desktop",
+    "traits": ["international", "english_speaking", "corporate_relocating"],
+    "budget": "high",
+    "urgency": "medium",
+    "trust_level": "medium",
+    "goal": {
+      "primary": "book_international_move",
+      "services_wanted": ["umzug", "international", "lagerung"],
+      "description": "Moving from UK to Zurich. Needs international shipping + temporary storage + local move.",
+      "must_have": ["umzug", "international"],
+      "nice_to_have": ["lagerung", "customs_help"]
+    },
+    "click_bias_weights": {
+      "main_cta": 0.75,
+      "secondary": 0.18,
+      "escape": 0.07
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "francophone-family",
+    "name": "Famille Romande (Claire)",
+    "language": "fr",
+    "first_name": "Claire",
+    "last_name": "Laurent",
+    "email_prefix": "claire.laurent",
+    "phone": "+41 79 100 0011",
+    "device": "mobile",
+    "traits": ["french_speaking", "family", "geneva_area"],
+    "budget": "medium",
+    "urgency": "medium",
+    "trust_level": "medium",
+    "goal": {
+      "primary": "book_move_with_cleaning",
+      "services_wanted": ["umzug", "reinigung"],
+      "description": "Famille genevoise. Déménagement + nettoyage de fin de bail.",
+      "must_have": ["umzug", "reinigung"],
+      "nice_to_have": []
+    },
+    "click_bias_weights": {
+      "main_cta": 0.70,
+      "secondary": 0.22,
+      "escape": 0.08
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "italian-speaker",
+    "name": "Ticinese (Marco)",
+    "language": "it",
+    "first_name": "Marco",
+    "last_name": "Rossini",
+    "email_prefix": "marco.rossini",
+    "phone": "+41 79 100 0012",
+    "device": "mobile",
+    "traits": ["italian_speaking", "lugano_area", "local_preference"],
+    "budget": "medium",
+    "urgency": "low",
+    "trust_level": "high",
+    "goal": {
+      "primary": "book_move_only",
+      "services_wanted": ["umzug"],
+      "description": "Trasloco locale nel Ticino. Cerca impresa locale affidabile.",
+      "must_have": ["umzug"],
+      "nice_to_have": ["pulizia"]
+    },
+    "click_bias_weights": {
+      "main_cta": 0.65,
+      "secondary": 0.25,
+      "escape": 0.10
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "last-minute-larry",
+    "name": "Last Minute Larry",
+    "language": "de",
+    "first_name": "Lars",
+    "last_name": "Huber",
+    "email_prefix": "lars.huber",
+    "phone": "+41 79 100 0013",
+    "device": "mobile",
+    "traits": ["urgent", "impulsive", "time_critical"],
+    "budget": "high",
+    "urgency": "high",
+    "trust_level": "low",
+    "goal": {
+      "primary": "book_emergency_move",
+      "services_wanted": ["umzug"],
+      "description": "Needs to move THIS WEEK. Emergency situation. Will pay premium for immediate availability.",
+      "must_have": ["umzug"],
+      "nice_to_have": []
+    },
+    "click_bias_weights": {
+      "main_cta": 0.90,
+      "secondary": 0.08,
+      "escape": 0.02
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "skeptical-senior",
+    "name": "Skeptical Senior (Ruth)",
+    "language": "de",
+    "first_name": "Ruth",
+    "last_name": "Baumann",
+    "email_prefix": "ruth.baumann",
+    "phone": "+41 79 100 0014",
+    "device": "desktop",
+    "traits": ["elderly", "risk_averse", "trust_focused", "needs_assurance"],
+    "budget": "medium",
+    "urgency": "low",
+    "trust_level": "low",
+    "goal": {
+      "primary": "book_senior_move",
+      "services_wanted": ["umzug", "reinigung", "entsorgung"],
+      "description": "Moving to retirement home. Needs gentle, trustworthy service with full support.",
+      "must_have": ["umzug"],
+      "nice_to_have": ["reinigung", "entsorgung", "packing"]
+    },
+    "click_bias_weights": {
+      "main_cta": 0.50,
+      "secondary": 0.30,
+      "escape": 0.20
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "green-conscious",
+    "name": "Eco Warrior (Nina)",
+    "language": "de",
+    "first_name": "Nina",
+    "last_name": "Lehmann",
+    "email_prefix": "nina.lehmann",
+    "phone": "+41 79 100 0015",
+    "device": "mobile",
+    "traits": ["eco_conscious", "sustainability_focused", "ethical_consumer"],
+    "budget": "medium",
+    "urgency": "low",
+    "trust_level": "high",
+    "goal": {
+      "primary": "book_eco_move",
+      "services_wanted": ["umzug", "entsorgung"],
+      "description": "Wants eco-friendly move with proper recycling and donation of unwanted items.",
+      "must_have": ["umzug"],
+      "nice_to_have": ["entsorgung", "donation", "recycling"]
+    },
+    "click_bias_weights": {
+      "main_cta": 0.60,
+      "secondary": 0.30,
+      "escape": 0.10
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "info-seeker",
+    "name": "Information Gatherer (Peter)",
+    "language": "de",
+    "first_name": "Peter",
+    "last_name": "Gerber",
+    "email_prefix": "peter.gerber",
+    "phone": "+41 79 100 0016",
+    "device": "desktop",
+    "traits": ["research_phase", "not_ready_to_book", "education_focused"],
+    "budget": "unknown",
+    "urgency": "low",
+    "trust_level": "medium",
+    "goal": {
+      "primary": "research_costs",
+      "services_wanted": ["umzug"],
+      "description": "Just researching. Wants to understand costs and process. Not ready to book yet.",
+      "must_have": [],
+      "nice_to_have": ["umzug"]
+    },
+    "click_bias_weights": {
+      "main_cta": 0.30,
+      "secondary": 0.50,
+      "escape": 0.20
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "wealthy-perfectionist",
+    "name": "Luxury Client (Sophia)",
+    "language": "de",
+    "first_name": "Sophia",
+    "last_name": "von Bergen",
+    "email_prefix": "sophia.vonbergen",
+    "phone": "+41 79 100 0017",
+    "device": "desktop",
+    "traits": ["luxury", "perfectionist", "white_glove_service"],
+    "budget": "high",
+    "urgency": "low",
+    "trust_level": "high",
+    "goal": {
+      "primary": "book_premium_full_service",
+      "services_wanted": ["umzug", "reinigung", "packing", "lagerung", "concierge"],
+      "description": "Expects white-glove service. Everything handled. Price is not a concern.",
+      "must_have": ["umzug", "reinigung", "packing"],
+      "nice_to_have": ["lagerung", "handyman", "it_setup"]
+    },
+    "click_bias_weights": {
+      "main_cta": 0.85,
+      "secondary": 0.12,
+      "escape": 0.03
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "diy-helper",
+    "name": "DIY Mover (Felix)",
+    "language": "de",
+    "first_name": "Felix",
+    "last_name": "Wyss",
+    "email_prefix": "felix.wyss",
+    "phone": "+41 79 100 0018",
+    "device": "mobile",
+    "traits": ["diy", "cost_minimizer", "hands_on"],
+    "budget": "low",
+    "urgency": "medium",
+    "trust_level": "medium",
+    "goal": {
+      "primary": "book_partial_help",
+      "services_wanted": ["umzug"],
+      "description": "Will pack and prepare everything. Just needs help with heavy lifting and transport.",
+      "must_have": ["umzug"],
+      "nice_to_have": []
+    },
+    "click_bias_weights": {
+      "main_cta": 0.55,
+      "secondary": 0.30,
+      "escape": 0.15
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "young-couple",
+    "name": "Young Couple (Lena & Tim)",
+    "language": "de",
+    "first_name": "Lena",
+    "last_name": "Graf",
+    "email_prefix": "lena.graf",
+    "phone": "+41 79 100 0019",
+    "device": "mobile",
+    "traits": ["first_move", "budget_conscious", "tech_savvy"],
+    "budget": "low",
+    "urgency": "medium",
+    "trust_level": "medium",
+    "goal": {
+      "primary": "book_affordable_move",
+      "services_wanted": ["umzug"],
+      "description": "First apartment move. Small household. Looking for affordable, reliable service.",
+      "must_have": ["umzug"],
+      "nice_to_have": ["reinigung"]
+    },
+    "click_bias_weights": {
+      "main_cta": 0.60,
+      "secondary": 0.28,
+      "escape": 0.12
+    },
+    "enabled": true
+  },
+  {
+    "persona_id": "chaos-bot",
+    "name": "Chaos Bot (Random)",
+    "language": "de",
+    "first_name": "Test",
+    "last_name": "Bot",
+    "email_prefix": "chaos.bot",
+    "phone": "+41 79 999 9999",
+    "device": "mobile",
+    "traits": ["random", "unpredictable", "edge_case_tester"],
+    "budget": "medium",
+    "urgency": "medium",
+    "trust_level": "medium",
+    "goal": {
+      "primary": "random_exploration",
+      "services_wanted": [],
+      "description": "Random exploration bot. Tests edge cases and error handling. No specific goal.",
+      "must_have": [],
+      "nice_to_have": []
+    },
+    "click_bias_weights": {
+      "main_cta": 0.33,
+      "secondary": 0.33,
+      "escape": 0.34
+    },
+    "enabled": true
+  }
+]

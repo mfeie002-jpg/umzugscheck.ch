@@ -1,0 +1,356 @@
+[
+  {
+    "gateway_id": "gw_home",
+    "keyword_cluster": "umzugscheck",
+    "landing_url": "https://umzugscheck.ch/",
+    "intent": "Marketing funnel entry",
+    "language": "de",
+    "expected_outcomes": [
+      "move_only"
+    ],
+    "top_user_intents": [
+      "umzug buchen",
+      "angebot vergleichen",
+      "beratung"
+    ],
+    "priority_weight": 10,
+    "enabled": true
+  },
+  {
+    "gateway_id": "gw_umzugsfirmen_schweiz",
+    "keyword_cluster": "umzugsfirmen-schweiz",
+    "landing_url": "https://umzugscheck.ch/umzugsfirmen-schweiz",
+    "intent": "Marketing funnel entry",
+    "language": "de",
+    "expected_outcomes": [
+      "move_only",
+      "move_cleaning"
+    ],
+    "top_user_intents": [
+      "umzugsfirma finden",
+      "offerte",
+      "bewertungen"
+    ],
+    "priority_weight": 9,
+    "enabled": true
+  },
+  {
+    "gateway_id": "gw_umzugsofferten",
+    "keyword_cluster": "umzugsofferten",
+    "landing_url": "https://umzugscheck.ch/umzugsofferten",
+    "intent": "Marketing funnel entry",
+    "language": "de",
+    "expected_outcomes": [
+      "pricing_compare",
+      "move_only"
+    ],
+    "top_user_intents": [
+      "offerten erhalten",
+      "anbieter vergleichen",
+      "umzug buchen"
+    ],
+    "priority_weight": 9,
+    "enabled": true
+  },
+  {
+    "gateway_id": "gw_beste_umzugsfirma",
+    "keyword_cluster": "beste-umzugsfirma",
+    "landing_url": "https://umzugscheck.ch/beste-umzugsfirma",
+    "intent": "Marketing funnel entry",
+    "language": "de",
+    "expected_outcomes": [
+      "move_only"
+    ],
+    "top_user_intents": [
+      "umzug buchen",
+      "angebot vergleichen",
+      "beratung"
+    ],
+    "priority_weight": 9,
+    "enabled": true
+  },
+  {
+    "gateway_id": "gw_guenstige_umzugsfirma",
+    "keyword_cluster": "guenstige-umzugsfirma",
+    "landing_url": "https://umzugscheck.ch/guenstige-umzugsfirma",
+    "intent": "Marketing funnel entry",
+    "language": "de",
+    "expected_outcomes": [
+      "move_only"
+    ],
+    "top_user_intents": [
+      "umzug buchen",
+      "angebot vergleichen",
+      "beratung"
+    ],
+    "priority_weight": 9,
+    "enabled": true
+  },
+  {
+    "gateway_id": "gw_preisrechner",
+    "keyword_cluster": "preisrechner",
+    "landing_url": "https://umzugscheck.ch/preisrechner",
+    "intent": "Marketing funnel entry",
+    "language": "de",
+    "expected_outcomes": [
+      "pricing_compare",
+      "move_only"
+    ],
+    "top_user_intents": [
+      "kosten berechnen",
+      "preis",
+      "offerte"
+    ],
+    "priority_weight": 9,
+    "enabled": true
+  },
+  {
+    "gateway_id": "gw_umzugsfirmen_basel",
+    "keyword_cluster": "umzugsfirmen/basel",
+    "landing_url": "https://umzugscheck.ch/umzugsfirmen/basel",
+    "intent": "Marketing funnel entry",
+    "language": "de",
+    "expected_outcomes": [
+      "move_only",
+      "move_cleaning"
+    ],
+    "top_user_intents": [
+      "umzugsfirma finden",
+      "offerte",
+      "bewertungen"
+    ],
+    "priority_weight": 9,
+    "enabled": true
+  },
+  {
+    "gateway_id": "gw_umzugsfirmen_bern",
+    "keyword_cluster": "umzugsfirmen/bern",
+    "landing_url": "https://umzugscheck.ch/umzugsfirmen/bern",
+    "intent": "Marketing funnel entry",
+    "language": "de",
+    "expected_outcomes": [
+      "move_only",
+      "move_cleaning"
+    ],
+    "top_user_intents": [
+      "umzugsfirma finden",
+      "offerte",
+      "bewertungen"
+    ],
+    "priority_weight": 9,
+    "enabled": true
+  },
+  {
+    "gateway_id": "gw_umzugsfirmen_genf",
+    "keyword_cluster": "umzugsfirmen/genf",
+    "landing_url": "https://umzugscheck.ch/umzugsfirmen/genf",
+    "intent": "Marketing funnel entry",
+    "language": "de",
+    "expected_outcomes": [
+      "move_only",
+      "move_cleaning"
+    ],
+    "top_user_intents": [
+      "umzugsfirma finden",
+      "offerte",
+      "bewertungen"
+    ],
+    "priority_weight": 9,
+    "enabled": true
+  },
+  {
+    "gateway_id": "gw_umzugsfirmen_kanton_basel_stadt",
+    "keyword_cluster": "umzugsfirmen/kanton-basel-stadt",
+    "landing_url": "https://umzugscheck.ch/umzugsfirmen/kanton-basel-stadt",
+    "intent": "Marketing funnel entry",
+    "language": "de",
+    "expected_outcomes": [
+      "move_only",
+      "move_cleaning"
+    ],
+    "top_user_intents": [
+      "umzugsfirma finden",
+      "offerte",
+      "bewertungen"
+    ],
+    "priority_weight": 9,
+    "enabled": true
+  },
+  {
+    "gateway_id": "gw_umzugsfirmen_kanton_bern",
+    "keyword_cluster": "umzugsfirmen/kanton-bern",
+    "landing_url": "https://umzugscheck.ch/umzugsfirmen/kanton-bern",
+    "intent": "Marketing funnel entry",
+    "language": "de",
+    "expected_outcomes": [
+      "move_only",
+      "move_cleaning"
+    ],
+    "top_user_intents": [
+      "umzugsfirma finden",
+      "offerte",
+      "bewertungen"
+    ],
+    "priority_weight": 9,
+    "enabled": true
+  },
+  {
+    "gateway_id": "gw_umzugsfirmen_kanton_genf",
+    "keyword_cluster": "umzugsfirmen/kanton-genf",
+    "landing_url": "https://umzugscheck.ch/umzugsfirmen/kanton-genf",
+    "intent": "Marketing funnel entry",
+    "language": "de",
+    "expected_outcomes": [
+      "move_only",
+      "move_cleaning"
+    ],
+    "top_user_intents": [
+      "umzugsfirma finden",
+      "offerte",
+      "bewertungen"
+    ],
+    "priority_weight": 9,
+    "enabled": true
+  },
+  {
+    "gateway_id": "gw_umzugsfirmen_kanton_zuerich",
+    "keyword_cluster": "umzugsfirmen/kanton-zuerich",
+    "landing_url": "https://umzugscheck.ch/umzugsfirmen/kanton-zuerich",
+    "intent": "Marketing funnel entry",
+    "language": "de",
+    "expected_outcomes": [
+      "move_only",
+      "move_cleaning"
+    ],
+    "top_user_intents": [
+      "umzugsfirma finden",
+      "offerte",
+      "bewertungen"
+    ],
+    "priority_weight": 9,
+    "enabled": true
+  },
+  {
+    "gateway_id": "gw_umzugsfirmen_zuerich",
+    "keyword_cluster": "umzugsfirmen/zuerich",
+    "landing_url": "https://umzugscheck.ch/umzugsfirmen/zuerich",
+    "intent": "Marketing funnel entry",
+    "language": "de",
+    "expected_outcomes": [
+      "move_only",
+      "move_cleaning"
+    ],
+    "top_user_intents": [
+      "umzugsfirma finden",
+      "offerte",
+      "bewertungen"
+    ],
+    "priority_weight": 9,
+    "enabled": true
+  },
+  {
+    "gateway_id": "gw_entsorgungsrechner",
+    "keyword_cluster": "entsorgungsrechner",
+    "landing_url": "https://umzugscheck.ch/entsorgungsrechner",
+    "intent": "Marketing funnel entry",
+    "language": "de",
+    "expected_outcomes": [
+      "disposal"
+    ],
+    "top_user_intents": [
+      "entsorgung",
+      "entruempelung",
+      "kosten"
+    ],
+    "priority_weight": 8,
+    "enabled": true
+  },
+  {
+    "gateway_id": "gw_firmen",
+    "keyword_cluster": "firmen",
+    "landing_url": "https://umzugscheck.ch/firmen",
+    "intent": "Marketing funnel entry",
+    "language": "de",
+    "expected_outcomes": [
+      "move_only"
+    ],
+    "top_user_intents": [
+      "umzug buchen",
+      "angebot vergleichen",
+      "beratung"
+    ],
+    "priority_weight": 8,
+    "enabled": true
+  },
+  {
+    "gateway_id": "gw_reinigungsrechner",
+    "keyword_cluster": "reinigungsrechner",
+    "landing_url": "https://umzugscheck.ch/reinigungsrechner",
+    "intent": "Marketing funnel entry",
+    "language": "de",
+    "expected_outcomes": [
+      "cleaning_only"
+    ],
+    "top_user_intents": [
+      "endreinigung",
+      "reinigungsfirma",
+      "offerte"
+    ],
+    "priority_weight": 8,
+    "enabled": true
+  },
+  {
+    "gateway_id": "gw_umzugsfirmen_kanton_aargau",
+    "keyword_cluster": "umzugsfirmen/kanton-aargau",
+    "landing_url": "https://umzugscheck.ch/umzugsfirmen/kanton-aargau",
+    "intent": "Marketing funnel entry",
+    "language": "de",
+    "expected_outcomes": [
+      "move_only",
+      "move_cleaning"
+    ],
+    "top_user_intents": [
+      "umzugsfirma finden",
+      "offerte",
+      "bewertungen"
+    ],
+    "priority_weight": 8,
+    "enabled": true
+  },
+  {
+    "gateway_id": "gw_umzugsfirmen_kanton_luzern",
+    "keyword_cluster": "umzugsfirmen/kanton-luzern",
+    "landing_url": "https://umzugscheck.ch/umzugsfirmen/kanton-luzern",
+    "intent": "Marketing funnel entry",
+    "language": "de",
+    "expected_outcomes": [
+      "move_only",
+      "move_cleaning"
+    ],
+    "top_user_intents": [
+      "umzugsfirma finden",
+      "offerte",
+      "bewertungen"
+    ],
+    "priority_weight": 8,
+    "enabled": true
+  },
+  {
+    "gateway_id": "gw_umzugsfirmen_kanton_st_gallen",
+    "keyword_cluster": "umzugsfirmen/kanton-st-gallen",
+    "landing_url": "https://umzugscheck.ch/umzugsfirmen/kanton-st-gallen",
+    "intent": "Marketing funnel entry",
+    "language": "de",
+    "expected_outcomes": [
+      "move_only",
+      "move_cleaning"
+    ],
+    "top_user_intents": [
+      "umzugsfirma finden",
+      "offerte",
+      "bewertungen"
+    ],
+    "priority_weight": 8,
+    "enabled": true
+  }
+]

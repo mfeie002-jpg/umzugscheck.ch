@@ -1,0 +1,203 @@
+[
+  {
+    "gateway_id": "homepage",
+    "name": "Homepage (Direct/Brand)",
+    "landing_url": "https://www.umzugscheck.ch",
+    "language": "de",
+    "intent": "general_moving",
+    "keyword_cluster": "umzugscheck, umzug schweiz, zügelfirma",
+    "expected_ctas": ["Offerte anfragen", "Preisvergleich", "Services"],
+    "priority_weight": 10,
+    "enabled": true
+  },
+  {
+    "gateway_id": "umzug-bern-guenstig",
+    "name": "Günstiger Umzug Bern",
+    "landing_url": "https://www.umzugscheck.ch/umzug-bern",
+    "language": "de",
+    "intent": "Günstiger Umzug Bern",
+    "keyword_cluster": "umzug bern günstig, preiswert zügeln bern",
+    "priority_weight": 8,
+    "enabled": true
+  },
+  {
+    "gateway_id": "demenagement-geneve",
+    "name": "Déménagement Genève",
+    "landing_url": "https://www.umzugscheck.ch/fr/demenagement-geneve",
+    "language": "fr",
+    "intent": "Déménagement Genève",
+    "keyword_cluster": "déménagement genève, déménageurs genève",
+    "priority_weight": 9,
+    "enabled": true
+  },
+  {
+    "gateway_id": "trasloco-lugano",
+    "name": "Trasloco Lugano",
+    "landing_url": "https://www.umzugscheck.ch/it/trasloco-lugano",
+    "language": "it",
+    "intent": "Trasloco Lugano",
+    "keyword_cluster": "trasloco lugano, traslocatori lugano",
+    "priority_weight": 6,
+    "enabled": true
+  },
+  {
+    "gateway_id": "moving-zurich-expat",
+    "name": "Expat Moving Zurich",
+    "landing_url": "https://www.umzugscheck.ch/en/moving-zurich",
+    "language": "en",
+    "intent": "International move Zurich",
+    "keyword_cluster": "moving to zurich, expat relocation zurich",
+    "priority_weight": 7,
+    "enabled": true
+  },
+  {
+    "gateway_id": "reinigung-umzug-zuerich",
+    "name": "Endreinigung Zürich",
+    "landing_url": "https://www.umzugscheck.ch/endreinigung-zuerich",
+    "language": "de",
+    "intent": "Endreinigung nach Umzug",
+    "keyword_cluster": "endreinigung zürich, wohnungsreinigung umzug",
+    "priority_weight": 5,
+    "enabled": true
+  },
+  {
+    "gateway_id": "bueroumzug-basel",
+    "name": "Büroumzug Basel",
+    "landing_url": "https://www.umzugscheck.ch/bueroumzug-basel",
+    "language": "de",
+    "intent": "Geschäftsumzug Basel",
+    "keyword_cluster": "büroumzug basel, firmenumzug basel",
+    "priority_weight": 8,
+    "enabled": true
+  },
+  {
+    "gateway_id": "klaviertransport-schweiz",
+    "name": "Klaviertransport Schweiz",
+    "landing_url": "https://www.umzugscheck.ch/klaviertransport",
+    "language": "de",
+    "intent": "Spezialtransport Klavier",
+    "keyword_cluster": "klavier transportieren, flügeltransport schweiz",
+    "priority_weight": 3,
+    "enabled": true
+  },
+  {
+    "gateway_id": "lagerraum-zuerich",
+    "name": "Lagerraum Zürich",
+    "landing_url": "https://www.umzugscheck.ch/lagerraum-zuerich",
+    "language": "de",
+    "intent": "Möbellagerung Zürich",
+    "keyword_cluster": "lagerraum zürich, möbel einlagern zürich",
+    "priority_weight": 4,
+    "enabled": true
+  },
+  {
+    "gateway_id": "umzug-winterthur",
+    "name": "Umzug Winterthur",
+    "landing_url": "https://www.umzugscheck.ch/umzug-winterthur",
+    "language": "de",
+    "intent": "Umzug Winterthur",
+    "keyword_cluster": "umzug winterthur, zügelfirma winterthur",
+    "priority_weight": 6,
+    "enabled": true
+  },
+  {
+    "gateway_id": "demenagement-lausanne",
+    "name": "Déménagement Lausanne",
+    "landing_url": "https://www.umzugscheck.ch/fr/demenagement-lausanne",
+    "language": "fr",
+    "intent": "Déménagement Lausanne",
+    "keyword_cluster": "déménagement lausanne, déménageurs vaud",
+    "priority_weight": 7,
+    "enabled": true
+  },
+  {
+    "gateway_id": "notfall-umzug-zuerich",
+    "name": "Notfallumzug Zürich",
+    "landing_url": "https://www.umzugscheck.ch/notfallumzug-zuerich",
+    "language": "de",
+    "intent": "Dringender Umzug",
+    "keyword_cluster": "notfallumzug, umzug kurzfristig zürich",
+    "priority_weight": 9,
+    "enabled": true
+  },
+  {
+    "gateway_id": "umzug-st-gallen",
+    "name": "Umzug St. Gallen",
+    "landing_url": "https://www.umzugscheck.ch/umzug-st-gallen",
+    "language": "de",
+    "intent": "Umzug St. Gallen",
+    "keyword_cluster": "umzug st gallen, zügelfirma ostschweiz",
+    "priority_weight": 5,
+    "enabled": true
+  },
+  {
+    "gateway_id": "senioren-umzug",
+    "name": "Seniorenumzug",
+    "landing_url": "https://www.umzugscheck.ch/seniorenumzug",
+    "language": "de",
+    "intent": "Umzug für Senioren",
+    "keyword_cluster": "seniorenumzug, umzug altersheim",
+    "priority_weight": 6,
+    "enabled": true
+  },
+  {
+    "gateway_id": "studenten-umzug-zuerich",
+    "name": "Studentenumzug Zürich",
+    "landing_url": "https://www.umzugscheck.ch/studentenumzug-zuerich",
+    "language": "de",
+    "intent": "Günstiger Studentenumzug",
+    "keyword_cluster": "studentenumzug zürich, wg umzug günstig",
+    "priority_weight": 7,
+    "enabled": true
+  },
+  {
+    "gateway_id": "umzug-ins-ausland",
+    "name": "Umzug ins Ausland",
+    "landing_url": "https://www.umzugscheck.ch/international-umzug",
+    "language": "de",
+    "intent": "Internationaler Umzug",
+    "keyword_cluster": "umzug ins ausland, internationale spedition",
+    "priority_weight": 8,
+    "enabled": true
+  },
+  {
+    "gateway_id": "entsorgung-umzug",
+    "name": "Entsorgung bei Umzug",
+    "landing_url": "https://www.umzugscheck.ch/entsorgung-umzug",
+    "language": "de",
+    "intent": "Möbelentsorgung Umzug",
+    "keyword_cluster": "möbel entsorgen umzug, räumung wohnung",
+    "priority_weight": 4,
+    "enabled": true
+  },
+  {
+    "gateway_id": "packmaterial-umzug",
+    "name": "Packmaterial Umzug",
+    "landing_url": "https://www.umzugscheck.ch/packmaterial",
+    "language": "de",
+    "intent": "Umzugskartons kaufen",
+    "keyword_cluster": "umzugskartons, packmaterial zürich",
+    "priority_weight": 3,
+    "enabled": true
+  },
+  {
+    "gateway_id": "umzug-wochenende",
+    "name": "Umzug am Wochenende",
+    "landing_url": "https://www.umzugscheck.ch/umzug-wochenende",
+    "language": "de",
+    "intent": "Umzug Samstag/Sonntag",
+    "keyword_cluster": "umzug wochenende, zügeln samstag",
+    "priority_weight": 7,
+    "enabled": true
+  },
+  {
+    "gateway_id": "demenagement-fribourg",
+    "name": "Déménagement Fribourg",
+    "landing_url": "https://www.umzugscheck.ch/fr/demenagement-fribourg",
+    "language": "fr",
+    "intent": "Déménagement Fribourg",
+    "keyword_cluster": "déménagement fribourg, déménageurs fribourg",
+    "priority_weight": 5,
+    "enabled": true
+  }
+]

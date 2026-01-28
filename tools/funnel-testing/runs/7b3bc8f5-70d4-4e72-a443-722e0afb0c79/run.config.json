@@ -1,0 +1,68 @@
+{
+  "run_id": "7b3bc8f5-70d4-4e72-a443-722e0afb0c79",
+  "seed": "marketing_test_002",
+  "gateway": {
+    "gateway_id": "klaviertransport",
+    "name": "Klaviertransport",
+    "landing_url": "https://www.umzugscheck.ch/klaviertransport",
+    "language": "de",
+    "intent": "book_piano_transport",
+    "keyword_cluster": "klaviertransport, flügeltransport, klavier umzug",
+    "expected_ctas": [
+      "Klaviertransport Offerte",
+      "Spezialumzug"
+    ],
+    "traffic_volume": "low",
+    "primary_business_models": [
+      "umzug",
+      "special"
+    ],
+    "priority_weight": 5,
+    "enabled": true
+  },
+  "persona": {
+    "persona_id": "piano-owner",
+    "name": "Piano Owner (Thomas)",
+    "language": "de",
+    "first_name": "Thomas",
+    "last_name": "Zimmermann",
+    "email_prefix": "thomas.zimmermann",
+    "phone": "+41 79 100 0007",
+    "device": "desktop",
+    "traits": [
+      "special_item",
+      "risk_averse",
+      "quality_focused"
+    ],
+    "budget": "high",
+    "urgency": "low",
+    "trust_level": "high",
+    "goal": {
+      "primary": "book_piano_transport",
+      "services_wanted": [
+        "umzug",
+        "special"
+      ],
+      "description": "Has grand piano. Needs specialist transport + regular household move.",
+      "must_have": [
+        "umzug"
+      ],
+      "nice_to_have": [
+        "reinigung"
+      ]
+    },
+    "click_bias_weights": {
+      "main_cta": 0.8,
+      "secondary": 0.15,
+      "escape": 0.05
+    },
+    "enabled": true
+  },
+  "policy": "RealisticWeighted",
+  "timestamp": "2026-01-28T21:52:48.413Z",
+  "maxSteps": 20,
+  "maxTimeMs": 120000,
+  "dryRun": true,
+  "captureTrace": false,
+  "captureNetworkHar": false
+}

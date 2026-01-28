@@ -1,0 +1,56 @@
+{
+  "gateway": {
+    "gateway_id": "umzug-basel",
+    "name": "Umzug Basel",
+    "landing_url": "https://www.umzugscheck.ch/umzug-basel",
+    "language": "de",
+    "intent": "book_move_basel",
+    "keyword_cluster": "umzug basel, zügelfirma basel, umzugsunternehmen basel",
+    "expected_ctas": [
+      "Offerte Basel",
+      "Umzugsfirmen vergleichen"
+    ],
+    "traffic_volume": "medium",
+    "primary_business_models": [
+      "umzug"
+    ],
+    "priority_weight": 8,
+    "enabled": true
+  },
+  "persona": {
+    "persona_id": "diy-helper",
+    "name": "DIY Mover (Felix)",
+    "language": "de",
+    "first_name": "Felix",
+    "last_name": "Wyss",
+    "email_prefix": "felix.wyss",
+    "phone": "+41 79 100 0018",
+    "device": "mobile",
+    "traits": [
+      "diy",
+      "cost_minimizer",
+      "hands_on"
+    ],
+    "budget": "low",
+    "urgency": "medium",
+    "trust_level": "medium",
+    "goal": {
+      "primary": "book_partial_help",
+      "services_wanted": [
+        "umzug"
+      ],
+      "description": "Will pack and prepare everything. Just needs help with heavy lifting and transport.",
+      "must_have": [
+        "umzug"
+      ],
+      "nice_to_have": []
+    },
+    "click_bias_weights": {
+      "main_cta": 0.55,
+      "secondary": 0.3,
+      "escape": 0.15
+    },
+    "enabled": true
+  },
+  "policy": "RealisticWeighted"
+}

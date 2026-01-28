@@ -1,0 +1,85 @@
+{
+  "run_id": "ada3b97a-579a-4017-99b3-a741f68eeb55",
+  "config": {
+    "run_id": "ada3b97a-579a-4017-99b3-a741f68eeb55",
+    "seed": "final_validation_001",
+    "gateway": {
+      "gateway_id": "guenstiger-umzug",
+      "name": "Günstiger Umzug",
+      "landing_url": "https://www.umzugscheck.ch/guenstiger-umzug",
+      "language": "de",
+      "intent": "find_cheap_move",
+      "keyword_cluster": "günstiger umzug, billiger umzug, umzug preiswert, budget umzug",
+      "expected_ctas": [
+        "Budget-Offerte",
+        "Sparangebote"
+      ],
+      "traffic_volume": "high",
+      "primary_business_models": [
+        "umzug"
+      ],
+      "priority_weight": 9,
+      "enabled": true
+    },
+    "persona": {
+      "persona_id": "comparison-queen",
+      "name": "Comparison Shopper (Julia)",
+      "language": "de",
+      "first_name": "Julia",
+      "last_name": "Steiner",
+      "email_prefix": "julia.steiner",
+      "phone": "+41 79 100 0009",
+      "device": "desktop",
+      "traits": [
+        "research_heavy",
+        "comparison_focused",
+        "price_sensitive"
+      ],
+      "budget": "medium",
+      "urgency": "low",
+      "trust_level": "low",
+      "goal": {
+        "primary": "compare_options",
+        "services_wanted": [
+          "umzug"
+        ],
+        "description": "Wants to compare at least 5 quotes before deciding. Exploring all options.",
+        "must_have": [
+          "umzug"
+        ],
+        "nice_to_have": [
+          "reinigung"
+        ]
+      },
+      "click_bias_weights": {
+        "main_cta": 0.4,
+        "secondary": 0.45,
+        "escape": 0.15
+      },
+      "enabled": true
+    },
+    "policy": "ChaosMonkey",
+    "timestamp": "2026-01-28T21:58:12.924Z",
+    "maxSteps": 20,
+    "maxTimeMs": 120000,
+    "dryRun": true,
+    "captureTrace": false,
+    "captureNetworkHar": false
+  },
+  "steps": [
+    {
+      "stepNumber": 1,
+      "action": "fill",
+      "text": "Filled form fields with test data",
+      "timestamp": 8257,
+      "success": true
+    }
+  ],
+  "detectedCtAs": [],
+  "trustSignals": [],
+  "conversionConfidence": 10,
+  "verdict": "blocker",
+  "dropoffReason": "No clickable CTAs detected - Dead end",
+  "totalTimeMs": 8257,
+  "stepsCompleted": 1
+}
