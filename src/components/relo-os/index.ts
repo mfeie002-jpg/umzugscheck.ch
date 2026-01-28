@@ -20,6 +20,7 @@ export { InventoryOrchestrator } from './InventoryOrchestrator';
 export { ServiceTierSelector } from './ServiceTierSelector';
 export { DynamicPriceDisplay } from './DynamicPriceDisplay';
 export { GuaranteedPriceCard } from './GuaranteedPriceCard';
+export { QuoteOrchestrator } from './QuoteOrchestrator';
 
 // Phase 4: Matching (Quality-Weighted Bidding)
 export { ProviderMatchCard } from './ProviderMatchCard';
