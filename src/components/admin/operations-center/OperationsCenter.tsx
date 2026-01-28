@@ -1,6 +1,6 @@
 /**
  * Command Center - Central Operations Dashboard
- * 10 Module Overview for Multi-Brand Portfolio
+ * Mobile-First Design with Touch-Optimized UX
  */
 
 import { useState } from 'react';
@@ -8,7 +8,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
 import { 
   LayoutDashboard, 
   TrendingUp, 
@@ -23,7 +24,11 @@ import {
   RefreshCw,
   Building2,
   HelpCircle,
-  Info
+  Info,
+  Menu,
+  Phone,
+  X,
+  ChevronRight
 } from 'lucide-react';
 
 import { BrandPerformanceModule } from '@/components/admin/operations-center/modules/BrandPerformanceModule';
@@ -38,24 +43,26 @@ import { ScenarioSimulatorModule } from '@/components/admin/operations-center/mo
 import { WeeklySummaryModule } from '@/components/admin/operations-center/modules/WeeklySummaryModule';
 import { ModuleHeader, MODULE_CONFIGS } from './ModuleHeader';
 
-// Tab definitions with tooltips
+// Tab definitions
 const TABS = [
-  { value: 'overview', label: 'Übersicht', icon: LayoutDashboard, tooltip: 'Schnellübersicht aller wichtigen Metriken auf einen Blick' },
-  { value: 'brands', label: 'Marken', icon: Building2, tooltip: 'Performance der 3 Marken: Feierabend, Umzugexpress, Zügelhelden' },
-  { value: 'routing', label: 'Routing', icon: Route, tooltip: 'Automatische Lead-Verteilung basierend auf Score und Wert' },
-  { value: 'capacity', label: 'Kapazität', icon: Users, tooltip: 'Crew-Auslastung und Verfügbarkeit planen' },
-  { value: 'killswitch', label: 'Kill Switch', icon: AlertTriangle, tooltip: 'Automatische Notfall-Stopps bei kritischen Metriken' },
-  { value: 'forecast', label: 'Prognose', icon: TrendingUp, tooltip: '6-Monats Revenue-Vorhersage nach Marke' },
-  { value: 'partners', label: 'Partner', icon: Users, tooltip: 'Marketplace Partner Status und Performance' },
-  { value: 'funnel', label: 'Funnel', icon: Target, tooltip: 'Conversion Rates von Website bis Buchung' },
-  { value: 'costs', label: 'Kosten', icon: DollarSign, tooltip: 'Kostenstruktur und Unit Economics pro Job' },
-  { value: 'simulator', label: 'Simulator', icon: Calculator, tooltip: 'What-if Analyse: Teste verschiedene Szenarien' },
+  { value: 'overview', label: 'Übersicht', icon: LayoutDashboard, tooltip: 'Schnellübersicht' },
+  { value: 'brands', label: 'Marken', icon: Building2, tooltip: '3 Marken Performance' },
+  { value: 'routing', label: 'Routing', icon: Route, tooltip: 'Lead-Verteilung' },
+  { value: 'capacity', label: 'Kapazität', icon: Users, tooltip: 'Crew-Auslastung' },
+  { value: 'killswitch', label: 'Kill Switch', icon: AlertTriangle, tooltip: 'Notfall-Stopps' },
+  { value: 'forecast', label: 'Prognose', icon: TrendingUp, tooltip: 'Revenue-Vorhersage' },
+  { value: 'partners', label: 'Partner', icon: Users, tooltip: 'Marketplace Partner' },
+  { value: 'funnel', label: 'Funnel', icon: Target, tooltip: 'Conversion Rates' },
+  { value: 'costs', label: 'Kosten', icon: DollarSign, tooltip: 'Unit Economics' },
+  { value: 'simulator', label: 'Simulator', icon: Calculator, tooltip: 'What-if Analyse' },
 ];
 
 export function CommandCenter() {
   const [lastRefresh, setLastRefresh] = useState(new Date());
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
+  const [activeTab, setActiveTab] = useState('overview');
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
@@ -64,380 +71,419 @@ export function CommandCenter() {
     setIsRefreshing(false);
   };
 
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+    setMobileNavOpen(false);
+  };
+
   return (
-    <TooltipProvider>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold flex items-center gap-3">
-              <LayoutDashboard className="h-8 w-8 text-primary" />
+    <div className="min-h-screen pb-20 md:pb-4">
+      {/* Mobile Header - Compact & Touch-Friendly */}
+      <div className="sticky top-0 z-40 bg-background/95 backdrop-blur border-b md:relative md:border-0">
+        <div className="flex items-center justify-between p-3 md:p-0">
+          {/* Mobile: Compact title */}
+          <div className="flex items-center gap-2 md:hidden">
+            <LayoutDashboard className="h-6 w-6 text-primary" />
+            <span className="font-bold">Ops Center</span>
+          </div>
+          
+          {/* Desktop: Full header */}
+          <div className="hidden md:block">
+            <h1 className="text-2xl lg:text-3xl font-bold flex items-center gap-3">
+              <LayoutDashboard className="h-7 w-7 lg:h-8 lg:w-8 text-primary" />
               Operations Center
             </h1>
-            <p className="text-muted-foreground mt-1">
-              Multi-Brand Operations Dashboard • 3 Marken • Live Monitoring
+            <p className="text-muted-foreground text-sm mt-1">
+              Multi-Brand Dashboard • Live Monitoring
             </p>
           </div>
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-muted-foreground">
-              Letzte Aktualisierung: {lastRefresh.toLocaleTimeString('de-CH')}
-            </span>
-            <Button onClick={handleRefresh} disabled={isRefreshing} size="sm">
-              <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
-              Aktualisieren
-            </Button>
-          </div>
-        </div>
 
-        {/* Intro Card */}
-        {showIntro && (
-          <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border-blue-200 dark:border-blue-800">
-            <CardContent className="pt-4">
-              <div className="flex items-start justify-between">
-                <div className="flex items-start gap-4">
-                  <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
-                    <Info className="h-6 w-6 text-blue-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Willkommen im Operations Center!</h3>
-                    <p className="text-sm text-muted-foreground max-w-2xl">
-                      Dies ist deine Zentrale für alle Business-Metriken. Nutze die <strong>Tabs oben</strong> um 
-                      zwischen Modulen zu wechseln. Jedes Modul hat einen <strong>"Wie funktioniert das?"</strong>-Button 
-                      mit detaillierten Erklärungen. Die <strong>Quick Stats</strong> unten zeigen die wichtigsten Zahlen 
-                      auf einen Blick - hovere für mehr Info.
-                    </p>
+          {/* Actions */}
+          <div className="flex items-center gap-2">
+            <Button 
+              onClick={handleRefresh} 
+              disabled={isRefreshing} 
+              size="sm"
+              variant="ghost"
+              className="h-10 w-10 p-0 md:h-9 md:w-auto md:px-3"
+            >
+              <RefreshCw className={`h-5 w-5 md:h-4 md:w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+              <span className="hidden md:inline md:ml-2">Aktualisieren</span>
+            </Button>
+            
+            {/* Mobile Nav Toggle */}
+            <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
+              <SheetTrigger asChild>
+                <Button variant="outline" size="sm" className="h-10 w-10 p-0 md:hidden">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="bottom" className="h-[70vh] rounded-t-2xl">
+                <SheetTitle className="sr-only">Navigation</SheetTitle>
+                <div className="pt-4">
+                  <h3 className="font-bold text-lg mb-4">Module</h3>
+                  <div className="space-y-1">
+                    {TABS.map((tab) => (
+                      <button
+                        key={tab.value}
+                        onClick={() => handleTabChange(tab.value)}
+                        className={`w-full flex items-center gap-3 p-4 rounded-xl transition-colors min-h-[56px]
+                          ${activeTab === tab.value 
+                            ? 'bg-primary text-primary-foreground' 
+                            : 'hover:bg-muted active:bg-muted/80'
+                          }`}
+                      >
+                        <tab.icon className="h-5 w-5 flex-shrink-0" />
+                        <div className="flex-1 text-left">
+                          <p className="font-medium">{tab.label}</p>
+                          <p className={`text-xs ${activeTab === tab.value ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>
+                            {tab.tooltip}
+                          </p>
+                        </div>
+                        <ChevronRight className="h-5 w-5 opacity-50" />
+                      </button>
+                    ))}
                   </div>
                 </div>
-                <Button variant="ghost" size="sm" onClick={() => setShowIntro(false)}>
-                  Verstanden
+              </SheetContent>
+            </Sheet>
+          </div>
+        </div>
+      </div>
+
+      <div className="p-3 md:p-0 md:pt-6 space-y-4 md:space-y-6">
+        {/* Intro Card - Collapsible on Mobile */}
+        {showIntro && (
+          <Card className="bg-primary/5 border-primary/20">
+            <CardContent className="p-4">
+              <div className="flex items-start gap-3">
+                <Info className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm">
+                    <span className="font-semibold">Willkommen!</span> Wische durch die <strong>Tabs</strong> oder tippe auf <strong>☰</strong> für alle Module.
+                  </p>
+                </div>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => setShowIntro(false)}
+                  className="h-8 w-8 p-0 flex-shrink-0"
+                >
+                  <X className="h-4 w-4" />
                 </Button>
               </div>
             </CardContent>
           </Card>
         )}
 
-        {/* Quick Stats Bar with Tooltips */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
-          <QuickStat 
-            icon={Building2} 
-            label="Marken" 
-            value="3" 
-            tooltip="Feierabend (Premium), Umzugexpress (Speed), Zügelhelden (Budget)"
-          />
-          <QuickStat 
-            icon={Users} 
-            label="Crews" 
-            value="1" 
-            tooltip="Aktive Umzugs-Teams. Bei >85% Auslastung für 4 Wochen → Crew #2 einstellen"
-          />
-          <QuickStat 
-            icon={Target} 
-            label="Jobs/Monat" 
-            value="26" 
-            tooltip="Geplante Jobs diesen Monat über alle 3 Marken"
-          />
-          <QuickStat 
-            icon={DollarSign} 
-            label="Ziel-Revenue" 
-            value="CHF 47K" 
-            tooltip="Monatliches Umsatzziel basierend auf 26 Jobs × Ø CHF 1'815"
-          />
-          <QuickStat 
-            icon={Gauge} 
-            label="Auslastung" 
-            value="85%" 
-            status="ok" 
-            tooltip="80-95% = Optimal. Unter 60% = Rabatte anbieten. Über 95% = Peak-Pricing"
-          />
-          <QuickStat 
-            icon={AlertTriangle} 
-            label="Kill Switches" 
-            value="0 aktiv" 
-            status="ok" 
-            tooltip="Automatische Notfall-Stopps. 0 = Alle Metriken im grünen Bereich"
-          />
+        {/* Quick Stats - 2x3 Grid on Mobile, 6 columns on Desktop */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 md:gap-3">
+          <QuickStatMobile icon={Building2} label="Marken" value="3" />
+          <QuickStatMobile icon={Users} label="Crews" value="1" />
+          <QuickStatMobile icon={Target} label="Jobs" value="26" />
+          <QuickStatMobile icon={DollarSign} label="Revenue" value="47K" />
+          <QuickStatMobile icon={Gauge} label="Auslastung" value="85%" status="ok" />
+          <QuickStatMobile icon={AlertTriangle} label="Alerts" value="0" status="ok" />
         </div>
 
-        {/* Main Tabs with Tooltips */}
-        <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid grid-cols-5 lg:grid-cols-10 w-full h-auto">
+        {/* Tab Navigation - Horizontal Scroll on Mobile */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          {/* Mobile: Horizontal Scroll Tabs */}
+          <div className="md:hidden -mx-3 px-3">
+            <ScrollArea className="w-full whitespace-nowrap">
+              <div className="flex gap-2 pb-2">
+                {TABS.map((tab) => (
+                  <button
+                    key={tab.value}
+                    onClick={() => setActiveTab(tab.value)}
+                    className={`flex items-center gap-2 px-4 py-3 rounded-full transition-colors min-h-[48px] flex-shrink-0
+                      ${activeTab === tab.value 
+                        ? 'bg-primary text-primary-foreground' 
+                        : 'bg-muted hover:bg-muted/80'
+                      }`}
+                  >
+                    <tab.icon className="h-4 w-4" />
+                    <span className="text-sm font-medium">{tab.label}</span>
+                  </button>
+                ))}
+              </div>
+              <ScrollBar orientation="horizontal" className="invisible" />
+            </ScrollArea>
+          </div>
+
+          {/* Desktop: Standard Tabs */}
+          <TabsList className="hidden md:grid md:grid-cols-5 lg:grid-cols-10 w-full h-auto">
             {TABS.map((tab) => (
-              <Tooltip key={tab.value}>
-                <TooltipTrigger asChild>
-                  <TabsTrigger value={tab.value} className="text-xs">
-                    <tab.icon className="h-3 w-3 mr-1" />
-                    {tab.label}
-                  </TabsTrigger>
-                </TooltipTrigger>
-                <TooltipContent side="bottom" className="max-w-xs">
-                  <p className="text-sm">{tab.tooltip}</p>
-                </TooltipContent>
-              </Tooltip>
+              <TabsTrigger 
+                key={tab.value} 
+                value={tab.value} 
+                className="text-xs py-2.5"
+              >
+                <tab.icon className="h-3.5 w-3.5 mr-1.5" />
+                {tab.label}
+              </TabsTrigger>
             ))}
           </TabsList>
 
-          <TabsContent value="overview" className="mt-6">
-            <OverviewIntro />
-            <OverviewGrid />
+          {/* Tab Contents */}
+          <TabsContent value="overview" className="mt-4 md:mt-6">
+            <OverviewIntroMobile />
+            <OverviewGridMobile />
           </TabsContent>
 
-          <TabsContent value="brands" className="mt-6">
+          <TabsContent value="brands" className="mt-4 md:mt-6">
             <ModuleHeader {...MODULE_CONFIGS.brands} icon={Building2} />
             <BrandPerformanceModule />
           </TabsContent>
 
-          <TabsContent value="routing" className="mt-6">
+          <TabsContent value="routing" className="mt-4 md:mt-6">
             <ModuleHeader {...MODULE_CONFIGS.routing} icon={Route} />
             <LeadRoutingModule />
           </TabsContent>
 
-          <TabsContent value="capacity" className="mt-6">
+          <TabsContent value="capacity" className="mt-4 md:mt-6">
             <ModuleHeader {...MODULE_CONFIGS.capacity} icon={Users} />
             <CapacityPlannerModule />
           </TabsContent>
 
-          <TabsContent value="killswitch" className="mt-6">
+          <TabsContent value="killswitch" className="mt-4 md:mt-6">
             <ModuleHeader {...MODULE_CONFIGS.killswitch} icon={AlertTriangle} />
             <KillSwitchModule />
           </TabsContent>
 
-          <TabsContent value="forecast" className="mt-6">
+          <TabsContent value="forecast" className="mt-4 md:mt-6">
             <ModuleHeader {...MODULE_CONFIGS.forecast} icon={TrendingUp} />
             <RevenueForecastModule />
           </TabsContent>
 
-          <TabsContent value="partners" className="mt-6">
+          <TabsContent value="partners" className="mt-4 md:mt-6">
             <ModuleHeader {...MODULE_CONFIGS.partners} icon={Users} />
             <PartnerNetworkModule />
           </TabsContent>
 
-          <TabsContent value="funnel" className="mt-6">
+          <TabsContent value="funnel" className="mt-4 md:mt-6">
             <ModuleHeader {...MODULE_CONFIGS.funnel} icon={Target} />
             <ConversionFunnelModule />
           </TabsContent>
 
-          <TabsContent value="costs" className="mt-6">
+          <TabsContent value="costs" className="mt-4 md:mt-6">
             <ModuleHeader {...MODULE_CONFIGS.costs} icon={DollarSign} />
             <CostStructureModule />
           </TabsContent>
 
-          <TabsContent value="simulator" className="mt-6">
+          <TabsContent value="simulator" className="mt-4 md:mt-6">
             <ModuleHeader {...MODULE_CONFIGS.simulator} icon={Calculator} />
             <ScenarioSimulatorModule />
           </TabsContent>
         </Tabs>
       </div>
-    </TooltipProvider>
+
+      {/* Mobile Bottom CTA - Call to Action */}
+      <div className="fixed bottom-0 left-0 right-0 p-3 bg-background/95 backdrop-blur border-t md:hidden safe-area-inset-bottom">
+        <Button 
+          size="lg" 
+          className="w-full h-14 text-base font-semibold gap-2"
+          asChild
+        >
+          <a href="tel:+41765681302">
+            <Phone className="h-5 w-5" />
+            Jetzt Lead anrufen
+          </a>
+        </Button>
+      </div>
+    </div>
   );
 }
 
-// Quick Stat Component with Tooltip
-function QuickStat({ 
+// Mobile-Optimized Quick Stat
+function QuickStatMobile({ 
   icon: Icon, 
   label, 
   value, 
-  status,
-  tooltip 
+  status 
 }: { 
   icon: React.ElementType; 
   label: string; 
   value: string;
   status?: 'ok' | 'warning' | 'critical';
-  tooltip?: string;
 }) {
-  const content = (
-    <Card className={`cursor-help transition-all hover:shadow-md
-      ${status === 'critical' ? 'border-destructive bg-destructive/5' : ''}
-      ${status === 'warning' ? 'border-yellow-500 bg-yellow-500/5' : ''}
-      ${status === 'ok' ? 'border-green-500/50' : ''}
+  return (
+    <Card className={`
+      ${status === 'ok' ? 'border-green-500/30 bg-green-500/5' : ''}
+      ${status === 'warning' ? 'border-yellow-500/30 bg-yellow-500/5' : ''}
+      ${status === 'critical' ? 'border-destructive/30 bg-destructive/5' : ''}
     `}>
-      <CardContent className="py-3 px-4">
+      <CardContent className="p-3 md:p-4">
         <div className="flex items-center gap-2">
-          <Icon className={`h-4 w-4 ${
-            status === 'critical' ? 'text-destructive' :
-            status === 'warning' ? 'text-yellow-500' :
-            status === 'ok' ? 'text-green-500' : 'text-muted-foreground'
+          <Icon className={`h-4 w-4 flex-shrink-0 ${
+            status === 'ok' ? 'text-green-600' :
+            status === 'warning' ? 'text-yellow-600' :
+            status === 'critical' ? 'text-destructive' : 
+            'text-muted-foreground'
           }`} />
-          <div>
-            <p className="text-xs text-muted-foreground flex items-center gap-1">
-              {label}
-              <HelpCircle className="h-3 w-3 opacity-50" />
-            </p>
-            <p className="font-bold text-sm">{value}</p>
+          <div className="min-w-0">
+            <p className="text-xs text-muted-foreground truncate">{label}</p>
+            <p className="font-bold text-sm md:text-base">{value}</p>
           </div>
         </div>
       </CardContent>
     </Card>
   );
-
-  if (tooltip) {
-    return (
-      <Tooltip>
-        <TooltipTrigger asChild>{content}</TooltipTrigger>
-        <TooltipContent side="bottom" className="max-w-xs">
-          <p className="text-sm">{tooltip}</p>
-        </TooltipContent>
-      </Tooltip>
-    );
-  }
-
-  return content;
 }
 
-// Overview Introduction
-function OverviewIntro() {
+// Mobile Overview Intro
+function OverviewIntroMobile() {
   return (
-    <Card className="mb-6 bg-muted/30">
-      <CardContent className="pt-4">
+    <Card className="mb-4 bg-muted/30">
+      <CardContent className="p-4">
         <div className="flex items-start gap-3">
-          <LayoutDashboard className="h-5 w-5 text-primary mt-0.5" />
-          <div>
-            <h3 className="font-semibold">Übersicht</h3>
-            <p className="text-sm text-muted-foreground">
-              Die Übersicht zeigt kompakte Versionen aller wichtigen Module. 
-              Klicke auf die <strong>Tabs oben</strong> für detaillierte Ansichten mit mehr Interaktionsmöglichkeiten.
-            </p>
-          </div>
+          <LayoutDashboard className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+          <p className="text-sm text-muted-foreground">
+            Kompakte Übersicht aller Module. Tippe auf einen <strong>Tab</strong> für Details.
+          </p>
         </div>
       </CardContent>
     </Card>
   );
 }
 
-// Overview Grid - Shows condensed versions of all modules
-function OverviewGrid() {
+// Mobile-Optimized Overview Grid
+function OverviewGridMobile() {
   return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-3 md:gap-6 md:grid-cols-2 lg:grid-cols-3">
       {/* Brand Summary */}
       <Card>
-        <CardHeader className="pb-2">
+        <CardHeader className="p-4 pb-2">
           <CardTitle className="text-base flex items-center gap-2">
             <Building2 className="h-4 w-4" />
             Marken Performance
           </CardTitle>
-          <CardDescription className="text-xs">Revenue & Margin pro Marke</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
-            <BrandRow name="Feierabend" revenue={22400} margin={35} color="bg-blue-500" />
-            <BrandRow name="Umzugexpress" revenue={16000} margin={28} color="bg-red-500" />
-            <BrandRow name="Zügelhelden" revenue={8800} margin={22} color="bg-teal-500" />
+        <CardContent className="p-4 pt-2">
+          <div className="space-y-3">
+            <BrandRowMobile name="Feierabend" revenue={22400} margin={35} color="bg-primary" />
+            <BrandRowMobile name="Umzugexpress" revenue={16000} margin={28} color="bg-destructive" />
+            <BrandRowMobile name="Zügelhelden" revenue={8800} margin={22} color="bg-chart-1" />
           </div>
         </CardContent>
       </Card>
 
       {/* Kill Switch Status */}
       <Card>
-        <CardHeader className="pb-2">
+        <CardHeader className="p-4 pb-2">
           <CardTitle className="text-base flex items-center gap-2">
             <AlertTriangle className="h-4 w-4" />
             Kill Switch Status
           </CardTitle>
-          <CardDescription className="text-xs">Automatische Notfall-Schwellwerte</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-4 pt-2">
           <div className="space-y-2">
-            <KillSwitchRow name="CPL (7d Ø)" value={45} threshold={90} />
-            <KillSwitchRow name="CM2" value={28} threshold={20} inverted />
-            <KillSwitchRow name="Claims %" value={2} threshold={5} />
-            <KillSwitchRow name="Runway" value={6} threshold={3} inverted unit="Mo" />
+            <KillSwitchRowMobile name="CPL" value={45} threshold={90} />
+            <KillSwitchRowMobile name="CM2" value={28} threshold={20} inverted />
+            <KillSwitchRowMobile name="Claims" value={2} threshold={5} />
+            <KillSwitchRowMobile name="Runway" value={6} threshold={3} inverted unit="Mo" />
           </div>
         </CardContent>
       </Card>
 
-      {/* Capacity */}
+      {/* Capacity Gauge */}
       <Card>
-        <CardHeader className="pb-2">
+        <CardHeader className="p-4 pb-2">
           <CardTitle className="text-base flex items-center gap-2">
             <Gauge className="h-4 w-4" />
             Auslastung
           </CardTitle>
-          <CardDescription className="text-xs">80-95% ist optimal</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="text-center py-4">
-            <div className="relative inline-flex items-center justify-center">
-              <svg className="w-24 h-24 transform -rotate-90">
-                <circle cx="48" cy="48" r="40" fill="none" stroke="hsl(var(--muted))" strokeWidth="8" />
+        <CardContent className="p-4 pt-2">
+          <div className="flex items-center justify-center py-2">
+            <div className="relative">
+              <svg className="w-20 h-20 md:w-24 md:h-24 transform -rotate-90">
+                <circle cx="40" cy="40" r="32" fill="none" stroke="hsl(var(--muted))" strokeWidth="6" className="md:hidden" />
+                <circle cx="48" cy="48" r="40" fill="none" stroke="hsl(var(--muted))" strokeWidth="8" className="hidden md:block" />
+                <circle 
+                  cx="40" cy="40" r="32" fill="none" 
+                  stroke="hsl(var(--primary))" strokeWidth="6"
+                  strokeDasharray={`${85 * 2.01} ${100 * 2.01}`}
+                  strokeLinecap="round"
+                  className="md:hidden"
+                />
                 <circle 
                   cx="48" cy="48" r="40" fill="none" 
                   stroke="hsl(var(--primary))" strokeWidth="8"
                   strokeDasharray={`${85 * 2.51} ${100 * 2.51}`}
                   strokeLinecap="round"
+                  className="hidden md:block"
                 />
               </svg>
-              <span className="absolute text-2xl font-bold">85%</span>
+              <span className="absolute inset-0 flex items-center justify-center text-xl md:text-2xl font-bold">85%</span>
             </div>
-            <p className="text-sm text-muted-foreground mt-2">26 von 31 Jobs gebucht</p>
           </div>
+          <p className="text-center text-sm text-muted-foreground">26 von 31 Jobs</p>
         </CardContent>
       </Card>
 
-      {/* Conversion Funnel Mini */}
+      {/* Funnel Mini */}
       <Card>
-        <CardHeader className="pb-2">
+        <CardHeader className="p-4 pb-2">
           <CardTitle className="text-base flex items-center gap-2">
             <Target className="h-4 w-4" />
-            Conversion Funnel
+            Funnel
           </CardTitle>
-          <CardDescription className="text-xs">Vom Besucher zur Buchung</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-1">
-            <FunnelRow stage="Website" count={2500} percentage={100} />
-            <FunnelRow stage="Calculator" count={450} percentage={18} />
-            <FunnelRow stage="Lead" count={95} percentage={21} />
-            <FunnelRow stage="Quoted" count={42} percentage={44} />
-            <FunnelRow stage="Booked" count={26} percentage={62} />
+        <CardContent className="p-4 pt-2">
+          <div className="space-y-1.5">
+            <FunnelRowMobile stage="Website" count={2500} percentage={100} />
+            <FunnelRowMobile stage="Calculator" count={450} percentage={18} />
+            <FunnelRowMobile stage="Lead" count={95} percentage={21} />
+            <FunnelRowMobile stage="Quoted" count={42} percentage={44} />
+            <FunnelRowMobile stage="Booked" count={26} percentage={62} />
           </div>
         </CardContent>
       </Card>
 
-      {/* Cost Breakdown Mini */}
+      {/* Costs Mini */}
       <Card>
-        <CardHeader className="pb-2">
+        <CardHeader className="p-4 pb-2">
           <CardTitle className="text-base flex items-center gap-2">
             <DollarSign className="h-4 w-4" />
-            Kostenstruktur
+            Kosten
           </CardTitle>
-          <CardDescription className="text-xs">COGS Verteilung</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-4 pt-2">
           <div className="space-y-2">
-            <CostRow name="Personal" amount={18500} percentage={55} />
-            <CostRow name="Fahrzeug" amount={4200} percentage={12} />
-            <CostRow name="Marketing" amount={5700} percentage={17} />
-            <CostRow name="Overhead" amount={5400} percentage={16} />
+            <CostRowMobile name="Personal" amount={18500} percentage={55} />
+            <CostRowMobile name="Fahrzeug" amount={4200} percentage={12} />
+            <CostRowMobile name="Marketing" amount={5700} percentage={17} />
+            <CostRowMobile name="Overhead" amount={5400} percentage={16} />
           </div>
         </CardContent>
       </Card>
 
-      {/* Weekly Summary Mini */}
+      {/* Weekly Mini */}
       <Card>
-        <CardHeader className="pb-2">
+        <CardHeader className="p-4 pb-2">
           <CardTitle className="text-base flex items-center gap-2">
             <FileText className="h-4 w-4" />
             Diese Woche
           </CardTitle>
-          <CardDescription className="text-xs">KW {new Date().getWeek()} Performance</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            <div className="flex justify-between">
-              <span className="text-sm text-muted-foreground">Revenue</span>
-              <span className="font-bold">CHF 11'200</span>
+        <CardContent className="p-4 pt-2">
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <p className="text-xs text-muted-foreground">Revenue</p>
+              <p className="font-bold">CHF 11.2K</p>
             </div>
-            <div className="flex justify-between">
-              <span className="text-sm text-muted-foreground">Jobs</span>
-              <span className="font-bold">7</span>
+            <div>
+              <p className="text-xs text-muted-foreground">Jobs</p>
+              <p className="font-bold">7</p>
             </div>
-            <div className="flex justify-between">
-              <span className="text-sm text-muted-foreground">Ø Margin</span>
-              <span className="font-bold text-green-600">29%</span>
+            <div>
+              <p className="text-xs text-muted-foreground">Marge</p>
+              <p className="font-bold text-green-600">29%</p>
             </div>
-            <div className="flex justify-between">
-              <span className="text-sm text-muted-foreground">Neue Leads</span>
-              <span className="font-bold">23</span>
+            <div>
+              <p className="text-xs text-muted-foreground">Leads</p>
+              <p className="font-bold">23</p>
             </div>
           </div>
         </CardContent>
@@ -446,80 +492,60 @@ function OverviewGrid() {
   );
 }
 
-// Helper Components
-function BrandRow({ name, revenue, margin, color }: { name: string; revenue: number; margin: number; color: string }) {
+// Helper Components - Mobile Optimized
+function BrandRowMobile({ name, revenue, margin, color }: { name: string; revenue: number; margin: number; color: string }) {
   return (
-    <div className="flex items-center gap-3">
-      <div className={`w-2 h-8 rounded ${color}`} />
-      <div className="flex-1">
-        <p className="font-medium text-sm">{name}</p>
+    <div className="flex items-center gap-3 min-h-[44px]">
+      <div className={`w-1.5 h-10 rounded ${color}`} />
+      <div className="flex-1 min-w-0">
+        <p className="font-medium text-sm truncate">{name}</p>
         <p className="text-xs text-muted-foreground">
-          CHF {revenue.toLocaleString('de-CH')} • {margin}% CM2
+          CHF {(revenue / 1000).toFixed(1)}K • {margin}%
         </p>
       </div>
     </div>
   );
 }
 
-function KillSwitchRow({ name, value, threshold, inverted = false, unit = '' }: { 
+function KillSwitchRowMobile({ name, value, threshold, inverted = false, unit = '' }: { 
   name: string; value: number; threshold: number; inverted?: boolean; unit?: string;
 }) {
   const isOk = inverted ? value >= threshold : value <= threshold;
   return (
-    <div className="flex items-center justify-between text-sm">
-      <span>{name}</span>
+    <div className="flex items-center justify-between min-h-[36px]">
+      <span className="text-sm">{name}</span>
       <div className="flex items-center gap-2">
-        <span className={isOk ? 'text-green-600' : 'text-destructive'}>
+        <span className={`font-medium ${isOk ? 'text-green-600' : 'text-destructive'}`}>
           {value}{unit}
         </span>
-        <Badge variant={isOk ? 'secondary' : 'destructive'} className="text-xs">
-          {isOk ? 'OK' : 'ALERT'}
+        <Badge variant={isOk ? 'secondary' : 'destructive'} className="text-xs h-5">
+          {isOk ? 'OK' : '!'}
         </Badge>
       </div>
     </div>
   );
 }
 
-function FunnelRow({ stage, count, percentage }: { stage: string; count: number; percentage: number }) {
+function FunnelRowMobile({ stage, count, percentage }: { stage: string; count: number; percentage: number }) {
   return (
-    <div className="flex items-center gap-2">
-      <div className="w-20 text-xs">{stage}</div>
-      <div className="flex-1 h-4 bg-muted rounded overflow-hidden">
-        <div 
-          className="h-full bg-primary/70 rounded"
-          style={{ width: `${percentage}%` }}
-        />
-      </div>
-      <div className="w-16 text-xs text-right">{count} ({percentage}%)</div>
-    </div>
-  );
-}
-
-function CostRow({ name, amount, percentage }: { name: string; amount: number; percentage: number }) {
-  return (
-    <div className="flex items-center gap-2">
-      <div className="w-20 text-xs">{name}</div>
+    <div className="flex items-center gap-2 min-h-[28px]">
+      <div className="w-16 text-xs truncate">{stage}</div>
       <div className="flex-1 h-3 bg-muted rounded overflow-hidden">
-        <div 
-          className="h-full bg-chart-1 rounded"
-          style={{ width: `${percentage}%` }}
-        />
+        <div className="h-full bg-primary/60 rounded" style={{ width: `${percentage}%` }} />
       </div>
-      <div className="w-20 text-xs text-right">CHF {(amount / 1000).toFixed(1)}K</div>
+      <div className="w-8 text-xs text-right">{percentage}%</div>
     </div>
   );
 }
 
-// Helper for week number
-declare global {
-  interface Date {
-    getWeek(): number;
-  }
+function CostRowMobile({ name, amount, percentage }: { name: string; amount: number; percentage: number }) {
+  return (
+    <div className="flex items-center gap-2 min-h-[28px]">
+      <div className="w-16 text-xs truncate">{name}</div>
+      <div className="flex-1 h-2.5 bg-muted rounded overflow-hidden">
+        <div className="h-full bg-chart-1 rounded" style={{ width: `${percentage}%` }} />
+      </div>
+      <div className="w-12 text-xs text-right">{(amount / 1000).toFixed(1)}K</div>
+    </div>
+  );
 }
-Date.prototype.getWeek = function() {
-  const d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
-  const dayNum = d.getUTCDay() || 7;
-  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-  const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
-  return Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1)/7);
-};
