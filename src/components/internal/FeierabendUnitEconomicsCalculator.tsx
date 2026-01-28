@@ -31,20 +31,76 @@ interface FeierabendInputs {
   materialsDisposalCost: number;
 }
 
-const DEFAULT_INPUTS: FeierabendInputs = {
-  avgOrderValue: 2800,
-  marketingCPL: 60,
-  salesCloseRate: 22,
-  salesTimePerLead: 30,
-  salesHourlyCost: 45,
-  crewSize: 3,
-  jobDuration: 6,
-  crewHourlyCost: 38,
-  vehicleFuelCost: 180,
-  materialsDisposalCost: 120,
+type Scenario = "conservative" | "base" | "aggressive";
+
+const SCENARIO_CONFIGS: Record<Scenario, { label: string; description: string; inputs: FeierabendInputs }> = {
+  conservative: {
+    label: "🥶 Winter (Konservativ)",
+    description: "Niedrigere Nachfrage, höhere CPL, schwächere Conversion",
+    inputs: {
+      avgOrderValue: 2400,
+      marketingCPL: 85,
+      salesCloseRate: 18,
+      salesTimePerLead: 35,
+      salesHourlyCost: 45,
+      crewSize: 3,
+      jobDuration: 6,
+      crewHourlyCost: 38,
+      vehicleFuelCost: 180,
+      materialsDisposalCost: 120,
+    },
+  },
+  base: {
+    label: "📊 Base Case",
+    description: "Realistische Durchschnittswerte",
+    inputs: {
+      avgOrderValue: 2800,
+      marketingCPL: 60,
+      salesCloseRate: 22,
+      salesTimePerLead: 30,
+      salesHourlyCost: 45,
+      crewSize: 3,
+      jobDuration: 6,
+      crewHourlyCost: 38,
+      vehicleFuelCost: 180,
+      materialsDisposalCost: 120,
+    },
+  },
+  aggressive: {
+    label: "☀️ Sommer (Aggressiv)",
+    description: "Hohe Nachfrage, bessere CPL, starke Conversion",
+    inputs: {
+      avgOrderValue: 3200,
+      marketingCPL: 45,
+      salesCloseRate: 28,
+      salesTimePerLead: 25,
+      salesHourlyCost: 45,
+      crewSize: 3,
+      jobDuration: 6,
+      crewHourlyCost: 38,
+      vehicleFuelCost: 180,
+      materialsDisposalCost: 120,
+    },
+  },
 };
 
 const TARGET_CM2 = 400;
+
+// Helper to calculate metrics for any input set
+const calculateMetrics = (inputs: FeierabendInputs) => {
+  const { avgOrderValue, marketingCPL, salesCloseRate, salesTimePerLead, salesHourlyCost, crewSize, jobDuration, crewHourlyCost, vehicleFuelCost, materialsDisposalCost } = inputs;
+  
+  const crewCost = crewSize * jobDuration * crewHourlyCost;
+  const cogs = crewCost + vehicleFuelCost + materialsDisposalCost;
+  const closeRateDecimal = salesCloseRate / 100;
+  const marketingCACPerBooking = closeRateDecimal > 0 ? marketingCPL / closeRateDecimal : Infinity;
+  const salesLaborCostPerLead = (salesTimePerLead / 60) * salesHourlyCost;
+  const salesLaborCACPerBooking = closeRateDecimal > 0 ? salesLaborCostPerLead / closeRateDecimal : Infinity;
+  const totalCAC = marketingCACPerBooking + salesLaborCACPerBooking;
+  const contributionMarginII = avgOrderValue - cogs - totalCAC;
+  
+  return { cogs, totalCAC, contributionMarginII };
+};
 
 const formatCHF = (value: number) => {
   return new Intl.NumberFormat("de-CH", {
@@ -140,7 +196,7 @@ const FormulaDisplay = ({
 };
 
 export function FeierabendUnitEconomicsCalculator() {
-  const [inputs, setInputs] = useState<FeierabendInputs>(DEFAULT_INPUTS);
+  const [inputs, setInputs] = useState<FeierabendInputs>(SCENARIO_CONFIGS.base.inputs);
 
   const updateInput = (key: keyof FeierabendInputs, value: number) => {
     setInputs(prev => ({ ...prev, [key]: value }));
@@ -459,6 +515,77 @@ export function FeierabendUnitEconomicsCalculator() {
             </CardContent>
           </Card>
         </div>
+
+        {/* SCENARIO COMPARISON TABLE */}
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
+              Szenario-Vergleich (Feierabend Direct Mover)
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border">
+                    <th className="text-left py-3 px-2 font-medium text-muted-foreground">Szenario</th>
+                    <th className="text-right py-3 px-2 font-medium text-muted-foreground">AOV</th>
+                    <th className="text-right py-3 px-2 font-medium text-muted-foreground">CPL</th>
+                    <th className="text-right py-3 px-2 font-medium text-muted-foreground">Close %</th>
+                    <th className="text-right py-3 px-2 font-medium text-muted-foreground">COGS</th>
+                    <th className="text-right py-3 px-2 font-medium text-muted-foreground">CAC</th>
+                    <th className="text-right py-3 px-2 font-medium text-muted-foreground">CM II</th>
+                    <th className="text-center py-3 px-2 font-medium text-muted-foreground">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(["conservative", "base", "aggressive"] as Scenario[]).map((scenario) => {
+                    const config = SCENARIO_CONFIGS[scenario];
+                    const metrics = calculateMetrics(config.inputs);
+                    const isHealthyScenario = metrics.contributionMarginII >= TARGET_CM2;
+                    const isCriticalScenario = metrics.contributionMarginII < 0;
+                    
+                    return (
+                      <tr key={scenario} className="border-b border-border/50 hover:bg-muted/30">
+                        <td className="py-3 px-2">
+                          <div>
+                            <p className="font-medium">{config.label}</p>
+                            <p className="text-xs text-muted-foreground">{config.description}</p>
+                          </div>
+                        </td>
+                        <td className="text-right py-3 px-2 font-mono">{formatCHF(config.inputs.avgOrderValue)}</td>
+                        <td className="text-right py-3 px-2 font-mono">{formatCHF(config.inputs.marketingCPL)}</td>
+                        <td className="text-right py-3 px-2 font-mono">{config.inputs.salesCloseRate}%</td>
+                        <td className="text-right py-3 px-2 font-mono">{formatCHF(metrics.cogs)}</td>
+                        <td className="text-right py-3 px-2 font-mono">
+                          {metrics.totalCAC === Infinity ? "∞" : formatCHF(metrics.totalCAC)}
+                        </td>
+                        <td className={cn(
+                          "text-right py-3 px-2 font-mono font-bold",
+                          isHealthyScenario ? "text-green-600" : isCriticalScenario ? "text-red-600" : "text-amber-600"
+                        )}>
+                          {formatCHF(metrics.contributionMarginII)}
+                        </td>
+                        <td className="text-center py-3 px-2">
+                          {isHealthyScenario ? (
+                            <Badge className="bg-green-600 text-white">🟢 SCALE</Badge>
+                          ) : isCriticalScenario ? (
+                            <Badge className="bg-red-600 text-white">🔴 STOP</Badge>
+                          ) : (
+                            <Badge className="bg-amber-500 text-white">🟡 OPTIMIZE</Badge>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+            <p className="text-xs text-muted-foreground mt-4">
+              Ziel: CM II ≥ CHF 400 pro Auftrag. Szenarios basieren auf saisonalen Schwankungen im Schweizer Umzugsmarkt.
+            </p>
+          </CardContent>
+        </Card>
 
         {/* Quick Actions based on status */}
         {!isHealthy && (
