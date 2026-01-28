@@ -6,9 +6,10 @@
 
 import { useState, useMemo } from 'react';
 import { Helmet } from 'react-helmet';
-import { ChevronDown, ChevronUp, Terminal } from 'lucide-react';
+import { ChevronDown, ChevronUp, Terminal, TrendingUp, AlertTriangle, BarChart3, Calculator, Route, Users, FileText, DollarSign, BookOpen } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 
 import {
   GlobalStatusBar,
@@ -21,11 +22,13 @@ import {
   FinanceControlPanel,
   KillSwitchAlerts,
   OperatorDecisionPanel,
+  SectionHelp,
+  COMMAND_CENTER_HELP,
 } from '@/components/internal/command-center';
 import type {
   GlobalStatus,
   ExecutiveKPIs,
-  FeierabendInputs,
+  BrandInputs,
   MarketplaceInputs,
   DailyPLEntry,
   OperatorDecision,
@@ -93,7 +96,7 @@ export default function CommandCenterPage() {
   const [refundsIssued, setRefundsIssued] = useState(280);
   
   // Unit economics inputs
-  const [feierabendInputs, setFeierabendInputs] = useState<FeierabendInputs>({
+  const [feierabendInputs, setFeierabendInputs] = useState<BrandInputs>({
     aovNet: 2800,
     cplMkt: 55,
     closeRate: 0.28,
@@ -240,18 +243,32 @@ export default function CommandCenterPage() {
         {/* Global Status Bar - Sticky */}
         <GlobalStatusBar status={globalStatus} />
         
-        {/* Header */}
+        {/* Header with Handbook Link */}
         <header className="border-b bg-card">
           <div className="container mx-auto px-4 py-3">
-            <div className="flex items-center gap-2">
-              <Terminal className="h-5 w-5 text-primary" />
-              <h1 className="text-lg font-bold tracking-tight">Command Center</h1>
-              <span className="text-xs text-muted-foreground">Swiss Relocation Operating System</span>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Terminal className="h-5 w-5 text-primary" />
+                <h1 className="text-lg font-bold tracking-tight">Command Center</h1>
+                <span className="text-xs text-muted-foreground hidden sm:inline">Swiss Relocation Operating System</span>
+              </div>
+              <Link to="/admin/handbuch">
+                <Button variant="outline" size="sm" className="h-9 gap-1.5">
+                  <BookOpen className="h-4 w-4" />
+                  <span className="hidden sm:inline">Handbuch</span>
+                </Button>
+              </Link>
             </div>
           </div>
         </header>
         
         <main className="container mx-auto px-4 py-4 space-y-4">
+          {/* Global Status Help */}
+          <SectionHelp 
+            icon={AlertTriangle}
+            {...COMMAND_CENTER_HELP.globalStatus}
+          />
+          
           {/* Kill Switch Alerts */}
           <KillSwitchAlerts
             blendedCPL7d={globalStatus.blendedCPL7d}
@@ -263,16 +280,30 @@ export default function CommandCenterPage() {
             fillRatePercent={78}
           />
           
-          {/* Operator Decision */}
-          <OperatorDecisionPanel decision={operatorDecision} />
+          {/* Operator Decision with Help */}
+          <div>
+            <SectionHelp 
+              icon={TrendingUp}
+              {...COMMAND_CENTER_HELP.operatorDecision}
+            />
+            <OperatorDecisionPanel decision={operatorDecision} />
+          </div>
           
           {/* Section 1: Executive Snapshot */}
           <Section title="1. Executive Snapshot" defaultOpen={true}>
+            <SectionHelp 
+              icon={BarChart3}
+              {...COMMAND_CENTER_HELP.executiveSnapshot}
+            />
             <ExecutiveSnapshot kpis={kpis} period={period} onPeriodChange={setPeriod} />
           </Section>
           
           {/* Section 2: Unit Economics */}
           <Section title="2. Paid Media & Unit Economics" defaultOpen={true}>
+            <SectionHelp 
+              icon={Calculator}
+              {...COMMAND_CENTER_HELP.unitEconomics}
+            />
             <UnitEconomicsPanel
               feierabendInputs={feierabendInputs}
               marketplaceInputs={marketplaceInputs}
@@ -283,26 +314,46 @@ export default function CommandCenterPage() {
           
           {/* Section 3: Lead Scoring & Routing */}
           <Section title="3. Lead Scoring & Routing Brain" defaultOpen={true}>
+            <SectionHelp 
+              icon={Route}
+              {...COMMAND_CENTER_HELP.leadScoring}
+            />
             <LeadScoringSimulator />
           </Section>
           
           {/* Section 4: Distribution Engine */}
           <Section title="4. Distribution & Auction Engine" defaultOpen={false}>
+            <SectionHelp 
+              icon={Route}
+              {...COMMAND_CENTER_HELP.distributionEngine}
+            />
             <DistributionEngine />
           </Section>
           
           {/* Section 5: Partner Network */}
           <Section title="5. Partner Network Control" defaultOpen={false}>
+            <SectionHelp 
+              icon={Users}
+              {...COMMAND_CENTER_HELP.partnerNetwork}
+            />
             <PartnerNetworkPanel />
           </Section>
           
           {/* Section 6: Roadmap */}
           <Section title="6. 90-Day Roadmap & Execution" defaultOpen={false}>
+            <SectionHelp 
+              icon={FileText}
+              {...COMMAND_CENTER_HELP.roadmapTracker}
+            />
             <RoadmapTracker />
           </Section>
           
           {/* Section 7: Finance & Cash */}
           <Section title="7. Finance, Utilization & Cash" defaultOpen={false}>
+            <SectionHelp 
+              icon={DollarSign}
+              {...COMMAND_CENTER_HELP.financeControl}
+            />
             <FinanceControlPanel
               cashOnHand={cashOnHand}
               monthlyFixedCosts={monthlyFixedCosts}
