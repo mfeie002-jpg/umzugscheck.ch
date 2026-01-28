@@ -34,7 +34,7 @@ const content = {
     timeline: {
       title: "Projekt-Timeline",
       start: "Start",
-      startDate: "31. Oktober 2024",
+      startDate: "31. Oktober 2026",
       today: "Heute",
       todayDate: "21. Januar 2025",
       launch: "Launch",
