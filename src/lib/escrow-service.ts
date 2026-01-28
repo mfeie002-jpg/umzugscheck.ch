@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { createCheckoutSession } from "./stripe-service";
 
 export interface EscrowTransaction {
   id: string;
@@ -47,6 +48,69 @@ export interface CreateEscrowParams {
 
 // Platform fee percentage (e.g., 5%)
 const DEFAULT_PLATFORM_FEE_PERCENT = 5;
+
+/**
+ * Create escrow and initiate Stripe checkout
+ */
+export async function createEscrowWithStripe(params: CreateEscrowParams): Promise<{
+  escrow: EscrowTransaction | null;
+  checkoutUrl: string | null;
+  error?: string;
+}> {
+  const escrow = await createEscrowTransaction(params);
+  
+  if (!escrow) {
+    return { escrow: null, checkoutUrl: null, error: 'Failed to create escrow' };
+  }
+  
+  // Create Stripe checkout
+  const { url, error } = await createCheckoutSession({
+    providerId: params.providerId,
+    leadId: params.leadId,
+    amount: params.totalAmount,
+    description: params.serviceDescription || `Escrow: ${params.customerName}`,
+    paymentType: 'lead_purchase',
+    successUrl: `${window.location.origin}/escrow/success?id=${escrow.id}`,
+    cancelUrl: `${window.location.origin}/escrow/cancel?id=${escrow.id}`,
+  });
+  
+  if (error) {
+    console.warn('Stripe checkout failed (using demo mode):', error);
+  }
+  
+  return { escrow, checkoutUrl: url };
+}
+
+/**
+ * Get escrow status label for display
+ */
+export function getEscrowStatusDisplay(status: EscrowTransaction['status']): {
+  label: string;
+  color: string;
+  icon: 'clock' | 'check' | 'shield' | 'alert' | 'x';
+} {
+  const map: Record<EscrowTransaction['status'], { label: string; color: string; icon: 'clock' | 'check' | 'shield' | 'alert' | 'x' }> = {
+    pending: { label: 'Ausstehend', color: 'text-yellow-600 bg-yellow-100', icon: 'clock' },
+    funded: { label: 'Finanziert', color: 'text-blue-600 bg-blue-100', icon: 'shield' },
+    released: { label: 'Freigegeben', color: 'text-emerald-600 bg-emerald-100', icon: 'check' },
+    disputed: { label: 'Streitfall', color: 'text-red-600 bg-red-100', icon: 'alert' },
+    refunded: { label: 'Erstattet', color: 'text-gray-600 bg-gray-100', icon: 'x' },
+    cancelled: { label: 'Storniert', color: 'text-gray-500 bg-gray-50', icon: 'x' },
+  };
+  return map[status] || map.pending;
+}
+
+/**
+ * Calculate escrow amounts helper
+ */
+export function calculateEscrowAmounts(totalAmount: number, feePercent = DEFAULT_PLATFORM_FEE_PERCENT) {
+  const platformFee = Math.round(totalAmount * (feePercent / 100));
+  return {
+    totalAmount,
+    platformFee,
+    providerPayout: totalAmount - platformFee,
+  };
+}
 
 /**
  * Create a new escrow transaction
