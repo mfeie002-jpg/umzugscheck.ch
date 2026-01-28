@@ -1,0 +1,122 @@
+{
+  "baseURL": "https://umzugscheck.ch",
+  "runDate": "2026-01-28",
+  "results": [
+    {
+      "scenario": "Szenario 1: Umzug Kanton Zug",
+      "status": "FEHLGESCHLAGEN",
+      "durationSec": 8,
+      "blocker": "Zielseite nicht erreicht",
+      "steps": [
+        "Startseite geladen",
+        "CTA geklickt: Preisrechner",
+        "CTA geklickt: Preisrechner",
+        "CTA geklickt: Preisrechner",
+        "Felder ausgefuellt",
+        "CTA geklickt: Preisrechner",
+        "Felder ausgefuellt",
+        "CTA geklickt: Preisrechner",
+        "Felder ausgefuellt",
+        "CTA geklickt: Preisrechner",
+        "Zurueck-Button getestet",
+        "Refresh getestet"
+      ],
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+        "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+        "Failed to load resource: net::ERR_NAME_NOT_RESOLVED"
+      ],
+      "visitedUrls": [
+        "https://umzugscheck.ch/",
+        "about:blank"
+      ],
+      "screenshots": [
+        "C:\\Users\\Mo\\Documents\\GitHub\\umzugscheckv2-ce833634\\umzugscheck.ch\\qa-artifacts\\umzugscheck\\qa-artifacts\\umzugscheck\\2026-01-28\\scenarios\\s1-umzug-zug_00-start.png",
+        "C:\\Users\\Mo\\Documents\\GitHub\\umzugscheckv2-ce833634\\umzugscheck.ch\\qa-artifacts\\umzugscheck\\qa-artifacts\\umzugscheck\\2026-01-28\\scenarios\\s1-umzug-zug_step-1.png",
+        "C:\\Users\\Mo\\Documents\\GitHub\\umzugscheckv2-ce833634\\umzugscheck.ch\\qa-artifacts\\umzugscheck\\qa-artifacts\\umzugscheck\\2026-01-28\\scenarios\\s1-umzug-zug_step-2.png",
+        "C:\\Users\\Mo\\Documents\\GitHub\\umzugscheckv2-ce833634\\umzugscheck.ch\\qa-artifacts\\umzugscheck\\qa-artifacts\\umzugscheck\\2026-01-28\\scenarios\\s1-umzug-zug_step-3.png",
+        "C:\\Users\\Mo\\Documents\\GitHub\\umzugscheckv2-ce833634\\umzugscheck.ch\\qa-artifacts\\umzugscheck\\qa-artifacts\\umzugscheck\\2026-01-28\\scenarios\\s1-umzug-zug_step-4.png",
+        "C:\\Users\\Mo\\Documents\\GitHub\\umzugscheckv2-ce833634\\umzugscheck.ch\\qa-artifacts\\umzugscheck\\qa-artifacts\\umzugscheck\\2026-01-28\\scenarios\\s1-umzug-zug_step-5.png",
+        "C:\\Users\\Mo\\Documents\\GitHub\\umzugscheckv2-ce833634\\umzugscheck.ch\\qa-artifacts\\umzugscheck\\qa-artifacts\\umzugscheck\\2026-01-28\\scenarios\\s1-umzug-zug_step-6.png",
+        "C:\\Users\\Mo\\Documents\\GitHub\\umzugscheckv2-ce833634\\umzugscheck.ch\\qa-artifacts\\umzugscheck\\qa-artifacts\\umzugscheck\\2026-01-28\\scenarios\\s1-umzug-zug_back.png",
+        "C:\\Users\\Mo\\Documents\\GitHub\\umzugscheckv2-ce833634\\umzugscheck.ch\\qa-artifacts\\umzugscheck\\qa-artifacts\\umzugscheck\\2026-01-28\\scenarios\\s1-umzug-zug_refresh.png"
+      ]
+    },
+    {
+      "scenario": "Szenario 2: Nur Reinigung",
+      "status": "FEHLGESCHLAGEN",
+      "durationSec": 6,
+      "blocker": "Fehlerseite erkannt",
+      "steps": [
+        "Startseite geladen",
+        "Navigation zu Reinigung geklickt",
+        "Option Reinigung (ohne Umzug) ausgewaehlt",
+        "CTA geklickt: Preisrechner",
+        "Option Reinigung (ohne Umzug) ausgewaehlt",
+        "CTA geklickt: Preisrechner",
+        "Option Reinigung (ohne Umzug) ausgewaehlt",
+        "CTA geklickt: Preisrechner",
+        "Zurueck-Button getestet",
+        "Refresh getestet"
+      ],
+      "consoleErrors": [
+        "404 Error: User attempted to access non-existent route: /volumenrechner"
+      ],
+      "visitedUrls": [
+        "https://umzugscheck.ch/",
+        "https://umzugscheck.ch/reinigung",
+        "https://umzugscheck.ch/volumenrechner"
+      ],
+      "screenshots": [
+        "C:\\Users\\Mo\\Documents\\GitHub\\umzugscheckv2-ce833634\\umzugscheck.ch\\qa-artifacts\\umzugscheck\\qa-artifacts\\umzugscheck\\2026-01-28\\scenarios\\s2-reinigung-bern_00-start.png",
+        "C:\\Users\\Mo\\Documents\\GitHub\\umzugscheckv2-ce833634\\umzugscheck.ch\\qa-artifacts\\umzugscheck\\qa-artifacts\\umzugscheck\\2026-01-28\\scenarios\\s2-reinigung-bern_01-cleaning.png",
+        "C:\\Users\\Mo\\Documents\\GitHub\\umzugscheckv2-ce833634\\umzugscheck.ch\\qa-artifacts\\umzugscheck\\qa-artifacts\\umzugscheck\\2026-01-28\\scenarios\\s2-reinigung-bern_step-1.png",
+        "C:\\Users\\Mo\\Documents\\GitHub\\umzugscheckv2-ce833634\\umzugscheck.ch\\qa-artifacts\\umzugscheck\\qa-artifacts\\umzugscheck\\2026-01-28\\scenarios\\s2-reinigung-bern_step-2.png",
+        "C:\\Users\\Mo\\Documents\\GitHub\\umzugscheckv2-ce833634\\umzugscheck.ch\\qa-artifacts\\umzugscheck\\qa-artifacts\\umzugscheck\\2026-01-28\\scenarios\\s2-reinigung-bern_step-3.png",
+        "C:\\Users\\Mo\\Documents\\GitHub\\umzugscheckv2-ce833634\\umzugscheck.ch\\qa-artifacts\\umzugscheck\\qa-artifacts\\umzugscheck\\2026-01-28\\scenarios\\s2-reinigung-bern_error.png",
+        "C:\\Users\\Mo\\Documents\\GitHub\\umzugscheckv2-ce833634\\umzugscheck.ch\\qa-artifacts\\umzugscheck\\qa-artifacts\\umzugscheck\\2026-01-28\\scenarios\\s2-reinigung-bern_back.png",
+        "C:\\Users\\Mo\\Documents\\GitHub\\umzugscheckv2-ce833634\\umzugscheck.ch\\qa-artifacts\\umzugscheck\\qa-artifacts\\umzugscheck\\2026-01-28\\scenarios\\s2-reinigung-bern_refresh.png"
+      ]
+    },
+    {
+      "scenario": "Szenario 3: Umzug + Lagerung",
+      "status": "FEHLGESCHLAGEN",
+      "durationSec": 5,
+      "blocker": "Fehlerseite erkannt",
+      "steps": [
+        "Startseite geladen",
+        "Addon (Lagerung/Moebellift) ausgewaehlt",
+        "CTA geklickt: Preisrechner",
+        "Felder ausgefuellt",
+        "Addon (Lagerung/Moebellift) ausgewaehlt",
+        "CTA geklickt: Preisrechner",
+        "Addon (Lagerung/Moebellift) ausgewaehlt",
+        "CTA geklickt: Preisrechner",
+        "Zurueck-Button getestet",
+        "Refresh getestet"
+      ],
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+        "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+        "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+        "404 Error: User attempted to access non-existent route: /volumenrechner",
+        "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+        "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+        "Failed to load resource: net::ERR_NAME_NOT_RESOLVED"
+      ],
+      "visitedUrls": [
+        "https://umzugscheck.ch/",
+        "https://umzugscheck.ch/volumenrechner"
+      ],
+      "screenshots": [
+        "C:\\Users\\Mo\\Documents\\GitHub\\umzugscheckv2-ce833634\\umzugscheck.ch\\qa-artifacts\\umzugscheck\\qa-artifacts\\umzugscheck\\2026-01-28\\scenarios\\s3-umzug-lagerung_00-start.png",
+        "C:\\Users\\Mo\\Documents\\GitHub\\umzugscheckv2-ce833634\\umzugscheck.ch\\qa-artifacts\\umzugscheck\\qa-artifacts\\umzugscheck\\2026-01-28\\scenarios\\s3-umzug-lagerung_step-1.png",
+        "C:\\Users\\Mo\\Documents\\GitHub\\umzugscheckv2-ce833634\\umzugscheck.ch\\qa-artifacts\\umzugscheck\\qa-artifacts\\umzugscheck\\2026-01-28\\scenarios\\s3-umzug-lagerung_step-2.png",
+        "C:\\Users\\Mo\\Documents\\GitHub\\umzugscheckv2-ce833634\\umzugscheck.ch\\qa-artifacts\\umzugscheck\\qa-artifacts\\umzugscheck\\2026-01-28\\scenarios\\s3-umzug-lagerung_step-3.png",
+        "C:\\Users\\Mo\\Documents\\GitHub\\umzugscheckv2-ce833634\\umzugscheck.ch\\qa-artifacts\\umzugscheck\\qa-artifacts\\umzugscheck\\2026-01-28\\scenarios\\s3-umzug-lagerung_error.png",
+        "C:\\Users\\Mo\\Documents\\GitHub\\umzugscheckv2-ce833634\\umzugscheck.ch\\qa-artifacts\\umzugscheck\\qa-artifacts\\umzugscheck\\2026-01-28\\scenarios\\s3-umzug-lagerung_back.png",
+        "C:\\Users\\Mo\\Documents\\GitHub\\umzugscheckv2-ce833634\\umzugscheck.ch\\qa-artifacts\\umzugscheck\\qa-artifacts\\umzugscheck\\2026-01-28\\scenarios\\s3-umzug-lagerung_refresh.png"
+      ]
+    }
+  ]
+}
