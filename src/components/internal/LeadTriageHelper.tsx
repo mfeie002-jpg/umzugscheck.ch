@@ -58,7 +58,7 @@ const URGENCY_OPTIONS = [
   { value: 'low', label: 'Flexibel (2+ Wochen)', multiplier: 0.9 },
   { value: 'medium', label: 'Normal (1-2 Wochen)', multiplier: 1.0 },
   { value: 'high', label: 'Dringend (< 1 Woche)', multiplier: 1.15 },
-  { value: 'urgent', label: 'Sofort (< 3 Tage)', multiplier: 1.3 },
+  { value: 'urgent', label: 'Express (< 3 Tage)', multiplier: 1.3 },
 ];
 
 const DEFAULT_INPUTS: TriageInputs = {
@@ -169,35 +169,35 @@ export function LeadTriageHelper() {
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div className="flex items-start gap-4">
               {result.decision === 'keep' && (
-                <div className="p-3 rounded-full bg-green-100 dark:bg-green-900">
-                  <Truck className="w-8 h-8 text-green-600" />
+                <div className="p-3 rounded bg-green-100 dark:bg-green-900">
+                  <Truck className="w-6 h-6 text-green-600" />
                 </div>
               )}
               {result.decision === 'route' && (
-                <div className="p-3 rounded-full bg-blue-100 dark:bg-blue-900">
-                  <Building2 className="w-8 h-8 text-blue-600" />
+                <div className="p-3 rounded bg-blue-100 dark:bg-blue-900">
+                  <Building2 className="w-6 h-6 text-blue-600" />
                 </div>
               )}
               {result.decision === 'reject' && (
-                <div className="p-3 rounded-full bg-red-100 dark:bg-red-900">
-                  <AlertTriangle className="w-8 h-8 text-red-600" />
+                <div className="p-3 rounded bg-red-100 dark:bg-red-900">
+                  <AlertTriangle className="w-6 h-6 text-red-600" />
                 </div>
               )}
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   {result.decision === 'keep' && (
                     <Badge className="bg-green-600 text-white text-lg px-3 py-1">
-                      🐋 KEEP – Feierabendumzug (Whale)
+                      KEEP - Feierabend Direct
                     </Badge>
                   )}
                   {result.decision === 'route' && (
                     <Badge className="bg-blue-600 text-white text-lg px-3 py-1">
-                      ➡️ ROUTE – Umzugscheck Marketplace
+                      ROUTE - Marketplace
                     </Badge>
                   )}
                   {result.decision === 'reject' && (
                     <Badge className="bg-red-600 text-white text-lg px-3 py-1">
-                      ⛔ REJECT – Nicht profitabel
+                      REJECT - Nicht profitabel
                     </Badge>
                   )}
                 </div>
@@ -413,19 +413,33 @@ export function LeadTriageHelper() {
             <CheckCircle2 className="w-5 h-5 text-muted-foreground mt-0.5" />
             <div>
               <p className="text-sm font-medium mb-2">Entscheidungsregeln</p>
-              <div className="grid md:grid-cols-3 gap-4 text-xs text-muted-foreground">
-                <div className="flex items-start gap-2">
-                  <Badge className="bg-green-600 text-white shrink-0">KEEP</Badge>
-                  <span>Auftragswert ≥ CHF 1'800, Marge ≥ CHF 400, Anruf: 8–10 Min</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Badge className="bg-blue-600 text-white shrink-0">ROUTE</Badge>
-                  <span>CHF 1'000–1'800 oder kleine Wohnung (≤1.5 Zi), Anruf: 2–3 Min</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Badge className="bg-red-600 text-white shrink-0">REJECT</Badge>
-                  <span>Unter CHF 1'000 oder Budget &lt; CHF 800 – nicht profitabel</span>
-                </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-left py-2 pr-4 font-medium">Status</th>
+                      <th className="text-left py-2 pr-4 font-medium">Kriterien</th>
+                      <th className="text-right py-2 font-medium">Anruf</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-muted-foreground">
+                    <tr className="border-b border-border/50">
+                      <td className="py-2 pr-4"><Badge className="bg-green-600 text-white">KEEP</Badge></td>
+                      <td className="py-2 pr-4">Auftragswert min. CHF 1'800, Marge min. CHF 400</td>
+                      <td className="py-2 text-right font-mono">8-10 Min</td>
+                    </tr>
+                    <tr className="border-b border-border/50">
+                      <td className="py-2 pr-4"><Badge className="bg-blue-600 text-white">ROUTE</Badge></td>
+                      <td className="py-2 pr-4">CHF 1'000-1'800 oder max. 1.5 Zimmer</td>
+                      <td className="py-2 text-right font-mono">2-3 Min</td>
+                    </tr>
+                    <tr>
+                      <td className="py-2 pr-4"><Badge className="bg-red-600 text-white">REJECT</Badge></td>
+                      <td className="py-2 pr-4">Unter CHF 1'000 oder Budget unter CHF 800</td>
+                      <td className="py-2 text-right font-mono">-</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
