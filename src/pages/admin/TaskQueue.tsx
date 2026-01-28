@@ -21,7 +21,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, RefreshCw, Brain, Sparkles } from "lucide-react";
+import { Loader2, RefreshCw, Brain, Sparkles, History, CheckCircle2 } from "lucide-react";
 
 type AgentType = "codex" | "copilot";
 
@@ -44,6 +44,17 @@ interface AgentRunnerTask {
   prompt?: string;
   target_files?: string[];
   message?: string;
+}
+
+interface CompletedTask {
+  id: string;
+  agent: string;
+  title: string;
+  output_summary: string | null;
+  files_changed: string[] | null;
+  completed_at: string | null;
+  started_at: string | null;
+  source: string | null;
 }
 
 const AGENT_LABELS: Record<AgentType, string> = {
@@ -107,7 +118,9 @@ const TaskQueue = () => {
   const [completeLoading, setCompleteLoading] = useState(false);
   const [completionSummary, setCompletionSummary] = useState("");
   const [filesTouched, setFilesTouched] = useState("");
-  const [activeTab, setActiveTab] = useState<"queue" | "agent-runner">("queue");
+  const [activeTab, setActiveTab] = useState<"queue" | "agent-runner" | "history">("queue");
+  const [historyData, setHistoryData] = useState<CompletedTask[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
 
   const fetchQueue = useCallback(async () => {
     setQueueLoading(true);
@@ -143,6 +156,25 @@ const TaskQueue = () => {
     }
   }, [fetchQueue]);
 
+  const fetchHistory = useCallback(async () => {
+    setHistoryLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("ai_task_queue")
+        .select("id, agent, title, output_summary, files_changed, completed_at, started_at, source")
+        .eq("status", "done")
+        .order("completed_at", { ascending: false })
+        .limit(50);
+      if (error) throw error;
+      setHistoryData((data as CompletedTask[]) || []);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "History konnte nicht geladen werden";
+      toast.error(message);
+    } finally {
+      setHistoryLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     fetchQueue();
   }, [fetchQueue]);
@@ -150,8 +182,10 @@ const TaskQueue = () => {
   useEffect(() => {
     if (activeTab === "queue") {
       fetchQueue();
+    } else if (activeTab === "history") {
+      fetchHistory();
     }
-  }, [activeTab, fetchQueue]);
+  }, [activeTab, fetchQueue, fetchHistory]);
 
   const handleFetchNext = useCallback(async () => {
     setRunnerLoading(true);
@@ -234,10 +268,11 @@ const TaskQueue = () => {
           </p>
         </div>
 
-        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as "queue" | "agent-runner")} className="space-y-4">
+        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as "queue" | "agent-runner" | "history")} className="space-y-4">
           <TabsList>
             <TabsTrigger value="queue">Task Queue</TabsTrigger>
             <TabsTrigger value="agent-runner">🧩 Agent Runner</TabsTrigger>
+            <TabsTrigger value="history">📜 History</TabsTrigger>
           </TabsList>
 
           <TabsContent value="queue">
@@ -398,6 +433,104 @@ const TaskQueue = () => {
                     Reset
                   </Button>
                 </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="history">
+            <Card className="border">
+              <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <History className="h-5 w-5" />
+                    Erledigte Tasks
+                  </CardTitle>
+                  <CardDescription>
+                    {historyData.length} abgeschlossene Tasks (letzte 50)
+                  </CardDescription>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={fetchHistory}
+                  disabled={historyLoading}
+                >
+                  {historyLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCw className="mr-2 h-4 w-4" />}
+                  Aktualisieren
+                </Button>
+              </CardHeader>
+              <CardContent>
+                {historyLoading ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                  </div>
+                ) : historyData.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    Noch keine erledigten Tasks vorhanden.
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {historyData.map((task) => (
+                      <div 
+                        key={task.id} 
+                        className="rounded-lg border border-border p-4 space-y-3 hover:bg-muted/50 transition-colors"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex items-center gap-3">
+                            <div className={`p-1.5 rounded-md ${task.agent === 'codex' ? 'bg-blue-500/10 text-blue-600' : 'bg-green-500/10 text-green-600'}`}>
+                              <CheckCircle2 className="h-4 w-4" />
+                            </div>
+                            <div>
+                              <p className="font-semibold text-foreground">{task.title}</p>
+                              <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
+                                <span className={`font-medium uppercase ${task.agent === 'codex' ? 'text-blue-600' : 'text-green-600'}`}>
+                                  {task.agent.toUpperCase()}
+                                </span>
+                                <span>•</span>
+                                <span>#{task.id.slice(0, 8)}</span>
+                                {task.source && (
+                                  <>
+                                    <span>•</span>
+                                    <span className="capitalize">{task.source}</span>
+                                  </>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="text-xs text-muted-foreground text-right shrink-0">
+                            {task.completed_at && (
+                              <div>{formatDate(task.completed_at)}</div>
+                            )}
+                            {task.started_at && task.completed_at && (
+                              <div className="text-muted-foreground/70">
+                                Dauer: {Math.round((new Date(task.completed_at).getTime() - new Date(task.started_at).getTime()) / 1000 / 60)} min
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        
+                        {task.output_summary && (
+                          <div className="text-sm text-muted-foreground bg-muted/50 rounded-md p-3">
+                            {task.output_summary}
+                          </div>
+                        )}
+                        
+                        {task.files_changed && task.files_changed.length > 0 && (
+                          <div className="flex flex-wrap gap-1.5">
+                            {task.files_changed.map((file, idx) => (
+                              <span 
+                                key={idx}
+                                className="text-xs bg-muted px-2 py-0.5 rounded-full text-muted-foreground font-mono"
+                              >
+                                {file}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
