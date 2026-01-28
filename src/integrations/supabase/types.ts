@@ -3011,6 +3011,170 @@ export type Database = {
         }
         Relationships: []
       }
+      paid_media_alerts: {
+        Row: {
+          acknowledged_at: string | null
+          acknowledged_by: string | null
+          alert_type: string
+          created_at: string | null
+          id: string
+          is_acknowledged: boolean | null
+          message: string
+          metric_value: number | null
+          severity: string | null
+          threshold_value: number | null
+        }
+        Insert: {
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
+          alert_type: string
+          created_at?: string | null
+          id?: string
+          is_acknowledged?: boolean | null
+          message: string
+          metric_value?: number | null
+          severity?: string | null
+          threshold_value?: number | null
+        }
+        Update: {
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
+          alert_type?: string
+          created_at?: string | null
+          id?: string
+          is_acknowledged?: boolean | null
+          message?: string
+          metric_value?: number | null
+          severity?: string | null
+          threshold_value?: number | null
+        }
+        Relationships: []
+      }
+      paid_media_campaigns: {
+        Row: {
+          campaign_id: string
+          campaign_name: string
+          campaign_type: string | null
+          created_at: string | null
+          daily_budget_chf: number | null
+          id: string
+          platform: string
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          campaign_id: string
+          campaign_name: string
+          campaign_type?: string | null
+          created_at?: string | null
+          daily_budget_chf?: number | null
+          id?: string
+          platform: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          campaign_id?: string
+          campaign_name?: string
+          campaign_type?: string | null
+          created_at?: string | null
+          daily_budget_chf?: number | null
+          id?: string
+          platform?: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      paid_media_daily_metrics: {
+        Row: {
+          campaign_id: string | null
+          clicks: number | null
+          conversion_value_chf: number | null
+          conversions: number | null
+          cost_chf: number | null
+          cpc_chf: number | null
+          cpl_chf: number | null
+          created_at: string | null
+          ctr: number | null
+          date: string
+          id: string
+          impressions: number | null
+          roas: number | null
+        }
+        Insert: {
+          campaign_id?: string | null
+          clicks?: number | null
+          conversion_value_chf?: number | null
+          conversions?: number | null
+          cost_chf?: number | null
+          cpc_chf?: number | null
+          cpl_chf?: number | null
+          created_at?: string | null
+          ctr?: number | null
+          date: string
+          id?: string
+          impressions?: number | null
+          roas?: number | null
+        }
+        Update: {
+          campaign_id?: string | null
+          clicks?: number | null
+          conversion_value_chf?: number | null
+          conversions?: number | null
+          cost_chf?: number | null
+          cpc_chf?: number | null
+          cpl_chf?: number | null
+          created_at?: string | null
+          ctr?: number | null
+          date?: string
+          id?: string
+          impressions?: number | null
+          roas?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "paid_media_daily_metrics_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "paid_media_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      paid_media_sync_log: {
+        Row: {
+          completed_at: string | null
+          error_message: string | null
+          id: string
+          platform: string
+          records_synced: number | null
+          started_at: string | null
+          status: string | null
+          sync_type: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          error_message?: string | null
+          id?: string
+          platform: string
+          records_synced?: number | null
+          started_at?: string | null
+          status?: string | null
+          sync_type?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          error_message?: string | null
+          id?: string
+          platform?: string
+          records_synced?: number | null
+          started_at?: string | null
+          status?: string | null
+          sync_type?: string | null
+        }
+        Relationships: []
+      }
       payment_history: {
         Row: {
           amount: number
@@ -5239,6 +5403,7 @@ export type Database = {
         Returns: number
       }
       capture_ranking_benchmark: { Args: { p_notes?: string }; Returns: string }
+      check_paid_media_kill_switches: { Args: never; Returns: undefined }
       check_rate_limit: {
         Args: {
           p_action_type: string
