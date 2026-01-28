@@ -284,6 +284,7 @@ const ChatGPTOverview = lazy(() => import("./pages/admin/ChatGPTOverview"));
 const AICommandCenter = lazy(() => import("./pages/admin/AICommandCenter"));
 const AdminCapabilities = lazy(() => import("./pages/admin/Capabilities"));
 const VariantTestHub = lazy(() => import("./pages/admin/VariantTestHub"));
+const ReloOSPhases = lazy(() => import("./pages/admin/ReloOSPhases"));
 const FlowCommandCenter = lazy(() => import("./pages/admin/FlowCommandCenter"));
 const CommandCenter = lazy(() => import("./pages/admin/CommandCenter"));
 const AnalysisFramework = lazy(() => import("./pages/admin/AnalysisFramework"));
@@ -481,6 +482,7 @@ const AdminRoutes = () => (
       <Route path="/admin/post-launch" element={<PostLaunch />} />
       <Route path="/admin/phase-6" element={<Phase6Admin />} />
       <Route path="/admin/go-live" element={<GoLive />} />
+      <Route path="/admin/relo-os-phases" element={<ReloOSPhases />} />
       <Route path="/admin/video-analyses" element={<VideoAnalysesAdmin />} />
       {/* New Admin Pages */}
       <Route path="/admin/email-templates" element={<EmailTemplatesAdmin />} />
