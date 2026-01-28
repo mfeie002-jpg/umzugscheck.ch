@@ -9,7 +9,7 @@
  * - Dynamic Mobile Menu based on active variant
  */
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { 
   ChevronDown, ArrowRight, CheckCircle, Menu, Zap, Shield, Star, Heart,
@@ -22,9 +22,9 @@ import { HeaderLogo } from "@/components/brand/HeaderLogo";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { DynamicMobileMenu } from "@/hooks/useDynamicMobileMenu";
-import { VARIANT_P } from "@/lib/navigation-variants";
 import { useNavigationVariant } from "@/hooks/useNavigationVariant";
 import { useFlowPath } from "@/hooks/useUnifiedAB";
+import type { NavConfig } from "@/lib/navigation-variants";
 
 interface NavItem {
   icon: React.ElementType;
@@ -49,66 +49,76 @@ const TRUST_SIGNALS = [
   { icon: Heart, label: "100% Gratis", color: "text-secondary" },
 ];
 
-const NAV_SECTIONS: NavSection[] = [
+// Static dropdown items (links don't change, only main nav labels change)
+const DROPDOWN_ITEMS = {
+  preisrechner: [
+    { icon: Calculator, title: "Umzugskosten-Rechner", description: "Was kostet dein Umzug? In 60 Sekunden.", href: "/preisrechner", badge: "Beliebt", badgeColor: "from-amber-500 to-orange-500" },
+    { icon: ClipboardList, title: "Umzugscheckliste", description: "Schritt für Schritt stressfrei umziehen", href: "/checkliste", badge: "Top", badgeColor: "from-emerald-500 to-teal-500" },
+    { icon: Box, title: "Volumenrechner", description: "Wie viel Platz braucht dein Haushalt?", href: "/volumenrechner" },
+    { icon: Bot, title: "Digitaler Umzugsassistent", description: "KI-gestützter Umzugsplaner", href: "/assistent", badge: "Neu", badgeColor: "from-violet-500 to-purple-500" },
+    { icon: Package, title: "Packtipps & Tricks", description: "Effizient & sicher verpacken", href: "/ratgeber/packtipps" },
+  ],
+  firmen: [
+    { icon: MapPin, title: "Umzugsfirma Zürich", description: "Top-Bewertungen in Zürich", href: "/umzugsfirmen/zuerich", badge: "★4.9" },
+    { icon: MapPin, title: "Umzugsfirma Bern", description: "Beste Preise in Bern", href: "/umzugsfirmen/bern" },
+    { icon: MapPin, title: "Umzugsfirma Basel", description: "Geprüfte Partner in Basel", href: "/umzugsfirmen/basel" },
+    { icon: MapPin, title: "Umzugsfirma Luzern", description: "Zentralschweiz Experten", href: "/umzugsfirmen/luzern" },
+    { icon: Truck, title: "Alle Umzugsfirmen", description: "Alle Regionen & Kantone", href: "/umzugsfirmen" },
+  ],
+  services: [
+    { icon: Home, title: "Umzugsreinigung", description: "Mit Abgabegarantie – Depot zurück!", href: "/umzugsreinigung", badge: "Garantie", badgeColor: "from-emerald-500 to-green-500" },
+    { icon: Trash2, title: "Entsorgung & Räumung", description: "Altes raus, Neues rein", href: "/entsorgung" },
+    { icon: Archive, title: "Lagerung & Einlagerung", description: "Flexibel zwischenlagern", href: "/lagerung" },
+    { icon: CableCar, title: "Möbellift mieten", description: "Grosses sicher transportieren", href: "/moebellift" },
+    { icon: Briefcase, title: "Firmenumzug", description: "Büro & Geschäft professionell", href: "/firmenumzug" },
+  ],
+  ratgeber: [
+    { icon: Baby, title: "Umziehen mit Kindern & Haustieren", description: "Stressfrei für die ganze Familie", href: "/ratgeber/umziehen-mit-kindern" },
+    { icon: Key, title: "Wohnungsübergabe leicht gemacht", description: "Depot zurück, garantiert!", href: "/ratgeber/wohnungsuebergabe" },
+    { icon: Mail, title: "Adressänderung & Ummelden", description: "Alle Behördengänge im Griff", href: "/ratgeber/adressaenderung" },
+    { icon: Wrench, title: "DIY vs. Profi-Umzug", description: "Selber machen oder Profis?", href: "/ratgeber/diy-vs-profi" },
+    { icon: Calculator, title: "Umzugskosten sparen", description: "Tipps vom Profi für dein Budget", href: "/ratgeber/kosten-sparen" },
+  ],
+  fuerFirmen: [
+    { icon: Sparkles, title: "So funktioniert Umzugscheck", description: "Dein Weg zur besten Offerte", href: "/so-funktioniert" },
+    { icon: Star, title: "Kundenbewertungen", description: "Echte Erfahrungen lesen", href: "/bewertungen" },
+    { icon: Award, title: "Geprüfte Umzugspartner", description: "Qualität die du spürst", href: "/qualitaet" },
+    { icon: Users, title: "Über uns", description: "Das Team hinter Umzugscheck", href: "/ueber-uns" },
+    { icon: HelpCircle, title: "FAQ & Hilfe", description: "Antworten auf deine Fragen", href: "/faq" },
+  ],
+};
+
+// Build nav sections dynamically based on the active variant's labels and microcopy
+const buildNavSections = (variant: NavConfig): NavSection[] => [
   {
-    id: "umzug-planen",
-    label: "📋 Umzug planen",
-    tagline: "Tools, Tipps & Rechner für deinen Zügeltag",
-    items: [
-      { icon: Calculator, title: "Umzugskosten-Rechner", description: "Was kostet dein Umzug? In 60 Sekunden.", href: "/preisrechner", badge: "Beliebt", badgeColor: "from-amber-500 to-orange-500" },
-      { icon: ClipboardList, title: "Umzugscheckliste", description: "Schritt für Schritt stressfrei umziehen", href: "/checkliste", badge: "Top", badgeColor: "from-emerald-500 to-teal-500" },
-      { icon: Box, title: "Volumenrechner", description: "Wie viel Platz braucht dein Haushalt?", href: "/volumenrechner" },
-      { icon: Bot, title: "Digitaler Umzugsassistent", description: "KI-gestützter Umzugsplaner", href: "/assistent", badge: "Neu", badgeColor: "from-violet-500 to-purple-500" },
-      { icon: Package, title: "Packtipps & Tricks", description: "Effizient & sicher verpacken", href: "/ratgeber/packtipps" },
-    ],
+    id: "preisrechner",
+    label: `📋 ${variant.labels.preisrechner}`,
+    tagline: variant.microcopy.preisrechner,
+    items: DROPDOWN_ITEMS.preisrechner,
   },
   {
-    id: "umzugsfirmen",
-    label: "🔍 Umzugsfirmen",
-    tagline: "200+ geprüfte Partner – Umzugsfirma finden & sparen",
-    items: [
-      { icon: MapPin, title: "Umzugsfirma Zürich", description: "Top-Bewertungen in Zürich", href: "/umzugsfirmen/zuerich", badge: "★4.9" },
-      { icon: MapPin, title: "Umzugsfirma Bern", description: "Beste Preise in Bern", href: "/umzugsfirmen/bern" },
-      { icon: MapPin, title: "Umzugsfirma Basel", description: "Geprüfte Partner in Basel", href: "/umzugsfirmen/basel" },
-      { icon: MapPin, title: "Umzugsfirma Luzern", description: "Zentralschweiz Experten", href: "/umzugsfirmen/luzern" },
-      { icon: Truck, title: "Alle Umzugsfirmen", description: "Alle Regionen & Kantone", href: "/umzugsfirmen" },
-    ],
+    id: "firmen",
+    label: `🔍 ${variant.labels.firmen}`,
+    tagline: variant.microcopy.firmen,
+    items: DROPDOWN_ITEMS.firmen,
   },
   {
     id: "services",
-    label: "🛠️ Services",
-    tagline: "Rundum-Service: Reinigung, Lagerung, Entsorgung & mehr",
-    items: [
-      { icon: Home, title: "Umzugsreinigung", description: "Mit Abgabegarantie – Depot zurück!", href: "/umzugsreinigung", badge: "Garantie", badgeColor: "from-emerald-500 to-green-500" },
-      { icon: Trash2, title: "Entsorgung & Räumung", description: "Altes raus, Neues rein", href: "/entsorgung" },
-      { icon: Archive, title: "Lagerung & Einlagerung", description: "Flexibel zwischenlagern", href: "/lagerung" },
-      { icon: CableCar, title: "Möbellift mieten", description: "Grosses sicher transportieren", href: "/moebellift" },
-      { icon: Briefcase, title: "Firmenumzug", description: "Büro & Geschäft professionell", href: "/firmenumzug" },
-    ],
+    label: `🛠️ ${variant.labels.services}`,
+    tagline: variant.microcopy.services,
+    items: DROPDOWN_ITEMS.services,
   },
   {
     id: "ratgeber",
-    label: "📚 Ratgeber",
-    tagline: "Tipps & Tricks für einen stressfreien Umzug",
-    items: [
-      { icon: Baby, title: "Umziehen mit Kindern & Haustieren", description: "Stressfrei für die ganze Familie", href: "/ratgeber/umziehen-mit-kindern" },
-      { icon: Key, title: "Wohnungsübergabe leicht gemacht", description: "Depot zurück, garantiert!", href: "/ratgeber/wohnungsuebergabe" },
-      { icon: Mail, title: "Adressänderung & Ummelden", description: "Alle Behördengänge im Griff", href: "/ratgeber/adressaenderung" },
-      { icon: Wrench, title: "DIY vs. Profi-Umzug", description: "Selber machen oder Profis?", href: "/ratgeber/diy-vs-profi" },
-      { icon: Calculator, title: "Umzugskosten sparen", description: "Tipps vom Profi für dein Budget", href: "/ratgeber/kosten-sparen" },
-    ],
+    label: `📚 ${variant.labels.ratgeber}`,
+    tagline: variant.microcopy.ratgeber,
+    items: DROPDOWN_ITEMS.ratgeber,
   },
   {
-    id: "so-funktioniert",
-    label: "⭐ So funktioniert's",
-    tagline: "Stressfrei in 3 Schritten – so funktioniert Umzugscheck",
-    items: [
-      { icon: Sparkles, title: "So funktioniert Umzugscheck", description: "Dein Weg zur besten Offerte", href: "/so-funktioniert" },
-      { icon: Star, title: "Kundenbewertungen", description: "Echte Erfahrungen lesen", href: "/bewertungen" },
-      { icon: Award, title: "Geprüfte Umzugspartner", description: "Qualität die du spürst", href: "/qualitaet" },
-      { icon: Users, title: "Über uns", description: "Das Team hinter Umzugscheck", href: "/ueber-uns" },
-      { icon: HelpCircle, title: "FAQ & Hilfe", description: "Antworten auf deine Fragen", href: "/faq" },
-    ],
+    id: "fuerFirmen",
+    label: `⭐ ${variant.labels.fuerFirmen}`,
+    tagline: variant.microcopy.fuerFirmen,
+    items: DROPDOWN_ITEMS.fuerFirmen,
   },
 ];
 
@@ -119,16 +129,20 @@ export const NavigationV16 = () => {
   const navVariant = useNavigationVariant();
   const flowPath = useFlowPath();
 
-  // Context-aware CTA label based on current page
+  // Build dynamic navigation sections based on current variant
+  const navSections = useMemo(() => buildNavSections(navVariant), [navVariant]);
+
+  // Context-aware CTA label based on current page or variant
   const getCtaLabel = () => {
     if (location.pathname.includes('reinigung')) return 'Reinigungsofferte';
     if (location.pathname.includes('lagerung')) return 'Lagerungsofferte';
     if (location.pathname.includes('entsorgung')) return 'Entsorgungsofferte';
     if (location.pathname.includes('firmenumzug')) return 'Firmenofferte';
-    return VARIANT_P.labels.cta;
+    return navVariant.labels.cta;
   };
 
   // Mobile menu is now handled by DynamicMobileMenu component
+
 
   return (
     <>
@@ -147,7 +161,7 @@ export const NavigationV16 = () => {
 
           {/* Desktop Navigation - Only show from xl breakpoint */}
           <nav className="hidden xl:flex items-center gap-0.5 flex-1 min-w-0 justify-center">
-            {NAV_SECTIONS.map((section) => (
+            {navSections.map((section) => (
               <div
                 key={section.id}
                 className="relative"
