@@ -285,13 +285,19 @@ const navStructure: NavItem[] = [
     icon: Clock 
   },
   
-  // ========== PHASE 6: GROWTH ==========
-  { type: "divider", title: "🚀 Phase 6: Growth" },
+  // ========== LAUNCH & GROWTH ==========
+  { type: "divider", title: "🚀 Launch & Growth" },
+  { 
+    title: "Relo-OS Phasen", 
+    href: "/admin/relo-os-phases", 
+    icon: Layers,
+    highlight: true,
+    badge: "DEV"
+  },
   { 
     title: "Post-Launch", 
     href: "/admin/post-launch", 
     icon: TrendingUp,
-    highlight: true,
     badge: "LIVE"
   },
   { 
