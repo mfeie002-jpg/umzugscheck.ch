@@ -1,0 +1,952 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "date": "2026-01-28",
+    "description": "Komplettes A/B Test Export-Paket mit 17 Navigation-Varianten inklusive Dropdowns, Submenüs und vollständiger Struktur",
+    "variants": 17,
+    "usage": "Importiere diese Datei in dein Projekt und folge der A-B-TEST-INTEGRATION-GUIDE.md"
+  },
+  "variants": [
+    {
+      "id": "ultimate",
+      "name": "1. Original (Status Quo)",
+      "description": "Aktuelle Navigation wie sie jetzt ist",
+      "structure": {
+        "points": 5,
+        "style": "Sie-Form",
+        "focus": "Neutral"
+      },
+      "labels": {
+        "preisrechner": "Preisrechner",
+        "firmen": "Umzugsfirmen",
+        "services": "Services",
+        "ratgeber": "Ratgeber",
+        "fuerFirmen": "Für Firmen",
+        "cta": "Offerten erhalten"
+      },
+      "microcopy": {
+        "preisrechner": "Umzugskosten berechnen in 60 Sekunden",
+        "firmen": "Geprüfte Firmen in deiner Region",
+        "services": "Reinigung, Lagerung, Entsorgung & mehr",
+        "ratgeber": "Checklisten, Tipps & Anleitungen",
+        "fuerFirmen": "Für Umzugsfirmen: Partner werden"
+      },
+      "dropdownTitles": {
+        "preisrechner": "KOSTEN BERECHNEN",
+        "firmen": "UMZUGSFIRMEN FINDEN",
+        "services": "ALLE SERVICES",
+        "ratgeber": "RATGEBER",
+        "fuerFirmen": "FÜR FIRMEN"
+      },
+      "ctaCard": {
+        "preisrechner": {
+          "title": "Kostenlose Offerten",
+          "buttonText": "Preisrechner starten"
+        },
+        "firmen": {
+          "title": "Offerten in deiner Region",
+          "buttonText": "Offerten anfordern"
+        },
+        "services": {
+          "title": "Service auswählen",
+          "buttonText": "Offerten erhalten"
+        },
+        "ratgeber": {
+          "title": "Umzug jetzt starten",
+          "buttonText": "Jetzt Offerten erhalten"
+        },
+        "fuerFirmen": {
+          "title": "Jetzt Partner werden",
+          "buttonText": "Kostenlos registrieren"
+        }
+      }
+    },
+    {
+      "id": "variant-b",
+      "name": "2. Ultimate (Lovable)",
+      "description": "Action-First mit Verben, conversion-fokussiert",
+      "structure": {
+        "points": 5,
+        "style": "Sie-Form",
+        "focus": "Action-Verben"
+      },
+      "labels": {
+        "preisrechner": "Kosten berechnen",
+        "firmen": "Firmen vergleichen",
+        "services": "Alle Services",
+        "ratgeber": "Tipps & Hilfe",
+        "fuerFirmen": "Für Anbieter",
+        "cta": "Gratis Offerten"
+      },
+      "microcopy": {
+        "preisrechner": "Was kostet dein Umzug? In 60 Sekunden Klarheit.",
+        "firmen": "Geprüfte Firmen in deiner Region vergleichen",
+        "services": "Reinigung, Lagerung, Entsorgung & mehr",
+        "ratgeber": "Checklisten, Spartipps & Anleitungen",
+        "fuerFirmen": "Für Umzugsfirmen: Partner werden & Leads erhalten"
+      },
+      "dropdownTitles": {
+        "preisrechner": "KOSTEN BERECHNEN",
+        "firmen": "FIRMEN VERGLEICHEN",
+        "services": "ALLE SERVICES",
+        "ratgeber": "TIPPS & HILFE",
+        "fuerFirmen": "FÜR ANBIETER"
+      },
+      "ctaCard": {
+        "preisrechner": {
+          "title": "Kosten klar. Umzug entspannt.",
+          "buttonText": "Preisrechner starten"
+        },
+        "firmen": {
+          "title": "Offerten in deiner Region",
+          "buttonText": "Offerten anfordern"
+        },
+        "services": {
+          "title": "Ein Paket. Alles drin.",
+          "buttonText": "Services wählen"
+        },
+        "ratgeber": {
+          "title": "Kurz lesen. Dann Offerten.",
+          "buttonText": "Jetzt Offerten erhalten"
+        },
+        "fuerFirmen": {
+          "title": "Wachse mit qualifizierten Leads",
+          "buttonText": "Kostenlos registrieren"
+        }
+      }
+    },
+    {
+      "id": "variant-c",
+      "name": "3. ChatGPT Concierge",
+      "description": "Offerten vergleichen zuerst, Planung danach",
+      "structure": {
+        "points": 5,
+        "style": "Sie-Form",
+        "focus": "Offerten-first"
+      },
+      "labels": {
+        "preisrechner": "Offerten vergleichen",
+        "firmen": "Kosten & Planung",
+        "services": "Services",
+        "ratgeber": "Ratgeber",
+        "fuerFirmen": "Für Firmen",
+        "cta": "Offerten erhalten"
+      },
+      "microcopy": {
+        "preisrechner": "Region wählen → geprüfte Firmen → bis zu 40% sparen.",
+        "firmen": "Preisrechner, Checkliste & Zeitplan in 2 Minuten.",
+        "services": "Umzug, Reinigung, Montage & alles drumherum.",
+        "ratgeber": "Tipps + Vorlagen + Downloads – kurz & nützlich.",
+        "fuerFirmen": "Partner werden, Leads bekommen, Dashboard nutzen."
+      },
+      "dropdownTitles": {
+        "preisrechner": "OFFERTEN VERGLEICHEN",
+        "firmen": "KOSTEN & PLANUNG",
+        "services": "SERVICES",
+        "ratgeber": "RATGEBER",
+        "fuerFirmen": "FÜR FIRMEN"
+      },
+      "ctaCard": {
+        "preisrechner": {
+          "title": "Offerten in deiner Region",
+          "buttonText": "Offerten anfordern"
+        },
+        "firmen": {
+          "title": "Starte mit dem Preisrechner",
+          "buttonText": "Preisrechner starten"
+        },
+        "services": {
+          "title": "Service auswählen & Offerten erhalten",
+          "buttonText": "Offerten erhalten"
+        },
+        "ratgeber": {
+          "title": "Umzug jetzt starten",
+          "buttonText": "Jetzt Offerten erhalten"
+        },
+        "fuerFirmen": {
+          "title": "Jetzt Partner werden",
+          "buttonText": "Kostenlos registrieren"
+        }
+      }
+    },
+    {
+      "id": "variant-d",
+      "name": "4. Strategic Report",
+      "description": "Premium-UX: Kosten & Planung → Offerten vergleichen",
+      "structure": {
+        "points": 5,
+        "style": "Sie-Form",
+        "focus": "Planung-first"
+      },
+      "labels": {
+        "preisrechner": "Kosten & Planung",
+        "firmen": "Offerten vergleichen",
+        "services": "Services",
+        "ratgeber": "Ratgeber",
+        "fuerFirmen": "Für Firmen",
+        "cta": "Offerten erhalten"
+      },
+      "microcopy": {
+        "preisrechner": "Checkliste, Zeitplan, Kosten – in 2 Minuten Klarheit.",
+        "firmen": "Region wählen, Firmen vergleichen, bis zu 40% sparen.",
+        "services": "Reinigung, Lagerung & mehr für einen stressfreien Umzug.",
+        "ratgeber": "Kurz, praktisch, sofort nutzbar.",
+        "fuerFirmen": "Für Umzugsfirmen: Mehr qualifizierte Anfragen. Weniger Leerlauf."
+      },
+      "dropdownTitles": {
+        "preisrechner": "KOSTEN & PLANUNG",
+        "firmen": "OFFERTEN VERGLEICHEN",
+        "services": "SERVICES",
+        "ratgeber": "RATGEBER",
+        "fuerFirmen": "FÜR FIRMEN"
+      },
+      "ctaCard": {
+        "preisrechner": {
+          "title": "Kosten klar. Umzug entspannt.",
+          "buttonText": "Preisrechner starten"
+        },
+        "firmen": {
+          "title": "Offerten in deiner Region",
+          "buttonText": "Offerten anfordern"
+        },
+        "services": {
+          "title": "Service auswählen & Offerten erhalten",
+          "buttonText": "Offerten erhalten"
+        },
+        "ratgeber": {
+          "title": "Umzug jetzt starten",
+          "buttonText": "Jetzt Offerten erhalten"
+        },
+        "fuerFirmen": {
+          "title": "Jetzt Partner werden",
+          "buttonText": "Kostenlos registrieren"
+        }
+      }
+    },
+    {
+      "id": "variant-e",
+      "name": "5. Mobile-First Archetyp",
+      "description": "Kürzere Nomen, Mobile-first, SEO-kompatibel",
+      "structure": {
+        "points": 5,
+        "style": "Sie-Form",
+        "focus": "Mobile-optimiert"
+      },
+      "labels": {
+        "preisrechner": "Kosten & Planung",
+        "firmen": "Umzugsfirmen",
+        "services": "Services",
+        "ratgeber": "Tipps & Vorlagen",
+        "fuerFirmen": "Für Firmen",
+        "cta": "Offerten erhalten"
+      },
+      "microcopy": {
+        "preisrechner": "Preisvorschau in 2 Minuten, gratis & unverbindlich.",
+        "firmen": "Zürich, Bern, Basel – Top Anbieter vergleichen.",
+        "services": "Privatumzug, Firmenumzug, Reinigung & mehr.",
+        "ratgeber": "Download, sofort nutzbar.",
+        "fuerFirmen": "Kostenlos registrieren & Kunden gewinnen."
+      },
+      "dropdownTitles": {
+        "preisrechner": "KOSTEN & PLANUNG",
+        "firmen": "UMZUGSFIRMEN",
+        "services": "SERVICES",
+        "ratgeber": "TIPPS & VORLAGEN",
+        "fuerFirmen": "FÜR FIRMEN"
+      },
+      "ctaCard": {
+        "preisrechner": {
+          "title": "Kosten klar. Umzug entspannt.",
+          "buttonText": "Preisrechner starten"
+        },
+        "firmen": {
+          "title": "Offerten in deiner Region",
+          "buttonText": "Offerten anfordern"
+        },
+        "services": {
+          "title": "Ein Paket. Alles drin.",
+          "buttonText": "Services wählen"
+        },
+        "ratgeber": {
+          "title": "Kurz lesen. Dann Offerten.",
+          "buttonText": "Jetzt Offerten erhalten"
+        },
+        "fuerFirmen": {
+          "title": "Wachse mit qualifizierten Leads",
+          "buttonText": "Kostenlos registrieren"
+        }
+      }
+    },
+    {
+      "id": "variant-f",
+      "name": "6. Conversion-Killer",
+      "description": "Aggressiv auf Conversion getrimmt, Schweizer Sicherheit",
+      "structure": {
+        "points": 5,
+        "style": "Sie-Form",
+        "focus": "Conversion-optimiert"
+      },
+      "labels": {
+        "preisrechner": "Kosten & Planung",
+        "firmen": "Offerten vergleichen",
+        "services": "Services",
+        "ratgeber": "Ratgeber",
+        "fuerFirmen": "Für Firmen",
+        "cta": "Offerten erhalten"
+      },
+      "microcopy": {
+        "preisrechner": "Budget berechnen, Checklisten & Zeitplan.",
+        "firmen": "Top-Firmen in deiner Region, bis 40% sparen.",
+        "services": "Reinigung, Lagerung & Umzugskartons.",
+        "ratgeber": "Tipps, Vorlagen & Behördengänge.",
+        "fuerFirmen": "Partner werden & B2B Umzüge."
+      },
+      "dropdownTitles": {
+        "preisrechner": "KOSTEN & PLANUNG",
+        "firmen": "OFFERTEN VERGLEICHEN",
+        "services": "SERVICES",
+        "ratgeber": "RATGEBER",
+        "fuerFirmen": "FÜR FIRMEN"
+      },
+      "ctaCard": {
+        "preisrechner": {
+          "title": "Budget geklärt?",
+          "buttonText": "Jetzt Preise vergleichen"
+        },
+        "firmen": {
+          "title": "Lokale Umzugsfirmen",
+          "buttonText": "Offerten anfordern"
+        },
+        "services": {
+          "title": "Service auswählen",
+          "buttonText": "Offerten erhalten"
+        },
+        "ratgeber": {
+          "title": "Keine Lust zu lesen?",
+          "buttonText": "Anfrage starten"
+        },
+        "fuerFirmen": {
+          "title": "Jetzt Partner werden",
+          "buttonText": "Kostenlos registrieren"
+        }
+      }
+    },
+    {
+      "id": "variant-g",
+      "name": "7. User Journey Split",
+      "description": "Klassische Trennung: Planen vs. Finden",
+      "structure": {
+        "points": 5,
+        "style": "Sie-Form",
+        "focus": "Journey-Split"
+      },
+      "labels": {
+        "preisrechner": "Umzug planen",
+        "firmen": "Umzugsfirma finden",
+        "services": "Services",
+        "ratgeber": "Ratgeber",
+        "fuerFirmen": "Für Firmen",
+        "cta": "Offerten erhalten"
+      },
+      "microcopy": {
+        "preisrechner": "Tools & Tipps für deinen Umzug.",
+        "firmen": "Vergleiche Firmen & Preise.",
+        "services": "Alle Umzugs-Services & Zusatzleistungen.",
+        "ratgeber": "Guides, Checklisten & Spar-Tipps.",
+        "fuerFirmen": "Partner werden & Firmenumzüge."
+      },
+      "dropdownTitles": {
+        "preisrechner": "UMZUG PLANEN",
+        "firmen": "UMZUGSFIRMA FINDEN",
+        "services": "SERVICES",
+        "ratgeber": "RATGEBER",
+        "fuerFirmen": "FÜR FIRMEN"
+      },
+      "ctaCard": {
+        "preisrechner": {
+          "title": "Bereit für Offerten?",
+          "buttonText": "Preisrechner starten"
+        },
+        "firmen": {
+          "title": "Offerten in deiner Region",
+          "buttonText": "Offerten anfordern"
+        },
+        "services": {
+          "title": "Service auswählen",
+          "buttonText": "Offerten erhalten"
+        },
+        "ratgeber": {
+          "title": "Umzug jetzt starten",
+          "buttonText": "Jetzt Offerten erhalten"
+        },
+        "fuerFirmen": {
+          "title": "Jetzt Partner werden",
+          "buttonText": "Kostenlos registrieren"
+        }
+      }
+    },
+    {
+      "id": "variant-h",
+      "name": "8. Zielgruppen-Split",
+      "description": "Trennung nach Kundentyp: Privatumzug vs. Firmenumzug",
+      "structure": {
+        "points": 5,
+        "style": "Sie-Form",
+        "focus": "Zielgruppen-getrennt"
+      },
+      "labels": {
+        "preisrechner": "Privatumzug",
+        "firmen": "Firmenumzug",
+        "services": "Umzugsfirmen",
+        "ratgeber": "Planung & Checkliste",
+        "fuerFirmen": "Zusatzservices",
+        "cta": "Offerten erhalten"
+      },
+      "microcopy": {
+        "preisrechner": "Alles für Ihren stressfreien Wohnungswechsel.",
+        "firmen": "Effiziente Büroumzüge für Unternehmen.",
+        "services": "Vergleichen Sie geprüfte Umzugsunternehmen.",
+        "ratgeber": "Checklisten, Zeitpläne und Kostenrechner.",
+        "fuerFirmen": "Packservice, Reinigung, Möbellifte & mehr."
+      },
+      "dropdownTitles": {
+        "preisrechner": "PRIVATUMZUG",
+        "firmen": "FIRMENUMZUG",
+        "services": "UMZUGSFIRMEN",
+        "ratgeber": "PLANUNG & CHECKLISTE",
+        "fuerFirmen": "ZUSATZSERVICES"
+      },
+      "ctaCard": {
+        "preisrechner": {
+          "title": "Geprüfte Umzugspartner",
+          "buttonText": "Offerten erhalten"
+        },
+        "firmen": {
+          "title": "Firmenkunden-Spezialisten",
+          "buttonText": "Offerten erhalten"
+        },
+        "services": {
+          "title": "Alle Kantone abgedeckt",
+          "buttonText": "Offerten anfordern"
+        },
+        "ratgeber": {
+          "title": "Gratis Planungstool",
+          "buttonText": "Offerten erhalten"
+        },
+        "fuerFirmen": {
+          "title": "Alle Zusatzleistungen",
+          "buttonText": "Offerten erhalten"
+        }
+      }
+    },
+    {
+      "id": "variant-i",
+      "name": "9. Allgemeines Menu-Konzept",
+      "description": "Sticky Top Nav + Mega Menu: Klarheit & Übersicht",
+      "structure": {
+        "points": 5,
+        "style": "Sie-Form",
+        "focus": "Mega-Menu"
+      },
+      "labels": {
+        "preisrechner": "Kosten berechnen",
+        "firmen": "Firmen finden",
+        "services": "Services",
+        "ratgeber": "Ratgeber",
+        "fuerFirmen": "Für Anbieter",
+        "cta": "Offerten vergleichen"
+      },
+      "microcopy": {
+        "preisrechner": "Preisvorschau in 2 Min. Der Nutzer weiß immer, wo er ist.",
+        "firmen": "Region wählen → Firmen vergleichen → Übersicht auf einen Blick.",
+        "services": "Alle Optionen kategorisiert, kognitive Entlastung.",
+        "ratgeber": "Tipps, Vorlagen & Downloads. Keine verschachtelten Menüs.",
+        "fuerFirmen": "Partner werden. Tab Bar für Mobile (Daumen erreichbar)."
+      },
+      "dropdownTitles": {
+        "preisrechner": "KOSTEN BERECHNEN",
+        "firmen": "FIRMEN FINDEN",
+        "services": "SERVICES",
+        "ratgeber": "RATGEBER",
+        "fuerFirmen": "FÜR ANBIETER"
+      },
+      "ctaCard": {
+        "preisrechner": {
+          "title": "Mega Menu Übersicht",
+          "buttonText": "Preisrechner starten"
+        },
+        "firmen": {
+          "title": "Alle Optionen auf einen Blick",
+          "buttonText": "Offerten anfordern"
+        },
+        "services": {
+          "title": "Kategorisiert & Hierarchisch",
+          "buttonText": "Service wählen"
+        },
+        "ratgeber": {
+          "title": "Kein Kurzzeitgedächtnis-Problem",
+          "buttonText": "Ratgeber lesen"
+        },
+        "fuerFirmen": {
+          "title": "Mobile-first Tab Bar",
+          "buttonText": "Partner werden"
+        }
+      }
+    },
+    {
+      "id": "variant-j",
+      "name": "10. Conversion-Killer Final",
+      "description": "Action-first, schärfste Wortwahl, maximale Conversion",
+      "structure": {
+        "points": 5,
+        "style": "Sie-Form",
+        "focus": "Max Conversion"
+      },
+      "labels": {
+        "preisrechner": "Kosten berechnen",
+        "firmen": "Offerten vergleichen",
+        "services": "Services",
+        "ratgeber": "Ratgeber",
+        "fuerFirmen": "Für Anbieter",
+        "cta": "Gratis Offerten"
+      },
+      "microcopy": {
+        "preisrechner": "Preisvorschau in 2 Min. Kostenlos & unverbindlich.",
+        "firmen": "Geprüfte Umzugsfirmen in deiner Region. Bis zu 40% sparen.",
+        "services": "Umzug, Reinigung, Packen, Lift, Entsorgung. Alles aus einer Hand.",
+        "ratgeber": "Checklisten, Vorlagen & Tipps. Kurz, praktisch, sofort nutzbar.",
+        "fuerFirmen": "Partner werden, Leads erhalten, Dashboard nutzen."
+      },
+      "dropdownTitles": {
+        "preisrechner": "KOSTEN BERECHNEN",
+        "firmen": "OFFERTEN VERGLEICHEN",
+        "services": "SERVICES",
+        "ratgeber": "RATGEBER",
+        "fuerFirmen": "FÜR ANBIETER"
+      },
+      "ctaCard": {
+        "preisrechner": {
+          "title": "In 2 Minuten Klarheit",
+          "buttonText": "Preisrechner starten"
+        },
+        "firmen": {
+          "title": "3–5 Offerten in 24–48h",
+          "buttonText": "Gratis Offerten"
+        },
+        "services": {
+          "title": "Komplettpaket möglich",
+          "buttonText": "Gratis Offerten"
+        },
+        "ratgeber": {
+          "title": "Schnellstart in 5 Minuten",
+          "buttonText": "Checkliste herunterladen"
+        },
+        "fuerFirmen": {
+          "title": "Mehr Anfragen. Weniger Leerstand.",
+          "buttonText": "Kostenlos registrieren"
+        }
+      }
+    },
+    {
+      "id": "variant-k",
+      "name": "11. Simpel & Clean",
+      "description": "6 Punkte: Umzug, Reinigung, Services, Ratgeber, So funktioniert's + CTA",
+      "structure": {
+        "points": 6,
+        "style": "Sie-Form",
+        "focus": "Minimalistisch"
+      },
+      "labels": {
+        "preisrechner": "Umzug",
+        "firmen": "Umzugsreinigung",
+        "services": "Weitere Services",
+        "ratgeber": "Ratgeber",
+        "fuerFirmen": "So funktioniert's",
+        "cta": "Jetzt Offerten vergleichen"
+      },
+      "microcopy": {
+        "preisrechner": "Privatumzug – alles für Ihren stressfreien Wohnungswechsel.",
+        "firmen": "Endreinigung mit Abgabegarantie.",
+        "services": "Entsorgung, Lagerung, Möbelmontage.",
+        "ratgeber": "Checklisten, Tipps & Tricks zum Download.",
+        "fuerFirmen": "Transparent: Von der Anfrage bis zur Offerte."
+      },
+      "dropdownTitles": {
+        "preisrechner": "UMZUG",
+        "firmen": "UMZUGSREINIGUNG",
+        "services": "WEITERE SERVICES",
+        "ratgeber": "RATGEBER",
+        "fuerFirmen": "SO FUNKTIONIERT'S"
+      },
+      "ctaCard": {
+        "preisrechner": {
+          "title": "Privatumzug starten",
+          "buttonText": "Offerten erhalten"
+        },
+        "firmen": {
+          "title": "Reinigung mit Garantie",
+          "buttonText": "Offerten erhalten"
+        },
+        "services": {
+          "title": "Alles aus einer Hand",
+          "buttonText": "Offerten erhalten"
+        },
+        "ratgeber": {
+          "title": "Kurz & praktisch",
+          "buttonText": "Checkliste herunterladen"
+        },
+        "fuerFirmen": {
+          "title": "So einfach geht's",
+          "buttonText": "Mehr erfahren"
+        }
+      }
+    },
+    {
+      "id": "variant-l",
+      "name": "12. Optimiert (Best-of-Breed)",
+      "description": "V10 Basis + Benefit-Sublines + visuelle Trennung",
+      "structure": {
+        "points": 5,
+        "style": "Sie-Form",
+        "focus": "Best Practice"
+      },
+      "labels": {
+        "preisrechner": "Preise berechnen",
+        "firmen": "Umzugsfirma finden",
+        "services": "Reinigung & Services",
+        "ratgeber": "Checklisten & Ratgeber",
+        "fuerFirmen": "Für Anbieter",
+        "cta": "Gratis Offerten"
+      },
+      "microcopy": {
+        "preisrechner": "In 2 Minuten zum Richtpreis & Gratis-Offerten.",
+        "firmen": "Geprüfte Firmen in deiner Region. Bis zu 40% sparen.",
+        "services": "Mit Abnahmegarantie, Lagerung & Entsorgung.",
+        "ratgeber": "Zeitpläne, Spartipps und Vorlagen zum Download.",
+        "fuerFirmen": "Partner werden, Leads erhalten, Dashboard nutzen."
+      },
+      "dropdownTitles": {
+        "preisrechner": "PREISE BERECHNEN",
+        "firmen": "UMZUGSFIRMA FINDEN",
+        "services": "REINIGUNG & SERVICES",
+        "ratgeber": "CHECKLISTEN & RATGEBER",
+        "fuerFirmen": "FÜR ANBIETER"
+      },
+      "ctaCard": {
+        "preisrechner": {
+          "title": "Kostenlos & unverbindlich",
+          "buttonText": "Preisrechner starten"
+        },
+        "firmen": {
+          "title": "3–5 Offerten in 24–48h",
+          "buttonText": "Gratis Offerten"
+        },
+        "services": {
+          "title": "Mit Abnahmegarantie",
+          "buttonText": "Offerten erhalten"
+        },
+        "ratgeber": {
+          "title": "Kurz lesen. Dann Offerten.",
+          "buttonText": "Checkliste herunterladen"
+        },
+        "fuerFirmen": {
+          "title": "Mehr Anfragen. Weniger Leerstand.",
+          "buttonText": "Kostenlos registrieren"
+        }
+      }
+    },
+    {
+      "id": "variant-m",
+      "name": "13. Mobile-First Optimiert",
+      "description": "4 Hauptpunkte: Planen, Offerten, Funktioniert, Hilfe – Du-Form",
+      "structure": {
+        "points": 4,
+        "style": "Du-Form",
+        "focus": "Mobile-first, persönlich"
+      },
+      "labels": {
+        "preisrechner": "Plane deinen Umzug",
+        "firmen": "Offerten vergleichen",
+        "services": "So funktioniert's",
+        "ratgeber": "Hilfe & Kontakt",
+        "fuerFirmen": "Für Anbieter",
+        "cta": "Gratis Offerten"
+      },
+      "microcopy": {
+        "preisrechner": "Tools, Checklisten & Tipps, damit du stressfrei an alles denkst.",
+        "firmen": "Hol dir gratis Offerten von geprüften Umzugsfirmen & finde das beste Angebot.",
+        "services": "In 3 Schritten zu deinem stressfreien Umzug – transparent, sicher und einfach.",
+        "ratgeber": "Wir sind für dich da – FAQ, Tipps und persönlicher Support.",
+        "fuerFirmen": "Partner werden, Leads erhalten, Dashboard nutzen."
+      },
+      "dropdownTitles": {
+        "preisrechner": "PLANE DEINEN UMZUG",
+        "firmen": "OFFERTEN VERGLEICHEN",
+        "services": "SO FUNKTIONIERT'S",
+        "ratgeber": "HILFE & KONTAKT",
+        "fuerFirmen": "FÜR ANBIETER"
+      },
+      "ctaCard": {
+        "preisrechner": {
+          "title": "Bereit für den nächsten Schritt?",
+          "buttonText": "Gratis Offerten holen"
+        },
+        "firmen": {
+          "title": "Gratis & unverbindlich",
+          "buttonText": "Jetzt Offerten holen"
+        },
+        "services": {
+          "title": "In 3 Schritten zum Umzug",
+          "buttonText": "Jetzt starten"
+        },
+        "ratgeber": {
+          "title": "Lieber telefonieren?",
+          "buttonText": "Anrufen"
+        },
+        "fuerFirmen": {
+          "title": "Mehr Anfragen. Weniger Leerstand.",
+          "buttonText": "Partner werden"
+        }
+      }
+    },
+    {
+      "id": "variant-n",
+      "name": "14. 2026 Design",
+      "description": "5 Sektionen: Umzug planen, Umzugsfirmen, Services, Ratgeber, So funktioniert's + Context-Aware CTA",
+      "structure": {
+        "points": 5,
+        "style": "Du-Form",
+        "focus": "Modern 2026"
+      },
+      "labels": {
+        "preisrechner": "Umzug planen",
+        "firmen": "Umzugsfirmen",
+        "services": "Services",
+        "ratgeber": "Ratgeber",
+        "fuerFirmen": "So funktioniert's",
+        "cta": "Offerten erhalten"
+      },
+      "microcopy": {
+        "preisrechner": "Tools, Tipps & Rechner für deinen Zügeltag",
+        "firmen": "200+ geprüfte Partner – Umzugsfirma finden & sparen",
+        "services": "Rundum-Service: Reinigung, Lagerung, Entsorgung & mehr",
+        "ratgeber": "Tipps & Tricks für einen stressfreien Umzug",
+        "fuerFirmen": "Stressfrei in 3 Schritten – so funktioniert Umzugscheck"
+      },
+      "dropdownTitles": {
+        "preisrechner": "UMZUG PLANEN",
+        "firmen": "UMZUGSFIRMEN",
+        "services": "SERVICES",
+        "ratgeber": "RATGEBER",
+        "fuerFirmen": "SO FUNKTIONIERT'S"
+      },
+      "ctaCard": {
+        "preisrechner": {
+          "title": "Bereit für Offerten?",
+          "buttonText": "Preisrechner starten"
+        },
+        "firmen": {
+          "title": "200+ geprüfte Partner",
+          "buttonText": "Offerten anfordern"
+        },
+        "services": {
+          "title": "Rundum sorglos",
+          "buttonText": "Offerten erhalten"
+        },
+        "ratgeber": {
+          "title": "Umzug jetzt starten",
+          "buttonText": "Jetzt Offerten erhalten"
+        },
+        "fuerFirmen": {
+          "title": "So einfach geht's",
+          "buttonText": "Mehr erfahren"
+        }
+      }
+    },
+    {
+      "id": "variant-o",
+      "name": "15. ChatGPT Feedback v15",
+      "description": "4 Hauptpunkte: Plane deinen Umzug, Offerten vergleichen, So funktioniert's, Hilfe & Kontakt – Du-Form",
+      "structure": {
+        "points": 4,
+        "style": "Du-Form",
+        "focus": "Persönlich, emotional"
+      },
+      "labels": {
+        "preisrechner": "Plane deinen Umzug",
+        "firmen": "Offerten vergleichen",
+        "services": "So funktioniert's",
+        "ratgeber": "Hilfe & Kontakt",
+        "fuerFirmen": "Für Anbieter",
+        "cta": "Kostenlos Offerten erhalten"
+      },
+      "microcopy": {
+        "preisrechner": "Tools, Checklisten & Tipps, damit du stressfrei an alles denkst.",
+        "firmen": "Hol dir gratis Offerten von geprüften Umzugsfirmen & finde das beste Angebot.",
+        "services": "In 3 Schritten zu deinem stressfreien Umzug – transparent, sicher und einfach.",
+        "ratgeber": "Wir sind für dich da – FAQ, Tipps und persönlicher Support bei allen Umzugsfragen.",
+        "fuerFirmen": "Partner werden, Leads erhalten, Dashboard nutzen."
+      },
+      "dropdownTitles": {
+        "preisrechner": "PLANE DEINEN UMZUG",
+        "firmen": "OFFERTEN VERGLEICHEN",
+        "services": "SO FUNKTIONIERT'S",
+        "ratgeber": "HILFE & KONTAKT",
+        "fuerFirmen": "FÜR ANBIETER"
+      },
+      "ctaCard": {
+        "preisrechner": {
+          "title": "Bereit für den nächsten Schritt?",
+          "buttonText": "Gratis Offerten holen"
+        },
+        "firmen": {
+          "title": "Gratis & unverbindlich",
+          "buttonText": "Jetzt Offerten holen"
+        },
+        "services": {
+          "title": "In 3 Schritten zum Umzug",
+          "buttonText": "Jetzt starten"
+        },
+        "ratgeber": {
+          "title": "Lieber telefonieren?",
+          "buttonText": "Kontakt aufnehmen"
+        },
+        "fuerFirmen": {
+          "title": "Mehr Anfragen. Weniger Leerstand.",
+          "buttonText": "Partner werden"
+        }
+      }
+    },
+    {
+      "id": "variant-p",
+      "name": "16. SEO-Optimiert 2026",
+      "description": "5 Sektionen: Umzug planen, Umzugsfirmen, Services, Ratgeber, So funktioniert's – SEO-fokussiert mit Microcopy",
+      "structure": {
+        "points": 5,
+        "style": "Du-Form",
+        "focus": "SEO-optimiert"
+      },
+      "labels": {
+        "preisrechner": "Umzug planen",
+        "firmen": "Umzugsfirmen",
+        "services": "Services",
+        "ratgeber": "Ratgeber",
+        "fuerFirmen": "So funktioniert's",
+        "cta": "Offerten erhalten"
+      },
+      "microcopy": {
+        "preisrechner": "Tools, Tipps & Rechner für deinen Zügeltag",
+        "firmen": "200+ geprüfte Partner – Umzugsfirma finden & sparen",
+        "services": "Rundum-Service: Reinigung, Lagerung, Entsorgung & mehr",
+        "ratgeber": "Tipps & Tricks für einen stressfreien Umzug",
+        "fuerFirmen": "Stressfrei in 3 Schritten – so funktioniert Umzugscheck"
+      },
+      "dropdownTitles": {
+        "preisrechner": "UMZUG PLANEN",
+        "firmen": "UMZUGSFIRMEN",
+        "services": "SERVICES",
+        "ratgeber": "RATGEBER",
+        "fuerFirmen": "SO FUNKTIONIERT'S"
+      },
+      "ctaCard": {
+        "preisrechner": {
+          "title": "Bereit für den nächsten Schritt?",
+          "buttonText": "Gratis Offerten holen"
+        },
+        "firmen": {
+          "title": "200+ geprüfte Partner",
+          "buttonText": "Offerten anfordern"
+        },
+        "services": {
+          "title": "Rundum sorglos",
+          "buttonText": "Offerten erhalten"
+        },
+        "ratgeber": {
+          "title": "Umzug jetzt starten",
+          "buttonText": "Jetzt Offerten erhalten"
+        },
+        "fuerFirmen": {
+          "title": "In 3 Schritten zum Umzug",
+          "buttonText": "Jetzt starten"
+        }
+      }
+    },
+    {
+      "id": "variant-17",
+      "name": "17. NavigationV17 (Neu)",
+      "description": "Conversion-Killer Architektur mit eigenem Design",
+      "structure": {
+        "points": 5,
+        "style": "Sie-Form",
+        "focus": "Premium Design"
+      },
+      "labels": {
+        "preisrechner": "Kosten & Planung",
+        "firmen": "Offerten vergleichen",
+        "services": "Services",
+        "ratgeber": "Ratgeber",
+        "fuerFirmen": "Für Firmen",
+        "cta": "Offerten erhalten"
+      },
+      "microcopy": {
+        "preisrechner": "Eigenständige Navigation mit Premium-Design.",
+        "firmen": "Mega-Dropdowns mit Trust-Signalen.",
+        "services": "Reinigung, Lagerung, Entsorgung & mehr.",
+        "ratgeber": "Tipps, Vorlagen & Downloads.",
+        "fuerFirmen": "Partner werden, Dashboard nutzen."
+      },
+      "dropdownTitles": {
+        "preisrechner": "KOSTEN & PLANUNG",
+        "firmen": "OFFERTEN VERGLEICHEN",
+        "services": "SERVICES",
+        "ratgeber": "RATGEBER",
+        "fuerFirmen": "FÜR FIRMEN"
+      },
+      "ctaCard": {
+        "preisrechner": {
+          "title": "Budget geklärt?",
+          "buttonText": "Jetzt Preise vergleichen"
+        },
+        "firmen": {
+          "title": "Lokale Umzugsfirmen",
+          "buttonText": "Offerten anfordern"
+        },
+        "services": {
+          "title": "Service auswählen",
+          "buttonText": "Offerten erhalten"
+        },
+        "ratgeber": {
+          "title": "Umzug starten",
+          "buttonText": "Jetzt Offerten erhalten"
+        },
+        "fuerFirmen": {
+          "title": "Partner werden",
+          "buttonText": "Kostenlos registrieren"
+        }
+      }
+    }
+  ],
+  "summary": {
+    "total_variants": 17,
+    "point_distribution": {
+      "4_points": ["variant-m", "variant-o"],
+      "5_points": ["ultimate", "variant-b", "variant-c", "variant-d", "variant-e", "variant-f", "variant-g", "variant-h", "variant-i", "variant-j", "variant-l", "variant-n", "variant-p", "variant-17"],
+      "6_points": ["variant-k"]
+    },
+    "style_distribution": {
+      "sie_form": ["ultimate", "variant-b", "variant-c", "variant-d", "variant-e", "variant-f", "variant-g", "variant-h", "variant-i", "variant-j", "variant-k", "variant-l", "variant-17"],
+      "du_form": ["variant-m", "variant-n", "variant-o", "variant-p"]
+    },
+    "focus_areas": {
+      "conversion": ["variant-f", "variant-j", "variant-17"],
+      "mobile_first": ["variant-e", "variant-m", "variant-o"],
+      "planning_first": ["variant-d"],
+      "offers_first": ["variant-c"],
+      "target_group_split": ["variant-h"],
+      "journey_split": ["variant-g"],
+      "minimalist": ["variant-k"],
+      "best_practices": ["variant-l"],
+      "seo_optimized": ["variant-p", "variant-n"]
+    }
+  }
+}
