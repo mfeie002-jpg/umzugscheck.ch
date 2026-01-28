@@ -47,6 +47,7 @@ const PaidMediaControl = lazy(() => import("./pages/internal/PaidMediaControl"))
 const LaunchRoadmap = lazy(() => import("./pages/internal/LaunchRoadmap"));
 const LeadRouting = lazy(() => import("./pages/internal/LeadRouting"));
 const PartnerNetwork = lazy(() => import("./pages/internal/PartnerNetwork"));
+const LeadDistribution = lazy(() => import("./pages/internal/LeadDistribution"));
 const ExportDownload = lazy(() => import("./pages/ExportDownload"));
 
 // Service pages
@@ -498,6 +499,7 @@ const AdminRoutes = () => (
       <Route path="/internal/launch-roadmap" element={<LaunchRoadmap />} />
       <Route path="/internal/lead-routing" element={<LeadRouting />} />
       <Route path="/internal/partners" element={<PartnerNetwork />} />
+      <Route path="/internal/distribution" element={<LeadDistribution />} />
     </AnimatedRoutes>
   </Suspense>
 );
