@@ -64,6 +64,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useState } from "react";
+import { getTooltipForRoute } from "@/lib/admin-handbook-data";
 
 // ============================================================================
 // COMPLETE ADMIN NAVIGATION - ALL FEATURES & TOOLS
@@ -78,6 +79,7 @@ interface NavItem {
   exact?: boolean;
   external?: boolean;
   type?: 'divider';
+  description?: string; // Added for enhanced tooltips
 }
 
 const navStructure: NavItem[] = [
@@ -422,6 +424,13 @@ const navStructure: NavItem[] = [
     href: "/admin/documentation", 
     icon: BookOpen 
   },
+  { 
+    title: "📖 Handbuch", 
+    href: "/admin/handbuch", 
+    icon: BookOpen,
+    highlight: true,
+    badge: "HILFE"
+  },
 ];
 
 export function AdminSidebar() {
@@ -572,7 +581,9 @@ export function AdminSidebar() {
               </Link>
             );
 
-            // Wrap in tooltip for collapsed mode
+            // Wrap in tooltip - enhanced with description
+            const tooltipDescription = item.href ? getTooltipForRoute(item.href) : null;
+            
             if (collapsed) {
               return (
                 <TooltipProvider key={item.href} delayDuration={0}>
@@ -580,20 +591,41 @@ export function AdminSidebar() {
                     <TooltipTrigger asChild>
                       {NavContent}
                     </TooltipTrigger>
-                    <TooltipContent side="right" className="flex items-center gap-2">
-                      {item.title}
-                      {item.badge && (
-                        <Badge variant="default" className="text-[9px] px-1 py-0 h-4 bg-orange-500">
-                          {item.badge}
-                        </Badge>
-                      )}
+                    <TooltipContent side="right" className="max-w-xs">
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">{item.title}</span>
+                          {item.badge && (
+                            <Badge variant="default" className="text-[9px] px-1 py-0 h-4 bg-orange-500">
+                              {item.badge}
+                            </Badge>
+                          )}
+                        </div>
+                        {tooltipDescription && (
+                          <span className="text-xs text-muted-foreground">{tooltipDescription}</span>
+                        )}
+                      </div>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               );
             }
 
-            return NavContent;
+            // Also show tooltip on hover for expanded mode
+            return (
+              <TooltipProvider key={item.href} delayDuration={300}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    {NavContent}
+                  </TooltipTrigger>
+                  {tooltipDescription && (
+                    <TooltipContent side="right" className="max-w-xs">
+                      <span className="text-xs">{tooltipDescription}</span>
+                    </TooltipContent>
+                  )}
+                </Tooltip>
+              </TooltipProvider>
+            );
           })}
         </nav>
       </ScrollArea>
