@@ -188,13 +188,14 @@ export function canTransition(from: MoveProjectStatus, to: MoveProjectStatus): b
 // ============================================================================
 
 /**
- * Create a new move project
+ * Create a new move project (with Supabase persistence)
  */
 export async function createMoveProject(params: {
   source: MoveProject['source'];
   origin?: Partial<AddressDetails>;
   destination?: Partial<AddressDetails>;
   moveDate?: string;
+  userId?: string;
 }): Promise<MoveProject | null> {
   const defaultAddress: AddressDetails = {
     street: '',
@@ -235,13 +236,57 @@ export async function createMoveProject(params: {
     updatedAt: new Date().toISOString()
   };
 
-  // For now, store in localStorage until we have the DB table
+  // Try Supabase first
+  try {
+    const dbData = {
+      status: project.status,
+      source: project.source,
+      origin_street: project.origin?.street,
+      origin_postal_code: project.origin?.postalCode,
+      origin_city: project.origin?.city,
+      origin_canton: project.origin?.canton,
+      destination_street: project.destination?.street,
+      destination_postal_code: project.destination?.postalCode,
+      destination_city: project.destination?.city,
+      destination_canton: project.destination?.canton,
+      move_date: project.moveDate,
+      flexibility: project.flexibility,
+      total_volume: project.totalVolume,
+      total_weight: project.totalWeight,
+      service_tier: project.serviceTier,
+      guaranteed_price: project.guaranteedPrice,
+      price_breakdown: project.priceBreakdown,
+      additional_services: project.additionalServices,
+      moving_day_checklist: project.movingDayChecklist,
+      cleaning_accepted: project.cleaningAccepted,
+      deposit_released: project.depositReleased,
+      user_id: params.userId || null
+    };
+
+    const { data, error } = await supabase
+      .from('move_projects')
+      .insert([dbData])
+      .select('id')
+      .single();
+
+    if (!error && data?.id) {
+      localStorage.setItem('current_move_project_id', data.id);
+      return { ...project, id: data.id } as MoveProject;
+    }
+    
+    console.warn('Supabase insert failed, falling back to localStorage:', error?.message);
+  } catch (e) {
+    console.warn('Supabase unavailable, using localStorage:', e);
+  }
+
+  // Fallback to localStorage
   const id = `mp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   const fullProject = { ...project, id } as MoveProject;
   
   try {
     localStorage.setItem(`move_project_${id}`, JSON.stringify(fullProject));
     localStorage.setItem('current_move_project', id);
+    localStorage.setItem('current_move_project_id', id);
   } catch (e) {
     console.error('Failed to save move project:', e);
     return null;
@@ -251,12 +296,42 @@ export async function createMoveProject(params: {
 }
 
 /**
- * Get current move project from localStorage
+ * Get current move project (tries Supabase first, falls back to localStorage)
+ */
+export async function getCurrentMoveProjectAsync(): Promise<MoveProject | null> {
+  try {
+    // Try Supabase first
+    const currentId = localStorage.getItem('current_move_project_id');
+    if (currentId && !currentId.startsWith('mp_')) {
+      const { data, error } = await supabase
+        .from('move_projects')
+        .select('*')
+        .eq('id', currentId)
+        .maybeSingle();
+      
+      if (!error && data) {
+        return dbRowToMoveProject(data);
+      }
+    }
+  } catch (e) {
+    console.warn('Supabase load failed:', e);
+  }
+  
+  // Fallback to localStorage
+  return getCurrentMoveProject();
+}
+
+/**
+ * Get current move project from localStorage (sync version for backwards compatibility)
  */
 export function getCurrentMoveProject(): MoveProject | null {
   try {
-    const currentId = localStorage.getItem('current_move_project');
+    const currentId = localStorage.getItem('current_move_project') || 
+                      localStorage.getItem('current_move_project_id');
     if (!currentId) return null;
+    
+    // If it's a Supabase UUID, we can't load sync
+    if (!currentId.startsWith('mp_')) return null;
     
     const stored = localStorage.getItem(`move_project_${currentId}`);
     if (!stored) return null;
@@ -268,8 +343,129 @@ export function getCurrentMoveProject(): MoveProject | null {
   }
 }
 
+// Helper to convert DB row to MoveProject
+function dbRowToMoveProject(row: Record<string, any>): MoveProject {
+  return {
+    id: row.id,
+    userId: row.user_id,
+    status: row.status || 'draft',
+    source: row.source || 'homepage',
+    origin: {
+      street: row.origin_street || '',
+      streetNumber: row.origin_street_number,
+      postalCode: row.origin_postal_code || '',
+      city: row.origin_city || '',
+      canton: row.origin_canton || '',
+      floor: row.origin_floor,
+      hasElevator: row.origin_has_elevator,
+      parkingDistance: row.origin_parking_distance,
+      coordinates: row.origin_coordinates
+    },
+    destination: {
+      street: row.destination_street || '',
+      streetNumber: row.destination_street_number,
+      postalCode: row.destination_postal_code || '',
+      city: row.destination_city || '',
+      canton: row.destination_canton || '',
+      floor: row.destination_floor,
+      hasElevator: row.destination_has_elevator,
+      parkingDistance: row.destination_parking_distance,
+      coordinates: row.destination_coordinates
+    },
+    moveDate: row.move_date || '',
+    flexibility: row.flexibility || 'exact',
+    inventorySessionId: row.inventory_session_id,
+    digitalTwin: row.digital_twin,
+    totalVolume: row.total_volume || 0,
+    totalWeight: row.total_weight || 0,
+    serviceTier: row.service_tier || 'comfort',
+    guaranteedPrice: row.guaranteed_price || 0,
+    priceBreakdown: row.price_breakdown || {
+      basePrice: 0, distanceSurcharge: 0, floorSurcharge: 0, fragileSurcharge: 0,
+      seasonalAdjustment: 0, serviceFees: {}, platformFee: 0, total: 0,
+      currency: 'CHF', validUntil: '', guaranteeType: 'estimate'
+    },
+    additionalServices: row.additional_services || [],
+    escrowId: row.escrow_id,
+    providerId: row.provider_id,
+    providerName: row.provider_name,
+    bookingConfirmedAt: row.booking_confirmed_at,
+    trackingUrl: row.tracking_url,
+    movingDayChecklist: row.moving_day_checklist || [],
+    inTransitUpdates: row.in_transit_updates,
+    handoverProtocolId: row.handover_protocol_id,
+    cleaningAccepted: row.cleaning_accepted || false,
+    depositReleased: row.deposit_released || false,
+    customerRating: row.customer_rating,
+    customerReview: row.customer_review,
+    createdAt: row.created_at || new Date().toISOString(),
+    updatedAt: row.updated_at || new Date().toISOString(),
+    completedAt: row.completed_at
+  };
+}
+
 /**
- * Update move project
+ * Update move project (with Supabase persistence)
+ */
+export async function updateMoveProjectAsync(
+  projectId: string, 
+  updates: Partial<MoveProject>
+): Promise<MoveProject | null> {
+  // Try Supabase first if it's a UUID
+  if (!projectId.startsWith('mp_')) {
+    try {
+      const dbData: Record<string, any> = {};
+      
+      if (updates.status) dbData.status = updates.status;
+      if (updates.origin) {
+        dbData.origin_street = updates.origin.street;
+        dbData.origin_postal_code = updates.origin.postalCode;
+        dbData.origin_city = updates.origin.city;
+        dbData.origin_canton = updates.origin.canton;
+        dbData.origin_floor = updates.origin.floor;
+        dbData.origin_has_elevator = updates.origin.hasElevator;
+      }
+      if (updates.destination) {
+        dbData.destination_street = updates.destination.street;
+        dbData.destination_postal_code = updates.destination.postalCode;
+        dbData.destination_city = updates.destination.city;
+        dbData.destination_canton = updates.destination.canton;
+        dbData.destination_floor = updates.destination.floor;
+        dbData.destination_has_elevator = updates.destination.hasElevator;
+      }
+      if (updates.moveDate !== undefined) dbData.move_date = updates.moveDate;
+      if (updates.serviceTier) dbData.service_tier = updates.serviceTier;
+      if (updates.digitalTwin) dbData.digital_twin = updates.digitalTwin;
+      if (updates.totalVolume !== undefined) dbData.total_volume = updates.totalVolume;
+      if (updates.totalWeight !== undefined) dbData.total_weight = updates.totalWeight;
+      if (updates.guaranteedPrice !== undefined) dbData.guaranteed_price = updates.guaranteedPrice;
+      if (updates.priceBreakdown) dbData.price_breakdown = updates.priceBreakdown;
+      if (updates.escrowId) dbData.escrow_id = updates.escrowId;
+      if (updates.providerId) dbData.provider_id = updates.providerId;
+      if (updates.providerName) dbData.provider_name = updates.providerName;
+      if (updates.completedAt) dbData.completed_at = updates.completedAt;
+
+      const { data, error } = await supabase
+        .from('move_projects')
+        .update(dbData)
+        .eq('id', projectId)
+        .select('*')
+        .single();
+
+      if (!error && data) {
+        return dbRowToMoveProject(data);
+      }
+    } catch (e) {
+      console.warn('Supabase update failed:', e);
+    }
+  }
+
+  // Fallback to localStorage
+  return updateMoveProject(projectId, updates);
+}
+
+/**
+ * Update move project (sync version for backwards compatibility)
  */
 export function updateMoveProject(
   projectId: string, 
