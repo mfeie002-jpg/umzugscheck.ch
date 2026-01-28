@@ -3,20 +3,13 @@
  *
  * Switches between different navigation components based on the active A/B variant.
  * 
- * All 17 navigation variants are now properly mapped:
- * - Variants 1-10 (ultimate, variant-b to variant-j): Use NavigationV16 with variant config
- * - Variants 11-13 (variant-k, variant-l, variant-m): Use dedicated NavigationV11/12/13
- * - Variant 14 (variant-n): Use NavigationV14 
- * - Variant 15 (variant-o): Use NavigationV15 (emoji style)
- * - Variant 16 (variant-p): Use NavigationV16 (premium mega-dropdowns)
- * - Variant 17 (variant-17): Use NavigationV17 (conversion-killer)
+ * All 17 navigation variants now use dynamic labels from their variant config:
+ * - Variants 1-16: Use NavigationV16 which reads labels/microcopy dynamically
+ * - Variant 17 (variant-17): Use NavigationV17 (conversion-killer with special dropdowns)
+ * 
+ * Each variant's unique labels are defined in src/lib/navigation-variants.ts
  */
 
-import { NavigationV11 } from "./navigation/NavigationV11";
-import { NavigationV12 } from "./navigation/NavigationV12";
-import { NavigationV13 } from "./navigation/NavigationV13";
-import { NavigationV14 } from "./navigation/NavigationV14";
-import { NavigationV15 } from "./navigation/NavigationV15";
 import { NavigationV16 } from "./navigation/NavigationV16";
 import { NavigationV17 } from "./navigation-v17";
 import { useNavigationVariant } from "@/hooks/useNavigationVariant";
@@ -33,37 +26,14 @@ export const DynamicNavigation = () => {
   const variantId = variant.id;
 
   // Map each variant ID to its correct navigation component
+  // ALL variants now use NavigationV16 or NavigationV17 which dynamically read from variant config
   switch (variantId) {
-    // Variant 17: NavigationV17 (Conversion-Killer Architecture)
+    // Variant 17: NavigationV17 (Conversion-Killer Architecture with special dropdowns)
     case 'variant-17':
       return <NavigationV17 />;
 
-    // Variant 16: NavigationV16 with premium mega-dropdowns (variant-p)
-    case 'variant-p':
-      return <NavigationV16 />;
-
-    // Variant 15: NavigationV15 with emojis (variant-o)
-    case 'variant-o':
-      return <NavigationV15 />;
-
-    // Variant 14: NavigationV14 (Aggressive Funnel)
-    case 'variant-n':
-      return <NavigationV14 />;
-
-    // Variant 13: NavigationV13 (Mixed Approach)
-    case 'variant-m':
-      return <NavigationV13 />;
-
-    // Variant 12: NavigationV12 (Swiss Archetype)
-    case 'variant-l':
-      return <NavigationV12 />;
-
-    // Variant 11: NavigationV11 (Simpel & Clean)
-    case 'variant-k':
-      return <NavigationV11 />;
-
-    // Variants 1-10: Use NavigationV16 which reads the variant config dynamically
-    // These variants use the same component but different labels/microcopy from NavConfig
+    // ALL other variants (1-16): Use NavigationV16 which dynamically reads labels/microcopy
+    // from the variant config. Each variant has unique labels defined in navigation-variants.ts
     case 'ultimate':
     case 'variant-b':
     case 'variant-c':
@@ -74,6 +44,12 @@ export const DynamicNavigation = () => {
     case 'variant-h':
     case 'variant-i':
     case 'variant-j':
+    case 'variant-k':  // Variant 11: Simpel & Clean
+    case 'variant-l':  // Variant 12: Best-of-Breed
+    case 'variant-m':  // Variant 13: Mobile-First Optimiert
+    case 'variant-n':  // Variant 14: 2026 Design
+    case 'variant-o':  // Variant 15: ChatGPT v15
+    case 'variant-p':  // Variant 16: SEO-Optimiert
     default:
       return <NavigationV16 />;
   }
