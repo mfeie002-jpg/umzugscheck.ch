@@ -17,6 +17,9 @@ import { useNavigationVariant } from "@/hooks/useNavigationVariant";
 export const DynamicNavigation = () => {
   const variant = useNavigationVariant();
 
+  // Debug log to verify variant changes are being received
+  console.log('[DynamicNavigation] Current variant:', variant.id, variant.name);
+
   // variant-17 uses NavigationV17
   if (variant.id === "variant-17") {
     return <NavigationV17 />;

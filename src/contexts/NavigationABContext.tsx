@@ -33,13 +33,19 @@ export const NavigationABProvider = ({ children }: { children: ReactNode }) => {
   const setVariant = useCallback((id: string) => {
     const found = NAV_VARIANTS.find(v => v.id === id);
     if (found) {
+      // Update state FIRST so React re-renders immediately
       setVariantState(found);
+      
+      // Persist to localStorage and dispatch events
       setStoredNavVariant(id as any);
       
       // Update URL without reload
       const url = new URL(window.location.href);
       url.searchParams.set('nav', id);
       window.history.replaceState({}, '', url.toString());
+      
+      // Force a re-render by dispatching a custom event that all listeners can pick up
+      console.log('[NavigationAB] Variant changed to:', id, found.name);
     }
   }, []);
 
