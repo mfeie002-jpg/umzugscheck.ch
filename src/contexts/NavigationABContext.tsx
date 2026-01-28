@@ -99,5 +99,4 @@ export const NavigationABProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// Re-export the context type for consumers
-export type { NavigationABContextType };
+// NavigationABContextType is already exported on line 15
