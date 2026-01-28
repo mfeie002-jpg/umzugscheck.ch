@@ -3,6 +3,7 @@ import { Navigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { AdminSidebar } from "./AdminSidebar";
 import { AdminFloatingAIButton } from "./AdminFloatingAIButton";
+import { AdminHelpButton } from "./AdminHelpButton";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface AdminLayoutProps {
@@ -39,6 +40,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
         {children}
       </main>
       <AdminFloatingAIButton />
+      <AdminHelpButton />
     </div>
   );
 }
