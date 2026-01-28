@@ -278,6 +278,7 @@ const ConversionAnalytics = lazy(() => import("./pages/admin/ConversionAnalytics
 const EmailAutomation = lazy(() => import("./pages/admin/EmailAutomation"));
 const ABTesting = lazy(() => import("./pages/admin/ABTestingComplete"));
 const PaidMedia = lazy(() => import("./pages/admin/PaidMedia"));
+const OperationsCenterPage = lazy(() => import("./pages/admin/OperationsCenter"));
 const LocalizedUmzugsofferten = lazy(() => import("./pages/LocalizedUmzugsofferten"));
 const ImageDownload = lazy(() => import("./pages/ImageDownload"));
 const ProviderAvailability = lazy(() => import("./pages/admin/ProviderAvailability"));
@@ -295,7 +296,7 @@ const VariantTestHub = lazy(() => import("./pages/admin/VariantTestHub"));
 const ReloOSPhases = lazy(() => import("./pages/admin/ReloOSPhases"));
 const InvisibleMoveDashboardDemo = lazy(() => import("./pages/InvisibleMoveDashboardDemo"));
 const FlowCommandCenter = lazy(() => import("./pages/admin/FlowCommandCenter"));
-const CommandCenter = lazy(() => import("./pages/admin/CommandCenter"));
+const CommandCenter = lazy(() => import("./pages/admin/ArchetypCommandCenter"));
 const AnalysisFramework = lazy(() => import("./pages/admin/AnalysisFramework"));
 const EmailTemplatesAdmin = lazy(() => import("./pages/admin/EmailTemplates"));
 const MockDataDashboard = lazy(() => import("./pages/admin/MockDataDashboard"));
@@ -458,6 +459,7 @@ const AdminRoutes = () => (
       <Route path="/admin/email-automation" element={<EmailAutomation />} />
       <Route path="/admin/ab-testing" element={<ABTesting />} />
       <Route path="/admin/paid-media" element={<PaidMedia />} />
+      <Route path="/admin/operations-center" element={<OperationsCenterPage />} />
       <Route path="/admin/availability" element={<ProviderAvailability />} />
       <Route path="/admin/code-export" element={<CodeExport />} />
       <Route path="/admin/tools" element={<AdminTools />} />
