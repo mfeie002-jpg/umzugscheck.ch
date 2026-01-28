@@ -22,10 +22,11 @@ export { DynamicPriceDisplay } from './DynamicPriceDisplay';
 export { GuaranteedPriceCard } from './GuaranteedPriceCard';
 export { QuoteOrchestrator } from './QuoteOrchestrator';
 
-// Phase 4: Matching (Quality-Weighted Bidding)
+// Phase 4: Matching (Quality-Weighted Bidding) + Booking (Smart Escrow)
 export { ProviderMatchCard } from './ProviderMatchCard';
+export { BookingOrchestrator } from './BookingOrchestrator';
 
-// Phase 5: Booking (Smart Escrow) + Moving (GPS Tracking)
+// Phase 5: Moving (GPS Tracking)
 export { SmartEscrowBooking } from './SmartEscrowBooking';
 export type { EscrowBookingData, SmartEscrowBookingProps } from './SmartEscrowBooking';
 export { LiveTrackingPanel } from './LiveTrackingPanel';
