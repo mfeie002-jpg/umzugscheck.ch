@@ -357,6 +357,8 @@ export const V9bFeedbackBased: React.FC = () => {
 
       {/* Main Content */}
       <div className="max-w-xl mx-auto px-4 py-6">
+        {/* SEO H1 */}
+        <h1 className="sr-only">Umzugsofferten Schweiz - ChatGPT Pro Vergleich in 3 Minuten</h1>
         
         {/* Step 1: Adressen (Feedback: PLZ mit Autocomplete) */}
         {currentStep === 1 && (

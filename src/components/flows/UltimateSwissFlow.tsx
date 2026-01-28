@@ -663,6 +663,11 @@ export const UltimateSwissFlow: FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 overflow-x-hidden">
+      {/* SEO H1 - nur am Anfang sichtbar */}
+      {currentStep === 1 && (
+        <h1 className="sr-only">Umzugsofferte Schweiz - Vergleichen Sie bis zu 40% günstiger</h1>
+      )}
+      
       <div className="max-w-xl mx-auto px-4 pb-52 sm:pb-44 md:pb-36">
         {/* Header */}
         <header className="py-6 text-center">

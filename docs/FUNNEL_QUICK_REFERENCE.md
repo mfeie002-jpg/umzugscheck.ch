@@ -9,7 +9,8 @@
 ### Run All 20 Tests
 
 ```
-Task: "Test all 20 Core Umzugscheck Funnels using the Playwright test suite.
+Task: Test all 20 Core Umzugscheck Funnels using the Playwright test suite
+Base URL: https://umzugscheck.ch (production) or https://umzugscheckv2.lovable.app (staging)
 
 Follow this protocol for EACH of the 20 routes:
 
@@ -30,37 +31,40 @@ Steps for EACH funnel:
 8. Move to next funnel
 
 Report format:
-Funnel #[N]: [Name] → Status: ✅/⚠️/❌ → Score: X/10 → Notes: [issues]"
+Funnel #[N]: [Name] → Status: ✅/⚠️/❌ → Score: X/10 → Notes: [issues]
 ```
 
 ### Test One Funnel
 
 ```
-Task: "Test Funnel #2: Vergleich Wizard at /vergleich
+Task: Test Funnel #2: Vergleich Wizard at /vergleich
+Base URL: https://umzugscheck.ch (production) or https://umzugscheckv2.lovable.app (staging)
 
 Persona: Max Test (Zürich→Zug, 3 rooms)
 
 Steps:
-1. Navigate to https://umzugscheckv2.lovable.app/vergleich
+1. Navigate to {base_url}/vergleich
 2. Screenshot: page loads
 3. Fill form:
    - From postal: 8001
    - To postal: 6300
    - Rooms: 3
    - Date: 2026-03-15
-4. Click 'Weiter' or 'Offerten erhalten'
+4. Click "Weiter" or "Offerten erhalten"
 5. Screenshot: next step
 6. Repeat until thank you page
 7. Screenshot: thank you page
-8. Report: Success (✅) or Issues (⚠️/❌)"
+8. Report: Success (✅) or Issues (⚠️/❌)
+Note: Stop before final submit unless explicitly authorized.
 ```
 
 ### Test Critical 5 Funnels (Quick Check)
 
 ```
-Task: "Run quick smoke test on 5 Critical funnels:
+Task: Run quick smoke test on 5 Critical funnels
+Base URL: https://umzugscheck.ch (production) or https://umzugscheckv2.lovable.app (staging)
 
-1. Homepage (/) → Click 'Offerten vergleichen'
+1. Homepage (/) → Click "Offerten vergleichen"
 2. Vergleich (/vergleich) → Fill + Submit
 3. Video (/video) → Verify upload interface visible
 4. Firmenverzeichnis (/umzugsfirmen) → Verify companies load
@@ -68,7 +72,7 @@ Task: "Run quick smoke test on 5 Critical funnels:
 
 Viewport: Desktop 1920x1080
 Time limit: 15 minutes
-Report any blockers immediately"
+Report any blockers immediately
 ```
 
 ---

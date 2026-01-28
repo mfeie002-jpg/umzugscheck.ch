@@ -177,6 +177,7 @@ export const ChatGPTFlow1ZeroFriction: React.FC = () => {
               exit={{ opacity: 0, x: -20 }}
               className="space-y-6"
             >
+              <h1 className="sr-only">Umzugsofferte Schweiz - Kostenlos vergleichen in 2 Schritten</h1>
               {/* Step 1: Move Info */}
               <div className="text-center mb-8">
                 <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">

@@ -325,17 +325,17 @@ export const NavigationV16 = () => {
               </Button>
             </div>
 
-            {/* Tablet CTA (lg only) - Compact but visible */}
-            <Button asChild className="hidden lg:flex xl:hidden h-10 px-4 font-semibold gap-1.5 rounded-lg bg-gradient-to-r from-primary to-primary/90 text-primary-foreground shadow-md shadow-primary/20">
+            {/* Desktop/Tablet CTA (visible on md and larger) */}
+            <Button asChild className="hidden md:flex h-10 px-4 font-semibold gap-1.5 rounded-lg bg-gradient-to-r from-primary to-primary/90 text-primary-foreground shadow-md shadow-primary/20">
               <Link to={flowPath}>
                 <Zap className="w-4 h-4" />
                 Offerte
               </Link>
             </Button>
 
-            {/* Mobile CTA - PRIMARY (blue) for brand consistency */}
+            {/* Mobile CTA - PRIMARY (blue) for brand consistency - visible only on md below */}
             <Link to={flowPath}>
-              <Button size="sm" className="lg:hidden h-9 px-2.5 font-semibold gap-1 rounded-lg bg-gradient-to-r from-primary to-primary/90 text-primary-foreground shadow-md shadow-primary/20 hover:shadow-primary/30 text-xs sm:text-sm">
+              <Button size="sm" className="md:hidden h-9 px-2.5 font-semibold gap-1 rounded-lg bg-gradient-to-r from-primary to-primary/90 text-primary-foreground shadow-md shadow-primary/20 hover:shadow-primary/30 text-xs sm:text-sm">
                 <Zap className="w-3.5 h-3.5 flex-shrink-0" />
                 <span className="truncate">Offerten</span>
               </Button>

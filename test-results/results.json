@@ -1,0 +1,473 @@
+{
+  "config": {
+    "configFile": "C:\\Users\\Mo\\Documents\\GitHub\\umzugscheckv2-ce833634\\umzugscheck.ch\\playwright.config.ts",
+    "rootDir": "C:/Users/Mo/Documents/GitHub/umzugscheckv2-ce833634/umzugscheck.ch/e2e",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 5
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/Mo/Documents/GitHub/umzugscheckv2-ce833634/umzugscheck.ch/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 5
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "C:/Users/Mo/Documents/GitHub/umzugscheckv2-ce833634/umzugscheck.ch/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "C:/Users/Mo/Documents/GitHub/umzugscheckv2-ce833634/umzugscheck.ch/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 5
+        },
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "C:/Users/Mo/Documents/GitHub/umzugscheckv2-ce833634/umzugscheck.ch/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "C:/Users/Mo/Documents/GitHub/umzugscheckv2-ce833634/umzugscheck.ch/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 5
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "C:/Users/Mo/Documents/GitHub/umzugscheckv2-ce833634/umzugscheck.ch/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "C:/Users/Mo/Documents/GitHub/umzugscheckv2-ce833634/umzugscheck.ch/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 5
+        },
+        "id": "Mobile Chrome",
+        "name": "Mobile Chrome",
+        "testDir": "C:/Users/Mo/Documents/GitHub/umzugscheckv2-ce833634/umzugscheck.ch/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "C:/Users/Mo/Documents/GitHub/umzugscheckv2-ce833634/umzugscheck.ch/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 5
+        },
+        "id": "Mobile Safari",
+        "name": "Mobile Safari",
+        "testDir": "C:/Users/Mo/Documents/GitHub/umzugscheckv2-ce833634/umzugscheck.ch/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "html",
+        {
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "runAgents": "none",
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.58.0",
+    "workers": 8,
+    "webServer": {
+      "command": "npm run dev",
+      "url": "http://localhost:8080",
+      "reuseExistingServer": true,
+      "timeout": 120000
+    }
+  },
+  "suites": [
+    {
+      "title": "critical-5-smoke-test.spec.ts",
+      "file": "critical-5-smoke-test.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Critical 5 Funnels - Smoke Test",
+          "file": "critical-5-smoke-test.spec.ts",
+          "line": 19,
+          "column": 6,
+          "specs": [
+            {
+              "title": "1. Homepage - Click Offerten vergleichen",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6437,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Test 1: Homepage (/)\n"
+                        },
+                        {
+                          "text": "  ✓ Page loaded\n"
+                        },
+                        {
+                          "text": "  ✓ Primary CTA visible\n"
+                        },
+                        {
+                          "text": "  ✓ CTA clicked, redirected\n"
+                        },
+                        {
+                          "text": "✅ Funnel 1: PASS\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 SMOKE TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/smoke-*.png\n"
+                        },
+                        {
+                          "text": "Report: Check output above for pass/fail status\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-28T23:56:50.495Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "f146bbb72cf500b286e7-689cea9c7198a30ec7fe",
+              "file": "critical-5-smoke-test.spec.ts",
+              "line": 24,
+              "column": 3
+            },
+            {
+              "title": "2. Vergleich Wizard - Fill & Submit",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 4772,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Test 2: Vergleich (/vergleich)\n"
+                        },
+                        {
+                          "text": "  ✓ Page loaded\n"
+                        },
+                        {
+                          "text": "❌ Funnel 2: FAIL - No form found\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 SMOKE TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/smoke-*.png\n"
+                        },
+                        {
+                          "text": "Report: Check output above for pass/fail status\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-28T23:56:50.494Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "f146bbb72cf500b286e7-773c9ce1df804809a841",
+              "file": "critical-5-smoke-test.spec.ts",
+              "line": 56,
+              "column": 3
+            },
+            {
+              "title": "3. Video Upload - Interface Visible",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 4689,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Test 3: Video (/video)\n"
+                        },
+                        {
+                          "text": "  ✓ Page loaded\n"
+                        },
+                        {
+                          "text": "⚠️  Funnel 3: PARTIAL - No obvious upload interface found\n"
+                        },
+                        {
+                          "text": "  ℹ️  Page contains video/upload references\n"
+                        },
+                        {
+                          "text": "✅ Funnel 3: PASS (text reference found)\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 SMOKE TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/smoke-*.png\n"
+                        },
+                        {
+                          "text": "Report: Check output above for pass/fail status\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-28T23:56:50.493Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "f146bbb72cf500b286e7-a73ed7084f309b8f57a6",
+              "file": "critical-5-smoke-test.spec.ts",
+              "line": 120,
+              "column": 3
+            },
+            {
+              "title": "4. Firmenverzeichnis - Companies Load",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 4866,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Test 4: Firmenverzeichnis (/umzugsfirmen)\n"
+                        },
+                        {
+                          "text": "  ✓ Page loaded\n"
+                        },
+                        {
+                          "text": "  ✓ Found 1 companies\n"
+                        },
+                        {
+                          "text": "✅ Funnel 4: PASS\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 SMOKE TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/smoke-*.png\n"
+                        },
+                        {
+                          "text": "Report: Check output above for pass/fail status\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-28T23:56:50.530Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "f146bbb72cf500b286e7-536577f0cf3a200f2a44",
+              "file": "critical-5-smoke-test.spec.ts",
+              "line": 153,
+              "column": 3
+            },
+            {
+              "title": "5. Beste Firmen - Ranking Visible",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 5460,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Test 5: Beste Firmen (/beste-umzugsfirma)\n"
+                        },
+                        {
+                          "text": "  ✓ Page loaded\n"
+                        },
+                        {
+                          "text": "  ✓ Ranking indicators found\n"
+                        },
+                        {
+                          "text": "✅ Funnel 5: PASS\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 SMOKE TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/smoke-*.png\n"
+                        },
+                        {
+                          "text": "Report: Check output above for pass/fail status\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-28T23:56:50.528Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "f146bbb72cf500b286e7-a85e81c7a0880ce8c7bf",
+              "file": "critical-5-smoke-test.spec.ts",
+              "line": 188,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-01-28T23:56:48.792Z",
+    "duration": 8451.452000000001,
+    "expected": 5,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

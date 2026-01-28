@@ -9,7 +9,7 @@
 
 A **complete, professional-grade testing infrastructure** for all 20 core customer journeys on umzugscheckv2.lovable.app.
 
-### 10 Files Created
+### 11 Files Created
 
 | # | File | Purpose | Size |
 |---|------|---------|------|
@@ -23,6 +23,7 @@ A **complete, professional-grade testing infrastructure** for all 20 core custom
 | 8 | **docs/TESTING_FRAMEWORK_SUMMARY.md** | Executive summary | 80 pages |
 | 9 | **src/lib/funnel-test-helpers.ts** | Test data library (TypeScript) | 600 lines |
 | 10 | **e2e/core-20-funnels.spec.ts** | Playwright E2E test suite | 900 lines |
+| 11 | **TOP_10_MARKETING_FUNNELS_AGENT_PROMPT.md** | Agent-ready prompt for top-10 marketing funnels | 15 pages |
 
 **BONUS**: `scripts/verify-testing-setup.js` (verification script)
 
@@ -104,6 +105,49 @@ A **complete, professional-grade testing infrastructure** for all 20 core custom
 
 ---
 
+## 🧭 Top-10 Marketing Funnels (ordered)
+
+### Top 5
+1. `https://umzugscheck.ch/umzugsofferten-v9` (V9 Zero Friction)
+2. `https://umzugscheck.ch/umzugsofferten-v9b` (ChatGPT Pro Ext)
+3. `https://umzugscheck.ch/umzugsofferten-v9c` (Zero Friction Optimized)
+4. `https://umzugscheck.ch/chatgpt-flow-1` (2-Step Zero-Friction Pro)
+5. `https://umzugscheck.ch/chatgpt-flow-2` (Social Proof Boosted)
+
+### Next 5
+6. `https://umzugscheck.ch/chatgpt-flow-3` (Chat-based Guided Flow)
+7. `https://umzugscheck.ch/umzugsofferten-ultimate-best36` (Ultimate Best36)
+8. `https://umzugscheck.ch/umzugsofferten-ultimate-ch` (Ultimate CH)
+9. `https://umzugscheck.ch/umzugsofferten-ultimate-v7` (Ultimate V7)
+10. `https://umzugscheck.ch/umzugsofferten-v6f` (Ultimate "Best of All")
+
+---
+
+## 📌 Core 20 Funnels (ordered)
+
+1. Homepage Smart Router (`/`)
+2. Vergleich Wizard (`/vergleich`)
+3. Video-Offerte (`/video`)
+4. AI Photo Upload (`/rechner/ai`)
+5. Firmenverzeichnis (`/umzugsfirmen`)
+6. Beste Firmen Ranking (`/beste-umzugsfirma`)
+7. Guenstige Firmen (`/guenstige-umzugsfirma`)
+8. Firmenprofil (`/firma/:slug`)
+9. Reinigungsrechner (`/rechner/reinigung`)
+10. Entsorgungsrechner (`/rechner/entsorgung`)
+11. Region Zuerich (`/umzugsfirmen/zuerich`)
+12. Region Bern (`/umzugsfirmen/bern`)
+13. Privatumzug Service (`/privatumzug`)
+14. Firmenumzug Service (`/firmenumzug`)
+15. Umzugskosten Guide (`/umzugskosten`)
+16. Checkliste (`/umzugscheckliste`)
+17. FAQ (`/faq`)
+18. Fuer Firmen (B2B) (`/fuer-firmen`)
+19. Lagerrechner (`/rechner/lager`)
+20. Packservice (`/rechner/packservice`)
+
+---
+
 ## 🚀 Quick Start
 
 ### Step 1: Verify Setup (2 min)
@@ -153,6 +197,7 @@ Root Level:
   ├── SETUP_COMPLETE.md                  ← Quick setup
   ├── DELIVERY_SUMMARY.md                ← What was built
   └── TESTING_FRAMEWORK_SUMMARY.md       ← Executive view
+  └── TOP_10_MARKETING_FUNNELS_AGENT_PROMPT.md ← Agent prompt (top-10 marketing funnels)
 
 Documentation (docs/):
   ├── FUNNEL_TESTING_PLAN.md            ← Main bible (30 pages)
@@ -179,8 +224,8 @@ Code:
 
 ### For AI Agents (Lovable, Claude, etc.)
 1. Read: `FUNNEL_QUICK_REFERENCE.md`
-2. Copy: Relevant test prompt
-3. Paste: To agent interface
+2. Use: `TOP_10_MARKETING_FUNNELS_AGENT_PROMPT.md` for the top-10 marketing funnels
+3. Paste: Relevant prompt into agent interface
 4. Review: Generated report
 
 ### For Product/Leadership

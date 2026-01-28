@@ -182,6 +182,9 @@ export const ChatGPTFlow3GuidedChat: React.FC = () => {
   const [showFeedback, setShowFeedback] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
   
+  // SEO: H1 wird nur einmal am Anfang angezeigt (visuell versteckt wenn Chat startet)
+  const showH1 = messages.length === 0;
+  
   const [formData, setFormData] = useState<FormData>({
     fromZip: '',
     toZip: '',
@@ -437,6 +440,9 @@ export const ChatGPTFlow3GuidedChat: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-cyan-50/50 to-teal-50/50 dark:from-background dark:to-background flex flex-col">
       {showConfetti && <Confetti />}
+      
+      {/* SEO H1 - visuell versteckt */}
+      <h1 className="sr-only">Umzugsofferten Schweiz - Geführter Chat für personalisierte Offerten</h1>
       
       {/* Header */}
       <div className="sticky top-0 z-40 bg-background/95 backdrop-blur-md border-b border-border">
