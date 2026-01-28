@@ -450,6 +450,7 @@ Deno.serve(async (req) => {
     // GET /ai-task-webhook/next?agent=codex|copilot
     if (req.method === 'GET' && action === 'next') {
       const agent = url.searchParams.get('agent')
+      const autoGenerate = url.searchParams.get('auto_generate') !== 'false' // Default: true
       
       if (!agent || !['codex', 'copilot'].includes(agent)) {
         return new Response(JSON.stringify({ error: 'agent must be codex or copilot' }), {
@@ -458,7 +459,7 @@ Deno.serve(async (req) => {
         })
       }
 
-      const { data, error } = await supabase
+      let { data, error } = await supabase
         .from('ai_task_queue')
         .select('*')
         .eq('agent', agent)
@@ -470,10 +471,64 @@ Deno.serve(async (req) => {
 
       if (error && error.code !== 'PGRST116') throw error
 
+      // Auto-generate if queue is empty for this agent
+      if (!data && autoGenerate) {
+        console.log(`📭 [GET] No pending ${agent} tasks - triggering auto-generate...`)
+        
+        // Check if there are ANY pending tasks (for either agent)
+        const { count: totalPending } = await supabase
+          .from('ai_task_queue')
+          .select('*', { count: 'exact', head: true })
+          .eq('status', 'pending')
+        
+        // Only auto-generate if the entire queue is empty
+        if (totalPending === 0) {
+          try {
+            const generateResponse = await fetch(`${supabaseUrl}/functions/v1/generate-ai-tasks`, {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${supabaseKey}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                founder_notes: 'Auto-generated: Queue was empty, generating new tasks based on latest analysis.',
+                force_generate: true,
+              }),
+            })
+
+            if (generateResponse.ok) {
+              const generateResult = await generateResponse.json()
+              console.log(`✅ [GET] Auto-generated ${generateResult.tasks_created} new tasks`)
+              
+              await new Promise(r => setTimeout(r, 500))
+              
+              const retry = await supabase
+                .from('ai_task_queue')
+                .select('*')
+                .eq('agent', agent)
+                .eq('status', 'pending')
+                .order('priority', { ascending: false })
+                .order('created_at', { ascending: true })
+                .limit(1)
+                .single()
+              
+              if (!retry.error) {
+                data = retry.data
+              }
+            } else {
+              console.error('[GET] Auto-generate failed:', await generateResponse.text())
+            }
+          } catch (genError) {
+            console.error('[GET] Auto-generate error:', genError)
+          }
+        }
+      }
+
       if (!data) {
         return new Response(JSON.stringify({ 
           message: `Keine pending Tasks für ${agent}`,
-          prompt: null 
+          prompt: null,
+          auto_generate_attempted: autoGenerate,
         }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         })
