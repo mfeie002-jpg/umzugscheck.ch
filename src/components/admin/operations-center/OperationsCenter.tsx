@@ -3,11 +3,12 @@
  * 10 Module Overview for Multi-Brand Portfolio
  */
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { 
   LayoutDashboard, 
   TrendingUp, 
@@ -20,7 +21,9 @@ import {
   FileText,
   Gauge,
   RefreshCw,
-  Building2
+  Building2,
+  HelpCircle,
+  Info
 } from 'lucide-react';
 
 import { BrandPerformanceModule } from '@/components/admin/operations-center/modules/BrandPerformanceModule';
@@ -33,156 +36,217 @@ import { ConversionFunnelModule } from '@/components/admin/operations-center/mod
 import { CostStructureModule } from '@/components/admin/operations-center/modules/CostStructureModule';
 import { ScenarioSimulatorModule } from '@/components/admin/operations-center/modules/ScenarioSimulatorModule';
 import { WeeklySummaryModule } from '@/components/admin/operations-center/modules/WeeklySummaryModule';
+import { ModuleHeader, MODULE_CONFIGS } from './ModuleHeader';
+
+// Tab definitions with tooltips
+const TABS = [
+  { value: 'overview', label: 'Übersicht', icon: LayoutDashboard, tooltip: 'Schnellübersicht aller wichtigen Metriken auf einen Blick' },
+  { value: 'brands', label: 'Marken', icon: Building2, tooltip: 'Performance der 3 Marken: Feierabend, Umzugexpress, Zügelhelden' },
+  { value: 'routing', label: 'Routing', icon: Route, tooltip: 'Automatische Lead-Verteilung basierend auf Score und Wert' },
+  { value: 'capacity', label: 'Kapazität', icon: Users, tooltip: 'Crew-Auslastung und Verfügbarkeit planen' },
+  { value: 'killswitch', label: 'Kill Switch', icon: AlertTriangle, tooltip: 'Automatische Notfall-Stopps bei kritischen Metriken' },
+  { value: 'forecast', label: 'Prognose', icon: TrendingUp, tooltip: '6-Monats Revenue-Vorhersage nach Marke' },
+  { value: 'partners', label: 'Partner', icon: Users, tooltip: 'Marketplace Partner Status und Performance' },
+  { value: 'funnel', label: 'Funnel', icon: Target, tooltip: 'Conversion Rates von Website bis Buchung' },
+  { value: 'costs', label: 'Kosten', icon: DollarSign, tooltip: 'Kostenstruktur und Unit Economics pro Job' },
+  { value: 'simulator', label: 'Simulator', icon: Calculator, tooltip: 'What-if Analyse: Teste verschiedene Szenarien' },
+];
 
 export function CommandCenter() {
   const [lastRefresh, setLastRefresh] = useState(new Date());
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [showIntro, setShowIntro] = useState(true);
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
-    // Simulate refresh
     await new Promise(resolve => setTimeout(resolve, 1000));
     setLastRefresh(new Date());
     setIsRefreshing(false);
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-3">
-            <LayoutDashboard className="h-8 w-8 text-primary" />
-            Command Center
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            Multi-Brand Operations Dashboard • 3 Marken • Live Monitoring
-          </p>
+    <TooltipProvider>
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold flex items-center gap-3">
+              <LayoutDashboard className="h-8 w-8 text-primary" />
+              Operations Center
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              Multi-Brand Operations Dashboard • 3 Marken • Live Monitoring
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-muted-foreground">
+              Letzte Aktualisierung: {lastRefresh.toLocaleTimeString('de-CH')}
+            </span>
+            <Button onClick={handleRefresh} disabled={isRefreshing} size="sm">
+              <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+              Aktualisieren
+            </Button>
+          </div>
         </div>
-        <div className="flex items-center gap-3">
-          <span className="text-sm text-muted-foreground">
-            Letzte Aktualisierung: {lastRefresh.toLocaleTimeString('de-CH')}
-          </span>
-          <Button onClick={handleRefresh} disabled={isRefreshing} size="sm">
-            <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
-            Aktualisieren
-          </Button>
+
+        {/* Intro Card */}
+        {showIntro && (
+          <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border-blue-200 dark:border-blue-800">
+            <CardContent className="pt-4">
+              <div className="flex items-start justify-between">
+                <div className="flex items-start gap-4">
+                  <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
+                    <Info className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold mb-1">Willkommen im Operations Center!</h3>
+                    <p className="text-sm text-muted-foreground max-w-2xl">
+                      Dies ist deine Zentrale für alle Business-Metriken. Nutze die <strong>Tabs oben</strong> um 
+                      zwischen Modulen zu wechseln. Jedes Modul hat einen <strong>"Wie funktioniert das?"</strong>-Button 
+                      mit detaillierten Erklärungen. Die <strong>Quick Stats</strong> unten zeigen die wichtigsten Zahlen 
+                      auf einen Blick - hovere für mehr Info.
+                    </p>
+                  </div>
+                </div>
+                <Button variant="ghost" size="sm" onClick={() => setShowIntro(false)}>
+                  Verstanden
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Quick Stats Bar with Tooltips */}
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+          <QuickStat 
+            icon={Building2} 
+            label="Marken" 
+            value="3" 
+            tooltip="Feierabend (Premium), Umzugexpress (Speed), Zügelhelden (Budget)"
+          />
+          <QuickStat 
+            icon={Users} 
+            label="Crews" 
+            value="1" 
+            tooltip="Aktive Umzugs-Teams. Bei >85% Auslastung für 4 Wochen → Crew #2 einstellen"
+          />
+          <QuickStat 
+            icon={Target} 
+            label="Jobs/Monat" 
+            value="26" 
+            tooltip="Geplante Jobs diesen Monat über alle 3 Marken"
+          />
+          <QuickStat 
+            icon={DollarSign} 
+            label="Ziel-Revenue" 
+            value="CHF 47K" 
+            tooltip="Monatliches Umsatzziel basierend auf 26 Jobs × Ø CHF 1'815"
+          />
+          <QuickStat 
+            icon={Gauge} 
+            label="Auslastung" 
+            value="85%" 
+            status="ok" 
+            tooltip="80-95% = Optimal. Unter 60% = Rabatte anbieten. Über 95% = Peak-Pricing"
+          />
+          <QuickStat 
+            icon={AlertTriangle} 
+            label="Kill Switches" 
+            value="0 aktiv" 
+            status="ok" 
+            tooltip="Automatische Notfall-Stopps. 0 = Alle Metriken im grünen Bereich"
+          />
         </div>
+
+        {/* Main Tabs with Tooltips */}
+        <Tabs defaultValue="overview" className="w-full">
+          <TabsList className="grid grid-cols-5 lg:grid-cols-10 w-full h-auto">
+            {TABS.map((tab) => (
+              <Tooltip key={tab.value}>
+                <TooltipTrigger asChild>
+                  <TabsTrigger value={tab.value} className="text-xs">
+                    <tab.icon className="h-3 w-3 mr-1" />
+                    {tab.label}
+                  </TabsTrigger>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="max-w-xs">
+                  <p className="text-sm">{tab.tooltip}</p>
+                </TooltipContent>
+              </Tooltip>
+            ))}
+          </TabsList>
+
+          <TabsContent value="overview" className="mt-6">
+            <OverviewIntro />
+            <OverviewGrid />
+          </TabsContent>
+
+          <TabsContent value="brands" className="mt-6">
+            <ModuleHeader {...MODULE_CONFIGS.brands} icon={Building2} />
+            <BrandPerformanceModule />
+          </TabsContent>
+
+          <TabsContent value="routing" className="mt-6">
+            <ModuleHeader {...MODULE_CONFIGS.routing} icon={Route} />
+            <LeadRoutingModule />
+          </TabsContent>
+
+          <TabsContent value="capacity" className="mt-6">
+            <ModuleHeader {...MODULE_CONFIGS.capacity} icon={Users} />
+            <CapacityPlannerModule />
+          </TabsContent>
+
+          <TabsContent value="killswitch" className="mt-6">
+            <ModuleHeader {...MODULE_CONFIGS.killswitch} icon={AlertTriangle} />
+            <KillSwitchModule />
+          </TabsContent>
+
+          <TabsContent value="forecast" className="mt-6">
+            <ModuleHeader {...MODULE_CONFIGS.forecast} icon={TrendingUp} />
+            <RevenueForecastModule />
+          </TabsContent>
+
+          <TabsContent value="partners" className="mt-6">
+            <ModuleHeader {...MODULE_CONFIGS.partners} icon={Users} />
+            <PartnerNetworkModule />
+          </TabsContent>
+
+          <TabsContent value="funnel" className="mt-6">
+            <ModuleHeader {...MODULE_CONFIGS.funnel} icon={Target} />
+            <ConversionFunnelModule />
+          </TabsContent>
+
+          <TabsContent value="costs" className="mt-6">
+            <ModuleHeader {...MODULE_CONFIGS.costs} icon={DollarSign} />
+            <CostStructureModule />
+          </TabsContent>
+
+          <TabsContent value="simulator" className="mt-6">
+            <ModuleHeader {...MODULE_CONFIGS.simulator} icon={Calculator} />
+            <ScenarioSimulatorModule />
+          </TabsContent>
+        </Tabs>
       </div>
-
-      {/* Quick Stats Bar */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
-        <QuickStat icon={Building2} label="Marken" value="3" />
-        <QuickStat icon={Users} label="Crews" value="1" />
-        <QuickStat icon={Target} label="Jobs/Monat" value="26" />
-        <QuickStat icon={DollarSign} label="Ziel-Revenue" value="CHF 47K" />
-        <QuickStat icon={Gauge} label="Auslastung" value="85%" status="ok" />
-        <QuickStat icon={AlertTriangle} label="Kill Switches" value="0 aktiv" status="ok" />
-      </div>
-
-      {/* Main Tabs */}
-      <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid grid-cols-5 lg:grid-cols-10 w-full h-auto">
-          <TabsTrigger value="overview" className="text-xs">
-            <LayoutDashboard className="h-3 w-3 mr-1" />
-            Übersicht
-          </TabsTrigger>
-          <TabsTrigger value="brands" className="text-xs">
-            <Building2 className="h-3 w-3 mr-1" />
-            Marken
-          </TabsTrigger>
-          <TabsTrigger value="routing" className="text-xs">
-            <Route className="h-3 w-3 mr-1" />
-            Routing
-          </TabsTrigger>
-          <TabsTrigger value="capacity" className="text-xs">
-            <Users className="h-3 w-3 mr-1" />
-            Kapazität
-          </TabsTrigger>
-          <TabsTrigger value="killswitch" className="text-xs">
-            <AlertTriangle className="h-3 w-3 mr-1" />
-            Kill Switch
-          </TabsTrigger>
-          <TabsTrigger value="forecast" className="text-xs">
-            <TrendingUp className="h-3 w-3 mr-1" />
-            Prognose
-          </TabsTrigger>
-          <TabsTrigger value="partners" className="text-xs">
-            <Users className="h-3 w-3 mr-1" />
-            Partner
-          </TabsTrigger>
-          <TabsTrigger value="funnel" className="text-xs">
-            <Target className="h-3 w-3 mr-1" />
-            Funnel
-          </TabsTrigger>
-          <TabsTrigger value="costs" className="text-xs">
-            <DollarSign className="h-3 w-3 mr-1" />
-            Kosten
-          </TabsTrigger>
-          <TabsTrigger value="simulator" className="text-xs">
-            <Calculator className="h-3 w-3 mr-1" />
-            Simulator
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="overview" className="mt-6">
-          <OverviewGrid />
-        </TabsContent>
-
-        <TabsContent value="brands" className="mt-6">
-          <BrandPerformanceModule />
-        </TabsContent>
-
-        <TabsContent value="routing" className="mt-6">
-          <LeadRoutingModule />
-        </TabsContent>
-
-        <TabsContent value="capacity" className="mt-6">
-          <CapacityPlannerModule />
-        </TabsContent>
-
-        <TabsContent value="killswitch" className="mt-6">
-          <KillSwitchModule />
-        </TabsContent>
-
-        <TabsContent value="forecast" className="mt-6">
-          <RevenueForecastModule />
-        </TabsContent>
-
-        <TabsContent value="partners" className="mt-6">
-          <PartnerNetworkModule />
-        </TabsContent>
-
-        <TabsContent value="funnel" className="mt-6">
-          <ConversionFunnelModule />
-        </TabsContent>
-
-        <TabsContent value="costs" className="mt-6">
-          <CostStructureModule />
-        </TabsContent>
-
-        <TabsContent value="simulator" className="mt-6">
-          <ScenarioSimulatorModule />
-        </TabsContent>
-      </Tabs>
-    </div>
+    </TooltipProvider>
   );
 }
 
-// Quick Stat Component
+// Quick Stat Component with Tooltip
 function QuickStat({ 
   icon: Icon, 
   label, 
   value, 
-  status 
+  status,
+  tooltip 
 }: { 
   icon: React.ElementType; 
   label: string; 
   value: string;
   status?: 'ok' | 'warning' | 'critical';
+  tooltip?: string;
 }) {
-  return (
-    <Card className={`
+  const content = (
+    <Card className={`cursor-help transition-all hover:shadow-md
       ${status === 'critical' ? 'border-destructive bg-destructive/5' : ''}
       ${status === 'warning' ? 'border-yellow-500 bg-yellow-500/5' : ''}
       ${status === 'ok' ? 'border-green-500/50' : ''}
@@ -195,8 +259,44 @@ function QuickStat({
             status === 'ok' ? 'text-green-500' : 'text-muted-foreground'
           }`} />
           <div>
-            <p className="text-xs text-muted-foreground">{label}</p>
+            <p className="text-xs text-muted-foreground flex items-center gap-1">
+              {label}
+              <HelpCircle className="h-3 w-3 opacity-50" />
+            </p>
             <p className="font-bold text-sm">{value}</p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+
+  if (tooltip) {
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild>{content}</TooltipTrigger>
+        <TooltipContent side="bottom" className="max-w-xs">
+          <p className="text-sm">{tooltip}</p>
+        </TooltipContent>
+      </Tooltip>
+    );
+  }
+
+  return content;
+}
+
+// Overview Introduction
+function OverviewIntro() {
+  return (
+    <Card className="mb-6 bg-muted/30">
+      <CardContent className="pt-4">
+        <div className="flex items-start gap-3">
+          <LayoutDashboard className="h-5 w-5 text-primary mt-0.5" />
+          <div>
+            <h3 className="font-semibold">Übersicht</h3>
+            <p className="text-sm text-muted-foreground">
+              Die Übersicht zeigt kompakte Versionen aller wichtigen Module. 
+              Klicke auf die <strong>Tabs oben</strong> für detaillierte Ansichten mit mehr Interaktionsmöglichkeiten.
+            </p>
           </div>
         </div>
       </CardContent>
@@ -215,6 +315,7 @@ function OverviewGrid() {
             <Building2 className="h-4 w-4" />
             Marken Performance
           </CardTitle>
+          <CardDescription className="text-xs">Revenue & Margin pro Marke</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
@@ -232,6 +333,7 @@ function OverviewGrid() {
             <AlertTriangle className="h-4 w-4" />
             Kill Switch Status
           </CardTitle>
+          <CardDescription className="text-xs">Automatische Notfall-Schwellwerte</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
@@ -250,6 +352,7 @@ function OverviewGrid() {
             <Gauge className="h-4 w-4" />
             Auslastung
           </CardTitle>
+          <CardDescription className="text-xs">80-95% ist optimal</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="text-center py-4">
@@ -277,6 +380,7 @@ function OverviewGrid() {
             <Target className="h-4 w-4" />
             Conversion Funnel
           </CardTitle>
+          <CardDescription className="text-xs">Vom Besucher zur Buchung</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-1">
@@ -296,6 +400,7 @@ function OverviewGrid() {
             <DollarSign className="h-4 w-4" />
             Kostenstruktur
           </CardTitle>
+          <CardDescription className="text-xs">COGS Verteilung</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
@@ -314,6 +419,7 @@ function OverviewGrid() {
             <FileText className="h-4 w-4" />
             Diese Woche
           </CardTitle>
+          <CardDescription className="text-xs">KW {new Date().getWeek()} Performance</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
@@ -403,3 +509,17 @@ function CostRow({ name, amount, percentage }: { name: string; amount: number; p
     </div>
   );
 }
+
+// Helper for week number
+declare global {
+  interface Date {
+    getWeek(): number;
+  }
+}
+Date.prototype.getWeek = function() {
+  const d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
+  const dayNum = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+  return Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1)/7);
+};
