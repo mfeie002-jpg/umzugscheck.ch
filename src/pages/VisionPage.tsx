@@ -35,6 +35,8 @@ import { VisionContactCTA } from "@/components/vision/VisionContactCTA";
 import { VisionLiveStats } from "@/components/vision/VisionLiveStats";
 import { VisionProgressIndicator } from "@/components/vision/VisionProgressIndicator";
 import { VisionScrollTracker, useScrollDepthTracking } from "@/components/vision/VisionScrollTracker";
+import { ReloOSJourneySection } from "@/components/vision/ReloOSJourneySection";
+import { ReloOSFeaturesGrid } from "@/components/vision/ReloOSFeaturesGrid";
 import { getVisionTranslation, type VisionLanguage } from "@/lib/vision-translations";
 import { StakeholderJokeBanner, StakeholderJokesMarquee, StakeholderJokesGrid } from "@/components/stakeholder/StakeholderJokeBanner";
 import { usePersona } from "@/hooks/usePersona";
@@ -230,6 +232,14 @@ export default function VisionPage() {
 
       {/* 5. VISUAL DIVIDER - Emotional break */}
       <VisionVisualDivider language={language} variant="journey" />
+
+      {/* NEW: RELO-OS 6-PHASE JOURNEY */}
+      <VisionScrollTracker sectionId="relo-os" sectionName="Relo-OS Journey">
+        <ReloOSJourneySection language={language} variant="full" />
+      </VisionScrollTracker>
+
+      {/* NEW: RELO-OS FEATURES GRID */}
+      <ReloOSFeaturesGrid language={language} variant="full" />
 
       {/* 6. TRUST LOGOS */}
       <VisionTrustLogos language={language} />

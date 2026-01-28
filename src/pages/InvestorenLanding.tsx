@@ -22,6 +22,8 @@ import { ExpandAllToggle } from "@/components/vision/ExpandAllToggle";
 import { VisionContactCTA } from "@/components/vision/VisionContactCTA";
 import { VisionLiveStats } from "@/components/vision/VisionLiveStats";
 import { VisionProgressIndicator } from "@/components/vision/VisionProgressIndicator";
+import { ReloOSJourneySection } from "@/components/vision/ReloOSJourneySection";
+import { ReloOSFeaturesGrid } from "@/components/vision/ReloOSFeaturesGrid";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, TrendingUp } from "lucide-react";
@@ -208,6 +210,12 @@ export default function InvestorenLanding() {
 
       {/* 4. VISUAL DIVIDER */}
       <VisionVisualDivider language={language} variant="business" />
+
+      {/* NEW: RELO-OS 6-PHASE JOURNEY - Full for Investors */}
+      <ReloOSJourneySection language={language} variant="full" />
+
+      {/* NEW: RELO-OS FEATURES GRID - Full Tech Details */}
+      <ReloOSFeaturesGrid language={language} variant="full" />
 
       {/* 4. PROFITABILITY ROADMAP */}
       <VisionProfitabilityRoadmap language={language} />
