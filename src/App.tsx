@@ -43,6 +43,7 @@ const VisionPage = lazy(() => import("./pages/VisionPage"));
 const FamilyLanding = lazy(() => import("./pages/FamilyLanding"));
 const InvestorenLanding = lazy(() => import("./pages/InvestorenLanding"));
 const AdminInternResults = lazy(() => import("./pages/AdminInternResults"));
+const PaidMediaControl = lazy(() => import("./pages/internal/PaidMediaControl"));
 const ExportDownload = lazy(() => import("./pages/ExportDownload"));
 
 // Service pages
@@ -489,6 +490,8 @@ const AdminRoutes = () => (
       <Route path="/admin/email-templates" element={<EmailTemplatesAdmin />} />
       <Route path="/admin/mock-data" element={<MockDataDashboard />} />
       <Route path="/admin/documentation" element={<DocumentationBrowser />} />
+      {/* Internal dashboards */}
+      <Route path="/internal/paid-media-control" element={<PaidMediaControl />} />
     </AnimatedRoutes>
   </Suspense>
 );
