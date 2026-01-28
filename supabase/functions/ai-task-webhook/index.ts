@@ -50,6 +50,7 @@ Deno.serve(async (req) => {
 
         if (requestedAction === 'next') {
           const agent = body.agent
+          const autoGenerate = body.auto_generate !== false // Default: true
 
           if (!agent || !['codex', 'copilot'].includes(agent)) {
             return new Response(JSON.stringify({ error: 'agent must be codex or copilot' }), {
@@ -58,7 +59,8 @@ Deno.serve(async (req) => {
             })
           }
 
-          const { data, error } = await supabase
+          // First, check for pending tasks
+          let { data, error } = await supabase
             .from('ai_task_queue')
             .select('*')
             .eq('agent', agent)
@@ -70,10 +72,67 @@ Deno.serve(async (req) => {
 
           if (error && error.code !== 'PGRST116') throw error
 
+          // Auto-generate if queue is empty and auto_generate is enabled
+          if (!data && autoGenerate) {
+            console.log(`📭 No pending ${agent} tasks - triggering auto-generate...`)
+            
+            // Check if there are ANY pending tasks (for either agent)
+            const { count: totalPending } = await supabase
+              .from('ai_task_queue')
+              .select('*', { count: 'exact', head: true })
+              .eq('status', 'pending')
+            
+            // Only auto-generate if the entire queue is empty
+            if (totalPending === 0) {
+              try {
+                // Call generate-ai-tasks function
+                const generateResponse = await fetch(`${supabaseUrl}/functions/v1/generate-ai-tasks`, {
+                  method: 'POST',
+                  headers: {
+                    'Authorization': `Bearer ${supabaseKey}`,
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    founder_notes: 'Auto-generated: Queue was empty, generating new tasks based on latest analysis.',
+                    force_generate: true,
+                  }),
+                })
+
+                if (generateResponse.ok) {
+                  const generateResult = await generateResponse.json()
+                  console.log(`✅ Auto-generated ${generateResult.tasks_created} new tasks`)
+                  
+                  // Wait a moment for DB consistency
+                  await new Promise(r => setTimeout(r, 500))
+                  
+                  // Try to fetch the newly created task
+                  const retry = await supabase
+                    .from('ai_task_queue')
+                    .select('*')
+                    .eq('agent', agent)
+                    .eq('status', 'pending')
+                    .order('priority', { ascending: false })
+                    .order('created_at', { ascending: true })
+                    .limit(1)
+                    .single()
+                  
+                  if (!retry.error) {
+                    data = retry.data
+                  }
+                } else {
+                  console.error('Auto-generate failed:', await generateResponse.text())
+                }
+              } catch (genError) {
+                console.error('Auto-generate error:', genError)
+              }
+            }
+          }
+
           if (!data) {
             return new Response(JSON.stringify({
               message: `Keine pending Tasks für ${agent}`,
               prompt: null,
+              auto_generate_attempted: autoGenerate,
             }), {
               headers: { ...corsHeaders, 'Content-Type': 'application/json' },
             })
@@ -90,6 +149,7 @@ Deno.serve(async (req) => {
             prompt: data.prompt,
             target_files: data.target_files,
             message: 'Kopiere den Prompt und füge ihn in den Agent ein',
+            auto_generated: !!(body.auto_generate !== false && data.source === 'ai-generator'),
           }), {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           })
