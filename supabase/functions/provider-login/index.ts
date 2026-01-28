@@ -4,13 +4,61 @@ import { create, getNumericDate } from "https://deno.land/x/djwt@v2.8/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
-const JWT_SECRET = Deno.env.get('JWT_SECRET');
+// Verify password using Web Crypto API (PBKDF2)
+async function verifyPassword(password: string, storedHash: string): Promise<boolean> {
+  try {
+    // Parse the stored hash format: $pbkdf2$iterations$salt$hash
+    const parts = storedHash.split('$');
+    if (parts.length !== 5 || parts[1] !== 'pbkdf2') {
+      console.error('Invalid hash format');
+      return false;
+    }
 
-if (!JWT_SECRET) {
-  throw new Error('JWT_SECRET environment variable is not set');
+    const iterations = parseInt(parts[2], 10);
+    const saltHex = parts[3];
+    const expectedHashHex = parts[4];
+
+    const encoder = new TextEncoder();
+    
+    // Decode hex salt to bytes
+    const saltBytes = new Uint8Array(saltHex.length / 2);
+    for (let i = 0; i < saltHex.length; i += 2) {
+      saltBytes[i / 2] = parseInt(saltHex.substring(i, i + 2), 16);
+    }
+
+    const keyMaterial = await crypto.subtle.importKey(
+      "raw",
+      encoder.encode(password),
+      "PBKDF2",
+      false,
+      ["deriveBits"]
+    );
+
+    const derivedBits = await crypto.subtle.deriveBits(
+      {
+        name: "PBKDF2",
+        salt: saltBytes,
+        iterations: iterations,
+        hash: "SHA-256"
+      },
+      keyMaterial,
+      256
+    );
+
+    // Convert to hex for comparison
+    const hashArray = new Uint8Array(derivedBits);
+    const hashHex = Array.from(hashArray)
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join('');
+
+    return hashHex === expectedHashHex;
+  } catch (error) {
+    console.error('Error verifying password:', error);
+    return false;
+  }
 }
 
 serve(async (req) => {
@@ -19,6 +67,16 @@ serve(async (req) => {
   }
 
   try {
+    const JWT_SECRET = Deno.env.get('JWT_SECRET');
+    
+    if (!JWT_SECRET) {
+      console.error('JWT_SECRET environment variable is not set');
+      return new Response(
+        JSON.stringify({ error: 'Serverkonfigurationsfehler' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
@@ -47,9 +105,8 @@ serve(async (req) => {
       );
     }
 
-    // Verify password
-    const bcrypt = await import('https://deno.land/x/bcrypt@v0.4.1/mod.ts');
-    const passwordMatch = await bcrypt.compare(password, provider.password_hash);
+    // Verify password using PBKDF2
+    const passwordMatch = await verifyPassword(password, provider.password_hash);
 
     if (!passwordMatch) {
       return new Response(
