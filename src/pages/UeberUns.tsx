@@ -366,12 +366,13 @@ export default function UeberUns() {
         </div>
       </PageSection>
 
-      {/* CTA */}
+      {/* CTA - compact variant to avoid looking like a second footer */}
       <CTASection
         title="Bereit für Ihren Umzug?"
         description="Erhalten Sie jetzt kostenlose Offerten von geprüften Umzugsfirmen"
         buttonText="Jetzt Offerten erhalten"
         buttonLink="/umzugsofferten"
+        variant="compact"
       />
     </div>
   );
