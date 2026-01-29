@@ -1,7 +1,7 @@
 /**
  * Traction Dashboard Component
  * Shows key metrics and proof points for investors
- * Updated: 13.5h/day average since 31.10.2024
+ * Updated: 13.5h/day average since 31.10.2026
  */
 
 import { memo } from "react";
@@ -116,7 +116,7 @@ const content = {
     workEthic: {
       title: "Arbeitsethik",
       stats: [
-        { label: "Start", value: "31.10.2024" },
+        { label: "Start", value: "31.10.2026" },
         { label: "Tage", value: getProjectDays().toString() },
         { label: "Ø Stunden/Tag", value: "13.5h" },
         { label: "Total Stunden", value: `${getTotalHours().toLocaleString('de-CH')}+` }
@@ -198,7 +198,7 @@ const content = {
     workEthic: {
       title: "Работна етика",
       stats: [
-        { label: "Старт", value: "31.10.2024" },
+        { label: "Старт", value: "31.10.2026" },
         { label: "Дни", value: getProjectDays().toString() },
         { label: "Ø Часа/ден", value: "13.5ч" },
         { label: "Общо часове", value: `${getTotalHours().toLocaleString('de-CH')}+` }
@@ -280,7 +280,7 @@ const content = {
     workEthic: {
       title: "Etica del lavoro",
       stats: [
-        { label: "Inizio", value: "31.10.2024" },
+        { label: "Inizio", value: "31.10.2026" },
         { label: "Giorni", value: getProjectDays().toString() },
         { label: "Ø Ore/giorno", value: "13.5h" },
         { label: "Ore totali", value: `${getTotalHours().toLocaleString('de-CH')}+` }
