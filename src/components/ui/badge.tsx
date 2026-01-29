@@ -16,11 +16,10 @@ const badgeVariants = cva(
         success: "border-transparent bg-green-600 text-white hover:bg-green-700 hover:shadow-medium active:scale-[0.95]",
       },
     },
-    },
     defaultVariants: {
       variant: "default",
     },
-  },
+  }
 );
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof badgeVariants> {}

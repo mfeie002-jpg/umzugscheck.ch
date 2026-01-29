@@ -105,12 +105,10 @@ const menuVariants = {
       stiffness: 120,
       duration: 0.3
     }
-  }, 
-    transition: { type: "spring" as const, damping: 25, stiffness: 300 } 
   },
   exit: { 
     x: "100%", 
-    transition: { type: "spring" as const, damping: 30, stiffness: 350 } 
+    transition: { type: "spring", damping: 30, stiffness: 350 } 
   }
 };
 
