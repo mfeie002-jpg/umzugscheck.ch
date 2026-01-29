@@ -1,161 +1,145 @@
 
-# Plan: AI_BRIEFING.md erstellen
+
+# Plan: 4 Zusätzliche ChatGPT Knowledge-Dokumente erstellen
 
 ## Ziel
-Erstellen einer vollständigen Dokumentationsdatei (`docs/AI_BRIEFING.md`) mit allem Wissen über das Umzugscheck.ch Projekt für das Onboarding einer neuen ChatGPT-Instanz.
+Erstellung von 4 weiteren Markdown-Dateien (zusätzlich zum bereits erstellten `AI_BRIEFING.md`) für das ChatGPT "Project Knowledge" Upload:
+
+1. **ARCHITECTURE.md** – Technische Architektur & Stack
+2. **REGIONS_DATABASE.md** – Alle 26 Kantone mit Preisen & SEO
+3. **PROMPT_LIBRARY.md** – 10 Premium ChatGPT Prompts vollständig
+4. **FLOW_VARIANTS.md** – 17 Navigation-Varianten & A/B Testing
 
 ---
 
-## Datei-Inhalt (Struktur)
+## Datei 1: docs/ARCHITECTURE.md (~250 Zeilen)
 
-### 1. HEADER & VISION
-- Projektname: umzugscheck.ch
-- Vision: "Relo-OS" (Relocation Operating System) / "Invisible Move"
-- Ziel: Digital Marketing Award 2026
-- Claim: "Der Archetyp, an dem sich alle anderen orientieren"
+### Inhalt
+- **Frontend Stack**: React 18, TypeScript, Vite, Tailwind, shadcn/ui
+- **State Management**: TanStack Query, React Context
+- **Routing**: React Router v6 mit Lazy Loading
+- **Backend**: Supabase (Lovable Cloud)
+- **Edge Functions**: Kategorisierte Liste aller 80+ Functions
+- **Verzeichnisstruktur**: Detailliertes Tree-Diagram
+- **Key Files**: Pfade zu wichtigen Dateien
+- **Design System**: Farben, Typografie, Komponenten
+- **Performance**: Code-Splitting, Lazy Loading, PWA
 
-### 2. TECH STACK
-```text
-Frontend:     React 18 + TypeScript + Vite
-Styling:      Tailwind CSS + shadcn/ui
-State:        TanStack Query + React Context
-Routing:      React Router v6 (Lazy Loading)
-Backend:      Supabase (Lovable Cloud)
-Edge Functions: 80+ Serverless Functions
-```
+---
 
-### 3. GESCHÄFTSMODELL
+## Datei 2: docs/REGIONS_DATABASE.md (~400 Zeilen)
 
-#### Cherries & Chaff Hybrid-Modell
-- **Tier 1 (Score >60)**: Feierabend Umzug (Premium-Brand, exklusiv)
-- **Tier 2 (Score 30-59)**: Marketplace Premium Auction (max 3 Partner)
-- **Tier 3 (Score <30)**: Reject oder Budget CHF 15
+### Inhalt
+- **Übersicht**: Alle 26 Kantone mit Kürzeln
+- **Datenstruktur**: TypeScript Interface `RegionData`
+- **Preis-Koeffizienten**: Tabelle aller Kantone
+- **Preis-Matrix**: Small/Medium/Large pro Kanton
+- **Popular Regions**: Die 8 wichtigsten Kantone
+- **Detaildaten für Top-Kantone**:
+  - Zürich (Koeffizient 1.18)
+  - Zug (Koeffizient 1.0)
+  - Bern (Koeffizient 1.08)
+  - Basel-Stadt (Koeffizient 1.12)
+  - Luzern (Koeffizient 1.05)
+  - Genf (Koeffizient 1.15)
+- **SEO-Struktur**: Title, Description, H1, Canonical
+- **Lokale Tipps**: Unique Content pro Kanton
+- **Autocomplete Places**: PLZ + Städte
 
-#### Multi-Brand Strategie
-| Brand | Segment | Ø Preis | Fokus |
-|-------|---------|---------|-------|
-| Feierabend Umzug | Premium | CHF 2'800 | Familien, Senioren |
-| Umzug Express | Speed | CHF 1'600 | Profis |
-| Zügelhelden | Value | CHF 1'100 | Studenten, Budget |
+---
 
-### 4. LEAD SCORING LOGIK
-```text
-Score 0-100 berechnet aus:
-- Zimmer: >3.5 → +30 | 2-3 → +20 | <2 → -10
-- Distanz: >50km → +20 | lokal → +10
-- Services: Verpackung → +20 | Reinigung → +10
-- Datum: Mid-month → +20 | Urgent → -50
-- Budget: Qualität → +10 | Günstigste → -20
-```
+## Datei 3: docs/PROMPT_LIBRARY.md (~500 Zeilen)
 
-### 5. RELO-OS 6-PHASEN ARCHITEKTUR
-```text
-1. ROUTE     → Initialisierung
-2. INVENTORY → AI Video Scan + LiDAR Digital Twin
-3. QUOTE     → Instant Fixed-Price (Dynamic Pricing)
-4. BOOKING   → Quality-Weighted Bidding + Smart Escrow
-5. MOVING    → Live GPS Tracking + ETAs
-6. COMPLETE  → Swiss Handover Protocol + After Move Care
-```
+### Inhalt
+Vollständige 10 Premium ChatGPT Prompts mit:
 
-### 6. REGIONEN-DATENBANK
-- Alle 26 Kantone mit vollständigen Daten
-- Preis-Koeffizienten (z.B. Zürich: 1.18, Zug: 1.0)
-- SEO-Texte, lokale Tipps, FAQs pro Kanton
-- Datei: `src/data/regions-database.ts`
+1. **Cross-Validation Matrix** (P0)
+2. **Friction Point Deep-Dive** (P0)
+3. **Conversion Psychology Audit** (P0)
+4. **Mobile Excellence Check** (P0)
+5. **Copy Teardown** (P1)
+6. **Competitor Benchmark Template** (P1)
+7. **A/B Test Hypothesis Generator** (P1)
+8. **V10 Ultimate Blueprint** (P0)
+9. **Accessibility Quick-Audit** (P1)
+10. **Implementation Roadmap** (P0)
 
-### 7. ROUTING STRUKTUR
-```text
-Hauptfunnels:
-  /umzugsofferten          → Lead-Funnel (Golden Flow)
-  /preisrechner            → Instant Calculator
-  /umzugsfirmen/{kanton}   → Regionale Rankings
+Pro Prompt:
+- ID, Titel, Kategorie, Priorität
+- Beschreibung
+- Vollständiger Prompt-Text
+- Verwendungsempfehlung
 
-Services:
-  /services/reinigung      → Endreinigung
-  /services/entsorgung     → Entsorgung/Räumung
-  /services/lagerung       → Einlagerung
-  /services/firmenumzug    → B2B Umzüge
+### Bonus
+- Empfohlene Reihenfolge für Analyse
+- Kombinations-Tipps
 
-Admin:
-  /admin/ai-command-center → AI Prompt Center
-  /admin/task-queue        → AI Autopilot Hub
-  /admin/flow-analysis     → Conversion Analyse
-```
+---
 
-### 8. EDGE FUNCTIONS (80+)
-Kategorien:
-- AI: `ai-assistant`, `ai-flow-generator`, `generate-ai-tasks`
-- Lead: `create-funnel-lead`, `purchase-lead`, `provider-leads`
-- Analysis: `analyze-landing-page`, `lighthouse`, `deep-flow-analysis`
-- Notifications: `send-email`, `send-sms-notification`, `send-lead-notification`
-- Provider: `provider-login`, `provider-signup`, `provider-subscription`
+## Datei 4: docs/FLOW_VARIANTS.md (~350 Zeilen)
 
-### 9. A/B TESTING SYSTEM
-- 17 Navigation-Varianten (V1-V17)
-- 48+ Flow-Varianten (konsolidiert zu "Golden Flow")
-- Golden Flow = V10 Smart Router + V10 Navigation
-- Datei: `src/contexts/NavigationABContext.tsx`
-
-### 10. CHATGPT PROMPT LIBRARY (10 Premium Prompts)
-1. Cross-Validation Matrix
-2. Friction Point Deep-Dive
-3. Conversion Psychology Audit
-4. Mobile Excellence Check
-5. Copy Teardown
-6. Competitor Benchmark Template
-7. A/B Test Hypothesis Generator
-8. V10 Ultimate Blueprint
-9. Accessibility Quick-Audit
-10. Implementation Roadmap
-
-### 11. AI AUTOPILOT SYSTEM
-- Task Queue: `/admin/task-queue`
-- Agents: CODEX (Code), COPILOT (Copy/UX)
-- Auto-Generation bei leerem Queue
-- Realtime Auto-Load nach Task-Completion
-
-### 12. SWISS TRUST TRIUMVIRATE
-Grading-Framework für Umzugsfirmen:
-- Institutional Trust (35%): UID, Versicherung, Mitgliedschaften
-- Social Trust (30%): Reviews, Team-Fotos, Cases
-- Process Trust (35%): Transparenz, Garantien
-
-### 13. SPRACHLICHE KONVENTIONEN
-- Schweizer Hochdeutsch (kein "ß")
-- "zügeln" statt "umziehen"
-- "Offerte" statt "Angebot"
-- "Sie-Form" für formelle Kommunikation
-
-### 14. KEY FILES
-```text
-src/data/regions-database.ts      → 26 Kantone mit Preisen/SEO
-src/lib/cherries-chaff/           → Lead Routing Engine
-src/lib/chatgpt-prompt-enhancements.ts → Premium Prompts
-src/contexts/NavigationABContext.tsx   → A/B Testing
-ARCHITECTURE.md                   → Tech-Architektur
-```
+### Inhalt
+- **Übersicht**: 17 Navigation-Varianten
+- **Golden Flow Konzept**: V10 Smart Router + V10 Navigation
+- **Varianten-Tabelle**: ID, Name, Beschreibung, Labels
+- **Detaillierte Varianten**:
+  - V1: Original (Status Quo)
+  - V2: Ultimate (Lovable)
+  - V3: ChatGPT Concierge
+  - V4: Strategic Report
+  - V5: Mobile-First Archetyp
+  - V6: Conversion-Killer
+  - V7: User Journey Split
+  - V8: Zielgruppen-Split
+  - V9: Allgemeines Menu-Konzept
+  - V10: Conversion-Killer Final
+  - V11: Simpel & Clean
+  - V12: Optimiert (Best-of-Breed)
+  - V13: Mobile-First Optimiert
+  - V14: 2026 Design
+  - V15: ChatGPT Feedback v15
+  - V16: SEO-Optimiert 2026
+  - V17: NavigationV17 (Neu)
+- **Technische Details**:
+  - URL-Parameter: `?nav=variant-b`
+  - localStorage Key
+  - Event Handling
+  - Context Provider
+- **Testing-Protokoll**: Wie A/B-Tests durchführen
 
 ---
 
 ## Technische Umsetzung
 
-**Neue Datei erstellen:**
-```
-docs/AI_BRIEFING.md
+4 neue Dateien erstellen:
+
+```text
+docs/ARCHITECTURE.md
+docs/REGIONS_DATABASE.md
+docs/PROMPT_LIBRARY.md
+docs/FLOW_VARIANTS.md
 ```
 
-**Inhalt:** ~500 Zeilen vollständiges Markdown-Dokument mit:
-- Alle oben genannten Sektionen
-- Code-Beispiele für Lead-Scoring
-- Mermaid-Diagramm für Relo-OS Phasen
-- Tabellen für Brands, Kantone, Prompts
-- Links zu relevanten Dateien
+---
+
+## Zusammenfassung aller 5 Dateien
+
+| Datei | Zeilen | Fokus |
+|-------|--------|-------|
+| AI_BRIEFING.md | ~600 | Vollständiges Projekt-Briefing |
+| ARCHITECTURE.md | ~250 | Tech Stack & Backend |
+| REGIONS_DATABASE.md | ~400 | 26 Kantone mit Preisen |
+| PROMPT_LIBRARY.md | ~500 | 10 Premium Prompts |
+| FLOW_VARIANTS.md | ~350 | 17 A/B-Test Varianten |
+
+**Total: ~2100 Zeilen Dokumentation für ChatGPT Project Knowledge**
 
 ---
 
 ## Ergebnis
-Eine einzige, vollständige Markdown-Datei, die:
-1. Als ChatGPT "Project Knowledge" hochgeladen werden kann
-2. Alle Business-Logik und technischen Details enthält
-3. Die neue AI sofort produktiv macht
+
+Nach Genehmigung werden alle 4 Dateien erstellt und sind bereit für:
+1. Upload zu ChatGPT Project
+2. Vollständiges Onboarding einer neuen AI
+3. Konsistente Dokumentation im Repository
+
