@@ -3,13 +3,11 @@
  * Shows points of interest around the new address with categories
  * Uses Leaflet (open-source) with OpenStreetMap tiles
  */
-import { memo, useState, useEffect, useMemo } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Circle, useMap } from 'react-leaflet';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import L from 'leaflet';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
@@ -121,17 +119,6 @@ interface AfterMoveCareMapProps {
   variant?: 'full' | 'compact';
 }
 
-// Custom hook for map center changes
-function MapCenterHandler({ center }: { center: { lat: number; lng: number } }) {
-  const map = useMap();
-  
-  useEffect(() => {
-    map.setView([center.lat, center.lng], 15);
-  }, [center, map]);
-  
-  return null;
-}
-
 // Create custom marker icon
 function createCategoryIcon(category: POICategory): L.DivIcon {
   const config = POI_CATEGORIES.find(c => c.id === category) || POI_CATEGORIES[0];
@@ -158,6 +145,15 @@ function createCategoryIcon(category: POICategory): L.DivIcon {
     iconAnchor: [16, 32],
     popupAnchor: [0, -32],
   });
+}
+
+function escapeHtml(input: string): string {
+  return input
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
 // Generate mock POIs for demo (in production, fetch from Overpass API or database)
@@ -219,6 +215,10 @@ export const AfterMoveCareMap = memo(function AfterMoveCareMap({
   className,
   variant = 'full'
 }: AfterMoveCareMapProps) {
+  const mapDivRef = useRef<HTMLDivElement | null>(null);
+  const mapRef = useRef<L.Map | null>(null);
+  const overlaysRef = useRef<L.LayerGroup | null>(null);
+
   const [activeCategory, setActiveCategory] = useState<POICategory>('all');
   const [selectedPOI, setSelectedPOI] = useState<POIMarker | null>(null);
   const [pois, setPois] = useState<POIMarker[]>([]);
@@ -259,13 +259,116 @@ export const AfterMoveCareMap = memo(function AfterMoveCareMap({
     return counts;
   }, [pois]);
 
-  const handlePOIClick = (poi: POIMarker) => {
+  const handlePOIClick = useCallback((poi: POIMarker) => {
     setSelectedPOI(poi);
     onPOISelect?.(poi);
-  };
+  }, [onPOISelect]);
 
   const getCategoryConfig = (category: POICategory) => 
     POI_CATEGORIES.find(c => c.id === category) || POI_CATEGORIES[0];
+
+  // Init map once + cleanup on unmount
+  useEffect(() => {
+    if (!mapDivRef.current) return;
+    if (mapRef.current) return;
+
+    const map = L.map(mapDivRef.current, {
+      zoomControl: true,
+      scrollWheelZoom: true,
+    });
+
+    // Tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      maxZoom: 19,
+    }).addTo(map);
+
+    const overlays = L.layerGroup().addTo(map);
+    overlaysRef.current = overlays;
+    mapRef.current = map;
+
+    return () => {
+      overlaysRef.current = null;
+      mapRef.current?.remove();
+      mapRef.current = null;
+    };
+  }, []);
+
+  // Update overlays when inputs change
+  useEffect(() => {
+    const map = mapRef.current;
+    const overlays = overlaysRef.current;
+    if (!map || !overlays) return;
+
+    // Center
+    map.setView([center.lat, center.lng], 15, { animate: false });
+
+    // Clear previous overlays
+    overlays.clearLayers();
+
+    // Radius circle
+    L.circle([center.lat, center.lng], {
+      radius: radiusMeters,
+      color: 'hsl(var(--primary))',
+      fillColor: 'hsl(var(--primary))',
+      fillOpacity: 0.08,
+      weight: 2,
+      dashArray: '5, 5',
+    }).addTo(overlays);
+
+    // Center marker
+    const homeIcon = L.divIcon({
+      className: 'home-marker',
+      html: `
+        <div style="
+          background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary)/0.8));
+          width: 44px;
+          height: 44px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+          border: 3px solid white;
+        ">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22" fill="rgba(255,255,255,0.3)"></polyline>
+          </svg>
+        </div>
+      `,
+      iconSize: [44, 44],
+      iconAnchor: [22, 22],
+    });
+
+    const homePopup = `
+      <div style="font-weight: 600;">🏠 Ihre neue Adresse</div>
+      ${addressLabel ? `<div style="font-size: 12px; opacity: 0.85;">${escapeHtml(addressLabel)}</div>` : ''}
+    `;
+
+    L.marker([center.lat, center.lng], { icon: homeIcon })
+      .bindPopup(homePopup)
+      .addTo(overlays);
+
+    // POI markers
+    filteredPOIs.forEach((poi) => {
+      const popupHtml = `
+        <div style="min-width: 200px;">
+          <div style="font-weight: 600;">${escapeHtml(poi.name)}</div>
+          <div style="margin-top: 6px; font-size: 12px; opacity: .85;">${escapeHtml(getCategoryConfig(poi.category).labelDe)}</div>
+          ${poi.distance ? `<div style="margin-top: 6px; font-size: 12px; opacity: .85;">📍 ${poi.distance}m entfernt</div>` : ''}
+          ${poi.rating ? `<div style="margin-top: 6px; font-size: 12px; opacity: .9;">⭐ ${poi.rating.toFixed(1)}${poi.reviewCount ? ` (${poi.reviewCount})` : ''}</div>` : ''}
+        </div>
+      `;
+
+      const marker = L.marker([poi.lat, poi.lng], {
+        icon: createCategoryIcon(poi.category),
+      }).addTo(overlays);
+
+      marker.bindPopup(popupHtml);
+      marker.on('click', () => handlePOIClick(poi));
+    });
+  }, [addressLabel, center.lat, center.lng, filteredPOIs, handlePOIClick, radiusMeters]);
 
   if (isLoading) {
     return (
@@ -341,99 +444,7 @@ export const AfterMoveCareMap = memo(function AfterMoveCareMap({
       {/* Map */}
       <CardContent className="p-0 relative">
         <div className={cn("w-full", variant === 'compact' ? "h-[300px]" : "h-[400px] md:h-[500px]")}>
-          <MapContainer
-            center={[center.lat, center.lng]}
-            zoom={15}
-            scrollWheelZoom={true}
-            className="h-full w-full z-0"
-            style={{ background: '#f8fafc' }}
-          >
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-            
-            <MapCenterHandler center={center} />
-            
-            {/* Radius circle */}
-            <Circle
-              center={[center.lat, center.lng]}
-              radius={radiusMeters}
-              pathOptions={{
-                color: 'hsl(var(--primary))',
-                fillColor: 'hsl(var(--primary))',
-                fillOpacity: 0.08,
-                weight: 2,
-                dashArray: '5, 5'
-              }}
-            />
-            
-            {/* Center marker (home) */}
-            <Marker 
-              position={[center.lat, center.lng]}
-              icon={L.divIcon({
-                className: 'home-marker',
-                html: `
-                  <div style="
-                    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary)/0.8));
-                    width: 44px;
-                    height: 44px;
-                    border-radius: 50%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-                    border: 3px solid white;
-                  ">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
-                      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                      <polyline points="9 22 9 12 15 12 15 22" fill="rgba(255,255,255,0.3)"></polyline>
-                    </svg>
-                  </div>
-                `,
-                iconSize: [44, 44],
-                iconAnchor: [22, 22],
-              })}
-            >
-              <Popup>
-                <div className="font-semibold">🏠 Ihre neue Adresse</div>
-                {addressLabel && <div className="text-sm text-muted-foreground">{addressLabel}</div>}
-              </Popup>
-            </Marker>
-            
-            {/* POI markers */}
-            {filteredPOIs.map((poi) => (
-              <Marker
-                key={poi.id}
-                position={[poi.lat, poi.lng]}
-                icon={createCategoryIcon(poi.category)}
-                eventHandlers={{
-                  click: () => handlePOIClick(poi)
-                }}
-              >
-                <Popup>
-                  <div className="min-w-[200px]">
-                    <div className="font-semibold">{poi.name}</div>
-                    <Badge variant="secondary" className="mt-1 text-xs">
-                      {getCategoryConfig(poi.category).labelDe}
-                    </Badge>
-                    {poi.distance && (
-                      <div className="text-xs text-muted-foreground mt-1">
-                        📍 {poi.distance}m entfernt
-                      </div>
-                    )}
-                    {poi.rating && (
-                      <div className="flex items-center gap-1 text-xs mt-1">
-                        <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
-                        {poi.rating.toFixed(1)}
-                        {poi.reviewCount && <span className="text-muted-foreground">({poi.reviewCount})</span>}
-                      </div>
-                    )}
-                  </div>
-                </Popup>
-              </Marker>
-            ))}
-          </MapContainer>
+          <div ref={mapDivRef} className="h-full w-full bg-muted" />
         </div>
 
         {/* Selected POI Detail Panel */}
