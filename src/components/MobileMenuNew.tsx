@@ -100,7 +100,7 @@ const menuVariants = {
     x: 0, 
     opacity: 1,
     transition: { 
-      type: "spring",
+      type: "spring" as const,
       damping: 25,
       stiffness: 120,
       duration: 0.3
@@ -108,7 +108,7 @@ const menuVariants = {
   },
   exit: { 
     x: "100%", 
-    transition: { type: "spring", damping: 30, stiffness: 350 } 
+    transition: { type: "spring" as const, damping: 30, stiffness: 350 } 
   }
 };
 
