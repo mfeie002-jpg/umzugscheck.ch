@@ -95,9 +95,17 @@ const overlayVariants = {
 };
 
 const menuVariants = {
-  hidden: { x: "100%" },
+  hidden: { x: "100%", opacity: 0 },
   visible: { 
     x: 0, 
+    opacity: 1,
+    transition: { 
+      type: "spring",
+      damping: 25,
+      stiffness: 120,
+      duration: 0.3
+    }
+  }, 
     transition: { type: "spring" as const, damping: 25, stiffness: 300 } 
   },
   exit: { 

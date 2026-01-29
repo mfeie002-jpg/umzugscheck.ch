@@ -3,17 +3,18 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const cardVariants = cva(
-  "rounded-lg text-card-foreground transition-all duration-200",
+  "rounded-lg text-card-foreground transition-all duration-250 focus-within:ring-2 focus-within:ring-primary/50",
   {
     variants: {
       variant: {
-        default: "border bg-card shadow-sm hover:shadow-soft",
-        elevated: "bg-card shadow-medium border-0 hover:shadow-lift",
-        outline: "border-2 bg-card hover:border-primary/30",
-        ghost: "bg-transparent hover:bg-accent/50",
-        premium: "bg-gradient-to-br from-card to-card/80 shadow-strong border border-primary/10 hover:shadow-lift",
-        interactive: "border bg-card shadow-sm hover:shadow-medium hover:-translate-y-1 cursor-pointer",
-        glass: "bg-white/80 backdrop-blur-lg border border-white/20 shadow-soft",
+        default: "border bg-card shadow-sm hover:shadow-medium hover:border-primary/30 hover:scale-[1.02]",
+        elevated: "bg-card shadow-medium border-0 hover:shadow-lift hover:scale-[1.02]",
+        outline: "border-2 bg-card hover:border-primary/50 hover:bg-primary/5",
+        ghost: "bg-transparent hover:bg-accent/50 hover:border hover:border-accent/30",
+        premium: "bg-gradient-to-br from-card to-card/80 shadow-strong border border-primary/10 hover:shadow-lift hover:-translate-y-1 hover:scale-[1.01]",
+        interactive: "border bg-card shadow-sm hover:shadow-medium hover:-translate-y-2 cursor-pointer active:scale-[0.98]",
+        glass: "bg-white/80 backdrop-blur-lg border border-white/20 shadow-soft hover:shadow-medium hover:bg-white/90",
+      },
       },
       padding: {
         default: "",

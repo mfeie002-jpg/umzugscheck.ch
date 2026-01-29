@@ -180,35 +180,42 @@ const AIUpload = () => {
               <Button
                 variant="ghost"
                 onClick={() => navigate("/rechner")}
-                className="mb-4"
+                className="mb-4 min-h-[44px]"
+                aria-label="Zurück zum Rechner"
               >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Zurück
+                <ArrowLeft className="w-5 h-5 mr-2" />
+                <span className="font-semibold">Zurück</span>
               </Button>
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-accent-light rounded-full mb-4">
                 <Sparkles className="w-4 h-4 text-accent" />
                 <span className="text-sm font-medium text-accent">KI-gestützte Analyse</span>
               </div>
-              <h1 className="text-3xl md:text-4xl font-bold mb-4">
-                Fotos & Videos hochladen
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                📸 Fotos & Videos hochladen
               </h1>
-              <p className="text-lg text-muted-foreground">
-                Laden Sie Bilder oder Videos Ihrer Wohnung hoch. Unsere KI analysiert automatisch
-                das Umzugsvolumen und erstellt eine detaillierte Inventarliste.
+              <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+                Laden Sie Bilder oder Videos Ihrer Wohnung hoch. Unsere <span className="font-semibold text-accent">KI analysiert automatisch</span> das Umzugsvolumen und erstellt eine <span className="font-semibold text-primary">detaillierte Inventarliste</span>.
               </p>
             </div>
 
             {/* Instructions */}
-            <Alert className="mb-8">
-              <AlertTitle>So erhalten Sie die beste Schätzung</AlertTitle>
-              <AlertDescription>
-                <ul className="list-disc list-inside mt-2 space-y-1">
-                  <li>Fotografieren Sie jedes Zimmer aus verschiedenen Winkeln</li>
-                  <li>Zeigen Sie Möbel, Schränke und Gegenstände deutlich</li>
-                  <li>Optional: Machen Sie einen Video-Rundgang durch die Wohnung</li>
-                  <li>Je mehr Details sichtbar sind, desto genauer die Schätzung</li>
-                </ul>
-              </AlertDescription>
+            <Alert className="mb-8 bg-primary/5 border-primary/20 shadow-soft">
+              <div className="flex gap-3">
+                <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center mt-0.5">
+                  <span className="text-lg" role="img" aria-label="Glühbirne">💡</span>
+                </div>
+                <div className="flex-1">
+                  <AlertTitle className="text-base font-bold mb-3">So erhalten Sie die beste Schätzung</AlertTitle>
+                  <AlertDescription>
+                    <ul className="space-y-2.5 text-sm">
+                      <li className="flex gap-2"><span className="text-primary font-bold">✓</span> Fotografieren Sie jedes Zimmer aus verschiedenen Winkeln</li>
+                      <li className="flex gap-2"><span className="text-primary font-bold">✓</span> Zeigen Sie Möbel, Schränke und Gegenstände deutlich</li>
+                      <li className="flex gap-2"><span className="text-accent font-bold">🎥</span> Optional: Machen Sie einen Video-Rundgang durch die Wohnung</li>
+                      <li className="flex gap-2"><span className="text-green-600 font-bold">★</span> Je mehr Details sichtbar sind, desto genauer die Schätzung</li>
+                    </ul>
+                  </AlertDescription>
+                </div>
+              </div>
             </Alert>
 
             {/* Upload Area */}
@@ -219,34 +226,44 @@ const AIUpload = () => {
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
                   onClick={() => fileInputRef.current?.click()}
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Dateien hochladen"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      fileInputRef.current?.click();
+                    }
+                  }}
                   className={`
-                    border-2 border-dashed rounded-xl p-12 text-center cursor-pointer
-                    transition-all duration-300
+                    border-3 border-dashed rounded-2xl p-12 text-center cursor-pointer
+                    transition-all duration-300 min-h-[280px] flex items-center justify-center
+                    focus:outline-none focus:ring-4 focus:ring-accent/30
                     ${isDragging 
-                      ? "border-accent bg-accent-light scale-105" 
-                      : "border-border hover:border-accent hover:bg-accent-light/50"
+                      ? "border-accent bg-accent/10 scale-105 shadow-lift" 
+                      : "border-border hover:border-accent hover:bg-accent/5 hover:shadow-medium"
                     }
                   `}
                 >
                   <div className="flex flex-col items-center gap-4">
-                    <div className="w-20 h-20 rounded-full bg-accent-light flex items-center justify-center">
-                      <Upload className="w-10 h-10 text-accent" />
+                    <div className="w-24 h-24 rounded-full bg-accent/15 flex items-center justify-center animate-pulse-subtle shadow-medium">
+                      <Upload className="w-12 h-12 text-accent" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-semibold mb-2">
-                        Dateien hierher ziehen oder klicken
+                      <h3 className="text-2xl font-bold mb-2 text-foreground">
+                        📁 Dateien hierher ziehen oder klicken
                       </h3>
-                      <p className="text-sm text-muted-foreground mb-4">
+                      <p className="text-base text-muted-foreground mb-4 font-medium">
                         Maximal 10 Dateien, je max. 10MB
                       </p>
-                      <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
-                        <div className="flex items-center gap-2">
-                          <ImageIcon className="w-4 h-4" />
-                          <span>JPG, PNG, HEIC</span>
+                      <div className="flex items-center justify-center gap-6 text-sm">
+                        <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 rounded-lg">
+                          <ImageIcon className="w-5 h-5 text-primary" />
+                          <span className="font-medium text-foreground">JPG, PNG, HEIC</span>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Video className="w-4 h-4" />
-                          <span>MP4, MOV</span>
+                        <div className="flex items-center gap-2 px-3 py-1.5 bg-accent/10 rounded-lg">
+                          <Video className="w-5 h-5 text-accent" />
+                          <span className="font-medium text-foreground">MP4, MOV</span>
                         </div>
                       </div>
                     </div>

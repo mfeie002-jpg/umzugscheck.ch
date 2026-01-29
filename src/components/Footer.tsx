@@ -45,20 +45,23 @@ const Footer = () => {
       </Helmet>
       
       {/* Trust Bar - Enhanced */}
-      <div className="border-b border-primary-foreground/10">
-        <div className="container mx-auto px-4 py-4 sm:py-5">
-          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 md:gap-10 text-xs sm:text-sm text-primary-foreground/90">
-            <span className="flex items-center gap-1.5 sm:gap-2 font-medium">
-              <Shield className="h-4 w-4 sm:h-5 sm:w-5" />
-              SSL-verschlüsselt
+      <div className="border-b-2 border-primary-foreground/20 bg-black/20">
+        <div className="container mx-auto px-4 py-5 sm:py-6">
+          <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 md:gap-12 text-xs sm:text-sm text-primary-foreground font-medium">
+            <span className="flex items-center gap-2.5 sm:gap-3 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/15 transition-colors">
+              <Shield className="h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0" />
+              <span className="hidden xs:inline">SSL-verschlüsselt</span>
+              <span className="inline xs:hidden">Sicher</span>
             </span>
-            <span className="flex items-center gap-1.5 sm:gap-2 font-medium">
-              <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5" />
-              DSGVO-konform
+            <span className="flex items-center gap-2.5 sm:gap-3 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/15 transition-colors">
+              <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0" />
+              <span className="hidden xs:inline">DSGVO-konform</span>
+              <span className="inline xs:hidden">Konform</span>
             </span>
-            <span className="flex items-center gap-1.5 sm:gap-2 font-medium">
-              <Award className="h-4 w-4 sm:h-5 sm:w-5" />
-              Swiss Made
+            <span className="flex items-center gap-2.5 sm:gap-3 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/15 transition-colors">
+              <Award className="h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0" />
+              <span className="hidden xs:inline">Swiss Made</span>
+              <span className="inline xs:hidden">CH</span>
             </span>
           </div>
         </div>
@@ -78,25 +81,26 @@ const Footer = () => {
           {/* Preise berechnen */}
           <div>
             <h4 className="font-bold mb-4 text-primary-foreground">Preise berechnen</h4>
-            <ul className="space-y-2.5 text-sm">
+            <ul className="space-y-3 text-sm">
               <li>
-              <Link to="/umzugsofferten" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
+              <Link to="/umzugsofferten" className="inline-flex items-center text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all duration-200 p-2 -ml-2 focus:outline-none focus:ring-2 focus:ring-white/20 rounded min-h-[44px] min-w-[44px]">
                   Umzugskosten berechnen
                 </Link>
               </li>
               <li>
-                <Link to="/umzugsofferten" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
+                <Link to="/umzugsofferten" className="inline-flex items-center text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all duration-200 p-2 -ml-2 focus:outline-none focus:ring-2 focus:ring-white/20 rounded min-h-[44px] min-w-[44px]">
                   Umzugsofferten vergleichen
                 </Link>
               </li>
               <li>
-                <Link to="/umzugsfirmen" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
+                <Link to="/umzugsfirmen" className="inline-flex items-center text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all duration-200 p-2 -ml-2 focus:outline-none focus:ring-2 focus:ring-white/20 rounded min-h-[44px] min-w-[44px]">
                   Alle Umzugsfirmen
                 </Link>
               </li>
               <li>
-                <Link to="/umzugsfirmen-schweiz" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
+                <Link to="/umzugsfirmen-schweiz" className="inline-flex items-center text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all duration-200 p-2 -ml-2 focus:outline-none focus:ring-2 focus:ring-white/20 rounded min-h-[44px] min-w-[44px]">
                   Umzug nach Region
+                </Link>
                 </Link>
               </li>
             </ul>

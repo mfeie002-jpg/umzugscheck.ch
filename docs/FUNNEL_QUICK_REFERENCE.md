@@ -32,6 +32,7 @@ Steps for EACH funnel:
 
 Report format:
 Funnel #[N]: [Name] → Status: ✅/⚠️/❌ → Score: X/10 → Notes: [issues]
+Note: Stop before final submit unless explicitly authorized.
 ```
 
 ### Test One Funnel
@@ -65,7 +66,7 @@ Task: Run quick smoke test on 5 Critical funnels
 Base URL: https://umzugscheck.ch (production) or https://umzugscheckv2.lovable.app (staging)
 
 1. Homepage (/) → Click "Offerten vergleichen"
-2. Vergleich (/vergleich) → Fill + Submit
+2. Vergleich (/vergleich) → Fill + Submit (stop before final submit unless authorized)
 3. Video (/video) → Verify upload interface visible
 4. Firmenverzeichnis (/umzugsfirmen) → Verify companies load
 5. Beste Firmen (/beste-umzugsfirma) → Verify ranking visible

@@ -11,7 +11,7 @@
     "grepInvert": null,
     "maxFailures": 0,
     "metadata": {
-      "actualWorkers": 5
+      "actualWorkers": 8
     },
     "preserveOutput": "always",
     "projects": [
@@ -20,7 +20,7 @@
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
-          "actualWorkers": 5
+          "actualWorkers": 8
         },
         "id": "chromium",
         "name": "chromium",
@@ -36,7 +36,7 @@
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
-          "actualWorkers": 5
+          "actualWorkers": 8
         },
         "id": "firefox",
         "name": "firefox",
@@ -52,7 +52,7 @@
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
-          "actualWorkers": 5
+          "actualWorkers": 8
         },
         "id": "webkit",
         "name": "webkit",
@@ -68,7 +68,7 @@
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
-          "actualWorkers": 5
+          "actualWorkers": 8
         },
         "id": "Mobile Chrome",
         "name": "Mobile Chrome",
@@ -84,7 +84,7 @@
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
-          "actualWorkers": 5
+          "actualWorkers": 8
         },
         "id": "Mobile Safari",
         "name": "Mobile Safari",
@@ -131,20 +131,20 @@
   },
   "suites": [
     {
-      "title": "critical-5-smoke-test.spec.ts",
-      "file": "critical-5-smoke-test.spec.ts",
+      "title": "all-20-funnels.spec.ts",
+      "file": "all-20-funnels.spec.ts",
       "column": 0,
       "line": 0,
       "specs": [],
       "suites": [
         {
-          "title": "Critical 5 Funnels - Smoke Test",
-          "file": "critical-5-smoke-test.spec.ts",
-          "line": 19,
+          "title": "All 20 Core Umzugscheck Funnels",
+          "file": "all-20-funnels.spec.ts",
+          "line": 65,
           "column": 6,
           "specs": [
             {
-              "title": "1. Homepage - Click Offerten vergleichen",
+              "title": "Funnel 1: Homepage - Click Main CTA",
               "ok": true,
               "tags": [],
               "tests": [
@@ -159,43 +159,25 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 6437,
+                      "duration": 14792,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📱 Test 1: Homepage (/)\n"
+                          "text": "\n📱 Funnel #1: Homepage (P1: Max Test)\n"
                         },
                         {
-                          "text": "  ✓ Page loaded\n"
+                          "text": "✅ CTA visible\n"
                         },
                         {
-                          "text": "  ✓ Primary CTA visible\n"
+                          "text": "✅ CTA clicked, redirected\n"
                         },
                         {
-                          "text": "  ✓ CTA clicked, redirected\n"
-                        },
-                        {
-                          "text": "✅ Funnel 1: PASS\n\n"
-                        },
-                        {
-                          "text": "\n========================================\n"
-                        },
-                        {
-                          "text": "🏁 SMOKE TEST COMPLETE\n"
-                        },
-                        {
-                          "text": "========================================\n"
-                        },
-                        {
-                          "text": "Screenshots saved to: test-results/smoke-*.png\n"
-                        },
-                        {
-                          "text": "Report: Check output above for pass/fail status\n"
+                          "text": "Funnel #1: Homepage → Status: ✅ PASS → Score: 9/10 → Notes: CTA clear and functional\n\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-01-28T23:56:50.495Z",
+                      "startTime": "2026-01-29T00:20:19.218Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -203,18 +185,118 @@
                   "status": "expected"
                 }
               ],
-              "id": "f146bbb72cf500b286e7-689cea9c7198a30ec7fe",
-              "file": "critical-5-smoke-test.spec.ts",
-              "line": 24,
+              "id": "a16d3504a1ff64188055-5e2bf77d696b90ea2a74",
+              "file": "all-20-funnels.spec.ts",
+              "line": 71,
               "column": 3
             },
             {
-              "title": "2. Vergleich Wizard - Fill & Submit",
+              "title": "Funnel 2: Vergleich Wizard - Form & Submit",
               "ok": true,
               "tags": [],
               "tests": [
                 {
-                  "timeout": 60000,
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4351,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #2: Vergleich Wizard (P2: Mia Muster)\n"
+                        },
+                        {
+                          "text": "❌ Form not found\n"
+                        },
+                        {
+                          "text": "Funnel #2: Vergleich Wizard → Status: ❌ FAIL → Score: 1/10 → Notes: No form inputs\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:20:34.229Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-f12708d67ac0ff362832",
+              "file": "all-20-funnels.spec.ts",
+              "line": 93,
+              "column": 3
+            },
+            {
+              "title": "Funnel 3: Video-Offerte - Upload Interface",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3864,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #3: Video-Offerte (P4: Franz Gesch)\n"
+                        },
+                        {
+                          "text": "⚠️  Upload interface unclear\n"
+                        },
+                        {
+                          "text": "Funnel #3: Video-Offerte → Status: ⚠️ PARTIAL → Score: 4/10 → Notes: UI could be clearer\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:20:38.620Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-47f4ed12b1b93e147ff3",
+              "file": "all-20-funnels.spec.ts",
+              "line": 137,
+              "column": 3
+            },
+            {
+              "title": "Funnel 5: Firmenverzeichnis - Company List",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
                   "annotations": [],
                   "expectedStatus": "passed",
                   "projectId": "chromium",
@@ -224,37 +306,22 @@
                       "workerIndex": 1,
                       "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 4772,
+                      "duration": 6979,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📱 Test 2: Vergleich (/vergleich)\n"
+                          "text": "📱 Funnel #5: Firmenverzeichnis (P1: Rapidus User)\n"
                         },
                         {
-                          "text": "  ✓ Page loaded\n"
+                          "text": "✅ Companies loaded\n"
                         },
                         {
-                          "text": "❌ Funnel 2: FAIL - No form found\n"
-                        },
-                        {
-                          "text": "\n========================================\n"
-                        },
-                        {
-                          "text": "🏁 SMOKE TEST COMPLETE\n"
-                        },
-                        {
-                          "text": "========================================\n"
-                        },
-                        {
-                          "text": "Screenshots saved to: test-results/smoke-*.png\n"
-                        },
-                        {
-                          "text": "Report: Check output above for pass/fail status\n"
+                          "text": "Funnel #5: Firmenverzeichnis → Status: ✅ PASS → Score: 8/10 → Notes: List functional\n\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-01-28T23:56:50.494Z",
+                      "startTime": "2026-01-29T00:20:19.267Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -262,13 +329,113 @@
                   "status": "expected"
                 }
               ],
-              "id": "f146bbb72cf500b286e7-773c9ce1df804809a841",
-              "file": "critical-5-smoke-test.spec.ts",
-              "line": 56,
+              "id": "a16d3504a1ff64188055-b940c7b9e22ea69d4bb5",
+              "file": "all-20-funnels.spec.ts",
+              "line": 158,
               "column": 3
             },
             {
-              "title": "3. Video Upload - Interface Visible",
+              "title": "Funnel 6: Beste Firmen - Rankings Display",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 10859,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #6: Beste Firmen Ranking (P2: Max Test)\n"
+                        },
+                        {
+                          "text": "✅ Rankings visible\n"
+                        },
+                        {
+                          "text": "Funnel #6: Beste Firmen → Status: ✅ PASS → Score: 8/10 → Notes: Rankings clear\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:20:26.550Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-972e0ff59316a8e03e29",
+              "file": "all-20-funnels.spec.ts",
+              "line": 178,
+              "column": 3
+            },
+            {
+              "title": "Funnel 11: Region Zürich - Local Companies",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 4864,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #11: Region Zürich (P4: Mia Muster)\n"
+                        },
+                        {
+                          "text": "✅ Regional page loaded\n"
+                        },
+                        {
+                          "text": "Funnel #11: Region Zürich → Status: ✅ PASS → Score: 7/10 → Notes: Regional filter works\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:20:37.487Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-bd32595c05e110ab2e7f",
+              "file": "all-20-funnels.spec.ts",
+              "line": 198,
+              "column": 3
+            },
+            {
+              "title": "Funnel 4: AI Photo Upload - Calculator",
               "ok": true,
               "tags": [],
               "tests": [
@@ -283,43 +450,22 @@
                       "workerIndex": 2,
                       "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 4689,
+                      "duration": 5886,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📱 Test 3: Video (/video)\n"
+                          "text": "📱 Funnel #4: AI Photo Upload (P5: Franz Gesch)\n"
                         },
                         {
-                          "text": "  ✓ Page loaded\n"
+                          "text": "✅ AI Photo page accessible\n"
                         },
                         {
-                          "text": "⚠️  Funnel 3: PARTIAL - No obvious upload interface found\n"
-                        },
-                        {
-                          "text": "  ℹ️  Page contains video/upload references\n"
-                        },
-                        {
-                          "text": "✅ Funnel 3: PASS (text reference found)\n\n"
-                        },
-                        {
-                          "text": "\n========================================\n"
-                        },
-                        {
-                          "text": "🏁 SMOKE TEST COMPLETE\n"
-                        },
-                        {
-                          "text": "========================================\n"
-                        },
-                        {
-                          "text": "Screenshots saved to: test-results/smoke-*.png\n"
-                        },
-                        {
-                          "text": "Report: Check output above for pass/fail status\n"
+                          "text": "Funnel #4: AI Photo → Status: ✅ PASS → Score: 6/10 → Notes: Feature available\n\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-01-28T23:56:50.493Z",
+                      "startTime": "2026-01-29T00:20:19.264Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -327,13 +473,113 @@
                   "status": "expected"
                 }
               ],
-              "id": "f146bbb72cf500b286e7-a73ed7084f309b8f57a6",
-              "file": "critical-5-smoke-test.spec.ts",
-              "line": 120,
+              "id": "a16d3504a1ff64188055-f698218d04ddab7cb310",
+              "file": "all-20-funnels.spec.ts",
+              "line": 221,
               "column": 3
             },
             {
-              "title": "4. Firmenverzeichnis - Companies Load",
+              "title": "Funnel 7: Günstige Firmen - Budget Ranking",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 9397,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #7: Günstige Firmen (P1: Rapidus User)\n"
+                        },
+                        {
+                          "text": "✅ Budget ranking accessible\n"
+                        },
+                        {
+                          "text": "Funnel #7: Günstige Firmen → Status: ✅ PASS → Score: 7/10 → Notes: Budget option works\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:20:25.382Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-17fa467e55033c6dc958",
+              "file": "all-20-funnels.spec.ts",
+              "line": 237,
+              "column": 3
+            },
+            {
+              "title": "Funnel 8: Firmenprofil - Company Detail",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 6256,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #8: Firmenprofil (P2: Max Test)\n"
+                        },
+                        {
+                          "text": "✅ Company detail accessible\n"
+                        },
+                        {
+                          "text": "Funnel #8: Firmenprofil → Status: ✅ PASS → Score: 7/10 → Notes: Profile works\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:20:35.375Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-38fc6e323ea4fd95c7f7",
+              "file": "all-20-funnels.spec.ts",
+              "line": 253,
+              "column": 3
+            },
+            {
+              "title": "Funnel 9: Reinigungsrechner - Cleaning Cost",
               "ok": true,
               "tags": [],
               "tests": [
@@ -348,40 +594,22 @@
                       "workerIndex": 3,
                       "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 4866,
+                      "duration": 5950,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📱 Test 4: Firmenverzeichnis (/umzugsfirmen)\n"
+                          "text": "📱 Funnel #9: Reinigungsrechner (P4: Mia Muster)\n"
                         },
                         {
-                          "text": "  ✓ Page loaded\n"
+                          "text": "✅ Cleaning calculator accessible\n"
                         },
                         {
-                          "text": "  ✓ Found 1 companies\n"
-                        },
-                        {
-                          "text": "✅ Funnel 4: PASS\n\n"
-                        },
-                        {
-                          "text": "\n========================================\n"
-                        },
-                        {
-                          "text": "🏁 SMOKE TEST COMPLETE\n"
-                        },
-                        {
-                          "text": "========================================\n"
-                        },
-                        {
-                          "text": "Screenshots saved to: test-results/smoke-*.png\n"
-                        },
-                        {
-                          "text": "Report: Check output above for pass/fail status\n"
+                          "text": "Funnel #9: Reinigung → Status: ✅ PASS → Score: 6/10 → Notes: Feature available\n\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-01-28T23:56:50.530Z",
+                      "startTime": "2026-01-29T00:20:19.241Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -389,13 +617,113 @@
                   "status": "expected"
                 }
               ],
-              "id": "f146bbb72cf500b286e7-536577f0cf3a200f2a44",
-              "file": "critical-5-smoke-test.spec.ts",
-              "line": 153,
+              "id": "a16d3504a1ff64188055-b7a0c78decf9e36a7c79",
+              "file": "all-20-funnels.spec.ts",
+              "line": 274,
               "column": 3
             },
             {
-              "title": "5. Beste Firmen - Ranking Visible",
+              "title": "Funnel 10: Entsorgungsrechner - Disposal Cost",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 8232,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #10: Entsorgungsrechner (P5: Franz Gesch)\n"
+                        },
+                        {
+                          "text": "✅ Disposal calculator accessible\n"
+                        },
+                        {
+                          "text": "Funnel #10: Entsorgung → Status: ✅ PASS → Score: 6/10 → Notes: Feature available\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:20:25.408Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-9c6842b2b2ba05ea34da",
+              "file": "all-20-funnels.spec.ts",
+              "line": 290,
+              "column": 3
+            },
+            {
+              "title": "Funnel 12: Region Bern - Regional Service",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 5317,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #12: Region Bern (P1: Rapidus User)\n"
+                        },
+                        {
+                          "text": "✅ Bern region accessible\n"
+                        },
+                        {
+                          "text": "Funnel #12: Region Bern → Status: ✅ PASS → Score: 6/10 → Notes: Regional service works\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:20:33.923Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-08ab7e2b312fc24a016a",
+              "file": "all-20-funnels.spec.ts",
+              "line": 306,
+              "column": 3
+            },
+            {
+              "title": "Funnel 13: Privatumzug - Private Move Service",
               "ok": true,
               "tags": [],
               "tests": [
@@ -410,40 +738,22 @@
                       "workerIndex": 4,
                       "parallelIndex": 4,
                       "status": "passed",
-                      "duration": 5460,
+                      "duration": 6762,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "📱 Test 5: Beste Firmen (/beste-umzugsfirma)\n"
+                          "text": "📱 Funnel #13: Privatumzug (P2: Max Test)\n"
                         },
                         {
-                          "text": "  ✓ Page loaded\n"
+                          "text": "✅ Private move service accessible\n"
                         },
                         {
-                          "text": "  ✓ Ranking indicators found\n"
-                        },
-                        {
-                          "text": "✅ Funnel 5: PASS\n\n"
-                        },
-                        {
-                          "text": "\n========================================\n"
-                        },
-                        {
-                          "text": "🏁 SMOKE TEST COMPLETE\n"
-                        },
-                        {
-                          "text": "========================================\n"
-                        },
-                        {
-                          "text": "Screenshots saved to: test-results/smoke-*.png\n"
-                        },
-                        {
-                          "text": "Report: Check output above for pass/fail status\n"
+                          "text": "Funnel #13: Privatumzug → Status: ✅ PASS → Score: 6/10 → Notes: Service available\n\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-01-28T23:56:50.528Z",
+                      "startTime": "2026-01-29T00:20:19.364Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -451,9 +761,4212 @@
                   "status": "expected"
                 }
               ],
-              "id": "f146bbb72cf500b286e7-a85e81c7a0880ce8c7bf",
-              "file": "critical-5-smoke-test.spec.ts",
-              "line": 188,
+              "id": "a16d3504a1ff64188055-88e809fda842f4f4b88f",
+              "file": "all-20-funnels.spec.ts",
+              "line": 322,
+              "column": 3
+            },
+            {
+              "title": "Funnel 14: Firmenumzug - Business Move Service",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 8440,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #14: Firmenumzug (P4: Mia Muster)\n"
+                        },
+                        {
+                          "text": "✅ Business move service accessible\n"
+                        },
+                        {
+                          "text": "Funnel #14: Firmenumzug → Status: ✅ PASS → Score: 6/10 → Notes: Service available\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:20:26.604Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-99f99d308f0007ceac7b",
+              "file": "all-20-funnels.spec.ts",
+              "line": 338,
+              "column": 3
+            },
+            {
+              "title": "Funnel 18: Für Firmen - B2B Portal",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 4548,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #18: Für Firmen B2B (P5: Franz Gesch)\n"
+                        },
+                        {
+                          "text": "✅ B2B portal accessible\n"
+                        },
+                        {
+                          "text": "Funnel #18: Für Firmen → Status: ✅ PASS → Score: 6/10 → Notes: B2B available\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:20:35.090Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-72e9eb208d618f69e585",
+              "file": "all-20-funnels.spec.ts",
+              "line": 354,
+              "column": 3
+            },
+            {
+              "title": "Funnel 15: Umzugskosten Guide - Information",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 6106,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #15: Umzugskosten (P1: Rapidus User)\n"
+                        },
+                        {
+                          "text": "✅ Cost guide accessible\n"
+                        },
+                        {
+                          "text": "Funnel #15: Umzugskosten → Status: ✅ PASS → Score: 5/10 → Notes: Info page works\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:20:19.337Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-10c28a1914948bb4d1fd",
+              "file": "all-20-funnels.spec.ts",
+              "line": 374,
+              "column": 3
+            },
+            {
+              "title": "Funnel 16: Umzugscheckliste - Checklist",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 6317,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #16: Umzugscheckliste (P2: Max Test)\n"
+                        },
+                        {
+                          "text": "✅ Checklist accessible\n"
+                        },
+                        {
+                          "text": "Funnel #16: Checkliste → Status: ✅ PASS → Score: 5/10 → Notes: Checklist available\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:20:25.917Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-18d26e1d9b49af766c1b",
+              "file": "all-20-funnels.spec.ts",
+              "line": 390,
+              "column": 3
+            },
+            {
+              "title": "Funnel 17: FAQ - Frequently Asked Questions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 5652,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #17: FAQ (P4: Mia Muster)\n"
+                        },
+                        {
+                          "text": "✅ FAQ accessible\n"
+                        },
+                        {
+                          "text": "Funnel #17: FAQ → Status: ✅ PASS → Score: 5/10 → Notes: FAQ available\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:20:32.543Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-c8d81844e681c64154b3",
+              "file": "all-20-funnels.spec.ts",
+              "line": 406,
+              "column": 3
+            },
+            {
+              "title": "Funnel 19: Lagerrechner - Storage Cost Calculator",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 6,
+                      "status": "passed",
+                      "duration": 6492,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #19: Lagerrechner (P5: Franz Gesch)\n"
+                        },
+                        {
+                          "text": "✅ Storage calculator accessible\n"
+                        },
+                        {
+                          "text": "Funnel #19: Lagerrechner → Status: ✅ PASS → Score: 5/10 → Notes: Calculator available\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:20:19.346Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-7d188690371270d4f903",
+              "file": "all-20-funnels.spec.ts",
+              "line": 422,
+              "column": 3
+            },
+            {
+              "title": "Funnel 20: Packservice - Packing Service Calculator",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 6,
+                      "status": "passed",
+                      "duration": 8106,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #20: Packservice (P1: Rapidus User)\n"
+                        },
+                        {
+                          "text": "✅ Packing service accessible\n"
+                        },
+                        {
+                          "text": "Funnel #20: Packservice → Status: ✅ PASS → Score: 5/10 → Notes: Service available\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:20:26.266Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-4e556baf2cd63a165eaa",
+              "file": "all-20-funnels.spec.ts",
+              "line": 438,
+              "column": 3
+            },
+            {
+              "title": "Funnel 1: Homepage - Click Main CTA",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 7,
+                      "status": "passed",
+                      "duration": 26728,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n📱 Funnel #1: Homepage (P1: Max Test)\n"
+                        },
+                        {
+                          "text": "✅ CTA visible\n"
+                        },
+                        {
+                          "text": "✅ CTA clicked, redirected\n"
+                        },
+                        {
+                          "text": "Funnel #1: Homepage → Status: ✅ PASS → Score: 9/10 → Notes: CTA clear and functional\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:20:19.266Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-0b498d4604aabdd49584",
+              "file": "all-20-funnels.spec.ts",
+              "line": 71,
+              "column": 3
+            },
+            {
+              "title": "Funnel 2: Vergleich Wizard - Form & Submit",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 7,
+                      "status": "passed",
+                      "duration": 6178,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #2: Vergleich Wizard (P2: Mia Muster)\n"
+                        },
+                        {
+                          "text": "❌ Form not found\n"
+                        },
+                        {
+                          "text": "Funnel #2: Vergleich Wizard → Status: ❌ FAIL → Score: 1/10 → Notes: No form inputs\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:20:50.019Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-80605dbeda167170a1fb",
+              "file": "all-20-funnels.spec.ts",
+              "line": 93,
+              "column": 3
+            },
+            {
+              "title": "Funnel 3: Video-Offerte - Upload Interface",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 7,
+                      "status": "passed",
+                      "duration": 9832,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #3: Video-Offerte (P4: Franz Gesch)\n"
+                        },
+                        {
+                          "text": "⚠️  Upload interface unclear\n"
+                        },
+                        {
+                          "text": "Funnel #3: Video-Offerte → Status: ⚠️ PARTIAL → Score: 4/10 → Notes: UI could be clearer\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:20:56.251Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-f5768f996ec0de9cb165",
+              "file": "all-20-funnels.spec.ts",
+              "line": 137,
+              "column": 3
+            },
+            {
+              "title": "Funnel 5: Firmenverzeichnis - Company List",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 6,
+                      "status": "passed",
+                      "duration": 14450,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #5: Firmenverzeichnis (P1: Rapidus User)\n"
+                        },
+                        {
+                          "text": "✅ Companies loaded\n"
+                        },
+                        {
+                          "text": "Funnel #5: Firmenverzeichnis → Status: ✅ PASS → Score: 8/10 → Notes: List functional\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:20:43.974Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-2e09544b76ecfab219e7",
+              "file": "all-20-funnels.spec.ts",
+              "line": 158,
+              "column": 3
+            },
+            {
+              "title": "Funnel 6: Beste Firmen - Rankings Display",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 6,
+                      "status": "passed",
+                      "duration": 13192,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #6: Beste Firmen Ranking (P2: Max Test)\n"
+                        },
+                        {
+                          "text": "✅ Rankings visible\n"
+                        },
+                        {
+                          "text": "Funnel #6: Beste Firmen → Status: ✅ PASS → Score: 8/10 → Notes: Rankings clear\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:21:01.385Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-ef226b10bc84e2f8517f",
+              "file": "all-20-funnels.spec.ts",
+              "line": 178,
+              "column": 3
+            },
+            {
+              "title": "Funnel 11: Region Zürich - Local Companies",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 6,
+                      "status": "passed",
+                      "duration": 13303,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #11: Region Zürich (P4: Mia Muster)\n"
+                        },
+                        {
+                          "text": "✅ Regional page loaded\n"
+                        },
+                        {
+                          "text": "Funnel #11: Region Zürich → Status: ✅ PASS → Score: 7/10 → Notes: Regional filter works\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:21:14.863Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-33e27d19691f14cb14da",
+              "file": "all-20-funnels.spec.ts",
+              "line": 198,
+              "column": 3
+            },
+            {
+              "title": "Funnel 4: AI Photo Upload - Calculator",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 14328,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #4: AI Photo Upload (P5: Franz Gesch)\n"
+                        },
+                        {
+                          "text": "✅ AI Photo page accessible\n"
+                        },
+                        {
+                          "text": "Funnel #4: AI Photo → Status: ✅ PASS → Score: 6/10 → Notes: Feature available\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:20:46.322Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-c4c77ef4777db304fb11",
+              "file": "all-20-funnels.spec.ts",
+              "line": 221,
+              "column": 3
+            },
+            {
+              "title": "Funnel 7: Günstige Firmen - Budget Ranking",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 14844,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #7: Günstige Firmen (P1: Rapidus User)\n"
+                        },
+                        {
+                          "text": "✅ Budget ranking accessible\n"
+                        },
+                        {
+                          "text": "Funnel #7: Günstige Firmen → Status: ✅ PASS → Score: 7/10 → Notes: Budget option works\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:21:03.397Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-c901051e7150148e3a65",
+              "file": "all-20-funnels.spec.ts",
+              "line": 237,
+              "column": 3
+            },
+            {
+              "title": "Funnel 8: Firmenprofil - Company Detail",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 14680,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #8: Firmenprofil (P2: Max Test)\n"
+                        },
+                        {
+                          "text": "⚠️  Company links not found\n"
+                        },
+                        {
+                          "text": "Funnel #8: Firmenprofil → Status: ⚠️ PARTIAL → Score: 3/10 → Notes: Navigation unclear\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:21:18.374Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-6e7011dc8ea0a92cfe1d",
+              "file": "all-20-funnels.spec.ts",
+              "line": 253,
+              "column": 3
+            },
+            {
+              "title": "Funnel 9: Reinigungsrechner - Cleaning Cost",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 24587,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #9: Reinigungsrechner (P4: Mia Muster)\n"
+                        },
+                        {
+                          "text": "✅ Cleaning calculator accessible\n"
+                        },
+                        {
+                          "text": "Funnel #9: Reinigung → Status: ✅ PASS → Score: 6/10 → Notes: Feature available\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:20:46.235Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-28519b5655bfd61d740c",
+              "file": "all-20-funnels.spec.ts",
+              "line": 274,
+              "column": 3
+            },
+            {
+              "title": "Funnel 10: Entsorgungsrechner - Disposal Cost",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 11880,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #10: Entsorgungsrechner (P5: Franz Gesch)\n"
+                        },
+                        {
+                          "text": "✅ Disposal calculator accessible\n"
+                        },
+                        {
+                          "text": "Funnel #10: Entsorgung → Status: ✅ PASS → Score: 6/10 → Notes: Feature available\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:21:19.568Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-a6d28692f92b77d5674d",
+              "file": "all-20-funnels.spec.ts",
+              "line": 290,
+              "column": 3
+            },
+            {
+              "title": "Funnel 12: Region Bern - Regional Service",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 9595,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #12: Region Bern (P1: Rapidus User)\n"
+                        },
+                        {
+                          "text": "✅ Bern region accessible\n"
+                        },
+                        {
+                          "text": "Funnel #12: Region Bern → Status: ✅ PASS → Score: 6/10 → Notes: Regional service works\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:21:31.567Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-deb0955c90ff7ceec187",
+              "file": "all-20-funnels.spec.ts",
+              "line": 306,
+              "column": 3
+            },
+            {
+              "title": "Funnel 13: Privatumzug - Private Move Service",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 23580,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #13: Privatumzug (P2: Max Test)\n"
+                        },
+                        {
+                          "text": "✅ Private move service accessible\n"
+                        },
+                        {
+                          "text": "Funnel #13: Privatumzug → Status: ✅ PASS → Score: 6/10 → Notes: Service available\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:20:47.091Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-26c1591f7ba00e4ab674",
+              "file": "all-20-funnels.spec.ts",
+              "line": 322,
+              "column": 3
+            },
+            {
+              "title": "Funnel 14: Firmenumzug - Business Move Service",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 11633,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #14: Firmenumzug (P4: Mia Muster)\n"
+                        },
+                        {
+                          "text": "✅ Business move service accessible\n"
+                        },
+                        {
+                          "text": "Funnel #14: Firmenumzug → Status: ✅ PASS → Score: 6/10 → Notes: Service available\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:21:17.575Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-4bfddc2387a8e31c837f",
+              "file": "all-20-funnels.spec.ts",
+              "line": 338,
+              "column": 3
+            },
+            {
+              "title": "Funnel 18: Für Firmen - B2B Portal",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 8384,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #18: Für Firmen B2B (P5: Franz Gesch)\n"
+                        },
+                        {
+                          "text": "✅ B2B portal accessible\n"
+                        },
+                        {
+                          "text": "Funnel #18: Für Firmen → Status: ✅ PASS → Score: 6/10 → Notes: B2B available\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:21:29.909Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-5cd557d402b26f99c9c7",
+              "file": "all-20-funnels.spec.ts",
+              "line": 354,
+              "column": 3
+            },
+            {
+              "title": "Funnel 15: Umzugskosten Guide - Information",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 22585,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #15: Umzugskosten (P1: Rapidus User)\n"
+                        },
+                        {
+                          "text": "✅ Cost guide accessible\n"
+                        },
+                        {
+                          "text": "Funnel #15: Umzugskosten → Status: ✅ PASS → Score: 5/10 → Notes: Info page works\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:20:47.411Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-3567f757cb25e5f45a7c",
+              "file": "all-20-funnels.spec.ts",
+              "line": 374,
+              "column": 3
+            },
+            {
+              "title": "Funnel 16: Umzugscheckliste - Checklist",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 9949,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #16: Umzugscheckliste (P2: Max Test)\n"
+                        },
+                        {
+                          "text": "✅ Checklist accessible\n"
+                        },
+                        {
+                          "text": "Funnel #16: Checkliste → Status: ✅ PASS → Score: 5/10 → Notes: Checklist available\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:21:18.395Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-34070b2546f2333e6837",
+              "file": "all-20-funnels.spec.ts",
+              "line": 390,
+              "column": 3
+            },
+            {
+              "title": "Funnel 17: FAQ - Frequently Asked Questions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 7839,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #17: FAQ (P4: Mia Muster)\n"
+                        },
+                        {
+                          "text": "✅ FAQ accessible\n"
+                        },
+                        {
+                          "text": "Funnel #17: FAQ → Status: ✅ PASS → Score: 5/10 → Notes: FAQ available\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:21:28.533Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-d04b795dd43a8b8b9079",
+              "file": "all-20-funnels.spec.ts",
+              "line": 406,
+              "column": 3
+            },
+            {
+              "title": "Funnel 19: Lagerrechner - Storage Cost Calculator",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 13,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 18219,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #19: Lagerrechner (P5: Franz Gesch)\n"
+                        },
+                        {
+                          "text": "✅ Storage calculator accessible\n"
+                        },
+                        {
+                          "text": "Funnel #19: Lagerrechner → Status: ✅ PASS → Score: 5/10 → Notes: Calculator available\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:20:48.310Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-f765fe034e73b091cdc1",
+              "file": "all-20-funnels.spec.ts",
+              "line": 422,
+              "column": 3
+            },
+            {
+              "title": "Funnel 20: Packservice - Packing Service Calculator",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 13,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 11911,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #20: Packservice (P1: Rapidus User)\n"
+                        },
+                        {
+                          "text": "✅ Packing service accessible\n"
+                        },
+                        {
+                          "text": "Funnel #20: Packservice → Status: ✅ PASS → Score: 5/10 → Notes: Service available\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:21:08.787Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-14f48ff40028aed17d3f",
+              "file": "all-20-funnels.spec.ts",
+              "line": 438,
+              "column": 3
+            },
+            {
+              "title": "Funnel 1: Homepage - Click Main CTA",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 14,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6122,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n📱 Funnel #1: Homepage (P1: Max Test)\n"
+                        },
+                        {
+                          "text": "❌ CTA not found\n"
+                        },
+                        {
+                          "text": "Funnel #1: Homepage → Status: ❌ FAIL → Score: 2/10 → Notes: No visible CTA\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:20:48.512Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-89ad611ecff13fa1939e",
+              "file": "all-20-funnels.spec.ts",
+              "line": 71,
+              "column": 3
+            },
+            {
+              "title": "Funnel 2: Vergleich Wizard - Form & Submit",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 14,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 8927,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #2: Vergleich Wizard (P2: Mia Muster)\n"
+                        },
+                        {
+                          "text": "❌ Form not found\n"
+                        },
+                        {
+                          "text": "Funnel #2: Vergleich Wizard → Status: ❌ FAIL → Score: 1/10 → Notes: No form inputs\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:20:54.895Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-03479ab95e08bf358217",
+              "file": "all-20-funnels.spec.ts",
+              "line": 93,
+              "column": 3
+            },
+            {
+              "title": "Funnel 3: Video-Offerte - Upload Interface",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 14,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 11785,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #3: Video-Offerte (P4: Franz Gesch)\n"
+                        },
+                        {
+                          "text": "⚠️  Upload interface unclear\n"
+                        },
+                        {
+                          "text": "Funnel #3: Video-Offerte → Status: ⚠️ PARTIAL → Score: 4/10 → Notes: UI could be clearer\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:21:03.897Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-179042ade9ddd5a6ac34",
+              "file": "all-20-funnels.spec.ts",
+              "line": 137,
+              "column": 3
+            },
+            {
+              "title": "Funnel 5: Firmenverzeichnis - Company List",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 15,
+                      "parallelIndex": 7,
+                      "status": "passed",
+                      "duration": 6937,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #5: Firmenverzeichnis (P1: Rapidus User)\n"
+                        },
+                        {
+                          "text": "✅ Companies loaded\n"
+                        },
+                        {
+                          "text": "Funnel #5: Firmenverzeichnis → Status: ✅ PASS → Score: 8/10 → Notes: List functional\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:21:45.817Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-2320b2e7cdb3deae2782",
+              "file": "all-20-funnels.spec.ts",
+              "line": 158,
+              "column": 3
+            },
+            {
+              "title": "Funnel 6: Beste Firmen - Rankings Display",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 15,
+                      "parallelIndex": 7,
+                      "status": "passed",
+                      "duration": 12073,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #6: Beste Firmen Ranking (P2: Max Test)\n"
+                        },
+                        {
+                          "text": "✅ Rankings visible\n"
+                        },
+                        {
+                          "text": "Funnel #6: Beste Firmen → Status: ✅ PASS → Score: 8/10 → Notes: Rankings clear\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:21:52.994Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-b744e2d620e7f32fdaa1",
+              "file": "all-20-funnels.spec.ts",
+              "line": 178,
+              "column": 3
+            },
+            {
+              "title": "Funnel 11: Region Zürich - Local Companies",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 15,
+                      "parallelIndex": 7,
+                      "status": "passed",
+                      "duration": 9864,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #11: Region Zürich (P4: Mia Muster)\n"
+                        },
+                        {
+                          "text": "✅ Regional page loaded\n"
+                        },
+                        {
+                          "text": "Funnel #11: Region Zürich → Status: ✅ PASS → Score: 7/10 → Notes: Regional filter works\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:05.134Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-c4e0da772c46543cb883",
+              "file": "all-20-funnels.spec.ts",
+              "line": 198,
+              "column": 3
+            },
+            {
+              "title": "Funnel 4: AI Photo Upload - Calculator",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 14,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 13921,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #4: AI Photo Upload (P5: Franz Gesch)\n"
+                        },
+                        {
+                          "text": "✅ AI Photo page accessible\n"
+                        },
+                        {
+                          "text": "Funnel #4: AI Photo → Status: ✅ PASS → Score: 6/10 → Notes: Feature available\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:21:15.841Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-49c27b20df9223ab5d5f",
+              "file": "all-20-funnels.spec.ts",
+              "line": 221,
+              "column": 3
+            },
+            {
+              "title": "Funnel 7: Günstige Firmen - Budget Ranking",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 14,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 8999,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #7: Günstige Firmen (P1: Rapidus User)\n"
+                        },
+                        {
+                          "text": "✅ Budget ranking accessible\n"
+                        },
+                        {
+                          "text": "Funnel #7: Günstige Firmen → Status: ✅ PASS → Score: 7/10 → Notes: Budget option works\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:21:29.924Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-d4090af76228eb81611d",
+              "file": "all-20-funnels.spec.ts",
+              "line": 237,
+              "column": 3
+            },
+            {
+              "title": "Funnel 8: Firmenprofil - Company Detail",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 14,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6620,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #8: Firmenprofil (P2: Max Test)\n"
+                        },
+                        {
+                          "text": "⚠️  Company links not found\n"
+                        },
+                        {
+                          "text": "Funnel #8: Firmenprofil → Status: ⚠️ PARTIAL → Score: 3/10 → Notes: Navigation unclear\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:21:38.964Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-d128690628a23bd1ba08",
+              "file": "all-20-funnels.spec.ts",
+              "line": 253,
+              "column": 3
+            },
+            {
+              "title": "Funnel 9: Reinigungsrechner - Cleaning Cost",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 16,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 5936,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #9: Reinigungsrechner (P4: Mia Muster)\n"
+                        },
+                        {
+                          "text": "✅ Cleaning calculator accessible\n"
+                        },
+                        {
+                          "text": "Funnel #9: Reinigung → Status: ✅ PASS → Score: 6/10 → Notes: Feature available\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:21:46.128Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-0d28ec28388c7d30c143",
+              "file": "all-20-funnels.spec.ts",
+              "line": 274,
+              "column": 3
+            },
+            {
+              "title": "Funnel 10: Entsorgungsrechner - Disposal Cost",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 16,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 8694,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #10: Entsorgungsrechner (P5: Franz Gesch)\n"
+                        },
+                        {
+                          "text": "✅ Disposal calculator accessible\n"
+                        },
+                        {
+                          "text": "Funnel #10: Entsorgung → Status: ✅ PASS → Score: 6/10 → Notes: Feature available\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:21:52.300Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-4b67df483ea2eb50de6e",
+              "file": "all-20-funnels.spec.ts",
+              "line": 290,
+              "column": 3
+            },
+            {
+              "title": "Funnel 12: Region Bern - Regional Service",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 16,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 14166,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #12: Region Bern (P1: Rapidus User)\n"
+                        },
+                        {
+                          "text": "✅ Bern region accessible\n"
+                        },
+                        {
+                          "text": "Funnel #12: Region Bern → Status: ✅ PASS → Score: 6/10 → Notes: Regional service works\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:01.116Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-607cad4d677f3dd36f24",
+              "file": "all-20-funnels.spec.ts",
+              "line": 306,
+              "column": 3
+            },
+            {
+              "title": "Funnel 13: Privatumzug - Private Move Service",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 20,
+                      "parallelIndex": 6,
+                      "status": "passed",
+                      "duration": 6986,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #13: Privatumzug (P2: Max Test)\n"
+                        },
+                        {
+                          "text": "✅ Private move service accessible\n"
+                        },
+                        {
+                          "text": "Funnel #13: Privatumzug → Status: ✅ PASS → Score: 6/10 → Notes: Service available\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:21:47.346Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-594da777938c4bf246ed",
+              "file": "all-20-funnels.spec.ts",
+              "line": 322,
+              "column": 3
+            },
+            {
+              "title": "Funnel 14: Firmenumzug - Business Move Service",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 20,
+                      "parallelIndex": 6,
+                      "status": "passed",
+                      "duration": 9865,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #14: Firmenumzug (P4: Mia Muster)\n"
+                        },
+                        {
+                          "text": "✅ Business move service accessible\n"
+                        },
+                        {
+                          "text": "Funnel #14: Firmenumzug → Status: ✅ PASS → Score: 6/10 → Notes: Service available\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:21:54.570Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-9ca58eb4148dd927afe8",
+              "file": "all-20-funnels.spec.ts",
+              "line": 338,
+              "column": 3
+            },
+            {
+              "title": "Funnel 18: Für Firmen - B2B Portal",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 20,
+                      "parallelIndex": 6,
+                      "status": "passed",
+                      "duration": 7882,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #18: Für Firmen B2B (P5: Franz Gesch)\n"
+                        },
+                        {
+                          "text": "✅ B2B portal accessible\n"
+                        },
+                        {
+                          "text": "Funnel #18: Für Firmen → Status: ✅ PASS → Score: 6/10 → Notes: B2B available\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:04.497Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-ef272a17b82d2047b7ed",
+              "file": "all-20-funnels.spec.ts",
+              "line": 354,
+              "column": 3
+            },
+            {
+              "title": "Funnel 15: Umzugskosten Guide - Information",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 17,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 7275,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #15: Umzugskosten (P1: Rapidus User)\n"
+                        },
+                        {
+                          "text": "✅ Cost guide accessible\n"
+                        },
+                        {
+                          "text": "Funnel #15: Umzugskosten → Status: ✅ PASS → Score: 5/10 → Notes: Info page works\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:21:46.042Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-2a2669d78bbb79f01d26",
+              "file": "all-20-funnels.spec.ts",
+              "line": 374,
+              "column": 3
+            },
+            {
+              "title": "Funnel 16: Umzugscheckliste - Checklist",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 17,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 10792,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #16: Umzugscheckliste (P2: Max Test)\n"
+                        },
+                        {
+                          "text": "✅ Checklist accessible\n"
+                        },
+                        {
+                          "text": "Funnel #16: Checkliste → Status: ✅ PASS → Score: 5/10 → Notes: Checklist available\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:21:53.671Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-6fc4f4bf2f6d45bfaefc",
+              "file": "all-20-funnels.spec.ts",
+              "line": 390,
+              "column": 3
+            },
+            {
+              "title": "Funnel 17: FAQ - Frequently Asked Questions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 17,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 7974,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #17: FAQ (P4: Mia Muster)\n"
+                        },
+                        {
+                          "text": "✅ FAQ accessible\n"
+                        },
+                        {
+                          "text": "Funnel #17: FAQ → Status: ✅ PASS → Score: 5/10 → Notes: FAQ available\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:04.522Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-daaa1c4f36419baf4ffd",
+              "file": "all-20-funnels.spec.ts",
+              "line": 406,
+              "column": 3
+            },
+            {
+              "title": "Funnel 19: Lagerrechner - Storage Cost Calculator",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 18,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 8049,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #19: Lagerrechner (P5: Franz Gesch)\n"
+                        },
+                        {
+                          "text": "✅ Storage calculator accessible\n"
+                        },
+                        {
+                          "text": "Funnel #19: Lagerrechner → Status: ✅ PASS → Score: 5/10 → Notes: Calculator available\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:21:47.060Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-64fd40f7272ec254782a",
+              "file": "all-20-funnels.spec.ts",
+              "line": 422,
+              "column": 3
+            },
+            {
+              "title": "Funnel 20: Packservice - Packing Service Calculator",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 18,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 10119,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #20: Packservice (P1: Rapidus User)\n"
+                        },
+                        {
+                          "text": "✅ Packing service accessible\n"
+                        },
+                        {
+                          "text": "Funnel #20: Packservice → Status: ✅ PASS → Score: 5/10 → Notes: Service available\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:21:55.283Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-17030b98e21feacce375",
+              "file": "all-20-funnels.spec.ts",
+              "line": 438,
+              "column": 3
+            },
+            {
+              "title": "Funnel 1: Homepage - Click Main CTA",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 19,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 6036,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n📱 Funnel #1: Homepage (P1: Max Test)\n"
+                        },
+                        {
+                          "text": "❌ CTA not found\n"
+                        },
+                        {
+                          "text": "Funnel #1: Homepage → Status: ❌ FAIL → Score: 2/10 → Notes: No visible CTA\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:21:47.198Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-946b395f3bb1a5ca124f",
+              "file": "all-20-funnels.spec.ts",
+              "line": 71,
+              "column": 3
+            },
+            {
+              "title": "Funnel 2: Vergleich Wizard - Form & Submit",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 19,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 3689,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #2: Vergleich Wizard (P2: Mia Muster)\n"
+                        },
+                        {
+                          "text": "❌ Form not found\n"
+                        },
+                        {
+                          "text": "Funnel #2: Vergleich Wizard → Status: ❌ FAIL → Score: 1/10 → Notes: No form inputs\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:21:53.592Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-4afd0a1934336c499e0f",
+              "file": "all-20-funnels.spec.ts",
+              "line": 93,
+              "column": 3
+            },
+            {
+              "title": "Funnel 3: Video-Offerte - Upload Interface",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 19,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 4991,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #3: Video-Offerte (P4: Franz Gesch)\n"
+                        },
+                        {
+                          "text": "⚠️  Upload interface unclear\n"
+                        },
+                        {
+                          "text": "Funnel #3: Video-Offerte → Status: ⚠️ PARTIAL → Score: 4/10 → Notes: UI could be clearer\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:21:57.350Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-a145235a51ec88da2708",
+              "file": "all-20-funnels.spec.ts",
+              "line": 137,
+              "column": 3
+            },
+            {
+              "title": "Funnel 5: Firmenverzeichnis - Company List",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 21,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 5776,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #5: Firmenverzeichnis (P1: Rapidus User)\n"
+                        },
+                        {
+                          "text": "✅ Companies loaded\n"
+                        },
+                        {
+                          "text": "Funnel #5: Firmenverzeichnis → Status: ✅ PASS → Score: 8/10 → Notes: List functional\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:21:47.969Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-6b6f76cc2396f1fb5255",
+              "file": "all-20-funnels.spec.ts",
+              "line": 158,
+              "column": 3
+            },
+            {
+              "title": "Funnel 6: Beste Firmen - Rankings Display",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 21,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 4477,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #6: Beste Firmen Ranking (P2: Max Test)\n"
+                        },
+                        {
+                          "text": "✅ Rankings visible\n"
+                        },
+                        {
+                          "text": "Funnel #6: Beste Firmen → Status: ✅ PASS → Score: 8/10 → Notes: Rankings clear\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:21:54.071Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-c98e2f801e4376ff6e13",
+              "file": "all-20-funnels.spec.ts",
+              "line": 178,
+              "column": 3
+            },
+            {
+              "title": "Funnel 11: Region Zürich - Local Companies",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 21,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 6823,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #11: Region Zürich (P4: Mia Muster)\n"
+                        },
+                        {
+                          "text": "✅ Regional page loaded\n"
+                        },
+                        {
+                          "text": "Funnel #11: Region Zürich → Status: ✅ PASS → Score: 7/10 → Notes: Regional filter works\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:21:58.587Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-106115ccc50715ecd01c",
+              "file": "all-20-funnels.spec.ts",
+              "line": 198,
+              "column": 3
+            },
+            {
+              "title": "Funnel 4: AI Photo Upload - Calculator",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 22,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3448,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #4: AI Photo Upload (P5: Franz Gesch)\n"
+                        },
+                        {
+                          "text": "✅ AI Photo page accessible\n"
+                        },
+                        {
+                          "text": "Funnel #4: AI Photo → Status: ✅ PASS → Score: 6/10 → Notes: Feature available\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:21:52.583Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-19927e004fea1b4481da",
+              "file": "all-20-funnels.spec.ts",
+              "line": 221,
+              "column": 3
+            },
+            {
+              "title": "Funnel 7: Günstige Firmen - Budget Ranking",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 22,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6168,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #7: Günstige Firmen (P1: Rapidus User)\n"
+                        },
+                        {
+                          "text": "✅ Budget ranking accessible\n"
+                        },
+                        {
+                          "text": "Funnel #7: Günstige Firmen → Status: ✅ PASS → Score: 7/10 → Notes: Budget option works\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:21:57.442Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-34ad32ce29d0832f9358",
+              "file": "all-20-funnels.spec.ts",
+              "line": 237,
+              "column": 3
+            },
+            {
+              "title": "Funnel 8: Firmenprofil - Company Detail",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 22,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4306,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #8: Firmenprofil (P2: Max Test)\n"
+                        },
+                        {
+                          "text": "✅ Company detail accessible\n"
+                        },
+                        {
+                          "text": "Funnel #8: Firmenprofil → Status: ✅ PASS → Score: 7/10 → Notes: Profile works\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:03.679Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-b8b6231c46197afcda78",
+              "file": "all-20-funnels.spec.ts",
+              "line": 253,
+              "column": 3
+            },
+            {
+              "title": "Funnel 9: Reinigungsrechner - Cleaning Cost",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 19,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 3579,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #9: Reinigungsrechner (P4: Mia Muster)\n"
+                        },
+                        {
+                          "text": "✅ Cleaning calculator accessible\n"
+                        },
+                        {
+                          "text": "Funnel #9: Reinigung → Status: ✅ PASS → Score: 6/10 → Notes: Feature available\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:02.570Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-289d77007c0a985f37b3",
+              "file": "all-20-funnels.spec.ts",
+              "line": 274,
+              "column": 3
+            },
+            {
+              "title": "Funnel 10: Entsorgungsrechner - Disposal Cost",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 19,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 3497,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #10: Entsorgungsrechner (P5: Franz Gesch)\n"
+                        },
+                        {
+                          "text": "✅ Disposal calculator accessible\n"
+                        },
+                        {
+                          "text": "Funnel #10: Entsorgung → Status: ✅ PASS → Score: 6/10 → Notes: Feature available\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:06.311Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-6e8b8f3b4d1dfa1afefc",
+              "file": "all-20-funnels.spec.ts",
+              "line": 290,
+              "column": 3
+            },
+            {
+              "title": "Funnel 12: Region Bern - Regional Service",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 19,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 6171,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #12: Region Bern (P1: Rapidus User)\n"
+                        },
+                        {
+                          "text": "✅ Bern region accessible\n"
+                        },
+                        {
+                          "text": "Funnel #12: Region Bern → Status: ✅ PASS → Score: 6/10 → Notes: Regional service works\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:09.841Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-6787c59d5ac334137f19",
+              "file": "all-20-funnels.spec.ts",
+              "line": 306,
+              "column": 3
+            },
+            {
+              "title": "Funnel 13: Privatumzug - Private Move Service",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 23,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 3056,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #13: Privatumzug (P2: Max Test)\n"
+                        },
+                        {
+                          "text": "✅ Private move service accessible\n"
+                        },
+                        {
+                          "text": "Funnel #13: Privatumzug → Status: ✅ PASS → Score: 6/10 → Notes: Service available\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:15.488Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-cd69ce90454327becf6a",
+              "file": "all-20-funnels.spec.ts",
+              "line": 322,
+              "column": 3
+            },
+            {
+              "title": "Funnel 14: Firmenumzug - Business Move Service",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 23,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 2940,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #14: Firmenumzug (P4: Mia Muster)\n"
+                        },
+                        {
+                          "text": "✅ Business move service accessible\n"
+                        },
+                        {
+                          "text": "Funnel #14: Firmenumzug → Status: ✅ PASS → Score: 6/10 → Notes: Service available\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:18.928Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-71e05bb18285408270d4",
+              "file": "all-20-funnels.spec.ts",
+              "line": 338,
+              "column": 3
+            },
+            {
+              "title": "Funnel 18: Für Firmen - B2B Portal",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 23,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 3624,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #18: Für Firmen B2B (P5: Franz Gesch)\n"
+                        },
+                        {
+                          "text": "✅ B2B portal accessible\n"
+                        },
+                        {
+                          "text": "Funnel #18: Für Firmen → Status: ✅ PASS → Score: 6/10 → Notes: B2B available\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:21.897Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-6ea6ca246f0abf7bf7e7",
+              "file": "all-20-funnels.spec.ts",
+              "line": 354,
+              "column": 3
+            },
+            {
+              "title": "Funnel 15: Umzugskosten Guide - Information",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 21,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 3498,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #15: Umzugskosten (P1: Rapidus User)\n"
+                        },
+                        {
+                          "text": "✅ Cost guide accessible\n"
+                        },
+                        {
+                          "text": "Funnel #15: Umzugskosten → Status: ✅ PASS → Score: 5/10 → Notes: Info page works\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:05.492Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-afc0c1fe32e407efef1b",
+              "file": "all-20-funnels.spec.ts",
+              "line": 374,
+              "column": 3
+            },
+            {
+              "title": "Funnel 16: Umzugscheckliste - Checklist",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 21,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 4096,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #16: Umzugscheckliste (P2: Max Test)\n"
+                        },
+                        {
+                          "text": "✅ Checklist accessible\n"
+                        },
+                        {
+                          "text": "Funnel #16: Checkliste → Status: ✅ PASS → Score: 5/10 → Notes: Checklist available\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:09.034Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-7d1d31cc8194ba613d07",
+              "file": "all-20-funnels.spec.ts",
+              "line": 390,
+              "column": 3
+            },
+            {
+              "title": "Funnel 17: FAQ - Frequently Asked Questions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 21,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 3569,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #17: FAQ (P4: Mia Muster)\n"
+                        },
+                        {
+                          "text": "✅ FAQ accessible\n"
+                        },
+                        {
+                          "text": "Funnel #17: FAQ → Status: ✅ PASS → Score: 5/10 → Notes: FAQ available\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:13.178Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-092b7437a9d83b68f6b8",
+              "file": "all-20-funnels.spec.ts",
+              "line": 406,
+              "column": 3
+            },
+            {
+              "title": "Funnel 19: Lagerrechner - Storage Cost Calculator",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 22,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3746,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #19: Lagerrechner (P5: Franz Gesch)\n"
+                        },
+                        {
+                          "text": "✅ Storage calculator accessible\n"
+                        },
+                        {
+                          "text": "Funnel #19: Lagerrechner → Status: ✅ PASS → Score: 5/10 → Notes: Calculator available\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:08.127Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-3bf482f5406b512aaf78",
+              "file": "all-20-funnels.spec.ts",
+              "line": 422,
+              "column": 3
+            },
+            {
+              "title": "Funnel 20: Packservice - Packing Service Calculator",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 22,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3667,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #20: Packservice (P1: Rapidus User)\n"
+                        },
+                        {
+                          "text": "✅ Packing service accessible\n"
+                        },
+                        {
+                          "text": "Funnel #20: Packservice → Status: ✅ PASS → Score: 5/10 → Notes: Service available\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:11.913Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-89995554b1614674b1f7",
+              "file": "all-20-funnels.spec.ts",
+              "line": 438,
+              "column": 3
+            },
+            {
+              "title": "Funnel 1: Homepage - Click Main CTA",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 24,
+                      "parallelIndex": 6,
+                      "status": "passed",
+                      "duration": 8277,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n📱 Funnel #1: Homepage (P1: Max Test)\n"
+                        },
+                        {
+                          "text": "❌ CTA not found\n"
+                        },
+                        {
+                          "text": "Funnel #1: Homepage → Status: ❌ FAIL → Score: 2/10 → Notes: No visible CTA\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:18.145Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-fe3a950e29b706642ddc",
+              "file": "all-20-funnels.spec.ts",
+              "line": 71,
+              "column": 3
+            },
+            {
+              "title": "Funnel 2: Vergleich Wizard - Form & Submit",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 24,
+                      "parallelIndex": 6,
+                      "status": "passed",
+                      "duration": 5883,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #2: Vergleich Wizard (P2: Mia Muster)\n"
+                        },
+                        {
+                          "text": "❌ Form not found\n"
+                        },
+                        {
+                          "text": "Funnel #2: Vergleich Wizard → Status: ❌ FAIL → Score: 1/10 → Notes: No form inputs\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:26.589Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-9e18c82e54bac9cbb39a",
+              "file": "all-20-funnels.spec.ts",
+              "line": 93,
+              "column": 3
+            },
+            {
+              "title": "Funnel 3: Video-Offerte - Upload Interface",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 24,
+                      "parallelIndex": 6,
+                      "status": "passed",
+                      "duration": 4754,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #3: Video-Offerte (P4: Franz Gesch)\n"
+                        },
+                        {
+                          "text": "⚠️  Upload interface unclear\n"
+                        },
+                        {
+                          "text": "Funnel #3: Video-Offerte → Status: ⚠️ PARTIAL → Score: 4/10 → Notes: UI could be clearer\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:32.530Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-164aec97d9ba1c0518b9",
+              "file": "all-20-funnels.spec.ts",
+              "line": 137,
+              "column": 3
+            },
+            {
+              "title": "Funnel 5: Firmenverzeichnis - Company List",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 25,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 8234,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #5: Firmenverzeichnis (P1: Rapidus User)\n"
+                        },
+                        {
+                          "text": "✅ Companies loaded\n"
+                        },
+                        {
+                          "text": "Funnel #5: Firmenverzeichnis → Status: ✅ PASS → Score: 8/10 → Notes: List functional\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:18.346Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-1234d22d56f9f371177f",
+              "file": "all-20-funnels.spec.ts",
+              "line": 158,
+              "column": 3
+            },
+            {
+              "title": "Funnel 6: Beste Firmen - Rankings Display",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 25,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 5685,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #6: Beste Firmen Ranking (P2: Max Test)\n"
+                        },
+                        {
+                          "text": "✅ Rankings visible\n"
+                        },
+                        {
+                          "text": "Funnel #6: Beste Firmen → Status: ✅ PASS → Score: 8/10 → Notes: Rankings clear\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:26.919Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-8924eceaeba151320c9e",
+              "file": "all-20-funnels.spec.ts",
+              "line": 178,
+              "column": 3
+            },
+            {
+              "title": "Funnel 11: Region Zürich - Local Companies",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 25,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 5539,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #11: Region Zürich (P4: Mia Muster)\n"
+                        },
+                        {
+                          "text": "✅ Regional page loaded\n"
+                        },
+                        {
+                          "text": "Funnel #11: Region Zürich → Status: ✅ PASS → Score: 7/10 → Notes: Regional filter works\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:32.648Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-2714ecd5b7ab867265fa",
+              "file": "all-20-funnels.spec.ts",
+              "line": 198,
+              "column": 3
+            },
+            {
+              "title": "Funnel 4: AI Photo Upload - Calculator",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 26,
+                      "parallelIndex": 7,
+                      "status": "passed",
+                      "duration": 5323,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #4: AI Photo Upload (P5: Franz Gesch)\n"
+                        },
+                        {
+                          "text": "✅ AI Photo page accessible\n"
+                        },
+                        {
+                          "text": "Funnel #4: AI Photo → Status: ✅ PASS → Score: 6/10 → Notes: Feature available\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:19.797Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-8c3a9bff706cca551bba",
+              "file": "all-20-funnels.spec.ts",
+              "line": 221,
+              "column": 3
+            },
+            {
+              "title": "Funnel 7: Günstige Firmen - Budget Ranking",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 26,
+                      "parallelIndex": 7,
+                      "status": "passed",
+                      "duration": 5758,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #7: Günstige Firmen (P1: Rapidus User)\n"
+                        },
+                        {
+                          "text": "✅ Budget ranking accessible\n"
+                        },
+                        {
+                          "text": "Funnel #7: Günstige Firmen → Status: ✅ PASS → Score: 7/10 → Notes: Budget option works\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:25.365Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-d7254cf446973a154543",
+              "file": "all-20-funnels.spec.ts",
+              "line": 237,
+              "column": 3
+            },
+            {
+              "title": "Funnel 8: Firmenprofil - Company Detail",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 26,
+                      "parallelIndex": 7,
+                      "status": "passed",
+                      "duration": 6438,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #8: Firmenprofil (P2: Max Test)\n"
+                        },
+                        {
+                          "text": "✅ Company detail accessible\n"
+                        },
+                        {
+                          "text": "Funnel #8: Firmenprofil → Status: ✅ PASS → Score: 7/10 → Notes: Profile works\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:31.165Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-b14c73e9a2fa4bd8598e",
+              "file": "all-20-funnels.spec.ts",
+              "line": 253,
+              "column": 3
+            },
+            {
+              "title": "Funnel 9: Reinigungsrechner - Cleaning Cost",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 27,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 4819,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #9: Reinigungsrechner (P4: Mia Muster)\n"
+                        },
+                        {
+                          "text": "✅ Cleaning calculator accessible\n"
+                        },
+                        {
+                          "text": "Funnel #9: Reinigung → Status: ✅ PASS → Score: 6/10 → Notes: Feature available\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:19.772Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-01ed265b7c0d7eae8fe2",
+              "file": "all-20-funnels.spec.ts",
+              "line": 274,
+              "column": 3
+            },
+            {
+              "title": "Funnel 10: Entsorgungsrechner - Disposal Cost",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 27,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 5987,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #10: Entsorgungsrechner (P5: Franz Gesch)\n"
+                        },
+                        {
+                          "text": "✅ Disposal calculator accessible\n"
+                        },
+                        {
+                          "text": "Funnel #10: Entsorgung → Status: ✅ PASS → Score: 6/10 → Notes: Feature available\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:24.833Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-3aa12605503625425166",
+              "file": "all-20-funnels.spec.ts",
+              "line": 290,
+              "column": 3
+            },
+            {
+              "title": "Funnel 12: Region Bern - Regional Service",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 27,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 6023,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #12: Region Bern (P1: Rapidus User)\n"
+                        },
+                        {
+                          "text": "✅ Bern region accessible\n"
+                        },
+                        {
+                          "text": "Funnel #12: Region Bern → Status: ✅ PASS → Score: 6/10 → Notes: Regional service works\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:30.857Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-f9bceb5510db9e5122e1",
+              "file": "all-20-funnels.spec.ts",
+              "line": 306,
+              "column": 3
+            },
+            {
+              "title": "Funnel 13: Privatumzug - Private Move Service",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 28,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6023,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #13: Privatumzug (P2: Max Test)\n"
+                        },
+                        {
+                          "text": "✅ Private move service accessible\n"
+                        },
+                        {
+                          "text": "Funnel #13: Privatumzug → Status: ✅ PASS → Score: 6/10 → Notes: Service available\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:21.078Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-2889cb6b256babdd62dd",
+              "file": "all-20-funnels.spec.ts",
+              "line": 322,
+              "column": 3
+            },
+            {
+              "title": "Funnel 14: Firmenumzug - Business Move Service",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 28,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4718,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #14: Firmenumzug (P4: Mia Muster)\n"
+                        },
+                        {
+                          "text": "✅ Business move service accessible\n"
+                        },
+                        {
+                          "text": "Funnel #14: Firmenumzug → Status: ✅ PASS → Score: 6/10 → Notes: Service available\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:27.598Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-7cfaf121bb2e316edd68",
+              "file": "all-20-funnels.spec.ts",
+              "line": 338,
+              "column": 3
+            },
+            {
+              "title": "Funnel 18: Für Firmen - B2B Portal",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 28,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5675,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #18: Für Firmen B2B (P5: Franz Gesch)\n"
+                        },
+                        {
+                          "text": "✅ B2B portal accessible\n"
+                        },
+                        {
+                          "text": "Funnel #18: Für Firmen → Status: ✅ PASS → Score: 6/10 → Notes: B2B available\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:32.371Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-62400c3c0caf11b1bc46",
+              "file": "all-20-funnels.spec.ts",
+              "line": 354,
+              "column": 3
+            },
+            {
+              "title": "Funnel 15: Umzugskosten Guide - Information",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 29,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 5794,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #15: Umzugskosten (P1: Rapidus User)\n"
+                        },
+                        {
+                          "text": "✅ Cost guide accessible\n"
+                        },
+                        {
+                          "text": "Funnel #15: Umzugskosten → Status: ✅ PASS → Score: 5/10 → Notes: Info page works\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:21.346Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-7508fdba6b7257d628c2",
+              "file": "all-20-funnels.spec.ts",
+              "line": 374,
+              "column": 3
+            },
+            {
+              "title": "Funnel 16: Umzugscheckliste - Checklist",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 29,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 5737,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #16: Umzugscheckliste (P2: Max Test)\n"
+                        },
+                        {
+                          "text": "✅ Checklist accessible\n"
+                        },
+                        {
+                          "text": "Funnel #16: Checkliste → Status: ✅ PASS → Score: 5/10 → Notes: Checklist available\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:27.561Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-edb3bb4335bda4b20eec",
+              "file": "all-20-funnels.spec.ts",
+              "line": 390,
+              "column": 3
+            },
+            {
+              "title": "Funnel 17: FAQ - Frequently Asked Questions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 29,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 4465,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #17: FAQ (P4: Mia Muster)\n"
+                        },
+                        {
+                          "text": "✅ FAQ accessible\n"
+                        },
+                        {
+                          "text": "Funnel #17: FAQ → Status: ✅ PASS → Score: 5/10 → Notes: FAQ available\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:33.336Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-2395157380cadbb1a0d2",
+              "file": "all-20-funnels.spec.ts",
+              "line": 406,
+              "column": 3
+            },
+            {
+              "title": "Funnel 19: Lagerrechner - Storage Cost Calculator",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 30,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 6786,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #19: Lagerrechner (P5: Franz Gesch)\n"
+                        },
+                        {
+                          "text": "✅ Storage calculator accessible\n"
+                        },
+                        {
+                          "text": "Funnel #19: Lagerrechner → Status: ✅ PASS → Score: 5/10 → Notes: Calculator available\n\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:22.086Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-792fdf4fc7cd6ad2a075",
+              "file": "all-20-funnels.spec.ts",
+              "line": 422,
+              "column": 3
+            },
+            {
+              "title": "Funnel 20: Packservice - Packing Service Calculator",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 30,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 5060,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "📱 Funnel #20: Packservice (P1: Rapidus User)\n"
+                        },
+                        {
+                          "text": "✅ Packing service accessible\n"
+                        },
+                        {
+                          "text": "Funnel #20: Packservice → Status: ✅ PASS → Score: 5/10 → Notes: Service available\n\n"
+                        },
+                        {
+                          "text": "\n========================================\n"
+                        },
+                        {
+                          "text": "🏁 ALL 20 FUNNELS TEST COMPLETE\n"
+                        },
+                        {
+                          "text": "========================================\n"
+                        },
+                        {
+                          "text": "Screenshots saved to: test-results/all-20-funnel-*.png\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-29T00:22:29.149Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "a16d3504a1ff64188055-34e9a163a79a9282edc3",
+              "file": "all-20-funnels.spec.ts",
+              "line": 438,
               "column": 3
             }
           ]
@@ -463,9 +4976,9 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-01-28T23:56:48.792Z",
-    "duration": 8451.452000000001,
-    "expected": 5,
+    "startTime": "2026-01-29T00:20:15.860Z",
+    "duration": 143030.891,
+    "expected": 100,
     "skipped": 0,
     "unexpected": 0,
     "flaky": 0

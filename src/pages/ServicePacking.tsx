@@ -45,8 +45,8 @@ const ServicePacking = () => {
       <section className="pt-32 pb-20 bg-gradient-subtle">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-hero mb-4">
+            <div className="space-y-6 text-center lg:text-left">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-hero mb-4 mx-auto lg:mx-0">
                 <Package className="h-8 w-8 text-primary-foreground" />
               </div>
               <h1 className="text-balance">Verpackungsservice</h1>
@@ -54,7 +54,7 @@ const ServicePacking = () => {
                 Professionelle Verpackung mit hochwertigen Materialien. Ihre Wertsachen sind 
                 optimal geschützt – vom Geschirr bis zum Gemälde.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Link to="/contact">
                   <Button size="lg" className="bg-gradient-hero text-primary-foreground hover:opacity-90">
                     Offerte anfragen

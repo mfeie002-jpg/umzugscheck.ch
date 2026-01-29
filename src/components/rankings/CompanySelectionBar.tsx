@@ -74,16 +74,16 @@ export const CompanySelectionBar = ({
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
-          className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-border shadow-2xl"
+          className="fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-t from-background via-background to-background/95 border-t-2 border-primary/20 shadow-2xl backdrop-blur-sm"
         >
-          <div className="container mx-auto px-4 py-4">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="container mx-auto px-4 py-5 sm:py-6">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-5 min-h-[80px]">
               {/* Selected Count & Companies */}
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-primary" />
-                  <Badge variant="default" className="text-base px-3 py-1">
-                    {selectedCompanyIds.length} {selectedCompanyIds.length === 1 ? 'Firma' : 'Firmen'}
+              <div className="flex items-center gap-4 flex-wrap">
+                <div className="flex items-center gap-3">
+                  <CheckCircle2 className="w-6 h-6 text-primary flex-shrink-0" />
+                  <Badge variant="default" className="text-base px-4 py-2 shadow-medium">
+                    {selectedCompanyIds.length} {selectedCompanyIds.length === 1 ? 'Firma' : 'Firmen'} gewählt
                   </Badge>
                 </div>
                 
@@ -111,11 +111,12 @@ export const CompanySelectionBar = ({
               {/* CTA Button */}
               <Button
                 size="lg"
-                className="w-full sm:w-auto min-w-[280px]"
+                className="w-full sm:w-auto min-w-[300px] shadow-lift font-bold text-base min-h-[52px] active:scale-[0.98]"
                 onClick={() => setIsDialogOpen(true)}
               >
-                <CheckCircle2 className="w-5 h-5 mr-2" />
-                Offerten von ausgewählten Firmen erhalten
+                <CheckCircle2 className="w-6 h-6 mr-3" />
+                Jetzt Offerten erhalten
+                <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </div>
           </div>

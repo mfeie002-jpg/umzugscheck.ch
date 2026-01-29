@@ -96,11 +96,11 @@ const Calculator = () => {
           <div className="container mx-auto px-4">
             <ScrollReveal>
               <div className="max-w-3xl mx-auto text-center">
-                <h1 className="mb-3 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold">
+                <h1 className="mb-4 text-3xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight">
                   Umzugskosten berechnen
                 </h1>
-                <p className="text-base sm:text-lg md:text-xl text-white/90 max-w-2xl mx-auto">
-                  Wählen Sie Ihren Rechner – von schnell bis präzise. Erhalten Sie sofort eine Kostenschätzung für Ihren Umzug in der Schweiz.
+                <p className="text-base xs:text-lg sm:text-xl md:text-2xl text-white/95 max-w-2xl mx-auto leading-relaxed font-medium">
+                  Waehlen Sie Ihren Rechner - von schnell bis praezise. Erhalten Sie sofort eine Kostenschaetzung fuer Ihren Umzug.
                 </p>
               </div>
             </ScrollReveal>

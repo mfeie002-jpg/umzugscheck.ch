@@ -54,6 +54,7 @@ export default function BesteFirmen() {
   const [selectedCompanyIds, setSelectedCompanyIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<'cards' | 'table'>('cards');
+  const [announceMessage, setAnnounceMessage] = useState('');
 
   const handleRefresh = async () => {
     await fetchCompanies();

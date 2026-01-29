@@ -83,15 +83,16 @@ export const Navigation = () => {
       }}
       className={cn(
         "group/nav relative flex items-center gap-1.5 px-3 xl:px-4 py-2.5 font-semibold rounded-xl transition-all duration-200",
-        "text-sm xl:text-base whitespace-nowrap",
+        "text-sm xl:text-base whitespace-nowrap min-h-[44px]",
         "hover:bg-gradient-to-r hover:from-primary/10 hover:to-primary/5 hover:text-primary",
-        "active:scale-[0.98]",
+        "active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2",
         activeDropdown === dropdown 
           ? "text-primary bg-gradient-to-r from-primary/15 to-primary/5 shadow-sm" 
           : "text-foreground"
       )}
       aria-expanded={activeDropdown === dropdown}
       aria-haspopup="true"
+      aria-label={`${children} Menü ${activeDropdown === dropdown ? 'schließen' : 'öffnen'}`}
     >
       <span className="truncate max-w-[120px] xl:max-w-none">{children}</span>
       <ChevronDown className={cn(

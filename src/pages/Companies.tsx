@@ -821,25 +821,30 @@ const Companies = () => {
         </section>
 
         {/* Enhanced Toolbar */}
-        <section className="py-3 bg-muted/30 border-b">
+        <section className="py-4 bg-muted/40 border-b shadow-soft">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto flex items-center justify-between gap-4 flex-wrap">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3 flex-wrap">
                 <FavoriteCompanies />
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => setShowPriceChart(!showPriceChart)}
-                  className={showPriceChart ? "bg-primary/10 border-primary" : ""}
+                  className={cn(
+                    "min-h-[40px] transition-all",
+                    showPriceChart ? "bg-primary/10 border-primary text-primary shadow-sm" : "hover:border-primary/50"
+                  )}
+                  aria-pressed={showPriceChart}
+                  aria-label="Preistrends anzeigen"
                 >
                   <BarChart3 className="w-4 h-4 mr-2" />
-                  Preistrends
+                  <span className="font-medium">Preistrends</span>
                 </Button>
               </div>
               <div className="flex items-center gap-2">
-                <Badge variant="outline" className="text-xs">
-                  <Clock className="w-3 h-3 mr-1" />
-                  Aktualisiert: heute
+                <Badge variant="outline" className="text-xs py-1.5 px-3 bg-white shadow-soft">
+                  <Clock className="w-3.5 h-3.5 mr-1.5 text-primary" />
+                  <span className="font-medium">Aktualisiert: heute</span>
                 </Badge>
               </div>
             </div>
@@ -877,17 +882,20 @@ const Companies = () => {
                 {/* Main Content */}
                 <div className="flex-1 min-w-0">
                   {error && (
-                    <Alert variant="destructive" className="mb-6">
+                    <Alert variant="destructive" className="mb-6 shadow-medium">
                       <AlertCircle className="h-4 w-4" />
-                      <AlertDescription>
-                        {error}
+                      <AlertDescription className="flex flex-col sm:flex-row sm:items-center gap-3">
+                        <span className="flex-1">
+                          {navigator.onLine ? error : '❌ Keine Internetverbindung. Bitte überprüfen Sie Ihre Verbindung.'}
+                        </span>
                         <Button 
                           variant="outline" 
                           size="sm" 
                           onClick={fetchCompanies}
-                          className="ml-4"
+                          className="flex-shrink-0 bg-white hover:bg-gray-50"
+                          aria-label="Erneut versuchen"
                         >
-                          Erneut versuchen
+                          🔄 Erneut versuchen
                         </Button>
                       </AlertDescription>
                     </Alert>

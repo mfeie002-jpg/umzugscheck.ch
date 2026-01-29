@@ -10,7 +10,7 @@ import {
   generateFakePhone,
   generateTestMetadata,
   FunnelDefinition,
-} from '../lib/funnel-test-helpers';
+} from '../src/lib/funnel-test-helpers';
 import fs from 'fs';
 import path from 'path';
 
