@@ -291,10 +291,10 @@ export const AfterMoveCareMap = memo(function AfterMoveCareMap({
               Umgebungs-Scan
             </CardTitle>
             {addressLabel && (
-              <p className="text-sm text-muted-foreground mt-1">
-                {addressLabel}
-                {cityName && <Badge variant="secondary" className="ml-2">{cityName}</Badge>}
-              </p>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
+                <span>{addressLabel}</span>
+                {cityName && <Badge variant="secondary">{cityName}</Badge>}
+              </div>
             )}
           </div>
           <Badge variant="outline" className="gap-1">
