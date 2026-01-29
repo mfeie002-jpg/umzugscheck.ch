@@ -1,7 +1,37 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, XCircle, Clock, FileText, Image } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { 
+  CheckCircle2, XCircle, Clock, FileText, ExternalLink, 
+  Play, AlertCircle, Home, Building2, Video, Camera,
+  List, Star, Banknote, User, Sparkles, Trash2, MapPin,
+  Briefcase, Calculator, HelpCircle, Package, Warehouse
+} from "lucide-react";
+
+// Core 20 Funnels definition
+const CORE_FUNNELS = [
+  { id: 1, name: "Homepage Smart Router", route: "/", intent: "Ich suche Umzugshilfe", priority: "critical", icon: Home },
+  { id: 2, name: "Vergleich Wizard", route: "/vergleich", intent: "Ich will Offerten vergleichen", priority: "critical", icon: List },
+  { id: 3, name: "Video-Offerte", route: "/video", intent: "Video-basierte Schätzung", priority: "critical", icon: Video },
+  { id: 4, name: "AI Photo Upload", route: "/rechner/ai", intent: "Fotos hochladen für Preis", priority: "high", icon: Camera },
+  { id: 5, name: "Firmenverzeichnis", route: "/umzugsfirmen", intent: "Welche Firmen gibt es?", priority: "critical", icon: Building2 },
+  { id: 6, name: "Beste Firmen Ranking", route: "/beste-umzugsfirma", intent: "Wer ist der Beste?", priority: "critical", icon: Star },
+  { id: 7, name: "Günstige Firmen", route: "/guenstige-umzugsfirma", intent: "Wer ist günstig?", priority: "high", icon: Banknote },
+  { id: 8, name: "Firmenprofil", route: "/firma/example-umzug", intent: "Details zu dieser Firma", priority: "high", icon: User },
+  { id: 9, name: "Reinigungsrechner", route: "/rechner/reinigung", intent: "Was kostet Endreinigung?", priority: "high", icon: Sparkles },
+  { id: 10, name: "Entsorgungsrechner", route: "/rechner/entsorgung", intent: "Was kostet Entrümpelung?", priority: "high", icon: Trash2 },
+  { id: 11, name: "Region Zürich", route: "/umzugsfirmen/zuerich", intent: "Firmen in Zürich", priority: "critical", icon: MapPin },
+  { id: 12, name: "Region Bern", route: "/umzugsfirmen/bern", intent: "Firmen in Bern", priority: "high", icon: MapPin },
+  { id: 13, name: "Privatumzug Service", route: "/privatumzug", intent: "Normaler Umzug Service", priority: "high", icon: Home },
+  { id: 14, name: "Firmenumzug Service", route: "/firmenumzug", intent: "Büroumzug Service", priority: "high", icon: Briefcase },
+  { id: 15, name: "Umzugskosten Guide", route: "/umzugskosten", intent: "Was kostet ein Umzug?", priority: "medium", icon: Calculator },
+  { id: 16, name: "Checkliste", route: "/umzugscheckliste", intent: "Was muss ich tun?", priority: "medium", icon: List },
+  { id: 17, name: "FAQ", route: "/faq", intent: "Häufige Fragen", priority: "medium", icon: HelpCircle },
+  { id: 18, name: "Für Firmen (B2B)", route: "/fuer-firmen", intent: "Ich bin Umzugsfirma", priority: "high", icon: Building2 },
+  { id: 19, name: "Lagerrechner", route: "/rechner/lager", intent: "Was kostet Einlagerung?", priority: "medium", icon: Warehouse },
+  { id: 20, name: "Packservice", route: "/rechner/packservice", intent: "Was kostet Packservice?", priority: "medium", icon: Package },
+];
 
 interface TestResult {
   title: string;
@@ -36,7 +66,7 @@ export default function TestReport() {
   const [results, setResults] = useState<TestResult[]>([]);
   const [stats, setStats] = useState({ passed: 0, failed: 0, skipped: 0, duration: 0 });
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [hasResults, setHasResults] = useState(false);
 
   useEffect(() => {
     fetch("/test-results/results.json")
@@ -62,6 +92,7 @@ export default function TestReport() {
         });
 
         setResults(parsed);
+        setHasResults(parsed.length > 0);
         setStats({
           passed: data.stats?.expected || parsed.filter((r) => r.status === "passed").length,
           failed: data.stats?.unexpected || parsed.filter((r) => r.status === "failed").length,
@@ -70,11 +101,47 @@ export default function TestReport() {
         });
         setLoading(false);
       })
-      .catch((err) => {
-        setError(err.message);
+      .catch(() => {
+        setHasResults(false);
         setLoading(false);
       });
   }, []);
+
+  const getPriorityBadge = (priority: string) => {
+    switch (priority) {
+      case "critical":
+        return <Badge variant="destructive" className="text-xs">🔴 Critical</Badge>;
+      case "high":
+        return <Badge variant="default" className="text-xs bg-amber-500">🟡 High</Badge>;
+      default:
+        return <Badge variant="secondary" className="text-xs">🟢 Medium</Badge>;
+    }
+  };
+
+  const getFunnelStatus = (funnelName: string) => {
+    const result = results.find(r => 
+      r.title.toLowerCase().includes(funnelName.toLowerCase()) ||
+      r.file.toLowerCase().includes(funnelName.toLowerCase())
+    );
+    return result?.status || "untested";
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "passed":
+        return <CheckCircle2 className="w-5 h-5 text-green-500" />;
+      case "failed":
+        return <XCircle className="w-5 h-5 text-red-500" />;
+      case "skipped":
+        return <Clock className="w-5 h-5 text-amber-500" />;
+      default:
+        return <AlertCircle className="w-5 h-5 text-muted-foreground" />;
+    }
+  };
+
+  const testedCount = CORE_FUNNELS.filter(f => getFunnelStatus(f.name) !== "untested").length;
+  const passedCount = CORE_FUNNELS.filter(f => getFunnelStatus(f.name) === "passed").length;
+  const failedCount = CORE_FUNNELS.filter(f => getFunnelStatus(f.name) === "failed").length;
 
   if (loading) {
     return (
@@ -87,37 +154,6 @@ export default function TestReport() {
     );
   }
 
-  if (error) {
-    return (
-      <div className="min-h-screen bg-background p-8">
-        <div className="max-w-4xl mx-auto">
-          <Card className="border-amber-500/50 bg-amber-500/10">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-amber-600">
-                <FileText className="w-5 h-5" />
-                Keine Test-Ergebnisse gefunden
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground mb-4">
-                Die Datei <code className="bg-muted px-2 py-1 rounded">/test-results/results.json</code> wurde nicht gefunden.
-              </p>
-              <div className="bg-muted/50 rounded-lg p-4 font-mono text-sm">
-                <p className="text-foreground mb-2"># Tests lokal ausführen:</p>
-                <p className="text-primary">npx playwright test e2e/all-20-funnels.spec.ts</p>
-                <p className="text-muted-foreground mt-2"># Dann results.json nach public/test-results/ kopieren</p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    );
-  }
-
-  const passRate = stats.passed + stats.failed > 0 
-    ? Math.round((stats.passed / (stats.passed + stats.failed)) * 100) 
-    : 0;
-
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-6xl mx-auto space-y-6">
@@ -125,29 +161,59 @@ export default function TestReport() {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-              E2E Test Report
+              Core 20 Funnels - Test Report
             </h1>
             <p className="text-muted-foreground">
-              Playwright Test-Ergebnisse für alle 20 Funnels
+              Systematische Validierung aller Customer Journeys
             </p>
           </div>
-          <Badge 
-            variant={passRate === 100 ? "success" : passRate >= 80 ? "default" : "destructive"}
-            className="text-lg px-4 py-2"
-          >
-            {passRate}% Passed
-          </Badge>
+          <div className="flex gap-2">
+            <Badge variant="outline" className="text-sm px-3 py-1">
+              {testedCount}/20 getestet
+            </Badge>
+            {hasResults && (
+              <Badge 
+                variant={passedCount === testedCount ? "success" : "destructive"}
+                className="text-sm px-3 py-1"
+              >
+                {passedCount} ✓ / {failedCount} ✗
+              </Badge>
+            )}
+          </div>
         </div>
+
+        {/* Info Banner wenn keine Ergebnisse */}
+        {!hasResults && (
+          <Card className="border-amber-500/50 bg-amber-500/10">
+            <CardContent className="pt-6">
+              <div className="flex items-start gap-4">
+                <FileText className="w-8 h-8 text-amber-600 flex-shrink-0" />
+                <div className="flex-1">
+                  <h3 className="font-semibold text-amber-700 mb-2">Keine automatisierten Testergebnisse</h3>
+                  <p className="text-muted-foreground text-sm mb-3">
+                    Die Playwright E2E-Tests wurden noch nicht ausgeführt. Du kannst die Funnels manuell testen oder die automatisierte Suite lokal starten:
+                  </p>
+                  <div className="bg-muted/50 rounded-lg p-3 font-mono text-xs">
+                    <p className="text-foreground">npx playwright test e2e/all-20-funnels.spec.ts</p>
+                    <p className="text-muted-foreground mt-1"># Dann results.json nach public/test-results/ kopieren</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Stats Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
-                <CheckCircle2 className="w-8 h-8 text-green-500" />
+                <div className="p-2 rounded-lg bg-primary/10">
+                  <List className="w-6 h-6 text-primary" />
+                </div>
                 <div>
-                  <p className="text-2xl font-bold text-green-600">{stats.passed}</p>
-                  <p className="text-sm text-muted-foreground">Passed</p>
+                  <p className="text-2xl font-bold">20</p>
+                  <p className="text-sm text-muted-foreground">Funnels</p>
                 </div>
               </div>
             </CardContent>
@@ -156,10 +222,12 @@ export default function TestReport() {
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
-                <XCircle className="w-8 h-8 text-red-500" />
+                <div className="p-2 rounded-lg bg-red-500/10">
+                  <AlertCircle className="w-6 h-6 text-red-500" />
+                </div>
                 <div>
-                  <p className="text-2xl font-bold text-red-600">{stats.failed}</p>
-                  <p className="text-sm text-muted-foreground">Failed</p>
+                  <p className="text-2xl font-bold">6</p>
+                  <p className="text-sm text-muted-foreground">Critical</p>
                 </div>
               </div>
             </CardContent>
@@ -168,10 +236,12 @@ export default function TestReport() {
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
-                <Clock className="w-8 h-8 text-amber-500" />
+                <div className="p-2 rounded-lg bg-amber-500/10">
+                  <Star className="w-6 h-6 text-amber-500" />
+                </div>
                 <div>
-                  <p className="text-2xl font-bold">{stats.skipped}</p>
-                  <p className="text-sm text-muted-foreground">Skipped</p>
+                  <p className="text-2xl font-bold">9</p>
+                  <p className="text-sm text-muted-foreground">High Priority</p>
                 </div>
               </div>
             </CardContent>
@@ -180,29 +250,92 @@ export default function TestReport() {
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-3">
-                <Clock className="w-8 h-8 text-primary" />
+                <div className="p-2 rounded-lg bg-green-500/10">
+                  <CheckCircle2 className="w-6 h-6 text-green-500" />
+                </div>
                 <div>
-                  <p className="text-2xl font-bold">{(stats.duration / 1000).toFixed(1)}s</p>
-                  <p className="text-sm text-muted-foreground">Duration</p>
+                  <p className="text-2xl font-bold">{testedCount}</p>
+                  <p className="text-sm text-muted-foreground">Getestet</p>
                 </div>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Test Results Table */}
+        {/* Funnel List */}
         <Card>
           <CardHeader>
-            <CardTitle>Test Details</CardTitle>
+            <CardTitle className="flex items-center justify-between">
+              <span>Alle 20 Core Funnels</span>
+              <Button variant="outline" size="sm" className="gap-2">
+                <Play className="w-4 h-4" />
+                Alle testen
+              </Button>
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
-              {results.length === 0 ? (
-                <p className="text-muted-foreground text-center py-8">
-                  Keine Tests gefunden
-                </p>
-              ) : (
-                results.map((result, idx) => (
+              {CORE_FUNNELS.map((funnel) => {
+                const status = getFunnelStatus(funnel.name);
+                const Icon = funnel.icon;
+                
+                return (
+                  <div
+                    key={funnel.id}
+                    className={`flex items-center justify-between p-3 rounded-lg border transition-colors hover:bg-muted/50 ${
+                      status === "passed"
+                        ? "bg-green-500/5 border-green-500/20"
+                        : status === "failed"
+                        ? "bg-red-500/5 border-red-500/20"
+                        : "bg-background border-border"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      <div className="flex items-center gap-2 w-8">
+                        <span className="text-sm text-muted-foreground font-mono">
+                          {String(funnel.id).padStart(2, '0')}
+                        </span>
+                      </div>
+                      {getStatusIcon(status)}
+                      <div className="p-1.5 rounded bg-muted">
+                        <Icon className="w-4 h-4 text-muted-foreground" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-foreground truncate">{funnel.name}</p>
+                        <p className="text-xs text-muted-foreground truncate">{funnel.intent}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-3">
+                      {getPriorityBadge(funnel.priority)}
+                      <code className="text-xs bg-muted px-2 py-1 rounded hidden md:block">
+                        {funnel.route}
+                      </code>
+                      <a
+                        href={funnel.route}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2 hover:bg-muted rounded-lg transition-colors"
+                      >
+                        <ExternalLink className="w-4 h-4 text-muted-foreground" />
+                      </a>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Test Results Details (if available) */}
+        {hasResults && results.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Detaillierte Testergebnisse</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                {results.map((result, idx) => (
                   <div
                     key={idx}
                     className={`flex items-center justify-between p-3 rounded-lg border ${
@@ -214,19 +347,13 @@ export default function TestReport() {
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      {result.status === "passed" ? (
-                        <CheckCircle2 className="w-5 h-5 text-green-500" />
-                      ) : result.status === "failed" ? (
-                        <XCircle className="w-5 h-5 text-red-500" />
-                      ) : (
-                        <Clock className="w-5 h-5 text-muted-foreground" />
-                      )}
+                      {getStatusIcon(result.status)}
                       <div>
                         <p className="font-medium text-foreground">{result.title}</p>
                         <p className="text-sm text-muted-foreground">{result.file}</p>
                         {result.error && (
-                          <p className="text-xs text-red-500 mt-1 font-mono">
-                            {result.error.slice(0, 100)}...
+                          <p className="text-xs text-red-500 mt-1 font-mono max-w-xl truncate">
+                            {result.error}
                           </p>
                         )}
                       </div>
@@ -235,19 +362,30 @@ export default function TestReport() {
                       <span className="text-sm text-muted-foreground">
                         {result.duration}ms
                       </span>
-                      <a
-                        href={`/test-results/all-20-funnel-${idx + 1}-landing.png`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary hover:underline flex items-center gap-1"
-                      >
-                        <Image className="w-4 h-4" />
-                        Screenshot
-                      </a>
                     </div>
                   </div>
-                ))
-              )}
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Documentation Link */}
+        <Card className="bg-muted/30">
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-semibold">Test-Dokumentation</h3>
+                <p className="text-sm text-muted-foreground">
+                  Detaillierte Anleitung für Agent-Testing und KPIs
+                </p>
+              </div>
+              <Button variant="outline" size="sm" asChild>
+                <a href="/docs/testing/CORE_20_FUNNELS.md" target="_blank">
+                  <FileText className="w-4 h-4 mr-2" />
+                  Docs öffnen
+                </a>
+              </Button>
             </div>
           </CardContent>
         </Card>
