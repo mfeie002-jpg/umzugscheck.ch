@@ -46,7 +46,7 @@ const AnimatedCounter = ({ value, suffix, decimals = 0 }: { value: number; suffi
 
 export const PremiumStatistics = () => {
   return (
-    <section className="py-16 bg-primary text-primary-foreground relative overflow-hidden">
+    <section className="py-8 md:py-16 bg-primary text-primary-foreground relative overflow-hidden">
       {/* Background pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl" />
