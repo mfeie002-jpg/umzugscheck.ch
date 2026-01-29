@@ -322,7 +322,7 @@ export const PremiumHeroSection = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="space-y-2 sm:space-y-4 md:space-y-6 order-2 lg:order-1"
+            className="space-y-2 sm:space-y-4 md:space-y-6 order-2 lg:order-1 text-center lg:text-left"
           >
             {/* Dual USP Badges - Consistent Primary/Secondary colors - Centered on mobile */}
             <div className="flex flex-wrap gap-2 sm:gap-3 justify-center lg:justify-start">
