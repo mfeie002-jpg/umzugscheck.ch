@@ -101,7 +101,6 @@ const Footer = () => {
                 <Link to="/umzugsfirmen-schweiz" className="inline-flex items-center text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all duration-200 p-2 -ml-2 focus:outline-none focus:ring-2 focus:ring-white/20 rounded min-h-[44px] min-w-[44px]">
                   Umzug nach Region
                 </Link>
-                </Link>
               </li>
             </ul>
           </div>
