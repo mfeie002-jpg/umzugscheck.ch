@@ -1170,11 +1170,21 @@ export function LandingPagesView() {
     loadPages();
   }, [loadPages]);
 
+  // IMPORTANT: Use the PUBLIC published URL, not window.location.origin
+  // The preview URL requires admin login which blocks ScreenshotMachine
+  const getPublicBaseUrl = () => {
+    // Always use the public production URL for screenshots
+    return 'https://umzugscheckv2.lovable.app';
+  };
+
   // Capture screenshot for a page
   const handleCapture = async (page: LandingPage) => {
     setCapturingPageId(page.id);
     try {
-      const fullUrl = `${window.location.origin}${page.url_path}`;
+      // Use PUBLIC URL, not window.location.origin (which is admin-locked preview)
+      const fullUrl = `${getPublicBaseUrl()}${page.url_path}`;
+      
+      console.log('Capturing landing page with PUBLIC URL:', fullUrl);
       
       // Use screenshotmachine API
       const { data, error } = await supabase.functions.invoke('capture-landing-page', {
@@ -1202,7 +1212,10 @@ export function LandingPagesView() {
   const handleAnalyze = async (page: LandingPage) => {
     setAnalyzingPageId(page.id);
     try {
-      const fullUrl = `${window.location.origin}${page.url_path}`;
+      // Use PUBLIC URL, not window.location.origin (which is admin-locked preview)
+      const fullUrl = `${getPublicBaseUrl()}${page.url_path}`;
+      
+      console.log('Analyzing landing page with PUBLIC URL:', fullUrl);
       
       const { data, error } = await supabase.functions.invoke('analyze-landing-page', {
         body: {

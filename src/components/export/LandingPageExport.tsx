@@ -243,7 +243,8 @@ const LandingPageExport = ({ onClose }: LandingPageExportProps) => {
         setStatus(`Erfasse: ${page.displayName}...`);
         
         try {
-          const fullUrl = `${window.location.origin}${page.urlPath}`;
+          // Use PUBLIC URL, not window.location.origin (which is admin-locked preview)
+          const fullUrl = `https://umzugscheckv2.lovable.app${page.urlPath}`;
           
           const { error } = await supabase.functions.invoke('capture-landing-page', {
             body: {
@@ -292,7 +293,8 @@ const LandingPageExport = ({ onClose }: LandingPageExportProps) => {
     setCapturingPageId(page.id);
     
     try {
-      const fullUrl = `${window.location.origin}${page.urlPath}`;
+      // Use PUBLIC URL, not window.location.origin (which is admin-locked preview)
+      const fullUrl = `https://umzugscheckv2.lovable.app${page.urlPath}`;
       
       const { error } = await supabase.functions.invoke('capture-landing-page', {
         body: {
