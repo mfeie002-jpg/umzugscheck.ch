@@ -25,6 +25,7 @@ import { MobileMenuV13 } from "@/components/navigation/MobileMenuV13";
 import { MobileMenuV14 } from "@/components/navigation/MobileMenuV14";
 import { MobileMenuV15 } from "@/components/navigation/MobileMenuV15";
 import { MobileMenuV16 } from "@/components/navigation/MobileMenuV16";
+import { useEffect, useState } from "react";
 
 // Lucide icons for V14
 import {
@@ -174,66 +175,87 @@ const getContextAwareCTA = (pathname: string): { label: string; href: string } =
 export const useDynamicMobileMenu = () => {
   const navVariant = useNavigationVariant();
   const location = useLocation();
+  const variantId = navVariant.id;
   
-  const DynamicMobileMenu = ({ isOpen, onClose }: DynamicMobileMenuProps) => {
-    const variantId = navVariant.id;
-    
-    // Variant 11: Simpel & Clean -> MobileMenuV11
-    if (variantId === 'variant-k') {
-      return <MobileMenuV11 isOpen={isOpen} onClose={onClose} />;
-    }
-    
-    // Variant 12: Best-of-Breed -> MobileMenuV12
-    if (variantId === 'variant-l') {
-      return <MobileMenuV12 isOpen={isOpen} onClose={onClose} />;
-    }
-    
-    // Variant 13: Progressive Disclosure -> MobileMenuV13
-    if (variantId === 'variant-m') {
-      return <MobileMenuV13 isOpen={isOpen} onClose={onClose} />;
-    }
-    
-    // Variant 14: 2026 Design -> MobileMenuV14 with navStructure + ctaConfig
-    if (variantId === 'variant-n') {
-      const ctaConfig = getContextAwareCTA(location.pathname);
-      return (
-        <MobileMenuV14 
-          isOpen={isOpen} 
-          onClose={onClose} 
-          navStructure={NAV_STRUCTURE_V14}
-          ctaConfig={ctaConfig}
-        />
-      );
-    }
-    
-    // Variant 15: ChatGPT Feedback v15 -> MobileMenuV15 with navStructure
-    if (variantId === 'variant-o') {
-      return (
-        <MobileMenuV15 
-          isOpen={isOpen} 
-          onClose={onClose} 
-          navStructure={NAV_STRUCTURE_V15}
-        />
-      );
-    }
-    
-    // Variant 16: SEO-Optimiert 2026 -> MobileMenuV16
-    if (variantId === 'variant-p') {
-      return <MobileMenuV16 isOpen={isOpen} onClose={onClose} />;
-    }
-    
-    // Variants 1-10 (ultimate, variant-b to variant-j) and variant-17
-    // All use MobileMenuNew which reads dynamic labels from navVariant
-    return <MobileMenuNew isOpen={isOpen} onClose={onClose} />;
-  };
+  // Force re-render when variant changes by using a state counter
+  const [, forceUpdate] = useState(0);
   
-  return { DynamicMobileMenu, variantId: navVariant.id };
+  useEffect(() => {
+    const handleChange = () => {
+      console.log('[useDynamicMobileMenu] Variant change detected, forcing re-render');
+      forceUpdate(n => n + 1);
+    };
+    
+    window.addEventListener('ab-state-changed', handleChange);
+    window.addEventListener('nav-variant-changed', handleChange as EventListener);
+    
+    return () => {
+      window.removeEventListener('ab-state-changed', handleChange);
+      window.removeEventListener('nav-variant-changed', handleChange as EventListener);
+    };
+  }, []);
+
+  console.log('[useDynamicMobileMenu] Current variant:', variantId);
+  
+  return { variantId, location, navVariant };
 };
 
 /**
  * Direct component export for simpler usage
+ * This component uses the variant ID directly to render the correct mobile menu
  */
 export const DynamicMobileMenu = ({ isOpen, onClose }: DynamicMobileMenuProps) => {
-  const { DynamicMobileMenu: Menu } = useDynamicMobileMenu();
-  return <Menu isOpen={isOpen} onClose={onClose} />;
+  const { variantId, location } = useDynamicMobileMenu();
+  
+  console.log('[DynamicMobileMenu] Rendering with variant:', variantId);
+  
+  // Variant 11: Simpel & Clean -> MobileMenuV11
+  if (variantId === 'variant-k') {
+    return <MobileMenuV11 isOpen={isOpen} onClose={onClose} key={`mobile-${variantId}`} />;
+  }
+  
+  // Variant 12: Best-of-Breed -> MobileMenuV12
+  if (variantId === 'variant-l') {
+    return <MobileMenuV12 isOpen={isOpen} onClose={onClose} key={`mobile-${variantId}`} />;
+  }
+  
+  // Variant 13: Progressive Disclosure -> MobileMenuV13
+  if (variantId === 'variant-m') {
+    return <MobileMenuV13 isOpen={isOpen} onClose={onClose} key={`mobile-${variantId}`} />;
+  }
+  
+  // Variant 14: 2026 Design -> MobileMenuV14 with navStructure + ctaConfig
+  if (variantId === 'variant-n') {
+    const ctaConfig = getContextAwareCTA(location.pathname);
+    return (
+      <MobileMenuV14 
+        isOpen={isOpen} 
+        onClose={onClose} 
+        navStructure={NAV_STRUCTURE_V14}
+        ctaConfig={ctaConfig}
+        key={`mobile-${variantId}`}
+      />
+    );
+  }
+  
+  // Variant 15: ChatGPT Feedback v15 -> MobileMenuV15 with navStructure
+  if (variantId === 'variant-o') {
+    return (
+      <MobileMenuV15 
+        isOpen={isOpen} 
+        onClose={onClose} 
+        navStructure={NAV_STRUCTURE_V15}
+        key={`mobile-${variantId}`}
+      />
+    );
+  }
+  
+  // Variant 16: SEO-Optimiert 2026 -> MobileMenuV16
+  if (variantId === 'variant-p') {
+    return <MobileMenuV16 isOpen={isOpen} onClose={onClose} key={`mobile-${variantId}`} />;
+  }
+  
+  // Variants 1-10 (ultimate, variant-b to variant-j) and variant-17
+  // All use MobileMenuNew which reads dynamic labels from navVariant
+  return <MobileMenuNew isOpen={isOpen} onClose={onClose} key={`mobile-${variantId}`} />;
 };
