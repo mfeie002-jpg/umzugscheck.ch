@@ -296,6 +296,7 @@ const AdminCapabilities = lazy(() => import("./pages/admin/Capabilities"));
 const VariantTestHub = lazy(() => import("./pages/admin/VariantTestHub"));
 const ReloOSPhases = lazy(() => import("./pages/admin/ReloOSPhases"));
 const InvisibleMoveDashboardDemo = lazy(() => import("./pages/InvisibleMoveDashboardDemo"));
+const AfterMoveCareDemo = lazy(() => import("./pages/AfterMoveCareDemo"));
 const FlowCommandCenter = lazy(() => import("./pages/admin/FlowCommandCenter"));
 const CommandCenter = lazy(() => import("./pages/admin/ArchetypCommandCenter"));
 const AnalysisFramework = lazy(() => import("./pages/admin/AnalysisFramework"));
@@ -753,6 +754,11 @@ const AppRouterContent = () => {
           
           {/* Invisible Move Dashboard Demo */}
           <Route path="/invisiblemovedashboard" element={<InvisibleMoveDashboardDemo />} />
+          <Route path="/invisible-move-demo" element={<InvisibleMoveDashboardDemo />} />
+          
+          {/* After Move Care Demo */}
+          <Route path="/after-move-care" element={<AfterMoveCareDemo />} />
+          <Route path="/umgebungs-scan" element={<AfterMoveCareDemo />} />
           
           {/* Swiss Premium Flows */}
           <Route path="/swiss-lightning" element={<SwissLightning />} />
