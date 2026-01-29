@@ -101,11 +101,11 @@ export const GoldenTrustBadges = memo(({
 
   // Default: inline
   return (
-    <div className={cn("flex flex-wrap items-center justify-center gap-x-4 gap-y-2", className)}>
+    <div className={cn("flex flex-wrap items-center justify-center gap-x-3 xs:gap-x-4 gap-y-1.5", className)}>
       {badges.map((badge, idx) => (
         <div
           key={badge.label}
-          className={cn("flex items-center", sizeClasses[size])}
+          className={cn("flex items-center leading-none", sizeClasses[size])}
         >
           <badge.icon className={cn(iconSizes[size], badge.color, "flex-shrink-0")} />
           <span className="text-muted-foreground ml-1 whitespace-nowrap">{badge.label}</span>

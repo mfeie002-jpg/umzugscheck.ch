@@ -59,7 +59,7 @@ const HERO_TABS: TabConfig[] = [
   { 
     id: "whatsapp", 
     label: "WhatsApp", 
-    shortLabel: "WhatsApp",
+    shortLabel: "WA",
     icon: MessageCircle, 
     description: "Bilder schicken, Offerte erhalten"
   },
@@ -97,7 +97,7 @@ export const GoldenHeroTabs = memo(({
         <div className="relative">
           {showHint && <GoldenTabHint variant="badge" position="above" activeTab={activeTab} />}
           
-          <TabsList className="w-full h-auto p-1.5 bg-muted/50 backdrop-blur-sm rounded-xl border border-border/50 grid grid-cols-4 gap-1">
+          <TabsList className="w-full h-auto p-1.5 bg-muted/50 backdrop-blur-sm rounded-xl border border-border/50 grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-1">
             {HERO_TABS.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
@@ -107,7 +107,7 @@ export const GoldenHeroTabs = memo(({
                   key={tab.id}
                   value={tab.id}
                   className={cn(
-                    "relative flex flex-col items-center gap-1 py-3 px-2 rounded-lg",
+                    "relative w-full flex flex-col items-center justify-center gap-1 py-3 px-2 rounded-lg min-h-[72px]",
                     "data-[state=active]:bg-background data-[state=active]:shadow-md",
                     "transition-all duration-200",
                     !isActive && "hover:bg-background/50"
@@ -120,7 +120,7 @@ export const GoldenHeroTabs = memo(({
                     )} />
                     {tab.badge && !isActive && (
                       <span className={cn(
-                        "absolute -top-2 -right-2 px-1.5 py-0.5 text-[8px] font-bold text-white rounded-full",
+                        "hidden xs:inline-flex absolute -top-2 -right-2 px-1.5 py-0.5 text-[8px] font-bold text-white rounded-full",
                         `bg-gradient-to-r ${tab.badgeColor || 'from-primary to-primary/80'}`
                       )}>
                         {tab.badge}
@@ -129,7 +129,7 @@ export const GoldenHeroTabs = memo(({
                   </div>
                   
                   <span className={cn(
-                    "text-xs font-medium",
+                    "text-xs font-medium leading-tight",
                     isActive ? "text-foreground" : "text-muted-foreground"
                   )}>
                     <span className="hidden sm:inline">{tab.label}</span>
