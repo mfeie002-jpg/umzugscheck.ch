@@ -1,7 +1,7 @@
 /**
  * Team/Founder Section for Vision Page
  * Shows the person behind Umzugscheck.ch
- * Updated: 13.5h/day average since 31.10.2024
+ * Updated: 13.5h/day average since 31.10.2026
  */
 
 import { memo } from "react";
