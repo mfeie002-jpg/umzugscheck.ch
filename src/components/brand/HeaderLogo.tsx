@@ -35,7 +35,8 @@ export function HeaderLogo({ className, size = "md", onClick, showTagline = true
         // `block` prevents baseline whitespace that pushes the tagline too far down on mobile
         className={cn(
           s.height,
-          "block w-auto min-w-[120px] xs:min-w-[140px] sm:min-w-[180px] max-w-[150px] xs:max-w-[170px] sm:max-w-none"
+          // slight negative bottom margin pulls the tagline closer on mobile
+          "block -mb-1 sm:-mb-0.5 w-auto min-w-[120px] xs:min-w-[140px] sm:min-w-[180px] max-w-[150px] xs:max-w-[170px] sm:max-w-none"
         )}
         aria-hidden="true"
       >
@@ -83,7 +84,7 @@ export function HeaderLogo({ className, size = "md", onClick, showTagline = true
       {showTagline && (
         <span
           className={cn(
-            "block font-semibold leading-none pl-0.5 -mt-2 text-muted-foreground/80",
+            "block font-semibold leading-none pl-0.5 -mt-3 sm:-mt-2.5 text-muted-foreground/80",
             s.tagline
           )}
         >

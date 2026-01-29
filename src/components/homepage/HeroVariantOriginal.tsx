@@ -91,7 +91,7 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="space-y-5 md:space-y-6 order-2 lg:order-1 text-center lg:text-left"
+            className="space-y-5 md:space-y-6 order-2 lg:order-1 text-center lg:text-left max-w-2xl mx-auto lg:mx-0 lg:max-w-none"
           >
             {/* Dual USP Badges */}
             <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
