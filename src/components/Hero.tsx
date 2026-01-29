@@ -12,10 +12,10 @@ export const Hero = () => {
   const PHONE_DISPLAY = "044 500 12 34";
   const PHONE_TEL = "+41445001234";
   const trustBadges = [
-    "Familienbetrieb seit 1980",
-    "5.0★ Google",
-    "Versichert bis CHF 1 Mio.",
-    "Region Zug & Zürich"
+    "Schweizer Familienunternehmen",
+    "5.0★ Google-Bewertungen",
+    "Voll versichert (Transport & Haftung)",
+    "Zug & Zürich – lokal verankert"
   ];
   const faqs = [
     {
@@ -102,7 +102,7 @@ export const Hero = () => {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.6 }}
               >
-                Feierabend beginnt,<br />sobald wir da sind.
+                Umzug in Zürich?<br />Rufen Sie uns an – wir kümmern uns um alles.
               </motion.h1>
 
               {/* Subline */}
@@ -112,7 +112,7 @@ export const Hero = () => {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
-                Familiengeführter Umzugspartner für Zug & Zürich. Pünktlich, erreichbar, versichert.
+                Persönlich erreichbar, lokal verankert und voll versichert – wir organisieren Ihren Umzug stressfrei am Telefon.
               </motion.p>
 
               {/* CTAs */}
@@ -141,7 +141,7 @@ export const Hero = () => {
                     Rückruf anfordern
                   </Button>
                 </Link>
-                <p className="text-sm text-white/80">2 Minuten klären – wir übernehmen den Rest.</p>
+                <p className="text-sm text-white/80">2 Minuten klären – wir übernehmen den Rest persönlich.</p>
               </motion.div>
 
               {/* Trust Pills */}
@@ -171,13 +171,13 @@ export const Hero = () => {
               <div className="space-y-6 text-left">
                 <div className="space-y-3">
                   <h1 className="text-5xl lg:text-6xl font-bold text-foreground leading-tight">
-                    Feierabend beginnt,<br className="hidden lg:block" /> sobald wir da sind.
+                    Umzug in Zürich? Rufen Sie uns an<br className="hidden lg:block" /> – wir kümmern uns um alles.
                   </h1>
                   <p className="text-xl text-muted-foreground leading-relaxed">
-                    Familiengeführter Umzugspartner für Zug & Zürich. Pünktlich, versichert und telefonisch sofort erreichbar.
+                    Schweizer Familienunternehmen für Zug & Zürich. Persönlich erreichbar, voll versichert und zuverlässig.
                   </p>
                   <p className="text-lg text-foreground/70 font-medium">
-                    Wir klären Ihren Umzug in 2 Minuten am Telefon – damit Ihr Abend wirklich frei bleibt.
+                    Wir klären Ihren Umzug in 2 Minuten am Telefon – danach übernehmen wir alles.
                   </p>
                 </div>
                 
@@ -272,7 +272,7 @@ export const Hero = () => {
         <div className="container mx-auto px-4 py-5 flex flex-col lg:flex-row items-start lg:items-center gap-3">
           <div className="flex-1">
             <p className="text-sm text-muted-foreground">Warum Familien uns anrufen</p>
-            <h3 className="text-xl font-semibold text-foreground">Eigene Teams, versichert, erreichbar – Zug & Zürich</h3>
+            <h3 className="text-xl font-semibold text-foreground">Familienbetrieb, versichert, erreichbar – Zug & Zürich</h3>
           </div>
           <div className="flex flex-wrap gap-2">
             {trustBadges.map((item) => (
