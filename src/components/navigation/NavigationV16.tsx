@@ -325,8 +325,8 @@ export const NavigationV16 = () => {
               </Button>
             </div>
 
-            {/* Desktop/Tablet CTA (visible on md and larger) */}
-            <Button asChild className="hidden md:flex h-10 px-4 font-semibold gap-1.5 rounded-lg bg-gradient-to-r from-primary to-primary/90 text-primary-foreground shadow-md shadow-primary/20">
+            {/* Desktop/Tablet CTA (visible on md to lg only, hidden on xl where the larger CTA shows) */}
+            <Button asChild className="hidden md:flex xl:hidden h-10 px-4 font-semibold gap-1.5 rounded-lg bg-gradient-to-r from-primary to-primary/90 text-primary-foreground shadow-md shadow-primary/20">
               <Link to={flowPath}>
                 <Zap className="w-4 h-4" />
                 Offerte
