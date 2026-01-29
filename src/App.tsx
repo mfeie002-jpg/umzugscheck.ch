@@ -513,8 +513,9 @@ const AdminRoutes = () => (
       <Route path="/internal/distribution" element={<LeadDistribution />} />
       <Route path="/internal/finance" element={<FinanceDashboard />} />
       <Route path="/internal/command-center" element={<UnifiedCommandCenter />} />
-      <Route path="/internal/test-report" element={<TestReport />} />
-      <Route path="/public/test-results" element={<Navigate to="/internal/test-report" replace />} />
+      {/* Accept trailing slash/subpaths */}
+      <Route path="/internal/test-report/*" element={<TestReport />} />
+      <Route path="/public/test-results/*" element={<Navigate to="/internal/test-report" replace />} />
       {/* Legacy redirects */}
       <Route path="/admin/operator-dashboard" element={<Navigate to="/internal/command-center" replace />} />
     </AnimatedRoutes>
@@ -909,6 +910,14 @@ const AppRouterContent = () => {
           <Route path="/fuer-firmen/anmelden" element={<ProviderLogin />} />
           <Route path="/fuer-firmen/registrieren" element={<ProviderSignupNew />} />
           <Route path="/export-download" element={<ExportDownload />} />
+
+          {/* Internal dashboards (fallback registration)
+              Some environments can mis-route /internal/* into the public route tree.
+              Registering here ensures /internal/test-report never falls into the 404 page.
+          */}
+          <Route path="/internal/test-report/*" element={<TestReport />} />
+          <Route path="/public/test-results/*" element={<Navigate to="/internal/test-report" replace />} />
+
           <Route path="*" element={<NotFound />} />
         </AnimatedRoutes>
       </Suspense>
