@@ -24,14 +24,19 @@ export function HeaderLogo({ className, size = "md", onClick, showTagline = true
       to="/"
       onClick={onClick}
       className={cn(
-        "flex flex-col hover:opacity-95 transition-opacity flex-shrink-0",
+        // Keep logo + tagline vertically compact for mobile headers
+        "flex flex-col justify-center hover:opacity-95 transition-opacity flex-shrink-0",
         className
       )}
       aria-label="Zur Startseite von Umzugscheck.ch"
     >
       <svg 
         viewBox="0 0 280 36" 
-        className={cn(s.height, "w-auto min-w-[120px] xs:min-w-[140px] sm:min-w-[180px] max-w-[150px] xs:max-w-[170px] sm:max-w-none")}
+        // `block` prevents baseline whitespace that pushes the tagline too far down on mobile
+        className={cn(
+          s.height,
+          "block w-auto min-w-[120px] xs:min-w-[140px] sm:min-w-[180px] max-w-[150px] xs:max-w-[170px] sm:max-w-none"
+        )}
         aria-hidden="true"
       >
         {/* House Icon - Brand Blue body, Brand Red roof */}
@@ -78,7 +83,7 @@ export function HeaderLogo({ className, size = "md", onClick, showTagline = true
       {showTagline && (
         <span
           className={cn(
-            "block font-semibold leading-tight pl-0.5 -mt-0.5 text-muted-foreground/80",
+            "block font-semibold leading-none pl-0.5 -mt-1 sm:-mt-0.5 text-muted-foreground/80",
             s.tagline
           )}
         >

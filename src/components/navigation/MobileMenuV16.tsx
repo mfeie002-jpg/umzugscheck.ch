@@ -58,8 +58,8 @@ const itemVariants = {
 
 // Trust Signals for header
 const TRUST_SIGNALS = [
-  { icon: BadgeCheck, label: "200+ Partner", color: "text-emerald-600" },
-  { icon: Star, label: "4.8★ Top", color: "text-amber-500" },
+  { icon: BadgeCheck, label: "200+ Partner", color: "text-primary" },
+  { icon: Star, label: "4.8★ Top", color: "text-primary" },
   { icon: Zap, label: "Gratis", color: "text-primary" },
 ];
 
@@ -79,8 +79,6 @@ interface NavSection {
   id: string;
   label: string;
   tagline: string;
-  emoji: string;
-  gradient: { from: string; to: string };
   icon: React.ElementType;
   items: NavItem[];
 }
@@ -90,8 +88,6 @@ const NAV_SECTIONS: NavSection[] = [
     id: "umzug-planen",
     label: "Umzug planen",
     tagline: "Tools, Tipps & Rechner für deinen Zügeltag",
-    emoji: "📋",
-    gradient: { from: "from-blue-500", to: "to-indigo-600" },
     icon: ClipboardList,
     items: [
       { icon: ClipboardList, title: "Umzugscheckliste", description: "Schritt für Schritt stressfrei umziehen", href: "/checkliste" },
@@ -105,8 +101,6 @@ const NAV_SECTIONS: NavSection[] = [
     id: "umzugsfirmen",
     label: "Umzugsfirmen",
     tagline: "200+ geprüfte Partner – Umzugsfirma finden & sparen",
-    emoji: "🚚",
-    gradient: { from: "from-primary", to: "to-emerald-600" },
     icon: Truck,
     items: [
       { icon: MapPin, title: "Umzugsfirma Zürich", description: "Top-Bewertungen in Zürich", href: "/umzugsfirmen/zuerich" },
@@ -120,8 +114,6 @@ const NAV_SECTIONS: NavSection[] = [
     id: "services",
     label: "Services",
     tagline: "Rundum-Service: Reinigung, Lagerung, Entsorgung & mehr",
-    emoji: "✨",
-    gradient: { from: "from-emerald-500", to: "to-teal-600" },
     icon: Sparkles,
     items: [
       { icon: Home, title: "Umzugsreinigung", description: "Mit Abgabegarantie – Depot zurück!", href: "/umzugsreinigung", badge: "Garantie" },
@@ -135,8 +127,6 @@ const NAV_SECTIONS: NavSection[] = [
     id: "ratgeber",
     label: "Ratgeber",
     tagline: "Tipps & Tricks für einen stressfreien Umzug",
-    emoji: "💡",
-    gradient: { from: "from-amber-500", to: "to-orange-600" },
     icon: FileText,
     items: [
       { icon: Baby, title: "Umziehen mit Kindern & Haustieren", description: "Stressfrei für die ganze Familie", href: "/ratgeber/umziehen-mit-kindern" },
@@ -150,8 +140,6 @@ const NAV_SECTIONS: NavSection[] = [
     id: "so-funktioniert",
     label: "So funktioniert's",
     tagline: "Stressfrei in 3 Schritten – so funktioniert Umzugscheck",
-    emoji: "🎯",
-    gradient: { from: "from-purple-500", to: "to-pink-600" },
     icon: HelpCircle,
     items: [
       { icon: Sparkles, title: "So funktioniert Umzugscheck", description: "Dein Weg zur besten Offerte", href: "/so-funktioniert" },
@@ -197,7 +185,7 @@ export const MobileMenuV16 = ({ isOpen, onClose }: MobileMenuV16Props) => {
             {/* Header with Trust Micro-Bar */}
             <div className="border-b border-border/50">
               {/* Trust Bar - Premium Gradient */}
-              <div className="flex items-center justify-center gap-4 py-2.5 bg-gradient-to-r from-primary/10 via-emerald-500/10 to-primary/10">
+              <div className="flex items-center justify-center gap-4 py-2.5 bg-muted/50">
                 {TRUST_SIGNALS.map((signal, idx) => {
                   const Icon = signal.icon;
                   return (
@@ -224,8 +212,10 @@ export const MobileMenuV16 = ({ isOpen, onClose }: MobileMenuV16Props) => {
                   transition={{ delay: 0.15 }}
                 >
                   <div className="flex flex-col">
-                    <HeaderLogo size="md" onClick={onClose} />
-                    <span className="text-[10px] text-muted-foreground font-medium">🇨🇭 Nr. 1 Schweizer Umzugsvergleich</span>
+                    <HeaderLogo size="md" showTagline={false} onClick={onClose} />
+                    <span className="text-[10px] text-muted-foreground font-medium -mt-0.5">
+                      Der Schweizer Umzugsvergleich
+                    </span>
                   </div>
                 </motion.div>
                 <Button 
@@ -241,21 +231,21 @@ export const MobileMenuV16 = ({ isOpen, onClose }: MobileMenuV16Props) => {
 
               {/* Quick Help Banner */}
               <motion.div
-                className="mx-4 mb-3 p-3 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200/50 dark:border-amber-800/30"
+                className="mx-4 mb-3 p-3 rounded-xl bg-muted/30 border border-border/50"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.2 }}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center flex-shrink-0">
-                    <Phone className="w-5 h-5 text-white" />
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <Phone className="w-5 h-5 text-primary" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-foreground">Brauchst du Hilfe?</p>
                     <p className="text-xs text-muted-foreground">Wir beraten dich gerne kostenlos!</p>
                   </div>
-                  <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full hover:bg-amber-100 dark:hover:bg-amber-900/30">
-                    <MessageCircle className="w-5 h-5 text-amber-600" />
+                  <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full hover:bg-muted">
+                    <MessageCircle className="w-5 h-5 text-primary" />
                   </Button>
                 </div>
               </motion.div>
@@ -274,7 +264,7 @@ export const MobileMenuV16 = ({ isOpen, onClose }: MobileMenuV16Props) => {
                     placeholder="Was suchst du? Zürich, Reinigung..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full h-13 min-h-[52px] pl-12 pr-4 rounded-2xl border-2 border-border/50 bg-muted/40 text-base focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all placeholder:text-muted-foreground/70"
+                    className="w-full min-h-[52px] h-12 pl-12 pr-4 rounded-2xl border border-border/60 bg-muted/40 text-base focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all placeholder:text-muted-foreground/70"
                   />
                 </motion.div>
               </div>
@@ -308,19 +298,17 @@ export const MobileMenuV16 = ({ isOpen, onClose }: MobileMenuV16Props) => {
                           : "hover:bg-muted/50"
                       )}
                     >
-                      {/* Gradient Icon Container */}
+                      {/* Clean Icon Container */}
                       <div className={cn(
                         "w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0",
-                        "bg-gradient-to-br shadow-lg",
-                        section.gradient.from,
-                        section.gradient.to
+                        "bg-primary/10 text-primary border border-border/40"
                       )}>
-                        <section.icon className="w-6 h-6 text-white" />
+                        <section.icon className="w-6 h-6" />
                       </div>
 
                       <div className="flex-1 min-w-0">
                         <span className="font-bold text-foreground block text-base">
-                          {section.emoji} {section.label}
+                          {section.label}
                         </span>
                         <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2 leading-relaxed">
                           {section.tagline}
@@ -362,7 +350,7 @@ export const MobileMenuV16 = ({ isOpen, onClose }: MobileMenuV16Props) => {
                                     onClick={onClose}
                                     className="flex items-start gap-4 px-4 py-4 min-h-[64px] rounded-xl hover:bg-background/80 active:bg-accent transition-all group touch-manipulation border border-transparent hover:border-border/50 hover:shadow-sm"
                                   >
-                                    <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center flex-shrink-0 group-hover:from-primary/30 group-hover:to-primary/10 transition-all">
+                                    <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/15 transition-all border border-border/40">
                                       <Icon className="h-5 w-5 text-primary" />
                                     </div>
                                     <div className="flex-1 min-w-0 pt-0.5">
@@ -371,7 +359,7 @@ export const MobileMenuV16 = ({ isOpen, onClose }: MobileMenuV16Props) => {
                                           {item.title}
                                         </span>
                                         {item.badge && (
-                                          <span className="px-1.5 py-0.5 text-[10px] font-bold bg-gradient-to-r from-primary to-emerald-600 text-white rounded-md uppercase">
+                                          <span className="px-2 py-0.5 text-[10px] font-bold bg-primary text-primary-foreground rounded-md uppercase">
                                             {item.badge}
                                           </span>
                                         )}
@@ -425,11 +413,11 @@ export const MobileMenuV16 = ({ isOpen, onClose }: MobileMenuV16Props) => {
                     onClick={onClose}
                     className="flex items-center gap-4 p-4 min-h-[68px] border border-dashed border-primary/30 rounded-2xl bg-primary/5 hover:bg-primary/10 transition-all group touch-manipulation"
                   >
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-600 to-slate-800 flex items-center justify-center flex-shrink-0 shadow-lg">
-                      <Building2 className="w-6 h-6 text-white" />
+                    <div className="w-12 h-12 rounded-xl bg-muted/60 border border-border/50 flex items-center justify-center flex-shrink-0">
+                      <Building2 className="w-6 h-6 text-muted-foreground" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <span className="font-bold text-foreground block text-base">💼 Für Anbieter</span>
+                      <span className="font-bold text-foreground block text-base">Für Anbieter</span>
                       <p className="text-xs text-muted-foreground">Partner werden, Leads erhalten, Dashboard nutzen</p>
                     </div>
                     <ArrowRight className="w-5 h-5 text-primary group-hover:translate-x-1 transition-transform" />
@@ -443,7 +431,7 @@ export const MobileMenuV16 = ({ isOpen, onClose }: MobileMenuV16Props) => {
               {/* Trust Pills Row */}
               <div className="flex items-center justify-center gap-4 py-3 px-4">
                 <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-                  <Shield className="w-4 h-4 text-emerald-600" />
+                  <Shield className="w-4 h-4 text-primary" />
                   <span>Gratis</span>
                 </div>
                 <div className="w-px h-4 bg-border" />
@@ -453,7 +441,7 @@ export const MobileMenuV16 = ({ isOpen, onClose }: MobileMenuV16Props) => {
                 </div>
                 <div className="w-px h-4 bg-border" />
                 <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-                  <Heart className="w-4 h-4 text-rose-500" />
+                  <Heart className="w-4 h-4 text-primary" />
                   <span>Swiss Made</span>
                 </div>
               </div>

@@ -65,8 +65,8 @@ const itemVariants = {
 } as const;
 
 const TRUST_SIGNALS = [
-  { icon: BadgeCheck, label: "Geprüft", color: "text-emerald-600" },
-  { icon: Star, label: "4.8★", color: "text-amber-500" },
+  { icon: BadgeCheck, label: "Geprüft", color: "text-primary" },
+  { icon: Star, label: "4.8★", color: "text-primary" },
   { icon: Zap, label: "Gratis", color: "text-primary" },
 ];
 
@@ -250,7 +250,10 @@ export const MobileMenuV15 = ({ isOpen, onClose, navStructure }: MobileMenuV15Pr
                                     onClick={onClose}
                                     className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-background active:bg-accent transition-colors group touch-manipulation"
                                   >
-                                    <span className="text-base flex-shrink-0">{item.emoji}</span>
+                                    {/* No emojis in navigation (clean Swiss look) */}
+                                    <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center flex-shrink-0 border border-border/40">
+                                      <ArrowRight className="w-4 h-4" />
+                                    </div>
                                     <div className="flex-1 min-w-0">
                                       <span className="text-sm font-medium text-foreground block group-hover:text-primary transition-colors">
                                         {item.title}
