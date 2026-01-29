@@ -626,60 +626,120 @@ export const DecisionFreeWizard = () => {
 
       <Card>
         <CardContent className="p-6 space-y-6">
-          {/* Date Selection */}
-          <div className="space-y-2">
-            <Label className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-primary" />
-              Wunschtermin
+          {/* Date Selection - Enhanced */}
+          <div className="space-y-3">
+            <Label className="flex items-center gap-2 text-base font-semibold">
+              <Calendar className="h-5 w-5 text-primary" />
+              Wann soll der Umzug stattfinden?
             </Label>
-            <Input
-              type="date"
-              value={moveData.moveDate}
-              onChange={(e) => setMoveData({ ...moveData, moveDate: e.target.value })}
-              min={new Date().toISOString().split('T')[0]}
-              className="h-12"
-            />
+            <div className="space-y-3">
+              {/* Quick date options */}
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { label: 'Nächste Woche', days: 7 },
+                  { label: 'In 2 Wochen', days: 14 },
+                  { label: 'Nächster Monat', days: 30 },
+                  { label: 'In 3 Monaten', days: 90 },
+                ].map((option) => {
+                  const targetDate = new Date();
+                  targetDate.setDate(targetDate.getDate() + option.days);
+                  const dateStr = targetDate.toISOString().split('T')[0];
+                  return (
+                    <Button
+                      key={option.label}
+                      variant={moveData.moveDate === dateStr ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setMoveData({ ...moveData, moveDate: dateStr })}
+                      className="justify-start text-xs h-10"
+                    >
+                      <Clock className="h-3 w-3 mr-2" />
+                      {option.label}
+                    </Button>
+                  );
+                })}
+              </div>
+              
+              {/* Date input with manual entry support */}
+              <div className="relative">
+                <Input
+                  type="date"
+                  value={moveData.moveDate}
+                  onChange={(e) => setMoveData({ ...moveData, moveDate: e.target.value })}
+                  min={new Date().toISOString().split('T')[0]}
+                  className="h-12 text-base"
+                  aria-label="Umzugsdatum auswählen"
+                />
+                {moveData.moveDate && (
+                  <Badge 
+                    variant="secondary" 
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-xs pointer-events-none"
+                  >
+                    {new Date(moveData.moveDate).toLocaleDateString('de-CH', { 
+                      weekday: 'short', 
+                      day: 'numeric', 
+                      month: 'short' 
+                    })}
+                  </Badge>
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                💡 Sie können das Datum auch direkt eintippen oder aus dem Kalender wählen
+              </p>
+            </div>
           </div>
 
-          {/* Contact */}
+          {/* Contact - Improved Labels */}
           <div className="space-y-4">
+            <h3 className="text-base font-semibold">Ihre Kontaktdaten</h3>
+            
             <div className="space-y-2">
-              <Label className="flex items-center gap-2">
+              <Label htmlFor="v8-name" className="flex items-center gap-2 text-sm">
                 <User className="h-4 w-4 text-primary" />
-                Name
+                Vor- und Nachname
               </Label>
               <Input
-                placeholder="Ihr Name"
+                id="v8-name"
+                placeholder="z.B. Hans Muster"
                 value={moveData.contact.name}
                 onChange={(e) => setMoveData({ ...moveData, contact: { ...moveData.contact, name: e.target.value } })}
                 className="h-12"
+                autoComplete="name"
               />
             </div>
+            
             <div className="space-y-2">
-              <Label className="flex items-center gap-2">
+              <Label htmlFor="v8-email" className="flex items-center gap-2 text-sm">
                 <Mail className="h-4 w-4 text-primary" />
-                E-Mail
+                E-Mail-Adresse
               </Label>
               <Input
+                id="v8-email"
                 type="email"
-                placeholder="ihre@email.ch"
+                placeholder="hans.muster@beispiel.ch"
                 value={moveData.contact.email}
                 onChange={(e) => setMoveData({ ...moveData, contact: { ...moveData.contact, email: e.target.value } })}
                 className="h-12"
+                autoComplete="email"
               />
             </div>
+            
             <div className="space-y-2">
-              <Label className="flex items-center gap-2">
+              <Label htmlFor="v8-phone" className="flex items-center gap-2 text-sm">
                 <Phone className="h-4 w-4 text-primary" />
-                Telefon
+                Telefonnummer (Mobil bevorzugt)
               </Label>
               <Input
+                id="v8-phone"
                 type="tel"
-                placeholder="+41 79 ..."
+                placeholder="+41 79 123 45 67"
                 value={moveData.contact.phone}
                 onChange={(e) => setMoveData({ ...moveData, contact: { ...moveData.contact, phone: e.target.value } })}
                 className="h-12"
+                autoComplete="tel"
               />
+              <p className="text-xs text-muted-foreground">
+                Wir rufen Sie nur bei Rückfragen an – kein Spam!
+              </p>
             </div>
           </div>
 

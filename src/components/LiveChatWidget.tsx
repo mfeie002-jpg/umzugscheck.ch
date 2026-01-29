@@ -41,6 +41,34 @@ const LiveChatWidget = () => {
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  // Check if user is in a form/wizard flow - hide chat button to prevent overlap
+  const [isInFormFlow, setIsInFormFlow] = useState(false);
+  
+  useEffect(() => {
+    const checkFormFlow = () => {
+      // Check if URL contains flow patterns or if there's a form wizard on page
+      const flowPatterns = ['/umzugsofferten', '/calculator', '/wizard', '/flow'];
+      const isFlow = flowPatterns.some(pattern => window.location.pathname.includes(pattern));
+      
+      // Also check for active form elements
+      const hasActiveWizard = document.querySelector('[data-wizard-active="true"]') !== null;
+      
+      setIsInFormFlow(isFlow || hasActiveWizard);
+    };
+    
+    checkFormFlow();
+    window.addEventListener('popstate', checkFormFlow);
+    
+    // Create observer for DOM changes (wizard steps)
+    const observer = new MutationObserver(checkFormFlow);
+    observer.observe(document.body, { childList: true, subtree: true, attributes: true });
+    
+    return () => {
+      window.removeEventListener('popstate', checkFormFlow);
+      observer.disconnect();
+    };
+  }, []);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -85,29 +113,35 @@ const LiveChatWidget = () => {
     sendMessage(reply);
   };
 
+  // Don't show chat button when in form flow (to prevent button overlap)
+  if (isInFormFlow && !isOpen) {
+    return null;
+  }
+
   return (
     <>
-      {/* Chat Button */}
+      {/* Chat Button - positioned on LEFT side on mobile to avoid CTA overlap */}
       <AnimatePresence>
         {!isOpen && (
           <motion.div
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
-            className="fixed bottom-24 right-4 z-50 md:bottom-8"
+            className="fixed bottom-24 left-4 z-40 md:bottom-8 md:right-4 md:left-auto"
           >
             <Button
               onClick={() => setIsOpen(true)}
-              className="w-14 h-14 rounded-full shadow-lg bg-primary hover:bg-primary/90"
+              className="w-12 h-12 md:w-14 md:h-14 rounded-full shadow-lg bg-primary hover:bg-primary/90"
+              aria-label="Chat öffnen"
             >
-              <MessageCircle className="w-6 h-6" />
+              <MessageCircle className="w-5 h-5 md:w-6 md:h-6" />
             </Button>
-            <Badge className="absolute -top-1 -right-1 bg-destructive">1</Badge>
+            <Badge className="absolute -top-1 -right-1 bg-destructive text-[10px] px-1.5">1</Badge>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Chat Window */}
+      {/* Chat Window - positioned LEFT on mobile */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -119,7 +153,7 @@ const LiveChatWidget = () => {
               height: isMinimized ? 'auto' : '500px'
             }}
             exit={{ opacity: 0, y: 100, scale: 0.8 }}
-            className="fixed bottom-24 right-4 z-50 w-[350px] bg-card border rounded-2xl shadow-2xl overflow-hidden md:bottom-8"
+            className="fixed bottom-24 left-4 z-40 w-[320px] md:w-[350px] bg-card border rounded-2xl shadow-2xl overflow-hidden md:bottom-8 md:right-4 md:left-auto"
           >
             {/* Header */}
             <div className="bg-primary text-primary-foreground p-4 flex items-center justify-between">
