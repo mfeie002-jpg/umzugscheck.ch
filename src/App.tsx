@@ -514,6 +514,7 @@ const AdminRoutes = () => (
       <Route path="/internal/finance" element={<FinanceDashboard />} />
       <Route path="/internal/command-center" element={<UnifiedCommandCenter />} />
       <Route path="/internal/test-report" element={<TestReport />} />
+      <Route path="/public/test-results" element={<Navigate to="/internal/test-report" replace />} />
       {/* Legacy redirects */}
       <Route path="/admin/operator-dashboard" element={<Navigate to="/internal/command-center" replace />} />
     </AnimatedRoutes>
