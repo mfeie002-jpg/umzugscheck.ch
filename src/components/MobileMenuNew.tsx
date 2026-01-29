@@ -298,7 +298,10 @@ export const MobileMenuNew = ({ isOpen, onClose }: MobileMenuNewProps) => {
                   type="single" 
                   collapsible 
                   value={openAccordion}
-                  onValueChange={setOpenAccordion}
+                  onValueChange={(value) => {
+                    console.log('[MobileMenuNew] Accordion value changed to:', value);
+                    setOpenAccordion(value);
+                  }}
                   className="space-y-3"
                 >
                   {/* 1. Preise berechnen - Enhanced & Friendly */}
