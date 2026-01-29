@@ -24,8 +24,8 @@ export function HeaderLogo({ className, size = "md", onClick, showTagline = true
       to="/"
       onClick={onClick}
       className={cn(
-        // Keep logo + tagline vertically compact for mobile headers
-        "flex flex-col justify-center hover:opacity-95 transition-opacity flex-shrink-0",
+        // Keep logo + tagline vertically compact and aligned for mobile headers
+        "flex flex-col justify-center items-start hover:opacity-95 transition-opacity flex-shrink-0",
         className
       )}
       aria-label="Zur Startseite von Umzugscheck.ch"
@@ -83,7 +83,7 @@ export function HeaderLogo({ className, size = "md", onClick, showTagline = true
       {showTagline && (
         <span
           className={cn(
-            "block font-semibold leading-none pl-0.5 -mt-1 sm:-mt-0.5 text-muted-foreground/80",
+            "block font-semibold leading-none pl-0.5 -mt-2 text-muted-foreground/80",
             s.tagline
           )}
         >
