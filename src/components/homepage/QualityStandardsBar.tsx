@@ -1,100 +1,136 @@
 /**
  * Quality Standards Bar - "Trust Bar 2"
  * 
- * Purpose: Shows quality/security signals (not media fame)
- * Answers: "Is this safe?" with ASTAG, Swiss Made, Data Security, Insurance
+ * Purpose: Shows quality/security signals with real partner logos
+ * Follows Swiss Trust Triumvirate: Institutional → Process → Social
  * 
- * Placement: Right after TrustRibbonAB (below "Bekannt aus")
+ * Logo Order (psychological impact):
+ * 1. Swiss Made Software (Technical Trust)
+ * 2. eUmzugCH (State Trust)
+ * 3. ASTAG (Industry Trust)
+ * 4. Die Post (Logistics Trust)
+ * 5. Google Reviews (Social Trust)
+ * 
+ * CSS: grayscale(100%) default → full color on hover
  */
 
 import { memo } from "react";
 import { motion } from "framer-motion";
-import { 
-  Shield, 
-  Server, 
-  Truck, 
-  CheckCircle2,
-  Award
-} from "lucide-react";
+import { ExternalLink } from "lucide-react";
 
-const qualityBadges = [
-  {
-    id: "astag",
-    icon: Truck,
-    title: "ASTAG-Standards",
-    subtitle: "Geprüfte Qualität",
-    color: "text-primary",
-  },
+// Logo data with external verification links
+const trustLogos = [
   {
     id: "swiss-made",
-    icon: Award,
-    title: "Swiss Made",
-    subtitle: "Software aus der Schweiz",
-    color: "text-[#D52B1E]",
+    name: "Swiss Made Software",
+    subtitle: "Entwickelt in der Schweiz",
+    // TODO: Replace with actual SVG from swissmadesoftware.org
+    logoUrl: "/logos/swiss-made-software.svg",
+    verifyUrl: "https://www.swissmadesoftware.org/",
+    fallbackIcon: "🇨🇭",
   },
   {
-    id: "data-ch",
-    icon: Server,
-    title: "Schweizer Hosting",
-    subtitle: "Daten bleiben hier",
-    color: "text-emerald-600",
+    id: "eumzug",
+    name: "eUmzugCH",
+    subtitle: "Offizielle Meldung erklärt",
+    // TODO: Replace with actual logo from eumzug.swiss
+    logoUrl: "/logos/eumzug-ch.svg",
+    verifyUrl: "https://www.eumzug.swiss/",
+    fallbackIcon: "🏛️",
   },
   {
-    id: "insured",
-    icon: Shield,
-    title: "Versicherte Partner",
-    subtitle: "Haftpflicht geprüft",
-    color: "text-[#E2001A]",
+    id: "astag",
+    name: "ASTAG Standards",
+    subtitle: "Branchenverband",
+    // TODO: Replace with actual SVG from astag.ch
+    logoUrl: "/logos/astag.svg",
+    verifyUrl: "https://www.astag.ch/",
+    fallbackIcon: "🚛",
   },
   {
-    id: "verified",
-    icon: CheckCircle2,
-    title: "Handelsregister",
-    subtitle: "UID verifiziert",
-    color: "text-primary",
+    id: "post",
+    name: "Die Post",
+    subtitle: "Nachsendeauftrag Partner",
+    // TODO: Replace with actual logo from post.ch
+    logoUrl: "/logos/die-post.svg",
+    verifyUrl: "https://www.post.ch/",
+    fallbackIcon: "📮",
+  },
+  {
+    id: "google",
+    name: "Google Reviews",
+    subtitle: "4.8/5 Sterne",
+    // TODO: Replace with Google logo
+    logoUrl: "/logos/google-reviews.svg",
+    verifyUrl: "https://www.google.com/search?q=umzugscheck.ch+bewertungen",
+    fallbackIcon: "⭐",
   },
 ];
 
 export const QualityStandardsBar = memo(function QualityStandardsBar() {
   return (
-    <section className="py-4 md:py-5 bg-muted/20 border-b border-border/30">
+    <section className="py-5 md:py-6 bg-muted/30 border-b border-border/30">
       <div className="container max-w-5xl px-4">
         {/* Header */}
-        <p className="text-center text-[10px] text-muted-foreground uppercase tracking-widest mb-3">
+        <p className="text-center text-[10px] text-muted-foreground uppercase tracking-widest mb-4">
           Geprüfte Qualität & Schweizer Standards
         </p>
         
-        {/* Badge Row - Scrollable on mobile */}
+        {/* Logo Row - Responsive grid */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="flex items-center justify-start md:justify-center gap-3 md:gap-4
-                     overflow-x-auto scrollbar-hide pb-1 -mx-4 px-4 md:mx-0 md:px-0"
+          className="flex items-center justify-center flex-wrap gap-6 md:gap-8"
         >
-          {qualityBadges.map((badge, index) => (
-            <motion.div
-              key={badge.id}
+          {trustLogos.map((logo, index) => (
+            <motion.a
+              key={logo.id}
+              href={logo.verifyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.05 }}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-card 
-                         border border-border/50 whitespace-nowrap flex-shrink-0
-                         hover:border-primary/30 hover:shadow-sm transition-all"
+              className="group flex flex-col items-center gap-1.5 
+                         hover:scale-105 transition-transform duration-300"
+              title={`${logo.name} verifizieren`}
             >
-              <badge.icon className={`w-4 h-4 ${badge.color}`} />
-              <div className="flex flex-col leading-none">
-                <span className="text-xs font-semibold text-foreground">
-                  {badge.title}
-                </span>
-                <span className="text-[9px] text-muted-foreground">
-                  {badge.subtitle}
-                </span>
+              {/* Logo Container with grayscale effect */}
+              <div className="relative h-10 w-auto max-w-[140px] flex items-center justify-center">
+                {/* Fallback: Emoji + Text (until real SVGs are added) */}
+                <div className="flex items-center gap-2 px-3 py-2 rounded-lg 
+                               bg-card border border-border/50
+                               grayscale opacity-60 
+                               group-hover:grayscale-0 group-hover:opacity-100
+                               transition-all duration-300">
+                  <span className="text-xl">{logo.fallbackIcon}</span>
+                  <span className="text-xs font-medium text-foreground whitespace-nowrap">
+                    {logo.name}
+                  </span>
+                </div>
+                
+                {/* External link indicator on hover */}
+                <div className="absolute -top-1 -right-1 opacity-0 group-hover:opacity-100 
+                               transition-opacity">
+                  <ExternalLink className="w-3 h-3 text-primary" />
+                </div>
               </div>
-            </motion.div>
+              
+              {/* Subtitle - visible on hover */}
+              <span className="text-[9px] text-muted-foreground opacity-0 
+                              group-hover:opacity-100 transition-opacity">
+                {logo.subtitle}
+              </span>
+            </motion.a>
           ))}
         </motion.div>
+        
+        {/* Footer note */}
+        <p className="text-center text-[9px] text-muted-foreground mt-4 opacity-70">
+          Klicken Sie auf ein Logo zur Verifizierung
+        </p>
       </div>
     </section>
   );
