@@ -5,8 +5,10 @@
  * - eUmzugCH (eCH-0221) commune registration
  * - Swiss Post address forwarding
  * - Serafe/Billag notification
- * - Move Readiness Checker (NEW)
- * - Parking Permit Planner (NEW)
+ * - Move Readiness Checker
+ * - Parking Permit Planner
+ * - Disposal Planning (NEW)
+ * - Address Change Management (NEW)
  * 
  * @see docs/VISION_COMPLETE.md
  */
@@ -20,6 +22,12 @@ export * from './move-readiness';
 
 // Parking Permit Planner (Phase 1 Link-Magnet)
 export * from './parking-permit';
+
+// Disposal Planning (Phase 1 Link-Magnet)
+export * from './disposal';
+
+// Address Change Management (Phase 1 Link-Magnet)
+export * from './address-change';
 
 // Serafe integration (skeleton)
 export const generateSerafeNotificationLink = (): string => {
@@ -51,6 +59,16 @@ export interface SwissAdminAutopilotState {
     completedAt?: Date;
     permitApplied?: boolean;
   };
+  disposal: {
+    status: 'pending' | 'completed' | 'skipped';
+    completedAt?: Date;
+    categoriesHandled?: string[];
+  };
+  addressChange: {
+    status: 'pending' | 'completed' | 'skipped';
+    completedAt?: Date;
+    institutionsNotified?: number;
+  };
 }
 
 export const getSwissAdminProgress = (state: SwissAdminAutopilotState): number => {
@@ -59,7 +77,9 @@ export const getSwissAdminProgress = (state: SwissAdminAutopilotState): number =
     state.swissPost, 
     state.serafe,
     state.moveReadiness,
-    state.parkingPermit
+    state.parkingPermit,
+    state.disposal,
+    state.addressChange
   ];
   const completed = tasks.filter(t => t?.status === 'completed' || t?.status === 'skipped').length;
   return Math.round((completed / tasks.length) * 100);

@@ -232,3 +232,22 @@ export const getCantonFromPostalCode = (postalCode: string): string | null => {
   
   return firstDigitMapping[first] || null;
 };
+
+/**
+ * Canton display names for UI
+ */
+export const CANTON_DISPLAY_NAMES: Record<string, string> = {
+  'ZH': 'Zürich', 'BE': 'Bern', 'LU': 'Luzern', 'UR': 'Uri', 'SZ': 'Schwyz',
+  'OW': 'Obwalden', 'NW': 'Nidwalden', 'GL': 'Glarus', 'ZG': 'Zug', 'FR': 'Fribourg',
+  'SO': 'Solothurn', 'BS': 'Basel-Stadt', 'BL': 'Basel-Landschaft', 'SH': 'Schaffhausen',
+  'AR': 'Appenzell Ausserrhoden', 'AI': 'Appenzell Innerrhoden', 'SG': 'St. Gallen',
+  'GR': 'Graubünden', 'AG': 'Aargau', 'TG': 'Thurgau', 'TI': 'Tessin', 'VD': 'Waadt',
+  'VS': 'Wallis', 'NE': 'Neuenburg', 'GE': 'Genf', 'JU': 'Jura',
+};
+
+/**
+ * Get canton rules by code (alias for getCantonRegulation)
+ */
+export const getCantonRules = (cantonCode: string): CantonRegulation | null => {
+  return getCantonRegulation(cantonCode);
+};

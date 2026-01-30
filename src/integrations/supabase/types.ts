@@ -733,6 +733,42 @@ export type Database = {
         }
         Relationships: []
       }
+      disposal_categories: {
+        Row: {
+          created_at: string
+          description_de: string | null
+          disposal_type: string
+          icon: string | null
+          id: string
+          name_de: string
+          name_fr: string | null
+          name_it: string | null
+          tips_de: string | null
+        }
+        Insert: {
+          created_at?: string
+          description_de?: string | null
+          disposal_type: string
+          icon?: string | null
+          id: string
+          name_de: string
+          name_fr?: string | null
+          name_it?: string | null
+          tips_de?: string | null
+        }
+        Update: {
+          created_at?: string
+          description_de?: string | null
+          disposal_type?: string
+          icon?: string | null
+          id?: string
+          name_de?: string
+          name_fr?: string | null
+          name_it?: string | null
+          tips_de?: string | null
+        }
+        Relationships: []
+      }
       email_automation_settings: {
         Row: {
           alert_type: string
@@ -4023,6 +4059,57 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      recycling_centers: {
+        Row: {
+          accepted_categories: string[] | null
+          address: string
+          city_slug: string
+          created_at: string
+          id: string
+          is_active: boolean | null
+          lat: number | null
+          lng: number | null
+          name: string
+          opening_hours: Json | null
+          phone: string | null
+          postal_code: string | null
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          accepted_categories?: string[] | null
+          address: string
+          city_slug: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          lat?: number | null
+          lng?: number | null
+          name: string
+          opening_hours?: Json | null
+          phone?: string | null
+          postal_code?: string | null
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          accepted_categories?: string[] | null
+          address?: string
+          city_slug?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          lat?: number | null
+          lng?: number | null
+          name?: string
+          opening_hours?: Json | null
+          phone?: string | null
+          postal_code?: string | null
+          updated_at?: string
+          website_url?: string | null
+        }
+        Relationships: []
       }
       referral_conversions: {
         Row: {
