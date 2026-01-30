@@ -57,7 +57,7 @@ export const MediaLogosSectionVariantB = memo(function MediaLogosSectionVariantB
   }, []);
   
   return (
-    <section className="py-5 md:py-8 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 border-y border-border/30">
+    <section className="py-5 md:py-5 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 border-y border-border/30">
       <div className="container max-w-5xl px-4">
         
         {/* LIVE TICKER - Top */}
