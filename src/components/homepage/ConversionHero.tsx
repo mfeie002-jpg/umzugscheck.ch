@@ -41,7 +41,7 @@ export const ConversionHero = memo(function ConversionHero() {
   };
 
   return (
-    <section className="relative min-h-[70vh] md:min-h-[75vh] lg:min-h-[70vh] flex items-center overflow-hidden">
+    <section className="relative min-h-[60vh] lg:min-h-[55vh] flex items-center overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 z-0">
         <div 
@@ -52,7 +52,7 @@ export const ConversionHero = memo(function ConversionHero() {
         <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/30" />
       </div>
 
-      <div className="container relative z-10 py-6 md:py-10 lg:py-12 px-4 md:px-6">
+      <div className="container relative z-10 py-6 md:py-8 lg:py-8 px-4 md:px-6">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           {/* Left Content */}
           <motion.div
