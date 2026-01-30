@@ -162,13 +162,6 @@ export const SocialProofBlock = () => {
                   className="h-7 md:h-8 w-auto object-contain max-w-[90px]"
                   loading="lazy"
                   style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.04))' }}
-                className="px-4 py-2.5 rounded-lg bg-card border border-border shadow-sm hover:shadow-md transition-all cursor-pointer"
-              >
-                <img
-                  src={logo.src}
-                  alt={logo.name}
-                  className="h-8 w-auto max-w-[90px] object-contain"
-                  loading="lazy"
                   onError={e => { e.currentTarget.style.display = "none"; }}
                   width={90}
                   height={32}
