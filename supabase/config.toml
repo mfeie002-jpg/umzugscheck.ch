@@ -89,3 +89,6 @@ verify_jwt = false
 
 [functions.ai-task-webhook]
 verify_jwt = false
+
+[functions.ai-assistant-v2]
+verify_jwt = false
