@@ -24,6 +24,7 @@ import { useFlowPath } from '@/hooks/useUnifiedAB';
 import { swissPostalCodes } from '@/lib/swiss-postal-codes';
 import { HeroTrustBar } from './HeroTrustBar';
 import { HeroTrustIntegration } from './HeroTrustIntegration';
+import { PressTrustBar } from './PressTrustBar';
 import { useSocialProofAB } from '@/contexts/SocialProofABContext';
 
 const APARTMENT_SIZES = [
@@ -49,7 +50,10 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
   const [apartmentSize, setApartmentSize] = useState('');
   
   // Determine if we should show hero-integrated trust based on SP variant
-  const showHeroTrust = ['M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W'].includes(spVariant);
+  const showHeroTrust = ['M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X'].includes(spVariant);
+  
+  // V24 (X): New "Press Trust Bar" variant - Desktop rail + Mobile inline
+  const showPressTrust = spVariant === 'X';
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -309,6 +313,13 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
                 {showHeroTrust && spVariant === 'V' && (
                   <HeroTrustIntegration variant="in-form-container" />
                 )}
+                
+                {/* V24 (X): Press Trust Bar - Mobile inline (inside form, under CTA) */}
+                {showPressTrust && (
+                  <div className="lg:hidden">
+                    <PressTrustBar variant="inline" />
+                  </div>
+                )}
               </div>
             </div>
           </motion.div>
@@ -330,6 +341,18 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
         {/* V23: Glassmorphism Bar - Premium overlay at bottom */}
         {showHeroTrust && spVariant === 'W' && (
           <HeroTrustIntegration variant="glassmorphism-bar" />
+        )}
+        
+        {/* V24 (X): Press Trust Bar - Desktop glassy rail (inside hero, below grid) */}
+        {showPressTrust && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="hidden lg:block"
+          >
+            <PressTrustBar variant="rail" />
+          </motion.div>
         )}
       </div>
     </section>
