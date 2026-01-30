@@ -234,7 +234,7 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="order-1 lg:order-2"
           >
-            <div className="bg-card rounded-2xl shadow-xl border border-border p-5 md:p-8 relative">
+            <div className="bg-card rounded-2xl shadow-xl border border-border p-4 md:p-6 relative">
               {/* Best Price Badge */}
               <div className="absolute -top-3 left-0 right-0 flex justify-center">
                 <span className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-secondary text-white text-xs font-bold rounded-full shadow-lg whitespace-nowrap">
@@ -243,7 +243,7 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
                 </span>
               </div>
 
-              <div className="space-y-5 pt-3">
+              <div className="space-y-4 pt-2">
                 {/* Form Header */}
                 <div className="text-center space-y-1">
                   <h2 className="text-xl md:text-2xl font-bold text-foreground">
@@ -319,7 +319,7 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
                 </form>
 
                 {/* Trust Badges */}
-                <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground pt-2">
+                <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground pt-1">
                   <span className="inline-flex items-center gap-1">
                     <Check className="w-3.5 h-3.5 text-primary" />
                     Kostenlos
