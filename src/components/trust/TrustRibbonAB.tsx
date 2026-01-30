@@ -1,6 +1,6 @@
 /**
  * A/B Wrapper for TrustRibbon
- * Renders Variant A, B, C, D, E, or F based on context
+ * Renders Variant A-L based on context
  * 
  * Variants:
  * - A: Original - Colored logos, 15'000+ big number
@@ -9,6 +9,7 @@
  * - D: Trust Stack (kompakt, Outcome-Tags)
  * - E: Trust Strip 2.0 (unified strip)
  * - F: Verifiable Trust (ZEFIX, UID, Insurance, Escrow)
+ * - G-L: Use same ribbon variants (MediaLogos handles visual differences)
  */
 
 import { memo } from 'react';
@@ -36,6 +37,7 @@ export const TrustRibbonAB = memo(function TrustRibbonAB(props: TrustRibbonABPro
       : props.variant,
   };
   
+  // Variants G-L reuse the F variant for TrustRibbon (MediaLogos handles the differences)
   switch (abVariant) {
     case 'B':
       return <TrustRibbonVariantB {...mappedProps} />;
@@ -46,6 +48,12 @@ export const TrustRibbonAB = memo(function TrustRibbonAB(props: TrustRibbonABPro
     case 'E':
       return <TrustRibbonVariantE {...mappedProps} />;
     case 'F':
+    case 'G':
+    case 'H':
+    case 'I':
+    case 'J':
+    case 'K':
+    case 'L':
       return <TrustRibbonVariantF {...props} />;
     default:
       return <TrustRibbon {...mappedProps} />;

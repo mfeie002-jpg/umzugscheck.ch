@@ -1,14 +1,15 @@
 /**
  * A/B Testing Toggle for Social Proof sections
- * 5 Variants: A (Original), B (Live Dashboard), C (Trust Hierarchy), D (Trust Stack), E (Trust Strip 2.0)
+ * 12 Variants: A-L
  * 
- * IMPROVED: Higher z-index, better visibility, larger touch target
+ * IMPROVED: Scrollable list for many variants
  */
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { FlaskConical, X, Check } from 'lucide-react';
 import { useState, memo } from 'react';
 import { useSocialProofAB } from '@/contexts/SocialProofABContext';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const variantInfo = {
   A: { label: 'V1', title: 'Original', color: 'bg-blue-600' },
@@ -17,6 +18,12 @@ const variantInfo = {
   D: { label: 'V4', title: 'Trust Stack', color: 'bg-violet-600' },
   E: { label: 'V5', title: 'Trust Strip 2.0', color: 'bg-rose-600' },
   F: { label: 'V6', title: 'Verifiable Trust', color: 'bg-cyan-600' },
+  G: { label: 'V7', title: 'Swiss Infrastructure', color: 'bg-red-600' },
+  H: { label: 'V8', title: 'Pain vs Gain', color: 'bg-orange-600' },
+  I: { label: 'V9', title: 'Hybrid Trust Bar', color: 'bg-yellow-600' },
+  J: { label: 'V10', title: 'Trust Ecosystem', color: 'bg-teal-600' },
+  K: { label: 'V11', title: 'Minimal Proof Strip', color: 'bg-slate-600' },
+  L: { label: 'V12', title: 'Swiss Standards', color: 'bg-indigo-600' },
 };
 
 export const SocialProofABToggle = memo(function SocialProofABToggle() {
@@ -38,46 +45,54 @@ export const SocialProofABToggle = memo(function SocialProofABToggle() {
             initial={{ opacity: 0, y: 10, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.9 }}
-            className="absolute bottom-16 left-0 bg-white dark:bg-card border-2 border-primary rounded-xl shadow-2xl p-4 w-72 pointer-events-auto"
+            className="absolute bottom-16 left-0 bg-white dark:bg-card border-2 border-primary rounded-xl shadow-2xl w-80 pointer-events-auto overflow-hidden"
           >
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center justify-between p-3 border-b border-border">
               <h3 className="font-bold text-sm text-foreground">🧪 A/B Test: Social Proof</h3>
               <button onClick={() => setIsExpanded(false)} className="p-1 rounded hover:bg-muted">
                 <X className="w-4 h-4" />
               </button>
             </div>
             
-            <div className="space-y-2">
-              {(Object.keys(variantInfo) as Array<keyof typeof variantInfo>).map((v) => {
-                const info = variantInfo[v];
-                const isActive = variant === v;
-                return (
-                  <button
-                    key={v}
-                    onClick={() => { setVariant(v); setIsExpanded(false); }}
-                    className={`w-full py-2.5 px-3 rounded-lg font-medium text-sm transition-all flex items-center justify-between ${
-                      isActive 
-                        ? `${info.color} text-white shadow-lg ring-2 ring-offset-2 ring-offset-background` 
-                        : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                    }`}
-                  >
-                    <span className="flex items-center gap-2">
-                      <span className="font-bold">{info.label}</span>
-                      <span className="opacity-80">{info.title}</span>
-                    </span>
-                    {isActive && <Check className="w-4 h-4" />}
-                  </button>
-                );
-              })}
-            </div>
+            <ScrollArea className="h-[320px]">
+              <div className="p-3 space-y-1.5">
+                {(Object.keys(variantInfo) as Array<keyof typeof variantInfo>).map((v) => {
+                  const info = variantInfo[v];
+                  const isActive = variant === v;
+                  return (
+                    <button
+                      key={v}
+                      onClick={() => { setVariant(v); setIsExpanded(false); }}
+                      className={`w-full py-2 px-3 rounded-lg font-medium text-sm transition-all flex items-center justify-between ${
+                        isActive 
+                          ? `${info.color} text-white shadow-lg ring-2 ring-offset-2 ring-offset-background` 
+                          : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                      }`}
+                    >
+                      <span className="flex items-center gap-2">
+                        <span className="font-bold">{info.label}</span>
+                        <span className="opacity-80">{info.title}</span>
+                      </span>
+                      {isActive && <Check className="w-4 h-4" />}
+                    </button>
+                  );
+                })}
+              </div>
+            </ScrollArea>
             
-            <div className="mt-3 pt-3 border-t border-border text-xs text-muted-foreground space-y-1">
+            <div className="p-3 border-t border-border text-[10px] text-muted-foreground space-y-0.5 max-h-28 overflow-y-auto">
               <div><strong>V1:</strong> Original (farbige Logos)</div>
               <div><strong>V2:</strong> Live Dashboard + Deal Cards</div>
               <div><strong>V3:</strong> Trust Hierarchy (Logos oben)</div>
               <div><strong>V4:</strong> Trust Stack (kompakt)</div>
               <div><strong>V5:</strong> Trust Strip 2.0 (unified)</div>
               <div><strong>V6:</strong> Verifiable Trust (ZEFIX/UID)</div>
+              <div><strong>V7:</strong> Swiss Infrastructure (eUmzug/Post)</div>
+              <div><strong>V8:</strong> Pain vs Gain (Problem→Lösung)</div>
+              <div><strong>V9:</strong> Hybrid Trust Bar (psychologisch)</div>
+              <div><strong>V10:</strong> Trust Ecosystem (Grid)</div>
+              <div><strong>V11:</strong> Minimal Proof Strip (Grayscale)</div>
+              <div><strong>V12:</strong> Swiss Standards (Meldepflicht)</div>
             </div>
           </motion.div>
         )}
