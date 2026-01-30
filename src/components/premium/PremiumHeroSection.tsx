@@ -154,11 +154,11 @@ export const PremiumHeroSection = () => {
   // Use fixed height in screenshot mode to prevent vh/svh from exploding with tall viewports
   const screenshotMode = isScreenshotRenderMode();
   const heroHeightClass = screenshotMode
-    ? "min-h-[600px]" // Fixed height for screenshots
-    : "min-h-[85svh] sm:min-h-[70vh] md:min-h-[65vh] lg:min-h-[70vh]";
+    ? "min-h-[560px]" // Fixed height for screenshots
+    : "sm:min-h-[62vh] md:min-h-[58vh] lg:min-h-[60vh]";
 
   return (
-    <section ref={sectionRef} className={`relative ${heroHeightClass} flex items-start sm:items-center overflow-hidden pt-2 sm:pt-0 pb-4 sm:pb-6`} style={{ position: 'relative' }}>
+    <section ref={sectionRef} className={`relative ${heroHeightClass} flex items-start sm:items-center overflow-hidden pt-1 sm:pt-0 pb-2 sm:pb-4`} style={{ position: 'relative' }}>
       {/* Background Image with Parallax Effect */}
       <motion.div
         className="absolute inset-0 w-full h-full"
@@ -313,7 +313,7 @@ export const PremiumHeroSection = () => {
       <GridPattern className="hidden md:block" size={32} fade />
       
       {/* Content Container - Minimal top padding on mobile for above-the-fold CTA */}
-      <div className="container mx-auto px-3 sm:px-6 pt-0 pb-2 sm:py-5 md:py-10 lg:py-12 relative z-10">
+      <div className="container mx-auto px-3 sm:px-6 pt-0 pb-1 sm:py-4 md:py-8 lg:py-8 relative z-10">
         {/* Mobile: Form first, Desktop: Text first */}
         <div className="grid lg:grid-cols-2 gap-2 sm:gap-4 lg:gap-12 items-start lg:items-center">
           
