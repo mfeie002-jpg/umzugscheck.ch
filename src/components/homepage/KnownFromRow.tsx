@@ -1,71 +1,46 @@
 /**
- * KnownFromRow - Integrated trust element for hero section
+ * KnownFromRow - Integrated trust element for hero section (Golden Flow V10)
  * 
- * Based on research:
- * - Prominent yet subtle: below form/CTA to leverage halo effect
- * - Grayscale logos with hover color pop for visual harmony
- * - Clickable to original sources for authenticity
- * - Responsive: stack/carousel on mobile
- * - 80-90% scale for subtlety
+ * Based on detailed research:
+ * 
+ * Option 1 (below-cta): Trust block inside form card, below CTA button
+ *   - Conversion-oriented: trust at the point of decision
+ *   - Mobile: 3 logos + "+3" indicator
+ *   - Desktop: all 6 logos in a row
+ * 
+ * Option 2 (hero-footer): Horizontal strip at bottom of hero section
+ *   - Full-width with subtle background
+ *   - Monochrome logos with hover color effect
+ *   - "Bekannt aus" label with Shield icon
  */
 
 import { memo } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { ShieldCheck, ExternalLink } from "lucide-react";
+import { Shield, Newspaper } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { 
+  ColoredMediaLogo, 
+  MonochromeMediaLogo,
+  SWISS_MEDIA_PARTNERS 
+} from "@/components/trust/media-logos";
 
-const MEDIA_LOGOS = [
-  { 
-    name: "SRF", 
-    href: "https://www.srf.ch",
-    tooltip: "Schweizer Radio und Fernsehen",
-    color: "hover:text-red-600"
-  },
-  { 
-    name: "TCS", 
-    href: "https://www.tcs.ch",
-    tooltip: "Touring Club Schweiz",
-    color: "hover:text-yellow-600"
-  },
-  { 
-    name: "NZZ", 
-    href: "https://www.nzz.ch",
-    tooltip: "Neue Zürcher Zeitung",
-    color: "hover:text-blue-800"
-  },
-  { 
-    name: "20min", 
-    href: "https://www.20min.ch",
-    tooltip: "20 Minuten",
-    color: "hover:text-blue-600"
-  },
-  { 
-    name: "BLICK", 
-    href: "https://www.blick.ch",
-    tooltip: "Blick",
-    color: "hover:text-red-500"
-  },
-];
+// Top 6 media partners for trust display
+const DISPLAY_LOGOS = ["SRF", "NZZ", "Blick", "20 Minuten", "Watson", "newhome"];
+const MOBILE_LOGOS = ["SRF", "NZZ", "Blick"]; // Top 3 for mobile
+const REMAINING_COUNT = DISPLAY_LOGOS.length - MOBILE_LOGOS.length;
 
 interface KnownFromRowProps {
-  variant?: "below-form" | "cta-adjacent" | "hero-footer";
+  variant?: "below-cta" | "hero-footer" | "compact";
   className?: string;
-  showAlways?: boolean;
 }
 
 export const KnownFromRow = memo(function KnownFromRow({
-  variant = "below-form",
+  variant = "below-cta",
   className,
 }: KnownFromRowProps) {
   
-  // Hero footer: Slim bar at bottom of hero section (inside hero container)
+  // Option 2: Hero footer strip (full-width at bottom of hero)
   if (variant === "hero-footer") {
     return (
       <motion.div
@@ -73,173 +48,111 @@ export const KnownFromRow = memo(function KnownFromRow({
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5, duration: 0.4 }}
         className={cn(
-          "w-full py-4 mt-6",
-          "bg-white/5 backdrop-blur-sm rounded-xl border border-white/10",
+          "py-3 bg-muted/30 border-t border-border/30",
           className
         )}
       >
-        <div className="flex items-center justify-center gap-4 flex-wrap px-4">
-          <div className="flex items-center gap-2 text-white/80">
-            <ShieldCheck className="w-4 h-4 text-primary" />
-            <span className="text-xs font-medium">
-              Vertrauen Sie dem Marktführer. Bekannt aus:
-            </span>
-          </div>
-          
-          <TooltipProvider delayDuration={200}>
-            <div className="flex items-center gap-4">
-              {MEDIA_LOGOS.map((logo) => (
-                <Tooltip key={logo.name}>
-                  <TooltipTrigger asChild>
-                    <a
-                      href={logo.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={cn(
-                        "text-sm font-bold tracking-wide",
-                        "text-white/40 grayscale",
-                        "hover:text-white hover:grayscale-0",
-                        "transition-all duration-300",
-                        "hover:scale-105"
-                      )}
-                    >
-                      {logo.name}
-                    </a>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom" className="text-xs">
-                    <span className="flex items-center gap-1">
-                      Featured on {logo.tooltip}
-                      <ExternalLink className="w-3 h-3" />
-                    </span>
-                  </TooltipContent>
-                </Tooltip>
-              ))}
-            </div>
-          </TooltipProvider>
-        </div>
-      </motion.div>
-    );
-  }
-  
-  // CTA-adjacent: Compact row directly below CTA button
-  if (variant === "cta-adjacent") {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 5 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-        className={cn("py-3", className)}
-      >
-        <TooltipProvider delayDuration={200}>
-          <div className="flex items-center justify-center gap-2 flex-wrap">
-            <ShieldCheck className="w-4 h-4 text-primary shrink-0" />
-            <span className="text-xs text-muted-foreground font-medium">
+        <div className="container flex items-center justify-center gap-4 flex-wrap">
+          {/* Label with icon */}
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <Newspaper className="w-4 h-4 text-primary" />
+            <span className="font-semibold uppercase tracking-wide text-primary">
               Bekannt aus
             </span>
-            
-            {/* Desktop: all logos with tooltips */}
-            <div className="hidden sm:flex items-center gap-3">
-              {MEDIA_LOGOS.map((logo) => (
-                <Tooltip key={logo.name}>
-                  <TooltipTrigger asChild>
-                    <a
-                      href={logo.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={cn(
-                        "text-xs font-bold",
-                        "text-muted-foreground/40 grayscale",
-                        "hover:grayscale-0",
-                        logo.color,
-                        "transition-all duration-200",
-                        "hover:scale-110"
-                      )}
-                    >
-                      {logo.name}
-                    </a>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom" className="text-xs">
-                    {logo.tooltip}
-                  </TooltipContent>
-                </Tooltip>
-              ))}
-            </div>
-            
-            {/* Mobile: 3 logos + "+2" */}
-            <div className="flex sm:hidden items-center gap-2">
-              {MEDIA_LOGOS.slice(0, 3).map((logo) => (
-                <a
-                  key={logo.name}
-                  href={logo.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={cn(
-                    "text-[11px] font-bold",
-                    "text-muted-foreground/40",
-                    logo.color,
-                    "transition-colors"
-                  )}
-                >
-                  {logo.name}
-                </a>
-              ))}
-              <span className="text-[10px] text-muted-foreground/30">+2</span>
-            </div>
           </div>
-        </TooltipProvider>
+          
+          {/* Desktop: All logos monochrome with hover effect */}
+          <div className="hidden md:flex items-center gap-4">
+            {DISPLAY_LOGOS.map((name) => (
+              <div 
+                key={name}
+                className="grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-200 cursor-pointer"
+              >
+                <ColoredMediaLogo name={name} size="sm" />
+              </div>
+            ))}
+          </div>
+          
+          {/* Mobile: 3 logos + "&amp; mehr" */}
+          <div className="flex md:hidden items-center gap-3">
+            {MOBILE_LOGOS.map((name) => (
+              <div 
+                key={name}
+                className="grayscale opacity-70"
+              >
+                <ColoredMediaLogo name={name} size="sm" />
+              </div>
+            ))}
+            <span className="text-xs font-semibold text-muted-foreground">
+              & mehr
+            </span>
+          </div>
+        </div>
       </motion.div>
     );
   }
   
-  // Below form: Default - subtle bar below the form card
+  // Compact variant: Minimal inline display
+  if (variant === "compact") {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4 }}
+        className={cn("flex items-center justify-center gap-2 py-2", className)}
+      >
+        <Shield className="w-3 h-3 text-primary/70 shrink-0" />
+        <span className="text-[10px] text-muted-foreground font-medium">Bekannt aus:</span>
+        <div className="flex items-center gap-2">
+          {MOBILE_LOGOS.map((name) => (
+            <MonochromeMediaLogo key={name} name={name} size="sm" />
+          ))}
+          <span className="text-[10px] font-semibold text-muted-foreground/60">+{REMAINING_COUNT}</span>
+        </div>
+      </motion.div>
+    );
+  }
+  
+  // Option 1 (default): Below CTA in form card
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay: 0.5 }}
-      className={cn("pt-4 mt-4", className)}
+      initial={{ opacity: 0, y: 5 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.4 }}
+      className={cn("mt-3", className)}
     >
-      <Separator className="mb-4 opacity-50" />
-      
-      <TooltipProvider delayDuration={200}>
-        <div className="flex items-center justify-center gap-3 flex-wrap">
-          <div className="flex items-center gap-1.5 text-muted-foreground">
-            <ShieldCheck className="w-4 h-4 text-primary/70" />
-            <span className="text-[11px] font-medium opacity-70">Bekannt aus</span>
-          </div>
-          
-          {/* Horizontal scrollable on mobile, flex on desktop */}
-          <div className="flex items-center gap-4 overflow-x-auto scrollbar-hide">
-            {MEDIA_LOGOS.map((logo) => (
-              <Tooltip key={logo.name}>
-                <TooltipTrigger asChild>
-                  <a
-                    href={logo.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={cn(
-                      "text-[11px] font-bold shrink-0 tracking-wide",
-                      "text-muted-foreground/30 grayscale",
-                      "hover:grayscale-0",
-                      logo.color,
-                      "transition-all duration-200",
-                      "hover:scale-110"
-                    )}
-                  >
-                    {logo.name}
-                  </a>
-                </TooltipTrigger>
-                <TooltipContent side="bottom" className="text-xs">
-                  <span className="flex items-center gap-1">
-                    {logo.tooltip}
-                    <ExternalLink className="w-3 h-3 opacity-50" />
-                  </span>
-                </TooltipContent>
-              </Tooltip>
-            ))}
-          </div>
+      <div className="flex items-center justify-center gap-3 text-xs text-muted-foreground">
+        {/* Shield + Label */}
+        <div className="flex items-center gap-1.5 shrink-0">
+          <Shield className="w-3 h-3 text-primary" />
+          <span className="font-semibold">Bekannt aus:</span>
         </div>
-      </TooltipProvider>
+        
+        {/* Desktop: All 6 logos */}
+        <div className="hidden sm:flex items-center gap-2">
+          {DISPLAY_LOGOS.map((name) => (
+            <div 
+              key={name}
+              className="grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-200"
+            >
+              <ColoredMediaLogo name={name} size="sm" />
+            </div>
+          ))}
+        </div>
+        
+        {/* Mobile: 3 logos + "+3" */}
+        <div className="flex sm:hidden items-center gap-2">
+          {MOBILE_LOGOS.map((name) => (
+            <div 
+              key={name}
+              className="grayscale opacity-60"
+            >
+              <ColoredMediaLogo name={name} size="sm" />
+            </div>
+          ))}
+          <span className="font-semibold text-muted-foreground/60">+{REMAINING_COUNT}</span>
+        </div>
+      </div>
     </motion.div>
   );
 });

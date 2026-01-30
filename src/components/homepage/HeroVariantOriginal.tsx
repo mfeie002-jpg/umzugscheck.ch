@@ -315,7 +315,7 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
                   </Button>
                   
                   {/* Trust integration: Always show KnownFrom below CTA (research-backed) */}
-                  <KnownFromRow variant="cta-adjacent" />
+                  <KnownFromRow variant="below-cta" />
                 </form>
 
                 {/* Trust Badges */}
