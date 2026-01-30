@@ -245,6 +245,8 @@ const InternFlowTesting = lazy(() => import("./pages/InternFlowTesting"));
 const TopFlowsComparison = lazy(() => import("./pages/TopFlowsComparison"));
 const NavigationComparison = lazy(() => import("./pages/NavigationComparison"));
 const V3VariantComparison = lazy(() => import("./pages/V3VariantComparison"));
+// Test pages
+const ComparisonBestPractices = lazy(() => import("./pages/test/ComparisonBestPractices"));
 // Note: RegionalOfferten is imported above with canton pages
 const FuerFirmen = lazy(() => import("./pages/FuerFirmen"));
 const ServicePlaceholder = lazy(() => import("./pages/ServicePlaceholder"));
@@ -932,6 +934,9 @@ const AppRouterContent = () => {
           */}
           <Route path="/internal/test-report/*" element={<TestReport />} />
           <Route path="/public/test-results/*" element={<Navigate to="/internal/test-report" replace />} />
+
+          {/* Test pages for A/B testing and research validation */}
+          <Route path="/test/comparison-best-practices" element={<ComparisonBestPractices />} />
 
           <Route path="*" element={<NotFound />} />
         </AnimatedRoutes>
