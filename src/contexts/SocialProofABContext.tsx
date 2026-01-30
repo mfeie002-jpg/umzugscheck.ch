@@ -1,7 +1,7 @@
 /**
  * A/B Testing Context for Social Proof Sections
  * 
- * CONSOLIDATED: 17 variants (A–Q) - reduced from 26
+ * EXPANDED: 22 variants (A–V) - includes research-based variants
  * 
  * === Standalone Sections (below Hero) ===
  * - Version 1 (A): Original - Colored logos, 15'000+ big number, Video testimonials
@@ -27,12 +27,19 @@
  * - Version 15 (O): Local Trust - Regional badges "Top bewertet" (was V18/R)
  * - Version 16 (P): Data Security - SSL, GDPR, Swiss Made focus (was V19/S)
  * - Version 17 (Q): In-Form Container - Trust bar inside form box (was V22/V)
+ * 
+ * === Research-Based (NEW from PDF Analysis) ===
+ * - Version 18 (R): Scannable Grid - 4-card grid with icons for quick scanning
+ * - Version 19 (S): Hierarchy Strip - Micro-testimonial + core stats side-by-side
+ * - Version 20 (T): Comparison Preview - Visual price comparison table
+ * - Version 21 (U): Mobile-First Tabs - Tab interface for mobile (Numbers/Media/Reviews)
+ * - Version 22 (V): Trust + Pain Combo - Pain points paired with solutions
  */
 
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 
-// Consolidated to 17 variants
-type Variant = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q';
+// Expanded to 22 variants with research-based additions
+type Variant = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 'V';
 
 // Mapping from old variants to new (for migration)
 export const VARIANT_MIGRATION_MAP: Record<string, Variant> = {
@@ -90,7 +97,7 @@ export const useSocialProofAB = () => {
   return context;
 };
 
-const VALID_VARIANTS: Variant[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q'];
+const VALID_VARIANTS: Variant[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V'];
 
 export const SocialProofABProvider = ({ children }: { children: ReactNode }) => {
   const [variant, setVariant] = useState<Variant>(() => {
