@@ -17,7 +17,7 @@ import { useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-// Social Proof variant info - 12 variants (A-L)
+// Social Proof variant info - 15 variants (A-O)
 const socialProofVariants = {
   A: { label: 'V1', title: 'Original', color: 'bg-blue-600' },
   B: { label: 'V2', title: 'Live Dashboard', color: 'bg-emerald-600' },
@@ -31,6 +31,9 @@ const socialProofVariants = {
   J: { label: 'V10', title: 'Trust Ecosystem', color: 'bg-teal-600' },
   K: { label: 'V11', title: 'Minimal Proof Strip', color: 'bg-slate-600' },
   L: { label: 'V12', title: 'Swiss Standards', color: 'bg-indigo-600' },
+  M: { label: 'V13', title: 'Hero Reassurance', color: 'bg-pink-600' },
+  N: { label: 'V14', title: 'Hero Form Footer', color: 'bg-lime-600' },
+  O: { label: 'V15', title: 'Hero Eyebrow', color: 'bg-fuchsia-600' },
 };
 
 // Tab Hint variant info
@@ -75,7 +78,7 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
     setNavVariant(variantId);
   }, [setNavVariant]);
 
-  const handleSPVariantChange = useCallback((sv: 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L') => {
+  const handleSPVariantChange = useCallback((sv: 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O') => {
     setSPVariant(sv);
   }, [setSPVariant]);
 
@@ -287,7 +290,7 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
                   </div>
                   
                   {/* Legend */}
-                  <div className="mt-4 p-3 bg-muted/30 rounded-lg text-xs text-muted-foreground space-y-1">
+                  <div className="mt-4 p-3 bg-muted/30 rounded-lg text-xs text-muted-foreground space-y-1 max-h-32 overflow-y-auto">
                     <div><strong>V1:</strong> Original (farbige Logos)</div>
                     <div><strong>V2:</strong> Live Dashboard + Deal Cards</div>
                     <div><strong>V3:</strong> Trust Hierarchy (Logos oben)</div>
@@ -300,6 +303,9 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
                     <div><strong>V10:</strong> Trust Ecosystem (Grid)</div>
                     <div><strong>V11:</strong> Minimal Proof Strip (Grayscale)</div>
                     <div><strong>V12:</strong> Swiss Standards (Meldepflicht)</div>
+                    <div className="pt-1 border-t border-border/50 mt-1"><strong>V13:</strong> Hero Reassurance (unter CTA)</div>
+                    <div><strong>V14:</strong> Hero Form Footer (in Form-Card)</div>
+                    <div><strong>V15:</strong> Hero Eyebrow (über Headline)</div>
                   </div>
                 </TabsContent>
 

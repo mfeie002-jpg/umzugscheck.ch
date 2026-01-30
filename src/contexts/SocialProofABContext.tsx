@@ -1,7 +1,7 @@
 /**
  * A/B Testing Context for Social Proof Sections
  * 
- * Controls 12 variants (A–L):
+ * Controls 15 variants (A–O):
  * - Version 1 (A): Original - Colored logos, 15'000+ big number, Video testimonials
  * - Version 2 (B): Monochrome logos, Live Dashboard, Deal Cards
  * - Version 3 (C): Trust Hierarchy (Authority → Logic → Emotion, Logos oben)
@@ -14,11 +14,14 @@
  * - Version 10 (J): Trust Ecosystem - Comprehensive trust grid
  * - Version 11 (K): Minimal Proof Strip - Clean grayscale logos only
  * - Version 12 (L): Swiss Standards Bar - "Der Schweizer Standard" headline
+ * - Version 13 (M): Hero Reassurance - Trust logos under left CTA (in Hero)
+ * - Version 14 (N): Hero Form Footer - Trust logos inside form card (in Hero)
+ * - Version 15 (O): Hero Eyebrow - Trust logos above headline (in Hero)
  */
 
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 
-type Variant = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L';
+type Variant = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O';
 
 interface SocialProofABContextType {
   variant: Variant;
@@ -40,7 +43,7 @@ export const SocialProofABProvider = ({ children }: { children: ReactNode }) => 
   const [variant, setVariant] = useState<Variant>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('socialproof-ab-variant');
-      const validVariants: Variant[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+      const validVariants: Variant[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O'];
       return validVariants.includes(saved as Variant) ? (saved as Variant) : 'A';
     }
     return 'A';
@@ -48,7 +51,7 @@ export const SocialProofABProvider = ({ children }: { children: ReactNode }) => 
 
   const toggleVariant = useCallback(() => {
     setVariant(prev => {
-      const variants: Variant[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+      const variants: Variant[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O'];
       const currentIndex = variants.indexOf(prev);
       const next = variants[(currentIndex + 1) % variants.length];
       localStorage.setItem('socialproof-ab-variant', next);
