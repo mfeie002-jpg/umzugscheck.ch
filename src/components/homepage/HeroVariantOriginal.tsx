@@ -22,6 +22,8 @@ import heroFamilyMoving from '@/assets/hero-family-moving.jpg';
 import { LiveActivityBadge } from '@/components/home/LiveActivityBadge';
 import { useFlowPath } from '@/hooks/useUnifiedAB';
 import { swissPostalCodes } from '@/lib/swiss-postal-codes';
+import { HeroTrustBar } from './HeroTrustBar';
+import { useSocialProofAB } from '@/contexts/SocialProofABContext';
 
 const APARTMENT_SIZES = [
   { value: '1', label: '1 Zimmer' },
@@ -39,10 +41,14 @@ const APARTMENT_SIZES = [
 export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
   const navigate = useNavigate();
   const flowPath = useFlowPath();
+  const { variant: spVariant } = useSocialProofAB();
   
   const [fromPostal, setFromPostal] = useState('');
   const [toPostal, setToPostal] = useState('');
   const [apartmentSize, setApartmentSize] = useState('');
+  
+  // Determine if we should show hero-integrated trust based on SP variant
+  const showHeroTrust = ['M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T'].includes(spVariant);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -177,6 +183,11 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
                 </Button>
               </Link>
             </div>
+            
+            {/* Hero-integrated trust bar (Variants M, P-T: below-cta) */}
+            {showHeroTrust && spVariant === 'M' && (
+              <HeroTrustBar variant="below-cta" />
+            )}
           </motion.div>
           
           {/* Right Column - Form Card */}
@@ -282,11 +293,28 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
                     Datenschutz
                   </span>
                 </div>
+                
+                {/* Hero-integrated trust bar (Variant N: inline-form) */}
+                {showHeroTrust && spVariant === 'N' && (
+                  <HeroTrustBar variant="inline-form" />
+                )}
               </div>
             </div>
           </motion.div>
           
         </div>
+        
+        {/* Hero-integrated trust bar below form (Variants O, P-T) */}
+        {showHeroTrust && ['O', 'P', 'S', 'T'].includes(spVariant) && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="mt-6 lg:mt-8"
+          >
+            <HeroTrustBar variant="below-form" />
+          </motion.div>
+        )}
       </div>
     </section>
   );

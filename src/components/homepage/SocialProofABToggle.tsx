@@ -1,6 +1,6 @@
 /**
  * A/B Testing Toggle for Social Proof sections
- * 12 Variants: A-L
+ * 20 Variants: A-T
  * 
  * IMPROVED: Scrollable list for many variants
  */
@@ -27,6 +27,11 @@ const variantInfo = {
   M: { label: 'V13', title: 'Hero Reassurance', color: 'bg-pink-600' },
   N: { label: 'V14', title: 'Hero Form Footer', color: 'bg-lime-600' },
   O: { label: 'V15', title: 'Hero Eyebrow', color: 'bg-fuchsia-600' },
+  P: { label: 'V16', title: 'CTA Adjacent', color: 'bg-sky-600' },
+  Q: { label: 'V17', title: 'Bandwagon Effect', color: 'bg-purple-600' },
+  R: { label: 'V18', title: 'Local Trust', color: 'bg-green-600' },
+  S: { label: 'V19', title: 'Data Security', color: 'bg-stone-600' },
+  T: { label: 'V20', title: 'Safety Architecture', color: 'bg-zinc-700' },
 };
 
 export const SocialProofABToggle = memo(function SocialProofABToggle() {
@@ -51,13 +56,13 @@ export const SocialProofABToggle = memo(function SocialProofABToggle() {
             className="absolute bottom-16 left-0 bg-white dark:bg-card border-2 border-primary rounded-xl shadow-2xl w-80 pointer-events-auto overflow-hidden"
           >
             <div className="flex items-center justify-between p-3 border-b border-border">
-              <h3 className="font-bold text-sm text-foreground">🧪 A/B Test: Social Proof</h3>
+              <h3 className="font-bold text-sm text-foreground">🧪 A/B Test: Social Proof (20)</h3>
               <button onClick={() => setIsExpanded(false)} className="p-1 rounded hover:bg-muted">
                 <X className="w-4 h-4" />
               </button>
             </div>
             
-            <ScrollArea className="h-[320px]">
+            <ScrollArea className="h-[360px]">
               <div className="p-3 space-y-1.5">
                 {(Object.keys(variantInfo) as Array<keyof typeof variantInfo>).map((v) => {
                   const info = variantInfo[v];
@@ -74,7 +79,7 @@ export const SocialProofABToggle = memo(function SocialProofABToggle() {
                     >
                       <span className="flex items-center gap-2">
                         <span className="font-bold">{info.label}</span>
-                        <span className="opacity-80">{info.title}</span>
+                        <span className="opacity-80 text-xs">{info.title}</span>
                       </span>
                       {isActive && <Check className="w-4 h-4" />}
                     </button>
@@ -83,22 +88,11 @@ export const SocialProofABToggle = memo(function SocialProofABToggle() {
               </div>
             </ScrollArea>
             
-            <div className="p-3 border-t border-border text-[10px] text-muted-foreground space-y-0.5 max-h-32 overflow-y-auto">
-              <div><strong>V1:</strong> Original (farbige Logos)</div>
-              <div><strong>V2:</strong> Live Dashboard + Deal Cards</div>
-              <div><strong>V3:</strong> Trust Hierarchy (Logos oben)</div>
-              <div><strong>V4:</strong> Trust Stack (kompakt)</div>
-              <div><strong>V5:</strong> Trust Strip 2.0 (unified)</div>
-              <div><strong>V6:</strong> Verifiable Trust (ZEFIX/UID)</div>
-              <div><strong>V7:</strong> Swiss Infrastructure (eUmzug/Post)</div>
-              <div><strong>V8:</strong> Pain vs Gain (Problem→Lösung)</div>
-              <div><strong>V9:</strong> Hybrid Trust Bar (psychologisch)</div>
-              <div><strong>V10:</strong> Trust Ecosystem (Grid)</div>
-              <div><strong>V11:</strong> Minimal Proof Strip (Grayscale)</div>
-              <div><strong>V12:</strong> Swiss Standards (Meldepflicht)</div>
-              <div className="pt-1 border-t border-border/50 mt-1"><strong>V13:</strong> Hero Reassurance (unter CTA)</div>
-              <div><strong>V14:</strong> Hero Form Footer (in Form-Card)</div>
-              <div><strong>V15:</strong> Hero Eyebrow (über Headline)</div>
+            <div className="p-3 border-t border-border text-[10px] text-muted-foreground space-y-0.5 max-h-40 overflow-y-auto">
+              <div><strong>V1-V6:</strong> Original, Live Dashboard, Trust Hierarchy, Stack, Strip, Verifiable</div>
+              <div><strong>V7-V12:</strong> Swiss Infra, Pain/Gain, Hybrid, Ecosystem, Minimal, Standards</div>
+              <div className="pt-1 border-t border-border/50 mt-1"><strong>V13-V15:</strong> Hero-integriert (Reassurance, Form Footer, Eyebrow)</div>
+              <div><strong>V16-V20:</strong> CTA Adjacent, Bandwagon, Local Trust, Data Security, Safety</div>
             </div>
           </motion.div>
         )}
