@@ -97,7 +97,7 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
   };
 
   return (
-    <section className="relative min-h-[85svh] sm:min-h-[85vh] flex items-center overflow-hidden">
+    <section className="relative sm:min-h-[62vh] lg:min-h-[55vh] flex items-start sm:items-center overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0">
         <img 
@@ -112,7 +112,7 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
       </div>
 
       {/* Content */}
-      <div className="container mx-auto px-4 sm:px-6 py-8 md:py-16 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 pt-2 pb-3 sm:py-7 md:py-8 lg:py-8 relative z-10">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           
           {/* Left Column - Text & CTAs */}
