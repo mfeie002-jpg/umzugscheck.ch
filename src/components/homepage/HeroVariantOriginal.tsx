@@ -188,8 +188,8 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
           >
             <div className="bg-card rounded-2xl shadow-xl border border-border p-5 md:p-8 relative">
               {/* Best Price Badge */}
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                <span className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-secondary text-white text-xs font-bold rounded-full shadow-lg">
+              <div className="absolute -top-3 left-0 right-0 flex justify-center">
+                <span className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-secondary text-white text-xs font-bold rounded-full shadow-lg whitespace-nowrap">
                   <Trophy className="w-3.5 h-3.5" />
                   Bester Preis garantiert
                 </span>
