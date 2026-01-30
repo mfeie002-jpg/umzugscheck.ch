@@ -1,6 +1,8 @@
 /**
  * Smart Router Types
  * Based on Gemini UX Audit recommendations
+ * 
+ * RELO-OS 2026: Enhanced with elevator & special items for better intent capture
  */
 
 export type SmartRouterStep = 
@@ -25,6 +27,12 @@ export interface SmartRouterData {
   moveDate: string;
   flexibleDate: boolean;
   
+  // RELO-OS 2026: Enhanced intent capture
+  hasElevatorFrom: boolean;      // Lift vorhanden (Abholadresse)?
+  hasElevatorTo: boolean;        // Lift vorhanden (Lieferadresse)?
+  hasSpecialItems: boolean;      // Klavier/Spezialgut vorhanden?
+  specialItemTypes: string[];    // ['piano', 'safe', 'art', 'antiques', 'aquarium']
+  
   // Step 3: Method selection
   selectedMethod: 'video' | 'form' | null;
   
@@ -45,6 +53,16 @@ export interface SmartRouterPriceEstimate {
   savings: number;
   isHighValue: boolean; // >2.5 rooms = high value = push video
 }
+
+// Special item types for intent capture
+export const SPECIAL_ITEM_TYPES = [
+  { id: 'piano', label: 'Klavier/Flügel', icon: '🎹' },
+  { id: 'safe', label: 'Tresor', icon: '🔐' },
+  { id: 'art', label: 'Kunst/Gemälde', icon: '🖼️' },
+  { id: 'antiques', label: 'Antiquitäten', icon: '🏺' },
+  { id: 'aquarium', label: 'Aquarium', icon: '🐠' },
+  { id: 'plants', label: 'Grosse Pflanzen', icon: '🌿' },
+] as const;
 
 // Routing logic thresholds
 export const SMART_ROUTER_CONFIG = {

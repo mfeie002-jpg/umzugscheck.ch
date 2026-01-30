@@ -24,24 +24,24 @@ export const NewHero = () => {
       {/* Content */}
       <div className="container mx-auto px-4 py-12 md:py-16 relative z-10">
         <div className="max-w-6xl mx-auto text-center">
-          {/* Main Headline - Mobile Optimized (max 3 lines) */}
+          {/* Main Headline - Relo-OS 2026 Messaging */}
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight text-white mb-4 md:mb-6"
           >
-            Dein stressfreier Umzug beginnt hier
+            Ihr Umzug. Unser System. Zero Stress.
           </motion.h1>
 
-          {/* Subtitle */}
+          {/* Subtitle - Zero-UI Messaging */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
             className="text-lg md:text-xl text-white/95 mb-6 md:mb-8 max-w-2xl mx-auto"
           >
-            Vergleiche geprüfte Schweizer Umzugsfirmen & erhalte kostenlose Offerten in 2 Minuten
+            KI-gestützte Festpreis-Garantie in 2 Minuten. Behörden, Reinigung, Tracking – wir orchestrieren alles.
           </motion.p>
 
           {/* Trust Row - Directly under subtitle */}
