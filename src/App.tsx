@@ -342,6 +342,10 @@ const GoldenFlowV10 = lazy(() => import("./pages/GoldenFlowV10"));
 const V10SmartRouter = lazy(() => import("./pages/V10SmartRouter"));
 const GoldenDemo = lazy(() => import("./pages/GoldenDemo"));
 
+// Paid Landing Pages (Google Ads)
+const ChampionQuickFlow = lazy(() => import("./pages/paid/ChampionQuickFlow"));
+const ChampionTrustFirst = lazy(() => import("./pages/paid/ChampionTrustFirst"));
+
 // Customer pages
 const KundenOnboarding = lazy(() => import("./pages/KundenOnboarding"));
 
@@ -745,6 +749,10 @@ const AppRouterContent = () => {
           <Route path="/chatgpt-flow-2" element={<ChatGPTFlow2 />} />
           <Route path="/chatgpt-flow-3" element={<ChatGPTFlow3 />} />
           <Route path="/chatgpt-export" element={<ChatGPTExport />} />
+          
+          {/* Paid Landing Pages (Google Ads Champions) */}
+          <Route path="/champion-quick-flow" element={<ChampionQuickFlow />} />
+          <Route path="/champion-trust-first" element={<ChampionTrustFirst />} />
           
           {/* Canonical 3-Step Flow (Best-of V6a/V8a/V9) */}
           <Route path="/umzugsofferten-canonical" element={<CanonicalOffertenFlow />} />
