@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 80" width="240" height="80">
+  <!-- Placeholder: Replace with official Watson logo -->
+  <rect width="240" height="80" fill="transparent"/>
+  <circle cx="90" cy="40" r="14" fill="#FF6B35"/>
+  <text x="90" y="45" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF">W</text>
+  <text x="115" y="47" text-anchor="start" font-family="system-ui, sans-serif" font-size="18" font-weight="700" fill="#1A1A1A">watson</text>
+</svg>
