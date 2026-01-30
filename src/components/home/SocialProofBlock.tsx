@@ -44,12 +44,12 @@ const reviews = [
 
 // Media logos with brand colors - NOT greyed out
 const mediaLogos = [
-  { name: "SRF", color: "#C8102E" },
-  { name: "NZZ", color: "#1a1a1a" },
-  { name: "20 Minuten", color: "#E3000F" },
-  { name: "Blick", color: "#E30613" },
-  { name: "Watson", color: "#1a1a1a" },
-  { name: "TCS", color: "#0050A8" },
+  { name: "SRF", src: "/logos/srf.png", color: "#C8102E" },
+  { name: "NZZ", src: "/logos/nzz.png", color: "#1a1a1a" },
+  { name: "20 Minuten", src: "/logos/20min.png", color: "#003399" },
+  { name: "Blick", src: "/logos/blick.png", color: "#E30613" },
+  { name: "Watson", src: "/logos/watson.png", color: "#1a1a1a" },
+  { name: "TCS", src: "/logos/tcs.png", color: "#0050A8" },
 ];
 
 export const SocialProofBlock = () => {
@@ -144,18 +144,19 @@ export const SocialProofBlock = () => {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.05 }}
                 whileHover={{ scale: 1.08, y: -2 }}
-                className="px-4 py-2.5 rounded-lg bg-card border border-border shadow-sm hover:shadow-md transition-all cursor-pointer"
+                className="px-4 py-2.5 rounded-lg bg-card border border-border shadow-sm hover:shadow-md transition-all cursor-pointer flex items-center justify-center"
                 style={{ 
                   background: `linear-gradient(135deg, ${logo.color}12, ${logo.color}06)`,
                   borderColor: `${logo.color}25`
                 }}
               >
-                <span 
-                  className="font-bold text-sm md:text-base"
-                  style={{ color: logo.color }}
-                >
-                  {logo.name}
-                </span>
+                <img
+                  src={logo.src}
+                  alt={logo.name + ' Logo'}
+                  className="h-7 md:h-8 w-auto object-contain max-w-[90px]"
+                  loading="lazy"
+                  style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.04))' }}
+                />
               </motion.div>
             ))}
           </div>

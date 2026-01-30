@@ -41,6 +41,7 @@ const EnhancedFAQ = lazy(() => import("@/components/homepage/EnhancedFAQ").then(
 const EnhancedFinalCTA = lazy(() => import("@/components/homepage/EnhancedFinalCTA").then(m => ({ default: m.EnhancedFinalCTA })));
 const CookieConsentBanner = lazy(() => import("@/components/CookieConsentBanner").then(m => ({ default: m.CookieConsentBanner })));
 const AlternativeContactSection = lazy(() => import("@/components/homepage/AlternativeContactSection").then(m => ({ default: m.AlternativeContactSection })));
+const SpotlightTestimonial = lazy(() => import("@/components/homepage/SpotlightTestimonial").then(m => ({ default: m.SpotlightTestimonial })));
 // Lazy load mobile sticky bar
 const MobileStickyBar = lazy(() => import("@/components/homepage/MobileStickyBar").then(m => ({ default: m.MobileStickyBar })));
 
@@ -124,6 +125,11 @@ const Index = () => {
           {/* 2. TRUST RIBBON - BEKANNT AUS + 15'000+ Stats (A/B TESTED) */}
           <Suspense fallback={<TrustSkeleton />}>
             <TrustRibbonAB variant="full" />
+          </Suspense>
+
+          {/* 3. Spotlight Testimonial - Dr. med. Keller */}
+          <Suspense fallback={<TestimonialsSkeleton />}>
+            <SpotlightTestimonial />
           </Suspense>
           
           {/* 4. How it works - simplified process */}
