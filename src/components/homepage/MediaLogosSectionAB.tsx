@@ -1,7 +1,7 @@
 /**
  * A/B Wrapper for MediaLogosSection (Trust Bar)
  * 
- * CONSOLIDATED: 17 variants (A-Q)
+ * EXPANDED: 22 variants (A-V) - includes research-based variants
  * 
  * === Standalone Sections ===
  * - V1 (A): Original - Swiss Trust Icons
@@ -23,6 +23,13 @@
  * - V15 (O): Local Trust
  * - V16 (P): Data Security
  * - V17 (Q): In-Form Container
+ * 
+ * === Research-Based (NEW) ===
+ * - V18 (R): Scannable Grid
+ * - V19 (S): Hierarchy Strip
+ * - V20 (T): Comparison Preview
+ * - V21 (U): Mobile-First Tabs
+ * - V22 (V): Trust + Pain Combo
  */
 
 import { memo } from 'react';
@@ -37,6 +44,11 @@ import { MediaLogosSectionVariantG } from './MediaLogosSectionVariantG';
 import { MediaLogosSectionVariantK } from './MediaLogosSectionVariantK';
 import { MediaLogosSectionVariantM } from './MediaLogosSectionVariantM';
 import { MediaLogosSectionVariantQ } from './MediaLogosSectionVariantQ';
+import { MediaLogosSectionVariantU } from './MediaLogosSectionVariantU';
+import { MediaLogosSectionVariantV } from './MediaLogosSectionVariantV';
+import { MediaLogosSectionVariantW } from './MediaLogosSectionVariantW';
+import { MediaLogosSectionVariantX } from './MediaLogosSectionVariantX';
+import { MediaLogosSectionVariantY } from './MediaLogosSectionVariantY';
 
 export const MediaLogosSectionAB = memo(function MediaLogosSectionAB() {
   const { variant } = useSocialProofAB();
@@ -83,6 +95,23 @@ export const MediaLogosSectionAB = memo(function MediaLogosSectionAB() {
     case 'Q':
       // In-Form Container → minimal below
       return <MediaLogosSectionVariantM />;
+    
+    // === Research-Based (R-V) NEW ===
+    case 'R':
+      // V18: Scannable Grid
+      return <MediaLogosSectionVariantU />;
+    case 'S':
+      // V19: Hierarchy Strip
+      return <MediaLogosSectionVariantV />;
+    case 'T':
+      // V20: Comparison Preview
+      return <MediaLogosSectionVariantW />;
+    case 'U':
+      // V21: Mobile-First Tabs
+      return <MediaLogosSectionVariantX />;
+    case 'V':
+      // V22: Trust + Pain Combo
+      return <MediaLogosSectionVariantY />;
     
     // Default: Original
     default:
