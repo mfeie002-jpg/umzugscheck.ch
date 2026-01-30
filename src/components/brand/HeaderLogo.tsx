@@ -84,7 +84,7 @@ export function HeaderLogo({ className, size = "md", onClick, showTagline = true
       {showTagline && (
         <span
           className={cn(
-            "block font-semibold leading-none pl-0.5 -mt-3 sm:-mt-2.5 text-muted-foreground/80",
+            "block font-semibold leading-none pl-0.5 -mt-2.5 sm:-mt-1 text-muted-foreground/80",
             s.tagline
           )}
         >
