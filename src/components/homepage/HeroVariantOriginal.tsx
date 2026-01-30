@@ -314,10 +314,8 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                   
-                  {/* V26 (Z): KnownFrom directly after CTA button */}
-                  {showKnownFrom && (
-                    <KnownFromRow variant="cta-adjacent" />
-                  )}
+                  {/* Trust integration: Always show KnownFrom below CTA (research-backed) */}
+                  <KnownFromRow variant="cta-adjacent" />
                 </form>
 
                 {/* Trust Badges */}
