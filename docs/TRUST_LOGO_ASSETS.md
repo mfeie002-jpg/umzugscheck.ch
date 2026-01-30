@@ -2,6 +2,27 @@
 
 > **WICHTIG:** Logos dürfen NICHT KI-generiert oder nachgebaut werden. Nur offizielle Assets verwenden!
 
+## ✅ Merge-Checkliste
+
+Vor jedem Merge abhaken:
+
+- [ ] Alle referenzierten Logos existieren physisch in `/public/logos/trust/`
+- [ ] Pfade im Code == Pfade im Repo
+- [ ] SVGs rendern lokal & im Preview
+- [ ] Keine 404s im Network Tab
+- [ ] Mobile View geprüft (Logos nicht abgeschnitten)
+- [ ] Fail-Safe `onError` in allen `<img>` Tags
+
+## Aktuelle Assets (Stand: 2026-01-30)
+
+```bash
+ls public/logos/trust/
+# astag.svg, blick.svg, die-mobiliar.svg, die-post.svg, eumzugch.svg
+# mieterverband-schweiz.svg, nzz.svg, raiffeisen.svg, srf.svg
+# swiss-hosting.svg, swiss-label.svg, trusted-shops.svg, twint.svg
+# watson.svg, zkb.svg
+```
+
 ## Asset-Spezifikationen
 
 | Eigenschaft | Wert |
