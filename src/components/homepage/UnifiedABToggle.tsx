@@ -24,6 +24,7 @@ const socialProofVariants = {
   C: { label: 'V3', title: 'Trust Hierarchy', color: 'bg-amber-600' },
   D: { label: 'V4', title: 'Trust Stack', color: 'bg-violet-600' },
   E: { label: 'V5', title: 'Trust Strip 2.0', color: 'bg-rose-600' },
+  F: { label: 'V6', title: 'Verifiable Trust', color: 'bg-cyan-600' },
 };
 
 // Tab Hint variant info
@@ -68,7 +69,7 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
     setNavVariant(variantId);
   }, [setNavVariant]);
 
-  const handleSPVariantChange = useCallback((sv: 'A' | 'B' | 'C' | 'D' | 'E') => {
+  const handleSPVariantChange = useCallback((sv: 'A' | 'B' | 'C' | 'D' | 'E' | 'F') => {
     setSPVariant(sv);
   }, [setSPVariant]);
 
@@ -286,6 +287,7 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
                     <div><strong>V3:</strong> Trust Hierarchy (Logos oben)</div>
                     <div><strong>V4:</strong> Trust Stack (kompakt)</div>
                     <div><strong>V5:</strong> Trust Strip 2.0 (unified)</div>
+                    <div><strong>V6:</strong> Verifiable Trust (ZEFIX/UID/nDSG)</div>
                   </div>
                 </TabsContent>
 

@@ -33,6 +33,14 @@ const CompanyComparisonSection = lazy(() => import("@/components/homepage/Compan
 const AIVideoCalculatorSection = lazy(() => import("@/components/homepage/AIVideoCalculatorSection").then(m => ({ default: m.AIVideoCalculatorSection })));
 const EnhancedServicesGrid = lazy(() => import("@/components/homepage/EnhancedServicesGrid").then(m => ({ default: m.EnhancedServicesGrid })));
 const CostExamplesSection = lazy(() => import("@/components/homepage/CostExamplesSection").then(m => ({ default: m.CostExamplesSection })));
+// NEW: Trust & Conversion Sections
+const QualityStandardsBar = lazy(() => import("@/components/homepage/QualityStandardsBar").then(m => ({ default: m.QualityStandardsBar })));
+const PainGainSection = lazy(() => import("@/components/homepage/PainGainSection").then(m => ({ default: m.PainGainSection })));
+const GuaranteesSection = lazy(() => import("@/components/homepage/GuaranteesSection").then(m => ({ default: m.GuaranteesSection })));
+const ChecklistTeaser = lazy(() => import("@/components/homepage/ChecklistTeaser").then(m => ({ default: m.ChecklistTeaser })));
+const SEOContentAccordion = lazy(() => import("@/components/homepage/SEOContentAccordion").then(m => ({ default: m.SEOContentAccordion })));
+// NEW: Moving Process Guide (Umzugsprozess Schweiz)
+const MovingProcessGuide = lazy(() => import("@/components/homepage/MovingProcessGuide").then(m => ({ default: m.MovingProcessGuide })));
 // A/B tested components
 const TrustRibbonAB = lazy(() => import("@/components/trust/TrustRibbonAB").then(m => ({ default: m.TrustRibbonAB })));
 const EnhancedTestimonialsAB = lazy(() => import("@/components/homepage/EnhancedTestimonialsAB").then(m => ({ default: m.EnhancedTestimonialsAB })));
@@ -132,57 +140,82 @@ const Index = () => {
             <SpotlightTestimonial />
           </Suspense>
           
-          {/* 4. How it works - simplified process */}
+          {/* 3. NEW: Quality Standards Bar - "Trust Bar 2" (ASTAG, Swiss Made, etc.) */}
+          <Suspense fallback={null}>
+            <QualityStandardsBar />
+          </Suspense>
+          
+          {/* 4. NEW: Pain vs Gain Section - Problem Solver */}
+          <Suspense fallback={<SectionSkeleton height="300px" />}>
+            <PainGainSection />
+          </Suspense>
+          
+          {/* 5. How it works - simplified process */}
           <Suspense fallback={<SectionSkeleton height="350px" />}>
             <EnhancedHowItWorks />
           </Suspense>
           
-          {/* 5. Company comparison - core value */}
+          {/* 6. Company comparison - core value */}
           <Suspense fallback={<CompanyCardsSkeleton count={3} />}>
             <CompanyComparisonSection />
           </Suspense>
           
-          {/* 6. KI Video Calculator - Innovation highlight */}
+          {/* 7. KI Video Calculator - Innovation highlight */}
           <Suspense fallback={<SectionSkeleton height="500px" />}>
             <AIVideoCalculatorSection />
           </Suspense>
+          
+          {/* 8. NEW: Guarantees Section - Risk Reversal */}
+          <Suspense fallback={<SectionSkeleton height="350px" />}>
+            <GuaranteesSection />
+          </Suspense>
 
-          {/* 7. Services grid */}
+          {/* 9. Services grid */}
           <Suspense fallback={<SectionSkeleton height="400px" variant="cards" />}>
             <EnhancedServicesGrid />
           </Suspense>
           
-          {/* 8. Cost Examples - Preisbeispiele */}
+          {/* 10. Cost Examples - Preisbeispiele */}
           <Suspense fallback={<SectionSkeleton height="500px" />}>
             <CostExamplesSection />
           </Suspense>
           
-          {/* 9. Testimonials - Video cards with concrete savings (A/B TESTED) */}
+          {/* 11. Testimonials - Video cards with concrete savings (A/B TESTED) */}
           <Suspense fallback={<TestimonialsSkeleton />}>
             <EnhancedTestimonialsAB />
           </Suspense>
           
-          {/* 10. Removed duplicate TrustRibbon - now only at top */}
-          
-          {/* 9. Alternative Contact - Phone/WhatsApp/Email */}
+          {/* 12. Alternative Contact - Phone/WhatsApp/Email */}
           <Suspense fallback={<SectionSkeleton height="200px" />}>
             <AlternativeContactSection />
           </Suspense>
           
-          {/* 10. Regions */}
+          {/* 13. Regions */}
           <Suspense fallback={<SectionSkeleton height="300px" />}>
             <EnhancedRegionsGrid />
           </Suspense>
           
-
-          {/* 12. Media logos - trust signals - moved inline to footer */}
+          {/* 14. NEW: Checklist Lead Magnet */}
+          <Suspense fallback={<SectionSkeleton height="300px" />}>
+            <ChecklistTeaser />
+          </Suspense>
           
-          {/* 13. FAQ */}
+          {/* 15. NEW: Moving Process Guide - Umzugsprozess Schweiz */}
+          <Suspense fallback={<SectionSkeleton height="600px" />}>
+            <MovingProcessGuide />
+          </Suspense>
+
+          {/* 16. FAQ */}
           <Suspense fallback={<SectionSkeleton height="400px" />}>
             <EnhancedFAQ />
           </Suspense>
           
-          {/* 14. Final CTA */}
+          {/* 16. NEW: SEO Content Accordion */}
+          <Suspense fallback={<SectionSkeleton height="400px" />}>
+            <SEOContentAccordion />
+          </Suspense>
+          
+          {/* 17. Final CTA */}
           <Suspense fallback={<SectionSkeleton height="300px" />}>
             <EnhancedFinalCTA />
           </Suspense>

@@ -1,145 +1,177 @@
 
+# Optimierung der Trust-Section (Homepage)
 
-# Plan: 4 Zusätzliche ChatGPT Knowledge-Dokumente erstellen
+## Zusammenfassung
+Die aktuelle Kombination aus **MediaLogosSectionVariantB** (Live-Ticker + Stats) und **QualityStandardsBar** (11 Partner-Logos) ist bereits die stärkste Variante. Dieser Plan optimiert sie gemäss Swiss Trust Triumvirate mit:
 
-## Ziel
-Erstellung von 4 weiteren Markdown-Dateien (zusätzlich zum bereits erstellten `AI_BRIEFING.md`) für das ChatGPT "Project Knowledge" Upload:
-
-1. **ARCHITECTURE.md** – Technische Architektur & Stack
-2. **REGIONS_DATABASE.md** – Alle 26 Kantone mit Preisen & SEO
-3. **PROMPT_LIBRARY.md** – 10 Premium ChatGPT Prompts vollständig
-4. **FLOW_VARIANTS.md** – 17 Navigation-Varianten & A/B Testing
+1. **Psychologisch optimierte Logo-Reihenfolge** (Risiko → Infrastruktur → Zahlung)
+2. **Transparenz-Tooltips** für Statistiken (vermeidet "Marketing-Orakel" Kritik)
+3. **Verbesserter Verification-CTA** ("Alle Partner verifizierbar ↗")
 
 ---
 
-## Datei 1: docs/ARCHITECTURE.md (~250 Zeilen)
+## Änderungen im Detail
 
-### Inhalt
-- **Frontend Stack**: React 18, TypeScript, Vite, Tailwind, shadcn/ui
-- **State Management**: TanStack Query, React Context
-- **Routing**: React Router v6 mit Lazy Loading
-- **Backend**: Supabase (Lovable Cloud)
-- **Edge Functions**: Kategorisierte Liste aller 80+ Functions
-- **Verzeichnisstruktur**: Detailliertes Tree-Diagram
-- **Key Files**: Pfade zu wichtigen Dateien
-- **Design System**: Farben, Typografie, Komponenten
-- **Performance**: Code-Splitting, Lazy Loading, PWA
+### 1. QualityStandardsBar.tsx - Logo-Reihenfolge optimieren
 
----
-
-## Datei 2: docs/REGIONS_DATABASE.md (~400 Zeilen)
-
-### Inhalt
-- **Übersicht**: Alle 26 Kantone mit Kürzeln
-- **Datenstruktur**: TypeScript Interface `RegionData`
-- **Preis-Koeffizienten**: Tabelle aller Kantone
-- **Preis-Matrix**: Small/Medium/Large pro Kanton
-- **Popular Regions**: Die 8 wichtigsten Kantone
-- **Detaildaten für Top-Kantone**:
-  - Zürich (Koeffizient 1.18)
-  - Zug (Koeffizient 1.0)
-  - Bern (Koeffizient 1.08)
-  - Basel-Stadt (Koeffizient 1.12)
-  - Luzern (Koeffizient 1.05)
-  - Genf (Koeffizient 1.15)
-- **SEO-Struktur**: Title, Description, H1, Canonical
-- **Lokale Tipps**: Unique Content pro Kanton
-- **Autocomplete Places**: PLZ + Städte
-
----
-
-## Datei 3: docs/PROMPT_LIBRARY.md (~500 Zeilen)
-
-### Inhalt
-Vollständige 10 Premium ChatGPT Prompts mit:
-
-1. **Cross-Validation Matrix** (P0)
-2. **Friction Point Deep-Dive** (P0)
-3. **Conversion Psychology Audit** (P0)
-4. **Mobile Excellence Check** (P0)
-5. **Copy Teardown** (P1)
-6. **Competitor Benchmark Template** (P1)
-7. **A/B Test Hypothesis Generator** (P1)
-8. **V10 Ultimate Blueprint** (P0)
-9. **Accessibility Quick-Audit** (P1)
-10. **Implementation Roadmap** (P0)
-
-Pro Prompt:
-- ID, Titel, Kategorie, Priorität
-- Beschreibung
-- Vollständiger Prompt-Text
-- Verwendungsempfehlung
-
-### Bonus
-- Empfohlene Reihenfolge für Analyse
-- Kombinations-Tipps
-
----
-
-## Datei 4: docs/FLOW_VARIANTS.md (~350 Zeilen)
-
-### Inhalt
-- **Übersicht**: 17 Navigation-Varianten
-- **Golden Flow Konzept**: V10 Smart Router + V10 Navigation
-- **Varianten-Tabelle**: ID, Name, Beschreibung, Labels
-- **Detaillierte Varianten**:
-  - V1: Original (Status Quo)
-  - V2: Ultimate (Lovable)
-  - V3: ChatGPT Concierge
-  - V4: Strategic Report
-  - V5: Mobile-First Archetyp
-  - V6: Conversion-Killer
-  - V7: User Journey Split
-  - V8: Zielgruppen-Split
-  - V9: Allgemeines Menu-Konzept
-  - V10: Conversion-Killer Final
-  - V11: Simpel & Clean
-  - V12: Optimiert (Best-of-Breed)
-  - V13: Mobile-First Optimiert
-  - V14: 2026 Design
-  - V15: ChatGPT Feedback v15
-  - V16: SEO-Optimiert 2026
-  - V17: NavigationV17 (Neu)
-- **Technische Details**:
-  - URL-Parameter: `?nav=variant-b`
-  - localStorage Key
-  - Event Handling
-  - Context Provider
-- **Testing-Protokoll**: Wie A/B-Tests durchführen
-
----
-
-## Technische Umsetzung
-
-4 neue Dateien erstellen:
-
+**Aktuelle Reihenfolge:**
 ```text
-docs/ARCHITECTURE.md
-docs/REGIONS_DATABASE.md
-docs/PROMPT_LIBRARY.md
-docs/FLOW_VARIANTS.md
+Trusted Shops → Swiss Label → Die Post → ASTAG → eUmzugCH → 
+Mieterverband → Die Mobiliar → Raiffeisen → ZKB → TWINT → Swiss Hosting
+```
+
+**Neue Reihenfolge (Conversion-optimiert):**
+```text
+Die Mobiliar → Die Post → eUmzugCH → TWINT → ZKB → Raiffeisen → 
+Mieterverband → ASTAG → Swiss Label → Trusted Shops → Swiss Hosting
+```
+
+**Begründung:**
+- **Pos 1-3**: Risikoreduktion (Versicherung, Infrastruktur, Behörden)
+- **Pos 4-6**: Zahlungssicherheit (TWINT, Banken)
+- **Pos 7-11**: Ergänzende Authority (Konsumentenschutz, Verbände, Zertifizierungen)
+
+### 2. MediaLogosSectionVariantB.tsx - Tooltips für Statistiken
+
+**Problem:** "Ø CHF 620 gespart" wirkt unglaubwürdig ohne Quelle.
+
+**Lösung:** Tooltip mit Erklärung hinzufügen:
+```tsx
+<Tooltip>
+  <TooltipTrigger>
+    <span>Ø CHF 620</span>
+    <Info className="w-3 h-3 ml-1 opacity-50" />
+  </TooltipTrigger>
+  <TooltipContent>
+    Basierend auf 15'000+ Preisvergleichen seit 2019. 
+    Durchschnittliche Differenz zwischen teuerstem und 
+    günstigstem Angebot.
+  </TooltipContent>
+</Tooltip>
+```
+
+### 3. QualityStandardsBar.tsx - Verbesserter Footer-CTA
+
+**Aktuell:**
+```text
+"Klicken zur Verifizierung • Alle Partner geprüft"
+```
+
+**Neu:**
+```tsx
+<a href="/partner" className="hover:text-primary">
+  Alle Partner verifizierbar ↗
+</a>
+```
+
+### 4. TRUST Konstanten erweitern (trust.ts)
+
+Neue Felder für Transparenz:
+```typescript
+export const TRUST = {
+  // ... bestehende Felder
+  
+  // Savings mit Disclaimer
+  savingsAverage: "620",
+  savingsDisclaimer: "Basierend auf 15'000+ Preisvergleichen seit 2019",
+  
+  // Live Ticker Städte (zentral verwaltet)
+  liveTickerCities: [
+    { city: "Zürich", savingsRange: [450, 750] },
+    { city: "Bern", savingsRange: [350, 550] },
+    { city: "Basel", savingsRange: [600, 950] },
+    { city: "Luzern", savingsRange: [280, 450] },
+  ],
+} as const;
 ```
 
 ---
 
-## Zusammenfassung aller 5 Dateien
+## Betroffene Dateien
 
-| Datei | Zeilen | Fokus |
-|-------|--------|-------|
-| AI_BRIEFING.md | ~600 | Vollständiges Projekt-Briefing |
-| ARCHITECTURE.md | ~250 | Tech Stack & Backend |
-| REGIONS_DATABASE.md | ~400 | 26 Kantone mit Preisen |
-| PROMPT_LIBRARY.md | ~500 | 10 Premium Prompts |
-| FLOW_VARIANTS.md | ~350 | 17 A/B-Test Varianten |
-
-**Total: ~2100 Zeilen Dokumentation für ChatGPT Project Knowledge**
+| Datei | Änderung |
+|-------|----------|
+| `src/components/homepage/QualityStandardsBar.tsx` | Logo-Reihenfolge, Footer-CTA |
+| `src/components/homepage/MediaLogosSectionVariantB.tsx` | Tooltips für Stats |
+| `src/content/trust.ts` | Neue Disclaimer-Felder |
 
 ---
 
-## Ergebnis
+## Technische Details
 
-Nach Genehmigung werden alle 4 Dateien erstellt und sind bereit für:
-1. Upload zu ChatGPT Project
-2. Vollständiges Onboarding einer neuen AI
-3. Konsistente Dokumentation im Repository
+### QualityStandardsBar.tsx - Neue trustLogos Array-Reihenfolge
 
+```typescript
+const trustLogos = [
+  // Pos 1: Risikoreduktion - Versicherung
+  { id: "mobiliar", name: "Die Mobiliar", subtitle: "Versicherung", ... },
+  
+  // Pos 2-3: Schweizer Infrastruktur
+  { id: "post", name: "Die Post", subtitle: "Nachsendeauftrag", ... },
+  { id: "eumzug", name: "eUmzugCH", subtitle: "Offizielle Meldung", ... },
+  
+  // Pos 4-6: Zahlungssicherheit
+  { id: "twint", name: "TWINT", subtitle: "Zahlung", ... },
+  { id: "zkb", name: "ZKB", subtitle: "Kantonalbank", ... },
+  { id: "raiffeisen", name: "Raiffeisen", subtitle: "Schweizer Bank", ... },
+  
+  // Pos 7-11: Ergänzende Authority
+  { id: "mieterverband", name: "Mieterverband", subtitle: "Mieter-Schutz", ... },
+  { id: "astag", name: "ASTAG", subtitle: "Branchenverband", ... },
+  { id: "swiss-label", name: "Swiss Label", subtitle: "Qualitäts-Siegel", ... },
+  { id: "trusted-shops", name: "Trusted Shops", subtitle: "Käuferschutz", ... },
+  { id: "swiss-hosting", name: "Swiss Hosting", subtitle: "Daten in CH", ... },
+];
+```
+
+### MediaLogosSectionVariantB.tsx - Stats mit Tooltips
+
+```tsx
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Info } from "lucide-react";
+
+// Im Stats-Row:
+<TooltipProvider>
+  <Tooltip>
+    <TooltipTrigger asChild>
+      <div className="flex items-center justify-center gap-2 mb-1 cursor-help">
+        <TrendingDown className="w-4 h-4 text-primary" />
+        <span className="text-xl md:text-2xl font-bold text-foreground">
+          Ø CHF {TRUST.savingsAverage}
+        </span>
+        <Info className="w-3.5 h-3.5 text-muted-foreground" />
+      </div>
+    </TooltipTrigger>
+    <TooltipContent side="bottom" className="max-w-[250px]">
+      <p className="text-xs">{TRUST.savingsDisclaimer}</p>
+    </TooltipContent>
+  </Tooltip>
+</TooltipProvider>
+```
+
+---
+
+## Mobile-First Anpassungen
+
+- Tooltips werden auf Mobile zu "tap to reveal" (bereits Standard bei Radix)
+- Logo-Grid bleibt `flex-wrap` für natürlichen Umbruch
+- Touch-Targets bleiben min. 44x44px
+
+---
+
+## Keine Breaking Changes
+
+- A/B-Testing-System bleibt intakt
+- Andere Varianten (C, D, E, F) werden nicht verändert
+- `MediaLogosSectionAB` Switch-Logic unverändert
+
+---
+
+## Erwarteter Impact
+
+| Metrik | Erwartung |
+|--------|-----------|
+| Trust-Wahrnehmung | ↑ durch Risiko-First Reihenfolge |
+| Credibility | ↑ durch transparente Disclaimers |
+| CTR auf Partner | ↑ durch klaren Verification-Link |
+| Bounce Rate | ↓ durch weniger "Marketing-Orakel" Skepsis |
