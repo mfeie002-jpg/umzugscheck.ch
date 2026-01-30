@@ -1,7 +1,7 @@
 /**
  * A/B Wrapper for MediaLogosSection (Trust Bar)
  * 
- * Renders Variant A-O based on Social Proof A/B context:
+ * Renders Variant A-T based on Social Proof A/B context:
  * - V1 (A): Original - Swiss Trust Icons (Mobiliar, ASTAG, Handelsregister, Google)
  * - V2 (B): Live Dashboard - Dynamic stats + media logos
  * - V3 (C): Trust Hierarchy - Authority logos oben (NZZ, SRF, etc.)
@@ -17,6 +17,11 @@
  * - V13 (M): Hero Reassurance - Trust in Hero, minimal below
  * - V14 (N): Hero Form Footer - Trust in form, minimal below
  * - V15 (O): Hero Eyebrow - Trust above headline, complementary below
+ * - V16 (P): CTA Adjacent - Trust badges next to submit buttons
+ * - V17 (Q): Bandwagon Effect - Live activity simulation
+ * - V18 (R): Local Trust - Regional badges ("Top bewertet", "Lokal")
+ * - V19 (S): Data Security - SSL, GDPR, Swiss Made prominent
+ * - V20 (T): Safety Architecture - Combined trust at action points
  */
 
 import { memo } from 'react';
@@ -36,6 +41,11 @@ import { MediaLogosSectionVariantL } from './MediaLogosSectionVariantL';
 import { MediaLogosSectionVariantM } from './MediaLogosSectionVariantM';
 import { MediaLogosSectionVariantN } from './MediaLogosSectionVariantN';
 import { MediaLogosSectionVariantO } from './MediaLogosSectionVariantO';
+import { MediaLogosSectionVariantP } from './MediaLogosSectionVariantP';
+import { MediaLogosSectionVariantQ } from './MediaLogosSectionVariantQ';
+import { MediaLogosSectionVariantR } from './MediaLogosSectionVariantR';
+import { MediaLogosSectionVariantS } from './MediaLogosSectionVariantS';
+import { MediaLogosSectionVariantT } from './MediaLogosSectionVariantT';
 
 export const MediaLogosSectionAB = memo(function MediaLogosSectionAB() {
   const { variant } = useSocialProofAB();
@@ -69,6 +79,16 @@ export const MediaLogosSectionAB = memo(function MediaLogosSectionAB() {
       return <MediaLogosSectionVariantN />;
     case 'O':
       return <MediaLogosSectionVariantO />;
+    case 'P':
+      return <MediaLogosSectionVariantP />;
+    case 'Q':
+      return <MediaLogosSectionVariantQ />;
+    case 'R':
+      return <MediaLogosSectionVariantR />;
+    case 'S':
+      return <MediaLogosSectionVariantS />;
+    case 'T':
+      return <MediaLogosSectionVariantT />;
     default:
       return <MediaLogosSection />;
   }

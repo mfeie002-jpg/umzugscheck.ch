@@ -17,7 +17,7 @@ import { useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-// Social Proof variant info - 15 variants (A-O)
+// Social Proof variant info - 20 variants (A-T)
 const socialProofVariants = {
   A: { label: 'V1', title: 'Original', color: 'bg-blue-600' },
   B: { label: 'V2', title: 'Live Dashboard', color: 'bg-emerald-600' },
@@ -34,6 +34,11 @@ const socialProofVariants = {
   M: { label: 'V13', title: 'Hero Reassurance', color: 'bg-pink-600' },
   N: { label: 'V14', title: 'Hero Form Footer', color: 'bg-lime-600' },
   O: { label: 'V15', title: 'Hero Eyebrow', color: 'bg-fuchsia-600' },
+  P: { label: 'V16', title: 'CTA Adjacent', color: 'bg-sky-600' },
+  Q: { label: 'V17', title: 'Bandwagon Effect', color: 'bg-purple-600' },
+  R: { label: 'V18', title: 'Local Trust', color: 'bg-green-600' },
+  S: { label: 'V19', title: 'Data Security', color: 'bg-stone-600' },
+  T: { label: 'V20', title: 'Safety Architecture', color: 'bg-zinc-700' },
 };
 
 // Tab Hint variant info
@@ -78,7 +83,7 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
     setNavVariant(variantId);
   }, [setNavVariant]);
 
-  const handleSPVariantChange = useCallback((sv: 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O') => {
+  const handleSPVariantChange = useCallback((sv: 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T') => {
     setSPVariant(sv);
   }, [setSPVariant]);
 
@@ -290,7 +295,7 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
                   </div>
                   
                   {/* Legend */}
-                  <div className="mt-4 p-3 bg-muted/30 rounded-lg text-xs text-muted-foreground space-y-1 max-h-32 overflow-y-auto">
+                  <div className="mt-4 p-3 bg-muted/30 rounded-lg text-xs text-muted-foreground space-y-1 max-h-40 overflow-y-auto">
                     <div><strong>V1:</strong> Original (farbige Logos)</div>
                     <div><strong>V2:</strong> Live Dashboard + Deal Cards</div>
                     <div><strong>V3:</strong> Trust Hierarchy (Logos oben)</div>
@@ -306,6 +311,11 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
                     <div className="pt-1 border-t border-border/50 mt-1"><strong>V13:</strong> Hero Reassurance (unter CTA)</div>
                     <div><strong>V14:</strong> Hero Form Footer (in Form-Card)</div>
                     <div><strong>V15:</strong> Hero Eyebrow (über Headline)</div>
+                    <div className="pt-1 border-t border-border/50 mt-1"><strong>V16:</strong> CTA Adjacent (bei Submit)</div>
+                    <div><strong>V17:</strong> Bandwagon Effect (Live-Aktivität)</div>
+                    <div><strong>V18:</strong> Local Trust (regionale Badges)</div>
+                    <div><strong>V19:</strong> Data Security (SSL/DSGVO)</div>
+                    <div><strong>V20:</strong> Safety Architecture (kombiniert)</div>
                   </div>
                 </TabsContent>
 
