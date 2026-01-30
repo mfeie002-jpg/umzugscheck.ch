@@ -21,26 +21,19 @@ import { memo } from "react";
 import { motion } from "framer-motion";
 import { ExternalLink, Shield, Truck, Home, Building2, CreditCard, Server, Award, Landmark, BadgeCheck, Mail } from "lucide-react";
 
-// 11 Trust Logos in psychologisch optimierter Reihenfolge
+// 11 Trust Logos in psychologisch optimierter Reihenfolge (Risiko → Infrastruktur → Zahlung → Authority)
 const trustLogos = [
+  // Pos 1: Risikoreduktion - Versicherung
   {
-    id: "trusted-shops",
-    name: "Trusted Shops",
-    subtitle: "Käuferschutz",
-    icon: BadgeCheck,
-    color: "text-[#FFDC0F]",
-    bgColor: "bg-[#FFDC0F]/10",
-    verifyUrl: "https://www.trustedshops.ch/",
-  },
-  {
-    id: "swiss-label",
-    name: "Swiss Label",
-    subtitle: "Qualitäts-Siegel",
-    icon: Award,
+    id: "mobiliar",
+    name: "Die Mobiliar",
+    subtitle: "Versicherung",
+    icon: Shield,
     color: "text-[#E2001A]",
     bgColor: "bg-[#E2001A]/10",
-    verifyUrl: "https://www.swisslabel.ch/",
+    verifyUrl: "https://www.mobiliar.ch/",
   },
+  // Pos 2-3: Schweizer Infrastruktur
   {
     id: "post",
     name: "Die Post",
@@ -51,15 +44,6 @@ const trustLogos = [
     verifyUrl: "https://www.post.ch/",
   },
   {
-    id: "astag",
-    name: "ASTAG",
-    subtitle: "Branchenverband",
-    icon: Truck,
-    color: "text-[#003366]",
-    bgColor: "bg-[#003366]/10",
-    verifyUrl: "https://www.astag.ch/",
-  },
-  {
     id: "eumzug",
     name: "eUmzugCH",
     subtitle: "Offizielle Meldung",
@@ -68,32 +52,15 @@ const trustLogos = [
     bgColor: "bg-[#DC0018]/10",
     verifyUrl: "https://www.eumzug.swiss/",
   },
+  // Pos 4-6: Zahlungssicherheit
   {
-    id: "mieterverband",
-    name: "Mieterverband",
-    subtitle: "Mieter-Schutz",
-    icon: Shield,
-    color: "text-[#0066B3]",
-    bgColor: "bg-[#0066B3]/10",
-    verifyUrl: "https://www.mieterverband.ch/",
-  },
-  {
-    id: "mobiliar",
-    name: "Die Mobiliar",
-    subtitle: "Versicherung",
-    icon: Shield,
-    color: "text-[#E2001A]",
-    bgColor: "bg-[#E2001A]/10",
-    verifyUrl: "https://www.mobiliar.ch/",
-  },
-  {
-    id: "raiffeisen",
-    name: "Raiffeisen",
-    subtitle: "Schweizer Bank",
-    icon: Landmark,
-    color: "text-[#FFD500]",
-    bgColor: "bg-[#FFD500]/10",
-    verifyUrl: "https://www.raiffeisen.ch/",
+    id: "twint",
+    name: "TWINT",
+    subtitle: "Zahlung",
+    icon: CreditCard,
+    color: "text-[#000000]",
+    bgColor: "bg-black/10",
+    verifyUrl: "https://www.twint.ch/",
   },
   {
     id: "zkb",
@@ -105,13 +72,50 @@ const trustLogos = [
     verifyUrl: "https://www.zkb.ch/",
   },
   {
-    id: "twint",
-    name: "TWINT",
-    subtitle: "Zahlung",
-    icon: CreditCard,
-    color: "text-[#000000]",
-    bgColor: "bg-black/10",
-    verifyUrl: "https://www.twint.ch/",
+    id: "raiffeisen",
+    name: "Raiffeisen",
+    subtitle: "Schweizer Bank",
+    icon: Landmark,
+    color: "text-[#FFD500]",
+    bgColor: "bg-[#FFD500]/10",
+    verifyUrl: "https://www.raiffeisen.ch/",
+  },
+  // Pos 7-11: Ergänzende Authority
+  {
+    id: "mieterverband",
+    name: "Mieterverband",
+    subtitle: "Mieter-Schutz",
+    icon: Shield,
+    color: "text-[#0066B3]",
+    bgColor: "bg-[#0066B3]/10",
+    verifyUrl: "https://www.mieterverband.ch/",
+  },
+  {
+    id: "astag",
+    name: "ASTAG",
+    subtitle: "Branchenverband",
+    icon: Truck,
+    color: "text-[#003366]",
+    bgColor: "bg-[#003366]/10",
+    verifyUrl: "https://www.astag.ch/",
+  },
+  {
+    id: "swiss-label",
+    name: "Swiss Label",
+    subtitle: "Qualitäts-Siegel",
+    icon: Award,
+    color: "text-[#E2001A]",
+    bgColor: "bg-[#E2001A]/10",
+    verifyUrl: "https://www.swisslabel.ch/",
+  },
+  {
+    id: "trusted-shops",
+    name: "Trusted Shops",
+    subtitle: "Käuferschutz",
+    icon: BadgeCheck,
+    color: "text-[#FFDC0F]",
+    bgColor: "bg-[#FFDC0F]/10",
+    verifyUrl: "https://www.trustedshops.ch/",
   },
   {
     id: "swiss-hosting",
@@ -180,7 +184,12 @@ export const QualityStandardsBar = memo(function QualityStandardsBar() {
         
         {/* Footer */}
         <p className="text-center text-[9px] text-muted-foreground mt-4 opacity-60">
-          Klicken zur Verifizierung • Alle Partner geprüft
+          <a 
+            href="/partner" 
+            className="hover:text-primary transition-colors inline-flex items-center gap-1"
+          >
+            Alle Partner verifizierbar ↗
+          </a>
         </p>
       </div>
     </section>

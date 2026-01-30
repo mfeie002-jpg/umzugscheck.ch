@@ -9,8 +9,9 @@
 
 import { memo, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, TrendingDown, Users, Shield, Truck, Award } from "lucide-react";
+import { Star, TrendingDown, Users, Shield, Truck, Award, Info } from "lucide-react";
 import { TRUST } from "@/content/trust";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 // Live stats that rotate
 const liveStats = [
@@ -111,10 +112,22 @@ export const MediaLogosSectionVariantB = memo(function MediaLogosSectionVariantB
             transition={{ delay: 0.1 }}
             className="text-center"
           >
-            <div className="flex items-center justify-center gap-2 mb-1">
-              <TrendingDown className="w-4 h-4 text-primary" />
-              <span className="text-xl md:text-2xl font-bold text-foreground">Ø CHF 620</span>
-            </div>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex items-center justify-center gap-2 mb-1 cursor-help">
+                    <TrendingDown className="w-4 h-4 text-primary" />
+                    <span className="text-xl md:text-2xl font-bold text-foreground">
+                      Ø CHF {TRUST.savingsAverage}
+                    </span>
+                    <Info className="w-3.5 h-3.5 text-muted-foreground" />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="max-w-[250px]">
+                  <p className="text-xs">{TRUST.savingsDisclaimer}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             <span className="text-xs text-muted-foreground">gespart pro Umzug</span>
           </motion.div>
           
