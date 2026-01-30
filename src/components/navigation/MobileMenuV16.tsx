@@ -170,7 +170,7 @@ export const MobileMenuV16 = ({ isOpen, onClose }: MobileMenuV16Props) => {
             initial="hidden"
             animate="visible"
             exit="hidden"
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 lg:hidden"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[10000] lg:hidden"
             onClick={onClose}
           />
 
@@ -180,7 +180,7 @@ export const MobileMenuV16 = ({ isOpen, onClose }: MobileMenuV16Props) => {
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="fixed inset-y-0 right-0 w-full max-w-[380px] bg-background z-50 lg:hidden flex flex-col shadow-2xl"
+            className="fixed inset-y-0 right-0 w-full max-w-[380px] bg-background z-[10005] lg:hidden flex flex-col shadow-2xl"
           >
             {/* Header with Trust Micro-Bar */}
             <div className="border-b border-border/50">

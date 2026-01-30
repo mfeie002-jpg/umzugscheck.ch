@@ -83,14 +83,14 @@ export const MobileMenuV11 = ({ isOpen, onClose }: MobileMenuV11Props) => {
     <>
       {/* Overlay */}
       <div 
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[10000] lg:hidden"
         onClick={onClose}
       />
       
       {/* Menu Panel */}
       <div className={cn(
         "fixed inset-y-0 right-0 w-full max-w-sm",
-        "bg-background z-50 lg:hidden flex flex-col",
+        "bg-background z-[10005] lg:hidden flex flex-col",
         "transform transition-transform duration-300",
         isOpen ? "translate-x-0" : "translate-x-full"
       )}>

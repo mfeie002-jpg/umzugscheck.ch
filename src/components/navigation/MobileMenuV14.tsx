@@ -47,7 +47,7 @@ export const MobileMenuV14 = ({ isOpen, onClose, navStructure, ctaConfig }: Mobi
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 z-50 lg:hidden"
+            className="fixed inset-0 bg-black/50 z-[10000] lg:hidden"
             onClick={onClose}
           />
 
@@ -57,7 +57,7 @@ export const MobileMenuV14 = ({ isOpen, onClose, navStructure, ctaConfig }: Mobi
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed inset-y-0 right-0 w-full max-w-sm bg-background z-50 lg:hidden flex flex-col shadow-xl"
+            className="fixed inset-y-0 right-0 w-full max-w-sm bg-background z-[10005] lg:hidden flex flex-col shadow-xl"
           >
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-border">
