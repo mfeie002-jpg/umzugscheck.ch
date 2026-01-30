@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 80" width="240" height="80">
+  <!-- Placeholder: Replace with official Swiss Label logo -->
+  <rect width="240" height="80" fill="transparent"/>
+  <rect x="60" y="20" width="120" height="40" rx="4" fill="#E2001A" opacity="0.1"/>
+  <text x="120" y="45" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="600" fill="#E2001A">Swiss Label</text>
+</svg>
