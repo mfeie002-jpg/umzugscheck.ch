@@ -42,14 +42,14 @@ const reviews = [
   },
 ];
 
-// Media logos with brand colors - NOT greyed out
+// Media logos: Nur SVGs aus /public/logos/trust/
 const mediaLogos = [
-  { name: "SRF", color: "#C8102E" },
-  { name: "NZZ", color: "#1a1a1a" },
-  { name: "20 Minuten", color: "#E3000F" },
-  { name: "Blick", color: "#E30613" },
-  { name: "Watson", color: "#1a1a1a" },
-  { name: "TCS", color: "#0050A8" },
+  { name: "SRF", src: "/logos/trust/srf.svg" },
+  { name: "NZZ", src: "/logos/trust/nzz.svg" },
+  { name: "20 Minuten", src: "/logos/trust/20min.svg" },
+  { name: "Blick", src: "/logos/trust/blick.svg" },
+  { name: "Watson", src: "/logos/trust/watson.svg" },
+  { name: "TCS", src: "/logos/trust/tcs.svg" },
 ];
 
 export const SocialProofBlock = () => {
@@ -130,7 +130,7 @@ export const SocialProofBlock = () => {
           ))}
         </div>
 
-        {/* Trust Logos - HIGH CONTRAST */}
+        {/* Trust Logos - SVG only, fail-safe */}
         <div className="text-center">
           <p className="text-xs md:text-sm font-bold uppercase tracking-widest text-muted-foreground mb-6">
             Bekannt aus & geprüft von
@@ -145,17 +145,18 @@ export const SocialProofBlock = () => {
                 transition={{ delay: index * 0.05 }}
                 whileHover={{ scale: 1.08, y: -2 }}
                 className="px-4 py-2.5 rounded-lg bg-card border border-border shadow-sm hover:shadow-md transition-all cursor-pointer"
-                style={{ 
-                  background: `linear-gradient(135deg, ${logo.color}12, ${logo.color}06)`,
-                  borderColor: `${logo.color}25`
-                }}
               >
-                <span 
-                  className="font-bold text-sm md:text-base"
-                  style={{ color: logo.color }}
-                >
-                  {logo.name}
-                </span>
+                <img
+                  src={logo.src}
+                  alt={logo.name}
+                  className="h-8 w-auto max-w-[90px] object-contain"
+                  loading="lazy"
+                  onError={e => { e.currentTarget.style.display = "none"; }}
+                  width={90}
+                  height={32}
+                  decoding="async"
+                  draggable={false}
+                />
               </motion.div>
             ))}
           </div>
