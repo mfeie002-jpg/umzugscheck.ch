@@ -259,6 +259,9 @@ const Pricing = lazy(() => import("./pages/Pricing"));
 const OffertenPage = lazy(() => import("./pages/OffertenPage"));
 const OffertenOptimized = lazy(() => import("./pages/OffertenOptimized"));
 const Tools = lazy(() => import("./pages/Tools"));
+// Public Link-Magnet Tools (Phase 1: Relo-OS Infrastructure)
+const MoveReadinessChecker = lazy(() => import("./pages/tools/MoveReadinessChecker"));
+const ParkingPermitPlanner = lazy(() => import("./pages/tools/ParkingPermitPlanner"));
 const UserDashboard = lazy(() => import("./pages/UserDashboard"));
 const Vergleich = lazy(() => import("./pages/Vergleich"));
 
@@ -857,6 +860,10 @@ const AppRouterContent = () => {
           <Route path="/basel-umzug" element={<BaselMoving />} />
           <Route path="/luzern-umzug" element={<LuzernMoving />} />
           <Route path="/service/:serviceType" element={<ServicePage />} />
+          
+          {/* Public Link-Magnet Tools (Phase 1: Relo-OS Infrastructure) */}
+          <Route path="/umzugs-checkliste-generator" element={<MoveReadinessChecker />} />
+          <Route path="/halteverbot-planer" element={<ParkingPermitPlanner />} />
           <Route path="/services/:serviceType" element={<ServiceOptimized />} />
           {/* Services V2 - Unified Calculator Approach */}
           <Route path="/services/reinigung" element={<ReinigungV2 />} />
