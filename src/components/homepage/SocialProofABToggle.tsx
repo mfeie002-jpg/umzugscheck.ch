@@ -32,6 +32,9 @@ const variantInfo = {
   R: { label: 'V18', title: 'Local Trust', color: 'bg-green-600' },
   S: { label: 'V19', title: 'Data Security', color: 'bg-stone-600' },
   T: { label: 'V20', title: 'Safety Architecture', color: 'bg-zinc-700' },
+  U: { label: 'V21', title: 'Left Under CTA', color: 'bg-amber-700' },
+  V: { label: 'V22', title: 'In-Form Container', color: 'bg-rose-700' },
+  W: { label: 'V23', title: 'Glassmorphism Bar', color: 'bg-cyan-700' },
 };
 
 export const SocialProofABToggle = memo(function SocialProofABToggle() {
@@ -93,6 +96,9 @@ export const SocialProofABToggle = memo(function SocialProofABToggle() {
               <div><strong>V7-V12:</strong> Swiss Infra, Pain/Gain, Hybrid, Ecosystem, Minimal, Standards</div>
               <div className="pt-1 border-t border-border/50 mt-1"><strong>V13-V15:</strong> Hero-integriert (Reassurance, Form Footer, Eyebrow)</div>
               <div><strong>V16-V20:</strong> CTA Adjacent, Bandwagon, Local Trust, Data Security, Safety</div>
+              <div className="pt-1 border-t border-border/50 mt-1"><strong>V21:</strong> Left Under CTA (weisse Logos)</div>
+              <div><strong>V22:</strong> In-Form Container (unten in Form-Box)</div>
+              <div><strong>V23:</strong> Glassmorphism Bar (Premium Overlay)</div>
             </div>
           </motion.div>
         )}
