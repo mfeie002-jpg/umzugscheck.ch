@@ -52,16 +52,26 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
   const [apartmentSize, setApartmentSize] = useState('');
   
   // Determine if we should show hero-integrated trust based on SP variant
-  const showHeroTrust = ['M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'].includes(spVariant);
+  // New mapping: I-M are hero-integrated, N-Q are psychological
+  const showHeroTrust = ['I', 'J', 'K', 'L', 'M', 'Q'].includes(spVariant);
   
-  // V24 (X): New "Press Trust Bar" variant - Desktop rail + Mobile inline
-  const showPressTrust = spVariant === 'X';
+  // V9 (I): Card CTA Trust - Trust directly at CTA decision point (was Z)
+  const showKnownFrom = spVariant === 'I';
   
-  // V25 (Y): Best practice - Desktop left under CTA + Mobile in form footer
-  const showTrustInline = spVariant === 'Y';
+  // V10 (J): Press Trust Bar - Desktop rail + Mobile inline (was X)
+  const showPressTrust = spVariant === 'J';
   
-  // V26 (Z): Ultimate - Trust directly in form card at CTA decision point
-  const showKnownFrom = spVariant === 'Z';
+  // V11 (K): Glassmorphism Bar - Premium overlay at bottom (was W)
+  const showGlassmorphism = spVariant === 'K';
+  
+  // V12 (L): Hero Left + Form - Desktop left under CTA + Mobile in form footer (was Y)
+  const showTrustInline = spVariant === 'L';
+  
+  // V13 (M): Left Under CTA - Monochrome white logos (was U)
+  const showLeftUnderCTA = spVariant === 'M';
+  
+  // V17 (Q): In-Form Container (was V)
+  const showInFormContainer = spVariant === 'Q';
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -197,14 +207,16 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
               </Link>
             </div>
             
-            {/* Hero-integrated trust bar (Variants M, P-T: below-cta) */}
-            {showHeroTrust && spVariant === 'M' && (
-              <HeroTrustBar variant="below-cta" />
+            {/* V13 (M): Left Under CTA - Monochrome WHITE logos */}
+            {showLeftUnderCTA && (
+              <HeroTrustIntegration variant="left-under-cta" />
             )}
             
-            {/* V21: Left Under CTA - Monochrome WHITE logos (Recommended) */}
-            {showHeroTrust && spVariant === 'U' && (
-              <HeroTrustIntegration variant="left-under-cta" />
+            {/* V12 (L): Hero Left + Form - Desktop left under CTA */}
+            {showTrustInline && (
+              <div className="hidden lg:block">
+                <HeroTrustInline variant="desktop-left" />
+              </div>
             )}
             
             {/* V25 (Y): Best Practice - Desktop left under CTA */}
@@ -324,24 +336,19 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
                   </span>
                 </div>
                 
-                {/* Hero-integrated trust bar (Variant N: inline-form) */}
-                {showHeroTrust && spVariant === 'N' && (
-                  <HeroTrustBar variant="inline-form" />
-                )}
-                
-                {/* V22: In-Form Container - Trust bar at bottom of form box */}
-                {showHeroTrust && spVariant === 'V' && (
+                {/* V17 (Q): In-Form Container - Trust bar at bottom of form box */}
+                {showInFormContainer && (
                   <HeroTrustIntegration variant="in-form-container" />
                 )}
                 
-                {/* V24 (X): Press Trust Bar - Mobile inline (inside form, under CTA) */}
+                {/* V10 (J): Press Trust Bar - Mobile inline */}
                 {showPressTrust && (
                   <div className="lg:hidden">
                     <PressTrustBar variant="inline" />
                   </div>
                 )}
                 
-                {/* V25 (Y): Best Practice - Mobile in form footer */}
+                {/* V12 (L): Hero Left + Form - Mobile in form footer */}
                 {showTrustInline && (
                   <div className="lg:hidden">
                     <HeroTrustInline variant="mobile-form" />
@@ -353,24 +360,12 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
           
         </div>
         
-        {/* Hero-integrated trust bar below form (Variants O, P-T) */}
-        {showHeroTrust && ['O', 'P', 'S', 'T'].includes(spVariant) && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="mt-6 lg:mt-8"
-          >
-            <HeroTrustBar variant="below-form" />
-          </motion.div>
-        )}
-        
-        {/* V23: Glassmorphism Bar - Premium overlay at bottom */}
-        {showHeroTrust && spVariant === 'W' && (
+        {/* V11 (K): Glassmorphism Bar - Premium overlay at bottom */}
+        {showGlassmorphism && (
           <HeroTrustIntegration variant="glassmorphism-bar" />
         )}
         
-        {/* V24 (X): Press Trust Bar - Desktop glassy rail (inside hero, below grid) */}
+        {/* V10 (J): Press Trust Bar - Desktop glassy rail */}
         {showPressTrust && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}

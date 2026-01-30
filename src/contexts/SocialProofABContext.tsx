@@ -1,35 +1,78 @@
 /**
  * A/B Testing Context for Social Proof Sections
  * 
- * Controls 23 variants (A–W):
+ * CONSOLIDATED: 17 variants (A–Q) - reduced from 26
+ * 
+ * === Standalone Sections (below Hero) ===
  * - Version 1 (A): Original - Colored logos, 15'000+ big number, Video testimonials
- * - Version 2 (B): Monochrome logos, Live Dashboard, Deal Cards
- * - Version 3 (C): Trust Hierarchy (Authority → Logic → Emotion, Logos oben)
- * - Version 4 (D): Trust Stack (kompaktes Modul, Outcome-Tags, Microtrust)
- * - Version 5 (E): Trust Strip 2.0 (Single unified strip, consistent rating, proofy testimonials)
- * - Version 6 (F): Verifiable Trust - State-backed signals (ZEFIX, UID, Insurance, Escrow)
+ * - Version 2 (B): Live Dashboard - Monochrome logos, Deal Cards, Activity Ticker
+ * - Version 3 (C): Trust Hierarchy - Authority → Logic → Emotion flow
+ * - Version 4 (D): Trust Stack - Compact module with Outcome-Tags
+ * - Version 5 (E): Trust Strip 2.0 - Single unified strip, consistent rating
+ * - Version 6 (F): Verifiable Trust - ZEFIX, UID, Insurance, Escrow signals
+ * 
+ * === Hybrid/Swiss-specific ===
  * - Version 7 (G): Swiss Infrastructure - eUmzugCH, Post, ASTAG focused
- * - Version 8 (H): Pain vs Gain - Problem solver cards approach  
- * - Version 9 (I): Hybrid Trust Bar - Psychological ordering (Risk→Infrastructure→Payment)
- * - Version 10 (J): Trust Ecosystem - Comprehensive trust grid
- * - Version 11 (K): Minimal Proof Strip - Clean grayscale logos only
- * - Version 12 (L): Swiss Standards Bar - "Der Schweizer Standard" headline
- * - Version 13 (M): Hero Reassurance - Trust logos under left CTA (in Hero)
- * - Version 14 (N): Hero Form Footer - Trust logos inside form card (in Hero)
- * - Version 15 (O): Hero Eyebrow - Trust logos above headline (in Hero)
- * - Version 16 (P): CTA Adjacent - Trust badges next to submit buttons
- * - Version 17 (Q): Bandwagon Effect - Live activity simulation ("X Personen vergleichen")
- * - Version 18 (R): Local Trust - "Top bewertet", "Lokal" badges per region
- * - Version 19 (S): Data Security Focus - SSL, GDPR, Swiss Made prominent
- * - Version 20 (T): Safety Architecture - Combined trust signals at action points
- * - Version 21 (U): Left Under CTA - Monochrome WHITE logos on dark bg (recommended)
- * - Version 22 (V): In-Form Container - Trust bar at bottom of form box
- * - Version 23 (W): Glassmorphism Bar - Premium overlay at bottom of hero
+ * - Version 8 (H): Minimal Proof Strip - Clean grayscale logos only (was V11/K)
+ * 
+ * === Hero-Integrated (Best 5 + Psychological) ===
+ * - Version 9 (I): Card CTA Trust 🎯 - Trust directly at CTA decision point (was V26/Z)
+ * - Version 10 (J): Press Trust Bar - Desktop rail + Mobile inline (was V24/X)
+ * - Version 11 (K): Glassmorphism Bar - Premium overlay at hero bottom (was V23/W)
+ * - Version 12 (L): Hero Left + Form - Desktop left + Mobile form footer (was V25/Y)
+ * - Version 13 (M): Left Under CTA - Monochrome white logos (was V21/U)
+ * 
+ * === Psychological Triggers ===
+ * - Version 14 (N): Bandwagon Effect - Live activity ("X Personen vergleichen") (was V17/Q)
+ * - Version 15 (O): Local Trust - Regional badges "Top bewertet" (was V18/R)
+ * - Version 16 (P): Data Security - SSL, GDPR, Swiss Made focus (was V19/S)
+ * - Version 17 (Q): In-Form Container - Trust bar inside form box (was V22/V)
  */
 
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 
-type Variant = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 'V' | 'W' | 'X' | 'Y' | 'Z';
+// Consolidated to 17 variants
+type Variant = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q';
+
+// Mapping from old variants to new (for migration)
+export const VARIANT_MIGRATION_MAP: Record<string, Variant> = {
+  // Standalone (unchanged)
+  'A': 'A', 'B': 'B', 'C': 'C', 'D': 'D', 'E': 'E', 'F': 'F',
+  // Swiss Infrastructure
+  'G': 'G',
+  // Merged into G or H
+  'H': 'G', // Pain vs Gain → Swiss Infrastructure
+  'I': 'G', // Hybrid Trust Bar → Swiss Infrastructure
+  'J': 'G', // Trust Ecosystem → Swiss Infrastructure
+  // Minimal (was K)
+  'K': 'H',
+  // Swiss Standards (merged into H)
+  'L': 'H',
+  // Old Hero-integrated M-O → merged into I (Card CTA Trust)
+  'M': 'I', 'N': 'I', 'O': 'I',
+  // Old P (CTA Adjacent) → merged into I
+  'P': 'I',
+  // Bandwagon (was Q)
+  'Q': 'N',
+  // Local Trust (was R)
+  'R': 'O',
+  // Data Security (was S)
+  'S': 'P',
+  // Safety Architecture (merged into P)
+  'T': 'P',
+  // Left Under CTA (was U)
+  'U': 'M',
+  // In-Form Container (was V)
+  'V': 'Q',
+  // Glassmorphism (was W)
+  'W': 'K',
+  // Press Trust Bar (was X)
+  'X': 'J',
+  // Hero Left + Form (was Y)
+  'Y': 'L',
+  // Card CTA Trust (was Z) - now the recommended I
+  'Z': 'I',
+};
 
 interface SocialProofABContextType {
   variant: Variant;
@@ -47,21 +90,31 @@ export const useSocialProofAB = () => {
   return context;
 };
 
+const VALID_VARIANTS: Variant[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q'];
+
 export const SocialProofABProvider = ({ children }: { children: ReactNode }) => {
   const [variant, setVariant] = useState<Variant>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('socialproof-ab-variant');
-      const validVariants: Variant[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-      return validVariants.includes(saved as Variant) ? (saved as Variant) : 'A';
+      if (saved) {
+        // Migrate old variants to new
+        const migrated = VARIANT_MIGRATION_MAP[saved];
+        if (migrated) {
+          localStorage.setItem('socialproof-ab-variant', migrated);
+          return migrated;
+        }
+        if (VALID_VARIANTS.includes(saved as Variant)) {
+          return saved as Variant;
+        }
+      }
     }
     return 'A';
   });
 
   const toggleVariant = useCallback(() => {
     setVariant(prev => {
-      const variants: Variant[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-      const currentIndex = variants.indexOf(prev);
-      const next = variants[(currentIndex + 1) % variants.length];
+      const currentIndex = VALID_VARIANTS.indexOf(prev);
+      const next = VALID_VARIANTS[(currentIndex + 1) % VALID_VARIANTS.length];
       localStorage.setItem('socialproof-ab-variant', next);
       return next;
     });

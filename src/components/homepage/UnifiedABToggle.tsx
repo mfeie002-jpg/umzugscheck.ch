@@ -18,27 +18,29 @@ import { cn } from '@/lib/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 // Social Proof variant info - 20 variants (A-T)
+// CONSOLIDATED: 17 variants (A-Q)
 const socialProofVariants = {
+  // === Standalone Sections ===
   A: { label: 'V1', title: 'Original', color: 'bg-blue-600' },
   B: { label: 'V2', title: 'Live Dashboard', color: 'bg-emerald-600' },
   C: { label: 'V3', title: 'Trust Hierarchy', color: 'bg-amber-600' },
   D: { label: 'V4', title: 'Trust Stack', color: 'bg-violet-600' },
   E: { label: 'V5', title: 'Trust Strip 2.0', color: 'bg-rose-600' },
   F: { label: 'V6', title: 'Verifiable Trust', color: 'bg-cyan-600' },
+  // === Hybrid/Swiss ===
   G: { label: 'V7', title: 'Swiss Infrastructure', color: 'bg-red-600' },
-  H: { label: 'V8', title: 'Pain vs Gain', color: 'bg-orange-600' },
-  I: { label: 'V9', title: 'Hybrid Trust Bar', color: 'bg-yellow-600' },
-  J: { label: 'V10', title: 'Trust Ecosystem', color: 'bg-teal-600' },
-  K: { label: 'V11', title: 'Minimal Proof Strip', color: 'bg-slate-600' },
-  L: { label: 'V12', title: 'Swiss Standards', color: 'bg-indigo-600' },
-  M: { label: 'V13', title: 'Hero Reassurance', color: 'bg-pink-600' },
-  N: { label: 'V14', title: 'Hero Form Footer', color: 'bg-lime-600' },
-  O: { label: 'V15', title: 'Hero Eyebrow', color: 'bg-fuchsia-600' },
-  P: { label: 'V16', title: 'CTA Adjacent', color: 'bg-sky-600' },
-  Q: { label: 'V17', title: 'Bandwagon Effect', color: 'bg-purple-600' },
-  R: { label: 'V18', title: 'Local Trust', color: 'bg-green-600' },
-  S: { label: 'V19', title: 'Data Security', color: 'bg-stone-600' },
-  T: { label: 'V20', title: 'Safety Architecture', color: 'bg-zinc-700' },
+  H: { label: 'V8', title: 'Minimal Proof Strip', color: 'bg-slate-600' },
+  // === Hero-Integrated ===
+  I: { label: 'V9', title: 'Card CTA Trust 🎯', color: 'bg-red-700' },
+  J: { label: 'V10', title: 'Press Trust Bar', color: 'bg-emerald-700' },
+  K: { label: 'V11', title: 'Glassmorphism Bar', color: 'bg-cyan-700' },
+  L: { label: 'V12', title: 'Hero Left + Form', color: 'bg-yellow-600' },
+  M: { label: 'V13', title: 'Left Under CTA', color: 'bg-amber-700' },
+  // === Psychological ===
+  N: { label: 'V14', title: 'Bandwagon Effect', color: 'bg-purple-600' },
+  O: { label: 'V15', title: 'Local Trust', color: 'bg-green-600' },
+  P: { label: 'V16', title: 'Data Security', color: 'bg-stone-600' },
+  Q: { label: 'V17', title: 'In-Form Container', color: 'bg-rose-700' },
 };
 
 // Tab Hint variant info
@@ -83,7 +85,7 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
     setNavVariant(variantId);
   }, [setNavVariant]);
 
-  const handleSPVariantChange = useCallback((sv: 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T') => {
+  const handleSPVariantChange = useCallback((sv: 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q') => {
     setSPVariant(sv);
   }, [setSPVariant]);
 
