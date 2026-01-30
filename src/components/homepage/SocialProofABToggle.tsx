@@ -36,6 +36,7 @@ const variantInfo = {
   V: { label: 'V22', title: 'In-Form Container', color: 'bg-rose-700' },
   W: { label: 'V23', title: 'Glassmorphism Bar', color: 'bg-cyan-700' },
   X: { label: 'V24', title: 'Press Trust Bar', color: 'bg-emerald-700' },
+  Y: { label: 'V25', title: 'Best Practice ⭐', color: 'bg-yellow-600' },
 };
 
 export const SocialProofABToggle = memo(function SocialProofABToggle() {
@@ -60,7 +61,7 @@ export const SocialProofABToggle = memo(function SocialProofABToggle() {
             className="absolute bottom-16 left-0 bg-white dark:bg-card border-2 border-primary rounded-xl shadow-2xl w-80 pointer-events-auto overflow-hidden"
           >
             <div className="flex items-center justify-between p-3 border-b border-border">
-              <h3 className="font-bold text-sm text-foreground">🧪 A/B Test: Social Proof (24)</h3>
+              <h3 className="font-bold text-sm text-foreground">🧪 A/B Test: Social Proof (25)</h3>
               <button onClick={() => setIsExpanded(false)} className="p-1 rounded hover:bg-muted">
                 <X className="w-4 h-4" />
               </button>
@@ -98,7 +99,7 @@ export const SocialProofABToggle = memo(function SocialProofABToggle() {
               <div className="pt-1 border-t border-border/50 mt-1"><strong>V13-V15:</strong> Hero-integriert (Reassurance, Form Footer, Eyebrow)</div>
               <div><strong>V16-V20:</strong> CTA Adjacent, Bandwagon, Local Trust, Data Security, Safety</div>
               <div className="pt-1 border-t border-border/50 mt-1"><strong>V21-V23:</strong> Left Under CTA, In-Form Container, Glassmorphism</div>
-              <div><strong>V24:</strong> Press Trust Bar (Desktop Rail + Mobile Inline) ⭐</div>
+              <div><strong>V24:</strong> Press Trust Bar | <strong>V25:</strong> Best Practice ⭐</div>
             </div>
           </motion.div>
         )}
