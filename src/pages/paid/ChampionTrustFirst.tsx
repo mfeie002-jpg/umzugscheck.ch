@@ -5,23 +5,16 @@
  * Target Keywords: "umzugsfirma in der nähe", "zügeln zürich", "umzug+reinigung"
  * Focus: Build confidence → Social proof → Lead capture
  * 
- * Design:
- * - Hero with proof-points
- * - Case studies / testimonials
- * - Service showcase
- * - Trust grid + certifications
- * - Sticky call bar (mobile)
- * - Form at bottom (or embedded)
+ * Branding: Umzugscheck.ch (Portal for multiple providers)
  */
 
 import { Helmet } from "react-helmet-async";
-import Header from "@/components/Header";
+import { DynamicNavigation } from "@/components/DynamicNavigation";
 import Footer from "@/components/Footer";
 import { ExpressQuoteForm } from "@/components/ExpressQuoteForm";
-import { FeierabendCard } from "@/components/ui/FeierabendCard";
-import { TrustBadge } from "@/components/ui/TrustBadge";
+import { Card } from "@/components/ui/card";
 import { track } from "@/utils/track";
-import { Star, Users, Award, MapPin } from "lucide-react";
+import { Star, Users, Award, MapPin, Shield, Clock, CheckCircle } from "lucide-react";
 
 type FormData = {
   phone: string;
@@ -44,144 +37,153 @@ const ChampionTrustFirst = () => {
   const testimonials = [
     {
       name: "Maria K., Zürich",
-      quote: "Professionell, pünktlich, und wirklich fair im Preis. Keine versteckten Kosten!",
+      quote: "Über Umzugscheck drei Offerten erhalten – super einfach und transparent!",
       rating: 5,
     },
     {
       name: "Hans M., Bern",
-      quote: "Die Jungs waren super freundlich und haben meine alten Möbel wie neue behandelt.",
+      quote: "Konnte schnell vergleichen und den passenden Anbieter finden. Top Service!",
       rating: 5,
     },
     {
       name: "Petra S., Basel",
-      quote: "Schnelle Offerte, schneller Umzug. So soll es sein! Empfehle ich weiter.",
+      quote: "Endlich eine Plattform, die wirklich hält was sie verspricht. Sehr empfehlenswert!",
       rating: 5,
     },
   ];
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Umzugsfirma Schweiz | Feierabend Umzüge - Zuverlässig & Transparent</title>
+        <title>Umzugsfirmen vergleichen | Umzugscheck.ch - Gratis Offerten</title>
         <meta
           name="description"
-          content="Feierabend Umzüge: 500+ erfolgreiche Umzüge pro Jahr. Fixpreise, Schweizer Zertifizierungen, Live-Support."
+          content="Vergleichen Sie kostenlos Umzugsfirmen in Ihrer Region. 500+ geprüfte Partner, transparente Preise, Schweizer Qualität."
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="canonical" href="https://umzugscheck.ch/champion-trust-first" />
       </Helmet>
 
-      <Header />
+      <DynamicNavigation />
 
       <main className="flex-1">
         {/* Hero with Social Proof */}
-        <section className="relative isolate bg-gradient-to-b from-feierabend-blue-50 via-white to-white pt-20 pb-16 px-4">
+        <section className="relative isolate bg-gradient-to-b from-secondary/30 via-background to-background pt-20 pb-16 px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
-              <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-gray-900 mb-6">
-                Ihr Umzug in <span className="text-feierabend-orange-500">zuverlässigen Händen</span>
+              <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-foreground mb-6">
+                Umzugsfirmen <span className="text-primary">vergleichen</span> & sparen
               </h1>
-              <p className="text-xl text-gray-600">
-                500+ erfolgreiche Umzüge pro Jahr • Schweizer Zertifizierungen • Live-Support
+              <p className="text-xl text-muted-foreground">
+                500+ geprüfte Umzugsfirmen • Kostenlose Offerten • Schweizer Qualität
               </p>
             </div>
 
             {/* Trust Numbers */}
             <div className="grid md:grid-cols-4 gap-6 mb-12">
-              <FeierabendCard variant="default" className="p-6 text-center">
-                <div className="text-4xl font-bold text-feierabend-orange-500 mb-2">500+</div>
-                <p className="text-gray-600">Umzüge/Jahr</p>
-              </FeierabendCard>
-              <FeierabendCard variant="default" className="p-6 text-center">
-                <div className="text-4xl font-bold text-feierabend-blue-500 mb-2">4.9★</div>
-                <p className="text-gray-600">Durchschn. Rating</p>
-              </FeierabendCard>
-              <FeierabendCard variant="default" className="p-6 text-center">
-                <div className="text-4xl font-bold text-feierabend-teal-500 mb-2">15+</div>
-                <p className="text-gray-600">Jahre Erfahrung</p>
-              </FeierabendCard>
-              <FeierabendCard variant="default" className="p-6 text-center">
+              <Card className="p-6 text-center border-border bg-card">
+                <div className="text-4xl font-bold text-primary mb-2">500+</div>
+                <p className="text-muted-foreground">Partner-Firmen</p>
+              </Card>
+              <Card className="p-6 text-center border-border bg-card">
+                <div className="text-4xl font-bold text-foreground mb-2">4.8★</div>
+                <p className="text-muted-foreground">Kundenbewertung</p>
+              </Card>
+              <Card className="p-6 text-center border-border bg-card">
+                <div className="text-4xl font-bold text-foreground mb-2">3</div>
+                <p className="text-muted-foreground">Offerten gratis</p>
+              </Card>
+              <Card className="p-6 text-center border-border bg-card">
                 <div className="text-4xl font-bold text-green-600 mb-2">100%</div>
-                <p className="text-gray-600">Zufrieden</p>
-              </FeierabendCard>
+                <p className="text-muted-foreground">Kostenlos</p>
+              </Card>
             </div>
 
             {/* Trust Badges */}
             <div className="grid md:grid-cols-3 gap-4">
-              <TrustBadge icon={<Award className="w-6 h-6" />} text="SSM Zertifiziert" />
-              <TrustBadge icon={<Users className="w-6 h-6" />} text="Professionelles Team" />
-              <TrustBadge icon={<MapPin className="w-6 h-6" />} text="Alle Kantone" />
+              <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50 border border-border">
+                <Award className="w-6 h-6 text-primary" />
+                <span className="font-medium text-foreground">Geprüfte Anbieter</span>
+              </div>
+              <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50 border border-border">
+                <Shield className="w-6 h-6 text-primary" />
+                <span className="font-medium text-foreground">Schweizer Qualität</span>
+              </div>
+              <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50 border border-border">
+                <MapPin className="w-6 h-6 text-primary" />
+                <span className="font-medium text-foreground">Alle Kantone</span>
+              </div>
             </div>
           </div>
         </section>
 
         {/* Testimonials Section */}
-        <section className="py-16 px-4 bg-white">
+        <section className="py-16 px-4 bg-background">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-12 text-gray-900">Das sagen unsere Kunden</h2>
+            <h2 className="text-3xl font-bold text-center mb-12 text-foreground">Das sagen unsere Nutzer</h2>
             <div className="grid md:grid-cols-3 gap-6">
               {testimonials.map((testimonial, i) => (
-                <FeierabendCard key={i} variant="premium" className="p-6">
+                <Card key={i} className="p-6 border-border bg-card">
                   <div className="flex mb-3">
                     {[...Array(testimonial.rating)].map((_, j) => (
-                      <Star key={j} className="w-5 h-5 fill-feierabend-orange-500 text-feierabend-orange-500" />
+                      <Star key={j} className="w-5 h-5 fill-primary text-primary" />
                     ))}
                   </div>
-                  <p className="text-gray-700 mb-4 italic">"{testimonial.quote}"</p>
-                  <p className="font-semibold text-gray-900">{testimonial.name}</p>
-                </FeierabendCard>
+                  <p className="text-muted-foreground mb-4 italic">"{testimonial.quote}"</p>
+                  <p className="font-semibold text-foreground">{testimonial.name}</p>
+                </Card>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Service Grid */}
-        <section className="py-16 px-4 bg-gray-50">
+        {/* How It Works */}
+        <section className="py-16 px-4 bg-muted/30">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-12 text-gray-900">Unsere Services</h2>
-            <div className="grid md:grid-cols-2 gap-6">
+            <h2 className="text-3xl font-bold text-center mb-12 text-foreground">So funktioniert's</h2>
+            <div className="grid md:grid-cols-3 gap-8">
               {[
-                { title: "Privatumzug", desc: "Von Wohnung zu Wohnung mit Profi-Team" },
-                { title: "Büroumzug", desc: "Minimale Downtime + IT-Support" },
-                { title: "Verpackung", desc: "Vollständiger Pack-Service" },
-                { title: "Endreinigung", desc: "Nach dem Umzug sofort eingriffsbereit" },
-                { title: "Entsorgung", desc: "Nachhaltige Möbel- & Materialverwertung" },
-                { title: "Einlagerung", desc: "Sichere Lagerung mit Klimakontrolle" },
-              ].map((service, i) => (
-                <FeierabendCard key={i} variant="default" className="p-6">
-                  <h3 className="font-bold text-lg text-gray-900 mb-2">{service.title}</h3>
-                  <p className="text-gray-600">{service.desc}</p>
-                </FeierabendCard>
+                { step: "1", title: "Anfrage stellen", desc: "Füllen Sie das kurze Formular aus" },
+                { step: "2", title: "Offerten erhalten", desc: "Bis zu 3 Angebote von geprüften Firmen" },
+                { step: "3", title: "Vergleichen & buchen", desc: "Wählen Sie das beste Angebot" },
+              ].map((item, i) => (
+                <div key={i} className="text-center">
+                  <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xl font-bold mx-auto mb-4">
+                    {item.step}
+                  </div>
+                  <h3 className="font-bold text-lg text-foreground mb-2">{item.title}</h3>
+                  <p className="text-muted-foreground">{item.desc}</p>
+                </div>
               ))}
             </div>
           </div>
         </section>
 
         {/* Form Section */}
-        <section className="py-16 px-4 bg-white">
+        <section className="py-16 px-4 bg-background">
           <div className="max-w-2xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-8 text-gray-900">Kostenlose Offerte Anfordern</h2>
-            <FeierabendCard variant="premium" className="p-8">
+            <h2 className="text-3xl font-bold text-center mb-8 text-foreground">Jetzt Gratis Offerten erhalten</h2>
+            <Card className="p-8 border-2 border-primary/20 shadow-lg">
               <ExpressQuoteForm onComplete={handleFormComplete} />
-            </FeierabendCard>
+            </Card>
           </div>
         </section>
 
         {/* Call-to-Action Banner */}
-        <section className="py-16 px-4 bg-feierabend-orange-50">
+        <section className="py-16 px-4 bg-primary/5">
           <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl font-bold mb-4 text-gray-900">Persönliche Beratung gewünscht?</h2>
-            <p className="text-lg text-gray-600 mb-8">
-              Unser Team antwortet sofort auf Ihre Fragen — kostenlos und unverbindlich.
+            <h2 className="text-3xl font-bold mb-4 text-foreground">Persönliche Beratung gewünscht?</h2>
+            <p className="text-lg text-muted-foreground mb-8">
+              Unser Team hilft Ihnen gerne bei der Auswahl der richtigen Umzugsfirma.
             </p>
             <a
-              href="tel:+41765681302"
+              href="tel:+41445678900"
               onClick={() => track("cta_call_click", { location: "banner", funnel: "champion_trust_first" })}
-              className="inline-block px-8 py-4 bg-feierabend-orange-600 hover:bg-feierabend-orange-500 text-white font-semibold rounded-lg transition-colors text-lg"
+              className="inline-block px-8 py-4 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-lg transition-colors text-lg"
             >
-              Jetzt Anrufen: +41 76 568 13 02
+              Jetzt Anrufen: +41 44 567 89 00
             </a>
-            <p className="text-sm text-gray-500 mt-4">Mo–Fr: 08:00–19:00 Uhr</p>
+            <p className="text-sm text-muted-foreground mt-4">Mo–Fr: 08:00–18:00 Uhr</p>
           </div>
         </section>
       </main>
