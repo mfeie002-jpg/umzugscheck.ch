@@ -35,6 +35,7 @@ const variantInfo = {
   U: { label: 'V21', title: 'Left Under CTA', color: 'bg-amber-700' },
   V: { label: 'V22', title: 'In-Form Container', color: 'bg-rose-700' },
   W: { label: 'V23', title: 'Glassmorphism Bar', color: 'bg-cyan-700' },
+  X: { label: 'V24', title: 'Press Trust Bar', color: 'bg-emerald-700' },
 };
 
 export const SocialProofABToggle = memo(function SocialProofABToggle() {
@@ -59,7 +60,7 @@ export const SocialProofABToggle = memo(function SocialProofABToggle() {
             className="absolute bottom-16 left-0 bg-white dark:bg-card border-2 border-primary rounded-xl shadow-2xl w-80 pointer-events-auto overflow-hidden"
           >
             <div className="flex items-center justify-between p-3 border-b border-border">
-              <h3 className="font-bold text-sm text-foreground">🧪 A/B Test: Social Proof (20)</h3>
+              <h3 className="font-bold text-sm text-foreground">🧪 A/B Test: Social Proof (24)</h3>
               <button onClick={() => setIsExpanded(false)} className="p-1 rounded hover:bg-muted">
                 <X className="w-4 h-4" />
               </button>
@@ -96,9 +97,8 @@ export const SocialProofABToggle = memo(function SocialProofABToggle() {
               <div><strong>V7-V12:</strong> Swiss Infra, Pain/Gain, Hybrid, Ecosystem, Minimal, Standards</div>
               <div className="pt-1 border-t border-border/50 mt-1"><strong>V13-V15:</strong> Hero-integriert (Reassurance, Form Footer, Eyebrow)</div>
               <div><strong>V16-V20:</strong> CTA Adjacent, Bandwagon, Local Trust, Data Security, Safety</div>
-              <div className="pt-1 border-t border-border/50 mt-1"><strong>V21:</strong> Left Under CTA (weisse Logos)</div>
-              <div><strong>V22:</strong> In-Form Container (unten in Form-Box)</div>
-              <div><strong>V23:</strong> Glassmorphism Bar (Premium Overlay)</div>
+              <div className="pt-1 border-t border-border/50 mt-1"><strong>V21-V23:</strong> Left Under CTA, In-Form Container, Glassmorphism</div>
+              <div><strong>V24:</strong> Press Trust Bar (Desktop Rail + Mobile Inline) ⭐</div>
             </div>
           </motion.div>
         )}
