@@ -1,15 +1,6 @@
 /**
  * A/B Wrapper for TrustRibbon
- * Renders Variant A-T based on context
- * 
- * Variants:
- * - A: Original - Colored logos, 15'000+ big number
- * - B: Live Dashboard, Deal Cards
- * - C: Trust Hierarchy (Authority → Logic → Emotion)
- * - D: Trust Stack (kompakt, Outcome-Tags)
- * - E: Trust Strip 2.0 (unified strip)
- * - F: Verifiable Trust (ZEFIX, UID, Insurance, Escrow)
- * - G-T: Use same ribbon variants (MediaLogos handles visual differences)
+ * CONSOLIDATED: 17 variants (A-Q)
  */
 
 import { memo } from 'react';
@@ -37,8 +28,8 @@ export const TrustRibbonAB = memo(function TrustRibbonAB(props: TrustRibbonABPro
       : props.variant,
   };
   
-  // Variants G-T reuse the F variant for TrustRibbon (MediaLogos handles the differences)
   switch (abVariant) {
+    // === Standalone Sections (A-F) ===
     case 'B':
       return <TrustRibbonVariantB {...mappedProps} />;
     case 'C':
@@ -48,6 +39,9 @@ export const TrustRibbonAB = memo(function TrustRibbonAB(props: TrustRibbonABPro
     case 'E':
       return <TrustRibbonVariantE {...mappedProps} />;
     case 'F':
+      return <TrustRibbonVariantF {...props} />;
+    
+    // === All other variants use Verifiable Trust style ===
     case 'G':
     case 'H':
     case 'I':
@@ -59,10 +53,9 @@ export const TrustRibbonAB = memo(function TrustRibbonAB(props: TrustRibbonABPro
     case 'O':
     case 'P':
     case 'Q':
-    case 'R':
-    case 'S':
-    case 'T':
       return <TrustRibbonVariantF {...props} />;
+    
+    // Default: Original
     default:
       return <TrustRibbon {...mappedProps} />;
   }
