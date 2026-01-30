@@ -29,7 +29,7 @@
 
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 
-type Variant = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 'V' | 'W' | 'X' | 'Y';
+type Variant = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 'V' | 'W' | 'X' | 'Y' | 'Z';
 
 interface SocialProofABContextType {
   variant: Variant;
@@ -51,7 +51,7 @@ export const SocialProofABProvider = ({ children }: { children: ReactNode }) => 
   const [variant, setVariant] = useState<Variant>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('socialproof-ab-variant');
-      const validVariants: Variant[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y'];
+      const validVariants: Variant[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
       return validVariants.includes(saved as Variant) ? (saved as Variant) : 'A';
     }
     return 'A';
@@ -59,7 +59,7 @@ export const SocialProofABProvider = ({ children }: { children: ReactNode }) => 
 
   const toggleVariant = useCallback(() => {
     setVariant(prev => {
-      const variants: Variant[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y'];
+      const variants: Variant[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
       const currentIndex = variants.indexOf(prev);
       const next = variants[(currentIndex + 1) % variants.length];
       localStorage.setItem('socialproof-ab-variant', next);

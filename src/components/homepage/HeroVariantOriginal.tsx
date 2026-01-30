@@ -26,6 +26,7 @@ import { HeroTrustBar } from './HeroTrustBar';
 import { HeroTrustIntegration } from './HeroTrustIntegration';
 import { PressTrustBar } from './PressTrustBar';
 import { HeroTrustInline } from './HeroTrustInline';
+import { KnownFromRow } from './KnownFromRow';
 import { useSocialProofAB } from '@/contexts/SocialProofABContext';
 
 const APARTMENT_SIZES = [
@@ -51,13 +52,16 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
   const [apartmentSize, setApartmentSize] = useState('');
   
   // Determine if we should show hero-integrated trust based on SP variant
-  const showHeroTrust = ['M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y'].includes(spVariant);
+  const showHeroTrust = ['M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'].includes(spVariant);
   
   // V24 (X): New "Press Trust Bar" variant - Desktop rail + Mobile inline
   const showPressTrust = spVariant === 'X';
   
   // V25 (Y): Best practice - Desktop left under CTA + Mobile in form footer
   const showTrustInline = spVariant === 'Y';
+  
+  // V26 (Z): Ultimate - Trust directly in form card at CTA decision point
+  const showKnownFrom = spVariant === 'Z';
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -297,6 +301,11 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
                     Jetzt checken lassen
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
+                  
+                  {/* V26 (Z): KnownFrom directly after CTA button */}
+                  {showKnownFrom && (
+                    <KnownFromRow variant="cta-adjacent" />
+                  )}
                 </form>
 
                 {/* Trust Badges */}
