@@ -5,22 +5,16 @@
  * Target Keywords: "umzugsfirma zürich", "umzugsofferte", "umzug offerte online"
  * Focus: Fast form completion → Lead capture
  * 
- * Design:
- * - Hero (no scroll-blocking video)
- * - 3x Trust badges inline
- * - 2-step form (phone → PLZ)
- * - Sticky call bar (mobile)
- * - Zero distractions
+ * Branding: Umzugscheck.ch (Portal for multiple providers)
  */
 
 import { Helmet } from "react-helmet-async";
-import Header from "@/components/Header";
+import { DynamicNavigation } from "@/components/DynamicNavigation";
 import Footer from "@/components/Footer";
 import { ExpressQuoteForm } from "@/components/ExpressQuoteForm";
-import { FeierabendCard } from "@/components/ui/FeierabendCard";
-import { TrustBadge } from "@/components/ui/TrustBadge";
+import { Card } from "@/components/ui/card";
 import { track } from "@/utils/track";
-import { Phone, Shield, Zap } from "lucide-react";
+import { Phone, Shield, Zap, CheckCircle, Clock, Users } from "lucide-react";
 
 type FormData = {
   phone: string;
@@ -37,95 +31,103 @@ const ChampionQuickFlow = () => {
       end_plz: data.endPlz,
       move_date: data.moveDate,
     });
-    // Redirect to success or booking
     window.location.href = "/booking?source=champion_quick_flow";
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background">
       <Helmet>
-        <title>Umzugsofferte in 2 Min | Feierabend Umzüge - Kostenlos & Unverbindlich</title>
+        <title>Umzugsofferte in 2 Min | Umzugscheck.ch - Kostenlos vergleichen</title>
         <meta
           name="description"
-          content="Erhalten Sie in wenigen Minuten Offerten von zertifizierten Umzugsfirmen. Vergleichen Sie Preise und buchen Sie direkt."
+          content="Erhalten Sie in 2 Minuten bis zu 3 Offerten von geprüften Umzugsfirmen. Kostenlos vergleichen und sparen."
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="canonical" href="https://umzugscheck.ch/champion-quick-flow" />
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "LocalBusiness",
-            name: "Feierabend Umzüge",
-            description: "Zertifizierte Umzugsfirma mit Online-Offerten",
-            areaServed: "CH",
-            priceRange: "CHF",
+            "@type": "WebPage",
+            name: "Umzugscheck.ch - Umzugsofferten vergleichen",
+            description: "Schweizer Vergleichsportal für Umzugsfirmen",
+            url: "https://umzugscheck.ch/champion-quick-flow",
           })}
         </script>
       </Helmet>
 
-      <Header />
+      <DynamicNavigation />
 
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative isolate bg-gradient-to-br from-feierabend-blue-50 via-white to-white pt-16 pb-12 px-4">
+        <section className="relative isolate bg-gradient-to-br from-secondary/30 via-background to-background pt-16 pb-12 px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900 mb-4">
-              Umzugsofferte in <span className="text-feierabend-orange-500">2 Minuten</span>
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground mb-4">
+              Umzugsofferten in <span className="text-primary">2 Minuten</span>
             </h1>
-            <p className="text-xl text-gray-600 mb-8">
-              Kostenlos • Unverbindlich • Mehrere Angebote zum Vergleichen
+            <p className="text-xl text-muted-foreground mb-8">
+              Kostenlos • Unverbindlich • Bis zu 3 Angebote vergleichen
             </p>
 
             {/* Trust Badges Row */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
-              <TrustBadge icon={<Phone className="w-6 h-6" />} text="Live Hotline Mo–Fr 08–19 Uhr" />
-              <TrustBadge icon={<Shield className="w-6 h-6" />} text="100 % Kostenlos" />
-              <TrustBadge icon={<Zap className="w-6 h-6" />} text="Sofort Offertenvergleich" />
+              <div className="flex items-center justify-center gap-2 p-3 rounded-lg bg-muted/50 border border-border">
+                <Phone className="w-5 h-5 text-primary" />
+                <span className="text-sm font-medium text-foreground">Hotline Mo–Fr 08–18 Uhr</span>
+              </div>
+              <div className="flex items-center justify-center gap-2 p-3 rounded-lg bg-muted/50 border border-border">
+                <Shield className="w-5 h-5 text-primary" />
+                <span className="text-sm font-medium text-foreground">100% Kostenlos</span>
+              </div>
+              <div className="flex items-center justify-center gap-2 p-3 rounded-lg bg-muted/50 border border-border">
+                <Zap className="w-5 h-5 text-primary" />
+                <span className="text-sm font-medium text-foreground">Sofort Offerten</span>
+              </div>
             </div>
           </div>
         </section>
 
         {/* Form Section */}
-        <section className="py-12 px-4 bg-white">
+        <section className="py-12 px-4 bg-background">
           <div className="max-w-2xl mx-auto">
-            <FeierabendCard variant="premium" className="p-8">
+            <Card className="p-8 border-2 border-primary/20 shadow-lg">
               <ExpressQuoteForm onComplete={handleFormComplete} />
-            </FeierabendCard>
+            </Card>
           </div>
         </section>
 
         {/* Benefits Section */}
-        <section className="py-12 px-4 bg-gray-50">
+        <section className="py-12 px-4 bg-muted/30">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-2xl font-bold mb-8 text-center text-gray-900">Warum Feierabend Umzüge?</h2>
+            <h2 className="text-2xl font-bold mb-8 text-center text-foreground">Warum Umzugscheck.ch?</h2>
             <div className="grid md:grid-cols-3 gap-6">
               {[
-                { title: "500+ Umzüge/Jahr", desc: "Lokale Expertise in jeder Stadt" },
-                { title: "Fixpreise", desc: "Keine versteckten Kosten" },
-                { title: "Geprüft & Zertifiziert", desc: "Schweizer Umzugsstandards" },
+                { icon: Users, title: "500+ Partner", desc: "Geprüfte Umzugsfirmen schweizweit" },
+                { icon: CheckCircle, title: "Gratis vergleichen", desc: "Keine versteckten Kosten" },
+                { icon: Clock, title: "Schnell & einfach", desc: "Offerten in wenigen Minuten" },
               ].map((item, i) => (
-                <FeierabendCard key={i} variant="default" className="p-6">
-                  <h3 className="font-bold text-gray-900 mb-2">{item.title}</h3>
-                  <p className="text-gray-600 text-sm">{item.desc}</p>
-                </FeierabendCard>
+                <Card key={i} className="p-6 border-border bg-card">
+                  <item.icon className="w-8 h-8 text-primary mb-3" />
+                  <h3 className="font-bold text-foreground mb-2">{item.title}</h3>
+                  <p className="text-muted-foreground text-sm">{item.desc}</p>
+                </Card>
               ))}
             </div>
           </div>
         </section>
 
         {/* CTA Banner */}
-        <section className="py-12 px-4 bg-feierabend-blue-50">
+        <section className="py-12 px-4 bg-primary/5">
           <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-2xl font-bold mb-4 text-gray-900">Noch Fragen?</h2>
-            <p className="text-gray-600 mb-6">
-              Rufen Sie unser Team an — wir beraten Sie gerne und unverbindlich.
+            <h2 className="text-2xl font-bold mb-4 text-foreground">Noch Fragen?</h2>
+            <p className="text-muted-foreground mb-6">
+              Rufen Sie uns an — wir beraten Sie gerne und unverbindlich.
             </p>
             <a
-              href="tel:+41765681302"
+              href="tel:+41445678900"
               onClick={() => track("cta_call_click", { location: "banner", funnel: "champion_quick_flow" })}
-              className="inline-block px-8 py-3 bg-feierabend-orange-600 hover:bg-feierabend-orange-500 text-white font-semibold rounded-lg transition-colors"
+              className="inline-block px-8 py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-lg transition-colors"
             >
-              +41 76 568 13 02
+              +41 44 567 89 00
             </a>
           </div>
         </section>
