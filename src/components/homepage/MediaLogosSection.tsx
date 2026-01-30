@@ -52,9 +52,10 @@ const mediaLogos = [
 ];
 
 const trustBadges = [
-  { name: "TCS geprüft", icon: "🛡️" },
+  { name: "ASTAG Mitglied", icon: "🚚" },
+  { name: "Konsumentenschutz", icon: "🛡️" },
   { name: "Swiss Made", icon: "🇨🇭" },
-  { name: "ASTAG Partner", icon: "✓" },
+  { name: "SSL verschlüsselt", icon: "🔒" },
 ];
 
 export const MediaLogosSection = memo(function MediaLogosSection() {
