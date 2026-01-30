@@ -12,8 +12,6 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
-import { DynamicNavigation } from '@/components/DynamicNavigation';
-import { Footer } from '@/components/Footer';
 import { AfterMoveCareMap } from '@/components/after-move';
 
 // Demo addresses in Switzerland
@@ -61,8 +59,7 @@ export default function AfterMoveCareDemo() {
 
   return (
     <div className="min-h-screen bg-background">
-      <DynamicNavigation />
-      
+      {/* Navigation + Footer provided by MainLayout in App.tsx */}
       <main className="container mx-auto px-4 py-8 max-w-6xl">
         {/* Back Link */}
         <Button variant="ghost" size="sm" asChild className="mb-6">
@@ -262,8 +259,6 @@ export default function AfterMoveCareDemo() {
           </CardContent>
         </Card>
       </main>
-
-      <Footer />
     </div>
   );
 }
