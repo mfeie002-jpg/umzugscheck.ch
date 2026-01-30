@@ -154,11 +154,15 @@ export const PremiumHeroSection = () => {
   // Use fixed height in screenshot mode to prevent vh/svh from exploding with tall viewports
   const screenshotMode = isScreenshotRenderMode();
   const heroHeightClass = screenshotMode
-    ? "min-h-[700px]" // Fixed height for screenshots
-    : "min-h-[85svh] sm:min-h-[85vh] md:min-h-[85vh]";
+    ? "min-h-[640px]" // Fixed height for screenshots
+    : "min-h-[70svh] sm:min-h-[70vh] md:min-h-[70vh]";
 
   return (
-    <section ref={sectionRef} className={`relative ${heroHeightClass} flex items-start sm:items-center overflow-hidden pt-2 sm:pt-0`} style={{ position: 'relative' }}>
+    <section
+      ref={sectionRef}
+      className={`relative ${heroHeightClass} flex items-start overflow-hidden pt-2 sm:pt-2`}
+      style={{ position: 'relative' }}
+    >
       {/* Background Image with Parallax Effect */}
       <motion.div
         className="absolute inset-0 w-full h-full"
