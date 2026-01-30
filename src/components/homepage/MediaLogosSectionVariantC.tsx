@@ -1,40 +1,45 @@
 /**
- * MediaLogosSection VARIANT C - Trust Hierarchy (Authority Logos oben)
+ * MediaLogosSection VARIANT C - Trust Hierarchy (Schweizer Pyramide)
  * 
  * VERSION 3: Authority → Logic → Emotion flow
- * - Row 1: Media logos (NZZ, SRF, Blick) - Authority
- * - Row 2: Quality seals (ASTAG, Versicherung) - Logic
+ * - Row 1: Branchen-Standards (ASTAG, Swiss Label) - Authority
+ * - Row 2: Sicherheit (Versicherung, Handelsregister) - Logic
  * - Row 3: Rating summary - Emotion
  */
 
 import { memo } from "react";
 import { motion } from "framer-motion";
-import { Star, Shield, Truck, Building2, CheckCircle2 } from "lucide-react";
+import { Star, Shield, Truck, Building2, Award, CheckCircle2 } from "lucide-react";
+import { TRUST } from "@/content/trust";
 
-// Media logos - Authority tier
-const mediaLogos = [
-  { name: "SRF", abbr: "SRF", color: "hover:text-red-600" },
-  { name: "NZZ", abbr: "NZZ", color: "hover:text-blue-900" },
-  { name: "20 Minuten", abbr: "20min", color: "hover:text-blue-600" },
-  { name: "Blick", abbr: "Blick", color: "hover:text-red-500" },
-  { name: "Watson", abbr: "watson", color: "hover:text-violet-600" },
-];
-
-// Quality seals - Logic tier
-const qualitySeals = [
+// Authority tier - Branchen-Standards
+const authoritySeals = [
   {
     id: "astag",
     name: "ASTAG",
     label: "Verbandsmitglied",
     Icon: Truck,
     iconColor: "text-primary",
+    description: "Der TÜV der Umzugsbranche",
   },
+  {
+    id: "swisslabel",
+    name: "Swiss Label",
+    label: "Armbrust-Zertifiziert",
+    Icon: Award,
+    iconColor: "text-[#D52B1E]",
+    description: "Schweizer Qualitätsstandard",
+  },
+];
+
+// Logic tier - Sicherheit & Verifizierung
+const securitySeals = [
   {
     id: "versicherung",
     name: "Versichert",
     label: "Bis CHF 2 Mio.",
     Icon: Shield,
-    iconColor: "text-primary",
+    iconColor: "text-[#E2001A]",
   },
   {
     id: "handelsregister",
@@ -45,8 +50,8 @@ const qualitySeals = [
   },
   {
     id: "verifiziert",
-    name: "200+",
-    label: "Geprüfte Firmen",
+    name: TRUST.companiesCount,
+    label: TRUST.companiesLabel,
     Icon: CheckCircle2,
     iconColor: "text-primary",
   },
@@ -57,7 +62,7 @@ export const MediaLogosSectionVariantC = memo(function MediaLogosSectionVariantC
     <section className="py-6 md:py-10 bg-muted/20 dark:bg-muted/30 border-y border-border/30">
       <div className="container max-w-5xl px-4">
         
-        {/* ROW 1: MEDIA LOGOS - Authority */}
+        {/* ROW 1: AUTHORITY - Branchen-Standards */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -65,17 +70,24 @@ export const MediaLogosSectionVariantC = memo(function MediaLogosSectionVariantC
           className="text-center mb-6"
         >
           <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-3">
-            Bekannt aus Schweizer Medien
+            Schweizer Branchen-Standards
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-3 md:gap-6">
-            {mediaLogos.map((logo) => (
-              <span
-                key={logo.name}
-                className={`text-sm md:text-base font-bold text-muted-foreground/60 
-                           ${logo.color} transition-colors cursor-default`}
+          <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6">
+            {authoritySeals.map((seal) => (
+              <div
+                key={seal.id}
+                className="flex items-center gap-3 px-4 py-3 rounded-xl bg-card border border-border/50 
+                           hover:border-border hover:shadow-md transition-all group"
               >
-                {logo.abbr}
-              </span>
+                <div className={`w-10 h-10 rounded-full bg-muted flex items-center justify-center
+                                group-hover:bg-primary/10 transition-colors`}>
+                  <seal.Icon className={`w-5 h-5 ${seal.iconColor}`} />
+                </div>
+                <div className="text-left">
+                  <span className="text-sm font-semibold text-foreground block">{seal.name}</span>
+                  <span className="text-[10px] text-muted-foreground">{seal.label}</span>
+                </div>
+              </div>
             ))}
           </div>
         </motion.div>
@@ -83,15 +95,15 @@ export const MediaLogosSectionVariantC = memo(function MediaLogosSectionVariantC
         {/* Divider */}
         <div className="w-20 h-px bg-border mx-auto mb-6" />
         
-        {/* ROW 2: QUALITY SEALS - Logic */}
+        {/* ROW 2: SECURITY - Logic tier */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.1 }}
-          className="flex flex-wrap items-center justify-center gap-4 md:gap-6 mb-6"
+          className="flex flex-wrap items-center justify-center gap-3 md:gap-4 mb-6"
         >
-          {qualitySeals.map((seal) => (
+          {securitySeals.map((seal) => (
             <div
               key={seal.id}
               className="flex items-center gap-2 px-3 py-2 rounded-lg bg-card border border-border/50 
@@ -116,12 +128,12 @@ export const MediaLogosSectionVariantC = memo(function MediaLogosSectionVariantC
         >
           <div className="flex gap-0.5">
             {[...Array(5)].map((_, i) => (
-              <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+              <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
             ))}
           </div>
           <span className="text-sm">
-            <strong className="text-foreground">4.8/5</strong>
-            <span className="text-muted-foreground ml-1">aus 2'847 Bewertungen</span>
+            <strong className="text-foreground">{TRUST.ratingDisplay}</strong>
+            <span className="text-muted-foreground ml-1">aus {TRUST.ratingCount.toLocaleString('de-CH')} Bewertungen</span>
           </span>
         </motion.div>
       </div>
