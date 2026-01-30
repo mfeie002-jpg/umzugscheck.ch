@@ -39,6 +39,8 @@ const PainGainSection = lazy(() => import("@/components/homepage/PainGainSection
 const GuaranteesSection = lazy(() => import("@/components/homepage/GuaranteesSection").then(m => ({ default: m.GuaranteesSection })));
 const ChecklistTeaser = lazy(() => import("@/components/homepage/ChecklistTeaser").then(m => ({ default: m.ChecklistTeaser })));
 const SEOContentAccordion = lazy(() => import("@/components/homepage/SEOContentAccordion").then(m => ({ default: m.SEOContentAccordion })));
+// NEW: Moving Process Guide (Umzugsprozess Schweiz)
+const MovingProcessGuide = lazy(() => import("@/components/homepage/MovingProcessGuide").then(m => ({ default: m.MovingProcessGuide })));
 // A/B tested components
 const TrustRibbonAB = lazy(() => import("@/components/trust/TrustRibbonAB").then(m => ({ default: m.TrustRibbonAB })));
 const EnhancedTestimonialsAB = lazy(() => import("@/components/homepage/EnhancedTestimonialsAB").then(m => ({ default: m.EnhancedTestimonialsAB })));
@@ -191,8 +193,13 @@ const Index = () => {
           <Suspense fallback={<SectionSkeleton height="300px" />}>
             <ChecklistTeaser />
           </Suspense>
+          
+          {/* 15. NEW: Moving Process Guide - Umzugsprozess Schweiz */}
+          <Suspense fallback={<SectionSkeleton height="600px" />}>
+            <MovingProcessGuide />
+          </Suspense>
 
-          {/* 15. FAQ */}
+          {/* 16. FAQ */}
           <Suspense fallback={<SectionSkeleton height="400px" />}>
             <EnhancedFAQ />
           </Suspense>
