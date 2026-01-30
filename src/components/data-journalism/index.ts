@@ -6,3 +6,5 @@
 export { MovingCostIndex } from './MovingCostIndex';
 export { MovingStatisticsDashboard } from './MovingStatisticsDashboard';
 export { LivingCostComparison } from './LivingCostComparison';
+export { EcoScoreDisplay } from './EcoScoreDisplay';
+export { TrendsWidget, CantonCostWidget, SeasonalWidget, EmbedPage } from './EmbeddableWidget';

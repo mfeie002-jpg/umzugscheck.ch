@@ -17,3 +17,6 @@ export type { GuaranteedQuote } from '@/lib/guaranteed-price-engine';
 
 // Swiss Integration
 export * from './swiss-integration';
+
+// Sustainability & Eco-Score
+export * from './sustainability';
