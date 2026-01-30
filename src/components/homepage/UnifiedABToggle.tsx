@@ -17,7 +17,7 @@ import { useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-// Social Proof variant info
+// Social Proof variant info - 12 variants (A-L)
 const socialProofVariants = {
   A: { label: 'V1', title: 'Original', color: 'bg-blue-600' },
   B: { label: 'V2', title: 'Live Dashboard', color: 'bg-emerald-600' },
@@ -25,6 +25,12 @@ const socialProofVariants = {
   D: { label: 'V4', title: 'Trust Stack', color: 'bg-violet-600' },
   E: { label: 'V5', title: 'Trust Strip 2.0', color: 'bg-rose-600' },
   F: { label: 'V6', title: 'Verifiable Trust', color: 'bg-cyan-600' },
+  G: { label: 'V7', title: 'Swiss Infrastructure', color: 'bg-red-600' },
+  H: { label: 'V8', title: 'Pain vs Gain', color: 'bg-orange-600' },
+  I: { label: 'V9', title: 'Hybrid Trust Bar', color: 'bg-yellow-600' },
+  J: { label: 'V10', title: 'Trust Ecosystem', color: 'bg-teal-600' },
+  K: { label: 'V11', title: 'Minimal Proof Strip', color: 'bg-slate-600' },
+  L: { label: 'V12', title: 'Swiss Standards', color: 'bg-indigo-600' },
 };
 
 // Tab Hint variant info
@@ -69,7 +75,7 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
     setNavVariant(variantId);
   }, [setNavVariant]);
 
-  const handleSPVariantChange = useCallback((sv: 'A' | 'B' | 'C' | 'D' | 'E' | 'F') => {
+  const handleSPVariantChange = useCallback((sv: 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L') => {
     setSPVariant(sv);
   }, [setSPVariant]);
 
@@ -287,7 +293,13 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
                     <div><strong>V3:</strong> Trust Hierarchy (Logos oben)</div>
                     <div><strong>V4:</strong> Trust Stack (kompakt)</div>
                     <div><strong>V5:</strong> Trust Strip 2.0 (unified)</div>
-                    <div><strong>V6:</strong> Verifiable Trust (ZEFIX/UID/nDSG)</div>
+                    <div><strong>V6:</strong> Verifiable Trust (ZEFIX/UID)</div>
+                    <div><strong>V7:</strong> Swiss Infrastructure (eUmzug/Post)</div>
+                    <div><strong>V8:</strong> Pain vs Gain (Problem→Lösung)</div>
+                    <div><strong>V9:</strong> Hybrid Trust Bar (psychologisch)</div>
+                    <div><strong>V10:</strong> Trust Ecosystem (Grid)</div>
+                    <div><strong>V11:</strong> Minimal Proof Strip (Grayscale)</div>
+                    <div><strong>V12:</strong> Swiss Standards (Meldepflicht)</div>
                   </div>
                 </TabsContent>
 
