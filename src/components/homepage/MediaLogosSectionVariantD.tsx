@@ -1,57 +1,66 @@
 /**
- * MediaLogosSection VARIANT D - Trust Stack (Kompakt)
+ * MediaLogosSection VARIANT D - Trust Pills (Schweizer Kompakt)
  * 
  * VERSION 4: Pill-based compact layout
- * - Single row of trust pills
- * - No separate sections, everything inline
+ * - Nur verifizierbare Schweizer Trust-Siegel
+ * - Single row, horizontal scroll on mobile
  * - Maximum density, minimum space
  */
 
 import { memo } from "react";
 import { motion } from "framer-motion";
-import { Star, Shield, Truck, CheckCircle2, Newspaper } from "lucide-react";
+import { Star, Shield, Truck, CheckCircle2, Award, CreditCard } from "lucide-react";
+import { TRUST } from "@/content/trust";
 
-// Trust pills - all in one compact row
+// Swiss Trust pills - prioritized by Swiss authority
 const trustPills = [
-  {
-    id: "media",
-    icon: Newspaper,
-    text: "SRF • NZZ • 20min",
-    subtext: "Bekannt aus",
-    color: "text-muted-foreground",
-    bgColor: "bg-muted/50",
-  },
   {
     id: "astag",
     icon: Truck,
     text: "ASTAG Mitglied",
-    subtext: null,
+    subtext: "Verbandsmitglied",
     color: "text-primary",
     bgColor: "bg-primary/10",
   },
   {
     id: "versichert",
     icon: Shield,
-    text: "Bis 2 Mio. CHF",
+    text: "Bis CHF 2 Mio.",
     subtext: "Versichert",
-    color: "text-primary",
-    bgColor: "bg-primary/10",
+    color: "text-[#E2001A]",
+    bgColor: "bg-[#E2001A]/10",
+  },
+  {
+    id: "swisslabel",
+    icon: Award,
+    text: "Swiss Label",
+    subtext: "Armbrust",
+    color: "text-[#D52B1E]",
+    bgColor: "bg-[#D52B1E]/10",
   },
   {
     id: "firmen",
     icon: CheckCircle2,
-    text: "200+ Firmen",
-    subtext: "Geprüft",
+    text: TRUST.companiesCount,
+    subtext: "Geprüfte Firmen",
     color: "text-primary",
     bgColor: "bg-primary/10",
   },
   {
+    id: "twint",
+    icon: CreditCard,
+    text: "TWINT",
+    subtext: "& Karte",
+    color: "text-[#00A0E4]",
+    bgColor: "bg-[#00A0E4]/10",
+  },
+  {
     id: "rating",
     icon: Star,
-    text: "4.8/5",
-    subtext: "2'847 Reviews",
-    color: "text-primary",
-    bgColor: "bg-primary/10",
+    text: TRUST.ratingDisplay,
+    subtext: `${TRUST.ratingCount.toLocaleString('de-CH')} Reviews`,
+    color: "text-amber-500",
+    bgColor: "bg-amber-500/10",
   },
 ];
 
@@ -59,6 +68,11 @@ export const MediaLogosSectionVariantD = memo(function MediaLogosSectionVariantD
   return (
     <section className="py-4 md:py-5 bg-muted/20 border-y border-border/30">
       <div className="container px-4">
+        
+        {/* Header */}
+        <p className="text-center text-[10px] text-muted-foreground uppercase tracking-widest mb-3">
+          Schweizer Qualität & Sicherheit
+        </p>
         
         {/* SINGLE ROW - Scrollable on mobile */}
         <motion.div

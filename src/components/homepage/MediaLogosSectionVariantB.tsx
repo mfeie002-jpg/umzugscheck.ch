@@ -1,15 +1,16 @@
 /**
- * MediaLogosSection VARIANT B - Live Dashboard + Deal Cards Style
+ * MediaLogosSection VARIANT B - Swiss Authority Stack
  * 
- * VERSION 2: Dynamic stats with monochrome media logos
- * - Live activity ticker
- * - Media logos (NZZ, SRF, Blick, etc.) in grayscale
- * - Dynamic savings counter
+ * VERSION 2: Fokus auf verifizierbare Schweizer Autorität
+ * - ASTAG + Versicherung prominent
+ * - Live-Statistiken für Social Proof
+ * - Keine unverifizierte Media-Logos
  */
 
 import { memo, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, TrendingDown, Users, Clock, Sparkles } from "lucide-react";
+import { Star, TrendingDown, Users, Shield, Truck, Award } from "lucide-react";
+import { TRUST } from "@/content/trust";
 
 // Live stats that rotate
 const liveStats = [
@@ -19,13 +20,29 @@ const liveStats = [
   { city: "Luzern", savings: 340, minutes: 18 },
 ];
 
-// Media logos - bekannte Schweizer Medien
-const mediaLogos = [
-  { name: "SRF", abbr: "SRF" },
-  { name: "NZZ", abbr: "NZZ" },
-  { name: "20min", abbr: "20'" },
-  { name: "Blick", abbr: "BL" },
-  { name: "Watson", abbr: "W" },
+// Schweizer Trust-Siegel
+const swissTrustBadges = [
+  {
+    id: "astag",
+    name: "ASTAG",
+    label: "Verbandsmitglied",
+    Icon: Truck,
+    color: "text-primary",
+  },
+  {
+    id: "versichert",
+    name: "Versichert",
+    label: "Bis CHF 2 Mio.",
+    Icon: Shield,
+    color: "text-[#E2001A]",
+  },
+  {
+    id: "swisslabel",
+    name: "Swiss Label",
+    label: "Schweizer Qualität",
+    Icon: Award,
+    color: "text-[#D52B1E]",
+  },
 ];
 
 export const MediaLogosSectionVariantB = memo(function MediaLogosSectionVariantB() {
@@ -82,9 +99,9 @@ export const MediaLogosSectionVariantB = memo(function MediaLogosSectionVariantB
           >
             <div className="flex items-center justify-center gap-2 mb-1">
               <Users className="w-4 h-4 text-primary" />
-              <span className="text-xl md:text-2xl font-bold text-foreground">15'000+</span>
+              <span className="text-xl md:text-2xl font-bold text-foreground">{TRUST.movesCount}</span>
             </div>
-            <span className="text-xs text-muted-foreground">Anfragen/Jahr</span>
+            <span className="text-xs text-muted-foreground">{TRUST.movesLabel}</span>
           </motion.div>
           
           <motion.div
@@ -113,26 +130,27 @@ export const MediaLogosSectionVariantB = memo(function MediaLogosSectionVariantB
                 <Star key={i} className="w-4 h-4 fill-primary text-primary" />
               ))}
             </div>
-            <span className="text-xs text-muted-foreground">4.8/5 (2'847 Bewertungen)</span>
+            <span className="text-xs text-muted-foreground">{TRUST.ratingWithCount}</span>
           </motion.div>
         </div>
         
-        {/* MEDIA LOGOS - Monochrome */}
+        {/* SWISS TRUST BADGES */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           className="flex justify-center"
         >
-          <div className="flex items-center gap-2 md:gap-4 px-4 py-2">
-            <span className="text-[10px] text-muted-foreground uppercase tracking-wide mr-2">Bekannt aus:</span>
-            {mediaLogos.map((logo, i) => (
+          <div className="flex items-center gap-3 md:gap-4 px-4 py-2">
+            <span className="text-[10px] text-muted-foreground uppercase tracking-wide mr-2">Zertifiziert:</span>
+            {swissTrustBadges.map((badge) => (
               <div
-                key={logo.name}
-                className="px-2 py-1 rounded bg-muted/50 text-xs font-bold text-muted-foreground 
-                           hover:text-foreground hover:bg-muted transition-colors cursor-default"
+                key={badge.id}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-card border border-border/50 
+                           hover:border-border hover:shadow-sm transition-all cursor-default"
               >
-                {logo.abbr}
+                <badge.Icon className={`w-4 h-4 ${badge.color}`} />
+                <span className="text-xs font-medium text-foreground">{badge.name}</span>
               </div>
             ))}
           </div>
