@@ -1,3 +1,7 @@
+# ============================================================================
+# RELO-OS 2026: Consolidated Redirects
+# ============================================================================
+
 # SEO Redirects - Legacy URLs to Canonical Structure (301)
 # City legacy pattern: /:city/umzugsfirmen -> /umzugsfirmen/:city
 /:city/umzugsfirmen   /umzugsfirmen/:city   301
@@ -9,7 +13,77 @@
 /luzern/umzugsfirmen    /umzugsfirmen/luzern    301
 /genf/umzugsfirmen      /umzugsfirmen/genf      301
 
+# ============================================================================
+# LEGACY FLOW REDIRECTS (301) - Relo-OS 2026 Consolidation
+# All legacy flow variants redirect to single Golden Flow entry point
+# ============================================================================
+
+# V1 Series
+/umzugsofferten-v1      /umzugsofferten   301
+/umzugsofferten-v1a     /umzugsofferten   301
+/umzugsofferten-v1b     /umzugsofferten   301
+/umzugsofferten-v1c     /umzugsofferten   301
+/umzugsofferten-v1d     /umzugsofferten   301
+/umzugsofferten-v1e     /umzugsofferten   301
+/umzugsofferten-v1f     /umzugsofferten   301
+/umzugsofferten-v1g     /umzugsofferten   301
+
+# V2 Series
+/umzugsofferten-v2a     /umzugsofferten   301
+/umzugsofferten-v2b     /umzugsofferten   301
+/umzugsofferten-v2e     /umzugsofferten   301
+/umzugsofferten-v2-archetyp   /umzugsofferten   301
+
+# V3 Series
+/umzugsofferten-v3a     /umzugsofferten   301
+/umzugsofferten-v3b     /umzugsofferten   301
+/umzugsofferten-v3c     /umzugsofferten   301
+/umzugsofferten-v3d     /umzugsofferten   301
+/umzugsofferten-v3e     /umzugsofferten   301
+
+# V4 Series
+/umzugsofferten-v4a     /umzugsofferten   301
+/umzugsofferten-v4b     /umzugsofferten   301
+/umzugsofferten-v4c     /umzugsofferten   301
+/umzugsofferten-v4d     /umzugsofferten   301
+/umzugsofferten-v4e     /umzugsofferten   301
+
+# V5 Series
+/umzugsofferten-v5a     /umzugsofferten   301
+/umzugsofferten-v5b     /umzugsofferten   301
+/umzugsofferten-v5c     /umzugsofferten   301
+/umzugsofferten-v5d     /umzugsofferten   301
+/umzugsofferten-v5e     /umzugsofferten   301
+
+# V8-V9 Series
+/umzugsofferten-v8a     /umzugsofferten   301
+/umzugsofferten-v9a     /umzugsofferten   301
+/umzugsofferten-v9b     /umzugsofferten   301
+/umzugsofferten-v9c     /umzugsofferten   301
+/umzugsofferten-v9d     /umzugsofferten   301
+
+# Other legacy flows
+/umzugsofferten-baseline    /umzugsofferten   301
+/umzugsofferten-ultimate    /umzugsofferten   301
+/umzugsofferten-ultimate-ch /umzugsofferten   301
+/umzugsofferten-dynamic     /umzugsofferten   301
+/umzugsofferten-variant     /umzugsofferten   301
+
+# V10 Smart Router -> Golden Flow
+/v10-smart-router       /umzugsofferten   301
+/smart-router           /umzugsofferten   301
+
+# Golden Flow V10 aliases
+/golden-flow            /umzugsofferten   301
+/golden-flow-v10        /umzugsofferten   301
+
+# Zero Friction
+/v9-zero-friction       /umzugsofferten   301
+
+# ============================================================================
 # SPA Fallback - All routes serve index.html for React Router
+# ============================================================================
+
 # Assets with hashes are served directly
 /assets/*  /assets/:splat  200
 

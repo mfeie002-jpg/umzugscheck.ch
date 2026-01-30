@@ -46,6 +46,11 @@ const getDefaultFormData = (): SmartRouterData => ({
   rooms: 3.5,
   moveDate: '',
   flexibleDate: true,
+  // RELO-OS 2026: Enhanced intent capture defaults
+  hasElevatorFrom: true,
+  hasElevatorTo: true,
+  hasSpecialItems: false,
+  specialItemTypes: [],
   selectedMethod: null,
   name: '',
   email: '',
