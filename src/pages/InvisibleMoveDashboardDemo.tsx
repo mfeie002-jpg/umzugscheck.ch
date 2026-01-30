@@ -9,14 +9,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { InvisibleMoveDashboard } from '@/components/dashboard/InvisibleMoveDashboard';
-import { DynamicNavigation } from '@/components/DynamicNavigation';
-import { Footer } from '@/components/Footer';
 
 export default function InvisibleMoveDashboardDemo() {
   return (
     <div className="min-h-screen bg-background">
-      <DynamicNavigation />
-      
+      {/* Navigation + Footer provided by MainLayout in App.tsx */}
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Back Link */}
         <Button variant="ghost" size="sm" asChild className="mb-6">
@@ -109,8 +106,6 @@ export default function InvisibleMoveDashboardDemo() {
           </CardContent>
         </Card>
       </main>
-
-      <Footer />
     </div>
   );
 }
