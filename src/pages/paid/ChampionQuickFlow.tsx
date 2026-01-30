@@ -9,8 +9,6 @@
  */
 
 import { Helmet } from "react-helmet-async";
-import { DynamicNavigation } from "@/components/DynamicNavigation";
-import Footer from "@/components/Footer";
 import { ExpressQuoteForm } from "@/components/ExpressQuoteForm";
 import { Card } from "@/components/ui/card";
 import { track } from "@/utils/track";
@@ -55,8 +53,7 @@ const ChampionQuickFlow = () => {
         </script>
       </Helmet>
 
-      <DynamicNavigation />
-
+      {/* Navigation + Footer provided by MainLayout in App.tsx */}
       <main className="flex-1">
         {/* Hero Section */}
         <section className="relative isolate bg-gradient-to-br from-secondary/30 via-background to-background pt-16 pb-12 px-4">
@@ -132,8 +129,6 @@ const ChampionQuickFlow = () => {
           </div>
         </section>
       </main>
-
-      <Footer />
     </div>
   );
 };

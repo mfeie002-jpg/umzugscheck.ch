@@ -9,8 +9,6 @@
  */
 
 import { Helmet } from "react-helmet-async";
-import { DynamicNavigation } from "@/components/DynamicNavigation";
-import Footer from "@/components/Footer";
 import { ExpressQuoteForm } from "@/components/ExpressQuoteForm";
 import { Card } from "@/components/ui/card";
 import { track } from "@/utils/track";
@@ -64,8 +62,7 @@ const ChampionTrustFirst = () => {
         <link rel="canonical" href="https://umzugscheck.ch/champion-trust-first" />
       </Helmet>
 
-      <DynamicNavigation />
-
+      {/* Navigation + Footer provided by MainLayout in App.tsx */}
       <main className="flex-1">
         {/* Hero with Social Proof */}
         <section className="relative isolate bg-gradient-to-b from-secondary/30 via-background to-background pt-20 pb-16 px-4">
@@ -187,8 +184,6 @@ const ChampionTrustFirst = () => {
           </div>
         </section>
       </main>
-
-      <Footer />
     </div>
   );
 };
