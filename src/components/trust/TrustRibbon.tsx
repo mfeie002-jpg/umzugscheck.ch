@@ -5,7 +5,7 @@
  */
 
 import { memo } from "react";
-import { ShieldCheck, BadgeCheck, CheckCircle, Star, Banknote } from "lucide-react";
+import { ShieldCheck, BadgeCheck, CheckCircle, Star, Banknote, Shield, Building2, TrendingUp } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -52,22 +52,14 @@ const TRUST_LOGOS: { key: string; label: string; src: string }[] = [
   { key: "swisslabel", label: "Swiss Label", src: "/logos/trust/swiss-label.svg" },
   { key: "astag", label: "ASTAG Schweiz", src: "/logos/trust/astag.svg" },
   { key: "swisshosting", label: "Swiss Hosting", src: "/logos/trust/swiss-hosting.svg" },
-  { key: "trustedshops", label: "Trusted Shops", src: "/logos/trust/trusted-shops.svg" },
+  { key: "trustedshops", label: "Trusted Shops", src: "/logos/trust/trusted-shops.svg" }
 ];
-          <span className="font-semibold">Google</span>
-          <div className="flex items-center gap-0.5 text-amber-500">
-            {[...Array(5)].map((_, i) => (
-              <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-            ))}
-          </div>
-        </div>
-      );
-    default:
-      return <div className={cn(base, "text-sm md:text-base font-semibold")}>{name}</div>;
-  }
-};
 
 interface TrustRibbonProps {
+  className?: string;
+}
+
+export const TrustRibbon = memo(({ className }: TrustRibbonProps) => {
   // 3) Media + Trust-Logos (default)
   return (
     <section className={cn("py-10 md:py-14", className)}>
