@@ -23,6 +23,7 @@ import { LiveActivityBadge } from '@/components/home/LiveActivityBadge';
 import { useFlowPath } from '@/hooks/useUnifiedAB';
 import { swissPostalCodes } from '@/lib/swiss-postal-codes';
 import { HeroTrustBar } from './HeroTrustBar';
+import { HeroTrustIntegration } from './HeroTrustIntegration';
 import { useSocialProofAB } from '@/contexts/SocialProofABContext';
 
 const APARTMENT_SIZES = [
@@ -48,7 +49,7 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
   const [apartmentSize, setApartmentSize] = useState('');
   
   // Determine if we should show hero-integrated trust based on SP variant
-  const showHeroTrust = ['M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T'].includes(spVariant);
+  const showHeroTrust = ['M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W'].includes(spVariant);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -188,6 +189,11 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
             {showHeroTrust && spVariant === 'M' && (
               <HeroTrustBar variant="below-cta" />
             )}
+            
+            {/* V21: Left Under CTA - Monochrome WHITE logos (Recommended) */}
+            {showHeroTrust && spVariant === 'U' && (
+              <HeroTrustIntegration variant="left-under-cta" />
+            )}
           </motion.div>
           
           {/* Right Column - Form Card */}
@@ -298,6 +304,11 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
                 {showHeroTrust && spVariant === 'N' && (
                   <HeroTrustBar variant="inline-form" />
                 )}
+                
+                {/* V22: In-Form Container - Trust bar at bottom of form box */}
+                {showHeroTrust && spVariant === 'V' && (
+                  <HeroTrustIntegration variant="in-form-container" />
+                )}
               </div>
             </div>
           </motion.div>
@@ -314,6 +325,11 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
           >
             <HeroTrustBar variant="below-form" />
           </motion.div>
+        )}
+        
+        {/* V23: Glassmorphism Bar - Premium overlay at bottom */}
+        {showHeroTrust && spVariant === 'W' && (
+          <HeroTrustIntegration variant="glassmorphism-bar" />
         )}
       </div>
     </section>
