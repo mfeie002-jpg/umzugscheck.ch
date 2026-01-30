@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 80" width="240" height="80">
+  <!-- Placeholder: Replace with official SRF logo -->
+  <rect width="240" height="80" fill="transparent"/>
+  <rect x="80" y="20" width="80" height="40" rx="4" fill="#C8102E"/>
+  <text x="120" y="47" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">SRF</text>
+</svg>
