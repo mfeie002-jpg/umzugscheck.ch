@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Navigate, useLocation } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProviderAuthProvider } from "@/contexts/ProviderAuthContext";
 import { PerformanceProvider } from "@/contexts/PerformanceContext";
@@ -941,38 +942,40 @@ const AppRouterContent = () => {
 
 const App = () => (
   <ErrorBoundary>
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <ProviderAuthProvider>
-          <PerformanceProvider>
-            <NavigationABProvider>
-              <TooltipProvider>
-                <Toaster />
-                <Sonner />
-                <BrowserRouter>
-                  <AnalyticsTracker />
-                  <ScreenshotRenderModeRoot />
-                  <CaptureReadySentinel />
-                  <CaptureDebugOverlay />
-                  <FunnelModeProvider />
-                  <ReloadDiagnostics />
-                  <CriticalCSS />
-                  <CriticalCSSLoader />
-                  <FontLoader />
-                  <ResourceHints />
-                  <PrefetchManager />
-                  <PerformanceMonitor />
-                  <WebVitalsReporter debug={process.env.NODE_ENV === 'development'} />
-                  <PreloadResources />
-                  <PerformanceDebugOverlay />
-                  <AppRouterContent />
-                </BrowserRouter>
-              </TooltipProvider>
-            </NavigationABProvider>
-          </PerformanceProvider>
-        </ProviderAuthProvider>
-      </AuthProvider>
-    </QueryClientProvider>
+    <HelmetProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <ProviderAuthProvider>
+            <PerformanceProvider>
+              <NavigationABProvider>
+                <TooltipProvider>
+                  <Toaster />
+                  <Sonner />
+                  <BrowserRouter>
+                    <AnalyticsTracker />
+                    <ScreenshotRenderModeRoot />
+                    <CaptureReadySentinel />
+                    <CaptureDebugOverlay />
+                    <FunnelModeProvider />
+                    <ReloadDiagnostics />
+                    <CriticalCSS />
+                    <CriticalCSSLoader />
+                    <FontLoader />
+                    <ResourceHints />
+                    <PrefetchManager />
+                    <PerformanceMonitor />
+                    <WebVitalsReporter debug={process.env.NODE_ENV === 'development'} />
+                    <PreloadResources />
+                    <PerformanceDebugOverlay />
+                    <AppRouterContent />
+                  </BrowserRouter>
+                </TooltipProvider>
+              </NavigationABProvider>
+            </PerformanceProvider>
+          </ProviderAuthProvider>
+        </AuthProvider>
+      </QueryClientProvider>
+    </HelmetProvider>
   </ErrorBoundary>
 );
 
