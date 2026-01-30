@@ -92,3 +92,9 @@ verify_jwt = false
 
 [functions.ai-assistant-v2]
 verify_jwt = false
+
+[functions.submit-post-move-survey]
+verify_jwt = false
+
+[functions.analyze-review-sentiment]
+verify_jwt = false

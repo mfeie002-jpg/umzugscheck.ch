@@ -2728,6 +2728,60 @@ export type Database = {
         }
         Relationships: []
       }
+      move_health_index: {
+        Row: {
+          admin_score: number | null
+          canton_code: string
+          canton_name: string
+          company_score: number | null
+          created_at: string | null
+          damage_rate_percent: number | null
+          last_calculated: string | null
+          overall_health_score: number | null
+          planning_score: number | null
+          satisfaction_index: number | null
+          stress_index: number | null
+          total_responses: number | null
+          trend_vs_last_quarter: string | null
+          updated_at: string | null
+          welcome_score: number | null
+        }
+        Insert: {
+          admin_score?: number | null
+          canton_code: string
+          canton_name: string
+          company_score?: number | null
+          created_at?: string | null
+          damage_rate_percent?: number | null
+          last_calculated?: string | null
+          overall_health_score?: number | null
+          planning_score?: number | null
+          satisfaction_index?: number | null
+          stress_index?: number | null
+          total_responses?: number | null
+          trend_vs_last_quarter?: string | null
+          updated_at?: string | null
+          welcome_score?: number | null
+        }
+        Update: {
+          admin_score?: number | null
+          canton_code?: string
+          canton_name?: string
+          company_score?: number | null
+          created_at?: string | null
+          damage_rate_percent?: number | null
+          last_calculated?: string | null
+          overall_health_score?: number | null
+          planning_score?: number | null
+          satisfaction_index?: number | null
+          stress_index?: number | null
+          total_responses?: number | null
+          trend_vs_last_quarter?: string | null
+          updated_at?: string | null
+          welcome_score?: number | null
+        }
+        Relationships: []
+      }
       move_projects: {
         Row: {
           assigned_provider_id: string | null
@@ -3480,6 +3534,74 @@ export type Database = {
           },
         ]
       }
+      post_move_surveys: {
+        Row: {
+          admin_ease: number | null
+          created_at: string | null
+          from_canton: string
+          had_damage: boolean | null
+          household_type: string | null
+          id: string
+          lead_id: string | null
+          move_type: string | null
+          moving_company_satisfaction: number | null
+          neighbors_welcome: number | null
+          overall_satisfaction: number
+          planning_ease: number | null
+          stress_level: number
+          submitted_at: string | null
+          to_canton: string
+          what_could_improve: string | null
+          what_went_well: string | null
+        }
+        Insert: {
+          admin_ease?: number | null
+          created_at?: string | null
+          from_canton: string
+          had_damage?: boolean | null
+          household_type?: string | null
+          id?: string
+          lead_id?: string | null
+          move_type?: string | null
+          moving_company_satisfaction?: number | null
+          neighbors_welcome?: number | null
+          overall_satisfaction: number
+          planning_ease?: number | null
+          stress_level: number
+          submitted_at?: string | null
+          to_canton: string
+          what_could_improve?: string | null
+          what_went_well?: string | null
+        }
+        Update: {
+          admin_ease?: number | null
+          created_at?: string | null
+          from_canton?: string
+          had_damage?: boolean | null
+          household_type?: string | null
+          id?: string
+          lead_id?: string | null
+          move_type?: string | null
+          moving_company_satisfaction?: number | null
+          neighbors_welcome?: number | null
+          overall_satisfaction?: number
+          planning_ease?: number | null
+          stress_level?: number
+          submitted_at?: string | null
+          to_canton?: string
+          what_could_improve?: string | null
+          what_went_well?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_move_surveys_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       price_alerts: {
         Row: {
           alert_frequency: string
@@ -3758,6 +3880,66 @@ export type Database = {
             foreignKeyName: "provider_performance_metrics_provider_id_fkey"
             columns: ["provider_id"]
             isOneToOne: false
+            referencedRelation: "service_providers_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      provider_sentiment_summary: {
+        Row: {
+          avg_sentiment: number | null
+          care_avg: number | null
+          communication_avg: number | null
+          created_at: string | null
+          last_updated: string | null
+          professionalism_avg: number | null
+          provider_id: string
+          punctuality_avg: number | null
+          top_negative_keywords: Json | null
+          top_positive_keywords: Json | null
+          total_reviews_analyzed: number | null
+          value_avg: number | null
+        }
+        Insert: {
+          avg_sentiment?: number | null
+          care_avg?: number | null
+          communication_avg?: number | null
+          created_at?: string | null
+          last_updated?: string | null
+          professionalism_avg?: number | null
+          provider_id: string
+          punctuality_avg?: number | null
+          top_negative_keywords?: Json | null
+          top_positive_keywords?: Json | null
+          total_reviews_analyzed?: number | null
+          value_avg?: number | null
+        }
+        Update: {
+          avg_sentiment?: number | null
+          care_avg?: number | null
+          communication_avg?: number | null
+          created_at?: string | null
+          last_updated?: string | null
+          professionalism_avg?: number | null
+          provider_id?: string
+          punctuality_avg?: number | null
+          top_negative_keywords?: Json | null
+          top_positive_keywords?: Json | null
+          total_reviews_analyzed?: number | null
+          value_avg?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_sentiment_summary_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: true
+            referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "provider_sentiment_summary_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: true
             referencedRelation: "service_providers_public"
             referencedColumns: ["id"]
           },
@@ -4395,6 +4577,82 @@ export type Database = {
             foreignKeyName: "review_responses_review_id_fkey"
             columns: ["review_id"]
             isOneToOne: true
+            referencedRelation: "reviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      review_sentiments: {
+        Row: {
+          analyzed_at: string | null
+          care_with_items_score: number | null
+          communication_score: number | null
+          confidence: number | null
+          created_at: string | null
+          id: string
+          model_version: string | null
+          negative_keywords: string[] | null
+          overall_sentiment: number | null
+          positive_keywords: string[] | null
+          professionalism_score: number | null
+          provider_id: string | null
+          punctuality_score: number | null
+          review_id: string | null
+          value_for_money_score: number | null
+        }
+        Insert: {
+          analyzed_at?: string | null
+          care_with_items_score?: number | null
+          communication_score?: number | null
+          confidence?: number | null
+          created_at?: string | null
+          id?: string
+          model_version?: string | null
+          negative_keywords?: string[] | null
+          overall_sentiment?: number | null
+          positive_keywords?: string[] | null
+          professionalism_score?: number | null
+          provider_id?: string | null
+          punctuality_score?: number | null
+          review_id?: string | null
+          value_for_money_score?: number | null
+        }
+        Update: {
+          analyzed_at?: string | null
+          care_with_items_score?: number | null
+          communication_score?: number | null
+          confidence?: number | null
+          created_at?: string | null
+          id?: string
+          model_version?: string | null
+          negative_keywords?: string[] | null
+          overall_sentiment?: number | null
+          positive_keywords?: string[] | null
+          professionalism_score?: number | null
+          provider_id?: string | null
+          punctuality_score?: number | null
+          review_id?: string | null
+          value_for_money_score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "review_sentiments_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "review_sentiments_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "service_providers_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "review_sentiments_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
             referencedRelation: "reviews"
             referencedColumns: ["id"]
           },
