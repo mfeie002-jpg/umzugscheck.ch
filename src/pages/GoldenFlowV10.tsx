@@ -15,6 +15,7 @@
 
 import { GoldenFlowWizard } from "@/components/golden-flow";
 import { GoldenSocialProof, GoldenTrustBadges } from "@/components/golden";
+import { HeroTrustBlock } from "@/components/golden-flow/components/HeroTrustBlock";
 import { Helmet } from "react-helmet";
 
 const GoldenFlowV10Page = () => {
@@ -37,9 +38,12 @@ const GoldenFlowV10Page = () => {
         </div>
 
         {/* Main Flow */}
-        <div className="container mx-auto px-4 pb-12">
+        <div className="container mx-auto px-4 pb-8">
           <GoldenFlowWizard />
         </div>
+        
+        {/* Hero Trust Strip - "Bekannt aus" at hero bottom */}
+        <HeroTrustBlock variant="hero-strip" />
 
         {/* Bottom Trust Section */}
         <div className="container mx-auto px-4 py-8 border-t">

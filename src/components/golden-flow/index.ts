@@ -19,3 +19,4 @@ export { GoldenFlowPricePreview } from './components/GoldenFlowPricePreview';
 export { GoldenFlowRoomGrid } from './components/GoldenFlowRoomGrid';
 export { GoldenFlowLaborIllusion } from './components/GoldenFlowLaborIllusion';
 export { GoldenFlowResultTeaser } from './components/GoldenFlowResultTeaser';
+export { HeroTrustBlock } from './components/HeroTrustBlock';
