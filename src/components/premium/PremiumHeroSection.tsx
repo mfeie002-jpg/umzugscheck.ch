@@ -419,14 +419,14 @@ export const PremiumHeroSection = () => {
             }}
             className="order-1 lg:order-2"
           >
-            <div className="bg-card rounded-xl md:rounded-2xl shadow-xl border border-border p-3 sm:p-5 md:p-8 relative">
-              <div className="space-y-2.5 sm:space-y-4 md:space-y-5">
+            <div className="bg-card rounded-xl md:rounded-2xl shadow-xl border border-border p-3 sm:p-4 md:p-6 relative">
+              <div className="space-y-2 sm:space-y-3 md:space-y-4">
                 {/* Form Header - Friendly, not pushy */}
-                <div className="text-center space-y-0.5 md:space-y-2">
-                  <h2 className="text-base sm:text-xl md:text-2xl font-bold text-foreground">
+                <div className="text-center space-y-0.5 md:space-y-1">
+                  <h2 className="text-base sm:text-lg md:text-xl font-bold text-foreground">
                     Wie möchten Sie starten?
                   </h2>
-                  <p className="text-[11px] sm:text-sm text-muted-foreground">
+                  <p className="text-[11px] sm:text-xs text-muted-foreground">
                     Wählen Sie Ihre bevorzugte Methode
                   </p>
                 </div>
