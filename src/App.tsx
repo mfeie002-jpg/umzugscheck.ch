@@ -248,6 +248,11 @@ const V3VariantComparison = lazy(() => import("./pages/V3VariantComparison"));
 // Test pages
 const ComparisonBestPractices = lazy(() => import("./pages/test/ComparisonBestPractices"));
 const SocialProofResearchTest = lazy(() => import("./pages/test/SocialProofResearchTest"));
+
+// Public Tools - Infrastructure Link Magnets
+const DisposalPlanner = lazy(() => import("./pages/tools/DisposalPlanner"));
+const AddressChangeWizard = lazy(() => import("./pages/tools/AddressChangeWizard"));
+const CommuneRegistrationWizard = lazy(() => import("./pages/tools/CommuneRegistrationWizard"));
 const CROTrustPatternsPage = lazy(() => import("./pages/CROTrustPatternsPage"));
 // Note: RegionalOfferten is imported above with canton pages
 const FuerFirmen = lazy(() => import("./pages/FuerFirmen"));
@@ -864,6 +869,9 @@ const AppRouterContent = () => {
           {/* Public Link-Magnet Tools (Phase 1: Relo-OS Infrastructure) */}
           <Route path="/umzugs-checkliste-generator" element={<MoveReadinessChecker />} />
           <Route path="/halteverbot-planer" element={<ParkingPermitPlanner />} />
+          <Route path="/entsorgungsplaner" element={<DisposalPlanner />} />
+          <Route path="/adressaenderung" element={<AddressChangeWizard />} />
+          <Route path="/ummeldung-wizard" element={<CommuneRegistrationWizard />} />
           <Route path="/services/:serviceType" element={<ServiceOptimized />} />
           {/* Services V2 - Unified Calculator Approach */}
           <Route path="/services/reinigung" element={<ReinigungV2 />} />
