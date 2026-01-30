@@ -1,12 +1,11 @@
 import { useState, type FormEvent } from "react";
-import { Phone, MessageCircle, ShieldCheck, Timer, Sparkles, ArrowRight } from "lucide-react";
+import { Phone, MessageCircle, ShieldCheck, Timer, Sparkles, ArrowRight, CheckCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { track } from "@/utils/track";
-import { FeierabendCard } from "@/components/ui/FeierabendCard";
-import { FeierabendButton } from "@/components/ui/FeierabendButton";
-import { TrustBadge } from "@/components/ui/TrustBadge";
 import { CONTACT_PHONE_E164, CONTACT_WHATSAPP_LINK } from "@/config/contact";
 
 type ExpressQuoteFormProps = {
@@ -24,7 +23,8 @@ type ExpressFormData = {
 
 /**
  * Express Quote Form for Paid Traffic (speed-to-lead)
- * Uses the new Feierabend design system and highlights trust + hotline reachability
+ * Uses Umzugscheck.ch design system with semantic tokens
+ * Mobile-first optimized with proper touch targets
  */
 export function ExpressQuoteForm({ onComplete, formId }: ExpressQuoteFormProps) {
   const [step, setStep] = useState<1 | 2>(1);
@@ -40,7 +40,7 @@ export function ExpressQuoteForm({ onComplete, formId }: ExpressQuoteFormProps) 
 
   const validateStep1 = () => {
     if (!formData.phone.trim()) return "Bitte Telefonnummer eintragen.";
-    if (!/^[0-9+\s]{8,}$/.test(formData.phone.trim())) return "Telefonnummer pruefen (nur Ziffern).";
+    if (!/^[0-9+\s]{8,}$/.test(formData.phone.trim())) return "Telefonnummer prüfen (nur Ziffern).";
     if (!/^[0-9]{4}$/.test(formData.startPlz)) return "Von PLZ muss 4 Ziffern haben.";
     if (!/^[0-9]{4}$/.test(formData.endPlz)) return "Nach PLZ muss 4 Ziffern haben.";
     return null;
@@ -90,7 +90,7 @@ export function ExpressQuoteForm({ onComplete, formId }: ExpressQuoteFormProps) 
       });
 
       onComplete?.(formData);
-      alert("Danke! Wir rufen Sie in wenigen Minuten zurueck.");
+      alert("Danke! Wir melden uns in wenigen Minuten.");
     } catch (error) {
       console.error("Form submission error:", error);
       setError("Ein Fehler ist aufgetreten. Bitte rufen Sie uns direkt an.");
@@ -99,93 +99,100 @@ export function ExpressQuoteForm({ onComplete, formId }: ExpressQuoteFormProps) 
     }
   };
 
-  const StepBadge = ({ active, label }: { active: boolean; label: string }) => (
+  const StepBadge = ({ active, stepNum }: { active: boolean; stepNum: 1 | 2 }) => (
     <div className="flex items-center gap-2">
       <div
-        className={`h-9 w-9 rounded-full flex items-center justify-center text-sm font-semibold ${
-          active ? "bg-feierabend-blue-700 text-white" : "bg-gray-100 text-gray-500"
+        className={`h-10 w-10 min-w-[40px] rounded-full flex items-center justify-center text-sm font-semibold transition-colors ${
+          active ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
         }`}
       >
-        {label}
+        {stepNum}
       </div>
-      <span className={`text-sm font-medium ${active ? "text-feierabend-blue-800" : "text-gray-500"}`}>
-        {label === "1" ? "Verfuegbarkeit" : "Rueckruf"}
+      <span className={`text-sm font-medium hidden sm:inline ${active ? "text-foreground" : "text-muted-foreground"}`}>
+        {stepNum === 1 ? "Verfügbarkeit" : "Rückruf"}
       </span>
     </div>
   );
 
   return (
-    <FeierabendCard
-      variant="premium"
-      className="w-full max-w-4xl mx-auto p-6 md:p-8 space-y-6 bg-gradient-to-br from-white via-feierabend-blue-50/50 to-white"
+    <Card
+      className="w-full max-w-4xl mx-auto p-4 sm:p-6 md:p-8 space-y-5 bg-card border-border"
       id={formId ?? "quote-form"}
     >
-      <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+      {/* Header */}
+      <div className="flex flex-col gap-3">
         <div className="space-y-2">
-          <p className="text-xs uppercase tracking-[0.08em] text-feierabend-orange-600 font-semibold">Express Offerte</p>
-          <h2 className="text-2xl md:text-3xl font-bold text-feierabend-blue-900 leading-tight">
-            In 5-10 Minuten fix gebucht am Telefon
+          <p className="text-xs uppercase tracking-wide text-primary font-semibold">Express Offerte</p>
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground leading-tight">
+            Gratis Offerten in wenigen Minuten
           </h2>
-          <p className="text-sm text-gray-600 max-w-2xl">
-            Wir rufen Sie sofort zurueck, pruefen Termine und sichern Ihnen den besten Slot. 24/7 Rueckruf - Live 08:00-19:00 Uhr.
+          <p className="text-sm text-muted-foreground">
+            Füllen Sie das Formular aus und erhalten Sie bis zu 3 unverbindliche Angebote von geprüften Umzugsfirmen.
           </p>
         </div>
-
-        <div className="hidden md:flex flex-col gap-2 text-right">
-          <TrustBadge icon={<ShieldCheck className="w-4 h-4" />} text="CHF 2 Mio. versichert" />
-          <TrustBadge icon={<Timer className="w-4 h-4" />} text="Rueckruf in 5-10 Min" variant="success" />
-          <TrustBadge icon={<Sparkles className="w-4 h-4" />} text="Seit 1980" />
-        </div>
       </div>
 
-      <div className="flex items-center gap-4">
-        <StepBadge active label="1" />
-        <div className={`flex-1 h-0.5 ${step === 2 ? "bg-feierabend-blue-200" : "bg-gray-200"}`} />
-        <StepBadge active={step === 2} label="2" />
+      {/* Progress Steps */}
+      <div className="flex items-center gap-3 sm:gap-4">
+        <StepBadge active stepNum={1} />
+        <div className={`flex-1 h-1 rounded-full ${step === 2 ? "bg-primary/30" : "bg-muted"}`} />
+        <StepBadge active={step === 2} stepNum={2} />
       </div>
 
+      {/* Error Message */}
       {error && (
-        <div className="rounded-xl border border-red-200 bg-red-50 text-red-700 px-4 py-3 text-sm">
+        <div className="rounded-lg border border-destructive/50 bg-destructive/10 text-destructive px-4 py-3 text-sm">
           {error}
         </div>
       )}
 
       {step === 1 ? (
         <form onSubmit={handleStep1Submit} className="space-y-5">
-          <div className="grid md:grid-cols-2 gap-4">
+          {/* Form Fields - Mobile Optimized */}
+          <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="phone" className="text-sm font-semibold text-feierabend-blue-900">Telefonnummer *</Label>
+              <Label htmlFor="phone" className="text-sm font-semibold text-foreground">
+                Telefonnummer *
+              </Label>
               <Input
                 id="phone"
                 type="tel"
-                placeholder="+41 76 568 13 02"
+                placeholder="+41 44 567 89 00"
                 value={formData.phone}
                 onChange={(event) => setFormData({ ...formData, phone: event.target.value })}
                 required
                 autoFocus
-                className="h-12 rounded-xl border-feierabend-blue-200 focus-visible:ring-feierabend-orange-500"
+                autoComplete="tel"
+                className="h-12 sm:h-14 text-base rounded-lg border-border focus-visible:ring-primary"
               />
-              <p className="text-xs text-gray-500">Wir rufen Sie in 5-10 Minuten zurueck.</p>
+              <p className="text-xs text-muted-foreground flex items-center gap-1">
+                <ShieldCheck className="w-3 h-3" /> Kein Spam – nur für Ihre Offerte
+              </p>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
-                <Label htmlFor="startPlz" className="text-sm font-semibold text-feierabend-blue-900">Von PLZ *</Label>
+                <Label htmlFor="startPlz" className="text-sm font-semibold text-foreground">
+                  Von PLZ *
+                </Label>
                 <Input
                   id="startPlz"
                   type="text"
                   placeholder="8000"
                   maxLength={4}
                   inputMode="numeric"
+                  autoComplete="postal-code"
                   value={formData.startPlz}
                   onChange={(event) => setFormData({ ...formData, startPlz: event.target.value.replace(/[^0-9]/g, "") })}
                   required
-                  className="h-12 rounded-xl border-feierabend-blue-200 focus-visible:ring-feierabend-orange-500"
+                  className="h-12 sm:h-14 text-base rounded-lg border-border focus-visible:ring-primary"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="endPlz" className="text-sm font-semibold text-feierabend-blue-900">Nach PLZ *</Label>
+                <Label htmlFor="endPlz" className="text-sm font-semibold text-foreground">
+                  Nach PLZ *
+                </Label>
                 <Input
                   id="endPlz"
                   type="text"
@@ -195,153 +202,172 @@ export function ExpressQuoteForm({ onComplete, formId }: ExpressQuoteFormProps) 
                   value={formData.endPlz}
                   onChange={(event) => setFormData({ ...formData, endPlz: event.target.value.replace(/[^0-9]/g, "") })}
                   required
-                  className="h-12 rounded-xl border-feierabend-blue-200 focus-visible:ring-feierabend-orange-500"
+                  className="h-12 sm:h-14 text-base rounded-lg border-border focus-visible:ring-primary"
                 />
               </div>
             </div>
           </div>
 
-          <FeierabendButton type="submit" variant="primary" size="lg" fullWidth icon={<ArrowRight className="w-5 h-5" />}>
-            Verfuegbarkeit pruefen & Rueckruf erhalten
-          </FeierabendButton>
+          {/* Primary CTA - Large Touch Target */}
+          <Button 
+            type="submit" 
+            size="lg" 
+            className="w-full h-14 text-base font-semibold rounded-lg"
+          >
+            Offerten vergleichen
+            <ArrowRight className="w-5 h-5 ml-2" />
+          </Button>
 
-          <div className="grid sm:grid-cols-3 gap-3 text-sm text-gray-600">
-            <div className="flex items-center gap-2 p-3 rounded-xl bg-white border border-feierabend-blue-100">
-              <Timer className="h-4 w-4 text-feierabend-blue-600" />
-              <span>Rueckruf in 5-10 Min</span>
+          {/* Trust Badges - Mobile Optimized Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-sm">
+            <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/50 border border-border">
+              <CheckCircle className="h-4 w-4 text-primary shrink-0" />
+              <span className="text-foreground">100% kostenlos</span>
             </div>
-            <div className="flex items-center gap-2 p-3 rounded-xl bg-white border border-feierabend-blue-100">
-              <ShieldCheck className="h-4 w-4 text-green-600" />
-              <span>Versichert bis CHF 2 Mio.</span>
+            <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/50 border border-border">
+              <Timer className="h-4 w-4 text-primary shrink-0" />
+              <span className="text-foreground">Antwort in Minuten</span>
             </div>
-            <div className="flex items-center gap-2 p-3 rounded-xl bg-white border border-feierabend-blue-100">
-              <Sparkles className="h-4 w-4 text-feierabend-orange-600" />
-              <span>Seit 1980 in CH</span>
+            <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/50 border border-border">
+              <ShieldCheck className="h-4 w-4 text-primary shrink-0" />
+              <span className="text-foreground">Geprüfte Partner</span>
             </div>
           </div>
 
+          {/* Alternative CTAs */}
           <div className="flex flex-col sm:flex-row gap-3">
-            <FeierabendButton
+            <Button
               type="button"
-              variant="secondary"
-              size="md"
-              fullWidth
-              icon={<Phone className="w-4 h-4" />}
+              variant="outline"
+              size="lg"
+              className="flex-1 h-12 rounded-lg"
               onClick={() => {
                 track("cta_call_click", { location: "express_quote_form" });
                 window.location.href = `tel:${CONTACT_PHONE_E164}`;
               }}
             >
+              <Phone className="w-4 h-4 mr-2" />
               Direkt anrufen
-            </FeierabendButton>
+            </Button>
 
-            <FeierabendButton
+            <Button
               type="button"
-              variant="secondary"
-              size="md"
-              fullWidth
-              icon={<MessageCircle className="w-4 h-4" />}
+              variant="outline"
+              size="lg"
+              className="flex-1 h-12 rounded-lg"
               onClick={() => {
                 track("cta_whatsapp_click", { location: "express_quote_form" });
                 window.open(CONTACT_WHATSAPP_LINK, "_blank", "noopener,noreferrer");
               }}
             >
-              WhatsApp starten
-            </FeierabendButton>
+              <MessageCircle className="w-4 h-4 mr-2" />
+              WhatsApp
+            </Button>
           </div>
         </form>
       ) : (
         <form onSubmit={handleStep2Submit} className="space-y-5">
-          <div className="bg-white border border-feierabend-blue-100 rounded-xl p-4 space-y-3">
+          {/* Summary Card */}
+          <div className="bg-muted/30 border border-border rounded-lg p-4 space-y-3">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-xs uppercase tracking-[0.08em] text-feierabend-blue-600 font-semibold">Ihre Angaben</p>
-                <p className="text-sm text-gray-600">Pruefen Sie kurz die Details.</p>
+                <p className="text-xs uppercase tracking-wide text-primary font-semibold">Ihre Angaben</p>
+                <p className="text-sm text-muted-foreground">Prüfen Sie kurz die Details.</p>
               </div>
-              <FeierabendButton
+              <Button
                 type="button"
-                variant="text"
+                variant="ghost"
                 size="sm"
                 onClick={() => setStep(1)}
-                className="text-feierabend-blue-700 hover:text-feierabend-blue-900"
+                className="text-primary hover:text-primary/80"
               >
-                Angaben anpassen
-              </FeierabendButton>
+                Ändern
+              </Button>
             </div>
 
-            <div className="grid sm:grid-cols-3 gap-3 text-sm text-gray-700">
-              <div className="p-3 rounded-lg bg-feierabend-blue-50/60 border border-feierabend-blue-100">
-                <p className="text-xs text-gray-500">Telefon</p>
-                <p className="font-semibold text-feierabend-blue-900">{formData.phone}</p>
+            <div className="grid grid-cols-3 gap-2 text-sm">
+              <div className="p-3 rounded-lg bg-background border border-border">
+                <p className="text-xs text-muted-foreground">Telefon</p>
+                <p className="font-semibold text-foreground truncate">{formData.phone}</p>
               </div>
-              <div className="p-3 rounded-lg bg-feierabend-blue-50/60 border border-feierabend-blue-100">
-                <p className="text-xs text-gray-500">Von</p>
-                <p className="font-semibold text-feierabend-blue-900">{formData.startPlz}</p>
+              <div className="p-3 rounded-lg bg-background border border-border">
+                <p className="text-xs text-muted-foreground">Von</p>
+                <p className="font-semibold text-foreground">{formData.startPlz}</p>
               </div>
-              <div className="p-3 rounded-lg bg-feierabend-blue-50/60 border border-feierabend-blue-100">
-                <p className="text-xs text-gray-500">Nach</p>
-                <p className="font-semibold text-feierabend-blue-900">{formData.endPlz}</p>
+              <div className="p-3 rounded-lg bg-background border border-border">
+                <p className="text-xs text-muted-foreground">Nach</p>
+                <p className="font-semibold text-foreground">{formData.endPlz}</p>
               </div>
             </div>
           </div>
 
+          {/* Optional Fields */}
           <div className="space-y-2">
-            <Label htmlFor="moveDate" className="text-sm font-semibold text-feierabend-blue-900">Wunsch-Umzugstermin (optional)</Label>
+            <Label htmlFor="moveDate" className="text-sm font-semibold text-foreground">
+              Wunsch-Umzugstermin (optional)
+            </Label>
             <Input
               id="moveDate"
               type="date"
               value={formData.moveDate}
               onChange={(event) => setFormData({ ...formData, moveDate: event.target.value })}
               min={new Date().toISOString().split("T")[0]}
-              className="h-12 rounded-xl border-feierabend-blue-200 focus-visible:ring-feierabend-orange-500"
+              className="h-12 sm:h-14 text-base rounded-lg border-border focus-visible:ring-primary"
             />
-            <p className="text-xs text-gray-500">Wir priorisieren Ihren Termin und bestaetigen sofort.</p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="note" className="text-sm font-semibold text-feierabend-blue-900">Notiz (optional)</Label>
+            <Label htmlFor="note" className="text-sm font-semibold text-foreground">
+              Notiz (optional)
+            </Label>
             <Textarea
               id="note"
-              placeholder="z.B. 3. Stock ohne Lift, fragile Moebel, Parkplatz"
+              placeholder="z.B. 3. Stock ohne Lift, fragile Möbel..."
               value={formData.note}
               onChange={(event) => setFormData({ ...formData, note: event.target.value })}
-              className="rounded-xl border-feierabend-blue-200 focus-visible:ring-feierabend-orange-500"
+              className="min-h-[80px] rounded-lg border-border focus-visible:ring-primary"
             />
-            <p className="text-xs text-gray-500">Hilft uns, den Rueckruf schneller vorzubereiten.</p>
           </div>
 
+          {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3">
-            <FeierabendButton
+            <Button
               type="button"
-              variant="secondary"
-              size="md"
-              fullWidth
+              variant="outline"
+              size="lg"
+              className="sm:flex-1 h-12 rounded-lg order-2 sm:order-1"
               onClick={() => setStep(1)}
             >
-              Zurueck
-            </FeierabendButton>
-            <FeierabendButton
+              Zurück
+            </Button>
+            <Button
               type="submit"
-              variant="primary"
               size="lg"
-              fullWidth
-              loading={isSubmitting}
-              icon={!isSubmitting ? <ArrowRight className="w-5 h-5" /> : undefined}
+              className="sm:flex-[2] h-14 text-base font-semibold rounded-lg order-1 sm:order-2"
+              disabled={isSubmitting}
             >
-              {isSubmitting ? "Wird gesendet..." : "Jetzt Rueckruf erhalten"}
-            </FeierabendButton>
+              {isSubmitting ? (
+                "Wird gesendet..."
+              ) : (
+                <>
+                  Jetzt Offerten erhalten
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </>
+              )}
+            </Button>
           </div>
 
-          <div className="grid sm:grid-cols-2 gap-3 text-xs text-gray-600">
-            <div className="p-3 rounded-xl bg-feierabend-blue-50/60 border border-feierabend-blue-100">
-              Live Hotline: 08:00-19:00 Uhr / Rueckruf 24/7
+          {/* Info Footer */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-muted-foreground">
+            <div className="p-3 rounded-lg bg-muted/30 border border-border">
+              Hotline: Mo–Fr 08:00–18:00 Uhr
             </div>
-            <div className="p-3 rounded-xl bg-feierabend-blue-50/60 border border-feierabend-blue-100">
-              Keine Vorkasse. Gratis Stornierung bis 72h vor Termin.
+            <div className="p-3 rounded-lg bg-muted/30 border border-border">
+              100% kostenlos & unverbindlich
             </div>
           </div>
         </form>
       )}
-    </FeierabendCard>
+    </Card>
   );
 }
