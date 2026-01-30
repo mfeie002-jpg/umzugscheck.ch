@@ -3,7 +3,7 @@ import { lazy, Suspense, useEffect } from "react";
 import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
 import IndexPremiumScreenshot from "@/pages/IndexPremiumScreenshot";
 import { SkipToContent } from "@/components/SkipToContent";
-import { SimplifiedFooter } from "@/components/home/SimplifiedFooter";
+// SimplifiedFooter removed - Footer is rendered by MainLayout
 import { ErrorBoundary } from "@/components/homepage/ErrorBoundary";
 import { ScrollProgress } from "@/components/ui/scroll-progress";
 import { FloatingWhatsApp } from "@/components/ui/FloatingWhatsApp";
@@ -221,7 +221,7 @@ const Index = () => {
           </Suspense>
         </main>
 
-        <SimplifiedFooter />
+        {/* Footer is rendered by MainLayout - do NOT add SimplifiedFooter here */}
         
         {/* Single mobile CTA approach - lazy loaded */}
         <Suspense fallback={null}>

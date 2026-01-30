@@ -17,6 +17,7 @@ import { SWISS_POSTAL_CODES } from '../constants';
 import { GoldenFlowTrustBar } from '../components/GoldenFlowTrustBar';
 import { GoldenFlowPricePreview } from '../components/GoldenFlowPricePreview';
 import { LiveActivityIndicator, FreeBadge, UrgencyBanner } from '../components/PsychologicalTriggers';
+import { HeroTrustBlock } from '../components/HeroTrustBlock';
 
 interface GoldenFlowStep1Props {
   formData: GoldenFlowData;
@@ -250,8 +251,11 @@ export function GoldenFlowStep1({ formData, priceEstimate, onUpdate, onNext }: G
         )}
       </Button>
       
-      {/* Trust bar */}
+      {/* Trust bar - compact security badges */}
       <GoldenFlowTrustBar variant="compact" />
+      
+      {/* "Bekannt aus" Trust Block - inside form card footer */}
+      <HeroTrustBlock variant="form-footer" colored />
     </motion.div>
   );
 }
