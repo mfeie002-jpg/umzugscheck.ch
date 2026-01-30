@@ -18,6 +18,10 @@ import path from 'path';
 // CONSTANTS
 // ============================================
 
+
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const BASE_URL = process.env.TEST_URL || DEFAULT_TEST_CONFIG.baseUrl;
 const REPORT_DIR = path.join(__dirname, '../../test-reports');
 const SCREENSHOTS_DIR = path.join(REPORT_DIR, 'screenshots');

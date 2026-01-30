@@ -1,0 +1,1511 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - region "Notifications (F8)":
+    - list
+  - region "Notifications alt+T"
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e9]:
+        - link "Zur Startseite von Umzugscheck.ch" [ref=e10]:
+          - /url: /
+          - img [ref=e11]:
+            - generic [ref=e16]: Umzugscheck.ch
+          - generic [ref=e17]: Der Schweizer Umzugsvergleich
+        - generic [ref=e18]:
+          - link "Offerten" [ref=e19]:
+            - /url: /umzugsofferten
+            - button "Offerten" [ref=e20] [cursor=pointer]:
+              - img
+              - generic [ref=e21]: Offerten
+          - button "Menü öffnen" [ref=e22] [cursor=pointer]:
+            - img
+            - generic [ref=e23]: Menü öffnen
+    - button [ref=e25] [cursor=pointer]:
+      - img
+    - button "Suche öffnen" [ref=e26] [cursor=pointer]:
+      - img [ref=e27]
+    - generic [ref=e30]:
+      - generic [ref=e32]:
+        - generic [ref=e33]: Rechner
+        - img [ref=e34]
+      - main [ref=e46]:
+        - generic [ref=e48]:
+          - link "Zum Hauptinhalt springen" [ref=e49]:
+            - /url: "#main-content"
+          - main [ref=e50]:
+            - generic [ref=e56]:
+              - generic [ref=e57]:
+                - generic [ref=e58]:
+                  - generic [ref=e59]:
+                    - img [ref=e61]
+                    - generic [ref=e64]:
+                      - paragraph [ref=e65]: Bis 40% sparen
+                      - paragraph [ref=e66]: durch Vergleich
+                  - generic [ref=e67]:
+                    - img [ref=e69]
+                    - generic [ref=e72]:
+                      - paragraph [ref=e73]: Schweizer Innovation
+                      - paragraph [ref=e74]: KI Video-Rechner
+                - heading "Der beste Deal der ganzen Schweiz." [level=1] [ref=e75]:
+                  - text: Der beste Deal
+                  - generic [ref=e76]: der ganzen Schweiz.
+                - paragraph [ref=e77]:
+                  - text: Unser
+                  - generic [ref=e78]:
+                    - img [ref=e79]
+                    - text: KI-Rechner
+                  - text: analysiert Ihren Umzug per Video – wir vergleichen 200+ Firmen und finden das
+                  - generic [ref=e82]:
+                    - img [ref=e83]
+                    - text: beste Angebot
+                  - text: .
+                - generic [ref=e89]:
+                  - generic [ref=e90]:
+                    - img [ref=e91]
+                    - text: Bis 40% günstiger
+                  - generic [ref=e94]:
+                    - img [ref=e95]
+                    - text: Video-Analyse
+                  - generic [ref=e98]:
+                    - img [ref=e99]
+                    - text: 200+ Firmen
+              - generic [ref=e103]:
+                - generic [ref=e105]:
+                  - img [ref=e106]
+                  - text: Bester Preis garantiert
+                - generic [ref=e112]:
+                  - generic [ref=e113]:
+                    - heading "200+ Firmen vergleichen" [level=2] [ref=e114]
+                    - paragraph [ref=e115]: Wir finden den günstigsten Anbieter für Sie
+                  - generic [ref=e116]:
+                    - generic [ref=e117]:
+                      - text: Von (PLZ oder Ort)
+                      - textbox "Von (PLZ oder Ort)" [ref=e118]:
+                        - /placeholder: z.B. 8001 oder Zürich
+                    - generic [ref=e119]:
+                      - text: Nach (PLZ oder Ort)
+                      - textbox "Nach (PLZ oder Ort)" [ref=e120]:
+                        - /placeholder: z.B. 3011 oder Bern
+                    - generic [ref=e121]:
+                      - text: Wohnungsgrösse
+                      - combobox "Wohnungsgrösse" [ref=e122] [cursor=pointer]:
+                        - generic: Wählen Sie...
+                        - img [ref=e123]
+                      - combobox [ref=e125]
+                    - button "Jetzt checken lassen" [ref=e126] [cursor=pointer]:
+                      - img
+                      - text: Jetzt checken lassen
+                      - img
+                    - generic [ref=e128]:
+                      - generic [ref=e129]:
+                        - img [ref=e130]
+                        - generic [ref=e132]: "Bekannt aus:"
+                      - generic [ref=e133]:
+                        - generic [ref=e135]: SRF
+                        - generic [ref=e136]: NZZ
+                        - generic [ref=e138]: BLICK
+                        - generic [ref=e139]: "+3"
+                  - generic [ref=e140]:
+                    - generic [ref=e141]:
+                      - img [ref=e142]
+                      - text: Kostenlos
+                    - generic [ref=e144]:
+                      - img [ref=e145]
+                      - text: Unverbindlich
+                    - generic [ref=e147]:
+                      - img [ref=e148]
+                      - text: Datenschutz
+            - generic [ref=e151]:
+              - generic [ref=e152]:
+                - generic [ref=e153]:
+                  - generic [ref=e154]:
+                    - img [ref=e155]
+                    - generic [ref=e157]: Bekannt aus
+                  - generic [ref=e158]:
+                    - generic [ref=e160] [cursor=pointer]:
+                      - generic [ref=e161]: "20"
+                      - generic [ref=e162]: Minuten
+                    - generic [ref=e164] [cursor=pointer]: SRF
+                    - generic [ref=e166] [cursor=pointer]: BLICK
+                    - generic [ref=e167] [cursor=pointer]: NZZ
+                    - generic [ref=e168] [cursor=pointer]: watson
+                    - generic [ref=e170] [cursor=pointer]: TCS
+                - paragraph [ref=e171]: 97% der Schweizer vertrauen Empfehlungen aus bekannten Medien
+              - generic [ref=e172]:
+                - generic [ref=e173]:
+                  - generic [ref=e174]: 15'000+
+                  - paragraph [ref=e175]: zufriedene Umzüge
+                - generic [ref=e176]:
+                  - generic [ref=e177]:
+                    - generic [ref=e178]:
+                      - img [ref=e179]
+                      - generic [ref=e181]: "4.8"
+                    - text: Bewertung
+                  - generic [ref=e182]:
+                    - generic [ref=e183]:
+                      - img [ref=e184]
+                      - generic [ref=e188]: 200+
+                    - text: Partner
+                  - generic [ref=e189]:
+                    - generic [ref=e190]:
+                      - img [ref=e191]
+                      - generic [ref=e194]: 40%
+                    - text: Ersparnis
+            - generic [ref=e196]:
+              - generic [ref=e197]:
+                - heading "Zürcher Qualität, die man spürt" [level=2] [ref=e198]
+                - paragraph [ref=e199]: "Über 15'000 Zürcher vertrauen uns ihr Zuhause an. Hier ist einer davon:"
+              - generic [ref=e200]:
+                - generic [ref=e201]:
+                  - generic [ref=e202]:
+                    - img [ref=e203]
+                    - img [ref=e205]
+                    - img [ref=e207]
+                    - img [ref=e209]
+                    - img [ref=e211]
+                    - generic [ref=e213]: Absolut empfehlenswert
+                  - paragraph [ref=e214]:
+                    - text: „Als Arzt habe ich
+                    - strong [ref=e215]: wenig Zeit
+                    - text: . Feierabend Umzüge hat
+                    - strong [ref=e216]: alles übernommen
+                    - text: – vom Einpacken bis zum Aufhängen der Bilder. Absolut empfehlenswert.“
+                  - generic [ref=e217]:
+                    - generic [ref=e218]: DK
+                    - generic [ref=e219]:
+                      - paragraph [ref=e220]: Dr. med. Keller
+                      - paragraph [ref=e221]: Umzug in Zürich · Oktober 2024
+                - generic [ref=e222]:
+                  - generic [ref=e223]:
+                    - generic [ref=e224]:
+                      - img "Team beim Umzug" [ref=e225]
+                      - button "Video ansehen (45 Sek)" [ref=e227] [cursor=pointer]:
+                        - img [ref=e228]
+                        - text: Video ansehen (45 Sek)
+                    - paragraph [ref=e230]: Schauen Sie unserem Team bei der Arbeit zu.
+                  - generic [ref=e231]:
+                    - generic [ref=e232]:
+                      - generic [ref=e233]:
+                        - img [ref=e234]
+                        - generic [ref=e237]: 15'000+
+                      - paragraph [ref=e238]: Umzüge seit 1980
+                    - generic [ref=e239]:
+                      - generic [ref=e240]:
+                        - img [ref=e241]
+                        - generic [ref=e244]: 98%
+                      - paragraph [ref=e245]: Weiterempfehlung
+                  - link "Mehr als 250 Google-Bewertungen lesen >" [ref=e247]:
+                    - /url: https://www.google.com
+            - generic [ref=e249]:
+              - paragraph [ref=e250]: Vertrauenspartner & Zertifizierungen
+              - generic [ref=e251]:
+                - link "Die Mobiliar Versicherung" [ref=e252]:
+                  - /url: https://www.mobiliar.ch/
+                  - img [ref=e254]
+                  - generic [ref=e256]:
+                    - generic [ref=e257]: Die Mobiliar
+                    - generic [ref=e258]: Versicherung
+                  - img [ref=e259]
+                - link "Die Post Nachsendeauftrag" [ref=e263]:
+                  - /url: https://www.post.ch/
+                  - img [ref=e265]
+                  - generic [ref=e268]:
+                    - generic [ref=e269]: Die Post
+                    - generic [ref=e270]: Nachsendeauftrag
+                  - img [ref=e271]
+                - link "eUmzugCH Offizielle Meldung" [ref=e275]:
+                  - /url: https://www.eumzug.swiss/
+                  - img [ref=e277]
+                  - generic [ref=e280]:
+                    - generic [ref=e281]: eUmzugCH
+                    - generic [ref=e282]: Offizielle Meldung
+                  - img [ref=e283]
+                - link "TWINT Zahlung" [ref=e287]:
+                  - /url: https://www.twint.ch/
+                  - img [ref=e289]
+                  - generic [ref=e291]:
+                    - generic [ref=e292]: TWINT
+                    - generic [ref=e293]: Zahlung
+                  - img [ref=e294]
+                - link "ZKB Kantonalbank" [ref=e298]:
+                  - /url: https://www.zkb.ch/
+                  - img [ref=e300]
+                  - generic [ref=e304]:
+                    - generic [ref=e305]: ZKB
+                    - generic [ref=e306]: Kantonalbank
+                  - img [ref=e307]
+                - link "Raiffeisen Schweizer Bank" [ref=e311]:
+                  - /url: https://www.raiffeisen.ch/
+                  - img [ref=e313]
+                  - generic [ref=e315]:
+                    - generic [ref=e316]: Raiffeisen
+                    - generic [ref=e317]: Schweizer Bank
+                  - img [ref=e318]
+                - link "Mieterverband Mieter-Schutz" [ref=e322]:
+                  - /url: https://www.mieterverband.ch/
+                  - img [ref=e324]
+                  - generic [ref=e326]:
+                    - generic [ref=e327]: Mieterverband
+                    - generic [ref=e328]: Mieter-Schutz
+                  - img [ref=e329]
+                - link "ASTAG Branchenverband" [ref=e333]:
+                  - /url: https://www.astag.ch/
+                  - img [ref=e335]
+                  - generic [ref=e340]:
+                    - generic [ref=e341]: ASTAG
+                    - generic [ref=e342]: Branchenverband
+                  - img [ref=e343]
+                - link "Swiss Label Qualitäts-Siegel" [ref=e347]:
+                  - /url: https://www.swisslabel.ch/
+                  - img [ref=e349]
+                  - generic [ref=e352]:
+                    - generic [ref=e353]: Swiss Label
+                    - generic [ref=e354]: Qualitäts-Siegel
+                  - img [ref=e355]
+                - link "Trusted Shops Käuferschutz" [ref=e359]:
+                  - /url: https://www.trustedshops.ch/
+                  - img [ref=e361]
+                  - generic [ref=e364]:
+                    - generic [ref=e365]: Trusted Shops
+                    - generic [ref=e366]: Käuferschutz
+                  - img [ref=e367]
+                - link "Swiss Hosting Daten in CH" [ref=e371]:
+                  - /url: https://www.swissmadesoftware.org/
+                  - img [ref=e373]
+                  - generic [ref=e376]:
+                    - generic [ref=e377]: Swiss Hosting
+                    - generic [ref=e378]: Daten in CH
+                  - img [ref=e379]
+              - paragraph [ref=e383]:
+                - link "Alle Partner verifizierbar ↗" [ref=e384]:
+                  - /url: /partner
+            - generic [ref=e386]:
+              - generic [ref=e387]:
+                - heading "Warum einen Stress-Umzug riskieren?" [level=2] [ref=e388]
+                - paragraph [ref=e389]: Wir lösen die häufigsten Umzugs-Probleme
+              - generic [ref=e390]:
+                - generic [ref=e391]:
+                  - generic [ref=e393]:
+                    - img [ref=e395]
+                    - generic [ref=e398]:
+                      - heading "Versteckte Kosten?" [level=3] [ref=e399]
+                      - paragraph [ref=e400]: Plötzlich teure Extras am Umzugstag
+                  - generic [ref=e402]: ↓
+                  - generic [ref=e404]:
+                    - img [ref=e406]
+                    - generic [ref=e409]:
+                      - heading "Fixpreis-Garantie" [level=3] [ref=e410]
+                      - paragraph [ref=e411]: Transparente Preise vorab, keine Überraschungen
+                - generic [ref=e412]:
+                  - generic [ref=e414]:
+                    - img [ref=e416]
+                    - generic [ref=e419]:
+                      - heading "Möbel beschädigt?" [level=3] [ref=e420]
+                      - paragraph [ref=e421]: Wer haftet bei Kratzern und Bruch?
+                  - generic [ref=e423]: ↓
+                  - generic [ref=e425]:
+                    - img [ref=e427]
+                    - generic [ref=e430]:
+                      - heading "Versicherte Partner" [level=3] [ref=e431]
+                      - paragraph [ref=e432]: Alle Firmen mit geprüfter Haftpflicht
+                - generic [ref=e433]:
+                  - generic [ref=e435]:
+                    - img [ref=e437]
+                    - generic [ref=e439]:
+                      - heading "Endlose Anrufe?" [level=3] [ref=e440]
+                      - paragraph [ref=e441]: Zehn Firmen kontaktieren für ein Angebot
+                  - generic [ref=e443]: ↓
+                  - generic [ref=e445]:
+                    - img [ref=e447]
+                    - generic [ref=e449]:
+                      - heading "Ein Formular" [level=3] [ref=e450]
+                      - paragraph [ref=e451]: Bis zu 5 geprüfte Offerten automatisch
+            - generic [ref=e453]:
+              - generic [ref=e454]:
+                - generic [ref=e455]: So funktioniert's
+                - heading "In 3 einfachen Schritten zur besten Offerte" [level=2] [ref=e456]
+                - paragraph [ref=e457]: Kostenlos, unverbindlich und in wenigen Minuten erledigt
+              - generic [ref=e458]:
+                - generic [ref=e459]:
+                  - button "01" [ref=e460] [cursor=pointer]
+                  - button "02" [ref=e461] [cursor=pointer]
+                  - button "03" [ref=e462] [cursor=pointer]
+                - generic [ref=e463]:
+                  - generic [ref=e464]:
+                    - generic [ref=e465]:
+                      - img "Umzugsdetails eingeben" [ref=e466]
+                      - generic [ref=e467]: "1"
+                      - generic [ref=e469]:
+                        - img [ref=e470]
+                        - generic [ref=e473]: Nur 2 Minuten
+                    - generic [ref=e474]:
+                      - paragraph [ref=e475]: Schritt 1
+                      - heading "Umzugsdetails eingeben" [level=3] [ref=e476]
+                      - paragraph [ref=e477]: Start- und Zielort, Wohnungsgrösse – in unter 2 Minuten ausgefüllt. Kein Video nötig.
+                    - generic [ref=e478]:
+                      - button [disabled] [ref=e479]:
+                        - img [ref=e480]
+                      - button [ref=e486] [cursor=pointer]:
+                        - img [ref=e487]
+                  - paragraph [ref=e489]: ← Wischen zum Navigieren →
+                - generic [ref=e490]:
+                  - generic [ref=e491]:
+                    - img [ref=e492]
+                    - generic [ref=e497]:
+                      - generic [ref=e498]: 15'000+
+                      - text: Kunden
+                  - generic [ref=e499]:
+                    - img [ref=e500]
+                    - generic [ref=e502]:
+                      - generic [ref=e503]: 4.9/5
+                      - text: Bewertung
+                  - generic [ref=e504]:
+                    - img [ref=e505]
+                    - generic [ref=e507]:
+                      - generic [ref=e508]: 200+
+                      - text: Firmen
+              - link "Jetzt Offerten erhalten" [ref=e510]:
+                - /url: /umzugsofferten
+                - text: Jetzt Offerten erhalten
+                - img
+            - generic [ref=e512]:
+              - generic [ref=e513]:
+                - generic [ref=e514]:
+                  - img [ref=e515]
+                  - text: Firmen vergleichen
+                - heading "Transparenter Offertenvergleich" [level=2] [ref=e517]
+                - paragraph [ref=e518]: Sehen Sie mehrere Offerten auf einen Blick – Sie sparen Zeit, Geld und Nerven.
+              - generic [ref=e519]:
+                - tablist [ref=e521]:
+                  - tab "Alle" [selected] [ref=e522] [cursor=pointer]
+                  - tab "Top Umzüge" [ref=e523] [cursor=pointer]
+                  - tab "Günstige" [ref=e524] [cursor=pointer]
+                  - tab "Beliebteste" [ref=e525] [cursor=pointer]
+                - generic [ref=e526]:
+                  - img [ref=e527]
+                  - generic [ref=e528]: "Sortieren:"
+                  - combobox [ref=e529]:
+                    - option "Empfohlen" [selected]
+                    - option "Günstigste"
+                    - option "Beste Bewertung"
+              - generic [ref=e530]:
+                - generic [ref=e531]:
+                  - generic [ref=e532]:
+                    - img [ref=e533]
+                    - text: Empfohlen
+                  - generic [ref=e536]:
+                    - generic [ref=e537]:
+                      - generic [ref=e538]:
+                        - img [ref=e540]
+                        - generic [ref=e544]:
+                          - heading "Zürich Umzug Pro" [level=3] [ref=e545]
+                          - paragraph [ref=e546]: Zürich
+                        - generic [ref=e547]: Verifiziert
+                      - generic [ref=e548]:
+                        - generic [ref=e549]:
+                          - img [ref=e550]
+                          - generic [ref=e552]: "4.9"
+                        - generic [ref=e553]: (225 Bewertungen)
+                    - generic [ref=e554]:
+                      - generic [ref=e555]: Geschätzter Preis
+                      - generic [ref=e556]: CHF 1'200 – 1'800
+                    - generic [ref=e557]:
+                      - img [ref=e558]
+                      - generic [ref=e561]: "Antwortzeit: < 4 Std."
+                    - generic [ref=e562]:
+                      - generic [ref=e563]: Privatumzug
+                      - generic [ref=e564]: Reinigung
+                      - generic [ref=e565]: Entsorgung
+                    - paragraph [ref=e566]: Erfahrenes Team mit 15+ Jahren Erfahrung
+                    - list [ref=e567]:
+                      - listitem [ref=e568]:
+                        - img [ref=e569]
+                        - generic [ref=e572]: Versichert
+                      - listitem [ref=e573]:
+                        - img [ref=e574]
+                        - generic [ref=e577]: ISO 9001
+                    - link "Offerte anfragen" [ref=e578]:
+                      - /url: /umzugsofferten
+                      - text: Offerte anfragen
+                      - img
+                - generic [ref=e580]:
+                  - generic [ref=e581]:
+                    - generic [ref=e582]:
+                      - img [ref=e584]
+                      - generic [ref=e588]:
+                        - heading "Family Move Bern" [level=3] [ref=e589]
+                        - paragraph [ref=e590]: Bern
+                      - generic [ref=e591]: Verifiziert
+                    - generic [ref=e592]:
+                      - generic [ref=e593]:
+                        - img [ref=e594]
+                        - generic [ref=e596]: "4.9"
+                      - generic [ref=e597]: (213 Bewertungen)
+                  - generic [ref=e598]:
+                    - generic [ref=e599]: Geschätzter Preis
+                    - generic [ref=e600]: CHF 1'200 – 1'800
+                  - generic [ref=e601]:
+                    - img [ref=e602]
+                    - generic [ref=e605]: "Antwortzeit: < 8 Std."
+                  - generic [ref=e606]:
+                    - generic [ref=e607]: Privatumzug
+                    - generic [ref=e608]: Firmenumzug
+                    - generic [ref=e609]: Möbelmontage
+                  - paragraph [ref=e610]: Familienunternehmen mit flexibler Terminwahl
+                  - list [ref=e611]:
+                    - listitem [ref=e612]:
+                      - img [ref=e613]
+                      - generic [ref=e616]: Versichert
+                  - link "Offerte anfragen" [ref=e617]:
+                    - /url: /umzugsofferten
+                    - text: Offerte anfragen
+                    - img
+                - generic [ref=e619]:
+                  - generic [ref=e620]:
+                    - generic [ref=e621]:
+                      - img [ref=e623]
+                      - generic [ref=e627]:
+                        - heading "Express Umzüge Basel" [level=3] [ref=e628]
+                        - paragraph [ref=e629]: Basel
+                      - generic [ref=e630]: Verifiziert
+                    - generic [ref=e631]:
+                      - generic [ref=e632]:
+                        - img [ref=e633]
+                        - generic [ref=e635]: "4.8"
+                      - generic [ref=e636]: (200 Bewertungen)
+                  - generic [ref=e637]:
+                    - generic [ref=e638]: Geschätzter Preis
+                    - generic [ref=e639]: CHF 800 – 1'200
+                  - generic [ref=e640]:
+                    - img [ref=e641]
+                    - generic [ref=e644]: "Antwortzeit: < 4 Std."
+                  - generic [ref=e645]:
+                    - generic [ref=e646]: Privatumzug
+                    - generic [ref=e647]: Entsorgung
+                  - paragraph [ref=e648]: Kurzfristige Termine möglich
+                  - list [ref=e649]:
+                    - listitem [ref=e650]:
+                      - img [ref=e651]
+                      - generic [ref=e654]: Versichert
+                    - listitem [ref=e655]:
+                      - img [ref=e656]
+                      - generic [ref=e659]: Schnell verfügbar
+                  - link "Offerte anfragen" [ref=e660]:
+                    - /url: /umzugsofferten
+                    - text: Offerte anfragen
+                    - img
+              - generic [ref=e661]:
+                - paragraph [ref=e662]:
+                  - strong [ref=e663]: "Hinweis:"
+                  - text: Nach Ihrer Anfrage erhalten Sie echte Offerten von geprüften Umzugsfirmen in Ihrer Region.
+                - link "Jetzt echte Offerten erhalten" [ref=e665]:
+                  - /url: /umzugsofferten
+                  - img
+                  - text: Jetzt echte Offerten erhalten
+                  - img
+            - generic [ref=e668]:
+              - generic [ref=e669]:
+                - generic [ref=e670]:
+                  - img [ref=e671]
+                  - generic [ref=e673]: Schweizer KI-Innovation
+                - heading "Der Smart Video-Rechner" [level=2] [ref=e674]
+                - paragraph [ref=e675]:
+                  - strong [ref=e676]: "Optional:"
+                  - text: Laden Sie ein Video Ihrer Wohnung hoch für eine präzisere Schätzung. Unser System erkennt automatisch Möbel und berechnet das Volumen – Sie sparen Zeit bei der Eingabe.
+                - generic [ref=e677]:
+                  - img [ref=e678]
+                  - generic [ref=e680]:
+                    - text: Das Video ist
+                    - strong [ref=e681]: optional
+                    - text: – Sie können auch ohne Video Offerten erhalten.
+                - generic [ref=e682]:
+                  - heading "Schritt 1 Video aufnehmen" [level=3] [ref=e686]:
+                    - button "Schritt 1 Video aufnehmen" [ref=e687] [cursor=pointer]:
+                      - generic [ref=e688]:
+                        - img [ref=e690]
+                        - generic [ref=e693]:
+                          - generic [ref=e694]: Schritt 1
+                          - heading "Video aufnehmen" [level=3] [ref=e695]
+                      - img [ref=e696]
+                  - heading "Schritt 2 Video hochladen" [level=3] [ref=e701]:
+                    - button "Schritt 2 Video hochladen" [ref=e702] [cursor=pointer]:
+                      - generic [ref=e703]:
+                        - img [ref=e705]
+                        - generic [ref=e708]:
+                          - generic [ref=e709]: Schritt 2
+                          - heading "Video hochladen" [level=3] [ref=e710]
+                      - img [ref=e711]
+                  - heading "Schritt 3 KI analysiert" [level=3] [ref=e716]:
+                    - button "Schritt 3 KI analysiert" [ref=e717] [cursor=pointer]:
+                      - generic [ref=e718]:
+                        - img [ref=e720]
+                        - generic [ref=e722]:
+                          - generic [ref=e723]: Schritt 3
+                          - heading "KI analysiert" [level=3] [ref=e724]
+                      - img [ref=e725]
+                  - heading "Schritt 4 Sofort-Offerten" [level=3] [ref=e730]:
+                    - button "Schritt 4 Sofort-Offerten" [ref=e731] [cursor=pointer]:
+                      - generic [ref=e732]:
+                        - img [ref=e734]
+                        - generic [ref=e736]:
+                          - generic [ref=e737]: Schritt 4
+                          - heading "Sofort-Offerten" [level=3] [ref=e738]
+                      - img [ref=e739]
+                - generic [ref=e741]:
+                  - generic [ref=e742]:
+                    - img [ref=e743]
+                    - generic [ref=e746]: Präzisere Kosteneinschätzung (+30% genauer)
+                  - generic [ref=e747]:
+                    - img [ref=e748]
+                    - generic [ref=e751]: Keine manuelle Inventarliste nötig
+                  - generic [ref=e752]:
+                    - img [ref=e753]
+                    - generic [ref=e756]: Firmen sehen genau, was zu tun ist
+                  - generic [ref=e757]:
+                    - img [ref=e758]
+                    - generic [ref=e761]: Schnellere Offertenerstellung
+                - generic [ref=e762]:
+                  - button "Video jetzt hochladen" [ref=e763] [cursor=pointer]:
+                    - img
+                    - text: Video jetzt hochladen
+                    - img
+                  - button "Video-Rechner starten" [ref=e764] [cursor=pointer]:
+                    - img
+                    - text: Video-Rechner starten
+                - generic [ref=e765]:
+                  - button "Datenschutz garantiert" [ref=e766] [cursor=pointer]:
+                    - img [ref=e767]
+                    - generic [ref=e769]: Datenschutz garantiert
+                  - generic [ref=e770]:
+                    - img [ref=e771]
+                    - text: 100% kostenlos
+              - generic [ref=e774]:
+                - generic [ref=e775]:
+                  - img "KI Video-Analyse" [ref=e776]
+                  - generic [ref=e779]:
+                    - generic [ref=e780]:
+                      - img [ref=e782]
+                      - generic [ref=e784]:
+                        - paragraph [ref=e785]: KI-Analyse abgeschlossen
+                        - paragraph [ref=e786]: 3.5-Zimmer-Wohnung erkannt
+                    - generic [ref=e787]:
+                      - generic [ref=e788]:
+                        - paragraph [ref=e789]: 42m³
+                        - paragraph [ref=e790]: Volumen
+                      - generic [ref=e791]:
+                        - paragraph [ref=e792]: ~45
+                        - paragraph [ref=e793]: Kartons
+                      - generic [ref=e794]:
+                        - paragraph [ref=e795]: CHF 1'280
+                        - paragraph [ref=e796]: Ab Preis
+                  - generic [ref=e797]: "Neu: Video-KI"
+                - generic [ref=e799]:
+                  - heading "Video-Rechner vs. Klassisch" [level=4] [ref=e800]:
+                    - img [ref=e801]
+                    - text: Video-Rechner vs. Klassisch
+                  - generic [ref=e805]:
+                    - generic [ref=e806]:
+                      - generic [ref=e807]: Zeitaufwand
+                      - generic [ref=e808]: 3 Minuten
+                      - generic [ref=e809]: 15-30 Minuten
+                    - generic [ref=e810]:
+                      - generic [ref=e811]: Genauigkeit
+                      - generic [ref=e812]: +30% genauer
+                      - generic [ref=e813]: Schätzung
+                    - generic [ref=e814]:
+                      - generic [ref=e815]: Inventarliste
+                      - generic [ref=e816]: Automatisch
+                      - generic [ref=e817]: Manuell
+                    - generic [ref=e818]:
+                      - generic [ref=e819]: Offerten-Zeit
+                      - generic [ref=e820]: < 24 Std.
+                      - generic [ref=e821]: 2-3 Tage
+                - generic [ref=e823]:
+                  - heading "Datenschutz & Sicherheit" [level=4] [ref=e824]:
+                    - img [ref=e825]
+                    - text: Datenschutz & Sicherheit
+                  - generic [ref=e827]:
+                    - generic [ref=e828]:
+                      - img [ref=e829]
+                      - generic [ref=e832]:
+                        - paragraph [ref=e833]: Ende-zu-Ende-Verschlüsselung
+                        - paragraph [ref=e834]: Ihr Video wird verschlüsselt übertragen und gespeichert.
+                    - generic [ref=e835]:
+                      - img [ref=e836]
+                      - generic [ref=e839]:
+                        - paragraph [ref=e840]: Automatische Löschung
+                        - paragraph [ref=e841]: Videos werden nach 30 Tagen automatisch gelöscht.
+                    - generic [ref=e842]:
+                      - img [ref=e843]
+                      - generic [ref=e846]:
+                        - paragraph [ref=e847]: Eingeschränkter Zugriff
+                        - paragraph [ref=e848]: Nur von Ihnen ausgewählte Firmen können das Video sehen.
+                    - generic [ref=e849]:
+                      - img [ref=e850]
+                      - generic [ref=e852]:
+                        - paragraph [ref=e853]: Schweizer Datenschutz
+                        - paragraph [ref=e854]: Hosting auf Schweizer Servern nach DSG-Standard.
+                  - paragraph [ref=e856]:
+                    - strong [ref=e857]: "Dateiformate:"
+                    - text: MP4, MOV |
+                    - strong [ref=e858]: "Max. Größe:"
+                    - text: 200 MB |
+                    - strong [ref=e859]: "Speicherung:"
+                    - text: Schweiz
+                - generic [ref=e860]:
+                  - img [ref=e861]
+                  - generic [ref=e864]: Videos werden verschlüsselt und nach 30 Tagen gelöscht
+            - generic [ref=e866]:
+              - generic [ref=e867]:
+                - img [ref=e869]
+                - heading "Ihre Sicherheits-Garantien" [level=2] [ref=e872]
+                - paragraph [ref=e873]: Wir überlassen nichts dem Zufall. Diese Absicherungen sind bei jedem Umzug über unsere Plattform inklusive.
+              - generic [ref=e874]:
+                - generic [ref=e875]:
+                  - img [ref=e877]
+                  - generic [ref=e881]:
+                    - generic [ref=e882]:
+                      - heading "Abnahmegarantie" [level=3] [ref=e883]
+                      - generic [ref=e884]: Pflicht für Mietwohnungen
+                    - paragraph [ref=e885]: "Bei Reinigung: Wir vermitteln nur Firmen mit Übergabe-Garantie für Schweizer Vermieter."
+                - generic [ref=e886]:
+                  - img [ref=e888]
+                  - generic [ref=e890]:
+                    - generic [ref=e891]:
+                      - heading "Vollversicherung" [level=3] [ref=e892]
+                      - generic [ref=e893]: Bis CHF 2 Mio.
+                    - paragraph [ref=e894]: Alle Partner mit Haftpflicht- und Transportversicherung. Bei Schaden sind Sie geschützt.
+                - generic [ref=e895]:
+                  - img [ref=e897]
+                  - generic [ref=e899]:
+                    - generic [ref=e900]:
+                      - heading "Sichere Zahlung" [level=3] [ref=e901]
+                      - generic [ref=e902]: Transparenter Geldfluss
+                    - paragraph [ref=e903]: Sie zahlen direkt an die Umzugsfirma – wir verdienen an der Vermittlung, nicht an Ihnen.
+                - generic [ref=e904]:
+                  - img [ref=e906]
+                  - generic [ref=e909]:
+                    - generic [ref=e910]:
+                      - heading "Flexible Stornierung" [level=3] [ref=e911]
+                      - generic [ref=e912]: Keine versteckten Gebühren
+                    - paragraph [ref=e913]: Die meisten Partner erlauben kostenlose Stornierung bis 48h vor dem Umzug.
+              - generic [ref=e914]:
+                - img [ref=e915]
+                - generic [ref=e918]: Alle Garantien ohne Zusatzkosten für Sie
+            - generic [ref=e920]:
+              - generic [ref=e921]:
+                - generic [ref=e922]: Unsere Dienstleistungen
+                - heading "Alles aus einer Hand" [level=2] [ref=e923]
+                - paragraph [ref=e924]: Von der Planung bis zur Reinigung – unsere Partner bieten umfassende Services
+              - generic [ref=e925]:
+                - link "Privatumzug Professioneller Umzugsservice für Ihr Zuhause – wie ein neues Zuhause ab CHF 450 Mehr" [ref=e927]:
+                  - /url: /umzug
+                  - img [ref=e929]
+                  - heading "Privatumzug" [level=3] [ref=e934]
+                  - paragraph [ref=e935]: Professioneller Umzugsservice für Ihr Zuhause – wie ein neues Zuhause
+                  - generic [ref=e936]:
+                    - generic [ref=e937]: ab CHF 450
+                    - generic [ref=e938]:
+                      - text: Mehr
+                      - img [ref=e939]
+                - link "Firmenumzug Büro- und Geschäftsumzüge ohne Betriebsunterbruch ab CHF 1'200 Mehr" [ref=e942]:
+                  - /url: /firmenumzug
+                  - img [ref=e944]
+                  - heading "Firmenumzug" [level=3] [ref=e948]
+                  - paragraph [ref=e949]: Büro- und Geschäftsumzüge ohne Betriebsunterbruch
+                  - generic [ref=e950]:
+                    - generic [ref=e951]: ab CHF 1'200
+                    - generic [ref=e952]:
+                      - text: Mehr
+                      - img [ref=e953]
+                - link "Reinigung Professionelle Endreinigung mit Abnahmegarantie ab CHF 300 Mehr" [ref=e956]:
+                  - /url: /reinigung
+                  - img [ref=e958]
+                  - heading "Reinigung" [level=3] [ref=e960]
+                  - paragraph [ref=e961]: Professionelle Endreinigung mit Abnahmegarantie
+                  - generic [ref=e962]:
+                    - generic [ref=e963]: ab CHF 300
+                    - generic [ref=e964]:
+                      - text: Mehr
+                      - img [ref=e965]
+                - link "Entsorgung Fachgerechte Entsorgung und Räumungen ab CHF 150 Mehr" [ref=e968]:
+                  - /url: /entsorgung
+                  - img [ref=e970]
+                  - heading "Entsorgung" [level=3] [ref=e973]
+                  - paragraph [ref=e974]: Fachgerechte Entsorgung und Räumungen
+                  - generic [ref=e975]:
+                    - generic [ref=e976]: ab CHF 150
+                    - generic [ref=e977]:
+                      - text: Mehr
+                      - img [ref=e978]
+                - link "Möbelmontage Professioneller Auf- und Abbau Ihrer Möbel ab CHF 80 Mehr" [ref=e981]:
+                  - /url: /moebelmontage
+                  - img [ref=e983]
+                  - heading "Möbelmontage" [level=3] [ref=e985]
+                  - paragraph [ref=e986]: Professioneller Auf- und Abbau Ihrer Möbel
+                  - generic [ref=e987]:
+                    - generic [ref=e988]: ab CHF 80
+                    - generic [ref=e989]:
+                      - text: Mehr
+                      - img [ref=e990]
+                - link "Lagerung Sichere Zwischen- und Langzeitlagerung ab CHF 50/Mt. Mehr" [ref=e993]:
+                  - /url: /lagerung
+                  - img [ref=e995]
+                  - heading "Lagerung" [level=3] [ref=e999]
+                  - paragraph [ref=e1000]: Sichere Zwischen- und Langzeitlagerung
+                  - generic [ref=e1001]:
+                    - generic [ref=e1002]: ab CHF 50/Mt.
+                    - generic [ref=e1003]:
+                      - text: Mehr
+                      - img [ref=e1004]
+              - paragraph [ref=e1006]: Preise variieren je nach Distanz, Etage und Zusatzleistungen. Nutzen Sie unseren Rechner für Ihre individuelle Offerte.
+            - generic [ref=e1008]:
+              - generic [ref=e1009]:
+                - generic [ref=e1010]:
+                  - img [ref=e1011]
+                  - text: Transparente Preise
+                - heading "Preisbeispiele für Ihren Umzug" [level=2] [ref=e1013]
+                - paragraph [ref=e1014]: Transparente Richtwerte – die genauen Kosten hängen von Ihren individuellen Anforderungen ab.
+                - generic [ref=e1016]:
+                  - img [ref=e1017]
+                  - generic [ref=e1020]: "Sonderaktion endet in:"
+                  - generic [ref=e1021]:
+                    - generic [ref=e1022]:
+                      - generic [ref=e1023]: "23"
+                      - generic [ref=e1024]: h
+                    - generic [ref=e1025]: ":"
+                    - generic [ref=e1026]:
+                      - generic [ref=e1027]: "59"
+                      - generic [ref=e1028]: m
+                    - generic [ref=e1029]: ":"
+                    - generic [ref=e1030]:
+                      - generic [ref=e1031]: "58"
+                      - generic [ref=e1032]: s
+              - generic [ref=e1034]:
+                - generic [ref=e1035]:
+                  - generic [ref=e1036]: ✓ Versicherte Partner
+                  - generic [ref=e1037]: ✓ Schweizer Qualität
+                  - generic [ref=e1038]: ✓ 100% Kostenlos
+                  - generic [ref=e1039]: ✓ Unverbindlich
+                  - generic [ref=e1040]: ✓ 24-48h Antwort
+                  - generic [ref=e1041]: ✓ Datenschutz
+                - generic [ref=e1042]:
+                  - generic [ref=e1043]: ✓ Versicherte Partner
+                  - generic [ref=e1044]: ✓ Schweizer Qualität
+                  - generic [ref=e1045]: ✓ 100% Kostenlos
+                  - generic [ref=e1046]: ✓ Unverbindlich
+                  - generic [ref=e1047]: ✓ 24-48h Antwort
+                  - generic [ref=e1048]: ✓ Datenschutz
+              - generic [ref=e1049]:
+                - generic [ref=e1052] [cursor=pointer]:
+                  - generic [ref=e1053]:
+                    - img [ref=e1055]
+                    - generic [ref=e1058]:
+                      - img [ref=e1059]
+                      - text: bis zu 35%
+                  - heading "1.5-Zimmer Wohnung" [level=3] [ref=e1062]
+                  - paragraph [ref=e1063]: Innerhalb Zürich
+                  - generic [ref=e1064]:
+                    - generic [ref=e1065]: CHF 0
+                    - text: –
+                    - generic [ref=e1066]: "0"
+                  - list [ref=e1067]:
+                    - listitem [ref=e1068]: ~20m³ Volumen
+                    - listitem [ref=e1070]: 2-3 Std. Dauer
+                    - listitem [ref=e1072]: Inkl. Transport
+                - generic [ref=e1076] [cursor=pointer]:
+                  - generic [ref=e1077]: Beliebt
+                  - img [ref=e1080]
+                  - heading "3.5-Zimmer Wohnung" [level=3] [ref=e1083]
+                  - paragraph [ref=e1084]: Zürich → Bern (120km)
+                  - generic [ref=e1085]:
+                    - generic [ref=e1086]: CHF 0
+                    - text: –
+                    - generic [ref=e1087]: "0"
+                  - list [ref=e1088]:
+                    - listitem [ref=e1089]: ~45m³ Volumen
+                    - listitem [ref=e1091]: 5-6 Std. Dauer
+                    - listitem [ref=e1093]: Inkl. Verpackung
+                - generic [ref=e1097] [cursor=pointer]:
+                  - generic [ref=e1098]:
+                    - img [ref=e1100]
+                    - generic [ref=e1104]:
+                      - img [ref=e1105]
+                      - text: bis zu 38%
+                  - heading "5-Zimmer Haus" [level=3] [ref=e1108]
+                  - paragraph [ref=e1109]: Basel → Luzern (90km)
+                  - generic [ref=e1110]:
+                    - generic [ref=e1111]: CHF 0
+                    - text: –
+                    - generic [ref=e1112]: "0"
+                  - list [ref=e1113]:
+                    - listitem [ref=e1114]: ~80m³ Volumen
+                    - listitem [ref=e1116]: Ganztags
+                    - listitem [ref=e1118]: Full-Service
+                - generic [ref=e1122] [cursor=pointer]:
+                  - generic [ref=e1123]:
+                    - img [ref=e1125]
+                    - generic [ref=e1128]:
+                      - img [ref=e1129]
+                      - text: bis zu 42%
+                  - heading "Büro (15 Arbeitsplätze)" [level=3] [ref=e1132]
+                  - paragraph [ref=e1133]: Innerhalb Zürich
+                  - generic [ref=e1134]:
+                    - generic [ref=e1135]: CHF 0
+                    - text: –
+                    - generic [ref=e1136]: "0"
+                  - list [ref=e1137]:
+                    - listitem [ref=e1138]: IT-Equipment
+                    - listitem [ref=e1140]: Wochenendumzug
+                    - listitem [ref=e1142]: Möbelmontage
+              - img [ref=e1144]
+              - generic [ref=e1146]:
+                - link "Ihren Preis berechnen" [ref=e1149]:
+                  - /url: /umzugsofferten
+                  - text: Ihren Preis berechnen
+                  - img
+                - paragraph [ref=e1150]: Unverbindliche Schätzung in 2 Minuten
+            - generic [ref=e1152]:
+              - generic [ref=e1153]:
+                - heading "Das sagen unsere Kunden" [level=2] [ref=e1154]
+                - generic [ref=e1155]:
+                  - generic [ref=e1156]:
+                    - img [ref=e1157]
+                    - img [ref=e1159]
+                    - img [ref=e1161]
+                    - img [ref=e1163]
+                    - img [ref=e1165]
+                  - generic [ref=e1167]: 4.8/5
+                  - generic [ref=e1168]: aus 2,847 Bewertungen
+              - generic [ref=e1169]:
+                - generic [ref=e1170]:
+                  - img [ref=e1173]
+                  - generic [ref=e1175]:
+                    - img [ref=e1176]
+                    - generic [ref=e1179]: CHF 840 gespart
+                  - paragraph [ref=e1180]:
+                    - img [ref=e1181]
+                    - generic [ref=e1184]: Der Preisunterschied zwischen den Offerten war enorm – hätte ich nicht verglichen, wäre es fast doppelt so teuer geworden.
+                  - generic [ref=e1185]:
+                    - img "Sandra K." [ref=e1187]
+                    - generic [ref=e1188]:
+                      - generic [ref=e1189]:
+                        - generic [ref=e1190]: Sandra K.
+                        - img [ref=e1191]
+                      - generic [ref=e1194]:
+                        - img [ref=e1195]
+                        - generic [ref=e1198]: Zürich → Basel
+                - generic [ref=e1199]:
+                  - img [ref=e1202]
+                  - generic [ref=e1204]:
+                    - img [ref=e1205]
+                    - generic [ref=e1208]: CHF 650 gespart
+                  - paragraph [ref=e1209]:
+                    - img [ref=e1210]
+                    - generic [ref=e1213]: In 2 Tagen hatte ich 5 Offerten. Die günstigste war auch die beste!
+                  - generic [ref=e1214]:
+                    - img "Marco R." [ref=e1216]
+                    - generic [ref=e1217]:
+                      - generic [ref=e1218]:
+                        - generic [ref=e1219]: Marco R.
+                        - img [ref=e1220]
+                      - generic [ref=e1223]:
+                        - img [ref=e1224]
+                        - generic [ref=e1227]: Bern → Luzern
+                - generic [ref=e1228]:
+                  - img [ref=e1231]
+                  - generic [ref=e1233]:
+                    - img [ref=e1234]
+                    - generic [ref=e1237]: CHF 920 gespart
+                  - paragraph [ref=e1238]:
+                    - img [ref=e1239]
+                    - generic [ref=e1242]: Alles inklusive – Reinigung, Entsorgung, Umzug. Ein Anruf, alles erledigt.
+                  - generic [ref=e1243]:
+                    - img "Lisa M." [ref=e1245]
+                    - generic [ref=e1246]:
+                      - generic [ref=e1247]:
+                        - generic [ref=e1248]: Lisa M.
+                        - img [ref=e1249]
+                      - generic [ref=e1252]:
+                        - img [ref=e1253]
+                        - generic [ref=e1256]: Winterthur → St. Gallen
+                - generic [ref=e1257]:
+                  - img [ref=e1260]
+                  - generic [ref=e1262]:
+                    - img [ref=e1263]
+                    - generic [ref=e1266]: CHF 780 gespart
+                  - paragraph [ref=e1267]:
+                    - img [ref=e1268]
+                    - generic [ref=e1271]: Ohne Vergleich hätte ich viel zu viel bezahlt. Absolut empfehlenswert!
+                  - generic [ref=e1272]:
+                    - img "Thomas B." [ref=e1274]
+                    - generic [ref=e1275]:
+                      - generic [ref=e1276]:
+                        - generic [ref=e1277]: Thomas B.
+                        - img [ref=e1278]
+                      - generic [ref=e1281]:
+                        - img [ref=e1282]
+                        - generic [ref=e1285]: Basel → Aarau
+              - link "Alle Bewertungen ansehen" [ref=e1287]:
+                - /url: "#bewertungen"
+                - text: Alle Bewertungen ansehen
+                - img [ref=e1288]
+            - generic [ref=e1291]:
+              - generic [ref=e1292]:
+                - generic [ref=e1293]:
+                  - img [ref=e1294]
+                  - generic [ref=e1296]: Persönliche Beratung
+                - heading "Lieber persönlich?" [level=2] [ref=e1297]
+                - paragraph [ref=e1298]: Unser Team hilft Ihnen gerne direkt weiter – rufen Sie an oder schreiben Sie uns.
+              - generic [ref=e1299]:
+                - button "Anrufen +41 44 123 45 67" [ref=e1301] [cursor=pointer]:
+                  - generic [ref=e1302]:
+                    - img
+                  - generic [ref=e1303]:
+                    - paragraph [ref=e1304]: Anrufen
+                    - paragraph [ref=e1305]: +41 44 123 45 67
+                - button "WhatsApp Schnelle Antwort" [ref=e1307] [cursor=pointer]:
+                  - generic [ref=e1308]:
+                    - img
+                  - generic [ref=e1309]:
+                    - paragraph [ref=e1310]: WhatsApp
+                    - paragraph [ref=e1311]: Schnelle Antwort
+                - button "E-Mail info@umzugscheck.ch" [ref=e1313] [cursor=pointer]:
+                  - generic [ref=e1314]:
+                    - img
+                  - generic [ref=e1315]:
+                    - paragraph [ref=e1316]: E-Mail
+                    - paragraph [ref=e1317]: info@umzugscheck.ch
+              - generic [ref=e1318]:
+                - img [ref=e1319]
+                - generic [ref=e1322]: Mo–Fr 08:00–18:00 | Sa 09:00–14:00
+            - generic [ref=e1324]:
+              - generic [ref=e1325]:
+                - generic [ref=e1326]:
+                  - img [ref=e1327]
+                  - text: Schweizweit
+                - heading "Umzugsfirmen in Ihrer Region" [level=2] [ref=e1330]
+                - paragraph [ref=e1331]: 200+ geprüfte Partner in allen 26 Kantonen
+              - generic [ref=e1332]:
+                - link "Zürich 45 Firmen" [ref=e1334]:
+                  - /url: /umzugsfirmen/zurich
+                  - img [ref=e1336]
+                  - generic [ref=e1340]: Zürich
+                  - generic [ref=e1341]: 45 Firmen
+                - link "Bern 32 Firmen" [ref=e1343]:
+                  - /url: /umzugsfirmen/bern
+                  - img [ref=e1345]
+                  - generic [ref=e1349]: Bern
+                  - generic [ref=e1350]: 32 Firmen
+                - link "Basel 28 Firmen" [ref=e1352]:
+                  - /url: /umzugsfirmen/basel
+                  - img [ref=e1354]
+                  - generic [ref=e1358]: Basel
+                  - generic [ref=e1359]: 28 Firmen
+                - link "Luzern 22 Firmen" [ref=e1361]:
+                  - /url: /umzugsfirmen/luzern
+                  - img [ref=e1363]
+                  - generic [ref=e1367]: Luzern
+                  - generic [ref=e1368]: 22 Firmen
+                - link "Aargau 25 Firmen" [ref=e1370]:
+                  - /url: /umzugsfirmen/aargau
+                  - img [ref=e1372]
+                  - generic [ref=e1376]: Aargau
+                  - generic [ref=e1377]: 25 Firmen
+                - link "St. Gallen 18 Firmen" [ref=e1379]:
+                  - /url: /umzugsfirmen/stgallen
+                  - img [ref=e1381]
+                  - generic [ref=e1385]: St. Gallen
+                  - generic [ref=e1386]: 18 Firmen
+                - link "Thurgau 12 Firmen" [ref=e1388]:
+                  - /url: /umzugsfirmen/thurgau
+                  - img [ref=e1390]
+                  - generic [ref=e1394]: Thurgau
+                  - generic [ref=e1395]: 12 Firmen
+                - link "Zug 14 Firmen" [ref=e1397]:
+                  - /url: /umzugsfirmen/zug
+                  - img [ref=e1399]
+                  - generic [ref=e1403]: Zug
+                  - generic [ref=e1404]: 14 Firmen
+                - link "Solothurn 15 Firmen" [ref=e1406]:
+                  - /url: /umzugsfirmen/solothurn
+                  - img [ref=e1408]
+                  - generic [ref=e1412]: Solothurn
+                  - generic [ref=e1413]: 15 Firmen
+                - link "Graubünden 10 Firmen" [ref=e1415]:
+                  - /url: /umzugsfirmen/graubuenden
+                  - img [ref=e1417]
+                  - generic [ref=e1421]: Graubünden
+                  - generic [ref=e1422]: 10 Firmen
+                - link "Wallis 11 Firmen" [ref=e1424]:
+                  - /url: /umzugsfirmen/wallis
+                  - img [ref=e1426]
+                  - generic [ref=e1430]: Wallis
+                  - generic [ref=e1431]: 11 Firmen
+                - link "Tessin 16 Firmen" [ref=e1433]:
+                  - /url: /umzugsfirmen/tessin
+                  - img [ref=e1435]
+                  - generic [ref=e1439]: Tessin
+                  - generic [ref=e1440]: 16 Firmen
+              - link "Alle Regionen anzeigen" [ref=e1442]:
+                - /url: /umzugsfirmen
+                - text: Alle Regionen anzeigen
+                - img [ref=e1443]
+            - generic [ref=e1450]:
+              - generic [ref=e1451]:
+                - generic [ref=e1452]:
+                  - img [ref=e1453]
+                  - text: Gratis Download
+                - heading "Schweizer Umzugs-Checkliste" [level=2] [ref=e1455]
+                - paragraph [ref=e1456]: Vergessen Sie nichts beim Umzug. Unsere 5-Seiten PDF mit allen wichtigen Schritten, Fristen und Tipps.
+                - list [ref=e1457]:
+                  - listitem [ref=e1458]:
+                    - img [ref=e1459]
+                    - generic [ref=e1462]: 8 Wochen vor dem Umzug – erste Schritte
+                  - listitem [ref=e1463]:
+                    - img [ref=e1464]
+                    - generic [ref=e1467]: Kündigungsfristen & Behördengänge
+                  - listitem [ref=e1468]:
+                    - img [ref=e1469]
+                    - generic [ref=e1472]: Packmaterial-Checkliste (mit Mengen)
+                  - listitem [ref=e1473]:
+                    - img [ref=e1474]
+                    - generic [ref=e1477]: "Umzugstag: Stunde-für-Stunde Plan"
+                  - listitem [ref=e1478]:
+                    - img [ref=e1479]
+                    - generic [ref=e1482]: "Nach dem Umzug: Was nicht vergessen"
+              - generic [ref=e1484]:
+                - generic [ref=e1486]:
+                  - img [ref=e1487]
+                  - generic [ref=e1490]: PDF
+                - generic [ref=e1491]:
+                  - generic [ref=e1492]:
+                    - img [ref=e1493]
+                    - textbox "ihre@email.ch" [ref=e1496]
+                  - button "Gratis Checkliste erhalten" [ref=e1497] [cursor=pointer]:
+                    - img
+                    - text: Gratis Checkliste erhalten
+                  - paragraph [ref=e1498]: Kein Spam. Nur die Checkliste + gelegentlich Tipps.
+            - generic [ref=e1500]:
+              - generic [ref=e1501]:
+                - generic [ref=e1502]: Umzugsprozess Schweiz
+                - heading "So funktioniert das Zügeln in der Schweiz" [level=2] [ref=e1503]
+                - paragraph [ref=e1504]: Ob innerhalb der Schweiz oder aus dem Ausland – mit unserer Checkliste vergessen Sie nichts. Inklusive eUmzugCH und Zollformalitäten.
+              - generic [ref=e1505]:
+                - tablist [ref=e1506]:
+                  - tab "Schweiz" [selected] [ref=e1507] [cursor=pointer]:
+                    - img [ref=e1508]
+                    - text: Schweiz
+                  - tab "Aus dem Ausland" [ref=e1511] [cursor=pointer]:
+                    - img [ref=e1512]
+                    - text: Aus dem Ausland
+                - tabpanel "Schweiz" [ref=e1514]:
+                  - generic [ref=e1515]:
+                    - generic [ref=e1518]:
+                      - img [ref=e1520]
+                      - generic [ref=e1522]:
+                        - generic [ref=e1523]:
+                          - heading "Vor dem Umzug" [level=4] [ref=e1524]
+                          - generic [ref=e1525]: 2–4 Wochen vorher
+                        - list [ref=e1526]:
+                          - listitem [ref=e1527]:
+                            - img [ref=e1528]
+                            - generic [ref=e1531]: Freien Umzugstag beim Arbeitgeber beantragen
+                          - listitem [ref=e1532]:
+                            - img [ref=e1533]
+                            - generic [ref=e1537]: Ab- und Anmeldung bei Gemeinden (eUmzugCH)
+                          - listitem [ref=e1538]:
+                            - img [ref=e1539]
+                            - generic [ref=e1541]: Strom, Gas, Wasser – Zählerstände melden
+                          - listitem [ref=e1542]:
+                            - img [ref=e1543]
+                            - generic [ref=e1546]: "Telekommunikation: Internet & TV ummelden"
+                          - listitem [ref=e1547]:
+                            - img [ref=e1548]
+                            - generic [ref=e1550]: "Adressänderung: Bank, Versicherungen, Ärzte"
+                          - listitem [ref=e1551]:
+                            - img [ref=e1552]
+                            - generic [ref=e1556]: Nachsendeauftrag bei der Post einrichten
+                          - listitem [ref=e1557]:
+                            - img [ref=e1558]
+                            - generic [ref=e1562]: Parkbewilligung für Umzugswagen beantragen
+                          - listitem [ref=e1563]:
+                            - img [ref=e1564]
+                            - generic [ref=e1569]: Schule/Kita bei Kindern informieren
+                          - listitem [ref=e1570]:
+                            - img [ref=e1571]
+                            - generic [ref=e1575]: Hund bei alter Gemeinde abmelden
+                    - generic [ref=e1578]:
+                      - img [ref=e1580]
+                      - generic [ref=e1584]:
+                        - generic [ref=e1585]:
+                          - heading "Am Umzugstag" [level=4] [ref=e1586]
+                          - generic [ref=e1587]: Der grosse Tag
+                        - list [ref=e1588]:
+                          - listitem [ref=e1589]:
+                            - img [ref=e1590]
+                            - generic [ref=e1593]: Zählerstände (Strom, Wasser, Heizung) ablesen
+                          - listitem [ref=e1594]:
+                            - img [ref=e1595]
+                            - generic [ref=e1599]: Kartons systematisch packen und beschriften
+                          - listitem [ref=e1600]:
+                            - img [ref=e1601]
+                            - generic [ref=e1603]: Möbel schützen und sichern
+                    - generic [ref=e1606]:
+                      - img [ref=e1608]
+                      - generic [ref=e1611]:
+                        - generic [ref=e1612]:
+                          - heading "Nach dem Umzug" [level=4] [ref=e1613]
+                          - generic [ref=e1614]: Erste 14 Tage
+                        - list [ref=e1615]:
+                          - listitem [ref=e1616]:
+                            - img [ref=e1617]
+                            - generic [ref=e1620]: Antrittsprotokoll mit Vermieter erstellen
+                          - listitem [ref=e1621]:
+                            - img [ref=e1622]
+                            - generic [ref=e1626]: Rückgabeprotokoll alte Wohnung (Kaution)
+                          - listitem [ref=e1627]:
+                            - img [ref=e1628]
+                            - generic [ref=e1630]: Versicherungen auf neue Adresse anpassen
+                          - listitem [ref=e1631]:
+                            - img [ref=e1632]
+                            - generic [ref=e1636]: Bei neuer Gemeinde anmelden (14 Tage Frist)
+                  - generic [ref=e1639]:
+                    - img [ref=e1641]
+                    - generic [ref=e1643]:
+                      - 'heading "Pro-Tipp: eUmzugCH" [level=4] [ref=e1644]'
+                      - paragraph [ref=e1645]:
+                        - text: Nutze
+                        - link "eUmzugCH" [ref=e1646]:
+                          - /url: https://www.eumzug.swiss
+                        - text: für digitale Ab- und Anmeldungen – das spart Zeit und ist in den meisten Kantonen verfügbar. In der Schweiz hast du Anspruch auf
+                        - strong [ref=e1647]: einen freien Umzugstag
+                        - text: bei deinem Arbeitgeber.
+              - generic [ref=e1649]:
+                - link "Jetzt Offerten vergleichen" [ref=e1650]:
+                  - /url: /umzugsofferten
+                  - button "Jetzt Offerten vergleichen" [ref=e1651] [cursor=pointer]:
+                    - text: Jetzt Offerten vergleichen
+                    - img
+                - link "Vollständige Checkliste" [ref=e1652]:
+                  - /url: /guide/umzugscheckliste-schweiz
+                  - button "Vollständige Checkliste" [ref=e1653] [cursor=pointer]
+            - generic [ref=e1656]:
+              - generic [ref=e1657]:
+                - generic [ref=e1658]:
+                  - img [ref=e1659]
+                  - generic [ref=e1662]: Häufige Fragen
+                - heading "Noch Fragen?" [level=2] [ref=e1663]
+                - paragraph [ref=e1664]: Hier finden Sie Antworten auf die häufigsten Fragen
+              - generic [ref=e1665]:
+                - generic [ref=e1666]:
+                  - button "Was kostet ein Umzug in der Schweiz?" [expanded] [ref=e1667] [cursor=pointer]:
+                    - generic [ref=e1668]: Was kostet ein Umzug in der Schweiz?
+                    - img [ref=e1669]
+                  - paragraph [ref=e1671]: Die Kosten variieren je nach Wohnungsgrösse, Distanz und Aufwand. Ein Studio-Umzug (lokal) kostet ca. CHF 400–800, eine 3-Zimmer-Wohnung CHF 1'200–2'500, und grössere Umzüge CHF 3'000–6'000+. Mit unserem kostenlosen Vergleich sparen Sie bis zu 40%.
+                - button "Wie funktioniert der KI-Video-Kostenrechner?" [ref=e1673] [cursor=pointer]:
+                  - generic [ref=e1674]: Wie funktioniert der KI-Video-Kostenrechner?
+                  - img [ref=e1675]
+                - button "Ist der Vergleichsservice wirklich kostenlos?" [ref=e1678] [cursor=pointer]:
+                  - generic [ref=e1679]: Ist der Vergleichsservice wirklich kostenlos?
+                  - img [ref=e1680]
+                - button "Wie werden die Umzugsfirmen geprüft?" [ref=e1683] [cursor=pointer]:
+                  - generic [ref=e1684]: Wie werden die Umzugsfirmen geprüft?
+                  - img [ref=e1685]
+                - button "Wie schnell erhalte ich Offerten?" [ref=e1688] [cursor=pointer]:
+                  - generic [ref=e1689]: Wie schnell erhalte ich Offerten?
+                  - img [ref=e1690]
+                - button "Welche Services sind im Umzug inbegriffen?" [ref=e1693] [cursor=pointer]:
+                  - generic [ref=e1694]: Welche Services sind im Umzug inbegriffen?
+                  - img [ref=e1695]
+                - button "Was passiert bei Schäden während des Umzugs?" [ref=e1698] [cursor=pointer]:
+                  - generic [ref=e1699]: Was passiert bei Schäden während des Umzugs?
+                  - img [ref=e1700]
+                - button "Kann ich auch Firmenumzüge vergleichen?" [ref=e1703] [cursor=pointer]:
+                  - generic [ref=e1704]: Kann ich auch Firmenumzüge vergleichen?
+                  - img [ref=e1705]
+                - button "In welchen Regionen ist der Service verfügbar?" [ref=e1708] [cursor=pointer]:
+                  - generic [ref=e1709]: In welchen Regionen ist der Service verfügbar?
+                  - img [ref=e1710]
+                - button "Muss ich eine Offerte annehmen?" [ref=e1713] [cursor=pointer]:
+                  - generic [ref=e1714]: Muss ich eine Offerte annehmen?
+                  - img [ref=e1715]
+            - status "Inhalt wird geladen..." [ref=e1717]:
+              - generic [ref=e1720]: Laden...
+            - status "Inhalt wird geladen..." [ref=e1721]:
+              - generic [ref=e1724]: Laden...
+          - generic [ref=e1726]:
+            - generic [ref=e1727]:
+              - generic [ref=e1728]:
+                - link "Zur Startseite von Umzugscheck.ch" [ref=e1730]:
+                  - /url: /
+                  - img [ref=e1732]
+                  - generic [ref=e1737]: Umzugscheck.ch
+                - paragraph [ref=e1738]: Die führende Vergleichsplattform für Umzüge in der Schweiz. Kostenlos, unverbindlich, zuverlässig.
+                - generic [ref=e1739]:
+                  - paragraph [ref=e1740]: Umzugscheck GmbH
+                  - paragraph [ref=e1741]: Bahnhofstrasse 100, 8001 Zürich
+                  - paragraph [ref=e1742]: CHE-xxx.xxx.xxx
+                - link "info@umzugscheck.ch" [ref=e1744]:
+                  - /url: mailto:info@umzugscheck.ch
+                  - img [ref=e1745]
+                  - text: info@umzugscheck.ch
+                - generic [ref=e1748]:
+                  - img [ref=e1750]
+                  - img [ref=e1753]
+                  - img [ref=e1757]
+              - generic [ref=e1759]:
+                - heading "Services" [level=4] [ref=e1760]
+                - list [ref=e1761]:
+                  - listitem [ref=e1762]:
+                    - link "Umzugsofferten" [ref=e1763]:
+                      - /url: /umzugsofferten
+                  - listitem [ref=e1764]:
+                    - link "Preisrechner" [ref=e1765]:
+                      - /url: /rechner
+                  - listitem [ref=e1766]:
+                    - link "Umzugsfirmen" [ref=e1767]:
+                      - /url: /umzugsfirmen
+                  - listitem [ref=e1768]:
+                    - link "Privatumzug" [ref=e1769]:
+                      - /url: /privatumzug
+                  - listitem [ref=e1770]:
+                    - link "Firmenumzug" [ref=e1771]:
+                      - /url: /firmenumzug
+                  - listitem [ref=e1772]:
+                    - link "Reinigung" [ref=e1773]:
+                      - /url: /reinigung
+              - generic [ref=e1774]:
+                - heading "Regionen" [level=4] [ref=e1775]
+                - list [ref=e1776]:
+                  - listitem [ref=e1777]:
+                    - link "Zürich" [ref=e1778]:
+                      - /url: /zuerich
+                  - listitem [ref=e1779]:
+                    - link "Bern" [ref=e1780]:
+                      - /url: /bern
+                  - listitem [ref=e1781]:
+                    - link "Basel" [ref=e1782]:
+                      - /url: /basel
+                  - listitem [ref=e1783]:
+                    - link "Luzern" [ref=e1784]:
+                      - /url: /luzern
+                  - listitem [ref=e1785]:
+                    - link "Aargau" [ref=e1786]:
+                      - /url: /aargau
+                  - listitem [ref=e1787]:
+                    - link "St. Gallen" [ref=e1788]:
+                      - /url: /st-gallen
+                  - listitem [ref=e1789]:
+                    - link "Alle Regionen" [ref=e1790]:
+                      - /url: /regionen
+              - generic [ref=e1791]:
+                - heading "Unternehmen" [level=4] [ref=e1792]
+                - list [ref=e1793]:
+                  - listitem [ref=e1794]:
+                    - link "Über uns" [ref=e1795]:
+                      - /url: /ueber-uns
+                  - listitem [ref=e1796]:
+                    - link "Für Umzugsfirmen" [ref=e1797]:
+                      - /url: /fuer-firmen
+                  - listitem [ref=e1798]:
+                    - link "Ratgeber" [ref=e1799]:
+                      - /url: /ratgeber
+                  - listitem [ref=e1800]:
+                    - link "Kontakt" [ref=e1801]:
+                      - /url: /kontakt
+                  - listitem [ref=e1802]:
+                    - link "FAQ" [ref=e1803]:
+                      - /url: /faq
+              - generic [ref=e1804]:
+                - heading "Rechtliches" [level=4] [ref=e1805]
+                - list [ref=e1806]:
+                  - listitem [ref=e1807]:
+                    - link "Impressum" [ref=e1808]:
+                      - /url: /impressum
+                  - listitem [ref=e1809]:
+                    - link "Datenschutz" [ref=e1810]:
+                      - /url: /datenschutz
+                  - listitem [ref=e1811]:
+                    - link "AGB" [ref=e1812]:
+                      - /url: /agb
+            - generic [ref=e1814]:
+              - generic [ref=e1815]:
+                - generic [ref=e1816]:
+                  - img [ref=e1817]
+                  - text: 100% kostenlos
+                - generic [ref=e1820]:
+                  - img [ref=e1821]
+                  - text: 200+ geprüfte Firmen
+                - generic [ref=e1824]:
+                  - img [ref=e1825]
+                  - text: Bis zu 40% sparen
+              - link "Jetzt Offerten erhalten" [ref=e1828]:
+                - /url: /umzugsofferten
+                - button "Jetzt Offerten erhalten" [ref=e1829] [cursor=pointer]
+            - generic [ref=e1830]:
+              - paragraph [ref=e1831]: © 2026 Umzugscheck.ch – Alle Rechte vorbehalten
+              - generic [ref=e1833]: Made with ❤️ in der Schweiz
+          - button "HA · N1 · SV1" [ref=e1835] [cursor=pointer]:
+            - img [ref=e1836]
+            - generic [ref=e1838]: HA
+            - generic [ref=e1839]: ·
+            - generic [ref=e1840]: N1
+            - generic [ref=e1841]: ·
+            - generic [ref=e1842]: SV1
+    - contentinfo [ref=e1843]:
+      - generic [ref=e1846]:
+        - generic [ref=e1847]:
+          - img [ref=e1848]
+          - generic [ref=e1850]: SSL-verschlüsselt
+        - generic [ref=e1851]:
+          - img [ref=e1852]
+          - generic [ref=e1855]: DSGVO-konform
+        - generic [ref=e1856]:
+          - img [ref=e1857]
+          - generic [ref=e1860]: Swiss Made
+      - generic [ref=e1861]:
+        - generic [ref=e1862]:
+          - generic [ref=e1863]:
+            - link "Zur Startseite von Umzugscheck.ch" [ref=e1864]:
+              - /url: /
+              - img [ref=e1866]
+              - generic [ref=e1871]: Umzugscheck.ch
+            - paragraph [ref=e1872]: Die führende Vergleichsplattform für Umzüge in der Schweiz. Kostenlos, transparent und einfach.
+          - generic [ref=e1873]:
+            - heading "Preise berechnen" [level=4] [ref=e1874]
+            - list [ref=e1875]:
+              - listitem [ref=e1876]:
+                - link "Umzugskosten berechnen" [ref=e1877]:
+                  - /url: /umzugsofferten
+              - listitem [ref=e1878]:
+                - link "Umzugsofferten vergleichen" [ref=e1879]:
+                  - /url: /umzugsofferten
+              - listitem [ref=e1880]:
+                - link "Alle Umzugsfirmen" [ref=e1881]:
+                  - /url: /umzugsfirmen
+              - listitem [ref=e1882]:
+                - link "Umzug nach Region" [ref=e1883]:
+                  - /url: /umzugsfirmen-schweiz
+          - generic [ref=e1884]:
+            - heading "Umzugs-Services" [level=4] [ref=e1885]
+            - list [ref=e1886]:
+              - listitem [ref=e1887]:
+                - link "Privatumzug" [ref=e1888]:
+                  - /url: /privatumzug
+              - listitem [ref=e1889]:
+                - link "Firmenumzug" [ref=e1890]:
+                  - /url: /firmenumzug
+              - listitem [ref=e1891]:
+                - link "Umzugsreinigung" [ref=e1892]:
+                  - /url: /reinigung
+              - listitem [ref=e1893]:
+                - link "Räumung & Entsorgung" [ref=e1894]:
+                  - /url: /entsorgung-raeumung
+              - listitem [ref=e1895]:
+                - link "Möbellager" [ref=e1896]:
+                  - /url: /einlagerung
+              - listitem [ref=e1897]:
+                - link "Möbellift" [ref=e1898]:
+                  - /url: /moebellift
+              - listitem [ref=e1899]:
+                - link "Haushaltsauflösung" [ref=e1900]:
+                  - /url: /haushaltsaufloesung
+              - listitem [ref=e1901]:
+                - link "Tresortransport" [ref=e1902]:
+                  - /url: /tresortransport
+              - listitem [ref=e1903]:
+                - link "Umzugshelfer" [ref=e1904]:
+                  - /url: /umzugshelfer
+          - generic [ref=e1905]:
+            - heading "Informationen" [level=4] [ref=e1906]
+            - list [ref=e1907]:
+              - listitem [ref=e1908]:
+                - link "So funktioniert's" [ref=e1909]:
+                  - /url: /so-funktionierts
+              - listitem [ref=e1910]:
+                - link "Ratgeber" [ref=e1911]:
+                  - /url: /ratgeber
+              - listitem [ref=e1912]:
+                - link "Über uns" [ref=e1913]:
+                  - /url: /ueber-uns
+              - listitem [ref=e1914]:
+                - link "FAQ" [ref=e1915]:
+                  - /url: /faq
+          - generic [ref=e1916]:
+            - heading "Für Firmen" [level=4] [ref=e1917]
+            - list [ref=e1918]:
+              - listitem [ref=e1919]:
+                - link "Partner werden" [ref=e1920]:
+                  - /url: /anbieter
+              - listitem [ref=e1921]:
+                - link "Anbieter Login" [ref=e1922]:
+                  - /url: /anbieter/login
+              - listitem [ref=e1923]:
+                - link "Kontakt" [ref=e1924]:
+                  - /url: /kontakt
+          - generic [ref=e1925]:
+            - heading "Kontakt" [level=4] [ref=e1926]
+            - list [ref=e1927]:
+              - listitem [ref=e1928]:
+                - img [ref=e1929]
+                - link "info@umzugscheck.ch" [ref=e1932]:
+                  - /url: mailto:info@umzugscheck.ch
+              - listitem [ref=e1933]:
+                - img [ref=e1934]
+                - link "+41 44 567 89 00" [ref=e1936]:
+                  - /url: tel:+41445678900
+              - listitem [ref=e1937]:
+                - img [ref=e1938]
+                - generic [ref=e1941]:
+                  - text: Umzugscheck GmbH
+                  - text: Bahnhofstrasse 100
+                  - text: 8001 Zürich
+        - generic [ref=e1943]:
+          - paragraph [ref=e1944]: © 2026 Umzugscheck.ch – Alle Rechte vorbehalten
+          - generic [ref=e1945]:
+            - link "Facebook" [ref=e1946]:
+              - /url: https://facebook.com/umzugscheck
+              - img [ref=e1947]
+            - link "LinkedIn" [ref=e1949]:
+              - /url: https://linkedin.com/company/umzugscheck
+              - img [ref=e1950]
+            - link "Instagram" [ref=e1954]:
+              - /url: https://instagram.com/umzugscheck
+              - img [ref=e1955]
+          - generic [ref=e1958]:
+            - link "Datenschutz" [ref=e1959]:
+              - /url: /datenschutz
+            - link "AGB" [ref=e1960]:
+              - /url: /agb
+            - link "Impressum" [ref=e1961]:
+              - /url: /impressum
+    - navigation "Mobile Navigation" [ref=e1962]:
+      - generic [ref=e1963]:
+        - link "Start" [ref=e1964]:
+          - /url: /
+          - generic [ref=e1966]:
+            - img [ref=e1967]
+            - generic [ref=e1970]: Start
+        - link "Kosten" [ref=e1971]:
+          - /url: /umzugsrechner
+          - generic [ref=e1972]:
+            - img [ref=e1973]
+            - generic [ref=e1975]: Kosten
+        - link "Offerten" [ref=e1976]:
+          - /url: /umzugsofferten
+          - generic [ref=e1977]:
+            - img [ref=e1980]
+            - generic [ref=e1983]: Offerten
+        - link "Firmen" [ref=e1984]:
+          - /url: /umzugsfirmen
+          - generic [ref=e1985]:
+            - img [ref=e1986]
+            - generic [ref=e1990]: Firmen
+        - button "Mehr" [ref=e1991] [cursor=pointer]:
+          - generic [ref=e1992]:
+            - img [ref=e1993]
+            - generic [ref=e1994]: Mehr
+```
