@@ -24,6 +24,9 @@ const variantInfo = {
   J: { label: 'V10', title: 'Trust Ecosystem', color: 'bg-teal-600' },
   K: { label: 'V11', title: 'Minimal Proof Strip', color: 'bg-slate-600' },
   L: { label: 'V12', title: 'Swiss Standards', color: 'bg-indigo-600' },
+  M: { label: 'V13', title: 'Hero Reassurance', color: 'bg-pink-600' },
+  N: { label: 'V14', title: 'Hero Form Footer', color: 'bg-lime-600' },
+  O: { label: 'V15', title: 'Hero Eyebrow', color: 'bg-fuchsia-600' },
 };
 
 export const SocialProofABToggle = memo(function SocialProofABToggle() {
@@ -80,7 +83,7 @@ export const SocialProofABToggle = memo(function SocialProofABToggle() {
               </div>
             </ScrollArea>
             
-            <div className="p-3 border-t border-border text-[10px] text-muted-foreground space-y-0.5 max-h-28 overflow-y-auto">
+            <div className="p-3 border-t border-border text-[10px] text-muted-foreground space-y-0.5 max-h-32 overflow-y-auto">
               <div><strong>V1:</strong> Original (farbige Logos)</div>
               <div><strong>V2:</strong> Live Dashboard + Deal Cards</div>
               <div><strong>V3:</strong> Trust Hierarchy (Logos oben)</div>
@@ -93,6 +96,9 @@ export const SocialProofABToggle = memo(function SocialProofABToggle() {
               <div><strong>V10:</strong> Trust Ecosystem (Grid)</div>
               <div><strong>V11:</strong> Minimal Proof Strip (Grayscale)</div>
               <div><strong>V12:</strong> Swiss Standards (Meldepflicht)</div>
+              <div className="pt-1 border-t border-border/50 mt-1"><strong>V13:</strong> Hero Reassurance (unter CTA)</div>
+              <div><strong>V14:</strong> Hero Form Footer (in Form-Card)</div>
+              <div><strong>V15:</strong> Hero Eyebrow (über Headline)</div>
             </div>
           </motion.div>
         )}

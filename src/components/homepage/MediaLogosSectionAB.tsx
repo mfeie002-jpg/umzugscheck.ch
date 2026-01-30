@@ -1,7 +1,7 @@
 /**
  * A/B Wrapper for MediaLogosSection (Trust Bar)
  * 
- * Renders Variant A-L based on Social Proof A/B context:
+ * Renders Variant A-O based on Social Proof A/B context:
  * - V1 (A): Original - Swiss Trust Icons (Mobiliar, ASTAG, Handelsregister, Google)
  * - V2 (B): Live Dashboard - Dynamic stats + media logos
  * - V3 (C): Trust Hierarchy - Authority logos oben (NZZ, SRF, etc.)
@@ -14,6 +14,9 @@
  * - V10 (J): Trust Ecosystem - Comprehensive grid
  * - V11 (K): Minimal Proof Strip - Grayscale CSS logos
  * - V12 (L): Swiss Standards Bar - Official process integration
+ * - V13 (M): Hero Reassurance - Trust in Hero, minimal below
+ * - V14 (N): Hero Form Footer - Trust in form, minimal below
+ * - V15 (O): Hero Eyebrow - Trust above headline, complementary below
  */
 
 import { memo } from 'react';
@@ -30,6 +33,9 @@ import { MediaLogosSectionVariantI } from './MediaLogosSectionVariantI';
 import { MediaLogosSectionVariantJ } from './MediaLogosSectionVariantJ';
 import { MediaLogosSectionVariantK } from './MediaLogosSectionVariantK';
 import { MediaLogosSectionVariantL } from './MediaLogosSectionVariantL';
+import { MediaLogosSectionVariantM } from './MediaLogosSectionVariantM';
+import { MediaLogosSectionVariantN } from './MediaLogosSectionVariantN';
+import { MediaLogosSectionVariantO } from './MediaLogosSectionVariantO';
 
 export const MediaLogosSectionAB = memo(function MediaLogosSectionAB() {
   const { variant } = useSocialProofAB();
@@ -57,6 +63,12 @@ export const MediaLogosSectionAB = memo(function MediaLogosSectionAB() {
       return <MediaLogosSectionVariantK />;
     case 'L':
       return <MediaLogosSectionVariantL />;
+    case 'M':
+      return <MediaLogosSectionVariantM />;
+    case 'N':
+      return <MediaLogosSectionVariantN />;
+    case 'O':
+      return <MediaLogosSectionVariantO />;
     default:
       return <MediaLogosSection />;
   }

@@ -54,6 +54,9 @@ export const TrustRibbonAB = memo(function TrustRibbonAB(props: TrustRibbonABPro
     case 'J':
     case 'K':
     case 'L':
+    case 'M':
+    case 'N':
+    case 'O':
       return <TrustRibbonVariantF {...props} />;
     default:
       return <TrustRibbon {...mappedProps} />;
