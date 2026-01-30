@@ -3,40 +3,43 @@ import { CheckCircle, Truck, Home, Star } from "lucide-react";
 const solutions = [
   {
     title: "Der Muskel-Einsatz",
-    subtitle: "Ideal für Sparfüchse & Selbstanpacker",
+    subtitle: "Für Sparfüchse, Studenten & Einzelzimmer",
     points: [
-      "LKW & Profi-Zügelmänner",
+      "LKW + Profi-Zügelmänner",
       "Transportversicherung inklusive",
       "Sie packen & zerlegen selbst",
-      "Günstiger Stunden- oder Pauschaltarif"
+      "Sie stellen Kartons bereit"
     ],
+    priceHint: "Günstiger Stunden- oder Pauschaltarif",
     icon: Truck,
     highlight: false,
     cta: "Dafür Offerte anfragen"
   },
   {
-    title: "Der Sorglos-Umzug",
+    title: "Der Klassiker",
     subtitle: "Unser Bestseller für Familien & Paare",
     points: [
       "Schutz aller Böden & Türrahmen",
       "Fachgerechte Demontage & Montage aller Möbel",
       "Sicherer Transport & Versicherung (bis CHF 5 Mio.)",
-      "Platzierung der Möbel am Wunschort",
-      "Ihr Aufwand: Nur Kisten packen – den Rest machen wir."
+      "Platzierung der Möbel am Wunschort"
     ],
+    footerNote: "Ihr Aufwand: Nur Kisten packen – den Rest machen wir.",
+    priceHint: "Fairer Festpreis nach Besichtigung",
     icon: Home,
     highlight: true,
     cta: "Dafür Offerte anfragen"
   },
   {
     title: "Der totale Feierabend",
-    subtitle: "Für Vielbeschäftigte & Senioren",
+    subtitle: "Für Vielbeschäftigte, Senioren & grosse Häuser",
     points: [
       "Ein- & Auspackservice",
       "Lampenmontage & Endreinigung mit Abgabegarantie",
       "Entsorgung & Komplettservice",
       "All-Inclusive Angebot"
     ],
+    priceHint: "All-Inclusive Angebot",
     icon: Star,
     highlight: false,
     cta: "Dafür Offerte anfragen"
@@ -60,7 +63,7 @@ export default function SolutionsInsteadOfPackages() {
               </div>
               <h3 className="text-lg md:text-xl font-bold text-center mb-1">{s.title}</h3>
               <div className="text-sm text-muted-foreground text-center mb-3">{s.subtitle}</div>
-              <ul className="flex flex-col gap-2 mb-4 w-full max-w-xs mx-auto">
+              <ul className="flex flex-col gap-2 mb-3 w-full max-w-xs mx-auto">
                 {s.points.map((p) => (
                   <li key={p} className="flex items-start gap-2 text-sm">
                     <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
@@ -68,6 +71,14 @@ export default function SolutionsInsteadOfPackages() {
                   </li>
                 ))}
               </ul>
+              {s.footerNote && (
+                <div className="text-xs text-muted-foreground mb-3 text-center max-w-xs">
+                  {s.footerNote}
+                </div>
+              )}
+              <div className="text-xs font-semibold text-primary/90 mb-4 text-center">
+                {s.priceHint}
+              </div>
               <button className={`mt-auto px-4 py-2 rounded-lg font-semibold text-white bg-primary hover:bg-primary/90 transition-colors w-full max-w-xs ${s.highlight ? "shadow-md" : ""}`}>{s.cta}</button>
               {s.highlight && (
                 <div className="mt-2 text-xs text-primary font-semibold uppercase tracking-wide">Meistgewählt</div>
