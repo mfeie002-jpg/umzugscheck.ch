@@ -1,328 +1,311 @@
 
-# Integration Analyse: 8 Link-Worthy AI Products
+# Integration Plan: AI-Driven Innovations für Umzugscheck.ch
 
 ## Executive Summary
 
-Von den 8 vorgeschlagenen Produkten sind **5.5 bereits implementiert**. Nur 2.5 Produkte fehlen noch vollständig oder als eigenständige Tools.
+Die vorgeschlagenen 7 Innovationen (5 praktische + 2 out-of-the-box) überlappen stark mit bereits implementierten Features. **5 von 7 sind bereits zu 60-90% vorhanden** - es braucht hauptsächlich Erweiterungen und AI-Layer.
 
 ---
 
-## Status-Matrix
+## Status-Matrix: Vorgeschlagen vs. Implementiert
 
 ```
-┌─────────────────────────────────┬────────────┬────────────────────────────────┐
-│ Produkt                         │ Status     │ Implementierung                │
-├─────────────────────────────────┼────────────┼────────────────────────────────┤
-│ 1. Move Readiness Checker       │ ✅ FERTIG  │ /umzugs-checkliste-generator   │
-│                                 │            │ 675 LOC, Wizard + Timeline     │
-├─────────────────────────────────┼────────────┼────────────────────────────────┤
-│ 2. Entsorgungs-Planer           │ ❌ NEU     │ Nicht vorhanden                │
-│                                 │            │ Nur als Add-on erwähnt         │
-├─────────────────────────────────┼────────────┼────────────────────────────────┤
-│ 3. Gemeinde-Wizard              │ ⚠️ 50%     │ Logic: eumzug-ch.ts            │
-│                                 │            │ Fehlt: Standalone-Page         │
-├─────────────────────────────────┼────────────┼────────────────────────────────┤
-│ 4. Address Change Autopilot     │ ⚠️ 50%     │ Logic: swiss-post.ts           │
-│                                 │            │ Fehlt: Standalone-Page         │
-├─────────────────────────────────┼────────────┼────────────────────────────────┤
-│ 5. Halteverbot-Planer           │ ✅ FERTIG  │ /halteverbot-planer            │
-│                                 │            │ 670 LOC, 8 Städte              │
-├─────────────────────────────────┼────────────┼────────────────────────────────┤
-│ 6. Swiss Handover Protocol      │ ✅ FERTIG  │ HandoverProtocol.tsx           │
-│                                 │            │ 405 LOC, Digitale Unterschrift │
-├─────────────────────────────────┼────────────┼────────────────────────────────┤
-│ 7. Trust Score Badge + API      │ ✅ FERTIG  │ quality-badge.ts               │
-│                                 │            │ 651 LOC, Trust Triumvirate     │
-├─────────────────────────────────┼────────────┼────────────────────────────────┤
-│ 8. MovePulse / Zügel-Report     │ ✅ FERTIG  │ /daten                         │
-│                                 │            │ Index + Dashboard + Living     │
-└─────────────────────────────────┴────────────┴────────────────────────────────┘
+┌────────────────────────────────────────┬───────────┬──────────────────────────────────────┐
+│ Vorgeschlagene Innovation              │ Status    │ Bestehende Implementation            │
+├────────────────────────────────────────┼───────────┼──────────────────────────────────────┤
+│ 1. AI-Powered Relocation Trends        │ ✅ 80%    │ /daten - MovingStatisticsDashboard   │
+│    Dashboard                           │           │ MovingCostIndex, Jahresstatistik     │
+├────────────────────────────────────────┼───────────┼──────────────────────────────────────┤
+│ 2. Sustainability Score &              │ ✅ 70%    │ /entsorgungsplaner (gerade gebaut)   │
+│    Waste Prediction                    │           │ Eco-Score fehlt, Route-Optimierung   │
+├────────────────────────────────────────┼───────────┼──────────────────────────────────────┤
+│ 3. AI Sentiment & Community            │ ⚠️ 30%    │ quality-badge.ts Trust Scores        │
+│    Rating Aggregator                   │           │ NLP-Layer fehlt komplett             │
+├────────────────────────────────────────┼───────────┼──────────────────────────────────────┤
+│ 4. Predictive Cost-of-Living           │ ✅ 90%    │ LivingCostComparison.tsx             │
+│    & Integration Advisor               │           │ + useNeighborhoods.ts TCR Calculator │
+├────────────────────────────────────────┼───────────┼──────────────────────────────────────┤
+│ 5. AI-Orchestrated Partner             │ ✅ 85%    │ ai-assistant Edge Function           │
+│    Ecosystem Hub                       │           │ + Relo-OS swiss-integration Module   │
+├────────────────────────────────────────┼───────────┼──────────────────────────────────────┤
+│ 6. Neighborhood "Future-Proof"         │ ⚠️ 40%    │ neighborhood_profiles DB vorhanden   │
+│    Simulator (Out-of-box)              │           │ Keine Prognose-/VR-Visualisierung    │
+├────────────────────────────────────────┼───────────┼──────────────────────────────────────┤
+│ 7. Crowdsourced Move-Impact            │ ❌ 10%    │ Nur statische Statistik in /daten    │
+│    Tracker (Out-of-box)                │           │ Kein User-Feedback-Loop              │
+└────────────────────────────────────────┴───────────┴──────────────────────────────────────┘
 ```
 
 ---
 
-## Bereits Implementierte Produkte (Details)
+## Detailanalyse: Was fehlt noch?
 
-### 1. Move Readiness Checker ✅
+### 1. AI-Powered Relocation Trends Dashboard (80% fertig)
 
-**Datei:** `src/pages/tools/MoveReadinessChecker.tsx` (675 LOC)
+**Bereits vorhanden:**
+- `MovingStatisticsDashboard.tsx` - Jahresübersicht, saisonale Muster, Top-10 Routen
+- `MovingCostIndex.tsx` - Kosten pro Kanton mit Trend-Indikatoren
+- `MLPricePredictions.tsx` - Einfache ML-Prognose-Komponente
 
-**Features:**
-- Wizard-Interface mit PLZ-Eingabe
-- Canton-Erkennung aus PLZ
-- Personalisierte Timeline (T-30 bis T+14)
-- Household-Type-Optionen (Single/Couple/Family)
-- Zusatz-Optionen (Kinder, Haustiere, Fahrzeuge)
-- Checklisten-Engine mit Fortschritt-Tracking
-- Schema.org HowTo-Markup für SEO
+**Fehlende Features:**
+- Predictive AI-Layer (aktuell nur statische Berechnung)
+- Canton-to-Canton Flow Visualization (nur Top-10 Liste, keine Map)
+- Embeddable Widget für Städte/Medien
+- Echtzeit-Signal-Integration (Traffic, Mobility)
 
-**Route:** `/umzugs-checkliste-generator`
-
----
-
-### 5. Halteverbot & Permit Planner ✅
-
-**Datei:** `src/pages/tools/ParkingPermitPlanner.tsx` (670 LOC)
-
-**Features:**
-- 8 Städte implementiert (ZH, BS, BE, WI, LU, SG, LS, GE)
-- Deadline-Calculator mit Schweizer Feiertagen
-- Step-by-Step Anleitung pro Stadt
-- Kosten-Schätzung pro Fahrzeugtyp
-- Kontakt-URLs zu Behörden
-- Frist-Warnungen bei knapper Zeit
-
-**Route:** `/halteverbot-planer`
-
----
-
-### 6. Swiss Handover Protocol ✅
-
-**Datei:** `src/components/relo-os/HandoverProtocol.tsx` (405 LOC)
-
-**Features:**
-- Raum-für-Raum Dokumentation
-- 4 Standard-Kategorien (Reinigung, Schlüssel, Zähler, Zustand)
-- Foto-Upload Tracking
-- Digitale Unterschrift (Mieter + Vermieter)
-- Progress-Tracking mit Pflichtfeldern
-- Swiss Rental Law konform ("Wohnungsabgabe")
-
-**Integration:** Relo-OS Phase 6 (Complete)
-
----
-
-### 7. Trust Score Badge ✅
-
-**Datei:** `src/lib/quality-badge.ts` (651 LOC)
-
-**Features:**
-- 4 Badge-Levels (none, verified, premium, elite)
-- Trust Triumvirate Integration:
-  - Institutional Trust (UID, Handelsregister, ASTAG)
-  - Social Trust (Reviews, Team Photos)
-  - Process Trust (Transparenz, Garantien)
-- Grenzwerte und Berechnung
-- Verifizierbare Links (Zefix, etc.)
-
----
-
-### 8. MovePulse / Zügel-Report ✅
-
-**Dateien:**
-- `src/components/data-journalism/MovingCostIndex.tsx` (330 LOC)
-- `src/components/data-journalism/MovingStatisticsDashboard.tsx` (403 LOC)
-- `src/components/data-journalism/LivingCostComparison.tsx`
-- `src/pages/DataJournalismPage.tsx`
-
-**Route:** `/daten`
-
-**Features:**
-- Umzugskosten-Index pro Kanton (alle 26)
-- Trend-Analyse (steigend/stabil/sinkend)
-- Jahresstatistik mit Recharts-Visualisierung
-- Saisonale Muster
-- Top-10 Umzugsrouten
-- Methodik-Abschnitt für Journalisten
-
----
-
-## Fehlende Produkte (Implementierungsplan)
-
-### 2. Entsorgungs- & Sperrgut Planner ❌ (100% NEU)
-
-**Warum wichtig:**
-- Städte wie ERZ Zürich haben offene APIs
-- Jeder Umzug hat Entsorgungsbedarf
-- Linkable von Städten, Hausverwaltungen, Recyclinghöfen
-
-**Neue Dateien:**
+**Erweiterungsplan:**
 ```
-src/lib/relo-os/swiss-integration/disposal/
-├── types.ts                 # DisposalItem, DisposalCategory
-├── city-calendars.ts        # ERZ API, andere Städte
-├── item-classifier.ts       # Was gehört wohin?
-└── index.ts
+src/components/data-journalism/
+├── MovingFlowMap.tsx          # NEU: Interaktive Kanton-zu-Kanton Visualisierung
+├── PredictiveTrendsPanel.tsx  # NEU: AI-gestützte Prognosen via Edge Function
+└── EmbeddableWidget.tsx       # NEU: Iframe-ready für externe Einbettung
 
-src/pages/tools/
-└── DisposalPlanner.tsx      # /entsorgungsplaner
+supabase/functions/
+└── predict-moving-trends/     # NEU: ML Prognose mit BFS + Platform-Daten
 ```
 
-**Datenquellen:**
-- Open ERZ API (Zürich) - kostenlos
-- opendata.swiss Abfall-Datasets
-- Stadt-spezifische .ics Kalender
+---
 
-**Features MVP:**
-- PLZ-Eingabe → nächste Sammeltermine
-- Artikel-Klassifizierung (Sperrgut, Elektro, Grüngut, etc.)
-- Recyclinghof-Finder mit Karte
-- Kalender-Export (.ics)
-- Umzugs-spezifische Empfehlungen
+### 2. Sustainability Score & Waste Prediction (70% fertig)
+
+**Bereits vorhanden:**
+- `/entsorgungsplaner` - Vollständiger Disposal Planner mit 12 Kategorien
+- Item Classification System (`item-classifier.ts`)
+- City-specific Calendar Integration
+
+**Fehlende Features:**
+- "Eco-Impact Score" pro Umzug (CO2-Berechnung)
+- Route-Optimierung mit ÖV-Alternative (SBB/GTFS)
+- Trash-Partner Integration (API für ERZ etc.)
+
+**Erweiterungsplan:**
+```
+src/lib/relo-os/
+├── sustainability/
+│   ├── eco-score-calculator.ts    # NEU: CO2-Footprint Berechnung
+│   ├── green-route-optimizer.ts   # NEU: SBB + Emissions-optimierte Routen
+│   └── partner-api.ts             # NEU: ERZ/Recycling Partner Integration
+```
 
 ---
 
-### 3. Gemeinde-Wizard ⚠️ (50% NEU)
+### 3. AI Sentiment & Community Rating Aggregator (30% fertig)
 
-**Bestehendes Fundament:**
-```typescript
-// src/lib/relo-os/swiss-integration/eumzug-ch.ts
-export const initiateEUmzug = async (request: EUmzugRequest): Promise<EUmzugResponse>
-export const checkEUmzugSupport = async (postalCode: string): Promise<boolean>
-export const getRegistrationDeadline = (moveDate: Date): Date
+**Bereits vorhanden:**
+- `quality-badge.ts` - Trust Triumvirate Score System (Institutional/Social/Process)
+- Provider reviews in Database
+- Blueprint mentions "Sentiment-Analyse" but not implemented
+
+**Fehlende Features:**
+- NLP-basierte Sentiment-Analyse von Reviews
+- Social Media Monitoring (X/Twitter)
+- Fake Review Detection
+- Real-time Sentiment Dashboard
+
+**Erweiterungsplan:**
+```
+supabase/functions/
+├── analyze-review-sentiment/    # NEU: Gemini-powered NLP für Reviews
+├── social-sentiment-monitor/    # NEU: X API Integration (optional)
+└── detect-fake-reviews/         # NEU: Anomaly Detection
+
+src/lib/relo-os/
+├── sentiment/
+│   ├── types.ts                 # Sentiment scores, confidence levels
+│   ├── review-analyzer.ts       # Review NLP processing
+│   └── aggregator.ts            # Canton/Company aggregation
 ```
 
-**Fehlt: Standalone Public Page**
+---
 
+### 4. Predictive Cost-of-Living & Integration Advisor (90% fertig)
+
+**Bereits vorhanden:**
+- `LivingCostComparison.tsx` - Vollständiger Stadt-zu-Stadt Vergleich
+- `useNeighborhoods.ts` - TCR Calculator, Lifestyle Matching
+- `neighborhood_profiles` DB mit 26+ Städten
+
+**Fehlende Features:**
+- Multi-language Support für Expats
+- Job-Market Integration
+- Personalisierte Empfehlungen basierend auf User-Profil
+
+**Erweiterungsplan:**
 ```
 src/pages/tools/
-└── CommuneRegistrationWizard.tsx   # /ummeldung-wizard
-```
+└── RelocationAdvisor.tsx        # NEU: Personalisierter Standort-Berater
 
-**Features MVP:**
-- PLZ-Eingabe (alt + neu)
-- eUmzugCH-Support-Check
-- Deep-Link zur richtigen Gemeinde
-- Fallback-Anleitung für nicht-digitale Gemeinden
-- Frist-Reminder (14 Tage nach Umzug)
-- Dokumenten-Checkliste
+src/lib/relo-os/
+├── relocation-advisor/
+│   ├── job-market-data.ts       # Integration mit Jobplattformen
+│   └── expat-guide-generator.ts # AI-generierte Expat-Guides
+```
 
 ---
 
-### 4. Address Change Autopilot ⚠️ (50% NEU)
+### 5. AI-Orchestrated Partner Ecosystem Hub (85% fertig)
 
-**Bestehendes Fundament:**
-```typescript
-// src/lib/relo-os/swiss-integration/swiss-post.ts
-export const generateSwissPostLink = (request: AddressChangeRequest): SwissPostResponse
-export const scheduleSwissPostReminder = (moveDate: Date)
-export const getRecommendedOrderDate = (moveDate: Date): Date
+**Bereits vorhanden:**
+- `ai-assistant` Edge Function mit Gemini 2.5
+- Relo-OS `swiss-integration/` Module (eUmzug, Swiss Post, Disposal, Address Change)
+- 5 öffentliche Tools bereits verlinkt
+
+**Fehlende Features:**
+- Unified Chatbot mit Tool-Calling (aktuell nur Q&A)
+- Auto-fill für Government Forms
+- One-Click Partner Bookings
+
+**Erweiterungsplan:**
+```
+supabase/functions/
+└── ai-assistant/
+    └── index.ts                 # ERWEITERN: Tool-calling für Relo-OS Actions
+
+src/components/
+└── AIPartnerHub.tsx             # NEU: Unified Chat Interface mit Actions
 ```
 
-**Fehlt: Standalone Public Page + Institution Checklist**
+---
 
+### 6. Neighborhood "Future-Proof" Simulator (40% fertig)
+
+**Bereits vorhanden:**
+- `neighborhood_profiles` mit Population Growth %, Demographics
+- `useNeighborhoodComparison()` für Multi-City Vergleich
+
+**Fehlende Features:**
+- 5-10 Jahre Projektionen
+- Visual Timeline/Slider
+- VR Preview (out-of-scope für MVP)
+
+**Erweiterungsplan:**
 ```
 src/pages/tools/
-└── AddressChangeWizard.tsx   # /adressaenderung
-```
+└── NeighborhoodFutureSimulator.tsx  # NEU: Interaktive Zukunftsprojektion
 
-**Features MVP:**
-- Swiss Post Deep-Link Generator
-- Institution-Checklist:
-  - Krankenkasse
-  - Bank(en)
-  - Versicherungen
-  - Arbeitgeber
-  - Abos (SBB, Swisscom, etc.)
-  - Vereine
-- Email-Template Generator
-- Kosten-Schätzung (Swiss Post Nachsendung)
-- T-7 Reminder
-
----
-
-## Priorisierung Empfehlung
-
-| Priorität | Produkt | Aufwand | Impact |
-|-----------|---------|---------|--------|
-| **P1** | Entsorgungs-Planer | Mittel | Hoch (100% neu, stark linkable) |
-| **P2** | Address Change Wizard | Niedrig | Mittel (Logic existiert, nur Page) |
-| **P3** | Commune Registration Wizard | Niedrig | Mittel (Logic existiert, nur Page) |
-
----
-
-## Technische Implementierung
-
-### Entsorgungs-Planer (P1)
-
-**Neue Database-Tabellen:**
-```sql
-CREATE TABLE disposal_categories (
-  id TEXT PRIMARY KEY,
-  name_de TEXT NOT NULL,
-  name_fr TEXT,
-  name_it TEXT,
-  icon TEXT,
-  disposal_type TEXT -- 'collection' | 'drop_off' | 'special'
-);
-
-CREATE TABLE disposal_schedules (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  city_slug TEXT NOT NULL,
-  postal_code TEXT NOT NULL,
-  category_id TEXT REFERENCES disposal_categories(id),
-  next_collection DATE,
-  frequency TEXT, -- 'weekly' | 'biweekly' | 'monthly'
-  calendar_url TEXT
-);
-
-CREATE TABLE recycling_centers (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  city_slug TEXT NOT NULL,
-  name TEXT NOT NULL,
-  address TEXT NOT NULL,
-  lat NUMERIC,
-  lng NUMERIC,
-  opening_hours JSONB,
-  accepted_categories TEXT[],
-  website_url TEXT
-);
-```
-
-**Edge Function (optional):**
-```typescript
-// supabase/functions/erz-calendar-sync/
-// Sync mit Open ERZ API für Zürich
+src/lib/projections/
+├── demographic-model.ts         # BFS Szenarien Integration
+└── infrastructure-predictor.ts  # Traffic, ÖV Entwicklung
 ```
 
 ---
 
-### Address Change Wizard (P2)
+### 7. Crowdsourced Move-Impact Tracker (10% fertig)
 
-**Neue Dateien:**
+**Bereits vorhanden:**
+- Statische Statistiken in `/daten`
+- Keine User-Feedback-Loop
+
+**Komplett neu zu bauen:**
+- Post-Move Survey System
+- Anonymisierte Aggregation
+- "National Move Health Index"
+- Stress-Level Tracking
+
+**Erweiterungsplan:**
 ```
-src/lib/relo-os/swiss-integration/address-change/
-├── types.ts                  # Institution, ChangeRequest
-├── institutions.ts           # Standard-Institutionen-Liste
-├── email-templates.ts        # Generierte Texte
-└── index.ts
+supabase/migrations/
+└── create_move_feedback_tables.sql  # satisfaction_surveys, stress_scores
 
-src/pages/tools/
-└── AddressChangeWizard.tsx   # /adressaenderung
+src/components/relo-os/
+└── PostMoveSurvey.tsx           # NEU: Relo-OS Phase 6 Integration
+
+src/pages/
+└── MoveHealthIndex.tsx          # NEU: Öffentliches Dashboard
+
+supabase/functions/
+└── aggregate-move-health/       # Privacy-preserving Aggregation
 ```
-
-**Keine neuen DB-Tabellen nötig** - Institutionen können als statische Liste starten.
 
 ---
 
-### Commune Registration Wizard (P3)
+## Priorisierte Implementierung
 
-**Neue Dateien:**
-```
-src/pages/tools/
-└── CommuneRegistrationWizard.tsx   # /ummeldung-wizard
-```
+### Phase 1: Quick Wins (1-2 Wochen)
+| Feature | Aufwand | Impact |
+|---------|---------|--------|
+| Eco-Score für `/entsorgungsplaner` | Niedrig | Mittel |
+| Embeddable Widget für `/daten` | Niedrig | Hoch |
+| AI Assistant Tool-Calling erweitern | Mittel | Hoch |
 
-**Nutzt bestehende:**
-- `eumzug-ch.ts` für eUmzugCH-Integration
-- `canton-rules.ts` für kantonale Unterschiede
-- `canton_regulations` DB-Tabelle (bereits vorhanden)
+### Phase 2: Core AI Features (3-4 Wochen)
+| Feature | Aufwand | Impact |
+|---------|---------|--------|
+| Review Sentiment Analyzer | Mittel | Hoch |
+| Predictive Trends Edge Function | Mittel | Hoch |
+| Neighborhood Future Simulator | Mittel | Mittel |
+
+### Phase 3: Ecosystem (4-6 Wochen)
+| Feature | Aufwand | Impact |
+|---------|---------|--------|
+| Move Health Index + Post-Move Survey | Hoch | Sehr hoch |
+| Canton-to-Canton Flow Map | Mittel | Hoch |
+| Partner API Integrations (ERZ, SBB) | Hoch | Mittel |
+
+---
+
+## Technische Architektur
+
+### Datenquellen-Integration
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     DATA LAYER                               │
+├─────────────────────────────────────────────────────────────┤
+│  FREE (Already usable)                                       │
+│  ├── opendata.swiss (BFS Migration, Housing)                │
+│  ├── opentransportdata.swiss (GTFS, Public Transit)         │
+│  ├── swisstopo (Boundaries, Building Addresses)             │
+│  └── Platform-eigene anonymisierte Daten                    │
+├─────────────────────────────────────────────────────────────┤
+│  PAID (Optional Premium)                                     │
+│  ├── Swisscom Mobility Insights (~CHF 500-2000/mo)          │
+│  ├── Wüest Partner (Real Estate Data)                       │
+│  └── X/Twitter API (Social Sentiment)                       │
+└─────────────────────────────────────────────────────────────┘
+         │
+         ▼
+┌─────────────────────────────────────────────────────────────┐
+│                     AI LAYER                                 │
+├─────────────────────────────────────────────────────────────┤
+│  Edge Functions (Lovable AI Gateway)                         │
+│  ├── predict-moving-trends    → google/gemini-2.5-flash     │
+│  ├── analyze-review-sentiment → google/gemini-2.5-flash     │
+│  ├── generate-expat-guide     → google/gemini-2.5-pro       │
+│  └── aggregate-move-health    → Local aggregation           │
+└─────────────────────────────────────────────────────────────┘
+         │
+         ▼
+┌─────────────────────────────────────────────────────────────┐
+│                     OUTPUT LAYER                             │
+├─────────────────────────────────────────────────────────────┤
+│  Public Tools                                                │
+│  ├── /daten                  → Trends Dashboard              │
+│  ├── /move-pulse             → City Move Pulse               │
+│  ├── /move-health-index      → Crowdsourced Index (NEU)      │
+│  └── /neighborhood-simulator → Future-Proof Tool (NEU)       │
+├─────────────────────────────────────────────────────────────┤
+│  Embeddable                                                  │
+│  ├── /embed/trends-widget    → For Cities/Media              │
+│  ├── /embed/eco-score        → For Trash Companies           │
+│  └── /embed/trust-badge      → For Moving Companies          │
+└─────────────────────────────────────────────────────────────┘
+```
 
 ---
 
 ## Zusammenfassung
 
-**Bereits fertig (5.5/8):**
-1. Move Readiness Checker ✅
-2. Halteverbot-Planner ✅
-3. Swiss Handover Protocol ✅
-4. Trust Score Badge ✅
-5. MovePulse / Zügel-Report ✅
-6. eUmzugCH + Swiss Post Logic (50%) ⚠️
+Die Platform ist bereits **~70% des Weges** zu den vorgeschlagenen AI-Driven Innovations:
 
-**Noch zu bauen (2.5/8):**
-1. Entsorgungs- & Sperrgut Planner (100% NEU) - **P1**
-2. Address Change Wizard Page (50% NEU) - **P2**
-3. Commune Registration Wizard Page (50% NEU) - **P3**
+| Kategorie | Status | Nächster Schritt |
+|-----------|--------|------------------|
+| Trends Dashboard | ✅ 80% | +Predictive AI, +Embeddable |
+| Waste/Sustainability | ✅ 70% | +Eco-Score |
+| Sentiment Analysis | ⚠️ 30% | +NLP Edge Function |
+| Cost-of-Living | ✅ 90% | +Expat Guide |
+| Partner Hub | ✅ 85% | +Tool-Calling |
+| Future Simulator | ⚠️ 40% | +Timeline UI |
+| Move Health Index | ❌ 10% | Komplett neu |
 
-Die Plattform ist bereits **~70% des Weges** zur "Public Infrastructure" - nur noch 3 Tools fehlen, wobei 2 davon hauptsächlich UI-Pages sind (Backend-Logic existiert bereits).
+**Empfehlung:** Starte mit **Phase 1 Quick Wins** (Embeddable Widgets, Eco-Score, AI Tool-Calling) - diese haben den höchsten ROI bei geringstem Aufwand.
