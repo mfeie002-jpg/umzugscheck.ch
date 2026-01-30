@@ -97,7 +97,7 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
   };
 
   return (
-    <section className="relative min-h-[85svh] sm:min-h-[85vh] flex items-center overflow-hidden">
+    <section className="relative sm:min-h-[62vh] lg:min-h-[55vh] flex items-start sm:items-center overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0">
         <img 
@@ -112,7 +112,7 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
       </div>
 
       {/* Content */}
-      <div className="container mx-auto px-4 sm:px-6 py-8 md:py-16 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 pt-2 pb-3 sm:py-7 md:py-8 lg:py-8 relative z-10">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           
           {/* Left Column - Text & CTAs */}
@@ -234,7 +234,7 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="order-1 lg:order-2"
           >
-            <div className="bg-card rounded-2xl shadow-xl border border-border p-5 md:p-8 relative">
+            <div className="bg-card rounded-2xl shadow-xl border border-border p-4 md:p-6 relative">
               {/* Best Price Badge */}
               <div className="absolute -top-3 left-0 right-0 flex justify-center">
                 <span className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-secondary text-white text-xs font-bold rounded-full shadow-lg whitespace-nowrap">
@@ -243,7 +243,7 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
                 </span>
               </div>
 
-              <div className="space-y-5 pt-3">
+              <div className="space-y-4 pt-2">
                 {/* Form Header */}
                 <div className="text-center space-y-1">
                   <h2 className="text-xl md:text-2xl font-bold text-foreground">
@@ -319,7 +319,7 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
                 </form>
 
                 {/* Trust Badges */}
-                <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground pt-2">
+                <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground pt-1">
                   <span className="inline-flex items-center gap-1">
                     <Check className="w-3.5 h-3.5 text-primary" />
                     Kostenlos

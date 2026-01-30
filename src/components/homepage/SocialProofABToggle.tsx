@@ -1,6 +1,6 @@
 /**
  * A/B Testing Toggle for Social Proof sections
- * CONSOLIDATED: 17 Variants (A-Q)
+ * EXPANDED: 28 Variants (A-AB) - includes research-based + CRO patterns
  */
 
 import { motion, AnimatePresence } from 'framer-motion';
@@ -31,6 +31,19 @@ const variantInfo = {
   O: { label: 'V15', title: 'Local Trust', color: 'bg-green-600', group: 'psych' },
   P: { label: 'V16', title: 'Data Security', color: 'bg-stone-600', group: 'psych' },
   Q: { label: 'V17', title: 'In-Form Container', color: 'bg-rose-700', group: 'psych' },
+  // === Research-Based ===
+  R: { label: 'V18', title: 'Scannable Grid 📊', color: 'bg-indigo-600', group: 'research' },
+  S: { label: 'V19', title: 'Hierarchy Strip', color: 'bg-teal-600', group: 'research' },
+  T: { label: 'V20', title: 'Comparison Preview', color: 'bg-orange-600', group: 'research' },
+  U: { label: 'V21', title: 'Mobile-First Tabs', color: 'bg-pink-600', group: 'research' },
+  V: { label: 'V22', title: 'Trust + Pain Combo', color: 'bg-lime-600', group: 'research' },
+  // === CRO Patterns (NEW) ===
+  W: { label: 'V23', title: 'Trust Floor 🏛️', color: 'bg-blue-700', group: 'cro' },
+  X: { label: 'V24', title: 'Form Anchor', color: 'bg-emerald-800', group: 'cro' },
+  Y: { label: 'V25', title: 'Eyebrow Badge', color: 'bg-violet-700', group: 'cro' },
+  Z: { label: 'V26', title: 'Floating Cards ✨', color: 'bg-amber-800', group: 'cro' },
+  AA: { label: 'V27', title: 'Trust Ticker 📜', color: 'bg-cyan-800', group: 'cro' },
+  AB: { label: 'V28', title: 'Glasmorphism Auth', color: 'bg-slate-700', group: 'cro' },
 };
 
 type VariantKey = keyof typeof variantInfo;
@@ -45,6 +58,8 @@ export const SocialProofABToggle = memo(function SocialProofABToggle() {
     hybrid: { label: '🇨🇭 Hybrid/Swiss', variants: ['G', 'H'] as VariantKey[] },
     hero: { label: '🎯 Hero-Integrated', variants: ['I', 'J', 'K', 'L', 'M'] as VariantKey[] },
     psych: { label: '🧠 Psychological', variants: ['N', 'O', 'P', 'Q'] as VariantKey[] },
+    research: { label: '🔬 Research-Based', variants: ['R', 'S', 'T', 'U', 'V'] as VariantKey[] },
+    cro: { label: '📈 CRO Patterns', variants: ['W', 'X', 'Y', 'Z', 'AA', 'AB'] as VariantKey[] },
   };
 
   return (
@@ -64,7 +79,7 @@ export const SocialProofABToggle = memo(function SocialProofABToggle() {
             className="absolute bottom-16 left-0 bg-white dark:bg-card border-2 border-primary rounded-xl shadow-2xl w-80 pointer-events-auto overflow-hidden"
           >
             <div className="flex items-center justify-between p-3 border-b border-border">
-              <h3 className="font-bold text-sm text-foreground">🧪 Social Proof A/B (17)</h3>
+              <h3 className="font-bold text-sm text-foreground">🧪 Social Proof A/B (22)</h3>
               <button onClick={() => setIsExpanded(false)} className="p-1 rounded hover:bg-muted">
                 <X className="w-4 h-4" />
               </button>
@@ -107,7 +122,7 @@ export const SocialProofABToggle = memo(function SocialProofABToggle() {
             
             <div className="p-3 border-t border-border text-[10px] text-muted-foreground">
               <div className="font-semibold text-foreground">🎯 V9 (Card CTA Trust) = Empfohlen</div>
-              <div className="mt-1">Konsolidiert von 26 → 17 Varianten</div>
+              <div className="mt-1">28 Varianten inkl. 6 CRO Patterns (W-AB)</div>
             </div>
           </motion.div>
         )}

@@ -247,6 +247,8 @@ const NavigationComparison = lazy(() => import("./pages/NavigationComparison"));
 const V3VariantComparison = lazy(() => import("./pages/V3VariantComparison"));
 // Test pages
 const ComparisonBestPractices = lazy(() => import("./pages/test/ComparisonBestPractices"));
+const SocialProofResearchTest = lazy(() => import("./pages/test/SocialProofResearchTest"));
+const CROTrustPatternsPage = lazy(() => import("./pages/CROTrustPatternsPage"));
 // Note: RegionalOfferten is imported above with canton pages
 const FuerFirmen = lazy(() => import("./pages/FuerFirmen"));
 const ServicePlaceholder = lazy(() => import("./pages/ServicePlaceholder"));
@@ -937,6 +939,8 @@ const AppRouterContent = () => {
 
           {/* Test pages for A/B testing and research validation */}
           <Route path="/test/comparison-best-practices" element={<ComparisonBestPractices />} />
+          <Route path="/test/social-proof-research" element={<SocialProofResearchTest />} />
+          <Route path="/test/cro-trust-patterns" element={<CROTrustPatternsPage />} />
 
           <Route path="*" element={<NotFound />} />
         </AnimatedRoutes>

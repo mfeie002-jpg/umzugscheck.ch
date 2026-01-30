@@ -1,7 +1,7 @@
 /**
  * A/B Testing Context for Social Proof Sections
  * 
- * CONSOLIDATED: 17 variants (A–Q) - reduced from 26
+ * EXPANDED: 28 variants (A–AB) - includes research-based + CRO patterns
  * 
  * === Standalone Sections (below Hero) ===
  * - Version 1 (A): Original - Colored logos, 15'000+ big number, Video testimonials
@@ -13,26 +13,41 @@
  * 
  * === Hybrid/Swiss-specific ===
  * - Version 7 (G): Swiss Infrastructure - eUmzugCH, Post, ASTAG focused
- * - Version 8 (H): Minimal Proof Strip - Clean grayscale logos only (was V11/K)
+ * - Version 8 (H): Minimal Proof Strip - Clean grayscale logos only
  * 
  * === Hero-Integrated (Best 5 + Psychological) ===
- * - Version 9 (I): Card CTA Trust 🎯 - Trust directly at CTA decision point (was V26/Z)
- * - Version 10 (J): Press Trust Bar - Desktop rail + Mobile inline (was V24/X)
- * - Version 11 (K): Glassmorphism Bar - Premium overlay at hero bottom (was V23/W)
- * - Version 12 (L): Hero Left + Form - Desktop left + Mobile form footer (was V25/Y)
- * - Version 13 (M): Left Under CTA - Monochrome white logos (was V21/U)
+ * - Version 9 (I): Card CTA Trust 🎯 - Trust directly at CTA decision point
+ * - Version 10 (J): Press Trust Bar - Desktop rail + Mobile inline
+ * - Version 11 (K): Glassmorphism Bar - Premium overlay at hero bottom
+ * - Version 12 (L): Hero Left + Form - Desktop left + Mobile form footer
+ * - Version 13 (M): Left Under CTA - Monochrome white logos
  * 
  * === Psychological Triggers ===
- * - Version 14 (N): Bandwagon Effect - Live activity ("X Personen vergleichen") (was V17/Q)
- * - Version 15 (O): Local Trust - Regional badges "Top bewertet" (was V18/R)
- * - Version 16 (P): Data Security - SSL, GDPR, Swiss Made focus (was V19/S)
- * - Version 17 (Q): In-Form Container - Trust bar inside form box (was V22/V)
+ * - Version 14 (N): Bandwagon Effect - Live activity
+ * - Version 15 (O): Local Trust - Regional badges
+ * - Version 16 (P): Data Security - SSL, GDPR, Swiss Made focus
+ * - Version 17 (Q): In-Form Container - Trust bar inside form box
+ * 
+ * === Research-Based (PDF Analysis) ===
+ * - Version 18 (R): Scannable Grid - 4-card grid for quick scanning
+ * - Version 19 (S): Hierarchy Strip - Micro-testimonial + core stats
+ * - Version 20 (T): Comparison Preview - Visual price comparison table
+ * - Version 21 (U): Mobile-First Tabs - Tab interface for mobile
+ * - Version 22 (V): Trust + Pain Combo - Pain points paired with solutions
+ * 
+ * === CRO Patterns (NEW - Hero Integration Research) ===
+ * - Version 23 (W): Trust Floor / Anker - Full-width bar at hero bottom
+ * - Version 24 (X): Form Anchor - Trust integrated in form card footer
+ * - Version 25 (Y): Eyebrow Badge - Trust above main headline
+ * - Version 26 (Z): Floating Cards - UI cards overlaying hero image
+ * - Version 27 (AA): Trust Ticker - Infinite scroll marquee for mobile
+ * - Version 28 (AB): Glasmorphism Authority - Frosted glass premium bar
  */
 
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 
-// Consolidated to 17 variants
-type Variant = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q';
+// Expanded to 28 variants including CRO patterns
+type Variant = 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 'V' | 'W' | 'X' | 'Y' | 'Z' | 'AA' | 'AB';
 
 // Mapping from old variants to new (for migration)
 export const VARIANT_MIGRATION_MAP: Record<string, Variant> = {
@@ -90,7 +105,7 @@ export const useSocialProofAB = () => {
   return context;
 };
 
-const VALID_VARIANTS: Variant[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q'];
+const VALID_VARIANTS: Variant[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB'];
 
 export const SocialProofABProvider = ({ children }: { children: ReactNode }) => {
   const [variant, setVariant] = useState<Variant>(() => {
