@@ -463,6 +463,54 @@ export type Database = {
           },
         ]
       }
+      canton_regulations: {
+        Row: {
+          canton_code: string
+          canton_name: string
+          created_at: string
+          deregistration_required: boolean
+          eumzug_supported: boolean
+          eumzug_url: string | null
+          id: string
+          language: string
+          local_holidays: string[] | null
+          registration_deadline_days: number
+          special_rules: Json | null
+          updated_at: string
+          utility_providers: Json | null
+        }
+        Insert: {
+          canton_code: string
+          canton_name: string
+          created_at?: string
+          deregistration_required?: boolean
+          eumzug_supported?: boolean
+          eumzug_url?: string | null
+          id?: string
+          language?: string
+          local_holidays?: string[] | null
+          registration_deadline_days?: number
+          special_rules?: Json | null
+          updated_at?: string
+          utility_providers?: Json | null
+        }
+        Update: {
+          canton_code?: string
+          canton_name?: string
+          created_at?: string
+          deregistration_required?: boolean
+          eumzug_supported?: boolean
+          eumzug_url?: string | null
+          id?: string
+          language?: string
+          local_holidays?: string[] | null
+          registration_deadline_days?: number
+          special_rules?: Json | null
+          updated_at?: string
+          utility_providers?: Json | null
+        }
+        Relationships: []
+      }
       case_timeline_events: {
         Row: {
           case_id: string
@@ -3172,6 +3220,66 @@ export type Database = {
           started_at?: string | null
           status?: string | null
           sync_type?: string | null
+        }
+        Relationships: []
+      }
+      parking_permit_rules: {
+        Row: {
+          application_url: string | null
+          canton_code: string
+          city_name: string
+          city_slug: string
+          contact_url: string | null
+          cost_chf: number | null
+          created_at: string
+          email: string | null
+          id: string
+          instructions: Json | null
+          lead_time_days: number
+          max_duration_hours: number | null
+          phone: string | null
+          requirements: Json | null
+          requires_permit: boolean
+          tips: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          application_url?: string | null
+          canton_code: string
+          city_name: string
+          city_slug: string
+          contact_url?: string | null
+          cost_chf?: number | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          instructions?: Json | null
+          lead_time_days?: number
+          max_duration_hours?: number | null
+          phone?: string | null
+          requirements?: Json | null
+          requires_permit?: boolean
+          tips?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          application_url?: string | null
+          canton_code?: string
+          city_name?: string
+          city_slug?: string
+          contact_url?: string | null
+          cost_chf?: number | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          instructions?: Json | null
+          lead_time_days?: number
+          max_duration_hours?: number | null
+          phone?: string | null
+          requirements?: Json | null
+          requires_permit?: boolean
+          tips?: string[] | null
+          updated_at?: string
         }
         Relationships: []
       }
