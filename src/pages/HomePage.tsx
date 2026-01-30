@@ -28,6 +28,10 @@ import { ForProvidersSection } from "@/components/home/ForProvidersSection";
 export const HomePage = () => {
   useFullAnalytics();
 
+  // Dynamisch importieren, um SSR/Code-Splitting zu ermöglichen
+  const KundenstimmeSpotlight = require("@/components/trust/KundenstimmeSpotlight").default;
+  const StrategicTrustSection = require("@/components/StrategicTrustSection").default;
+
   const faqItems = [
     {
       question: "Wie funktioniert umzugscheck.ch?",
@@ -157,6 +161,7 @@ export const HomePage = () => {
         companies={topCompanies}
       />
 
+
       {/* Breadcrumb for SEO */}
       <div className="bg-background border-b border-border">
         <div className="container mx-auto px-4 py-2">
@@ -165,6 +170,7 @@ export const HomePage = () => {
           </nav>
         </div>
       </div>
+
 
       {/* Hero Section */}
       <StandardHero
@@ -180,6 +186,18 @@ export const HomePage = () => {
           <LiveSignal />
         </div>
       </StandardHero>
+
+      {/* Neue strategische Trust Section */}
+      <StrategicTrustSection />
+
+      {/* Hybrid Trust Bar: Schweizer Standard */}
+      {require("@/components/trust/HybridTrustBar").default()}
+
+      {/* Kundenstimme Spotlight (Dr. Keller) */}
+      <KundenstimmeSpotlight />
+
+      {/* Lösungen statt Pakete: Entlastungs-Stufen */}
+      {require("@/components/trust/SolutionsInsteadOfPackages").default()}
 
       {/* Services with Rich Content - MOVED UP (Priority #1 after hero) */}
       <section className="py-16 bg-gradient-to-br from-happy-yellow/10 via-happy-pink/10 to-happy-purple/10">

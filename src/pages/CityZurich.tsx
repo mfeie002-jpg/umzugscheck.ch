@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import UmzugsprozessInfo from "@/components/UmzugsprozessInfo";
+import ZuerichUmzugsdetails from "@/components/ZuerichUmzugsdetails";
 import { ArrowRight, MapPin, Phone, Star, Truck, Clock, Shield, Users, CheckCircle, Building, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -216,6 +218,7 @@ const CityZurich = () => {
         </div>
       </section>
 
+
       {/* Services Section */}
       <section className="py-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -241,6 +244,12 @@ const CityZurich = () => {
           </div>
         </div>
       </section>
+
+      {/* Umzugsprozess Schweiz (allgemein) */}
+      <UmzugsprozessInfo />
+
+      {/* Zürich-spezifische Umzugsdetails */}
+      <ZuerichUmzugsdetails />
 
       {/* Testimonials Section */}
       <section className="py-20 bg-muted/30">
