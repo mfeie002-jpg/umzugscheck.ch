@@ -77,7 +77,7 @@ const TwintBadge = memo(function TwintBadge() {
 
 export const MediaLogosSection = memo(function MediaLogosSection() {
   return (
-    <section className="py-5 md:py-8 bg-[#F8F9FA] dark:bg-muted/30 border-y border-border/30">
+    <section className="py-5 md:py-8 bg-muted/20 dark:bg-muted/30 border-y border-border/30">
       <div className="container max-w-4xl px-4">
         {/* Header - klein und dezent */}
         <p className="text-center text-[10px] md:text-xs text-muted-foreground uppercase tracking-widest mb-4 md:mb-6">
