@@ -1,67 +1,65 @@
 /**
  * MediaLogosSection VARIANT G - "Swiss Infrastructure"
  * 
- * VERSION 7: Focus on official Swiss infrastructure partners
- * - eUmzugCH (Official state platform)
- * - Die Post (Mail forwarding)
- * - ASTAG (Industry association)
- * - Swiss Made Software
- * 
- * Based on feedback: "Infrastructure & Quality logos"
- * These are the "blue giants" that Swiss users trust implicitly.
+ * VERSION 8: Real logos and authentic partner descriptions
+ * - eUmzugCH (Official state platform for municipality registration)
+ * - Die Post (Mail forwarding service)
+ * - ASTAG (Swiss transport industry association)
+ * - Swiss Label (Quality certification)
  */
 
-import { memo } from "react";
+import { memo, useState } from "react";
 import { motion } from "framer-motion";
 import { 
-  Building2, 
-  Mail, 
-  Truck, 
-  Code2,
   ExternalLink,
   Shield,
   CheckCircle2
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const infrastructurePartners = [
   {
     id: "eumzugch",
     name: "eUmzugCH",
-    description: "Offizielle Behörden-Umzugsmeldung",
-    icon: Building2,
+    tagline: "Offizielle Umzugsmeldung",
+    description: "Die digitale Einwohnerkontrolle der Schweiz. Melden Sie Ihren Umzug direkt bei Ihrer Gemeinde an.",
+    logo: "/logos/trust/eumzugch.svg",
     url: "https://www.eumzug.swiss",
-    color: "text-red-600",
-    bgColor: "bg-red-50 dark:bg-red-950/20",
-    borderColor: "border-red-200 dark:border-red-800/30",
+    bgGradient: "from-red-50 to-white dark:from-red-950/30 dark:to-background",
+    accentColor: "text-red-600 dark:text-red-400",
+    borderColor: "border-red-200/60 dark:border-red-800/40",
   },
   {
     id: "post",
-    name: "Die Post",
-    description: "Nachsendeauftrag & Adressänderung",
-    icon: Mail,
+    name: "Die Schweizerische Post",
+    tagline: "Nachsendeauftrag",
+    description: "Ihr Briefkasten zieht mit. Automatische Weiterleitung aller Sendungen an Ihre neue Adresse.",
+    logo: "/logos/trust/die-post.svg",
     url: "https://www.post.ch/de/briefe-versenden/nachsendeauftrag",
-    color: "text-yellow-600",
-    bgColor: "bg-yellow-50 dark:bg-yellow-950/20",
-    borderColor: "border-yellow-200 dark:border-yellow-800/30",
+    bgGradient: "from-yellow-50 to-white dark:from-yellow-950/30 dark:to-background",
+    accentColor: "text-yellow-600 dark:text-yellow-400",
+    borderColor: "border-yellow-200/60 dark:border-yellow-800/40",
   },
   {
     id: "astag",
     name: "ASTAG",
-    description: "Schweizerischer Nutzfahrzeugverband",
-    icon: Truck,
+    tagline: "Branchenverband",
+    description: "Schweizerischer Nutzfahrzeugverband. Nur geprüfte, versicherte Umzugsfirmen.",
+    logo: "/logos/trust/astag.svg",
     url: "https://www.astag.ch",
-    color: "text-blue-600",
-    bgColor: "bg-blue-50 dark:bg-blue-950/20",
-    borderColor: "border-blue-200 dark:border-blue-800/30",
+    bgGradient: "from-blue-50 to-white dark:from-blue-950/30 dark:to-background",
+    accentColor: "text-blue-600 dark:text-blue-400",
+    borderColor: "border-blue-200/60 dark:border-blue-800/40",
   },
   {
-    id: "swissmade",
-    name: "Swiss Made",
-    description: "Entwickelt in der Schweiz",
-    icon: Code2,
-    url: "https://www.swissmadesoftware.org",
-    color: "text-primary",
-    bgColor: "bg-primary/5",
+    id: "swisslabel",
+    name: "Swiss Label",
+    tagline: "Schweizer Qualität",
+    description: "Gütesiegel für Schweizer Produkte und Dienstleistungen. Qualität, der Sie vertrauen können.",
+    logo: "/logos/trust/swiss-label.svg",
+    url: "https://www.swisslabel.ch",
+    bgGradient: "from-primary/5 to-white dark:from-primary/10 dark:to-background",
+    accentColor: "text-primary",
     borderColor: "border-primary/20",
   },
 ];
@@ -71,9 +69,73 @@ const qualityPromises = [
   { icon: CheckCircle2, text: "Handelsregister verifiziert" },
 ];
 
+interface PartnerCardProps {
+  partner: typeof infrastructurePartners[0];
+  index: number;
+}
+
+const PartnerCard = memo(function PartnerCard({ partner, index }: PartnerCardProps) {
+  const [imgError, setImgError] = useState(false);
+
+  return (
+    <motion.a
+      href={partner.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      initial={{ opacity: 0, y: 15 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: 0.08 * index, duration: 0.4 }}
+      className={cn(
+        "relative flex flex-col p-4 sm:p-5 rounded-xl",
+        "bg-gradient-to-br", partner.bgGradient,
+        "border", partner.borderColor,
+        "hover:shadow-lg hover:scale-[1.02] transition-all duration-300 group"
+      )}
+    >
+      {/* Logo */}
+      <div className="flex items-center gap-3 mb-3">
+        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-lg bg-white dark:bg-card shadow-sm flex items-center justify-center p-2 group-hover:shadow-md transition-shadow">
+          {!imgError ? (
+            <img
+              src={partner.logo}
+              alt={partner.name}
+              className="w-full h-full object-contain"
+              onError={() => setImgError(true)}
+            />
+          ) : (
+            <span className={cn("font-bold text-sm", partner.accentColor)}>
+              {partner.name.charAt(0)}
+            </span>
+          )}
+        </div>
+        <div className="flex-1 min-w-0">
+          <h4 className={cn("font-semibold text-sm sm:text-base truncate", partner.accentColor)}>
+            {partner.name}
+          </h4>
+          <p className="text-xs text-muted-foreground">
+            {partner.tagline}
+          </p>
+        </div>
+      </div>
+
+      {/* Description */}
+      <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed flex-1">
+        {partner.description}
+      </p>
+
+      {/* External link indicator */}
+      <div className="flex items-center gap-1 mt-3 text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
+        <span>Mehr erfahren</span>
+        <ExternalLink className="w-3 h-3" />
+      </div>
+    </motion.a>
+  );
+});
+
 export const MediaLogosSectionVariantG = memo(function MediaLogosSectionVariantG() {
   return (
-    <section className="py-6 md:py-8 bg-gradient-to-b from-muted/40 to-background border-b border-border/30">
+    <section className="py-8 md:py-12 bg-gradient-to-b from-muted/50 to-background border-b border-border/30">
       <div className="container max-w-5xl px-4">
         
         {/* Header */}
@@ -81,73 +143,37 @@ export const MediaLogosSectionVariantG = memo(function MediaLogosSectionVariantG
           initial={{ opacity: 0, y: -10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-5"
+          className="text-center mb-6 md:mb-8"
         >
-          <h3 className="text-sm font-semibold text-foreground mb-1">
+          <h3 className="text-base sm:text-lg font-bold text-foreground mb-2">
             🇨🇭 Integriert in Schweizer Infrastruktur
           </h3>
-          <p className="text-xs text-muted-foreground">
-            Kompatibel mit offiziellen Behörden- und Logistikprozessen
+          <p className="text-sm text-muted-foreground max-w-lg mx-auto">
+            Nahtlose Anbindung an offizielle Behörden- und Logistikprozesse der Schweiz
           </p>
         </motion.div>
 
         {/* Infrastructure Partners Grid */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5"
-        >
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
           {infrastructurePartners.map((partner, index) => (
-            <motion.a
-              key={partner.id}
-              href={partner.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.05 * index }}
-              className={`relative flex flex-col items-center p-4 rounded-xl 
-                         ${partner.bgColor} border ${partner.borderColor}
-                         hover:shadow-md transition-all duration-300 group`}
-            >
-              {/* Icon */}
-              <div className={`w-10 h-10 rounded-full bg-card flex items-center justify-center mb-2
-                              group-hover:scale-110 transition-transform shadow-sm`}>
-                <partner.icon className={`w-5 h-5 ${partner.color}`} />
-              </div>
-              
-              {/* Text */}
-              <span className={`text-sm font-semibold ${partner.color} text-center`}>
-                {partner.name}
-              </span>
-              <span className="text-[10px] text-muted-foreground text-center leading-tight mt-0.5">
-                {partner.description}
-              </span>
-              
-              {/* External link indicator */}
-              <ExternalLink className="absolute top-2 right-2 w-3 h-3 text-muted-foreground 
-                                       opacity-0 group-hover:opacity-100 transition-opacity" />
-            </motion.a>
+            <PartnerCard key={partner.id} partner={partner} index={index} />
           ))}
-        </motion.div>
+        </div>
 
         {/* Quality Promises Strip */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-          className="flex flex-wrap items-center justify-center gap-4 pt-4 border-t border-border/30"
+          transition={{ delay: 0.4 }}
+          className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 pt-5 border-t border-border/40"
         >
           {qualityPromises.map((promise, idx) => (
             <div 
               key={idx}
-              className="inline-flex items-center gap-1.5 text-xs text-muted-foreground"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm text-muted-foreground"
             >
-              <promise.icon className="w-3.5 h-3.5 text-emerald-500" />
+              <promise.icon className="w-4 h-4 text-emerald-500" />
               <span>{promise.text}</span>
             </div>
           ))}
