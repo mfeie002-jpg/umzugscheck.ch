@@ -208,6 +208,11 @@ const Footer = () => {
                   Lebensdauer-Rechner
                 </Link>
               </li>
+              <li>
+                <Link to="/pendel-rechner" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
+                  Pendel-Kapital-Rechner
+                </Link>
+              </li>
             </ul>
           </div>
 
