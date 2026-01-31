@@ -144,7 +144,7 @@ export const GOLDEN_NAV_SECTIONS: NavSection[] = [
     items: [
       { icon: Sparkles, title: "So funktioniert Umzugscheck", description: "Dein Weg zur besten Offerte", href: "/so-funktioniert" },
       { icon: Star, title: "Kundenbewertungen", description: "Echte Erfahrungen lesen", href: "/bewertungen" },
-      { icon: Award, title: "Geprüfte Umzugspartner", description: "Qualität die du spürst", href: "/qualitaet" },
+      { icon: Award, title: "Move Health Index", description: "Umzugszufriedenheit nach Kanton", href: "/move-health-index", badge: "Neu", badgeColor: "from-violet-500 to-purple-500" },
       { icon: Users, title: "Über uns", description: "Das Team hinter Umzugscheck", href: "/ueber-uns" },
       { icon: HelpCircle, title: "FAQ & Hilfe", description: "Antworten auf deine Fragen", href: "/faq" },
     ],
