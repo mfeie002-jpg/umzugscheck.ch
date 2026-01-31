@@ -117,21 +117,23 @@ export function ReloadDiagnostics() {
     }
 
     // ---------- Patch scrollTo to catch programmatic scrolls ----------
-    // SKIP patching in capture/render mode to avoid breaking screenshot stability
-    const skipScrollPatch = (() => {
-      try {
-        const p = new URLSearchParams(window.location.search);
-        return p.get("uc_capture") === "1" || p.get("uc_render") === "1";
-      } catch { return false; }
-    })();
+    // SKIP patching entirely - causes conflicts with framer-motion's scroll animations
+    // Framer-motion internally uses scrollTo for scroll-linked animations and
+    // patching it can break smooth scrolling behavior and cause console spam.
+    // If scroll debugging is needed, enable temporarily by setting this to false:
+    const skipScrollPatch = true;
     
     if (!skipScrollPatch) {
       try {
         const origScrollTo = window.scrollTo.bind(window);
         (window as any).scrollTo = (...args: any[]) => {
           const scrollY = typeof args[0] === "number" ? args[0] : (args[0] as ScrollToOptions)?.top;
-          // Only log scroll-to-top (likely culprit for unwanted jumps)
-          if (scrollY === 0 || scrollY === undefined) {
+          // Check if call originates from framer-motion (skip logging)
+          const stack = new Error().stack || "";
+          const isFramerMotion = stack.includes("framer") || stack.includes("motion");
+          
+          // Only log scroll-to-top from non-framer sources
+          if ((scrollY === 0 || scrollY === undefined) && !isFramerMotion) {
             // eslint-disable-next-line no-console
             console.warn(
               "%c[ReloadDiagnostics] window.scrollTo(0) detected",
@@ -139,7 +141,7 @@ export function ReloadDiagnostics() {
               { args, href: window.location.href }
             );
             // eslint-disable-next-line no-console
-            console.warn(new Error("scrollTo stack").stack);
+            console.warn(stack);
           }
           return origScrollTo(...(args as [any]));
         };
