@@ -3397,6 +3397,60 @@ export type Database = {
         }
         Relationships: []
       }
+      paid_launch_checklist: {
+        Row: {
+          acceptance_criteria: string[] | null
+          blocked_reason: string | null
+          category: string
+          change_description: string | null
+          completed_at: string | null
+          complexity: string | null
+          created_at: string | null
+          goal: string | null
+          id: string
+          owner: string | null
+          priority: string
+          site: string
+          status: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          acceptance_criteria?: string[] | null
+          blocked_reason?: string | null
+          category: string
+          change_description?: string | null
+          completed_at?: string | null
+          complexity?: string | null
+          created_at?: string | null
+          goal?: string | null
+          id?: string
+          owner?: string | null
+          priority: string
+          site: string
+          status?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          acceptance_criteria?: string[] | null
+          blocked_reason?: string | null
+          category?: string
+          change_description?: string | null
+          completed_at?: string | null
+          complexity?: string | null
+          created_at?: string | null
+          goal?: string | null
+          id?: string
+          owner?: string | null
+          priority?: string
+          site?: string
+          status?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       paid_media_alerts: {
         Row: {
           acknowledged_at: string | null
