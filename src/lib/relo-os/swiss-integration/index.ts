@@ -7,8 +7,9 @@
  * - Serafe/Billag notification
  * - Move Readiness Checker
  * - Parking Permit Planner
- * - Disposal Planning (NEW)
- * - Address Change Management (NEW)
+ * - Disposal Planning
+ * - Address Change Management
+ * - Lebensdauertabelle (Fixture Depreciation) - NEW
  * 
  * @see docs/VISION_COMPLETE.md
  */
@@ -28,6 +29,9 @@ export * from './disposal';
 
 // Address Change Management (Phase 1 Link-Magnet)
 export * from './address-change';
+
+// Lebensdauertabelle - Fixture Depreciation Engine (Phase 6 Handover)
+export * from './lebensdauer';
 
 // Serafe integration (skeleton)
 export const generateSerafeNotificationLink = (): string => {

@@ -1177,6 +1177,51 @@ export type Database = {
         }
         Relationships: []
       }
+      fixture_lifespans: {
+        Row: {
+          category: Database["public"]["Enums"]["fixture_category"]
+          created_at: string
+          id: string
+          is_active: boolean
+          item_de: string
+          item_fr: string | null
+          item_it: string | null
+          lifespan_years: number
+          notes_de: string | null
+          notes_fr: string | null
+          source: string
+          updated_at: string
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["fixture_category"]
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          item_de: string
+          item_fr?: string | null
+          item_it?: string | null
+          lifespan_years: number
+          notes_de?: string | null
+          notes_fr?: string | null
+          source?: string
+          updated_at?: string
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["fixture_category"]
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          item_de?: string
+          item_fr?: string | null
+          item_it?: string | null
+          lifespan_years?: number
+          notes_de?: string | null
+          notes_fr?: string | null
+          source?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       flow_alert_settings: {
         Row: {
           alert_type: string
@@ -6122,6 +6167,16 @@ export type Database = {
     Enums: {
       account_status: "active" | "inactive"
       app_role: "admin" | "user"
+      fixture_category:
+        | "walls"
+        | "floors"
+        | "kitchen"
+        | "bathroom"
+        | "doors_windows"
+        | "electrical"
+        | "heating"
+        | "exterior"
+        | "miscellaneous"
       move_project_status:
         | "route"
         | "inventory"
@@ -6260,6 +6315,17 @@ export const Constants = {
     Enums: {
       account_status: ["active", "inactive"],
       app_role: ["admin", "user"],
+      fixture_category: [
+        "walls",
+        "floors",
+        "kitchen",
+        "bathroom",
+        "doors_windows",
+        "electrical",
+        "heating",
+        "exterior",
+        "miscellaneous",
+      ],
       move_project_status: [
         "route",
         "inventory",

@@ -256,6 +256,7 @@ const SocialProofResearchTest = lazy(() => import("./pages/test/SocialProofResea
 const DisposalPlanner = lazy(() => import("./pages/tools/DisposalPlanner"));
 const AddressChangeWizard = lazy(() => import("./pages/tools/AddressChangeWizard"));
 const CommuneRegistrationWizard = lazy(() => import("./pages/tools/CommuneRegistrationWizard"));
+const LebensdauerRechnerPage = lazy(() => import("./pages/LebensdauerRechnerPage"));
 const CROTrustPatternsPage = lazy(() => import("./pages/CROTrustPatternsPage"));
 // Note: RegionalOfferten is imported above with canton pages
 const FuerFirmen = lazy(() => import("./pages/FuerFirmen"));
@@ -878,6 +879,7 @@ const AppRouterContent = () => {
           <Route path="/entsorgungsplaner" element={<DisposalPlanner />} />
           <Route path="/adressaenderung" element={<AddressChangeWizard />} />
           <Route path="/ummeldung-wizard" element={<CommuneRegistrationWizard />} />
+          <Route path="/lebensdauer-rechner" element={<LebensdauerRechnerPage />} />
           <Route path="/services/:serviceType" element={<ServiceOptimized />} />
           {/* Services V2 - Unified Calculator Approach */}
           <Route path="/services/reinigung" element={<ReinigungV2 />} />

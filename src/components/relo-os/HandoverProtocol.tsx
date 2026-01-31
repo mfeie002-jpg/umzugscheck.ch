@@ -2,7 +2,7 @@
  * Phase 6: Swiss Handover Protocol
  * 
  * Swiss-standard apartment handover with room-specific photo documentation,
- * digital signatures, and status tracking.
+ * digital signatures, Lebensdauer damage calculation, and status tracking.
  * Aligned with Swiss rental law requirements for "Wohnungsabgabe".
  */
 
@@ -26,13 +26,19 @@ import {
   ChevronUp,
   FileCheck,
   Award,
+  Calculator,
+  Plus,
+  Minus,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Textarea } from '@/components/ui/textarea';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
+import { LebensdauerCalculator } from './LebensdauerCalculator';
+import type { DamageAssessment } from '@/lib/relo-os/swiss-integration/lebensdauer';
 
 export interface HandoverRoom {
   id: string;
@@ -148,6 +154,21 @@ export const HandoverProtocol = memo(function HandoverProtocol({
 }: HandoverProtocolProps) {
   const [expandedRoom, setExpandedRoom] = useState<string | null>(null);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
+  const [damageAssessments, setDamageAssessments] = useState<DamageAssessment[]>([]);
+  const [showDamageCalculator, setShowDamageCalculator] = useState(false);
+
+  // Handle damage assessment from Lebensdauer calculator
+  const handleDamageAssessment = (assessment: DamageAssessment) => {
+    setDamageAssessments(prev => [...prev, assessment]);
+    setShowDamageCalculator(false);
+  };
+
+  const removeDamageAssessment = (index: number) => {
+    setDamageAssessments(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const totalTenantLiability = damageAssessments.reduce((sum, a) => sum + a.tenantPaysCHF, 0);
+  const totalLandlordShare = damageAssessments.reduce((sum, a) => sum + a.landlordPaysCHF, 0);
 
   // Calculate overall progress
   const totalItems = categories.reduce((sum, cat) => sum + cat.items.length, 0);
@@ -328,6 +349,92 @@ export const HandoverProtocol = memo(function HandoverProtocol({
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* Damage Assessment Section (Lebensdauertabelle Integration) */}
+          <div className="space-y-3 p-4 border rounded-lg bg-muted/30">
+            <div className="flex items-center justify-between">
+              <h4 className="font-medium text-sm flex items-center gap-2">
+                <Calculator className="h-4 w-4" />
+                Schäden & Abzüge (Lebensdauertabelle)
+              </h4>
+              <Dialog open={showDamageCalculator} onOpenChange={setShowDamageCalculator}>
+                <DialogTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    <Plus className="h-3 w-3 mr-1" />
+                    Schaden hinzufügen
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>Schaden berechnen</DialogTitle>
+                  </DialogHeader>
+                  <LebensdauerCalculator 
+                    onAssessmentComplete={handleDamageAssessment}
+                    compact
+                  />
+                </DialogContent>
+              </Dialog>
+            </div>
+
+            {damageAssessments.length === 0 ? (
+              <div className="text-center py-4 text-sm text-muted-foreground">
+                <Calculator className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                <p>Keine Schäden erfasst</p>
+                <p className="text-xs">Nutzen Sie den Lebensdauer-Rechner für transparente Abzüge</p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {damageAssessments.map((assessment, index) => (
+                  <div key={index} className="flex items-center justify-between p-2 bg-background rounded border">
+                    <div className="flex-1">
+                      <div className="font-medium text-sm">{assessment.fixtureName}</div>
+                      <div className="text-xs text-muted-foreground">
+                        {assessment.depreciation.ageYears} Jahre alt • {assessment.depreciation.residualPercent}% Restwert
+                      </div>
+                    </div>
+                    <div className="text-right mr-2">
+                      {assessment.replacementCostCHF > 0 ? (
+                        <>
+                          <div className="font-semibold text-sm text-primary">
+                            CHF {assessment.tenantPaysCHF}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            Mieter zahlt
+                          </div>
+                        </>
+                      ) : (
+                        <Badge variant={assessment.depreciation.isFullyAmortized ? 'default' : 'secondary'}>
+                          {assessment.depreciation.isFullyAmortized ? 'Kein Abzug' : `${assessment.depreciation.residualPercent}%`}
+                        </Badge>
+                      )}
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6"
+                      onClick={() => removeDamageAssessment(index)}
+                    >
+                      <Minus className="h-3 w-3" />
+                    </Button>
+                  </div>
+                ))}
+
+                {/* Totals */}
+                {totalTenantLiability > 0 && (
+                  <div className="pt-2 border-t mt-2">
+                    <div className="flex justify-between text-sm font-semibold">
+                      <span>Total Mieter-Abzug:</span>
+                      <span className="text-primary">CHF {totalTenantLiability.toLocaleString('de-CH')}</span>
+                    </div>
+                    <div className="flex justify-between text-xs text-muted-foreground">
+                      <span>Vermieter trägt:</span>
+                      <span>CHF {totalLandlordShare.toLocaleString('de-CH')}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Signatures */}
