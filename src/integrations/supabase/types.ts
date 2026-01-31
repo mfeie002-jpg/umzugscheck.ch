@@ -2770,6 +2770,57 @@ export type Database = {
         }
         Relationships: []
       }
+      move_health_canton_scores: {
+        Row: {
+          admin_score: number | null
+          avg_stress_level: number | null
+          canton_code: string
+          canton_name: string
+          created_at: string
+          grade: string | null
+          id: string
+          last_updated: string | null
+          moving_day_score: number | null
+          overall_health_score: number | null
+          planning_score: number | null
+          recommend_rate: number | null
+          score_trend: number | null
+          total_responses: number | null
+        }
+        Insert: {
+          admin_score?: number | null
+          avg_stress_level?: number | null
+          canton_code: string
+          canton_name: string
+          created_at?: string
+          grade?: string | null
+          id?: string
+          last_updated?: string | null
+          moving_day_score?: number | null
+          overall_health_score?: number | null
+          planning_score?: number | null
+          recommend_rate?: number | null
+          score_trend?: number | null
+          total_responses?: number | null
+        }
+        Update: {
+          admin_score?: number | null
+          avg_stress_level?: number | null
+          canton_code?: string
+          canton_name?: string
+          created_at?: string
+          grade?: string | null
+          id?: string
+          last_updated?: string | null
+          moving_day_score?: number | null
+          overall_health_score?: number | null
+          planning_score?: number | null
+          recommend_rate?: number | null
+          score_trend?: number | null
+          total_responses?: number | null
+        }
+        Relationships: []
+      }
       move_health_index: {
         Row: {
           admin_score: number | null
@@ -2823,6 +2874,101 @@ export type Database = {
           welcome_score?: number | null
         }
         Relationships: []
+      }
+      move_health_survey_responses: {
+        Row: {
+          address_change_ease: number | null
+          admin_hurdles_score: number | null
+          care_with_items_score: number | null
+          created_at: string
+          finding_company_ease: number | null
+          from_canton: string
+          health_score: number | null
+          id: string
+          improvement_suggestions: string | null
+          ip_hash: string | null
+          lead_id: string | null
+          move_date: string
+          move_type: string | null
+          moving_day_score: number | null
+          overall_score: number | null
+          planning_ease_score: number | null
+          positive_feedback: string | null
+          professionalism_score: number | null
+          punctuality_score: number | null
+          quote_comparison_ease: number | null
+          registration_ease: number | null
+          stress_level: number | null
+          to_canton: string
+          utility_transfer_ease: number | null
+          verified: boolean | null
+          would_recommend: boolean | null
+        }
+        Insert: {
+          address_change_ease?: number | null
+          admin_hurdles_score?: number | null
+          care_with_items_score?: number | null
+          created_at?: string
+          finding_company_ease?: number | null
+          from_canton: string
+          health_score?: number | null
+          id?: string
+          improvement_suggestions?: string | null
+          ip_hash?: string | null
+          lead_id?: string | null
+          move_date: string
+          move_type?: string | null
+          moving_day_score?: number | null
+          overall_score?: number | null
+          planning_ease_score?: number | null
+          positive_feedback?: string | null
+          professionalism_score?: number | null
+          punctuality_score?: number | null
+          quote_comparison_ease?: number | null
+          registration_ease?: number | null
+          stress_level?: number | null
+          to_canton: string
+          utility_transfer_ease?: number | null
+          verified?: boolean | null
+          would_recommend?: boolean | null
+        }
+        Update: {
+          address_change_ease?: number | null
+          admin_hurdles_score?: number | null
+          care_with_items_score?: number | null
+          created_at?: string
+          finding_company_ease?: number | null
+          from_canton?: string
+          health_score?: number | null
+          id?: string
+          improvement_suggestions?: string | null
+          ip_hash?: string | null
+          lead_id?: string | null
+          move_date?: string
+          move_type?: string | null
+          moving_day_score?: number | null
+          overall_score?: number | null
+          planning_ease_score?: number | null
+          positive_feedback?: string | null
+          professionalism_score?: number | null
+          punctuality_score?: number | null
+          quote_comparison_ease?: number | null
+          registration_ease?: number | null
+          stress_level?: number | null
+          to_canton?: string
+          utility_transfer_ease?: number | null
+          verified?: boolean | null
+          would_recommend?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "move_health_survey_responses_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       move_projects: {
         Row: {

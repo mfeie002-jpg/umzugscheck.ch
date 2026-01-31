@@ -44,13 +44,29 @@ function useHealthIndex() {
   return useQuery({
     queryKey: ["move-health-index"],
     queryFn: async () => {
+      // Query the new move_health_canton_scores table
       const { data, error } = await supabase
-        .from("move_health_index")
+        .from("move_health_canton_scores")
         .select("*")
         .order("overall_health_score", { ascending: false, nullsFirst: false });
 
       if (error) throw error;
-      return data as CantonHealthData[];
+      
+      // Map to expected interface format
+      return (data || []).map(row => ({
+        canton_code: row.canton_code,
+        canton_name: row.canton_name,
+        overall_health_score: row.overall_health_score,
+        satisfaction_index: row.recommend_rate,
+        stress_index: row.avg_stress_level ? (row.avg_stress_level / 5) * 100 : null,
+        planning_score: row.planning_score,
+        company_score: row.moving_day_score,
+        admin_score: row.admin_score,
+        welcome_score: null,
+        total_responses: row.total_responses,
+        damage_rate_percent: null,
+        trend_vs_last_quarter: row.score_trend > 0 ? "improving" : row.score_trend < 0 ? "declining" : "stable",
+      })) as CantonHealthData[];
     },
   });
 }
@@ -313,7 +329,7 @@ export default function MoveHealthIndex() {
               Ihre Bewertung ist anonym und dauert nur 2 Minuten.
             </p>
             <a 
-              href="/umzugsofferten" 
+              href="/umzug-bewerten" 
               className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors"
             >
               <Heart className="w-4 h-4" />
