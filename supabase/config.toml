@@ -98,3 +98,6 @@ verify_jwt = false
 
 [functions.analyze-review-sentiment]
 verify_jwt = false
+
+[functions.predictive-trends]
+verify_jwt = false
