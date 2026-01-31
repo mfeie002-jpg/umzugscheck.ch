@@ -765,6 +765,15 @@ export const PremiumHeroSection = () => {
                     </span>
                     <span className="font-bold text-xs text-foreground lowercase">watson</span>
                   </span>
+                  {/* newhome */}
+                  <span className="flex items-center gap-0.5">
+                    <span className="w-4 h-4 bg-[#00A859] rounded flex items-center justify-center">
+                      <svg viewBox="0 0 24 24" className="w-2.5 h-2.5 text-white" fill="currentColor">
+                        <path d="M12 3L4 9v12h16V9l-8-6z"/>
+                      </svg>
+                    </span>
+                    <span className="font-semibold text-xs text-[#00A859]">newhome</span>
+                  </span>
                 </div>
                 
                 {/* Trust Microcopy - Consistent Primary colors */}
