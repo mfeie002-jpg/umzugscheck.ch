@@ -292,4 +292,52 @@ export const COMMAND_CENTER_HELP = {
       { label: 'Runway', description: 'Monate bis Cash = 0' },
     ],
   },
+
+  paidLaunch: {
+    title: 'Paid Launch Cockpit',
+    description: 'Google Ads Launch Readiness',
+    explanation: 'Das Paid Launch Cockpit zeigt den Status aller vorbereitenden Aufgaben für den Google Ads Start. P0 Blocker müssen erledigt sein, bevor Ads geschaltet werden können.',
+    tips: [
+      'Alle P0 erledigen vor Launch',
+      'P1 optimiert in den ersten 2 Wochen',
+      'P2 nach erfolgreichem Test',
+      'Tasks können an AI Queue gesendet werden',
+    ],
+    metrics: [
+      { label: 'P0', description: 'Blocker - muss vor Launch' },
+      { label: 'P1', description: 'Optimierung - 2 Wochen' },
+      { label: 'P2', description: 'Enhancement - später' },
+    ],
+    handbookLink: '/admin/handbuch',
+  },
+
+  keywordClusters: {
+    title: 'Keyword Clusters',
+    description: 'Suchbegriffe & Intent-Mapping',
+    explanation: 'Übersicht aller Keyword-Cluster mit Suchintent, empfohlenen Landing Pages und geschätzten CPCs. Export für Google Ads Editor möglich.',
+    tips: [
+      'High Intent = direkte Buchungsabsicht',
+      'Research = Informationssuche',
+      'Negative Keywords ausschliessen',
+    ],
+    metrics: [
+      { label: 'CPC', description: 'Geschätzte Klickkosten' },
+      { label: 'Intent', description: 'Kaufbereitschaft' },
+    ],
+  },
+
+  competitorIntel: {
+    title: 'Competitor Intelligence',
+    description: 'Wettbewerber-Analyse',
+    explanation: 'Datenbank mit 30+ Wettbewerbern aus Zürich/Zug. Zeigt Positionierung, CTA-Strategie, Trust-Elemente und Preisanker.',
+    tips: [
+      'Movers = direkte Konkurrenz',
+      'Portals = Lead-Aggregatoren',
+      'Relocation = Expat-Segment',
+    ],
+    metrics: [
+      { label: 'CTA', description: 'Phone vs Form vs Both' },
+      { label: 'Trust', description: 'Vertrauenselemente' },
+    ],
+  },
 };

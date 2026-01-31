@@ -6,7 +6,7 @@
 
 import { useState, useMemo } from 'react';
 import { Helmet } from 'react-helmet';
-import { ChevronDown, ChevronUp, Terminal, TrendingUp, AlertTriangle, BarChart3, Calculator, Route, Users, FileText, DollarSign, BookOpen } from 'lucide-react';
+import { ChevronDown, ChevronUp, Terminal, TrendingUp, AlertTriangle, BarChart3, Calculator, Route, Users, FileText, DollarSign, BookOpen, Rocket, Search, Target } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
@@ -24,6 +24,9 @@ import {
   OperatorDecisionPanel,
   SectionHelp,
   COMMAND_CENTER_HELP,
+  PaidLaunchCockpit,
+  KeywordClustersPanel,
+  CompetitorIntelPanel,
 } from '@/components/internal/command-center';
 import type {
   GlobalStatus,
@@ -366,6 +369,33 @@ export default function CommandCenterPage() {
               onClaimsChange={setClaimsPaid}
               onRefundsChange={setRefundsIssued}
             />
+          </Section>
+          
+          {/* Section 8: Paid Launch Cockpit */}
+          <Section title="8. Paid Launch Cockpit" defaultOpen={true}>
+            <SectionHelp 
+              icon={Rocket}
+              {...COMMAND_CENTER_HELP.paidLaunch}
+            />
+            <PaidLaunchCockpit />
+          </Section>
+          
+          {/* Section 9: Keyword Clusters */}
+          <Section title="9. Keyword Clusters" defaultOpen={false}>
+            <SectionHelp 
+              icon={Search}
+              {...COMMAND_CENTER_HELP.keywordClusters}
+            />
+            <KeywordClustersPanel />
+          </Section>
+          
+          {/* Section 10: Competitor Intelligence */}
+          <Section title="10. Competitor Intelligence" defaultOpen={false}>
+            <SectionHelp 
+              icon={Target}
+              {...COMMAND_CENTER_HELP.competitorIntel}
+            />
+            <CompetitorIntelPanel />
           </Section>
         </main>
       </div>
