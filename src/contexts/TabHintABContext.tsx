@@ -43,9 +43,9 @@ export const TabHintABProvider = ({ children }: { children: ReactNode }) => {
       // Then check localStorage
       const saved = localStorage.getItem('tabhint-ab-variant');
       const validVariants: TabHintVariant[] = ['default', 'A', 'B', 'C', 'D'];
-      return validVariants.includes(saved as TabHintVariant) ? (saved as TabHintVariant) : 'default';
+      return validVariants.includes(saved as TabHintVariant) ? (saved as TabHintVariant) : 'C';
     }
-    return 'default';
+    return 'C'; // Default to Label oben - clear visual hierarchy
   });
 
   const toggleVariant = useCallback(() => {

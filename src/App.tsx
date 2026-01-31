@@ -200,6 +200,7 @@ const Sitemap = lazy(() => import("./pages/Sitemap"));
 const RoomPlannerDemo = lazy(() => import("./pages/RoomPlannerDemo"));
 const DataJournalismPage = lazy(() => import("./pages/DataJournalismPage"));
 const MoveHealthIndex = lazy(() => import("./pages/MoveHealthIndex"));
+const QuartierPrognose = lazy(() => import("./pages/tools/QuartierPrognose"));
 
 // Ranking pages
 const BesteFirmen = lazy(() => import("./pages/BesteFirmen"));
@@ -856,6 +857,7 @@ const AppRouterContent = () => {
           <Route path="/navigation-vergleich" element={<NavigationComparison />} />
           <Route path="/daten" element={<DataJournalismPage />} />
           <Route path="/move-health-index" element={<MoveHealthIndex />} />
+          <Route path="/quartier-prognose" element={<QuartierPrognose />} />
           <Route path="/sitemap" element={<Sitemap />} />
           {/* LEGACY ROUTES - Redirect to canonical /umzugsfirmen/:city */}
           <Route path="/:city/umzugsfirmen" element={<LegacyCityServiceRedirect />} />

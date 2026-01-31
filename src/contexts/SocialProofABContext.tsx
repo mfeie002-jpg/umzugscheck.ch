@@ -123,7 +123,7 @@ export const SocialProofABProvider = ({ children }: { children: ReactNode }) => 
         }
       }
     }
-    return 'A';
+    return 'I'; // Default to Card CTA Trust - best for hero-integrated conversion
   });
 
   const toggleVariant = useCallback(() => {
