@@ -76,6 +76,7 @@ export { HandoverProtocol } from './HandoverProtocol';
 export type { HandoverRoom, HandoverCategory, HandoverProtocolProps } from './HandoverProtocol';
 export { DigitalSignaturePad } from './DigitalSignaturePad';
 export { CompleteOrchestrator } from './CompleteOrchestrator';
+export { LebensdauerCalculator } from './LebensdauerCalculator';
 
 // Phase 6 sub-components
 export * from './phase-6-complete';

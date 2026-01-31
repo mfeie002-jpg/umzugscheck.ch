@@ -203,6 +203,11 @@ const Footer = () => {
                   Quartier-Prognose
                 </Link>
               </li>
+              <li>
+                <Link to="/lebensdauer-rechner" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
+                  Lebensdauer-Rechner
+                </Link>
+              </li>
             </ul>
           </div>
 
