@@ -80,3 +80,8 @@ export { LebensdauerCalculator } from './LebensdauerCalculator';
 
 // Phase 6 sub-components
 export * from './phase-6-complete';
+
+// ============================================================================
+// CROSS-PHASE TOOLS (Link Magnets / Public SEO Tools)
+// ============================================================================
+export { CommuteCapitalCalculator } from './CommuteCapitalCalculator';
