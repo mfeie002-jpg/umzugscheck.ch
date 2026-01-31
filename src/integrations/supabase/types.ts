@@ -463,6 +463,48 @@ export type Database = {
           },
         ]
       }
+      canton_migration_flows: {
+        Row: {
+          avg_cost: number | null
+          created_at: string | null
+          from_canton: string
+          id: string
+          move_count: number
+          source: string | null
+          to_canton: string
+          trend: string | null
+          updated_at: string | null
+          year: number
+          yoy_change_percent: number | null
+        }
+        Insert: {
+          avg_cost?: number | null
+          created_at?: string | null
+          from_canton: string
+          id?: string
+          move_count?: number
+          source?: string | null
+          to_canton: string
+          trend?: string | null
+          updated_at?: string | null
+          year: number
+          yoy_change_percent?: number | null
+        }
+        Update: {
+          avg_cost?: number | null
+          created_at?: string | null
+          from_canton?: string
+          id?: string
+          move_count?: number
+          source?: string | null
+          to_canton?: string
+          trend?: string | null
+          updated_at?: string | null
+          year?: number
+          yoy_change_percent?: number | null
+        }
+        Relationships: []
+      }
       canton_regulations: {
         Row: {
           canton_code: string
@@ -3001,17 +3043,22 @@ export type Database = {
           avg_age: number | null
           avg_rent_3room: number | null
           avg_rent_4room: number | null
+          bfs_scenario_high: Json | null
+          bfs_scenario_low: Json | null
+          bfs_scenario_medium: Json | null
           canton_code: string
           city_name: string
           commuter_score: number | null
           created_at: string
           description: string | null
+          development_projects: Json | null
           expat_score: number | null
           family_score: number | null
           foreigner_percent: number | null
           highlights: string[] | null
           highway_distance_km: number | null
           id: string
+          infrastructure_outlook: string | null
           nature_score: number | null
           nightlife_score: number | null
           population: number | null
@@ -3029,17 +3076,22 @@ export type Database = {
           avg_age?: number | null
           avg_rent_3room?: number | null
           avg_rent_4room?: number | null
+          bfs_scenario_high?: Json | null
+          bfs_scenario_low?: Json | null
+          bfs_scenario_medium?: Json | null
           canton_code: string
           city_name: string
           commuter_score?: number | null
           created_at?: string
           description?: string | null
+          development_projects?: Json | null
           expat_score?: number | null
           family_score?: number | null
           foreigner_percent?: number | null
           highlights?: string[] | null
           highway_distance_km?: number | null
           id?: string
+          infrastructure_outlook?: string | null
           nature_score?: number | null
           nightlife_score?: number | null
           population?: number | null
@@ -3057,17 +3109,22 @@ export type Database = {
           avg_age?: number | null
           avg_rent_3room?: number | null
           avg_rent_4room?: number | null
+          bfs_scenario_high?: Json | null
+          bfs_scenario_low?: Json | null
+          bfs_scenario_medium?: Json | null
           canton_code?: string
           city_name?: string
           commuter_score?: number | null
           created_at?: string
           description?: string | null
+          development_projects?: Json | null
           expat_score?: number | null
           family_score?: number | null
           foreigner_percent?: number | null
           highlights?: string[] | null
           highway_distance_km?: number | null
           id?: string
+          infrastructure_outlook?: string | null
           nature_score?: number | null
           nightlife_score?: number | null
           population?: number | null

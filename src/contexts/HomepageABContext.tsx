@@ -22,10 +22,10 @@ const HomepageABContext = createContext<HomepageABContextValue | undefined>(unde
 
 export const HomepageABProvider = memo(function HomepageABProvider({ children }: { children: ReactNode }) {
   const [variant, setVariantState] = useState<HomepageVariant>(() => {
-    if (typeof window === 'undefined') return 'A';
+    if (typeof window === 'undefined') return 'B';
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored === 'A' || stored === 'B' || stored === 'C') return stored;
-    return 'A'; // Default to Original (Screenshot-style with form card)
+    return 'B'; // Default to Premium (4-Tab) - best conversion
   });
 
   const setVariant = useCallback((v: HomepageVariant) => {
