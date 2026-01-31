@@ -2,9 +2,11 @@
  * LEBENSKOSTEN-VERGLEICH TOOL
  * Interactive comparison of living costs between Swiss cities
  * SEO optimized for backlinks from media outlets
+ * 
+ * Enhanced with Commute Capital Integration (Phase 2 SROS)
  */
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   ArrowRight, 
@@ -18,13 +20,21 @@ import {
   Star,
   Info,
   Check,
-  X
+  Clock,
+  DollarSign,
+  TrendingUp,
+  TrendingDown,
+  Calculator,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
+import { Slider } from '@/components/ui/slider';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
 import { 
   LIVING_COST_DATA, 
   getSwissAverage,
@@ -32,11 +42,26 @@ import {
   getComparisonPercent,
   type LivingCostData 
 } from '@/lib/data-journalism';
+import {
+  calculateCommuteCapital,
+  calculateTrueCostOfLiving,
+  formatCommuteDuration,
+  getCommuteQualityRating,
+} from '@/lib/relo-os/commute-capital';
+import {
+  useSBBJourney,
+  getEstimatedCommuteTime,
+  getEstimatedMonthlyPass,
+} from '@/lib/relo-os/commute-capital/useSBBJourney';
 
 export function LivingCostComparison() {
   const [city1Slug, setCity1Slug] = useState<string>('zuerich');
   const [city2Slug, setCity2Slug] = useState<string>('bern');
+  const [showCommuteCapital, setShowCommuteCapital] = useState(false);
+  const [hourlyRate, setHourlyRate] = useState(40);
+  const [workCity, setWorkCity] = useState<'city1' | 'city2' | 'other'>('city1');
   const swissAvg = getSwissAverage();
+  const { fetchJourney, journey: journeyData, loading: journeyLoading } = useSBBJourney();
 
   const city1 = useMemo(() => 
     LIVING_COST_DATA.find(c => c.slug === city1Slug) || LIVING_COST_DATA[0],
@@ -47,6 +72,58 @@ export function LivingCostComparison() {
     LIVING_COST_DATA.find(c => c.slug === city2Slug) || LIVING_COST_DATA[1],
     [city2Slug]
   );
+
+  // Get commute times for both scenarios
+  const commuteFromCity1 = useMemo(() => {
+    if (workCity === 'city1') return 0;
+    if (workCity === 'city2') {
+      return getEstimatedCommuteTime(city1Slug, city2Slug) || 45;
+    }
+    return 30; // Default for "other" work location
+  }, [city1Slug, city2Slug, workCity]);
+
+  const commuteFromCity2 = useMemo(() => {
+    if (workCity === 'city2') return 0;
+    if (workCity === 'city1') {
+      return getEstimatedCommuteTime(city2Slug, city1Slug) || 45;
+    }
+    return 30; // Default for "other" work location
+  }, [city1Slug, city2Slug, workCity]);
+
+  // Calculate commute capital for both cities
+  const commuteCapital1 = useMemo(() => {
+    const monthlyPass = getEstimatedMonthlyPass(commuteFromCity1);
+    return calculateCommuteCapital({
+      hourlyRate,
+      oneWayCommuteMinutes: commuteFromCity1,
+      monthlyPassCHF: monthlyPass,
+      workDaysPerYear: 220,
+    });
+  }, [hourlyRate, commuteFromCity1]);
+
+  const commuteCapital2 = useMemo(() => {
+    const monthlyPass = getEstimatedMonthlyPass(commuteFromCity2);
+    return calculateCommuteCapital({
+      hourlyRate,
+      oneWayCommuteMinutes: commuteFromCity2,
+      monthlyPassCHF: monthlyPass,
+      workDaysPerYear: 220,
+    });
+  }, [hourlyRate, commuteFromCity2]);
+
+  // Calculate "True Cost" including commute
+  const trueCost1 = useMemo(() => {
+    return city1.rent3Room.avg + commuteCapital1.totalMonthlyCommuteCost;
+  }, [city1.rent3Room.avg, commuteCapital1.totalMonthlyCommuteCost]);
+
+  const trueCost2 = useMemo(() => {
+    return city2.rent3Room.avg + commuteCapital2.totalMonthlyCommuteCost;
+  }, [city2.rent3Room.avg, commuteCapital2.totalMonthlyCommuteCost]);
+
+  // Winner changes when including commute costs
+  const winnerWithCommute = trueCost1 < trueCost2 ? city1 : city2;
+  const winnerWithoutCommute = city1.rent3Room.avg < city2.rent3Room.avg ? city1 : city2;
+  const winnerChanged = showCommuteCapital && winnerWithCommute.slug !== winnerWithoutCommute.slug;
 
   const swapCities = () => {
     const temp = city1Slug;
@@ -179,6 +256,182 @@ export function LivingCostComparison() {
                 </Select>
               </div>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Commute Capital Toggle & Settings */}
+        <Card className="mb-8 border-primary/20">
+          <CardContent className="pt-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-primary/10">
+                  <Calculator className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold">Pendel-Kapital berücksichtigen</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Berechnen Sie die wahren Lebenskosten inkl. Pendelzeit
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch
+                  id="commute-capital"
+                  checked={showCommuteCapital}
+                  onCheckedChange={setShowCommuteCapital}
+                />
+                <Label htmlFor="commute-capital" className="text-sm">
+                  {showCommuteCapital ? 'Aktiv' : 'Inaktiv'}
+                </Label>
+              </div>
+            </div>
+
+            {showCommuteCapital && (
+              <div className="space-y-4 pt-4 border-t">
+                {/* Work location */}
+                <div className="space-y-2">
+                  <Label className="text-sm">Wo arbeiten Sie?</Label>
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      variant={workCity === 'city1' ? 'secondary' : 'outline'}
+                      size="sm"
+                      onClick={() => setWorkCity('city1')}
+                    >
+                      In {city1.city}
+                    </Button>
+                    <Button
+                      variant={workCity === 'city2' ? 'secondary' : 'outline'}
+                      size="sm"
+                      onClick={() => setWorkCity('city2')}
+                    >
+                      In {city2.city}
+                    </Button>
+                    <Button
+                      variant={workCity === 'other' ? 'secondary' : 'outline'}
+                      size="sm"
+                      onClick={() => setWorkCity('other')}
+                    >
+                      Anderer Ort
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Hourly rate slider */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm flex items-center gap-2">
+                      <DollarSign className="w-4 h-4 text-muted-foreground" />
+                      Ihr Stundensatz (Zeitwert)
+                    </Label>
+                    <span className="text-sm font-medium">CHF {hourlyRate}/Std.</span>
+                  </div>
+                  <Slider
+                    value={[hourlyRate]}
+                    onValueChange={([v]) => setHourlyRate(v)}
+                    min={25}
+                    max={100}
+                    step={5}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>CHF 25</span>
+                    <span>Durchschnitt CH: ~40</span>
+                    <span>CHF 100</span>
+                  </div>
+                </div>
+
+                {/* Commute comparison */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+                  <div className={`p-4 rounded-lg border ${trueCost1 < trueCost2 ? 'border-primary/30 bg-primary/5' : 'bg-muted/30'}`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-medium">{city1.city}</span>
+                      {trueCost1 < trueCost2 && (
+                        <Badge variant="outline" className="text-xs text-primary border-primary/30">
+                          Günstiger
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="space-y-1 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Pendelzeit:</span>
+                        <span>{formatCommuteDuration(commuteFromCity1)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Zeitkosten/Mt.:</span>
+                        <span>CHF {commuteCapital1.monthlyTimeCost.toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">ÖV-Abo/Mt.:</span>
+                        <span>CHF {Math.round(commuteCapital1.annualTransportCost / 12).toLocaleString()}</span>
+                      </div>
+                      <Separator className="my-2" />
+                      <div className="flex justify-between font-medium">
+                        <span>Miete + Pendeln:</span>
+                        <span>CHF {trueCost1.toLocaleString()}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className={`p-4 rounded-lg border ${trueCost2 < trueCost1 ? 'border-primary/30 bg-primary/5' : 'bg-muted/30'}`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-medium">{city2.city}</span>
+                      {trueCost2 < trueCost1 && (
+                        <Badge variant="outline" className="text-xs text-primary border-primary/30">
+                          Günstiger
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="space-y-1 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Pendelzeit:</span>
+                        <span>{formatCommuteDuration(commuteFromCity2)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Zeitkosten/Mt.:</span>
+                        <span>CHF {commuteCapital2.monthlyTimeCost.toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">ÖV-Abo/Mt.:</span>
+                        <span>CHF {Math.round(commuteCapital2.annualTransportCost / 12).toLocaleString()}</span>
+                      </div>
+                      <Separator className="my-2" />
+                      <div className="flex justify-between font-medium">
+                        <span>Miete + Pendeln:</span>
+                        <span>CHF {trueCost2.toLocaleString()}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Winner changed alert */}
+                {winnerChanged && (
+                  <div className="flex items-start gap-3 p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg mt-4">
+                    <TrendingUp className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
+                    <div className="text-sm">
+                      <strong className="text-amber-700">Interessant!</strong>{' '}
+                      <span className="text-amber-700/80">
+                        Ohne Pendelkosten ist {winnerWithoutCommute.city} günstiger. 
+                        Aber inkl. Pendelzeit wird {winnerWithCommute.city} zur besseren Wahl – 
+                        Sie sparen CHF {Math.abs(trueCost1 - trueCost2).toLocaleString()}/Mt.
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Annual savings insight */}
+                <div className="flex items-start gap-3 p-4 bg-accent/50 rounded-lg border border-accent">
+                  <Info className="w-5 h-5 text-accent-foreground mt-0.5 shrink-0" />
+                  <div className="text-sm">
+                    <strong className="text-foreground">Jährliche Differenz:</strong>{' '}
+                    <span className="text-muted-foreground">
+                      Über ein Jahr spart {winnerWithCommute.city} Ihnen{' '}
+                      <strong>CHF {(Math.abs(trueCost1 - trueCost2) * 12).toLocaleString()}</strong>{' '}
+                      inkl. dem Wert Ihrer Pendelzeit bei CHF {hourlyRate}/Std.
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
 
