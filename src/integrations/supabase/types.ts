@@ -4682,6 +4682,65 @@ export type Database = {
           },
         ]
       }
+      relo_journeys: {
+        Row: {
+          archetype: string | null
+          booking_data: Json | null
+          complete_data: Json | null
+          completed_at: string | null
+          created_at: string
+          current_phase: string
+          id: string
+          inventory_data: Json | null
+          lead_id: string | null
+          moving_data: Json | null
+          quote_data: Json | null
+          route_data: Json | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          archetype?: string | null
+          booking_data?: Json | null
+          complete_data?: Json | null
+          completed_at?: string | null
+          created_at?: string
+          current_phase?: string
+          id?: string
+          inventory_data?: Json | null
+          lead_id?: string | null
+          moving_data?: Json | null
+          quote_data?: Json | null
+          route_data?: Json | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          archetype?: string | null
+          booking_data?: Json | null
+          complete_data?: Json | null
+          completed_at?: string | null
+          created_at?: string
+          current_phase?: string
+          id?: string
+          inventory_data?: Json | null
+          lead_id?: string | null
+          moving_data?: Json | null
+          quote_data?: Json | null
+          route_data?: Json | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "relo_journeys_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       review_photos: {
         Row: {
           display_order: number | null
@@ -5527,6 +5586,50 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      swiss_admin_tasks: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          deep_link: string | null
+          id: string
+          journey_id: string | null
+          notes: string | null
+          status: string
+          task_type: string
+          updated_at: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          deep_link?: string | null
+          id?: string
+          journey_id?: string | null
+          notes?: string | null
+          status?: string
+          task_type: string
+          updated_at?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          deep_link?: string | null
+          id?: string
+          journey_id?: string | null
+          notes?: string | null
+          status?: string
+          task_type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "swiss_admin_tasks_journey_id_fkey"
+            columns: ["journey_id"]
+            isOneToOne: false
+            referencedRelation: "relo_journeys"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       url_change_history: {
         Row: {

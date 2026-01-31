@@ -15,11 +15,24 @@
  *   - Local services discovery
  */
 
+// Core handover components
 export { HandoverProtocol } from '../HandoverProtocol';
 export { DigitalSignaturePad } from '../DigitalSignaturePad';
 export { CompleteOrchestrator } from '../CompleteOrchestrator';
 
-// Swiss Admin Autopilot (skeleton exports - to be implemented)
-// export { SwissAdminAutopilot } from './SwissAdminAutopilot';
-// export { EUmzugCHIntegration } from './EUmzugCHIntegration';
-// export { SwissPostReminder } from './SwissPostReminder';
+// Swiss Admin Autopilot
+export { SwissAdminAutopilot } from './SwissAdminAutopilot';
+export type { SwissAdminAutopilotProps } from './SwissAdminAutopilot';
+
+export { EUmzugCHIntegration } from './EUmzugCHIntegration';
+export type { EUmzugCHIntegrationProps } from './EUmzugCHIntegration';
+
+export { SwissPostReminder } from './SwissPostReminder';
+export type { SwissPostReminderProps } from './SwissPostReminder';
+
+export { SerafeNotification } from './SerafeNotification';
+export type { SerafeNotificationProps } from './SerafeNotification';
+
+// After Move Care
+export { AfterMoveCareSection } from './AfterMoveCareSection';
+export type { AfterMoveCareSectionProps } from './AfterMoveCareSection';

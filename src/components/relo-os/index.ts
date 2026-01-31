@@ -82,6 +82,12 @@ export { LebensdauerCalculator } from './LebensdauerCalculator';
 export * from './phase-6-complete';
 
 // ============================================================================
+// UNIFIED JOURNEY ORCHESTRATOR
+// ============================================================================
+export { JourneyOrchestrator } from './JourneyOrchestrator';
+export type { JourneyOrchestratorProps } from './JourneyOrchestrator';
+
+// ============================================================================
 // CROSS-PHASE TOOLS (Link Magnets / Public SEO Tools)
 // ============================================================================
 export { CommuteCapitalCalculator } from './CommuteCapitalCalculator';
