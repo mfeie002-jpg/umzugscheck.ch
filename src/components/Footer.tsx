@@ -184,6 +184,28 @@ const Footer = () => {
             </ul>
           </div>
 
+          {/* Data & Tools */}
+          <div>
+            <h4 className="font-bold mb-4 text-primary-foreground">Daten & Tools</h4>
+            <ul className="space-y-2.5 text-sm">
+              <li>
+                <Link to="/move-health-index" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
+                  Move Health Index
+                </Link>
+              </li>
+              <li>
+                <Link to="/umzug-bewerten" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
+                  Umzug bewerten
+                </Link>
+              </li>
+              <li>
+                <Link to="/quartier-prognose" className="text-primary-foreground/80 hover:text-white hover:translate-x-1 transition-all inline-block">
+                  Quartier-Prognose
+                </Link>
+              </li>
+            </ul>
+          </div>
+
           {/* Für Firmen */}
           <div>
             <h4 className="font-bold mb-4 text-primary-foreground">Für Firmen</h4>
