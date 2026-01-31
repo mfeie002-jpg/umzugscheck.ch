@@ -1,212 +1,250 @@
 
-# Relo-OS Phase Implementation Plan
+# Paid Acquisition Launch Module for Command Center
 
-## Current Status Assessment
+## Overview
 
-After thoroughly exploring the codebase, here's what's already implemented:
-
-### Implemented Components
-
-| Phase | Component | Status |
-|-------|-----------|--------|
-| **Phase 1: ROUTE** | `RouteInitializer` | Complete - Address capture, date selection, floor/lift details |
-| **Phase 2: INVENTORY** | `InventoryOrchestrator` | Complete - LiDAR + Video scanning, Digital Twin generation |
-| **Phase 3: QUOTE** | `QuoteOrchestrator` | Complete - Service tiers, dynamic pricing, guaranteed price |
-| **Phase 4: BOOKING** | `BookingOrchestrator` | Complete - Provider matching (QWB), Smart Escrow with Stripe |
-| **Phase 5: MOVING** | `MovingOrchestrator` | Complete - GPS tracking, ETA updates, crew communication |
-| **Phase 6: COMPLETE** | `CompleteOrchestrator` | Partial - Handover protocol, signatures, escrow release |
-
-### Missing Components (to be implemented)
-
-**Phase 6 - Swiss Admin Autopilot:**
-- `SwissAdminAutopilot` component (commented out in index.ts)
-- `EUmzugCHIntegration` component
-- `SwissPostReminder` component
-- `SerafeNotification` component
-
-**After-Move Care:**
-- `AfterMoveCareMap` exists but not integrated into Phase 6
-- `PostMoveSurvey` exists but needs Phase 6 integration
-- Neighborhood discovery features missing from Complete flow
-
-**Full Journey Orchestrator:**
-- No unified journey orchestrator that connects all 6 phases
-- No persistent journey state management
+Integrate the Swiss Growth Research Unit findings directly into the existing `/internal/command-center` as a new dedicated section. This creates a single operational hub for launching and managing the Feierabend-umzug.ch paid acquisition machine.
 
 ---
 
-## Implementation Plan
+## Current State Analysis
 
-### Task 1: Swiss Admin Autopilot Component
-Create the main Swiss Admin Autopilot component that orchestrates all Swiss-specific administrative tasks.
+### Command Center Architecture (Already Exists)
+The `/internal/command-center` already has:
+- **GlobalStatusBar**: SCALE/HOLD/STOP indicator
+- **KillSwitchAlerts**: 7 automated guardrails (CPL > 90, CM2 < 20%, etc.)
+- **OperatorDecisionPanel**: Daily action recommendations
+- **ExecutiveSnapshot**: 7d/30d KPIs
+- **UnitEconomicsPanel**: Multi-brand calculator (Feierabend, Express, Helden, Marketplace)
+- **LeadScoringSimulator**: Lead routing brain
+- **DistributionEngine**: Partner auction system
+- **RoadmapTracker**: 12-week execution plan (already includes "Launch first Google Ads")
+- **FinanceControlPanel**: Cash runway tracking
 
-**New file:** `src/components/relo-os/phase-6-complete/SwissAdminAutopilot.tsx`
-
-**Features:**
-- Task checklist with progress tracking
-- eUmzugCH deep-link integration
-- Swiss Post forwarding reminder (T-7)
-- Serafe notification link
-- Status persistence in database
-
-```text
-+------------------------------------------+
-|  Swiss Admin Autopilot                   |
-|  Progress: 2/4 complete                  |
-|  [===========            ]  50%          |
-+------------------------------------------+
-|  [x] eUmzugCH - Ummeldung               |
-|  [x] Swiss Post - Nachsendeauftrag      |
-|  [ ] Serafe - Adressänderung            |
-|  [ ] Third-party notifications          |
-+------------------------------------------+
-```
-
-### Task 2: eUmzugCH Integration Component
-Create a dedicated component for Swiss electronic move registration.
-
-**New file:** `src/components/relo-os/phase-6-complete/EUmzugCHIntegration.tsx`
-
-**Features:**
-- Commune lookup (based on postal code)
-- eUmzugCH participation check
-- Pre-filled deep-link generation
-- Fallback instructions for non-digital communes
-- Integration with existing `eumzug-ch.ts` library
-
-### Task 3: Swiss Post Reminder Component
-Create a reminder component for address forwarding service.
-
-**New file:** `src/components/relo-os/phase-6-complete/SwissPostReminder.tsx`
-
-**Features:**
-- T-7 day countdown before move date
-- Cost estimation display
-- Pre-filled deep-link to Swiss Post
-- Mark as complete functionality
-
-### Task 4: After-Move Care Integration
-Integrate existing `AfterMoveCareMap` into Phase 6 completion flow.
-
-**Modifications:**
-- Update `CompleteOrchestrator.tsx` to add "After Move Care" tab
-- Add neighborhood discovery section
-- Integrate `PostMoveSurvey` for feedback collection
-
-### Task 5: Unified Journey Orchestrator
-Create a master orchestrator that manages the complete 6-phase journey.
-
-**New file:** `src/components/relo-os/JourneyOrchestrator.tsx`
-
-**Features:**
-- Phase navigation with progress tracking
-- State persistence across sessions
-- Conditional phase skipping (e.g., skip inventory for simple moves)
-- Mobile-optimized stepper UI
-
-### Task 6: Database Schema for Journey State
-Create database tables to persist journey progress.
-
-**New tables:**
-- `relo_journeys` - Main journey tracking
-- `relo_journey_phases` - Per-phase completion data
-
-### Task 7: Phase 6 Complete Index Update
-Update the phase-6-complete index to export all new components.
+### Existing Infrastructure
+- `paid_media_campaigns` table (platform, campaign_id, status, daily_budget)
+- `paid_media_daily_metrics` table
+- `ai_task_queue` table for implementation tasks
+- `PaidMediaControl` page at `/internal/paid-media-control` (standalone)
 
 ---
 
-## Technical Details
+## Integration Plan
 
-### File Structure After Implementation
+### New Section: "8. Paid Launch Cockpit"
+Add a new collapsible section to the Command Center after Section 7 (Finance).
 
-```text
-src/components/relo-os/
-├── phase-6-complete/
-│   ├── index.ts (updated with new exports)
-│   ├── SwissAdminAutopilot.tsx (NEW)
-│   ├── EUmzugCHIntegration.tsx (NEW)
-│   ├── SwissPostReminder.tsx (NEW)
-│   ├── SerafeNotification.tsx (NEW)
-│   └── AfterMoveCareSection.tsx (NEW)
-├── JourneyOrchestrator.tsx (NEW)
-└── ... (existing files)
+```
++------------------------------------------+
+|  8. PAID LAUNCH COCKPIT                  |
+|  Status: PRE-LAUNCH | 3/20 tasks done    |
++------------------------------------------+
+|  [Quick Stats]                           |
+|  Budget: CHF 1,000 test | Daily: CHF 33  |
+|  Est. Clicks: 125-200 | Est. CPL: CHF 5-8|
++------------------------------------------+
+|  [P0 Blockers - 5 items]                 |
+|  [ ] Create /danke thank-you page        |
+|  [ ] Add gclid to contact_submissions    |
+|  [ ] Verify GA4 events firing            |
+|  [ ] Configure Consent Mode v2           |
+|  [ ] Verify trust claims                 |
++------------------------------------------+
+|  [Campaign Structure]                    |
+|  - Zürich Premium (CHF 600)              |
+|  - Zug Premium (CHF 300)                 |
+|  - Specialist (CHF 100)                  |
++------------------------------------------+
 ```
 
-### Database Schema
+---
 
+## Implementation Tasks
+
+### Task 1: Database Schema Extension
+Create a `paid_launch_checklist` table for tracking P0/P1/P2 implementation tasks.
+
+**Schema:**
 ```sql
--- Journey tracking table
-CREATE TABLE relo_journeys (
+CREATE TABLE paid_launch_checklist (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID REFERENCES auth.users(id),
-  lead_id UUID REFERENCES leads(id),
-  current_phase TEXT NOT NULL DEFAULT 'route',
-  archetype TEXT, -- overwhelmed_professional, family_manager, etc.
-  created_at TIMESTAMPTZ DEFAULT now(),
-  updated_at TIMESTAMPTZ DEFAULT now(),
+  site TEXT NOT NULL, -- 'feierabend' | 'umzugscheck' | 'both'
+  priority TEXT NOT NULL, -- 'p0' | 'p1' | 'p2'
+  category TEXT NOT NULL, -- 'tracking' | 'landing' | 'copy' | 'dev' | 'ops'
+  title TEXT NOT NULL,
+  goal TEXT,
+  change_description TEXT,
+  acceptance_criteria TEXT[],
+  owner TEXT, -- 'dev' | 'tracking' | 'copy' | 'ops'
+  complexity TEXT, -- 's' | 'm' | 'l'
+  status TEXT DEFAULT 'todo', -- 'todo' | 'in_progress' | 'done' | 'blocked'
+  blocked_reason TEXT,
   completed_at TIMESTAMPTZ,
-  -- Phase data stored as JSON
-  route_data JSONB,
-  inventory_data JSONB,
-  quote_data JSONB,
-  booking_data JSONB,
-  moving_data JSONB,
-  complete_data JSONB
-);
-
--- Swiss Admin tasks tracking
-CREATE TABLE swiss_admin_tasks (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  journey_id UUID REFERENCES relo_journeys(id),
-  task_type TEXT NOT NULL, -- eumzug, swiss_post, serafe, etc.
-  status TEXT DEFAULT 'pending',
-  completed_at TIMESTAMPTZ,
-  deep_link TEXT,
-  notes TEXT
+  created_at TIMESTAMPTZ DEFAULT now()
 );
 ```
 
-### Component Dependencies
+### Task 2: Create PaidLaunchCockpit Component
+**New file:** `src/components/internal/command-center/PaidLaunchCockpit.tsx`
 
-- Existing: `AfterMoveCareMap`, `PostMoveSurvey`, Swiss integration libs
-- UI: Tabs, Progress, Badge, Button (all from existing UI kit)
-- State: React Query for server state, local state for UI
+**Features:**
+- Pre-populated with all 20+ tickets from the research
+- Visual progress bar (P0 items block launch)
+- Quick-filter by category (tracking, dev, copy)
+- Mark as done with single click
+- "Copy to AI Queue" button to send to `ai_task_queue`
+- Campaign structure preview with budget allocation
+
+### Task 3: Create KeywordClustersPanel Component
+**New file:** `src/components/internal/command-center/KeywordClustersPanel.tsx`
+
+Display the keyword architecture:
+- Cluster name, example keywords, intent stage
+- Suggested landing page (clickable)
+- Negative keywords list
+- Can export to Google Ads Editor format
+
+### Task 4: Create CompetitorIntelPanel Component
+**New file:** `src/components/internal/command-center/CompetitorIntelPanel.tsx`
+
+Searchable/sortable table of 30+ competitors:
+- Name, region, positioning, CTA strategy
+- Last updated timestamp
+- Link to source
+
+### Task 5: Update Command Center Page
+**Modify:** `src/pages/internal/CommandCenter.tsx`
+
+Add Section 8 after Finance:
+```tsx
+<Section title="8. Paid Launch Cockpit" defaultOpen={true}>
+  <SectionHelp icon={Rocket} {...COMMAND_CENTER_HELP.paidLaunch} />
+  <PaidLaunchCockpit />
+</Section>
+```
+
+### Task 6: Seed Checklist Data
+Create migration with all 20+ tickets from the research report.
+
+### Task 7: Add Help Documentation
+Update `CommandCenterHelp.tsx` with new section documentation.
 
 ---
 
-## Implementation Order
+## File Structure After Implementation
 
-1. **Task 6** - Database schema (foundation for persistence)
-2. **Task 2** - eUmzugCH Integration (core Swiss feature)
-3. **Task 3** - Swiss Post Reminder
-4. **Task 1** - Swiss Admin Autopilot (combines 2 & 3)
-5. **Task 4** - After-Move Care Integration
-6. **Task 7** - Phase 6 Index Update
-7. **Task 5** - Journey Orchestrator (connects everything)
-
----
-
-## Mobile-First Considerations
-
-- All new components will use existing responsive patterns
-- Touch targets minimum 52px
-- Bottom sheet navigation for mobile journey steps
-- Swipeable phase transitions using framer-motion
-- Sticky progress indicator at top
+```
+src/components/internal/command-center/
+├── PaidLaunchCockpit.tsx (NEW)
+├── KeywordClustersPanel.tsx (NEW)
+├── CompetitorIntelPanel.tsx (NEW)
+├── CommandCenterHelp.tsx (updated)
+├── index.ts (updated)
+└── types.ts (updated)
+```
 
 ---
 
-## Estimated Effort
+## Data Flow
+
+```
+1. Research Data (static seed)
+   └─> paid_launch_checklist table
+       └─> PaidLaunchCockpit component
+           └─> Task marked "done"
+               └─> Refresh progress bar
+               └─> If P0 complete → unlock "Launch Ads" button
+
+2. Competitor Data (static seed)
+   └─> Local JSON or DB table
+       └─> CompetitorIntelPanel
+           └─> Searchable table
+
+3. Keyword Data (static seed)
+   └─> Local JSON
+       └─> KeywordClustersPanel
+           └─> Export to Google Ads Editor
+```
+
+---
+
+## UI/UX Details
+
+### PaidLaunchCockpit Layout
+- **Header Row**: Launch status badge, progress fraction, test budget display
+- **Tabs**: P0 Blockers | P1 Optimization | P2 Enhancement | All Tasks
+- **Task Card**: Checkbox, title, site badge, owner badge, complexity badge
+- **Footer**: "Export All to AI Queue" button, "Mark All P0 Complete" (disabled until all done)
+
+### Launch Readiness Logic
+```tsx
+const canLaunch = tasks.filter(t => t.priority === 'p0' && t.status !== 'done').length === 0;
+```
+
+When all P0 tasks are done:
+- Show green "READY TO LAUNCH" badge
+- Show "Open Google Ads" external link button
+- Log audit event for launch authorization
+
+---
+
+## Integration with Existing Systems
+
+### AI Task Queue Bridge
+"Copy to AI Queue" button creates tasks in `ai_task_queue`:
+```tsx
+const copyToAIQueue = async (task: ChecklistItem) => {
+  await supabase.from('ai_task_queue').insert({
+    agent: 'copilot',
+    title: `[PAID-LAUNCH] ${task.title}`,
+    description: task.goal,
+    prompt: task.change_description,
+    target_files: inferTargetFiles(task),
+    priority: task.priority === 'p0' ? 10 : task.priority === 'p1' ? 5 : 2,
+    source: 'paid-launch-cockpit'
+  });
+};
+```
+
+### Kill Switch Integration
+Extend `KillSwitchAlerts` to include:
+- "No active campaigns" warning when P0 complete but ads not launched
+- "Tracking incomplete" warning if GA4 events not verified
+
+---
+
+## Estimated Implementation Effort
 
 | Task | Complexity | Est. Time |
 |------|------------|-----------|
-| Database Schema | Low | 15 min |
-| eUmzugCH Integration | Medium | 30 min |
-| Swiss Post Reminder | Low | 15 min |
-| Swiss Admin Autopilot | Medium | 30 min |
-| After-Move Care Integration | Medium | 25 min |
-| Phase 6 Index Update | Low | 5 min |
-| Journey Orchestrator | High | 45 min |
+| Database schema | S | 15 min |
+| Seed checklist data | S | 20 min |
+| PaidLaunchCockpit component | M | 45 min |
+| KeywordClustersPanel | S | 25 min |
+| CompetitorIntelPanel | S | 25 min |
+| Command Center page update | S | 10 min |
+| Help documentation | S | 10 min |
 
-**Total estimated implementation time: ~2.5 hours**
+**Total: ~2.5 hours**
+
+---
+
+## Mobile Considerations
+
+- Tabs switch to horizontal scroll on mobile
+- Task cards stack vertically
+- Touch targets 52px+
+- Progress bar spans full width
+- "Launch" button sticky at bottom when visible
+
+---
+
+## Success Criteria
+
+1. All 20+ implementation tickets visible in cockpit
+2. P0 blockers clearly highlighted with red badges
+3. Progress bar updates in real-time when tasks marked done
+4. "Ready to Launch" appears when all P0 complete
+5. Tasks can be exported to AI queue for automated implementation
+6. Competitor intel searchable by name/region
+7. Keyword clusters exportable to Google Ads Editor format
