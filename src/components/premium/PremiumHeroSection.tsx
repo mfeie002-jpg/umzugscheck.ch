@@ -735,8 +735,40 @@ export const PremiumHeroSection = () => {
                   </TabsContent>
                 </Tabs>
                 
+                {/* "Bekannt aus:" Media Logos Row - Matches reference design */}
+                <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 pt-2 border-t border-border/30">
+                  <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <Shield className="h-3 w-3 text-primary" />
+                    <span className="font-medium">Bekannt aus:</span>
+                  </span>
+                  {/* SRF Badge */}
+                  <span className="bg-[#C8102E] text-white font-bold text-[10px] px-2 py-0.5 rounded">
+                    SRF
+                  </span>
+                  {/* NZZ */}
+                  <span className="font-serif font-bold text-sm text-foreground">
+                    NZZ
+                  </span>
+                  {/* BLICK Badge */}
+                  <span className="bg-[#E30613] text-white font-black text-[10px] px-2 py-0.5 rounded">
+                    BLICK
+                  </span>
+                  {/* 20 Minuten */}
+                  <span className="flex items-baseline gap-0.5">
+                    <span className="text-base font-black text-[#E3000F]">20</span>
+                    <span className="text-xs font-semibold text-foreground">Minuten</span>
+                  </span>
+                  {/* Watson */}
+                  <span className="flex items-center gap-0.5">
+                    <span className="w-4 h-4 bg-[#FF6B35] rounded-full flex items-center justify-center">
+                      <span className="text-white text-[8px] font-bold">W</span>
+                    </span>
+                    <span className="font-bold text-xs text-foreground lowercase">watson</span>
+                  </span>
+                </div>
+                
                 {/* Trust Microcopy - Consistent Primary colors */}
-                <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 pt-1 md:pt-2 text-xs sm:text-sm text-foreground/60">
+                <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 pt-2 text-xs sm:text-sm text-foreground/60">
                   <span className="flex items-center gap-1">
                     <CheckCircle2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
                     Kostenlos
