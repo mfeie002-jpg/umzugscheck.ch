@@ -1,375 +1,212 @@
 
-# Swiss Relocation Operating System (SROS): Complete Implementation Plan
+# Relo-OS Phase Implementation Plan
 
-## Executive Summary
+## Current Status Assessment
 
-This plan details the development of missing components to transform umzugscheck.ch from a lead aggregator into Switzerland's **Category King** relocation platform. The strategic blueprint identifies 6 major pillars - our current implementation covers approximately **45%** of the vision.
+After thoroughly exploring the codebase, here's what's already implemented:
 
----
+### Implemented Components
 
-## Current State Assessment
+| Phase | Component | Status |
+|-------|-----------|--------|
+| **Phase 1: ROUTE** | `RouteInitializer` | Complete - Address capture, date selection, floor/lift details |
+| **Phase 2: INVENTORY** | `InventoryOrchestrator` | Complete - LiDAR + Video scanning, Digital Twin generation |
+| **Phase 3: QUOTE** | `QuoteOrchestrator` | Complete - Service tiers, dynamic pricing, guaranteed price |
+| **Phase 4: BOOKING** | `BookingOrchestrator` | Complete - Provider matching (QWB), Smart Escrow with Stripe |
+| **Phase 5: MOVING** | `MovingOrchestrator` | Complete - GPS tracking, ETA updates, crew communication |
+| **Phase 6: COMPLETE** | `CompleteOrchestrator` | Partial - Handover protocol, signatures, escrow release |
 
-### What's Built (45%)
-| Component | Status |
-|-----------|--------|
-| Living Cost Comparison | ✅ Complete |
-| Tax Rate Integration (ESTV) | ✅ Complete |
-| Disposal Planning (OpenERZ) | ✅ Complete |
-| Recycling Center Lookup | ✅ Complete |
-| Address Change Wizard (22+ institutions) | ✅ Complete |
-| Swiss Post Forwarding Links | ✅ Complete |
-| eUmzugCH Deep Links | ✅ Skeleton |
-| Handover Protocol + Digital Signatures | ✅ Complete |
-| Move Health Index + Canton Scores | ✅ Complete |
-| Data Journalism (Flow Maps, Trends) | ✅ Complete |
+### Missing Components (to be implemented)
 
-### What's Missing (55%)
-| Component | Priority |
-|-----------|----------|
-| Lebensdauertabelle Depreciation Engine | 🔴 HIGH |
-| SBB Journey API Integration | 🔴 HIGH |
-| Computer Vision Damage Assessment | 🟡 MEDIUM |
-| geo.admin Environmental Data (Noise/Solar) | 🟡 MEDIUM |
-| B2B Utility Switchboard API | 🟡 MEDIUM |
-| Swiss Post Address Validation (MAT[CH]) | 🟢 LOW |
-| Furniture Rescue Marketplace | 🟢 LOW |
+**Phase 6 - Swiss Admin Autopilot:**
+- `SwissAdminAutopilot` component (commented out in index.ts)
+- `EUmzugCHIntegration` component
+- `SwissPostReminder` component
+- `SerafeNotification` component
 
----
+**After-Move Care:**
+- `AfterMoveCareMap` exists but not integrated into Phase 6
+- `PostMoveSurvey` exists but needs Phase 6 integration
+- Neighborhood discovery features missing from Complete flow
 
-## Phase 1: Lebensdauertabelle Depreciation Engine (Week 1-2)
-
-The paritätische Lebensdauertabelle is mentioned in multiple vision documents but exists only as PDF. This is a **high-value differentiator** for the handover protocol.
-
-### 1.1 Database Schema
-
-Create a structured database of fixture lifespans:
-
-```text
-┌─────────────────────────────────────────────────────────────┐
-│                   fixture_lifespans                          │
-├─────────────────────────────────────────────────────────────┤
-│ id (uuid)                                                    │
-│ category (enum): walls, floors, kitchen, bathroom, etc.      │
-│ item_de (text): "Dispersionfarbe", "Laminat", "Kühlschrank" │
-│ item_fr (text): French translation                           │
-│ lifespan_years (integer): 8, 15, 10                         │
-│ source (text): "Paritätische Lebensdauertabelle 2024"       │
-│ notes_de (text): Special conditions                         │
-└─────────────────────────────────────────────────────────────┘
-```
-
-### 1.2 Depreciation Calculator Library
-
-**File:** `src/lib/relo-os/swiss-integration/lebensdauer/index.ts`
-
-```text
-┌─────────────────────────────────────────────────────────────┐
-│               DepreciationEngine                             │
-├─────────────────────────────────────────────────────────────┤
-│ + calculateResidualValue(item, installYear, currentYear)    │
-│ + getLifespanForItem(category, itemName)                    │
-│ + isNormalWear(age, lifespan) → boolean                     │
-│ + generateHandoverReport(damages[])                          │
-└─────────────────────────────────────────────────────────────┘
-
-Formula: residualValue = 1 - (age / lifespan)
-If age >= lifespan → residualValue = 0% (no tenant liability)
-```
-
-### 1.3 UI Component: Lebensdauer Calculator
-
-**File:** `src/components/relo-os/LebensdauerCalculator.tsx`
-
-Features:
-- Category dropdown (Wände, Böden, Küche, Bad, etc.)
-- Item selector with autocomplete
-- Installation year input
-- Real-time residual value calculation
-- Visual progress bar showing depreciation
-- "Kein Abzug" badge when 100% amortized
-- Integration with HandoverProtocol.tsx
-
-### 1.4 Data Seeding
-
-Seed ~150 items from official Lebensdauertabelle:
-- Walls: Dispersionfarbe (8y), Tapeten (12y), Abrieb (15y)
-- Floors: Teppich (10y), Laminat (15y), Parkett (40y)
-- Kitchen: Kühlschrank (10y), Herd (20y), Armatur (15y)
-- Bathroom: Lavabo (25y), WC (30y), Dusche (20y)
+**Full Journey Orchestrator:**
+- No unified journey orchestrator that connects all 6 phases
+- No persistent journey state management
 
 ---
 
-## Phase 2: SBB Journey API Integration (Week 2-3)
+## Implementation Plan
 
-This enables the "Commute Capital" algorithm from the blueprint.
+### Task 1: Swiss Admin Autopilot Component
+Create the main Swiss Admin Autopilot component that orchestrates all Swiss-specific administrative tasks.
 
-### 2.1 Edge Function: SBB Journey Proxy
+**New file:** `src/components/relo-os/phase-6-complete/SwissAdminAutopilot.tsx`
 
-**File:** `supabase/functions/sbb-journey/index.ts`
-
-```text
-Endpoints:
-POST /sbb-journey
-  Request: { origin: "8001", destination: "3011", date: "2026-02-15" }
-  Response: {
-    duration_minutes: 75,
-    transfers: 1,
-    connections_per_hour: 4,
-    first_departure: "05:32",
-    last_departure: "23:45",
-    monthly_pass_chf: 420
-  }
-```
-
-SBB API endpoints to integrate:
-- `v3/trips/by-origin-destination` - Journey planning
-- Price API for Abonnement costs
-
-### 2.2 Commute Capital Calculator
-
-**File:** `src/lib/relo-os/commute-capital/index.ts`
+**Features:**
+- Task checklist with progress tracking
+- eUmzugCH deep-link integration
+- Swiss Post forwarding reminder (T-7)
+- Serafe notification link
+- Status persistence in database
 
 ```text
-┌─────────────────────────────────────────────────────────────┐
-│               CommuteCapitalEngine                           │
-├─────────────────────────────────────────────────────────────┤
-│ + calculateCommuteValue(                                     │
-│     hourlyRate: number,      // User's time value (CHF/h)   │
-│     dailyCommute: number,    // Minutes one-way             │
-│     workDaysPerYear: number  // Default: 220                │
-│   ) → annualTimeCost: number                                 │
-│                                                              │
-│ + getTrueCostOfLiving(                                      │
-│     rentSavings: number,                                    │
-│     commuteTimeCost: number,                                │
-│     transitPassCost: number                                 │
-│   ) → netBenefit: number                                    │
-└─────────────────────────────────────────────────────────────┘
++------------------------------------------+
+|  Swiss Admin Autopilot                   |
+|  Progress: 2/4 complete                  |
+|  [===========            ]  50%          |
++------------------------------------------+
+|  [x] eUmzugCH - Ummeldung               |
+|  [x] Swiss Post - Nachsendeauftrag      |
+|  [ ] Serafe - Adressänderung            |
+|  [ ] Third-party notifications          |
++------------------------------------------+
 ```
 
-### 2.3 Enhanced Living Cost Comparison
+### Task 2: eUmzugCH Integration Component
+Create a dedicated component for Swiss electronic move registration.
 
-Update `LivingCostComparison.tsx` to include:
-- Real SBB commute times (not static data)
-- "Time Value of Money" slider (25-100 CHF/hour)
-- Annual commute cost visualization
-- Net benefit/loss calculation
+**New file:** `src/components/relo-os/phase-6-complete/EUmzugCHIntegration.tsx`
+
+**Features:**
+- Commune lookup (based on postal code)
+- eUmzugCH participation check
+- Pre-filled deep-link generation
+- Fallback instructions for non-digital communes
+- Integration with existing `eumzug-ch.ts` library
+
+### Task 3: Swiss Post Reminder Component
+Create a reminder component for address forwarding service.
+
+**New file:** `src/components/relo-os/phase-6-complete/SwissPostReminder.tsx`
+
+**Features:**
+- T-7 day countdown before move date
+- Cost estimation display
+- Pre-filled deep-link to Swiss Post
+- Mark as complete functionality
+
+### Task 4: After-Move Care Integration
+Integrate existing `AfterMoveCareMap` into Phase 6 completion flow.
+
+**Modifications:**
+- Update `CompleteOrchestrator.tsx` to add "After Move Care" tab
+- Add neighborhood discovery section
+- Integrate `PostMoveSurvey` for feedback collection
+
+### Task 5: Unified Journey Orchestrator
+Create a master orchestrator that manages the complete 6-phase journey.
+
+**New file:** `src/components/relo-os/JourneyOrchestrator.tsx`
+
+**Features:**
+- Phase navigation with progress tracking
+- State persistence across sessions
+- Conditional phase skipping (e.g., skip inventory for simple moves)
+- Mobile-optimized stepper UI
+
+### Task 6: Database Schema for Journey State
+Create database tables to persist journey progress.
+
+**New tables:**
+- `relo_journeys` - Main journey tracking
+- `relo_journey_phases` - Per-phase completion data
+
+### Task 7: Phase 6 Complete Index Update
+Update the phase-6-complete index to export all new components.
 
 ---
 
-## Phase 3: geo.admin Environmental Data (Week 3-4)
+## Technical Details
 
-Integrate BAFU noise maps and environmental quality data.
-
-### 3.1 Edge Function: geo.admin Proxy
-
-**File:** `supabase/functions/geo-admin-query/index.ts`
-
-Query layers:
-- `ch.bafu.laerm-strassenlaerm_tag` - Daytime road noise
-- `ch.bafu.laerm-bahnlaerm_nacht` - Nighttime rail noise
-- `ch.bfe.solarenergie-eignung-dacher` - Solar potential
-
-### 3.2 Environmental Quality Types
-
-**File:** `src/lib/relo-os/environmental-quality/types.ts`
+### File Structure After Implementation
 
 ```text
-interface EnvironmentalProfile {
-  noiseDay: number;      // dB
-  noiseNight: number;    // dB
-  solarPotential: 'low' | 'medium' | 'high';
-  fogProbability: number; // days per year
-  quietScore: 0-100;
-  winterSunScore: 0-100;
-}
+src/components/relo-os/
+├── phase-6-complete/
+│   ├── index.ts (updated with new exports)
+│   ├── SwissAdminAutopilot.tsx (NEW)
+│   ├── EUmzugCHIntegration.tsx (NEW)
+│   ├── SwissPostReminder.tsx (NEW)
+│   ├── SerafeNotification.tsx (NEW)
+│   └── AfterMoveCareSection.tsx (NEW)
+├── JourneyOrchestrator.tsx (NEW)
+└── ... (existing files)
 ```
 
-### 3.3 Neighborhood Quality Overlay
+### Database Schema
 
-Add to `neighborhood_profiles` table:
-- `noise_day_db` (integer)
-- `noise_night_db` (integer)
-- `solar_potential_kwh` (integer)
-- `quiet_score` (integer)
+```sql
+-- Journey tracking table
+CREATE TABLE relo_journeys (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id),
+  lead_id UUID REFERENCES leads(id),
+  current_phase TEXT NOT NULL DEFAULT 'route',
+  archetype TEXT, -- overwhelmed_professional, family_manager, etc.
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now(),
+  completed_at TIMESTAMPTZ,
+  -- Phase data stored as JSON
+  route_data JSONB,
+  inventory_data JSONB,
+  quote_data JSONB,
+  booking_data JSONB,
+  moving_data JSONB,
+  complete_data JSONB
+);
+
+-- Swiss Admin tasks tracking
+CREATE TABLE swiss_admin_tasks (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  journey_id UUID REFERENCES relo_journeys(id),
+  task_type TEXT NOT NULL, -- eumzug, swiss_post, serafe, etc.
+  status TEXT DEFAULT 'pending',
+  completed_at TIMESTAMPTZ,
+  deep_link TEXT,
+  notes TEXT
+);
+```
+
+### Component Dependencies
+
+- Existing: `AfterMoveCareMap`, `PostMoveSurvey`, Swiss integration libs
+- UI: Tabs, Progress, Badge, Button (all from existing UI kit)
+- State: React Query for server state, local state for UI
 
 ---
 
-## Phase 4: Computer Vision Damage Assessment (Week 4-5)
+## Implementation Order
 
-AI-powered surface defect classification for handover disputes.
-
-### 4.1 Edge Function: Damage Assessment
-
-**File:** `supabase/functions/assess-damage/index.ts`
-
-Using Lovable AI (google/gemini-2.5-pro with vision):
-
-```text
-Input: Base64 image of surface defect
-Output: {
-  classification: "scratch" | "hole" | "stain" | "crack" | "wear",
-  severity: "superficial" | "minor" | "moderate" | "severe",
-  estimated_depth_mm: number,
-  is_normal_wear: boolean,
-  confidence: number,
-  recommendation_de: string
-}
-```
-
-### 4.2 Integration with Handover Protocol
-
-Enhance `HandoverProtocol.tsx`:
-- "AI analysieren" button when photo is captured
-- Overlay showing AI classification
-- Auto-link to Lebensdauertabelle item
-- Combined report: Photo + AI Assessment + Depreciation
+1. **Task 6** - Database schema (foundation for persistence)
+2. **Task 2** - eUmzugCH Integration (core Swiss feature)
+3. **Task 3** - Swiss Post Reminder
+4. **Task 1** - Swiss Admin Autopilot (combines 2 & 3)
+5. **Task 4** - After-Move Care Integration
+6. **Task 7** - Phase 6 Index Update
+7. **Task 5** - Journey Orchestrator (connects everything)
 
 ---
 
-## Phase 5: B2B Utility Switchboard (Week 5-6)
+## Mobile-First Considerations
 
-### 5.1 Utility Provider Registry
-
-**Database table:** `utility_providers`
-
-```text
-┌─────────────────────────────────────────────────────────────┐
-│                   utility_providers                          │
-├─────────────────────────────────────────────────────────────┤
-│ id, name, type (electricity|gas|water|internet)             │
-│ service_areas (text[]) - postal code prefixes               │
-│ api_available (boolean)                                      │
-│ notification_url (text) - for future B2B API                │
-│ form_template_url (text) - PDF form for manual notification │
-└─────────────────────────────────────────────────────────────┘
-```
-
-### 5.2 Utility Notification Wizard
-
-**File:** `src/components/relo-os/UtilityNotificationWizard.tsx`
-
-Features:
-- Auto-detect providers by postal code
-- Pre-filled notification forms
-- Meter reading input with photo
-- Direct API submission (where available)
-- PDF generation for manual submission
-
-### 5.3 Serafe Wizard Enhancement
-
-Upgrade from simple link to full wizard:
-- Household ID lookup
-- Date overlap calculator
-- Pre-filled notification generation
-- Direct submission link
+- All new components will use existing responsive patterns
+- Touch targets minimum 52px
+- Bottom sheet navigation for mobile journey steps
+- Swipeable phase transitions using framer-motion
+- Sticky progress indicator at top
 
 ---
 
-## Phase 6: Furniture Rescue Marketplace (Week 6-7)
+## Estimated Effort
 
-### 6.1 Brocki Integration
+| Task | Complexity | Est. Time |
+|------|------------|-----------|
+| Database Schema | Low | 15 min |
+| eUmzugCH Integration | Medium | 30 min |
+| Swiss Post Reminder | Low | 15 min |
+| Swiss Admin Autopilot | Medium | 30 min |
+| After-Move Care Integration | Medium | 25 min |
+| Phase 6 Index Update | Low | 5 min |
+| Journey Orchestrator | High | 45 min |
 
-**Database table:** `brocki_partners`
-
-```text
-┌─────────────────────────────────────────────────────────────┐
-│                    brocki_partners                           │
-├─────────────────────────────────────────────────────────────┤
-│ id, name, city, postal_code                                  │
-│ accepted_categories (text[])                                 │
-│ offers_pickup (boolean)                                      │
-│ contact_email, contact_phone                                 │
-│ website_url                                                  │
-└─────────────────────────────────────────────────────────────┘
-```
-
-### 6.2 "Don't Throw Away" Marketplace
-
-**File:** `src/components/relo-os/FurnitureRescue.tsx`
-
-Features:
-- Item photo + CV classification
-- Auto-suggest: Donate / Sell / Dispose
-- Brocki matching by location + category
-- One-click pickup request
-- Integration with Tutti.ch / Ricardo API
-
----
-
-## Technical Architecture
-
-### New Database Tables (5 total)
-
-```text
-1. fixture_lifespans      (~150 items)
-2. utility_providers      (~50 providers)
-3. brocki_partners        (~100 locations)
-4. environmental_readings (cached geo.admin data)
-5. damage_assessments     (CV results + user data)
-```
-
-### New Edge Functions (4 total)
-
-```text
-1. sbb-journey           - SBB API proxy
-2. geo-admin-query       - Environmental data
-3. assess-damage         - CV damage classification
-4. utility-notify        - B2B utility notifications
-```
-
-### New UI Components (6 total)
-
-```text
-1. LebensdauerCalculator.tsx     - Depreciation engine UI
-2. CommuteCapitalCalculator.tsx  - Time-value commute tool
-3. EnvironmentalQualityCard.tsx  - Noise/solar display
-4. DamageAssessmentOverlay.tsx   - CV results in handover
-5. UtilityNotificationWizard.tsx - Provider notifications
-6. FurnitureRescue.tsx           - Brocki marketplace
-```
-
----
-
-## Implementation Timeline
-
-| Week | Phase | Deliverable |
-|------|-------|-------------|
-| 1-2 | Lebensdauertabelle | Database + Calculator + Handover Integration |
-| 2-3 | SBB Integration | Edge Function + Commute Capital Calculator |
-| 3-4 | geo.admin Data | Environmental Quality Layer |
-| 4-5 | CV Damage Assessment | AI Edge Function + Handover Integration |
-| 5-6 | Utility Switchboard | Provider Registry + Notification Wizard |
-| 6-7 | Furniture Rescue | Brocki Integration + Marketplace UI |
-
----
-
-## Strategic Value
-
-### Link-Worthiness by Feature
-
-| Feature | Target Stakeholders |
-|---------|---------------------|
-| Lebensdauertabelle | Mieterverband, HEV, Legal blogs |
-| Commute Capital | Employers, ESG organizations, SBB |
-| Quiet Score | Health insurers, family portals |
-| Damage AI | Insurance companies, property managers |
-| Utility Switch | Energy providers (EWZ, BKW, Groupe E) |
-| Furniture Rescue | Sustainability orgs, Smart City portals |
-
-### North Star Alignment
-
-Each feature directly supports the **Perfect Moves Delivered (PMD)** metric:
-- **0 damage claims** → Lebensdauertabelle + CV Assessment
-- **On-time arrival** → Already in Phase 5 (GPS tracking)
-- **<1 hour admin effort** → Swiss Admin Autopilot expansion
-
----
-
-## Next Steps
-
-1. **Approve this plan** to begin Phase 1 (Lebensdauertabelle)
-2. Start with database schema + seeding official table data
-3. Build depreciation calculator library
-4. Integrate with existing HandoverProtocol component
-5. Test end-to-end handover flow with depreciation logic
+**Total estimated implementation time: ~2.5 hours**
