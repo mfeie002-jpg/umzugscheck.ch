@@ -109,10 +109,13 @@ const DEFAULT_DEVICE: () => DeviceConfig = () => ({
 });
 
 export default function ABComparisonLab() {
+  // Default: 5 devices with different A/B test combinations
   const [devices, setDevices] = useState<DeviceConfig[]>([
-    { ...DEFAULT_DEVICE(), id: 'device-1' },
-    { ...DEFAULT_DEVICE(), id: 'device-2', socialProof: 'A' },
-    { ...DEFAULT_DEVICE(), id: 'device-3', socialProof: 'B' },
+    { ...DEFAULT_DEVICE(), id: 'device-1', homepage: 'A', socialProof: 'I' },
+    { ...DEFAULT_DEVICE(), id: 'device-2', homepage: 'B', socialProof: 'A' },
+    { ...DEFAULT_DEVICE(), id: 'device-3', homepage: 'C', socialProof: 'B' },
+    { ...DEFAULT_DEVICE(), id: 'device-4', homepage: 'A', socialProof: 'D', navigation: 'V15' },
+    { ...DEFAULT_DEVICE(), id: 'device-5', homepage: 'C', socialProof: 'F', navigation: 'V1' },
   ]);
   
   const [activePreset, setActivePreset] = useState<string>('custom');
@@ -552,6 +555,9 @@ export default function ABComparisonLab() {
                             border: 'none',
                           }}
                           title={`Device ${device.id}`}
+                          // Sandbox WITHOUT allow-same-origin to prevent localStorage/session conflicts
+                          // Each iframe gets isolated storage context
+                          sandbox="allow-scripts allow-forms allow-popups allow-pointer-lock"
                         />
                       </div>
 
