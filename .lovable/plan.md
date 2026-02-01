@@ -224,15 +224,38 @@ Bemerkung: Nicht global erzwingen, sondern als Option für A/B-Testing bereitste
 
 ## Zusammenfassung
 
-| Komponente | Aktion | Aufwand |
-|------------|--------|---------|
-| TrustScoreWidget | Neu bauen | 2-3h |
-| CityPricesSection | Neu bauen | 2-3h |
-| ExitIntentMobileSheet | Neu bauen | 2h |
-| SavingsCalculatorSimple | Variante erstellen | 1-2h |
-| Georgia Typography | CSS-Variable | 30min |
-| LiveActivityBanner | Review (existiert) | 30min |
+| Komponente | Aktion | Aufwand | Status |
+|------------|--------|---------|--------|
+| TrustScoreWidget | Neu bauen | 2-3h | ✅ Fertig |
+| CityPricesSection | Neu bauen | 2-3h | ✅ Fertig |
+| ExitIntentMobileSheet | Neu bauen | 2h | ✅ Fertig |
+| SavingsCalculatorSimple | Variante erstellen | 1-2h | ✅ Fertig |
+| Georgia Typography | CSS-Variable | 30min | ✅ Fertig |
+| LiveActivityBanner | Review (existiert) | 30min | ⏸️ Bereits vorhanden |
 
 **Gesamtaufwand:** ca. 8-12 Stunden
 
 Dieser Plan fügt die wertvollen UI-Ideen aus dem Rebuild-Prompt hinzu, **ohne** die bestehende Infrastruktur (A/B-Testing, AI Video Calculator, dynamische Daten) zu zerstören.
+
+---
+
+## Implementierte Dateien
+
+- `src/components/homepage/TrustScoreWidget.tsx` - SVG Ring-Chart 94/100
+- `src/components/homepage/CityPricesSection.tsx` - Stadt-Selector mit Preis-Stats
+- `src/components/homepage/SavingsCalculatorSimple.tsx` - 3-Pills Sparrechner
+- `src/components/ExitIntentMobileSheet.tsx` - Mobile Bottom-Sheet bei Scroll-Up
+- `src/index.css` - `--font-headline: Georgia` Variable hinzugefügt
+
+## Nächste Schritte
+
+Die Komponenten sind erstellt und exportiert. Um sie zu nutzen:
+
+```tsx
+// In Index.tsx oder anderen Seiten:
+import { TrustScoreWidget, CityPricesSection, SavingsCalculatorSimple } from "@/components/homepage";
+import { ExitIntentMobileSheet } from "@/components/ExitIntentMobileSheet";
+
+// Für Georgia Headlines (optional):
+<h1 className="font-headline">Swiss Banking Style</h1>
+```
