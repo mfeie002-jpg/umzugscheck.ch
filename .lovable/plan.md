@@ -1,288 +1,238 @@
 
-# 4 Trust-Landingpages zum Vergleichen
+# Cherry-Pick Implementation Plan
 
 ## Übersicht
 
-Ich werde **4 komplett unterschiedliche Landingpages** erstellen, die verschiedene Trust-Strategien aus dem Feedback-Dokument testen. Die Seiten werden unter `/test/trust-v1`, `/test/trust-v2`, `/test/trust-v3` und `/test/trust-v4` verfügbar sein.
+Basierend auf der Konsolidierung werden **3 neue Komponenten** gebaut und **3 bestehende optimiert**.
 
 ---
 
-## Die 4 Strategien (Gruppiert - NICHT gemischt)
+## Teil 1: Neue Komponenten (3 Stück)
 
-### V1: "Der Behörden-Fokus" (Staatliche Autorität)
-**Philosophie:** "Wenn der Staat sagt, wir sind echt, dann sind wir echt"
+### 1.1 TrustScoreWidget.tsx
 
-| Element | Umsetzung |
-|---------|-----------|
-| Hero | Zefix/UID-Verifikationslink prominent ("Im Handelsregister prüfbar") |
-| Trust-Signal | Schweizer Wappen + eUmzugCH Integration |
-| CTA-Proximity | Kleine UID-Nummer unter dem Button |
-| Farbschema | Schweizer Rot + Weiss, formal |
-| Testimonials | KEINE - nur Fakten |
-| Footer | Vollständiges Impressum + UID |
+**Beschreibung:** Ein visuelles Widget mit einem SVG-Ring-Chart, das einen Trust-Score von 94/100 anzeigt, plus 4 Kategorie-Fortschrittsbalken.
 
-**Komponenten:**
-- `TrustHeroV1Zefix.tsx` - Hero mit Zefix-Link
-- `StateAuthorityBar.tsx` - eUmzugCH, Die Post, Kantone
-- `LegalFooterStrip.tsx` - UID + Handelsregister-Link
+**Technische Umsetzung:**
+- SVG-Kreis mit stroke-dasharray für den gefüllten Bereich
+- Framer Motion für Entrance-Animation
+- 4 horizontale Progress-Bars mit Labels
 
----
+**Daten (statisch):**
+- Transparenz: 23/25 (92%)
+- Partnerschaften: 25/25 (100%)
+- Bewertungen: 24/25 (96%)
+- Datensicherheit: 22/25 (88%)
+- Gesamtscore: 94/100
 
-### V2: "Der Branchen-Fokus" (Verbands-Legitimität)
-**Philosophie:** "Branchenverband = Qualitätsstandard"
+**Layout:**
+- Desktop: Ring links, Kategorien rechts (horizontal)
+- Mobile: Ring oben, Kategorien darunter (vertikal)
 
-| Element | Umsetzung |
-|---------|-----------|
-| Hero | SMA (Swiss Movers Association) Badge prominent |
-| Trust-Signal | ASTAG + SPEDLOGSWISS + Fachverband |
-| CTA-Proximity | "SMA-zertifizierte Partner" |
-| Farbschema | Professional Blau, Business-Stil |
-| Testimonials | Video von SMA-zertifizierter Firma |
-| Firmen-Cards | SMA-Badge auf jeder Karte |
-
-**Komponenten:**
-- `TrustHeroV2SMA.tsx` - Hero mit SMA-Badge
-- `IndustryAssociationBar.tsx` - Verbands-Logos
-- `CertifiedCompanyCard.tsx` - Firmen mit Branchen-Badges
-
----
-
-### V3: "Der Konsumenten-Fokus" (Käuferschutz)
-**Philosophie:** "Du bist geschützt - emotional sicher"
-
-| Element | Umsetzung |
-|---------|-----------|
-| Hero | Konsumentenbund-Siegel + Geld-zurück-Garantie |
-| Trust-Signal | Trusted Shops + SKS + Reklamationszentrale |
-| CTA-Proximity | "30 Tage Rückgaberecht" Badge |
-| Farbschema | Grün (Sicherheit), warm |
-| Testimonials | Echte Namen + Fotos (Social Proof heavy) |
-| Pain Section | "Was wenn etwas schief geht?" mit Lösung |
-
-**Komponenten:**
-- `TrustHeroV3Consumer.tsx` - Hero mit Käuferschutz
-- `ConsumerProtectionBar.tsx` - Trusted Shops, SKS
-- `GuaranteesGridV3.tsx` - 4 Garantie-Karten (erweitert)
-- `RealTestimonialsV3.tsx` - Testimonials mit echten Daten
-
----
-
-### V4: "Best of Lovable Analysis" (Meine Synthese)
-**Philosophie:** "Das Beste aus allen Welten, psychologisch optimiert"
-
-| Element | Umsetzung |
-|---------|-----------|
-| Hero | Trust-Pills (klickbar) → Trust-Drawer (Bottom Sheet) |
-| Above-Fold | "Bekannt aus" Media-Logos + Live-Counter |
-| Trust-Floor | 80px Anchor am Hero-Ende |
-| CTA-Proximity | Form-Anchor mit Mikro-Badges |
-| Mid-Page | Interaktiver Trust-Hub mit 3 Tabs |
-| Farbschema | Premium Blau + Gold Akzente |
-| Footer | Sticky Mobile Bar + alle Verifikationslinks |
-
-**Neue Komponenten:**
-- `TrustPills.tsx` - Klickbare Trust-Chips unter CTA
-- `TrustDrawer.tsx` - Bottom Sheet mit detaillierter Verifikation
-- `TrustFloor.tsx` - 80px Hero-Abschluss-Balken
-- `FormAnchorTrust.tsx` - Trust in Formular-Karte
-- `InteractiveTrustHub.tsx` - 3-Tab Hub (Behörden/Branche/Sicherheit)
-- `StickyMobileTrustBar.tsx` - Erscheint bei scrollY > 500
-
----
-
-## Seitenstruktur
-
-```text
-/test/trust-v1  →  TrustLandingV1.tsx  (Behörden-Fokus)
-/test/trust-v2  →  TrustLandingV2.tsx  (Branchen-Fokus)
-/test/trust-v3  →  TrustLandingV3.tsx  (Konsumenten-Fokus)
-/test/trust-v4  →  TrustLandingV4.tsx  (Best of Lovable)
-/test/trust-comparison  →  TrustComparisonHub.tsx  (Alle 4 nebeneinander)
+**Neuer Code:**
+```
+Datei: src/components/homepage/TrustScoreWidget.tsx
+- SVG Ring (120px, stroke-width 10)
+- Ring-Fill Animation bei Scroll-Into-View
+- 4 Kategorie-Bars mit Progress-Animation
+- Responsive Layout (flex-col auf Mobile, flex-row auf Desktop)
 ```
 
+**Platzierung:** Nach Testimonials-Section, vor FAQ
+
 ---
 
-## Technische Details
+### 1.2 CityPricesSection.tsx
 
-### Neue Dateien
+**Beschreibung:** Interaktive Sektion mit Stadt-Selector und dynamischen Preis-Stats.
 
-```text
-src/pages/test/
-├── TrustLandingV1.tsx          # Behörden/Staatlich
-├── TrustLandingV2.tsx          # Branchen/Verbände  
-├── TrustLandingV3.tsx          # Konsumenten/Käuferschutz
-├── TrustLandingV4.tsx          # Best of Lovable
-└── TrustComparisonHub.tsx      # Übersichtsseite
+**Technische Umsetzung:**
+- 6 Stadt-Pills als Tab-Navigation
+- Stats-Card mit 3 Spalten (Preis, Firmen, Ersparnis)
+- React State für aktive Stadt
+- Instant Update bei Klick (kein Reload)
 
-src/components/trust-variants/
-├── v1/
-│   ├── TrustHeroV1Zefix.tsx
-│   ├── StateAuthorityBar.tsx
-│   └── LegalFooterStrip.tsx
-├── v2/
-│   ├── TrustHeroV2SMA.tsx
-│   ├── IndustryAssociationBar.tsx
-│   └── CertifiedCompanyCard.tsx
-├── v3/
-│   ├── TrustHeroV3Consumer.tsx
-│   ├── ConsumerProtectionBar.tsx
-│   ├── GuaranteesGridV3.tsx
-│   └── RealTestimonialsV3.tsx
-└── v4/
-    ├── TrustPills.tsx
-    ├── TrustDrawer.tsx
-    ├── TrustFloor.tsx
-    ├── FormAnchorTrust.tsx
-    ├── InteractiveTrustHub.tsx
-    └── StickyMobileTrustBar.tsx
+**Daten:**
+| Stadt | Preis | Firmen | Ersparnis |
+|-------|-------|--------|-----------|
+| Zürich | CHF 1'400 | 48 | 32% |
+| Bern | CHF 1'100 | 36 | 29% |
+| Basel | CHF 1'200 | 29 | 31% |
+| Genf | CHF 1'600 | 22 | 28% |
+| Luzern | CHF 950 | 18 | 34% |
+| St. Gallen | CHF 880 | 14 | 33% |
+
+**Layout:**
+- Headline zentriert
+- Stadt-Pills: flex-wrap, justify-center
+- Stats-Card: 3 Spalten auf Desktop, gestapelt auf Mobile
+- CTA-Button: "Angebote in [Stadt] vergleichen"
+
+**Neuer Code:**
+```
+Datei: src/components/homepage/CityPricesSection.tsx
+- useState für selectedCity
+- Scroll-Entrance Animation (Intersection Observer)
+- Dynamischer CTA-Text mit Stadt-Name
 ```
 
-### Routing
+**Platzierung:** Nach Testimonials oder TrustScoreWidget
 
-```tsx
-// App.tsx - Neue Routes
-<Route path="/test/trust-v1" element={<TrustLandingV1 />} />
-<Route path="/test/trust-v2" element={<TrustLandingV2 />} />
-<Route path="/test/trust-v3" element={<TrustLandingV3 />} />
-<Route path="/test/trust-v4" element={<TrustLandingV4 />} />
-<Route path="/test/trust-comparison" element={<TrustComparisonHub />} />
+---
+
+### 1.3 ExitIntentMobileSheet.tsx
+
+**Beschreibung:** Mobile-only Bottom-Sheet, das bei schnellem Scroll-Up erscheint.
+
+**Technische Umsetzung:**
+- Trigger: scrollY > 300px + scroll-velocity > 100px in < 500ms
+- Vaul Bottom-Sheet (bereits installiert)
+- Einmal pro Session (sessionStorage)
+- Random Testimonial aus Pool
+
+**Trigger-Logik:**
+```typescript
+// Scroll-Velocity Detection
+let lastScrollY = 0;
+let lastTime = Date.now();
+
+const handleScroll = () => {
+  const currentY = window.scrollY;
+  const currentTime = Date.now();
+  const velocity = (lastScrollY - currentY) / (currentTime - lastTime) * 1000;
+  
+  if (currentY > 300 && velocity > 200 && !hasTriggered) {
+    setIsOpen(true);
+    setHasTriggered(true);
+    sessionStorage.setItem('exit_mobile_shown', 'true');
+  }
+  
+  lastScrollY = currentY;
+  lastTime = currentTime;
+};
 ```
 
----
+**Inhalt:**
+- "Noch nicht sicher?" - Headline
+- Random Testimonial (kompakt)
+- "Jetzt kostenlos vergleichen" - CTA
+- X-Button zum Schliessen
 
-## Visuelle Unterschiede
+**Neuer Code:**
+```
+Datei: src/components/ExitIntentMobileSheet.tsx
+- Vaul Sheet-Komponente
+- useScrollVelocity Custom Hook
+- Mobile-only (hidden md:hidden)
+```
 
-| Aspekt | V1 Behörden | V2 Branchen | V3 Konsumenten | V4 Best-Of |
-|--------|-------------|-------------|----------------|------------|
-| **Primärfarbe** | Rot (Schweiz) | Blau (Corporate) | Grün (Sicherheit) | Blau+Gold (Premium) |
-| **Hero-Style** | Formal, clean | Business, stark | Emotional, warm | Modern, interaktiv |
-| **Trust-Position** | Unter H1 | Badge-Strip | Über + Unter CTA | Pills → Drawer |
-| **Testimonials** | Keine | 1 Video | 3+ mit Fotos | Interaktiv |
-| **Mobile** | Minimal | Cards | Carousel | Bottom Sheet |
-| **CTA-Text** | "Jetzt anfragen" | "Partner finden" | "Sicher vergleichen" | "Offerten erhalten" |
-
----
-
-## Sektions-Vergleich pro Seite
-
-### V1: Behörden (9 Sektionen)
-1. Hero + Zefix-Link
-2. State Authority Bar (eUmzugCH, Post, Kantone)
-3. Fakten-Grid (keine Emotionen)
-4. How it Works
-5. Preisbeispiele (transparent)
-6. FAQ (sachlich)
-7. Legal Footer Strip
-8. Impressum-Expanded
-9. Final CTA
-
-### V2: Branchen (10 Sektionen)
-1. Hero + SMA-Badge
-2. Industry Association Bar
-3. Zertifizierte Firmen Preview
-4. Qualitätsstandards erklärt
-5. How it Works
-6. Video: SMA-Partner-Interview
-7. Firmen-Vergleich mit Badges
-8. FAQ
-9. Für Firmen CTA
-10. Final CTA
-
-### V3: Konsumenten (12 Sektionen)
-1. Hero + Konsumentenbund
-2. Consumer Protection Bar
-3. "Was kann schief gehen?" Pain Section
-4. Guarantees Grid (4 Karten)
-5. Testimonials mit Fotos (3+)
-6. How it Works
-7. Preisbeispiele
-8. Reklamationszentrale Link
-9. Alternative Contact
-10. FAQ (angstbasiert)
-11. Trust Footer
-12. Final CTA
-
-### V4: Best-Of (13 Sektionen)
-1. Hero + Trust-Pills (klickbar)
-2. Trust Floor (80px)
-3. Media Logos + Live Counter
-4. Pain vs Gain
-5. How it Works
-6. Trust Hub (3-Tab interaktiv)
-7. Company Preview
-8. Video Rechner Teaser
-9. Guarantees
-10. Testimonials
-11. FAQ
-12. SEO Accordion
-13. Sticky Mobile Bar + Final CTA
+**Platzierung:** In Index.tsx als globaler Wrapper
 
 ---
 
-## Trust-Entities pro Variante
+## Teil 2: Optimierungen bestehender Komponenten
 
-### V1 (Behörden)
-- Zefix/UID-Register (Link)
-- eUmzugCH
-- Die Post
-- Kantone (ZH, BE, BS)
-- Swiss Made Software
-- Swiss Hosting
+### 2.1 SocialProofTicker - Inline-Variante hinzufügen
 
-### V2 (Branchen)
-- SMA (Swiss Movers Association) **NEU**
-- ASTAG
-- SPEDLOGSWISS **NEU**
-- Mieterverband
-- FIDI **NEU**
+**Aktueller Stand:** Popup-Benachrichtigungen unten links
 
-### V3 (Konsumenten)
-- Schweizerischer Konsumentenbund **NEU**
-- Stiftung für Konsumentenschutz (SKS) **NEU**
-- Trusted Shops
-- Die Mobiliar
-- Reklamationszentrale **NEU**
-- TWINT/Raiffeisen
+**Erweiterung:** Zusätzliche inline Ticker-Variante als Section
 
-### V4 (Best-Of)
-Kombiniert selektiv:
-- Top 2 pro Kategorie
-- SMA + Zefix + Konsumentenbund
-- Media Logos (SRF, NZZ, TCS)
-- Live Activity Feed
+**Änderungen:**
+```
+Datei: src/components/homepage/LiveActivityBanner.tsx (existiert bereits!)
+- Review und ggf. Design-Update
+- Nachrichten-Pool erweitern mit Ersparnis-Daten
+```
+
+Bemerkung: `LiveActivityBanner.tsx` existiert bereits und macht genau das. Nur Review nötig.
 
 ---
 
-## Vergleichs-Hub Seite
+### 2.2 SavingsCalculator - Design-Update
 
-Die `/test/trust-comparison` Seite zeigt:
-1. Alle 4 Varianten in Tabs oder Cards
-2. Quick-Stats pro Variante
-3. "In Browser öffnen" Links
-4. A/B Test Notizen Bereich
-5. Mobile Preview Toggle
+**Aktueller Stand:** `PremiumSavingsCalculator.tsx` mit Sliders
 
----
+**Erweiterung:** Zusätzliche Variante mit 3 Grossen-Pills (Klein/Mittel/Gross)
 
-## Priorisierung der Implementierung
+**Änderungen:**
+```
+Datei: src/components/homepage/SavingsCalculatorSimple.tsx (NEU)
+- 3 Pills statt 2 Sliders für schnellere Interaktion
+- Grössere Ersparnis-Anzeige in Grün
+- Strikethrough für Originalpreis
+```
 
-| Phase | Aufgabe | Zeit |
-|-------|---------|------|
-| 1 | V4 (Best-Of) - da am komplexesten | 30 min |
-| 2 | V1 (Behörden) - schnell/clean | 15 min |
-| 3 | V2 (Branchen) | 15 min |
-| 4 | V3 (Konsumenten) | 15 min |
-| 5 | Comparison Hub | 10 min |
-| 6 | Routing + Navigation | 5 min |
-
-**Total: ~90 Minuten**
+**Daten (wie im Prompt):**
+- Klein (1-2 Zi): CHF 1'200 → CHF 840 (30%)
+- Mittel (3-4 Zi): CHF 1'800 → CHF 1'260 (30%)
+- Gross (5+ Zi): CHF 2'800 → CHF 1'960 (30%)
 
 ---
 
-## Ziel
+### 2.3 Georgia Typography - CSS-Variable
 
-Nach der Implementierung kannst du:
-1. Alle 4 Seiten nebeneinander vergleichen
-2. Mobile + Desktop testen
-3. Entscheiden welche Strategie am besten konvertiert
-4. Elemente von verschiedenen Varianten in die Hauptseite übernehmen
+**Aktueller Stand:** Georgia nur für NZZ-Logo
+
+**Erweiterung:** Optionale CSS-Variable für Headlines
+
+**Änderungen:**
+```css
+/* In src/index.css oder tailwind.config */
+:root {
+  --font-headline: Georgia, serif;
+}
+
+/* Neue Utility-Klasse */
+.font-headline {
+  font-family: var(--font-headline);
+}
+```
+
+Bemerkung: Nicht global erzwingen, sondern als Option für A/B-Testing bereitstellen.
+
+---
+
+## Teil 3: Implementierungs-Reihenfolge
+
+### Phase 1: Neue Komponenten (Priorität Hoch)
+1. `TrustScoreWidget.tsx` - 2-3 Stunden
+2. `CityPricesSection.tsx` - 2-3 Stunden  
+3. `ExitIntentMobileSheet.tsx` - 2 Stunden
+
+### Phase 2: Optimierungen (Priorität Mittel)
+4. `SavingsCalculatorSimple.tsx` - 1-2 Stunden
+5. Typography CSS-Variable - 30 Minuten
+
+### Phase 3: Integration (Priorität Niedrig)
+6. Komponenten in `Index.tsx` einbinden
+7. A/B-Test-Varianten erstellen
+
+---
+
+## Teil 4: Was NICHT gemacht wird
+
+### MockComparisonPreview
+- **Grund:** `PremiumCompanyComparison.tsx` und `CompanyComparisonTable.tsx` existieren bereits
+- **Aktion:** Keine neue Komponente, bestehende bei Bedarf stylen
+
+### Kompletter Rebuild
+- **Grund:** Würde AI Video Calculator und A/B-Testing zerstören
+- **Aktion:** Cherry-Pick Ansatz stattdessen
+
+---
+
+## Zusammenfassung
+
+| Komponente | Aktion | Aufwand |
+|------------|--------|---------|
+| TrustScoreWidget | Neu bauen | 2-3h |
+| CityPricesSection | Neu bauen | 2-3h |
+| ExitIntentMobileSheet | Neu bauen | 2h |
+| SavingsCalculatorSimple | Variante erstellen | 1-2h |
+| Georgia Typography | CSS-Variable | 30min |
+| LiveActivityBanner | Review (existiert) | 30min |
+
+**Gesamtaufwand:** ca. 8-12 Stunden
+
+Dieser Plan fügt die wertvollen UI-Ideen aus dem Rebuild-Prompt hinzu, **ohne** die bestehende Infrastruktur (A/B-Testing, AI Video Calculator, dynamische Daten) zu zerstören.
