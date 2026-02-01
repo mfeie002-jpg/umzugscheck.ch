@@ -235,15 +235,15 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
             className="order-1 lg:order-2"
           >
             <div className="bg-card rounded-2xl shadow-xl border border-border p-4 md:p-6 relative">
-              {/* Best Price Badge */}
-              <div className="absolute -top-3 left-0 right-0 flex justify-center">
+              {/* Best Price Badge - positioned inside card with proper spacing */}
+              <div className="flex justify-center mb-3">
                 <span className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-secondary text-white text-xs font-bold rounded-full shadow-lg whitespace-nowrap">
                   <Trophy className="w-3.5 h-3.5" />
                   Bester Preis garantiert
                 </span>
               </div>
 
-              <div className="space-y-4 pt-2">
+              <div className="space-y-4">
                 {/* Form Header */}
                 <div className="text-center space-y-1">
                   <h2 className="text-xl md:text-2xl font-bold text-foreground">
