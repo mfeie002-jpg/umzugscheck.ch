@@ -498,11 +498,13 @@ export const PremiumHeroSection = () => {
                     </TabsTrigger>
                   </TabsList>
                   
-                  {/* Hint below tabs for variants A and B */}
-                  <TabMethodHint position="below" />
+                  {/* Hint below tabs for variants A and B - with proper spacing */}
+                  <div className="relative z-0">
+                    <TabMethodHint position="below" />
+                  </div>
                   
                   {/* Video Tab - Friendly, not intimidating */}
-                  <TabsContent value="video" className="mt-4 space-y-3">
+                  <TabsContent value="video" className="mt-3 pt-1 space-y-3">
                     <Link to="/video-offerte" className="block">
                       <div className="relative group cursor-pointer">
                         <div className="border-2 border-secondary/40 hover:border-secondary rounded-xl p-5 sm:p-6 text-center transition-all bg-gradient-to-br from-secondary/5 to-secondary/10 hover:from-secondary/10 hover:to-secondary/15">
@@ -563,7 +565,7 @@ export const PremiumHeroSection = () => {
                   </TabsContent>
                   
                   {/* KI-Chat Tab - Conversational experience */}
-                  <TabsContent value="chat" className="mt-4 space-y-3">
+                  <TabsContent value="chat" className="mt-3 pt-1 space-y-3">
                     <Link to="/umzugsofferten-v2e" className="block">
                       <div className="relative group cursor-pointer">
                         <div className="border-2 border-violet-500/40 hover:border-violet-500 rounded-xl p-5 sm:p-6 text-center transition-all bg-gradient-to-br from-violet-500/5 to-violet-500/10 hover:from-violet-500/10 hover:to-violet-500/15">
@@ -602,7 +604,7 @@ export const PremiumHeroSection = () => {
                   </TabsContent>
                   
                   {/* WhatsApp Tab - Direct contact */}
-                  <TabsContent value="whatsapp" className="mt-4 space-y-3">
+                  <TabsContent value="whatsapp" className="mt-3 pt-1 space-y-3">
                     <a 
                       href="https://wa.me/41445551234?text=Hallo%2C%20ich%20m%C3%B6chte%20eine%20Umzugsofferte%20erhalten.%20Bitte%20kontaktieren%20Sie%20mich."
                       target="_blank"
@@ -657,9 +659,9 @@ export const PremiumHeroSection = () => {
                   </TabsContent>
                   
                   {/* Form Tab - Default with Video Hint */}
-                  <TabsContent value="form" className="mt-4 space-y-3 md:space-y-4">
-                    {/* Video Hint Banner */}
-                    <Link to="/video-offerte" className="block group">
+                  <TabsContent value="form" className="mt-3 pt-1 space-y-3 md:space-y-4">
+                    {/* Video Hint Banner - with clear separation from tabs */}
+                    <Link to="/video-offerte" className="block group mt-1">
                       <div className="flex items-center gap-3 p-2.5 bg-secondary/10 hover:bg-secondary/15 rounded-lg border border-secondary/20 transition-colors">
                         <div className="w-8 h-8 rounded-lg bg-secondary/20 flex items-center justify-center flex-shrink-0">
                           <Video className="h-4 w-4 text-secondary" />
