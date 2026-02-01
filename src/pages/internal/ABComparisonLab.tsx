@@ -7,7 +7,7 @@
 
 import { useState, useCallback, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Plus, Minus, Smartphone, Monitor, Tablet, Settings2, Copy, RefreshCw, Maximize2, Grid3X3 } from 'lucide-react';
+import { Plus, Minus, Smartphone, Monitor, Tablet, Settings2, Copy, RefreshCw, Maximize2, Grid3X3, Shuffle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card } from '@/components/ui/card';
@@ -124,6 +124,19 @@ export default function ABComparisonLab() {
       iframe.src = iframe.src;
     }
   }, []);
+
+  // Randomize all 3 variants for a device
+  const randomizeDevice = useCallback((deviceId: string) => {
+    const randomHomepage = HOMEPAGE_VARIANTS[Math.floor(Math.random() * HOMEPAGE_VARIANTS.length)].id;
+    const randomNavigation = NAVIGATION_VARIANTS[Math.floor(Math.random() * NAVIGATION_VARIANTS.length)].id;
+    const randomSocialProof = SOCIAL_PROOF_VARIANTS[Math.floor(Math.random() * SOCIAL_PROOF_VARIANTS.length)].id;
+    
+    updateDevice(deviceId, {
+      homepage: randomHomepage,
+      navigation: randomNavigation,
+      socialProof: randomSocialProof,
+    });
+  }, [updateDevice]);
 
   // Build URL with variant params
   const buildDeviceUrl = useCallback((device: DeviceConfig) => {
@@ -281,6 +294,19 @@ export default function ABComparisonLab() {
                           {getDeviceLabel(device)}
                         </Badge>
                         <div className="flex items-center gap-1">
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-6 w-6"
+                                onClick={() => randomizeDevice(device.id)}
+                              >
+                                <Shuffle className="w-3 h-3" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>Randomize</TooltipContent>
+                          </Tooltip>
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <Button
