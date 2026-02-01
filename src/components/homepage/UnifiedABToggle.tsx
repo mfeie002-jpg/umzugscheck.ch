@@ -8,12 +8,12 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { FlaskConical, X, Check, Navigation, Sparkles, MousePointerClick, LayoutTemplate } from 'lucide-react';
 import { useState, memo, useCallback } from 'react';
+import { useSearchParams, useLocation } from 'react-router-dom';
 import { useSocialProofAB } from '@/contexts/SocialProofABContext';
 import { useNavigationAB } from '@/contexts/NavigationABContext';
 import { useTabHintAB, TabHintVariant } from '@/contexts/TabHintABContext';
 import { useHomepageAB, HomepageVariant } from '@/contexts/HomepageABContext';
 import { NAV_VARIANTS } from '@/lib/navigation-variants';
-import { useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -111,13 +111,17 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
   const currentHomepageInfo = homepageVariants[homepageVariant] || homepageVariants.C;
   const navVariantNumber = getNavVariantNumber();
 
+  // Check if in A/B Comparison Lab mode (hide toggle when controlled via iframe)
+  const [searchParams] = useSearchParams();
+  const isLabMode = searchParams.get('ab-lab') === '1';
+
   // Only show in development/preview mode, never in production
   const isProduction = window.location.hostname === 'umzugscheck.ch' || 
                        window.location.hostname === 'www.umzugscheck.ch' ||
                        window.location.hostname === 'umzugscheckv2.lovable.app';
   
-  // Only show on homepage AND only in development
-  if (location.pathname !== '/' || isProduction) {
+  // Only show on homepage AND only in development AND not in lab mode
+  if (location.pathname !== '/' || isProduction || isLabMode) {
     return null;
   }
 

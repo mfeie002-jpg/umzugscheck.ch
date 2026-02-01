@@ -45,6 +45,7 @@ const FamilyLanding = lazy(() => import("./pages/FamilyLanding"));
 const InvestorenLanding = lazy(() => import("./pages/InvestorenLanding"));
 const AdminInternResults = lazy(() => import("./pages/AdminInternResults"));
 const PaidMediaControl = lazy(() => import("./pages/internal/PaidMediaControl"));
+const ABComparisonLab = lazy(() => import("./pages/internal/ABComparisonLab"));
 const LaunchRoadmap = lazy(() => import("./pages/internal/LaunchRoadmap"));
 const LeadRouting = lazy(() => import("./pages/internal/LeadRouting"));
 const PartnerNetwork = lazy(() => import("./pages/internal/PartnerNetwork"));
@@ -536,6 +537,7 @@ const AdminRoutes = () => (
       <Route path="/internal/distribution" element={<LeadDistribution />} />
       <Route path="/internal/finance" element={<FinanceDashboard />} />
       <Route path="/internal/command-center" element={<UnifiedCommandCenter />} />
+      <Route path="/internal/ab-comparison-lab" element={<ABComparisonLab />} />
       {/* Accept trailing slash/subpaths */}
       <Route path="/internal/test-report/*" element={<TestReport />} />
       <Route path="/public/test-results/*" element={<Navigate to="/internal/test-report" replace />} />
