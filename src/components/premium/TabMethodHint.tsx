@@ -29,7 +29,7 @@ interface TabMethodHintProps {
  */
 export const TabHintDivider = memo(({ className }: { className?: string }) => {
   return (
-    <div className={cn("relative flex items-center my-5 sm:my-6", className)}>
+    <div className={cn("relative flex items-center mt-6 mb-3 sm:mt-8 sm:mb-4", className)}>
       <div className="flex-1 border-t-2 border-dashed border-muted-foreground/30" />
       <span className="mx-4 text-xs font-bold text-muted-foreground bg-card px-3 py-1 rounded-full border border-muted-foreground/20">
         ODER
