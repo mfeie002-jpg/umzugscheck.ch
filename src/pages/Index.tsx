@@ -53,6 +53,12 @@ const AlternativeContactSection = lazy(() => import("@/components/homepage/Alter
 const SpotlightTestimonial = lazy(() => import("@/components/homepage/SpotlightTestimonial").then(m => ({ default: m.SpotlightTestimonial })));
 // Lazy load mobile sticky bar
 const MobileStickyBar = lazy(() => import("@/components/homepage/MobileStickyBar").then(m => ({ default: m.MobileStickyBar })));
+// NEW: Cherry-Pick Components
+const TrustScoreWidget = lazy(() => import("@/components/homepage/TrustScoreWidget").then(m => ({ default: m.TrustScoreWidget })));
+const CityPricesSection = lazy(() => import("@/components/homepage/CityPricesSection").then(m => ({ default: m.CityPricesSection })));
+const SavingsCalculatorSimple = lazy(() => import("@/components/homepage/SavingsCalculatorSimple").then(m => ({ default: m.SavingsCalculatorSimple })));
+// ExitIntentMobileSheet - imported directly (not lazy) for scroll detection
+import { ExitIntentMobileSheet } from "@/components/ExitIntentMobileSheet";
 
 // Legacy skeleton import (for fallback)
 import { SectionSkeleton, TestimonialsSkeleton } from "@/components/ui/skeleton-section";
@@ -163,6 +169,11 @@ const Index = () => {
             <CompanyComparisonSection />
           </Suspense>
           
+          {/* 6b. NEW: Quick Savings Calculator - Conversion hook before Video */}
+          <Suspense fallback={<SectionSkeleton height="300px" />}>
+            <SavingsCalculatorSimple />
+          </Suspense>
+          
           {/* 7. KI Video Calculator - Innovation highlight */}
           <Suspense fallback={<SectionSkeleton height="500px" />}>
             <AIVideoCalculatorSection />
@@ -183,9 +194,19 @@ const Index = () => {
             <CostExamplesSection />
           </Suspense>
           
+          {/* 10b. NEW: City Prices - Lokale Relevanz vor Testimonials */}
+          <Suspense fallback={<SectionSkeleton height="350px" />}>
+            <CityPricesSection />
+          </Suspense>
+          
           {/* 11. Testimonials - Video cards with concrete savings (A/B TESTED) */}
           <Suspense fallback={<TestimonialsSkeleton />}>
             <EnhancedTestimonialsAB />
+          </Suspense>
+          
+          {/* 11b. NEW: Trust Score Widget - Verstärkt Testimonials mit Zahlen */}
+          <Suspense fallback={<SectionSkeleton height="250px" />}>
+            <TrustScoreWidget />
           </Suspense>
           
           {/* 12. Alternative Contact - Phone/WhatsApp/Email */}
@@ -237,6 +258,9 @@ const Index = () => {
           message="Hallo! Ich interessiere mich für einen Umzug und hätte gerne mehr Informationen."
           delayMs={30000}
         />
+        
+        {/* Exit Intent Mobile Sheet - Scroll-velocity triggered */}
+        <ExitIntentMobileSheet />
         
         {/* Hotjar session recording & heatmaps */}
         <HotjarScript />
