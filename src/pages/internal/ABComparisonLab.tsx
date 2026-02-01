@@ -477,6 +477,11 @@ export default function ABComparisonLab() {
                         <iframe
                           ref={(el) => { iframeRefs.current[device.id] = el; }}
                           src={buildDeviceUrl(device)}
+                           // Isolate each simulator instance to avoid shared localStorage/auth races
+                           // when multiple devices are rendered in parallel.
+                           // IMPORTANT: We intentionally omit `allow-same-origin`.
+                           sandbox="allow-scripts allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-downloads"
+                           loading="lazy"
                           className="absolute top-0 left-0 origin-top-left"
                           style={{
                             width: size.width,
