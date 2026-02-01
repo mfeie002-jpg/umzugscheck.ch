@@ -1,240 +1,288 @@
 
-# Unified Paid Media Control Center - Integration Plan
+# 4 Trust-Landingpages zum Vergleichen
 
-## Overview
+## Übersicht
 
-Consolidate the **Paid Launch Cockpit** (from Command Center) with the existing **Paid Media Control** page (`/internal/paid-media-control`) to create a single, comprehensive operational hub for managing the Feierabend-umzug.ch paid acquisition machine.
-
----
-
-## Current State Analysis
-
-### Existing `/internal/paid-media-control` (8 tabs)
-
-| Tab | Component | Purpose |
-|-----|-----------|---------|
-| Calculator | `FeierabendUnitEconomicsCalculator` / `UmzugscheckUnitEconomicsCalculator` | Unit economics modeling (CM2, CAC, ROAS) |
-| Triage | `LeadTriageHelper` | Lead qualification decision tree |
-| Scaling | `ScalingDecisionPanel` | GO/NO-GO matrix for scaling |
-| Red Flags | `WeeklyRedFlagsPanel` | Early warning system (CPL spike, conversion drop) |
-| Phone ROI | `PhoneSupportROIRules` | Call center ROI rules and time caps |
-| GAV Labor | `GavLaborCalculator` | Swiss labor cost compliance |
-| Cherries | `CherriesChaffRouter` | Lead routing (Feierabend vs Marketplace) |
-| Yield | `SeasonalYieldManagement` | Dynamic pricing by season/day |
-
-### New Components (from Paid Launch Cockpit)
-
-| Component | Purpose |
-|-----------|---------|
-| `PaidLaunchCockpit` | 21-task implementation checklist (P0/P1/P2), launch readiness |
-| `KeywordClustersPanel` | 10 keyword clusters, Google Ads Editor export |
-| `CompetitorIntelPanel` | 30+ competitor database with positioning analysis |
+Ich werde **4 komplett unterschiedliche Landingpages** erstellen, die verschiedene Trust-Strategien aus dem Feedback-Dokument testen. Die Seiten werden unter `/test/trust-v1`, `/test/trust-v2`, `/test/trust-v3` und `/test/trust-v4` verfügbar sein.
 
 ---
 
-## Integration Plan
+## Die 4 Strategien (Gruppiert - NICHT gemischt)
 
-### New Tab Structure (11 tabs)
+### V1: "Der Behörden-Fokus" (Staatliche Autorität)
+**Philosophie:** "Wenn der Staat sagt, wir sind echt, dann sind wir echt"
 
+| Element | Umsetzung |
+|---------|-----------|
+| Hero | Zefix/UID-Verifikationslink prominent ("Im Handelsregister prüfbar") |
+| Trust-Signal | Schweizer Wappen + eUmzugCH Integration |
+| CTA-Proximity | Kleine UID-Nummer unter dem Button |
+| Farbschema | Schweizer Rot + Weiss, formal |
+| Testimonials | KEINE - nur Fakten |
+| Footer | Vollständiges Impressum + UID |
+
+**Komponenten:**
+- `TrustHeroV1Zefix.tsx` - Hero mit Zefix-Link
+- `StateAuthorityBar.tsx` - eUmzugCH, Die Post, Kantone
+- `LegalFooterStrip.tsx` - UID + Handelsregister-Link
+
+---
+
+### V2: "Der Branchen-Fokus" (Verbands-Legitimität)
+**Philosophie:** "Branchenverband = Qualitätsstandard"
+
+| Element | Umsetzung |
+|---------|-----------|
+| Hero | SMA (Swiss Movers Association) Badge prominent |
+| Trust-Signal | ASTAG + SPEDLOGSWISS + Fachverband |
+| CTA-Proximity | "SMA-zertifizierte Partner" |
+| Farbschema | Professional Blau, Business-Stil |
+| Testimonials | Video von SMA-zertifizierter Firma |
+| Firmen-Cards | SMA-Badge auf jeder Karte |
+
+**Komponenten:**
+- `TrustHeroV2SMA.tsx` - Hero mit SMA-Badge
+- `IndustryAssociationBar.tsx` - Verbands-Logos
+- `CertifiedCompanyCard.tsx` - Firmen mit Branchen-Badges
+
+---
+
+### V3: "Der Konsumenten-Fokus" (Käuferschutz)
+**Philosophie:** "Du bist geschützt - emotional sicher"
+
+| Element | Umsetzung |
+|---------|-----------|
+| Hero | Konsumentenbund-Siegel + Geld-zurück-Garantie |
+| Trust-Signal | Trusted Shops + SKS + Reklamationszentrale |
+| CTA-Proximity | "30 Tage Rückgaberecht" Badge |
+| Farbschema | Grün (Sicherheit), warm |
+| Testimonials | Echte Namen + Fotos (Social Proof heavy) |
+| Pain Section | "Was wenn etwas schief geht?" mit Lösung |
+
+**Komponenten:**
+- `TrustHeroV3Consumer.tsx` - Hero mit Käuferschutz
+- `ConsumerProtectionBar.tsx` - Trusted Shops, SKS
+- `GuaranteesGridV3.tsx` - 4 Garantie-Karten (erweitert)
+- `RealTestimonialsV3.tsx` - Testimonials mit echten Daten
+
+---
+
+### V4: "Best of Lovable Analysis" (Meine Synthese)
+**Philosophie:** "Das Beste aus allen Welten, psychologisch optimiert"
+
+| Element | Umsetzung |
+|---------|-----------|
+| Hero | Trust-Pills (klickbar) → Trust-Drawer (Bottom Sheet) |
+| Above-Fold | "Bekannt aus" Media-Logos + Live-Counter |
+| Trust-Floor | 80px Anchor am Hero-Ende |
+| CTA-Proximity | Form-Anchor mit Mikro-Badges |
+| Mid-Page | Interaktiver Trust-Hub mit 3 Tabs |
+| Farbschema | Premium Blau + Gold Akzente |
+| Footer | Sticky Mobile Bar + alle Verifikationslinks |
+
+**Neue Komponenten:**
+- `TrustPills.tsx` - Klickbare Trust-Chips unter CTA
+- `TrustDrawer.tsx` - Bottom Sheet mit detaillierter Verifikation
+- `TrustFloor.tsx` - 80px Hero-Abschluss-Balken
+- `FormAnchorTrust.tsx` - Trust in Formular-Karte
+- `InteractiveTrustHub.tsx` - 3-Tab Hub (Behörden/Branche/Sicherheit)
+- `StickyMobileTrustBar.tsx` - Erscheint bei scrollY > 500
+
+---
+
+## Seitenstruktur
+
+```text
+/test/trust-v1  →  TrustLandingV1.tsx  (Behörden-Fokus)
+/test/trust-v2  →  TrustLandingV2.tsx  (Branchen-Fokus)
+/test/trust-v3  →  TrustLandingV3.tsx  (Konsumenten-Fokus)
+/test/trust-v4  →  TrustLandingV4.tsx  (Best of Lovable)
+/test/trust-comparison  →  TrustComparisonHub.tsx  (Alle 4 nebeneinander)
 ```
-[Launch] [Keywords] [Competitors] [Calculator] [Triage] [Scaling] [Red Flags] [Phone] [GAV] [Cherries] [Yield]
-```
-
-Reorganized by workflow stage:
-
-**Pre-Launch (New)**
-1. **Launch Cockpit** - Implementation checklist, P0 blockers, readiness status
-2. **Keywords** - Keyword clusters, negative lists, Ads Editor export
-3. **Competitors** - Competitive intelligence database
-
-**Operations (Existing)**
-4. **Unit Economics** - Calculator (Feierabend/Umzugscheck toggle)
-5. **Lead Triage** - Qualification decision tree
-6. **Scaling** - GO/NO-GO decision matrix
-7. **Red Flags** - Weekly early warning system
-8. **Phone ROI** - Call center optimization rules
-9. **GAV Labor** - Swiss compliance calculator
-10. **Cherries** - Lead routing logic
-11. **Yield** - Seasonal pricing management
 
 ---
 
-## Implementation Tasks
+## Technische Details
 
-### Task 1: Add New Tabs to PaidMediaControl
-**Modify:** `src/pages/internal/PaidMediaControl.tsx`
+### Neue Dateien
 
-Add three new tabs at the beginning:
+```text
+src/pages/test/
+├── TrustLandingV1.tsx          # Behörden/Staatlich
+├── TrustLandingV2.tsx          # Branchen/Verbände  
+├── TrustLandingV3.tsx          # Konsumenten/Käuferschutz
+├── TrustLandingV4.tsx          # Best of Lovable
+└── TrustComparisonHub.tsx      # Übersichtsseite
+
+src/components/trust-variants/
+├── v1/
+│   ├── TrustHeroV1Zefix.tsx
+│   ├── StateAuthorityBar.tsx
+│   └── LegalFooterStrip.tsx
+├── v2/
+│   ├── TrustHeroV2SMA.tsx
+│   ├── IndustryAssociationBar.tsx
+│   └── CertifiedCompanyCard.tsx
+├── v3/
+│   ├── TrustHeroV3Consumer.tsx
+│   ├── ConsumerProtectionBar.tsx
+│   ├── GuaranteesGridV3.tsx
+│   └── RealTestimonialsV3.tsx
+└── v4/
+    ├── TrustPills.tsx
+    ├── TrustDrawer.tsx
+    ├── TrustFloor.tsx
+    ├── FormAnchorTrust.tsx
+    ├── InteractiveTrustHub.tsx
+    └── StickyMobileTrustBar.tsx
+```
+
+### Routing
+
 ```tsx
-<TabsTrigger value="launch">
-  <Rocket className="w-3.5 h-3.5" />
-  Launch
-</TabsTrigger>
-<TabsTrigger value="keywords">
-  <Search className="w-3.5 h-3.5" />
-  Keywords
-</TabsTrigger>
-<TabsTrigger value="competitors">
-  <Users className="w-3.5 h-3.5" />
-  Intel
-</TabsTrigger>
-```
-
-### Task 2: Import and Integrate Components
-Add new TabsContent sections:
-```tsx
-import { PaidLaunchCockpit, KeywordClustersPanel, CompetitorIntelPanel } from '@/components/internal/command-center/paid-launch';
-
-<TabsContent value="launch">
-  <PaidLaunchCockpit />
-</TabsContent>
-
-<TabsContent value="keywords">
-  <KeywordClustersPanel />
-</TabsContent>
-
-<TabsContent value="competitors">
-  <CompetitorIntelPanel />
-</TabsContent>
-```
-
-### Task 3: Update Header with Launch Status
-Add a launch readiness indicator to the header:
-```tsx
-import { usePaidLaunchStats } from '@/hooks/usePaidLaunchChecklist';
-
-// In header, show:
-{canLaunch ? (
-  <Badge className="bg-green-500">READY TO LAUNCH</Badge>
-) : (
-  <Badge variant="outline" className="border-amber-500 text-amber-600">
-    PRE-LAUNCH ({stats.p0Done}/{stats.p0Total} P0)
-  </Badge>
-)}
-```
-
-### Task 4: Add Quick Actions Panel
-Create a new floating panel showing critical P0 blockers:
-- Display on all tabs when P0 tasks remain
-- Quick-link to complete blocking tasks
-- Shows launch countdown/readiness percentage
-
-### Task 5: Responsive Tab Navigation
-Update TabsList for better mobile experience:
-- Use horizontal scroll on mobile
-- Group tabs with dropdown on very small screens
-- Add tab section headers (Pre-Launch | Operations)
-
-### Task 6: Update Page Title & Subtitle
-Change header to reflect unified purpose:
-```tsx
-<h1>Paid Media Control Center</h1>
-<p>Launch Readiness • Unit Economics • Operations</p>
+// App.tsx - Neue Routes
+<Route path="/test/trust-v1" element={<TrustLandingV1 />} />
+<Route path="/test/trust-v2" element={<TrustLandingV2 />} />
+<Route path="/test/trust-v3" element={<TrustLandingV3 />} />
+<Route path="/test/trust-v4" element={<TrustLandingV4 />} />
+<Route path="/test/trust-comparison" element={<TrustComparisonHub />} />
 ```
 
 ---
 
-## Visual Design
+## Visuelle Unterschiede
 
-### Header Layout
-```
-+----------------------------------------------------------+
-| INTERNAL / CFO-COO                                        |
-| Paid Media Control Center          [DIRECT] ○───● [MARKETPLACE]
-| Launch • Economics • Operations    [🟡 PRE-LAUNCH: 3/6 P0] |
-+----------------------------------------------------------+
-```
-
-### Tab Bar (Desktop)
-```
-┌────────┬──────────┬────────────┬────────────┬────────┬─────────┬───────────┬───────┬─────┬──────────┬───────┐
-│ Launch │ Keywords │ Competitors│ Calculator │ Triage │ Scaling │ Red Flags │ Phone │ GAV │ Cherries │ Yield │
-└────────┴──────────┴────────────┴────────────┴────────┴─────────┴───────────┴───────┴─────┴──────────┴───────┘
-```
-
-### Tab Bar (Mobile - Scrollable)
-```
-← [Launch] [Keywords] [Competitors] [Calc] [Triage] ... →
-```
+| Aspekt | V1 Behörden | V2 Branchen | V3 Konsumenten | V4 Best-Of |
+|--------|-------------|-------------|----------------|------------|
+| **Primärfarbe** | Rot (Schweiz) | Blau (Corporate) | Grün (Sicherheit) | Blau+Gold (Premium) |
+| **Hero-Style** | Formal, clean | Business, stark | Emotional, warm | Modern, interaktiv |
+| **Trust-Position** | Unter H1 | Badge-Strip | Über + Unter CTA | Pills → Drawer |
+| **Testimonials** | Keine | 1 Video | 3+ mit Fotos | Interaktiv |
+| **Mobile** | Minimal | Cards | Carousel | Bottom Sheet |
+| **CTA-Text** | "Jetzt anfragen" | "Partner finden" | "Sicher vergleichen" | "Offerten erhalten" |
 
 ---
 
-## Data Flow Integration
+## Sektions-Vergleich pro Seite
 
-### Cross-Tab Connections
+### V1: Behörden (9 Sektionen)
+1. Hero + Zefix-Link
+2. State Authority Bar (eUmzugCH, Post, Kantone)
+3. Fakten-Grid (keine Emotionen)
+4. How it Works
+5. Preisbeispiele (transparent)
+6. FAQ (sachlich)
+7. Legal Footer Strip
+8. Impressum-Expanded
+9. Final CTA
 
-1. **Launch → Red Flags**: If tracking tasks incomplete, show warning in Red Flags
-2. **Launch → Scaling**: Block "GO" decision if P0 blockers remain
-3. **Keywords → Launch**: Mark keyword setup task complete when clusters reviewed
-4. **Competitors → Launch**: Mark competitor intel task complete when reviewed
+### V2: Branchen (10 Sektionen)
+1. Hero + SMA-Badge
+2. Industry Association Bar
+3. Zertifizierte Firmen Preview
+4. Qualitätsstandards erklärt
+5. How it Works
+6. Video: SMA-Partner-Interview
+7. Firmen-Vergleich mit Badges
+8. FAQ
+9. Für Firmen CTA
+10. Final CTA
 
-### Shared State
-```tsx
-// New context for launch status
-interface PaidLaunchContext {
-  stats: PaidLaunchStats;
-  canLaunch: boolean;
-  p0Blockers: PaidLaunchTask[];
-}
-```
+### V3: Konsumenten (12 Sektionen)
+1. Hero + Konsumentenbund
+2. Consumer Protection Bar
+3. "Was kann schief gehen?" Pain Section
+4. Guarantees Grid (4 Karten)
+5. Testimonials mit Fotos (3+)
+6. How it Works
+7. Preisbeispiele
+8. Reklamationszentrale Link
+9. Alternative Contact
+10. FAQ (angstbasiert)
+11. Trust Footer
+12. Final CTA
 
----
-
-## Technical Implementation
-
-### Files to Modify
-
-| File | Changes |
-|------|---------|
-| `src/pages/internal/PaidMediaControl.tsx` | Add 3 new tabs, launch status header, imports |
-| `src/components/internal/command-center/paid-launch/index.ts` | Verify exports |
-| `src/hooks/usePaidLaunchChecklist.ts` | Already exists, no changes |
-
-### Files to Create
-
-| File | Purpose |
-|------|---------|
-| `src/components/internal/paid-media/LaunchStatusBadge.tsx` | Reusable launch status indicator |
-| `src/components/internal/paid-media/P0BlockerAlert.tsx` | Floating P0 alert for all tabs |
-
-### Dependencies
-- No new packages required
-- Uses existing UI components and hooks
-
----
-
-## Mobile-First Considerations
-
-- Horizontal scrolling TabsList with snap points
-- Launch status badge sticky in header
-- P0 blocker alert as bottom sheet
-- Touch targets 52px minimum
-- Tab icons always visible, text hidden on mobile (except active)
-
----
-
-## Success Criteria
-
-1. ✅ All 11 tabs accessible from single page
-2. ✅ Launch status visible in header on all tabs
-3. ✅ P0 blockers alert shows until all complete
-4. ✅ "Ready to Launch" state unlocks after P0 complete
-5. ✅ Mobile-responsive with horizontal scroll
-6. ✅ Existing calculator/triage/scaling functionality unchanged
-7. ✅ Keywords exportable to Google Ads Editor
-8. ✅ Competitor intel searchable
+### V4: Best-Of (13 Sektionen)
+1. Hero + Trust-Pills (klickbar)
+2. Trust Floor (80px)
+3. Media Logos + Live Counter
+4. Pain vs Gain
+5. How it Works
+6. Trust Hub (3-Tab interaktiv)
+7. Company Preview
+8. Video Rechner Teaser
+9. Guarantees
+10. Testimonials
+11. FAQ
+12. SEO Accordion
+13. Sticky Mobile Bar + Final CTA
 
 ---
 
-## Estimated Effort
+## Trust-Entities pro Variante
 
-| Task | Complexity | Est. Time |
-|------|------------|-----------|
-| Add new tabs to PaidMediaControl | S | 20 min |
-| Launch status header badge | S | 15 min |
-| P0 blocker floating alert | M | 25 min |
-| Responsive tab improvements | S | 15 min |
-| Cross-tab state connections | M | 30 min |
-| Testing & polish | S | 15 min |
+### V1 (Behörden)
+- Zefix/UID-Register (Link)
+- eUmzugCH
+- Die Post
+- Kantone (ZH, BE, BS)
+- Swiss Made Software
+- Swiss Hosting
 
-**Total: ~2 hours**
+### V2 (Branchen)
+- SMA (Swiss Movers Association) **NEU**
+- ASTAG
+- SPEDLOGSWISS **NEU**
+- Mieterverband
+- FIDI **NEU**
+
+### V3 (Konsumenten)
+- Schweizerischer Konsumentenbund **NEU**
+- Stiftung für Konsumentenschutz (SKS) **NEU**
+- Trusted Shops
+- Die Mobiliar
+- Reklamationszentrale **NEU**
+- TWINT/Raiffeisen
+
+### V4 (Best-Of)
+Kombiniert selektiv:
+- Top 2 pro Kategorie
+- SMA + Zefix + Konsumentenbund
+- Media Logos (SRF, NZZ, TCS)
+- Live Activity Feed
+
+---
+
+## Vergleichs-Hub Seite
+
+Die `/test/trust-comparison` Seite zeigt:
+1. Alle 4 Varianten in Tabs oder Cards
+2. Quick-Stats pro Variante
+3. "In Browser öffnen" Links
+4. A/B Test Notizen Bereich
+5. Mobile Preview Toggle
+
+---
+
+## Priorisierung der Implementierung
+
+| Phase | Aufgabe | Zeit |
+|-------|---------|------|
+| 1 | V4 (Best-Of) - da am komplexesten | 30 min |
+| 2 | V1 (Behörden) - schnell/clean | 15 min |
+| 3 | V2 (Branchen) | 15 min |
+| 4 | V3 (Konsumenten) | 15 min |
+| 5 | Comparison Hub | 10 min |
+| 6 | Routing + Navigation | 5 min |
+
+**Total: ~90 Minuten**
+
+---
+
+## Ziel
+
+Nach der Implementierung kannst du:
+1. Alle 4 Seiten nebeneinander vergleichen
+2. Mobile + Desktop testen
+3. Entscheiden welche Strategie am besten konvertiert
+4. Elemente von verschiedenen Varianten in die Hauptseite übernehmen
