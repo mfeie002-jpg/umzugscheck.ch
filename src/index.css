@@ -81,6 +81,7 @@ body {
     /* Typography - Premium Fonts */
     --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
     --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+    --font-headline: Georgia, 'Times New Roman', serif; /* Swiss banking trust feel - optional for A/B testing */
     
     /* ========== BRAND COLORS ========== */
     --uc-blue: 210 100% 33%;           /* #0050A8 - Primary brand blue */
