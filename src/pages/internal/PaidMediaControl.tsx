@@ -21,7 +21,9 @@ import {
   Filter,
   Rocket,
   Phone,
-  Activity
+  Activity,
+  Search,
+  Crosshair
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { FeierabendUnitEconomicsCalculator } from "@/components/internal/FeierabendUnitEconomicsCalculator";
@@ -35,6 +37,9 @@ import { CherriesChaffRouter } from "@/components/internal/CherriesChaffRouter";
 import { SeasonalYieldManagement } from "@/components/internal/SeasonalYieldManagement";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Truck, Cherry, Calendar } from "lucide-react";
+import { PaidLaunchCockpit, KeywordClustersPanel, CompetitorIntelPanel } from "@/components/internal/command-center/paid-launch";
+import { LaunchStatusBadge, P0BlockerAlert } from "@/components/internal/paid-media";
+import { usePaidLaunchStats } from "@/hooks/usePaidLaunchChecklist";
 
 type BusinessModel = "feierabend" | "umzugscheck";
 type Scenario = "conservative" | "base" | "aggressive";
@@ -291,6 +296,10 @@ export default function PaidMediaControl() {
   const [model, setModel] = useState<BusinessModel>("feierabend");
   const [scenario, setScenario] = useState<Scenario>("base");
   const [inputs, setInputs] = useState<InputValues>(SCENARIO_DEFAULTS[model][scenario]);
+  const [activeTab, setActiveTab] = useState("launch");
+  
+  const { data: launchStats } = usePaidLaunchStats();
+  const canLaunch = launchStats?.p0Done === launchStats?.p0Total && (launchStats?.p0Total || 0) > 0;
 
   const handleModelChange = (isUmzugscheck: boolean) => {
     const newModel = isUmzugscheck ? "umzugscheck" : "feierabend";
@@ -414,92 +423,131 @@ export default function PaidMediaControl() {
       <div className="min-h-screen bg-background">
         {/* TOP BAR */}
         <header className="border-b-2 border-border bg-card sticky top-0 z-10">
-          <div className="max-w-7xl mx-auto px-6 py-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">INTERNAL / CFO-COO</p>
-                <h1 className="text-xl font-bold text-foreground tracking-tight">Unit Economics Control</h1>
+          <div className="max-w-7xl mx-auto px-4 md:px-6 py-3">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div>
+                  <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">INTERNAL / CFO-COO</p>
+                  <h1 className="text-lg md:text-xl font-bold text-foreground tracking-tight">Paid Media Control Center</h1>
+                  <p className="text-xs text-muted-foreground hidden sm:block">Launch Readiness • Unit Economics • Operations</p>
+                </div>
               </div>
-              <div className="flex items-center gap-3 bg-muted border border-border rounded p-2">
-                <span className={cn("text-xs font-mono", model === "feierabend" ? "text-foreground" : "text-muted-foreground")}>
-                  DIRECT
-                </span>
-                <Switch
-                  checked={model === "umzugscheck"}
-                  onCheckedChange={handleModelChange}
-                />
-                <span className={cn("text-xs font-mono", model === "umzugscheck" ? "text-foreground" : "text-muted-foreground")}>
-                  MARKETPLACE
-                </span>
+              <div className="flex items-center gap-3 flex-wrap">
+                <LaunchStatusBadge showDetails className="hidden sm:flex" />
+                <div className="flex items-center gap-2 bg-muted border border-border rounded px-2 py-1.5">
+                  <span className={cn("text-xs font-mono", model === "feierabend" ? "text-foreground" : "text-muted-foreground")}>
+                    DIRECT
+                  </span>
+                  <Switch
+                    checked={model === "umzugscheck"}
+                    onCheckedChange={handleModelChange}
+                  />
+                  <span className={cn("text-xs font-mono", model === "umzugscheck" ? "text-foreground" : "text-muted-foreground")}>
+                    MARKETPLACE
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </header>
 
-        <main className="max-w-7xl mx-auto px-6 py-6 space-y-6">
+        <main className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 space-y-4">
+          {/* P0 Blocker Alert - shows on all tabs except launch */}
+          {activeTab !== "launch" && (
+            <P0BlockerAlert 
+              className="mb-4"
+              onNavigateToLaunch={() => setActiveTab("launch")}
+            />
+          )}
+          
           {/* Tabs for all panels */}
-          <Tabs defaultValue="calculator" className="w-full">
-            <div className="overflow-x-auto pb-2">
-              <TabsList className="inline-flex w-auto min-w-full md:grid md:grid-cols-8 gap-1">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <div className="overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0">
+              <TabsList className="inline-flex w-auto min-w-max gap-0.5 p-1">
+                {/* Pre-Launch Section */}
+                <div className="flex items-center gap-0.5 pr-2 border-r border-border mr-2">
+                  <TabsTrigger value="launch" className="gap-1 text-xs px-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+                    <Rocket className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">Launch</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="keywords" className="gap-1 text-xs px-2">
+                    <Search className="w-3.5 h-3.5" />
+                    <span className="hidden md:inline">Keywords</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="intel" className="gap-1 text-xs px-2">
+                    <Crosshair className="w-3.5 h-3.5" />
+                    <span className="hidden md:inline">Intel</span>
+                  </TabsTrigger>
+                </div>
+                
+                {/* Operations Section */}
                 <TabsTrigger value="calculator" className="gap-1 text-xs px-2">
                   <Calculator className="w-3.5 h-3.5" />
-                  <span className="hidden lg:inline">Unit Economics</span>
-                  <span className="lg:hidden">Calc</span>
+                  <span className="hidden lg:inline">Calculator</span>
+                  <span className="lg:hidden hidden sm:inline">Calc</span>
                 </TabsTrigger>
                 <TabsTrigger value="triage" className="gap-1 text-xs px-2">
                   <Filter className="w-3.5 h-3.5" />
-                  <span className="hidden lg:inline">Triage</span>
-                  <span className="lg:hidden">Triage</span>
+                  <span className="hidden md:inline">Triage</span>
                 </TabsTrigger>
                 <TabsTrigger value="scaling" className="gap-1 text-xs px-2">
-                  <Rocket className="w-3.5 h-3.5" />
-                  <span className="hidden lg:inline">Scaling</span>
-                  <span className="lg:hidden">Scale</span>
+                  <TrendingUp className="w-3.5 h-3.5" />
+                  <span className="hidden md:inline">Scaling</span>
                 </TabsTrigger>
                 <TabsTrigger value="redflags" className="gap-1 text-xs px-2">
                   <Activity className="w-3.5 h-3.5" />
                   <span className="hidden lg:inline">Red Flags</span>
-                  <span className="lg:hidden">Flags</span>
+                  <span className="lg:hidden hidden sm:inline">Flags</span>
                 </TabsTrigger>
                 <TabsTrigger value="phone" className="gap-1 text-xs px-2">
                   <Phone className="w-3.5 h-3.5" />
-                  <span className="hidden lg:inline">Phone ROI</span>
-                  <span className="lg:hidden">Phone</span>
+                  <span className="hidden md:inline">Phone</span>
                 </TabsTrigger>
                 <TabsTrigger value="gav" className="gap-1 text-xs px-2">
                   <Truck className="w-3.5 h-3.5" />
-                  <span className="hidden lg:inline">GAV Labor</span>
-                  <span className="lg:hidden">GAV</span>
+                  <span className="hidden md:inline">GAV</span>
                 </TabsTrigger>
                 <TabsTrigger value="cherries" className="gap-1 text-xs px-2">
                   <Cherry className="w-3.5 h-3.5" />
-                  <span className="hidden lg:inline">Cherries</span>
-                  <span className="lg:hidden">C&C</span>
+                  <span className="hidden md:inline">C&C</span>
                 </TabsTrigger>
                 <TabsTrigger value="yield" className="gap-1 text-xs px-2">
                   <Calendar className="w-3.5 h-3.5" />
-                  <span className="hidden lg:inline">Yield</span>
-                  <span className="lg:hidden">Yield</span>
+                  <span className="hidden md:inline">Yield</span>
                 </TabsTrigger>
               </TabsList>
             </div>
 
-            <TabsContent value="calculator" className="mt-6">
+            {/* NEW: Launch Cockpit Tab */}
+            <TabsContent value="launch" className="mt-4">
+              <PaidLaunchCockpit />
+            </TabsContent>
+
+            {/* NEW: Keywords Tab */}
+            <TabsContent value="keywords" className="mt-4">
+              <KeywordClustersPanel />
+            </TabsContent>
+
+            {/* NEW: Competitor Intel Tab */}
+            <TabsContent value="intel" className="mt-4">
+              <CompetitorIntelPanel />
+            </TabsContent>
+
+
+            <TabsContent value="calculator" className="mt-4">
               {/* Conditional Content based on Model */}
               {model === "feierabend" ? (
-                /* FEIERABEND CALCULATOR */
                 <FeierabendUnitEconomicsCalculator />
               ) : (
-                /* UMZUGSCHECK MARKETPLACE CALCULATOR */
                 <UmzugscheckUnitEconomicsCalculator />
               )}
             </TabsContent>
 
-            <TabsContent value="triage" className="mt-6">
+            <TabsContent value="triage" className="mt-4">
               <LeadTriageHelper />
             </TabsContent>
 
-            <TabsContent value="scaling" className="mt-6">
+            <TabsContent value="scaling" className="mt-4">
               <ScalingDecisionPanel 
                 model={model}
                 criteria={{
@@ -513,7 +561,7 @@ export default function PaidMediaControl() {
               />
             </TabsContent>
 
-            <TabsContent value="redflags" className="mt-6">
+            <TabsContent value="redflags" className="mt-4">
               <WeeklyRedFlagsPanel 
                 model={model}
                 metrics={{
@@ -537,7 +585,7 @@ export default function PaidMediaControl() {
               />
             </TabsContent>
 
-            <TabsContent value="phone" className="mt-6">
+            <TabsContent value="phone" className="mt-4">
               <PhoneSupportROIRules 
                 metrics={{
                   avgCallDuration: 7,
@@ -549,15 +597,15 @@ export default function PaidMediaControl() {
               />
             </TabsContent>
 
-            <TabsContent value="gav" className="mt-6">
+            <TabsContent value="gav" className="mt-4">
               <GavLaborCalculator />
             </TabsContent>
 
-            <TabsContent value="cherries" className="mt-6">
+            <TabsContent value="cherries" className="mt-4">
               <CherriesChaffRouter />
             </TabsContent>
 
-            <TabsContent value="yield" className="mt-6">
+            <TabsContent value="yield" className="mt-4">
               <SeasonalYieldManagement />
             </TabsContent>
           </Tabs>
