@@ -1,11 +1,12 @@
 /**
  * InlineMobileCTA - Mobile-only CTA that appears between sections
  * Addresses the CTA visibility gap on mobile between Hero and MobileStickyBar
+ * Phase 4: Thumb-zone optimized with haptic feedback
  */
 
 import { memo } from "react";
 import { ArrowRight, CheckCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { HapticButton } from "@/components/ui/haptic-button";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
@@ -25,8 +26,9 @@ export const InlineMobileCTA = memo(function InlineMobileCTA({
   if (variant === "compact") {
     return (
       <div className={cn("md:hidden py-4 px-4 bg-muted/30", className)}>
-        <Button
+        <HapticButton
           asChild
+          hapticType="light"
           size="lg"
           className="w-full h-12 rounded-xl bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold"
         >
@@ -35,7 +37,7 @@ export const InlineMobileCTA = memo(function InlineMobileCTA({
             {text}
             <ArrowRight className="w-4 h-4 ml-2" />
           </Link>
-        </Button>
+        </HapticButton>
       </div>
     );
   }
@@ -47,8 +49,9 @@ export const InlineMobileCTA = memo(function InlineMobileCTA({
           <p className="text-sm text-muted-foreground mb-3">
             Bereit für Ihren Umzug?
           </p>
-          <Button
+          <HapticButton
             asChild
+            hapticType="selection"
             size="lg"
             variant="outline"
             className="w-full h-12 rounded-xl border-primary text-primary hover:bg-primary hover:text-primary-foreground"
@@ -57,13 +60,13 @@ export const InlineMobileCTA = memo(function InlineMobileCTA({
               {text}
               <ArrowRight className="w-4 h-4 ml-2" />
             </Link>
-          </Button>
+          </HapticButton>
         </div>
       </div>
     );
   }
 
-  // Primary variant - most prominent
+  // Primary variant - most prominent, thumb-zone optimized
   return (
     <div className={cn("md:hidden py-6 px-4 bg-gradient-to-b from-muted/50 to-transparent", className)}>
       <div className="bg-primary/5 rounded-2xl p-4 border border-primary/20">
@@ -76,16 +79,19 @@ export const InlineMobileCTA = memo(function InlineMobileCTA({
             <p className="text-xs text-muted-foreground">200+ geprüfte Firmen</p>
           </div>
         </div>
-        <Button
+        {/* 56px minimum touch target for thumb-zone */}
+        <HapticButton
           asChild
+          hapticType="medium"
           size="lg"
-          className="w-full h-12 rounded-xl bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold"
+          className="w-full h-14 rounded-xl bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold"
+          style={{ minHeight: '56px' }}
         >
           <Link to={href}>
             {text}
             <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
           </Link>
-        </Button>
+        </HapticButton>
       </div>
     </div>
   );

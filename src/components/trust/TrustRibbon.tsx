@@ -5,46 +5,14 @@
  * - BEKANNT AUS - Echte farbige Logos, PROMINENT
  * - 15'000+ RIESIG, Rest klein als Support
  * - Klare visuelle Hierarchie
+ * - Verifiable Trust Links (Phase 3)
  */
 
 import { memo } from "react";
 import { Shield, Star, Users, Building2, TrendingUp } from "lucide-react";
 import { motion } from "framer-motion";
-
-// Media logos with REAL brand colors - NOT greyed out
-const MediaLogo = ({ name }: { name: string }) => {
-  const logos: Record<string, JSX.Element> = {
-    "20 Minuten": (
-      <div className="flex items-center gap-1">
-        <span className="text-xl font-black text-[#E3000F]">20</span>
-        <span className="text-base font-bold text-foreground">Minuten</span>
-      </div>
-    ),
-    "SRF": (
-      <div className="bg-[#C8102E] text-white text-xs font-bold px-2.5 py-1 rounded">
-        SRF
-      </div>
-    ),
-    "Blick": (
-      <div className="bg-[#E30613] text-white text-xs font-bold px-2.5 py-1 rounded">
-        BLICK
-      </div>
-    ),
-    "NZZ": (
-      <span className="font-serif font-bold text-lg text-foreground tracking-tight">NZZ</span>
-    ),
-    "Watson": (
-      <span className="font-bold text-base text-[#00A4E4]">watson</span>
-    ),
-    "TCS": (
-      <div className="bg-[#FFD700] text-black text-xs font-bold px-2.5 py-1 rounded">
-        TCS
-      </div>
-    ),
-  };
-  
-  return logos[name] || <span className="font-bold text-lg">{name}</span>;
-};
+import { VerifiableTrustLogo } from "./VerifiableTrustLogo";
+import { LiveCounter } from "@/components/homepage/LiveCounter";
 
 interface TrustRibbonProps {
   variant?: "full" | "compact";
@@ -78,7 +46,7 @@ export const TrustRibbon = memo(function TrustRibbon({
             </div>
             <div className="flex items-center gap-3">
               {["SRF", "NZZ", "Blick"].map((name) => (
-                <MediaLogo key={name} name={name} />
+                <VerifiableTrustLogo key={name} name={name} showTooltip={false} />
               ))}
               <span className="text-xs md:text-sm font-semibold text-muted-foreground">& mehr</span>
             </div>
@@ -107,16 +75,10 @@ export const TrustRibbon = memo(function TrustRibbon({
               <span className="text-sm font-bold text-primary uppercase tracking-wide">Bekannt aus</span>
             </div>
             
-            {/* Logos - COLORED, not grey */}
+            {/* Logos - COLORED with verifiable tooltips */}
             <div className="flex flex-wrap items-center justify-center gap-5 md:gap-6">
               {["20 Minuten", "SRF", "Blick", "NZZ", "Watson", "TCS"].map((name) => (
-                <motion.div
-                  key={name}
-                  whileHover={{ scale: 1.1 }}
-                  className="cursor-pointer"
-                >
-                  <MediaLogo name={name} />
-                </motion.div>
+                <VerifiableTrustLogo key={name} name={name} showTooltip={true} />
               ))}
             </div>
           </div>
@@ -135,17 +97,15 @@ export const TrustRibbon = memo(function TrustRibbon({
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          {/* THE BIG NUMBER - 15'000+ */}
+          {/* THE BIG NUMBER - 15'000+ with Live Counter */}
           <div className="text-center">
-            <motion.div 
+            <LiveCounter 
+              baseValue={15847}
+              incrementPerHour={2}
+              label=""
+              showPulse={false}
               className="text-7xl md:text-8xl lg:text-9xl font-black text-primary leading-none"
-              initial={{ scale: 0.8, opacity: 0 }}
-              whileInView={{ scale: 1, opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ type: "spring", stiffness: 200, damping: 15 }}
-            >
-              15'000+
-            </motion.div>
+            />
             <p className="text-xl md:text-2xl font-semibold text-foreground mt-2">zufriedene Umzüge</p>
           </div>
           
