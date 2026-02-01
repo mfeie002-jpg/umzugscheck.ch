@@ -319,8 +319,7 @@ const navStructure: NavItem[] = [
   { 
     title: "Invisible Move Demo", 
     href: "/invisible-move-demo", 
-    icon: Package,
-    external: true
+    icon: Package
   },
   { 
     title: "Capabilities", 
