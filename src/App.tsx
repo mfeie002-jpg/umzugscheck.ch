@@ -45,6 +45,7 @@ const HomepageV2 = lazy(() => import("./pages/HomepageV2"));
 const HomepageV3 = lazy(() => import("./pages/HomepageV3"));
 const HomepageV4 = lazy(() => import("./pages/HomepageV4"));
 const HomepageV5 = lazy(() => import("./pages/HomepageV5"));
+const HomepageV6 = lazy(() => import("./pages/HomepageV6"));
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 const VisionPage = lazy(() => import("./pages/VisionPage"));
 const FamilyLanding = lazy(() => import("./pages/FamilyLanding"));
@@ -601,6 +602,7 @@ const AppRouterContent = () => {
           <Route path="/homepage-3" element={<HomepageV3 />} />
           <Route path="/homepage-4" element={<HomepageV4 />} />
           <Route path="/homepage-5" element={<HomepageV5 />} />
+          <Route path="/homepage-6" element={<HomepageV6 />} />
           {/* Primary conversion funnel - Multi-step wizard */}
           <Route path="/vergleich" element={<Vergleich />} />
           <Route path="/offerte" element={<Vergleich />} />
