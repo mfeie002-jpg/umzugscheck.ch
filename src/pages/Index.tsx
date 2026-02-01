@@ -13,6 +13,7 @@ import { SocialProofABProvider } from "@/contexts/SocialProofABContext";
 import { TabHintABProvider } from "@/contexts/TabHintABContext";
 import { HomepageABProvider } from "@/contexts/HomepageABContext";
 import { UnifiedABToggle } from "@/components/homepage/UnifiedABToggle";
+import { ABUrlInitializer, useIsABLabMode } from "@/components/ABUrlInitializer";
 // Conversion & Analytics
 import { ScrollDepthTracker } from "@/components/conversion/ScrollDepthTracker";
 import { initMetrics } from "@/lib/realtime-metrics";
@@ -96,6 +97,8 @@ const Index = () => {
     <TabHintABProvider>
     <SocialProofABProvider>
     <ErrorBoundary>
+      {/* Initialize A/B variants from URL params (for Comparison Lab) */}
+      <ABUrlInitializer />
       <div className="min-h-screen bg-background">
         <Helmet>
           <html lang="de-CH" />
