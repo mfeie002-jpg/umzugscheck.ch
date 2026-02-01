@@ -172,21 +172,29 @@ export default function ABComparisonLab() {
     });
   }, [updateDevice]);
 
-  // Build URL with variant params
+  /**
+   * Build URL with variant params.
+   * IMPORTANT: In Lovable preview, the page access token is passed via query params.
+   * If we don't forward that token, the iframe requests can render blank.
+   */
   const buildDeviceUrl = useCallback((device: DeviceConfig) => {
+    const baseParams = new URLSearchParams(
+      typeof window !== 'undefined' ? window.location.search : ''
+    );
+
+    // Always force lab mode for iframes
+    baseParams.set('ab-lab', '1');
+
     // If a trust landing page is selected, navigate directly to that page
     if (device.trustLanding && device.trustLanding !== 'none') {
-      return `/test/trust-${device.trustLanding}?ab-lab=1`;
+      return `/test/trust-${device.trustLanding}?${baseParams.toString()}`;
     }
-    
+
     // Otherwise, use homepage with A/B params
-    const params = new URLSearchParams({
-      'ab-homepage': device.homepage,
-      'ab-nav': device.navigation,
-      'ab-social': device.socialProof,
-      'ab-lab': '1', // Flag to hide the A/B toggle
-    });
-    return `/?${params.toString()}`;
+    baseParams.set('ab-homepage', device.homepage);
+    baseParams.set('ab-nav', device.navigation);
+    baseParams.set('ab-social', device.socialProof);
+    return `/?${baseParams.toString()}`;
   }, []);
 
   // Presets
@@ -555,9 +563,6 @@ export default function ABComparisonLab() {
                             border: 'none',
                           }}
                           title={`Device ${device.id}`}
-                          // Sandbox WITHOUT allow-same-origin to prevent localStorage/session conflicts
-                          // Each iframe gets isolated storage context
-                          sandbox="allow-scripts allow-forms allow-popups allow-pointer-lock"
                         />
                       </div>
 
