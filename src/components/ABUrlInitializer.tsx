@@ -7,7 +7,7 @@
  * Parameters:
  * - ab-homepage: A, B, or C
  * - ab-nav: V1-V17 (navigation variant)
- * - ab-social: A-Q (Social Proof variant)
+ * - ab-social: A-AB (Social Proof variant - 28 total)
  * - ab-lab: 1 (hides the A/B toggle for lab mode)
  */
 
@@ -37,6 +37,15 @@ const NAV_ID_MAP: Record<string, string> = {
   'V16': 'variant-p',
   'V17': 'variant-17',
 };
+
+// All valid Social Proof variants (A-AB = 28 variants)
+const VALID_SOCIAL_VARIANTS = [
+  'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+  'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+  'AA', 'AB'
+] as const;
+
+type SocialProofVariant = typeof VALID_SOCIAL_VARIANTS[number];
 
 export const ABUrlInitializer = memo(function ABUrlInitializer() {
   const [searchParams] = useSearchParams();
@@ -68,8 +77,9 @@ export const ABUrlInitializer = memo(function ABUrlInitializer() {
   }, [navParam, setNavigation]);
   
   useEffect(() => {
-    if (socialParam && /^[A-Q]$/.test(socialParam)) {
-      setSocialProof(socialParam as 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q');
+    // Support all 28 variants: A-Z plus AA, AB
+    if (socialParam && VALID_SOCIAL_VARIANTS.includes(socialParam.toUpperCase() as SocialProofVariant)) {
+      setSocialProof(socialParam.toUpperCase() as SocialProofVariant);
     }
   }, [socialParam, setSocialProof]);
   

@@ -29,24 +29,42 @@ const NAVIGATION_VARIANTS = Array.from({ length: 17 }, (_, i) => ({
   description: `Navigation Variante ${i + 1}`,
 }));
 
+// All 28 Social Proof Variants (A-AB) matching SocialProofABContext
 const SOCIAL_PROOF_VARIANTS = [
+  // Standalone (A-F)
   { id: 'A', label: 'V1 Original', description: 'Farbige Logos' },
   { id: 'B', label: 'V2 Live Dashboard', description: 'Deal Cards, Activity Ticker' },
   { id: 'C', label: 'V3 Trust Hierarchy', description: 'Authority → Logic → Emotion' },
   { id: 'D', label: 'V4 Trust Stack', description: 'Kompakt mit Outcome-Tags' },
   { id: 'E', label: 'V5 Trust Strip 2.0', description: 'Unified Strip' },
   { id: 'F', label: 'V6 Verifiable Trust', description: 'ZEFIX, UID, Insurance' },
+  // Hybrid/Swiss (G-H)
   { id: 'G', label: 'V7 Swiss Infrastructure', description: 'eUmzugCH, Post, ASTAG' },
   { id: 'H', label: 'V8 Minimal Proof Strip', description: 'Clean Grayscale Logos' },
+  // Hero-Integrated (I-M)
   { id: 'I', label: 'V9 Card CTA Trust 🎯', description: 'Trust at CTA decision point' },
   { id: 'J', label: 'V10 Press Trust Bar', description: 'Desktop rail + Mobile inline' },
   { id: 'K', label: 'V11 Glassmorphism Bar', description: 'Premium overlay' },
   { id: 'L', label: 'V12 Hero Left + Form', description: 'Desktop left + Mobile footer' },
   { id: 'M', label: 'V13 Left Under CTA', description: 'Monochrome white logos' },
+  // Psychological (N-Q)
   { id: 'N', label: 'V14 Bandwagon Effect', description: 'Live activity' },
   { id: 'O', label: 'V15 Local Trust', description: 'Regional badges' },
   { id: 'P', label: 'V16 Data Security', description: 'SSL, GDPR, Swiss Made' },
   { id: 'Q', label: 'V17 In-Form Container', description: 'Trust bar inside form' },
+  // Research-Based (R-V)
+  { id: 'R', label: 'V18 Scannable Grid', description: '4-card grid for quick scanning' },
+  { id: 'S', label: 'V19 Hierarchy Strip', description: 'Micro-testimonial + core stats' },
+  { id: 'T', label: 'V20 Comparison Preview', description: 'Visual price comparison' },
+  { id: 'U', label: 'V21 Mobile-First Tabs', description: 'Tab interface for mobile' },
+  { id: 'V', label: 'V22 Trust + Pain Combo', description: 'Pain points + solutions' },
+  // CRO Patterns (W-AB)
+  { id: 'W', label: 'V23 Trust Floor', description: 'Full-width bar at hero bottom' },
+  { id: 'X', label: 'V24 Form Anchor', description: 'Trust in form card footer' },
+  { id: 'Y', label: 'V25 Eyebrow Badge', description: 'Trust above main headline' },
+  { id: 'Z', label: 'V26 Floating Cards', description: 'UI cards overlaying hero' },
+  { id: 'AA', label: 'V27 Trust Ticker', description: 'Infinite scroll marquee' },
+  { id: 'AB', label: 'V28 Glasmorphism Authority', description: 'Frosted glass premium bar' },
 ];
 
 interface DeviceConfig {
