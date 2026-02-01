@@ -28,20 +28,14 @@ import {
   TrustSkeleton 
 } from "@/components/performance/CLSOptimizedSections";
 
-// Lazy loaded components (below the fold)
+// Lazy loaded components (below the fold) - CONSOLIDATED for optimal page length
 const EnhancedHowItWorks = lazy(() => import("@/components/homepage/EnhancedHowItWorks").then(m => ({ default: m.EnhancedHowItWorks })));
 const CompanyComparisonSection = lazy(() => import("@/components/homepage/CompanyComparisonSection").then(m => ({ default: m.CompanyComparisonSection })));
-const AIVideoCalculatorSection = lazy(() => import("@/components/homepage/AIVideoCalculatorSection").then(m => ({ default: m.AIVideoCalculatorSection })));
 const EnhancedServicesGrid = lazy(() => import("@/components/homepage/EnhancedServicesGrid").then(m => ({ default: m.EnhancedServicesGrid })));
-const CostExamplesSection = lazy(() => import("@/components/homepage/CostExamplesSection").then(m => ({ default: m.CostExamplesSection })));
-// NEW: Trust & Conversion Sections
-const QualityStandardsBar = lazy(() => import("@/components/homepage/QualityStandardsBar").then(m => ({ default: m.QualityStandardsBar })));
+// Trust & Conversion Sections (consolidated)
 const PainGainSection = lazy(() => import("@/components/homepage/PainGainSection").then(m => ({ default: m.PainGainSection })));
 const GuaranteesSection = lazy(() => import("@/components/homepage/GuaranteesSection").then(m => ({ default: m.GuaranteesSection })));
-const ChecklistTeaser = lazy(() => import("@/components/homepage/ChecklistTeaser").then(m => ({ default: m.ChecklistTeaser })));
 const SEOContentAccordion = lazy(() => import("@/components/homepage/SEOContentAccordion").then(m => ({ default: m.SEOContentAccordion })));
-// NEW: Moving Process Guide (Umzugsprozess Schweiz)
-const MovingProcessGuide = lazy(() => import("@/components/homepage/MovingProcessGuide").then(m => ({ default: m.MovingProcessGuide })));
 // A/B tested components
 const TrustRibbonAB = lazy(() => import("@/components/trust/TrustRibbonAB").then(m => ({ default: m.TrustRibbonAB })));
 const EnhancedTestimonialsAB = lazy(() => import("@/components/homepage/EnhancedTestimonialsAB").then(m => ({ default: m.EnhancedTestimonialsAB })));
@@ -49,14 +43,15 @@ const EnhancedRegionsGrid = lazy(() => import("@/components/homepage/EnhancedReg
 const EnhancedFAQ = lazy(() => import("@/components/homepage/EnhancedFAQ").then(m => ({ default: m.EnhancedFAQ })));
 const EnhancedFinalCTA = lazy(() => import("@/components/homepage/EnhancedFinalCTA").then(m => ({ default: m.EnhancedFinalCTA })));
 const CookieConsentBanner = lazy(() => import("@/components/CookieConsentBanner").then(m => ({ default: m.CookieConsentBanner })));
-const AlternativeContactSection = lazy(() => import("@/components/homepage/AlternativeContactSection").then(m => ({ default: m.AlternativeContactSection })));
-const SpotlightTestimonial = lazy(() => import("@/components/homepage/SpotlightTestimonial").then(m => ({ default: m.SpotlightTestimonial })));
 // Lazy load mobile sticky bar
 const MobileStickyBar = lazy(() => import("@/components/homepage/MobileStickyBar").then(m => ({ default: m.MobileStickyBar })));
-// NEW: Cherry-Pick Components
+// Cherry-Pick Components (consolidated)
 const TrustScoreWidget = lazy(() => import("@/components/homepage/TrustScoreWidget").then(m => ({ default: m.TrustScoreWidget })));
 const CityPricesSection = lazy(() => import("@/components/homepage/CityPricesSection").then(m => ({ default: m.CityPricesSection })));
-const SavingsCalculatorSimple = lazy(() => import("@/components/homepage/SavingsCalculatorSimple").then(m => ({ default: m.SavingsCalculatorSimple })));
+// New utility components
+const InlineMobileCTA = lazy(() => import("@/components/homepage/InlineMobileCTA").then(m => ({ default: m.InlineMobileCTA })));
+const ScrollProgressDots = lazy(() => import("@/components/homepage/ScrollProgressDots").then(m => ({ default: m.ScrollProgressDots })));
+const ExitIntentDesktopModal = lazy(() => import("@/components/homepage/ExitIntentDesktopModal").then(m => ({ default: m.ExitIntentDesktopModal })));
 // ExitIntentMobileSheet - imported directly (not lazy) for scroll detection
 import { ExitIntentMobileSheet } from "@/components/ExitIntentMobileSheet";
 
@@ -136,116 +131,93 @@ const Index = () => {
         <ScrollDepthTracker />
 
         <main id="main-content" role="main">
-          {/* 1. Homepage Hero A/B - Variant A, B, or C */}
+          {/* 1. Homepage Hero A/B - Variant A, B, or C (includes Trust in form) */}
           <HomepageHeroAB />
           
           {/* 2. TRUST RIBBON - BEKANNT AUS + 15'000+ Stats (A/B TESTED) */}
           <Suspense fallback={<TrustSkeleton />}>
             <TrustRibbonAB variant="full" />
           </Suspense>
-
-          {/* 3. Spotlight Testimonial - Dr. med. Keller */}
-          <Suspense fallback={<TestimonialsSkeleton />}>
-            <SpotlightTestimonial />
-          </Suspense>
           
-          {/* 3. NEW: Quality Standards Bar - "Trust Bar 2" (ASTAG, Swiss Made, etc.) */}
-          <Suspense fallback={null}>
-            <QualityStandardsBar />
-          </Suspense>
-          
-          {/* 4. NEW: Pain vs Gain Section - Problem Solver */}
+          {/* 3. Pain vs Gain + How It Works (consolidated) */}
           <Suspense fallback={<SectionSkeleton height="300px" />}>
             <PainGainSection />
           </Suspense>
           
-          {/* 5. How it works - simplified process */}
           <Suspense fallback={<SectionSkeleton height="350px" />}>
             <EnhancedHowItWorks />
           </Suspense>
           
-          {/* 6. Company comparison - core value */}
+          {/* Mobile CTA #1 - After How It Works */}
+          <Suspense fallback={null}>
+            <InlineMobileCTA variant="compact" text="Jetzt vergleichen" />
+          </Suspense>
+          
+          {/* 4. Company comparison - core value */}
           <Suspense fallback={<CompanyCardsSkeleton count={3} />}>
             <CompanyComparisonSection />
           </Suspense>
           
-          {/* 6b. NEW: Quick Savings Calculator - Conversion hook before Video */}
-          <Suspense fallback={<SectionSkeleton height="300px" />}>
-            <SavingsCalculatorSimple />
-          </Suspense>
-          
-          {/* 7. KI Video Calculator - Innovation highlight */}
-          <Suspense fallback={<SectionSkeleton height="500px" />}>
-            <AIVideoCalculatorSection />
-          </Suspense>
-          
-          {/* 8. NEW: Guarantees Section - Risk Reversal */}
-          <Suspense fallback={<SectionSkeleton height="350px" />}>
-            <GuaranteesSection />
-          </Suspense>
-
-          {/* 9. Services grid */}
-          <Suspense fallback={<SectionSkeleton height="400px" variant="cards" />}>
-            <EnhancedServicesGrid />
-          </Suspense>
-          
-          {/* 10. Cost Examples - Preisbeispiele */}
-          <Suspense fallback={<SectionSkeleton height="500px" />}>
-            <CostExamplesSection />
-          </Suspense>
-          
-          {/* 10b. NEW: City Prices - Lokale Relevanz vor Testimonials */}
+          {/* 5. City Prices + Testimonials + TrustScore (consolidated local relevance) */}
           <Suspense fallback={<SectionSkeleton height="350px" />}>
             <CityPricesSection />
           </Suspense>
           
-          {/* 11. Testimonials - Video cards with concrete savings (A/B TESTED) */}
+          {/* Mobile CTA #2 - After City Prices */}
+          <Suspense fallback={null}>
+            <InlineMobileCTA variant="secondary" text="Kostenlos vergleichen" />
+          </Suspense>
+          
           <Suspense fallback={<TestimonialsSkeleton />}>
             <EnhancedTestimonialsAB />
           </Suspense>
           
-          {/* 11b. NEW: Trust Score Widget - Verstärkt Testimonials mit Zahlen */}
           <Suspense fallback={<SectionSkeleton height="250px" />}>
             <TrustScoreWidget />
           </Suspense>
           
-          {/* 12. Alternative Contact - Phone/WhatsApp/Email */}
-          <Suspense fallback={<SectionSkeleton height="200px" />}>
-            <AlternativeContactSection />
+          {/* 6. Guarantees - Risk Reversal */}
+          <Suspense fallback={<SectionSkeleton height="350px" />}>
+            <GuaranteesSection />
           </Suspense>
           
-          {/* 13. Regions */}
+          {/* Mobile CTA #3 - After Guarantees */}
+          <Suspense fallback={null}>
+            <InlineMobileCTA variant="primary" text="Offerten erhalten" />
+          </Suspense>
+
+          {/* 7. Services grid (compact) */}
+          <Suspense fallback={<SectionSkeleton height="400px" variant="cards" />}>
+            <EnhancedServicesGrid />
+          </Suspense>
+          
+          {/* 8. Regions (compact) */}
           <Suspense fallback={<SectionSkeleton height="300px" />}>
             <EnhancedRegionsGrid />
           </Suspense>
-          
-          {/* 14. NEW: Checklist Lead Magnet */}
-          <Suspense fallback={<SectionSkeleton height="300px" />}>
-            <ChecklistTeaser />
-          </Suspense>
-          
-          {/* 15. NEW: Moving Process Guide - Umzugsprozess Schweiz */}
-          <Suspense fallback={<SectionSkeleton height="600px" />}>
-            <MovingProcessGuide />
-          </Suspense>
 
-          {/* 16. FAQ */}
+          {/* 9. FAQ (Top questions only) */}
           <Suspense fallback={<SectionSkeleton height="400px" />}>
             <EnhancedFAQ />
           </Suspense>
           
-          {/* 16. NEW: SEO Content Accordion */}
-          <Suspense fallback={<SectionSkeleton height="400px" />}>
+          {/* 10. SEO Content Accordion (collapsed by default) */}
+          <Suspense fallback={<SectionSkeleton height="200px" />}>
             <SEOContentAccordion />
           </Suspense>
           
-          {/* 17. Final CTA */}
+          {/* 11. Final CTA */}
           <Suspense fallback={<SectionSkeleton height="300px" />}>
             <EnhancedFinalCTA />
           </Suspense>
         </main>
 
         {/* Footer is rendered by MainLayout - do NOT add SimplifiedFooter here */}
+        
+        {/* Desktop: Scroll Progress Dots (right side) */}
+        <Suspense fallback={null}>
+          <ScrollProgressDots />
+        </Suspense>
         
         {/* Single mobile CTA approach - lazy loaded */}
         <Suspense fallback={null}>
@@ -259,8 +231,11 @@ const Index = () => {
           delayMs={30000}
         />
         
-        {/* Exit Intent Mobile Sheet - Scroll-velocity triggered */}
+        {/* Exit Intent - Mobile (scroll velocity) + Desktop (mouse leave) */}
         <ExitIntentMobileSheet />
+        <Suspense fallback={null}>
+          <ExitIntentDesktopModal />
+        </Suspense>
         
         {/* Hotjar session recording & heatmaps */}
         <HotjarScript />

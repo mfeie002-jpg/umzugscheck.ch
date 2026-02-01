@@ -16,6 +16,8 @@ import {
   LiveDot,
   AnimatedCounter
 } from "@/components/common";
+import { HeroFormTrust } from "./HeroFormTrust";
+import { TrustScoreMini } from "./TrustScoreMini";
 
 // Swiss postal codes for autocomplete
 const swissPostalCodes = [
@@ -365,20 +367,25 @@ export const HeroSection = memo(function HeroSection() {
               </form>
 
               {/* Trust Points */}
-              <div className="flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4 mt-3 sm:mt-4 md:mt-6 pt-3 sm:pt-4 md:pt-6 border-t border-border">
+              <div className="flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4 mt-3 sm:mt-4 md:mt-6 pt-3 sm:pt-4 md:pt-6 border-t border-border/50">
                 <div className="flex items-center gap-1 md:gap-1.5 text-[10px] sm:text-xs text-muted-foreground">
-                  <CheckCircle className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 text-green-500" />
+                  <CheckCircle className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 text-emerald-500" />
                   Kostenlos
                 </div>
                 <div className="flex items-center gap-1 md:gap-1.5 text-[10px] sm:text-xs text-muted-foreground">
-                  <CheckCircle className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 text-green-500" />
+                  <CheckCircle className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 text-emerald-500" />
                   Unverbindlich
                 </div>
                 <div className="flex items-center gap-1 md:gap-1.5 text-[10px] sm:text-xs text-muted-foreground">
                   <Shield className="w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-3.5 md:h-3.5 text-primary" />
                   Datenschutz
                 </div>
+                {/* Trust Score Mini Badge */}
+                <TrustScoreMini score={94} showLabel={false} className="ml-1" />
               </div>
+              
+              {/* "Bekannt aus" Media Logos - Gatekeeper Moment Trust */}
+              <HeroFormTrust variant="full" className="mt-3" />
             </SpotlightCard>
           </motion.div>
         </div>
