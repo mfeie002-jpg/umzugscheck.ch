@@ -1,3 +1,8 @@
+// Trust Experiment Landingpages
+const LandingTrustProofA = lazy(() => import("./pages/landing-experiments/trust-a"));
+const LandingTrustProofB = lazy(() => import("./pages/landing-experiments/trust-b"));
+const LandingTrustProofC = lazy(() => import("./pages/landing-experiments/trust-c"));
+const LandingTrustUltimate = lazy(() => import("./pages/landing-experiments/trust-ultimate"));
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -843,6 +848,11 @@ const AppRouterContent = () => {
           <Route path="/navigation-vergleich" element={<NavigationComparison />} />
           <Route path="/daten" element={<DataJournalismPage />} />
           <Route path="/sitemap" element={<Sitemap />} />
+          {/* Trust Experiment Landingpages */}
+          <Route path="/landing-experiments/trust-a" element={<LandingTrustProofA />} />
+          <Route path="/landing-experiments/trust-b" element={<LandingTrustProofB />} />
+          <Route path="/landing-experiments/trust-c" element={<LandingTrustProofC />} />
+          <Route path="/landing-experiments/trust-ultimate" element={<LandingTrustUltimate />} />
           {/* LEGACY ROUTES - Redirect to canonical /umzugsfirmen/:city */}
           <Route path="/:city/umzugsfirmen" element={<LegacyCityServiceRedirect />} />
           <Route path="/:city/umzug" element={<CityOptimized />} />
@@ -925,6 +935,12 @@ const AppRouterContent = () => {
           <Route path="/fuer-firmen/anmelden" element={<ProviderLogin />} />
           <Route path="/fuer-firmen/registrieren" element={<ProviderSignupNew />} />
           <Route path="/export-download" element={<ExportDownload />} />
+
+          {/* Trust Experiment Landingpages */}
+          <Route path="/landing-experiments/trust-a" element={<LandingTrustProofA />} />
+          <Route path="/landing-experiments/trust-b" element={<LandingTrustProofB />} />
+          <Route path="/landing-experiments/trust-c" element={<LandingTrustProofC />} />
+          <Route path="/landing-experiments/trust-ultimate" element={<LandingTrustUltimate />} />
 
           {/* Internal dashboards (fallback registration)
               Some environments can mis-route /internal/* into the public route tree.
