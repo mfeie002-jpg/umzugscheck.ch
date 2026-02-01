@@ -1,261 +1,411 @@
 
-# Cherry-Pick Implementation Plan
+# Homepage Optimierungsplan: Von 86/100 → 100/100
 
-## Übersicht
+## Aktuelle Bewertung: 86/100
 
-Basierend auf der Konsolidierung werden **3 neue Komponenten** gebaut und **3 bestehende optimiert**.
-
----
-
-## Teil 1: Neue Komponenten (3 Stück)
-
-### 1.1 TrustScoreWidget.tsx
-
-**Beschreibung:** Ein visuelles Widget mit einem SVG-Ring-Chart, das einen Trust-Score von 94/100 anzeigt, plus 4 Kategorie-Fortschrittsbalken.
-
-**Technische Umsetzung:**
-- SVG-Kreis mit stroke-dasharray für den gefüllten Bereich
-- Framer Motion für Entrance-Animation
-- 4 horizontale Progress-Bars mit Labels
-
-**Daten (statisch):**
-- Transparenz: 23/25 (92%)
-- Partnerschaften: 25/25 (100%)
-- Bewertungen: 24/25 (96%)
-- Datensicherheit: 22/25 (88%)
-- Gesamtscore: 94/100
-
-**Layout:**
-- Desktop: Ring links, Kategorien rechts (horizontal)
-- Mobile: Ring oben, Kategorien darunter (vertikal)
-
-**Neuer Code:**
-```
-Datei: src/components/homepage/TrustScoreWidget.tsx
-- SVG Ring (120px, stroke-width 10)
-- Ring-Fill Animation bei Scroll-Into-View
-- 4 Kategorie-Bars mit Progress-Animation
-- Responsive Layout (flex-col auf Mobile, flex-row auf Desktop)
-```
-
-**Platzierung:** Nach Testimonials-Section, vor FAQ
+| Bereich | Aktuell | Ziel | Delta |
+|---------|---------|------|-------|
+| Hero & First Impression | 95 | 98 | +3 |
+| Trust Signals | 90 | 98 | +8 |
+| Conversion Flow | 82 | 98 | +16 |
+| Mobile UX | 80 | 98 | +18 |
+| Page Length/Fokus | 70 | 95 | +25 |
+| Performance | 85 | 98 | +13 |
 
 ---
 
-### 1.2 CityPricesSection.tsx
+## Teil 1: Kritische Probleme (Höchste Priorität)
 
-**Beschreibung:** Interaktive Sektion mit Stadt-Selector und dynamischen Preis-Stats.
+### 1.1 Page Length Problem - "Section Overload"
+**Problem:** Die Homepage hat 20+ Sections, was zu:
+- Decision Fatigue führt
+- Conversion-Punkte verwässert
+- Mobile Scroll-Müdigkeit verursacht
 
-**Technische Umsetzung:**
-- 6 Stadt-Pills als Tab-Navigation
-- Stats-Card mit 3 Spalten (Preis, Firmen, Ersparnis)
-- React State für aktive Stadt
-- Instant Update bei Klick (kein Reload)
+**Lösung:** Section Consolidation & Priority Ordering
 
-**Daten:**
-| Stadt | Preis | Firmen | Ersparnis |
-|-------|-------|--------|-----------|
-| Zürich | CHF 1'400 | 48 | 32% |
-| Bern | CHF 1'100 | 36 | 29% |
-| Basel | CHF 1'200 | 29 | 31% |
-| Genf | CHF 1'600 | 22 | 28% |
-| Luzern | CHF 950 | 18 | 34% |
-| St. Gallen | CHF 880 | 14 | 33% |
-
-**Layout:**
-- Headline zentriert
-- Stadt-Pills: flex-wrap, justify-center
-- Stats-Card: 3 Spalten auf Desktop, gestapelt auf Mobile
-- CTA-Button: "Angebote in [Stadt] vergleichen"
-
-**Neuer Code:**
 ```
-Datei: src/components/homepage/CityPricesSection.tsx
-- useState für selectedCity
-- Scroll-Entrance Animation (Intersection Observer)
-- Dynamischer CTA-Text mit Stadt-Name
+VORHER (20+ Sections):
+Hero → TrustRibbon → Spotlight → QualityBar → PainGain → 
+HowItWorks → CompanyComparison → SavingsCalc → VideoCalc → 
+Guarantees → Services → CostExamples → CityPrices → 
+Testimonials → TrustScore → AlternativeContact → Regions → 
+Checklist → MovingProcess → FAQ → SEO → FinalCTA
+
+NACHHER (12 Core Sections):
+1. Hero (mit integriertem Mini-Trust)
+2. TrustRibbon (Media + Stats kombiniert)
+3. PainGain → HowItWorks (kombiniert)
+4. CompanyComparison
+5. SavingsCalc + CityPrices (kombiniert als "Preise in Ihrer Stadt")
+6. Testimonials + TrustScore (kombiniert)
+7. Guarantees (bleibt)
+8. Services (kompakter)
+9. Regions (kompakter)
+10. FAQ (Top 5 nur)
+11. FinalCTA (bleibt)
+12. SEO Accordion (collapsed by default)
 ```
 
-**Platzierung:** Nach Testimonials oder TrustScoreWidget
+**Zu entfernen/verstecken:**
+- `SpotlightTestimonial` → In Testimonials integrieren
+- `QualityStandardsBar` → In TrustRibbon integrieren
+- `AIVideoCalculatorSection` → Separater Funnel-Link (zu lang für Homepage)
+- `ChecklistTeaser` → Footer-Link
+- `MovingProcessGuide` → Eigene Seite /umzugsprozess
+- `AlternativeContactSection` → Footer-Integration
 
 ---
 
-### 1.3 ExitIntentMobileSheet.tsx
+### 1.2 Mobile CTA Visibility Gap
+**Problem:** Zwischen Hero-CTA und MobileStickyBar gibt es keine inline CTAs
 
-**Beschreibung:** Mobile-only Bottom-Sheet, das bei schnellem Scroll-Up erscheint.
+**Lösung:** Inline CTAs nach jeder 2. Section
 
-**Technische Umsetzung:**
-- Trigger: scrollY > 300px + scroll-velocity > 100px in < 500ms
-- Vaul Bottom-Sheet (bereits installiert)
-- Einmal pro Session (sessionStorage)
-- Random Testimonial aus Pool
+```tsx
+// Neuer Component: InlineMobileCTA.tsx
+// Erscheint nach Section 2, 4, 6, 8 auf Mobile
+<InlineMobileCTA 
+  variant="compact" 
+  text="Jetzt vergleichen" 
+  className="md:hidden"
+/>
+```
 
-**Trigger-Logik:**
-```typescript
-// Scroll-Velocity Detection
-let lastScrollY = 0;
-let lastTime = Date.now();
+---
 
-const handleScroll = () => {
-  const currentY = window.scrollY;
-  const currentTime = Date.now();
-  const velocity = (lastScrollY - currentY) / (currentTime - lastTime) * 1000;
-  
-  if (currentY > 300 && velocity > 200 && !hasTriggered) {
-    setIsOpen(true);
-    setHasTriggered(true);
-    sessionStorage.setItem('exit_mobile_shown', 'true');
+### 1.3 Hero Trust Integration (Gatekeeper Moment)
+**Problem:** Trust Signals erscheinen erst NACH dem Hero-Formular
+
+**Lösung:** "Bekannt aus" Mini-Logos INNERHALB der Form-Card
+
+```tsx
+// In HeroSection.tsx Form-Card:
+<div className="border-t border-border/50 pt-3 mt-4">
+  <p className="text-[10px] text-muted-foreground text-center mb-2">
+    Bekannt aus
+  </p>
+  <div className="flex justify-center gap-4 opacity-60">
+    <SRFLogo className="h-4" />
+    <NZZLogo className="h-4" />
+    <TCSLogo className="h-4" />
+  </div>
+</div>
+```
+
+---
+
+## Teil 2: Conversion Optimierungen
+
+### 2.1 Progress Indicator auf Homepage
+**Problem:** User wissen nicht, wo sie im Scroll-Funnel sind
+
+**Lösung:** Diskreter Scroll-Progress-Dot-Navigator (rechts)
+
+```tsx
+// Neuer Component: ScrollProgressDots.tsx
+// 5 Dots: Hero | Trust | Vergleich | Preise | Kontakt
+<ScrollProgressDots 
+  sections={['hero', 'trust', 'compare', 'prices', 'contact']}
+  className="fixed right-4 top-1/2 -translate-y-1/2 hidden lg:flex"
+/>
+```
+
+### 2.2 Exit Intent Desktop
+**Problem:** Nur Mobile hat Exit-Intent
+
+**Lösung:** Desktop Exit-Intent Modal (Mouse leaves viewport top)
+
+```tsx
+// Neuer Component: ExitIntentDesktopModal.tsx
+// Trigger: Mouse verlässt Viewport nach oben + >5s auf Seite
+// Inhalt: "Bevor Sie gehen..." + Testimonial + CTA
+```
+
+### 2.3 Micro-Commitments im Hero
+**Problem:** Formular wirkt wie "großer Schritt"
+
+**Lösung:** Progressive Disclosure mit "Nur 30 Sekunden" Badge
+
+```tsx
+// Hero Form Enhancement:
+<Badge className="absolute -top-2 right-4 bg-emerald-500">
+  <Clock className="w-3 h-3 mr-1" />
+  Nur 30 Sek.
+</Badge>
+```
+
+---
+
+## Teil 3: Trust Signal Perfektionierung
+
+### 3.1 Verifiable Trust Links
+**Problem:** Trust Logos ohne Nachweis
+
+**Lösung:** Hover-Tooltip mit Verifizierungs-Link
+
+```tsx
+// In TrustRibbonAB.tsx:
+<TooltipProvider>
+  <Tooltip>
+    <TooltipTrigger>
+      <SRFLogo />
+    </TooltipTrigger>
+    <TooltipContent>
+      <p>Verifiziert: SRF Berichterstattung 2024</p>
+      <a href="..." className="text-xs text-primary">
+        Artikel ansehen ↗
+      </a>
+    </TooltipContent>
+  </Tooltip>
+</TooltipProvider>
+```
+
+### 3.2 Real-Time Social Proof
+**Problem:** "15'000+ Kunden" ist statisch
+
+**Lösung:** Live-Counter mit Puls-Animation
+
+```tsx
+// Enhancement für Stats:
+<LiveCounter 
+  baseValue={15847}
+  incrementPerHour={2}
+  label="Kunden heute"
+/>
+```
+
+### 3.3 Trust Score Integration im Hero
+**Problem:** TrustScoreWidget ist zu weit unten
+
+**Lösung:** Mini-Version im Hero-Badge-Bereich
+
+```tsx
+// Hero Badge Enhancement:
+<div className="flex items-center gap-1">
+  <TrustScoreMini score={94} />
+  <span className="text-xs">Trust Score</span>
+</div>
+```
+
+---
+
+## Teil 4: Mobile UX Perfektionierung
+
+### 4.1 Thumb-Zone Optimization
+**Problem:** Wichtige CTAs außerhalb der Thumb-Zone
+
+**Lösung:** Bottom-Aligned CTAs auf Mobile
+
+```css
+/* Mobile CTA Positioning */
+@media (max-width: 768px) {
+  .section-cta {
+    position: sticky;
+    bottom: 80px; /* Above MobileStickyBar */
   }
-  
-  lastScrollY = currentY;
-  lastTime = currentTime;
+}
+```
+
+### 4.2 Swipe Gestures
+**Problem:** Horizontal Scroll nicht intuitiv kommuniziert
+
+**Lösung:** Initial Swipe Hint Animation
+
+```tsx
+// In Carousels/Sliders:
+<SwipeHint 
+  direction="horizontal"
+  showOnce={true}
+  sessionKey="homepage_swipe_hint"
+/>
+```
+
+### 4.3 Touch Feedback
+**Problem:** Keine haptische Rückmeldung bei Interaktionen
+
+**Lösung:** Vibration API für wichtige Actions
+
+```tsx
+// In Button-Clicks:
+const handleClick = () => {
+  if ('vibrate' in navigator) {
+    navigator.vibrate(10); // Subtle haptic
+  }
+  // ... action
 };
 ```
 
-**Inhalt:**
-- "Noch nicht sicher?" - Headline
-- Random Testimonial (kompakt)
-- "Jetzt kostenlos vergleichen" - CTA
-- X-Button zum Schliessen
-
-**Neuer Code:**
-```
-Datei: src/components/ExitIntentMobileSheet.tsx
-- Vaul Sheet-Komponente
-- useScrollVelocity Custom Hook
-- Mobile-only (hidden md:hidden)
-```
-
-**Platzierung:** In Index.tsx als globaler Wrapper
-
 ---
 
-## Teil 2: Optimierungen bestehender Komponenten
+## Teil 5: Performance & Core Web Vitals
 
-### 2.1 SocialProofTicker - Inline-Variante hinzufügen
+### 5.1 LCP Optimization
+**Problem:** Hero-Bild lädt langsam
 
-**Aktueller Stand:** Popup-Benachrichtigungen unten links
-
-**Erweiterung:** Zusätzliche inline Ticker-Variante als Section
-
-**Änderungen:**
-```
-Datei: src/components/homepage/LiveActivityBanner.tsx (existiert bereits!)
-- Review und ggf. Design-Update
-- Nachrichten-Pool erweitern mit Ersparnis-Daten
-```
-
-Bemerkung: `LiveActivityBanner.tsx` existiert bereits und macht genau das. Nur Review nötig.
-
----
-
-### 2.2 SavingsCalculator - Design-Update
-
-**Aktueller Stand:** `PremiumSavingsCalculator.tsx` mit Sliders
-
-**Erweiterung:** Zusätzliche Variante mit 3 Grossen-Pills (Klein/Mittel/Gross)
-
-**Änderungen:**
-```
-Datei: src/components/homepage/SavingsCalculatorSimple.tsx (NEU)
-- 3 Pills statt 2 Sliders für schnellere Interaktion
-- Grössere Ersparnis-Anzeige in Grün
-- Strikethrough für Originalpreis
-```
-
-**Daten (wie im Prompt):**
-- Klein (1-2 Zi): CHF 1'200 → CHF 840 (30%)
-- Mittel (3-4 Zi): CHF 1'800 → CHF 1'260 (30%)
-- Gross (5+ Zi): CHF 2'800 → CHF 1'960 (30%)
-
----
-
-### 2.3 Georgia Typography - CSS-Variable
-
-**Aktueller Stand:** Georgia nur für NZZ-Logo
-
-**Erweiterung:** Optionale CSS-Variable für Headlines
-
-**Änderungen:**
-```css
-/* In src/index.css oder tailwind.config */
-:root {
-  --font-headline: Georgia, serif;
-}
-
-/* Neue Utility-Klasse */
-.font-headline {
-  font-family: var(--font-headline);
-}
-```
-
-Bemerkung: Nicht global erzwingen, sondern als Option für A/B-Testing bereitstellen.
-
----
-
-## Teil 3: Implementierungs-Reihenfolge
-
-### Phase 1: Neue Komponenten (Priorität Hoch)
-1. `TrustScoreWidget.tsx` - 2-3 Stunden
-2. `CityPricesSection.tsx` - 2-3 Stunden  
-3. `ExitIntentMobileSheet.tsx` - 2 Stunden
-
-### Phase 2: Optimierungen (Priorität Mittel)
-4. `SavingsCalculatorSimple.tsx` - 1-2 Stunden
-5. Typography CSS-Variable - 30 Minuten
-
-### Phase 3: Integration (Priorität Niedrig)
-6. Komponenten in `Index.tsx` einbinden
-7. A/B-Test-Varianten erstellen
-
----
-
-## Teil 4: Was NICHT gemacht wird
-
-### MockComparisonPreview
-- **Grund:** `PremiumCompanyComparison.tsx` und `CompanyComparisonTable.tsx` existieren bereits
-- **Aktion:** Keine neue Komponente, bestehende bei Bedarf stylen
-
-### Kompletter Rebuild
-- **Grund:** Würde AI Video Calculator und A/B-Testing zerstören
-- **Aktion:** Cherry-Pick Ansatz stattdessen
-
----
-
-## Zusammenfassung
-
-| Komponente | Aktion | Aufwand | Status |
-|------------|--------|---------|--------|
-| TrustScoreWidget | Neu bauen | 2-3h | ✅ Fertig |
-| CityPricesSection | Neu bauen | 2-3h | ✅ Fertig |
-| ExitIntentMobileSheet | Neu bauen | 2h | ✅ Fertig |
-| SavingsCalculatorSimple | Variante erstellen | 1-2h | ✅ Fertig |
-| Georgia Typography | CSS-Variable | 30min | ✅ Fertig |
-| LiveActivityBanner | Review (existiert) | 30min | ⏸️ Bereits vorhanden |
-
-**Gesamtaufwand:** ca. 8-12 Stunden
-
-Dieser Plan fügt die wertvollen UI-Ideen aus dem Rebuild-Prompt hinzu, **ohne** die bestehende Infrastruktur (A/B-Testing, AI Video Calculator, dynamische Daten) zu zerstören.
-
----
-
-## Implementierte Dateien
-
-- `src/components/homepage/TrustScoreWidget.tsx` - SVG Ring-Chart 94/100
-- `src/components/homepage/CityPricesSection.tsx` - Stadt-Selector mit Preis-Stats
-- `src/components/homepage/SavingsCalculatorSimple.tsx` - 3-Pills Sparrechner
-- `src/components/ExitIntentMobileSheet.tsx` - Mobile Bottom-Sheet bei Scroll-Up
-- `src/index.css` - `--font-headline: Georgia` Variable hinzugefügt
-
-## Nächste Schritte
-
-Die Komponenten sind erstellt und exportiert. Um sie zu nutzen:
+**Lösung:** Preload + AVIF/WebP + Blur Placeholder
 
 ```tsx
-// In Index.tsx oder anderen Seiten:
-import { TrustScoreWidget, CityPricesSection, SavingsCalculatorSimple } from "@/components/homepage";
-import { ExitIntentMobileSheet } from "@/components/ExitIntentMobileSheet";
+// In index.html:
+<link rel="preload" as="image" href="/hero-optimized.avif" />
 
-// Für Georgia Headlines (optional):
-<h1 className="font-headline">Swiss Banking Style</h1>
+// In HeroSection:
+<img 
+  src="/hero-optimized.avif"
+  style={{ backgroundImage: 'url(data:image/..blur..)' }}
+  loading="eager"
+  fetchpriority="high"
+/>
 ```
+
+### 5.2 CLS Prevention
+**Problem:** Lazy-loaded Sections verursachen Layout Shifts
+
+**Lösung:** Feste Höhen für Skeleton-Fallbacks
+
+```tsx
+// In Index.tsx:
+<Suspense fallback={<SectionSkeleton height="400px" />}>
+  <CompanyComparisonSection />
+</Suspense>
+```
+
+### 5.3 Reduce JS Bundle
+**Problem:** Viele Framer Motion Animationen
+
+**Lösung:** Motion-Lite für Above-Fold, Full Motion nur Below-Fold
+
+```tsx
+// Conditional Motion Import:
+const motion = isAboveFold 
+  ? require('framer-motion').m // Lightweight
+  : require('framer-motion').motion; // Full
+```
+
+---
+
+## Teil 6: Micro-Interactions & Delight
+
+### 6.1 Form Validation Delight
+**Problem:** Standard-Error-Messages
+
+**Lösung:** Freundliche Inline-Hinweise mit Icon
+
+```tsx
+// Form Validation:
+{error && (
+  <motion.div 
+    initial={{ opacity: 0, y: -5 }}
+    animate={{ opacity: 1, y: 0 }}
+    className="text-xs text-amber-600 flex items-center gap-1"
+  >
+    <Info className="w-3 h-3" />
+    Bitte geben Sie eine gültige PLZ ein
+  </motion.div>
+)}
+```
+
+### 6.2 Success State Celebration
+**Problem:** Kein Feedback nach Form-Submit
+
+**Lösung:** Konfetti + Success-Animation
+
+```tsx
+// Nach Submit:
+<Confetti trigger={isSubmitted} />
+<motion.div 
+  initial={{ scale: 0 }}
+  animate={{ scale: 1 }}
+  className="text-center"
+>
+  <CheckCircle className="w-16 h-16 text-emerald-500 mx-auto" />
+  <h3>Anfrage gesendet!</h3>
+</motion.div>
+```
+
+### 6.3 Scroll-Triggered Animations
+**Problem:** Manche Sections erscheinen "tot"
+
+**Lösung:** Subtile Entrance-Animations für alle Sections
+
+```tsx
+// Standard Section Wrapper:
+<ScrollAnimationWrapper>
+  <SectionContent />
+</ScrollAnimationWrapper>
+```
+
+---
+
+## Implementierungs-Roadmap
+
+### Phase 1: Section Consolidation (Kritisch)
+1. Sections zusammenführen (Index.tsx)
+2. Removed Sections auf eigene Seiten verschieben
+3. Inline Mobile CTAs hinzufügen
+
+### Phase 2: Hero Optimization
+4. Trust Logos in Form-Card integrieren
+5. Micro-Commitment Badge hinzufügen
+6. TrustScoreMini in Hero-Badges
+
+### Phase 3: Trust Enhancement
+7. Verifiable Trust Tooltips
+8. Live-Counter Implementation
+9. Desktop Exit-Intent Modal
+
+### Phase 4: Mobile Perfection
+10. Thumb-Zone CTAs
+11. Swipe Hints
+12. Touch Feedback (Vibration)
+
+### Phase 5: Performance
+13. Hero Image Optimization
+14. CLS-sichere Skeletons
+15. Motion-Lite für Above-Fold
+
+### Phase 6: Delight
+16. Form Validation UX
+17. Success Celebrations
+18. Section Animations
+
+---
+
+## Erwartetes Ergebnis
+
+| Bereich | Vorher | Nachher |
+|---------|--------|---------|
+| Hero & First Impression | 95 | 98 |
+| Trust Signals | 90 | 98 |
+| Conversion Flow | 82 | 98 |
+| Mobile UX | 80 | 98 |
+| Page Length/Fokus | 70 | 95 |
+| Performance | 85 | 98 |
+| **Gesamt** | **86** | **97-98** |
+
+Die verbleibenden 2-3 Punkte sind immer "subjektiv" - aber mit diesem Plan erreichen wir praktisch das Maximum dessen, was technisch und UX-mässig möglich ist.
+
+---
+
+## Technische Details
+
+### Neue Komponenten:
+1. `InlineMobileCTA.tsx` - Inline CTAs für Mobile
+2. `ScrollProgressDots.tsx` - Navigation-Dots rechts
+3. `ExitIntentDesktopModal.tsx` - Desktop Exit-Intent
+4. `TrustScoreMini.tsx` - Kompakte Trust-Score-Anzeige
+5. `SwipeHint.tsx` - Swipe-Hinweis-Animation
+6. `LiveCounter.tsx` - Animierter Live-Zähler
+
+### Zu modifizierende Dateien:
+- `src/pages/Index.tsx` - Section Consolidation
+- `src/components/homepage/HeroSection.tsx` - Trust Integration
+- `src/components/trust/TrustRibbonAB.tsx` - Verifiable Links
+- `tailwind.config.ts` - Neue Animation-Utilities
+- `src/index.css` - Performance-optimierte Styles
+
+### Geschätzter Aufwand:
+- Phase 1-2: 6-8 Stunden
+- Phase 3-4: 4-6 Stunden
+- Phase 5-6: 4-5 Stunden
+- **Gesamt: 14-19 Stunden**
