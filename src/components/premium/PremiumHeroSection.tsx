@@ -153,7 +153,7 @@ export const PremiumHeroSection = () => {
 
   // Use fixed height in screenshot mode to prevent vh/svh from exploding with tall viewports
   const screenshotMode = isScreenshotRenderMode();
-  const heroHeightClass = screenshotMode
+<<<<<<< HEAD
     ? "min-h-[640px]" // Fixed height for screenshots
     : "min-h-[70svh] sm:min-h-[70vh] md:min-h-[70vh]";
 
@@ -163,6 +163,16 @@ export const PremiumHeroSection = () => {
       className={`relative ${heroHeightClass} flex items-start overflow-hidden pt-2 sm:pt-2`}
       style={{ position: 'relative' }}
     >
+=======
+    ? "min-h-[600px]" // Fixed height for screenshots
+    : "min-h-[85svh] sm:min-h-[70vh] md:min-h-[65vh] lg:min-h-[70vh]";
+
+  const heroHeightClass = screenshotMode
+    ? "min-h-[600px]" // Fixed height for screenshots
+    : "min-h-[85svh] sm:min-h-[70vh] md:min-h-[65vh] lg:min-h-[70vh]";
+  return (
+    <section ref={sectionRef} className={`relative ${heroHeightClass} flex items-start sm:items-center overflow-hidden pt-2 sm:pt-0 pb-4 sm:pb-6`} style={{ position: 'relative' }}>
+>>>>>>> 3574a53fd8bf789e259d15eeafaaa94675023ece
       {/* Background Image with Parallax Effect */}
       <motion.div
         className="absolute inset-0 w-full h-full"
@@ -423,14 +433,14 @@ export const PremiumHeroSection = () => {
             }}
             className="order-1 lg:order-2"
           >
-            <div className="bg-card rounded-xl md:rounded-2xl shadow-xl border border-border p-3 sm:p-5 md:p-8 relative">
-              <div className="space-y-2.5 sm:space-y-4 md:space-y-5">
+            <div className="bg-card rounded-xl md:rounded-2xl shadow-xl border border-border p-3 sm:p-4 md:p-6 relative">
+              <div className="space-y-2 sm:space-y-3 md:space-y-4">
                 {/* Form Header - Friendly, not pushy */}
-                <div className="text-center space-y-0.5 md:space-y-2">
-                  <h2 className="text-base sm:text-xl md:text-2xl font-bold text-foreground">
+                <div className="text-center space-y-0.5 md:space-y-1">
+                  <h2 className="text-base sm:text-lg md:text-xl font-bold text-foreground">
                     Wie möchten Sie starten?
                   </h2>
-                  <p className="text-[11px] sm:text-sm text-muted-foreground">
+                  <p className="text-[11px] sm:text-xs text-muted-foreground">
                     Wählen Sie Ihre bevorzugte Methode
                   </p>
                 </div>

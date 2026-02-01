@@ -43,6 +43,23 @@ const reviews = [
 ];
 
 // Media logos: Nur SVGs aus /public/logos/trust/
+<<<<<<< HEAD
+=======
+  { name: "SRF", src: "/logos/srf.png", color: "#C8102E" },
+  { name: "NZZ", src: "/logos/nzz.png", color: "#1a1a1a" },
+  { name: "20 Minuten", src: "/logos/20min.png", color: "#003399" },
+  { name: "Blick", src: "/logos/blick.png", color: "#E30613" },
+  { name: "Watson", src: "/logos/watson.png", color: "#1a1a1a" },
+  { name: "TCS", src: "/logos/tcs.png", color: "#0050A8" },
+>>>>>>> 3574a53fd8bf789e259d15eeafaaa94675023ece
+  { name: "SRF", src: "/logos/trust/srf.svg" },
+  { name: "NZZ", src: "/logos/trust/nzz.svg" },
+  { name: "20 Minuten", src: "/logos/trust/20min.svg" },
+  { name: "Blick", src: "/logos/trust/blick.svg" },
+  { name: "Watson", src: "/logos/trust/watson.svg" },
+  { name: "TCS", src: "/logos/trust/tcs.svg" },
+];
+
 const mediaLogos = [
   { name: "SRF", src: "/logos/trust/srf.svg" },
   { name: "NZZ", src: "/logos/trust/nzz.svg" },
@@ -130,7 +147,7 @@ export const SocialProofBlock = () => {
           ))}
         </div>
 
-        {/* Trust Logos - HIGH CONTRAST */}
+        {/* Trust Logos - SVG only, fail-safe */}
         <div className="text-center">
           <p className="text-xs md:text-sm font-bold uppercase tracking-widest text-muted-foreground mb-6">
             Bekannt aus & geprüft von
@@ -150,7 +167,17 @@ export const SocialProofBlock = () => {
                   src={logo.src}
                   alt={logo.name}
                   className="h-8 w-auto max-w-[90px] object-contain"
+<<<<<<< HEAD
+=======
+                  style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.04))' }}
+                className="px-4 py-2.5 rounded-lg bg-card border border-border shadow-sm hover:shadow-md transition-all cursor-pointer"
+              >
+                <img
+                  src={logo.src}
+                  alt={logo.name}
+                  className="h-8 w-auto max-w-[90px] object-contain"
                   loading="lazy"
+>>>>>>> 3574a53fd8bf789e259d15eeafaaa94675023ece
                   onError={e => { e.currentTarget.style.display = "none"; }}
                   width={90}
                   height={32}
@@ -158,6 +185,14 @@ export const SocialProofBlock = () => {
                   draggable={false}
                 />
               </motion.div>
+                  loading="lazy"
+                  style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.04))' }}
+                  onError={e => { e.currentTarget.style.display = "none"; }}
+                  width={90}
+                  height={32}
+                  decoding="async"
+                  draggable={false}
+                />
             ))}
           </div>
           <p className="text-xs text-muted-foreground mt-5">

@@ -21,16 +21,12 @@ const PremiumHeroSection = lazy(() =>
 
 // SmartRouter imports (inline since it's the default)
 import { SmartRouterWizard } from '@/components/smart-router';
-import { GoldenSocialProof } from '@/components/golden';
 
 const SmartRouterHero = memo(function SmartRouterHero() {
   return (
     <section className="relative bg-gradient-to-b from-background to-muted/30 py-8 sm:py-12">
       <div className="container mx-auto px-4">
-        {/* Social Proof Strip */}
-        <GoldenSocialProof variant="strip" className="mb-6" />
-        
-        {/* Smart Router Wizard */}
+        {/* Smart Router Wizard - Social Proof is handled by TrustRibbonAB in Index.tsx */}
         <SmartRouterWizard />
       </div>
     </section>

@@ -1,6 +1,14 @@
 /**
  * A/B Wrapper for TrustRibbon
- * Renders Variant A, B, C, D, or E based on context
+ * Renders Variant A, B, C, D, E, or F based on context
+ * 
+ * Variants:
+ * - A: Original - Colored logos, 15'000+ big number
+ * - B: Live Dashboard, Deal Cards
+ * - C: Trust Hierarchy (Authority → Logic → Emotion)
+ * - D: Trust Stack (kompakt, Outcome-Tags)
+ * - E: Trust Strip 2.0 (unified strip)
+ * - F: Verifiable Trust (ZEFIX, UID, Insurance, Escrow)
  */
 
 import { memo } from 'react';
@@ -10,25 +18,36 @@ import { TrustRibbonVariantB } from '@/components/trust/TrustRibbonVariantB';
 import { TrustRibbonVariantC } from '@/components/trust/TrustRibbonVariantC';
 import { TrustRibbonVariantD } from '@/components/trust/TrustRibbonVariantD';
 import { TrustRibbonVariantE } from '@/components/trust/TrustRibbonVariantE';
+import { TrustRibbonVariantF } from '@/components/trust/TrustRibbonVariantF';
 
 interface TrustRibbonABProps {
-  variant?: "full" | "compact";
+  variant?: "full" | "compact" | "trust" | "media";
   className?: string;
 }
 
 export const TrustRibbonAB = memo(function TrustRibbonAB(props: TrustRibbonABProps) {
   const { variant: abVariant } = useSocialProofAB();
   
+  // Map variant prop for components that don't support all variants
+  const mappedProps = {
+    ...props,
+    variant: props.variant === "trust" || props.variant === "media" 
+      ? "full" as const 
+      : props.variant,
+  };
+  
   switch (abVariant) {
     case 'B':
-      return <TrustRibbonVariantB {...props} />;
+      return <TrustRibbonVariantB {...mappedProps} />;
     case 'C':
-      return <TrustRibbonVariantC {...props} />;
+      return <TrustRibbonVariantC {...mappedProps} />;
     case 'D':
-      return <TrustRibbonVariantD {...props} />;
+      return <TrustRibbonVariantD {...mappedProps} />;
     case 'E':
-      return <TrustRibbonVariantE {...props} />;
+      return <TrustRibbonVariantE {...mappedProps} />;
+    case 'F':
+      return <TrustRibbonVariantF {...props} />;
     default:
-      return <TrustRibbon {...props} />;
+      return <TrustRibbon {...mappedProps} />;
   }
 });

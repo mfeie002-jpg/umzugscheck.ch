@@ -24,6 +24,18 @@ export const TRUST = {
   responseTime: "24-48h",
   responseLabel: "Antwortzeit",
   
+  // Savings mit Disclaimer
+  savingsAverage: "620",
+  savingsDisclaimer: "Basierend auf 15'000+ Preisvergleichen seit 2019. Durchschnittliche Differenz zwischen teuerstem und günstigstem Angebot.",
+  
+  // Live Ticker Städte (zentral verwaltet)
+  liveTickerCities: [
+    { city: "Zürich", savingsRange: [450, 750] as const },
+    { city: "Bern", savingsRange: [350, 550] as const },
+    { city: "Basel", savingsRange: [600, 950] as const },
+    { city: "Luzern", savingsRange: [280, 450] as const },
+  ],
+  
   // Formatted strings
   get ratingDisplay() {
     return `${this.ratingValue}/5`;

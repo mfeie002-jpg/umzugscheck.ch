@@ -67,12 +67,13 @@ const TESTIMONIALS = [
   },
 ];
 
-// Media logos (trust signals)
+// Media logos (trust signals) - using text-based display, not image files
+// These are rendered via styled text components, not actual image files
 const MEDIA_LOGOS = [
-  { name: "20 Minuten", src: "/logos/20min.svg" },
-  { name: "NZZ", src: "/logos/nzz.svg" },
-  { name: "Blick", src: "/logos/blick.svg" },
-  { name: "SRF", src: "/logos/srf.svg" },
+  { name: "20 Minuten" },
+  { name: "NZZ" },
+  { name: "Blick" },
+  { name: "SRF" },
 ];
 
 interface GoldenSocialProofProps {
