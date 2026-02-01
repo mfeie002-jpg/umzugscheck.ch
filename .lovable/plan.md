@@ -1,17 +1,26 @@
 
 # Homepage Optimierungsplan: Von 86/100 → 100/100
 
-## Status: Phase 1 & 2 COMPLETE ✅
+## Status: Phase 1-4 COMPLETE ✅
 
 ### Completed Tasks:
-- ✅ Section Consolidation (20+ → 11 core sections)
-- ✅ InlineMobileCTA component created
-- ✅ Hero Trust Integration (media logos in form + TrustScoreMini)
-- ✅ ScrollProgressDots (desktop navigation)
-- ✅ ExitIntentDesktopModal (captures leaving users)
-- ✅ TrustScoreMini, LiveCounter, SwipeHint, HeroFormTrust components
+- ✅ Phase 1: Section Consolidation (20+ → 11 core sections)
+- ✅ Phase 1: InlineMobileCTA component created
+- ✅ Phase 2: Hero Trust Integration (media logos in form + TrustScoreMini)
+- ✅ Phase 2: ScrollProgressDots (desktop navigation)
+- ✅ Phase 2: ExitIntentDesktopModal (captures leaving users)
+- ✅ Phase 2: TrustScoreMini, LiveCounter, SwipeHint, HeroFormTrust components
+- ✅ Phase 3: VerifiableTrustLogo with hover tooltips & verification links
+- ✅ Phase 3: LiveCounter integration in TrustRibbon
+- ✅ Phase 4: Thumb-zone optimized CTAs (56px touch targets)
+- ✅ Phase 4: Haptic feedback utilities (triggerHaptic, HapticButton)
+- ✅ Phase 4: Mobile CTAs with vibration API support
 
-## Aktuelle Bewertung: 86/100 → 92/100 (estimated)
+### Remaining:
+- ⏳ Phase 5: Performance (LCP, CLS, Motion-Lite)
+- ⏳ Phase 6: Delight (Form Validation UX, Success Celebrations)
+
+## Aktuelle Bewertung: 86/100 → 94/100 (estimated)
 
 ## Teil 1: Kritische Probleme (Höchste Priorität)
 
