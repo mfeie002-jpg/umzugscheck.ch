@@ -252,6 +252,12 @@ const V3VariantComparison = lazy(() => import("./pages/V3VariantComparison"));
 // Test pages
 const ComparisonBestPractices = lazy(() => import("./pages/test/ComparisonBestPractices"));
 const SocialProofResearchTest = lazy(() => import("./pages/test/SocialProofResearchTest"));
+// Trust Landing Pages (A/B Test Variants)
+const TrustLandingV1 = lazy(() => import("./pages/test/TrustLandingV1"));
+const TrustLandingV2 = lazy(() => import("./pages/test/TrustLandingV2"));
+const TrustLandingV3 = lazy(() => import("./pages/test/TrustLandingV3"));
+const TrustLandingV4 = lazy(() => import("./pages/test/TrustLandingV4"));
+const TrustComparisonHub = lazy(() => import("./pages/test/TrustComparisonHub"));
 
 // Public Tools - Infrastructure Link Magnets
 const DisposalPlanner = lazy(() => import("./pages/tools/DisposalPlanner"));
@@ -968,6 +974,13 @@ const AppRouterContent = () => {
           <Route path="/test/comparison-best-practices" element={<ComparisonBestPractices />} />
           <Route path="/test/social-proof-research" element={<SocialProofResearchTest />} />
           <Route path="/test/cro-trust-patterns" element={<CROTrustPatternsPage />} />
+          
+          {/* Trust Landing Pages A/B Test Variants */}
+          <Route path="/test/trust-v1" element={<TrustLandingV1 />} />
+          <Route path="/test/trust-v2" element={<TrustLandingV2 />} />
+          <Route path="/test/trust-v3" element={<TrustLandingV3 />} />
+          <Route path="/test/trust-v4" element={<TrustLandingV4 />} />
+          <Route path="/test/trust-comparison" element={<TrustComparisonHub />} />
 
           <Route path="*" element={<NotFound />} />
         </AnimatedRoutes>
