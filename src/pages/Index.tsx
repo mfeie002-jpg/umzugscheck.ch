@@ -20,6 +20,8 @@ import { initMetrics } from "@/lib/realtime-metrics";
 import { trackPageView } from "@/lib/conversion-events";
 // Homepage Hero A/B - Renders variant A, B, or C
 import { HomepageHeroAB } from "@/components/homepage/HomepageHeroAB";
+// Performance: Resource hints for LCP optimization
+import { ResourceHints } from "@/components/performance/ResourceHints";
 
 // CLS-optimized skeletons for zero layout shift
 import { 
@@ -124,6 +126,9 @@ const Index = () => {
           <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
         </Helmet>
 
+        {/* Performance: Resource preloading for LCP */}
+        <ResourceHints />
+        
         <ScrollProgress />
         <SkipToContent />
         
