@@ -120,91 +120,119 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 
   const signIn = async (email: string, password: string) => {
-    const isFailedToFetch = (err: any) =>
-      String(err?.message || err || "")
-        .toLowerCase()
-        .includes("failed to fetch");
+    const isNetworkError = (err: any) => {
+      const msg = String(err?.message || err || "").toLowerCase();
+      return msg.includes("failed to fetch") || 
+             msg.includes("networkerror") || 
+             msg.includes("network error") ||
+             msg.includes("load failed");
+    };
 
-    // 1) Try normal browser login first
+    // 1) Try normal browser login first with timeout
     try {
-      const { error, data } = await supabase.auth.signInWithPassword({
+      console.log("[Auth] Attempting signInWithPassword...");
+      
+      const signInPromise = supabase.auth.signInWithPassword({
         email,
         password,
       });
+      
+      // Add timeout to prevent hanging
+      const timeoutPromise = new Promise<never>((_, reject) => 
+        setTimeout(() => reject(new Error("Login timeout")), 15000)
+      );
+      
+      const { error, data } = await Promise.race([signInPromise, timeoutPromise]);
 
-      if (!error || !isFailedToFetch(error)) {
+      if (!error) {
+        console.log("[Auth] signInWithPassword succeeded");
+        return { error: null, data };
+      }
+      
+      // If it's not a network error, return the actual error
+      if (!isNetworkError(error)) {
+        console.log("[Auth] signInWithPassword failed (not network):", error.message);
         return { error, data };
       }
+      
+      console.log("[Auth] signInWithPassword network error, trying edge function fallback...");
+    } catch (directError: any) {
+      // Check if it's a network error - if not, return it
+      if (!isNetworkError(directError)) {
+        console.log("[Auth] signInWithPassword exception (not network):", directError?.message);
+        return { error: directError, data: null };
+      }
+      console.log("[Auth] signInWithPassword network exception, trying edge function fallback...");
+    }
 
-      // 2) Fallback for environments where /auth/v1 is blocked (CORS/network)
-      const { data: fnData, error: fnError } = await supabase.functions.invoke(
-        "admin-login",
-        { body: { email, password } }
+    // 2) Fallback: try edge function for environments where /auth/v1 is blocked
+    try {
+      console.log("[Auth] Invoking admin-login edge function...");
+      
+      const fnPromise = supabase.functions.invoke("admin-login", { 
+        body: { email, password } 
+      });
+      
+      const timeoutPromise = new Promise<never>((_, reject) => 
+        setTimeout(() => reject(new Error("Edge function timeout")), 20000)
       );
+      
+      const { data: fnData, error: fnError } = await Promise.race([fnPromise, timeoutPromise]);
 
-        if (fnError) {
-          const msg = fnError.message || "";
-          if (msg.includes("Failed to send") || msg.includes("Failed to fetch")) {
-            return {
-              error: new Error("Backend nicht erreichbar. Bitte Adblocker/Privacy-Shields prüfen oder im Inkognito-Modus testen."),
-              data: null,
-            };
-          }
-          return { error: new Error(msg || "Anmeldung fehlgeschlagen"), data: null };
+      if (fnError) {
+        const msg = fnError.message || "";
+        console.log("[Auth] Edge function error:", msg);
+        
+        if (isNetworkError(fnError)) {
+          return {
+            error: new Error("Backend nicht erreichbar. Bitte Adblocker/Privacy-Shields prüfen oder im Inkognito-Modus testen."),
+            data: null,
+          };
         }
+        return { error: new Error(msg || "Anmeldung fehlgeschlagen"), data: null };
+      }
 
       const access_token = (fnData as any)?.access_token;
       const refresh_token = (fnData as any)?.refresh_token;
+      
       if (!access_token || !refresh_token) {
+        // Check if there's an error message in the response
+        const errorMsg = (fnData as any)?.error;
+        if (errorMsg) {
+          console.log("[Auth] Edge function returned error:", errorMsg);
+          return { error: new Error(errorMsg), data: null };
+        }
+        console.log("[Auth] Edge function missing tokens");
         return { error: new Error("Anmeldung fehlgeschlagen"), data: null };
       }
 
+      console.log("[Auth] Edge function succeeded, setting session...");
+      
       const { data: sessionData, error: setError } = await supabase.auth.setSession({
         access_token,
         refresh_token,
       });
 
-      return { error: setError, data: sessionData };
-    } catch (error: any) {
-      if (!isFailedToFetch(error)) {
-        return { error, data: null };
+      if (setError) {
+        console.log("[Auth] setSession error:", setError.message);
+      } else {
+        console.log("[Auth] Session set successfully");
       }
 
-      try {
-        const { data: fnData, error: fnError } = await supabase.functions.invoke(
-          "admin-login",
-          { body: { email, password } }
-        );
-
-        if (fnError) {
-          const msg = fnError.message || "";
-          if (msg.includes("Failed to send") || msg.includes("Failed to fetch")) {
-            return {
-              error: new Error("Backend nicht erreichbar. Bitte Adblocker/Privacy-Shields prüfen oder im Inkognito-Modus testen."),
-              data: null,
-            };
-          }
-          return { error: new Error(msg || "Anmeldung fehlgeschlagen"), data: null };
-        }
-
-        const access_token = (fnData as any)?.access_token;
-        const refresh_token = (fnData as any)?.refresh_token;
-        if (!access_token || !refresh_token) {
-          return { error: new Error("Anmeldung fehlgeschlagen"), data: null };
-        }
-
-        const { data: sessionData, error: setError } = await supabase.auth.setSession({
-          access_token,
-          refresh_token,
-        });
-
-        return { error: setError, data: sessionData };
-      } catch (fallbackError: any) {
+      return { error: setError, data: sessionData };
+    } catch (fallbackError: any) {
+      console.log("[Auth] Edge function exception:", fallbackError?.message);
+      
+      if (isNetworkError(fallbackError)) {
         return {
-          error: new Error(fallbackError?.message || "Backend nicht erreichbar"),
+          error: new Error("Backend nicht erreichbar. Bitte Adblocker/Privacy-Shields prüfen oder im Inkognito-Modus testen."),
           data: null,
         };
       }
+      return {
+        error: new Error(fallbackError?.message || "Anmeldung fehlgeschlagen"),
+        data: null,
+      };
     }
   };
 

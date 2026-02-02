@@ -58,9 +58,15 @@ const AdminLogin = () => {
     setIsLoading(true);
 
     try {
-      const { error } = await signIn(email, password);
-      if (error) throw error;
+      console.log("[AdminLogin] Starting login for:", email);
+      const { error, data } = await signIn(email, password);
+      
+      if (error) {
+        console.log("[AdminLogin] Login error:", error.message);
+        throw error;
+      }
 
+      console.log("[AdminLogin] Login successful, navigating to /admin");
       toast({
         title: "Erfolgreich angemeldet",
         description: "Admin-Zugriff wird geprüft…",
@@ -69,9 +75,21 @@ const AdminLogin = () => {
       // AdminLayout übernimmt die sichere Rollenprüfung; kein doppelter has_role Check hier.
       navigate("/admin");
     } catch (error: any) {
+      console.error("[AdminLogin] Login failed:", error);
+      
+      // Provide more specific error messages
+      let errorMessage = error?.message || "Ungültige E-Mail oder Passwort";
+      
+      // Check for common error patterns
+      if (errorMessage.includes("Invalid login credentials")) {
+        errorMessage = "Ungültige E-Mail oder Passwort";
+      } else if (errorMessage.includes("Email not confirmed")) {
+        errorMessage = "E-Mail wurde noch nicht bestätigt. Bitte prüfen Sie Ihren Posteingang.";
+      }
+      
       toast({
         title: "Anmeldefehler",
-        description: error?.message || "Ungültige E-Mail oder Passwort",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
