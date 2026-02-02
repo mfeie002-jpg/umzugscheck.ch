@@ -542,33 +542,26 @@ const Vergleich: React.FC = () => {
       </div>
 
       {/* Optional AI Upload */}
-      <Card className="border-dashed border-2 hover:border-primary/50 transition-colors mt-6 md:mt-8 w-full">
+      <Card className="border-dashed border-2 hover:border-primary/50 transition-colors">
         <CardContent className="py-6">
-          <div
-            className="flex flex-col sm:flex-row items-center justify-between gap-3 cursor-pointer"
+          <div 
+            className="flex items-center justify-between cursor-pointer"
             onClick={() => setShowAIUpload(!showAIUpload)}
           >
-            <div className="flex items-center gap-3 w-full sm:w-auto justify-center sm:justify-start">
+            <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                 <Upload className="w-5 h-5 text-primary" />
               </div>
-              <div className="text-center sm:text-left">
-                <p className="font-medium">Genauer & schneller mit Video/Fotos?</p>
+              <div>
+                <p className="font-medium">Genauere Schätzung mit KI (optional)</p>
                 <p className="text-sm text-muted-foreground">
-                  KI-Analyse = <span className="text-secondary font-semibold">bis 40% sparen</span>
+                  Laden Sie ein kurzes Video Ihrer Wohnung hoch
                 </p>
               </div>
             </div>
-            <button
-              className="flex items-center justify-center rounded-full w-11 h-11 bg-primary/10 hover:bg-primary/20 transition sm:ml-4"
-              tabIndex={0}
-              aria-label="KI-Upload öffnen"
-              type="button"
-            >
-              <ArrowRight className={`w-6 h-6 transition-transform ${showAIUpload ? 'rotate-90' : ''}`} />
-            </button>
+            <ArrowRight className={`w-5 h-5 transition-transform ${showAIUpload ? 'rotate-90' : ''}`} />
           </div>
-
+          
           {showAIUpload && (
             <div className="mt-4 p-4 bg-muted rounded-lg">
               <p className="text-sm mb-3">
