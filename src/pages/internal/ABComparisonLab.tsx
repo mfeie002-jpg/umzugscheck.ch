@@ -29,9 +29,20 @@ const NAVIGATION_VARIANTS = Array.from({ length: 17 }, (_, i) => ({
   description: `Navigation Variante ${i + 1}`,
 }));
 
+// Page variants - dedicated homepage versions for testing
+const PAGE_VARIANTS = [
+  { id: 'index', label: '— Index (A/B)', description: 'Standard Homepage mit A/B Params', path: '/' },
+  { id: 'homepage-1', label: 'Homepage 1', description: 'Trust/Social Proof Focus', path: '/homepage-1' },
+  { id: 'homepage-2', label: 'Homepage 2', description: 'Institutional Trust (HEV, SFTA)', path: '/homepage-2' },
+  { id: 'homepage-3', label: 'Homepage 3', description: 'Emotional Design & Accessibility', path: '/homepage-3' },
+  { id: 'homepage-4', label: 'Homepage 4', description: 'Personalization & Seasonality', path: '/homepage-4' },
+  { id: 'homepage-5', label: 'Homepage 5', description: 'Regulatory Architecture (SRO)', path: '/homepage-5' },
+  { id: 'homepage-6', label: 'Homepage 6', description: 'Premium Trust & Team', path: '/homepage-6' },
+];
+
 // Trust Landing Page Variants (dedicated test pages)
 const TRUST_LANDING_VARIANTS = [
-  { id: 'none', label: '— Homepage', description: 'Standard Homepage mit A/B Params' },
+  { id: 'none', label: '— Keine', description: 'Standard Page' },
   { id: 'v1', label: 'T1 Behörden', description: 'Zefix/UID staatliche Autorität' },
   { id: 'v2', label: 'T2 Branchen', description: 'ASTAG/SMA Verbands-Legitimität' },
   { id: 'v3', label: 'T3 Konsumenten', description: 'Käuferschutz & Garantien' },
@@ -78,10 +89,11 @@ const SOCIAL_PROOF_VARIANTS = [
 
 interface DeviceConfig {
   id: string;
-  homepage: string;
+  page: string; // 'index' or 'homepage-1' to 'homepage-6'
+  homepage: string; // A/B/C variant (only used when page='index')
   navigation: string;
   socialProof: string;
-  trustLanding: string; // 'none' = Homepage, 'v1'-'v4' = Trust Landing Pages
+  trustLanding: string; // 'none' = Normal page, 'v1'-'v4' = Trust Landing Pages
   deviceType: 'mobile' | 'tablet' | 'desktop';
 }
 
@@ -101,6 +113,7 @@ const generateDeviceId = () => `device-${Date.now()}-${Math.random().toString(36
 
 const DEFAULT_DEVICE: () => DeviceConfig = () => ({
   id: generateDeviceId(),
+  page: 'index',
   homepage: 'C',
   navigation: 'V10',
   socialProof: 'I',
@@ -109,13 +122,13 @@ const DEFAULT_DEVICE: () => DeviceConfig = () => ({
 });
 
 export default function ABComparisonLab() {
-  // Default: 5 devices with different A/B test combinations
+  // Default: 5 devices with different pages/variants for comparison
   const [devices, setDevices] = useState<DeviceConfig[]>([
-    { ...DEFAULT_DEVICE(), id: 'device-1', homepage: 'A', socialProof: 'I' },
-    { ...DEFAULT_DEVICE(), id: 'device-2', homepage: 'B', socialProof: 'A' },
-    { ...DEFAULT_DEVICE(), id: 'device-3', homepage: 'C', socialProof: 'B' },
-    { ...DEFAULT_DEVICE(), id: 'device-4', homepage: 'A', socialProof: 'D', navigation: 'V15' },
-    { ...DEFAULT_DEVICE(), id: 'device-5', homepage: 'C', socialProof: 'F', navigation: 'V1' },
+    { ...DEFAULT_DEVICE(), id: 'device-1', page: 'index', homepage: 'B', socialProof: 'I' },
+    { ...DEFAULT_DEVICE(), id: 'device-2', page: 'homepage-1', socialProof: 'A' },
+    { ...DEFAULT_DEVICE(), id: 'device-3', page: 'homepage-3', socialProof: 'B' },
+    { ...DEFAULT_DEVICE(), id: 'device-4', page: 'homepage-5', socialProof: 'D', navigation: 'V15' },
+    { ...DEFAULT_DEVICE(), id: 'device-5', page: 'homepage-6', socialProof: 'F', navigation: 'V1' },
   ]);
   
   const [activePreset, setActivePreset] = useState<string>('custom');
@@ -159,12 +172,14 @@ export default function ABComparisonLab() {
 
   // Randomize all variants for a device
   const randomizeDevice = useCallback((deviceId: string) => {
+    const randomPage = PAGE_VARIANTS[Math.floor(Math.random() * PAGE_VARIANTS.length)].id;
     const randomHomepage = HOMEPAGE_VARIANTS[Math.floor(Math.random() * HOMEPAGE_VARIANTS.length)].id;
     const randomNavigation = NAVIGATION_VARIANTS[Math.floor(Math.random() * NAVIGATION_VARIANTS.length)].id;
     const randomSocialProof = SOCIAL_PROOF_VARIANTS[Math.floor(Math.random() * SOCIAL_PROOF_VARIANTS.length)].id;
     const randomTrustLanding = TRUST_LANDING_VARIANTS[Math.floor(Math.random() * TRUST_LANDING_VARIANTS.length)].id;
     
     updateDevice(deviceId, {
+      page: randomPage,
       homepage: randomHomepage,
       navigation: randomNavigation,
       socialProof: randomSocialProof,
@@ -184,27 +199,47 @@ export default function ABComparisonLab() {
 
     // Always force lab mode for iframes
     baseParams.set('ab-lab', '1');
+    baseParams.set('ab-nav', device.navigation);
+    baseParams.set('ab-social', device.socialProof);
 
     // If a trust landing page is selected, navigate directly to that page
     if (device.trustLanding && device.trustLanding !== 'none') {
       return `/test/trust-${device.trustLanding}?${baseParams.toString()}`;
     }
 
-    // Otherwise, use homepage with A/B params
-    baseParams.set('ab-homepage', device.homepage);
-    baseParams.set('ab-nav', device.navigation);
-    baseParams.set('ab-social', device.socialProof);
-    return `/?${baseParams.toString()}`;
+    // Find the page config
+    const pageConfig = PAGE_VARIANTS.find(p => p.id === device.page);
+    const pagePath = pageConfig?.path || '/';
+
+    // For index page, add homepage A/B variant
+    if (device.page === 'index') {
+      baseParams.set('ab-homepage', device.homepage);
+    }
+
+    return `${pagePath}?${baseParams.toString()}`;
   }, []);
 
   // Presets
   const applyPreset = useCallback((preset: string) => {
     setActivePreset(preset);
     switch (preset) {
+      case 'pages-all':
+        // Show all 6 homepage variants + index
+        setDevices(PAGE_VARIANTS.slice(0, 6).map((p, idx) => ({
+          id: `device-${idx + 1}`,
+          page: p.id,
+          homepage: 'B',
+          navigation: 'V10',
+          socialProof: 'I',
+          trustLanding: 'none',
+          deviceType: 'mobile' as const,
+        })));
+        break;
       case 'social-all':
         // Show all social proof variants
         setDevices(SOCIAL_PROOF_VARIANTS.slice(0, 6).map((sp, idx) => ({
           id: `device-${idx + 1}`,
+          page: 'index',
           homepage: 'C',
           navigation: 'V10',
           socialProof: sp.id,
@@ -216,6 +251,7 @@ export default function ABComparisonLab() {
         // Show top 5 navigation variants
         setDevices(['V10', 'V15', 'V1', 'V5', 'V17'].map((nav, idx) => ({
           id: `device-${idx + 1}`,
+          page: 'index',
           homepage: 'C',
           navigation: nav,
           socialProof: 'I',
@@ -227,6 +263,7 @@ export default function ABComparisonLab() {
         // Show all hero variants
         setDevices(HOMEPAGE_VARIANTS.map((hp, idx) => ({
           id: `device-${idx + 1}`,
+          page: 'index',
           homepage: hp.id,
           navigation: 'V10',
           socialProof: 'I',
@@ -238,6 +275,7 @@ export default function ABComparisonLab() {
         // Show all 4 Trust Landing Pages
         setDevices(TRUST_LANDING_VARIANTS.filter(t => t.id !== 'none').map((t, idx) => ({
           id: `device-${idx + 1}`,
+          page: 'index',
           homepage: 'C',
           navigation: 'V10',
           socialProof: 'I',
@@ -248,9 +286,9 @@ export default function ABComparisonLab() {
       case 'responsive':
         // Show same config on different devices
         setDevices([
-          { id: 'device-1', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', deviceType: 'mobile' as const },
-          { id: 'device-2', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', deviceType: 'tablet' as const },
-          { id: 'device-3', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', deviceType: 'desktop' as const },
+          { id: 'device-1', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', deviceType: 'mobile' as const },
+          { id: 'device-2', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', deviceType: 'tablet' as const },
+          { id: 'device-3', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', deviceType: 'desktop' as const },
         ]);
         break;
       default:
@@ -263,7 +301,8 @@ export default function ABComparisonLab() {
     if (device.trustLanding && device.trustLanding !== 'none') {
       return `Trust-${device.trustLanding.toUpperCase()}`;
     }
-    return `H${device.homepage}-N${device.navigation.replace('V', '')}-S${device.socialProof}`;
+    const pageLabel = device.page === 'index' ? `H${device.homepage}` : device.page.replace('homepage-', 'HP');
+    return `${pageLabel}-N${device.navigation.replace('V', '')}-S${device.socialProof}`;
   };
 
   return (
@@ -291,6 +330,14 @@ export default function ABComparisonLab() {
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-xs text-muted-foreground">Presets:</span>
                 <Button
+                  variant={activePreset === 'pages-all' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => applyPreset('pages-all')}
+                  className="h-7 text-xs"
+                >
+                  HP 1-6
+                </Button>
+                <Button
                   variant={activePreset === 'social-all' ? 'default' : 'outline'}
                   size="sm"
                   onClick={() => applyPreset('social-all')}
@@ -312,7 +359,7 @@ export default function ABComparisonLab() {
                   onClick={() => applyPreset('hero-all')}
                   className="h-7 text-xs"
                 >
-                All Heroes
+                  All Heroes
                 </Button>
                 <Button
                   variant={activePreset === 'trust-all' ? 'default' : 'outline'}
@@ -426,12 +473,29 @@ export default function ABComparisonLab() {
 
                       {/* Variant Selectors */}
                       <div className="grid grid-cols-2 gap-1 mb-1">
-                        {/* Trust Landing Page (takes precedence) */}
+                        {/* Page Selector */}
+                        <Select
+                          value={device.page}
+                          onValueChange={(v) => updateDevice(device.id, { page: v })}
+                        >
+                          <SelectTrigger className="h-7 text-[10px]">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {PAGE_VARIANTS.map((p) => (
+                              <SelectItem key={p.id} value={p.id} className="text-xs">
+                                {p.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+
+                        {/* Trust Landing Page */}
                         <Select
                           value={device.trustLanding}
                           onValueChange={(v) => updateDevice(device.id, { trustLanding: v })}
                         >
-                          <SelectTrigger className="h-7 text-[10px] col-span-2">
+                          <SelectTrigger className="h-7 text-[10px]">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
@@ -444,25 +508,31 @@ export default function ABComparisonLab() {
                         </Select>
                       </div>
 
-                      {/* Homepage A/B Params (only shown when trustLanding is 'none') */}
+                      {/* A/B Params (only shown when trustLanding is 'none') */}
                       {device.trustLanding === 'none' && (
                         <div className="grid grid-cols-3 gap-1">
-                          {/* Homepage */}
-                          <Select
-                            value={device.homepage}
-                            onValueChange={(v) => updateDevice(device.id, { homepage: v })}
-                          >
-                            <SelectTrigger className="h-7 text-[10px]">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {HOMEPAGE_VARIANTS.map((hp) => (
-                                <SelectItem key={hp.id} value={hp.id} className="text-xs">
-                                  H{hp.id}: {hp.label}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                          {/* Homepage A/B (only for index page) */}
+                          {device.page === 'index' ? (
+                            <Select
+                              value={device.homepage}
+                              onValueChange={(v) => updateDevice(device.id, { homepage: v })}
+                            >
+                              <SelectTrigger className="h-7 text-[10px]">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {HOMEPAGE_VARIANTS.map((hp) => (
+                                  <SelectItem key={hp.id} value={hp.id} className="text-xs">
+                                    H{hp.id}: {hp.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          ) : (
+                            <div className="h-7 flex items-center text-[10px] text-muted-foreground px-2 bg-muted/50 rounded">
+                              {PAGE_VARIANTS.find(p => p.id === device.page)?.label}
+                            </div>
+                          )}
 
                           {/* Navigation */}
                           <Select
@@ -582,13 +652,25 @@ export default function ABComparisonLab() {
         <div className="container mx-auto px-4 pb-8">
           <Card className="p-4 bg-muted/30">
             <h3 className="font-semibold text-sm mb-2">Quick Reference</h3>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs text-muted-foreground">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4 text-xs text-muted-foreground">
+              <div>
+                <strong className="text-foreground">Pages:</strong>
+                <ul className="mt-1 space-y-0.5">
+                  <li>Index = A/B Test Homepage</li>
+                  <li>HP1 = Trust/Social Proof</li>
+                  <li>HP2 = Institutional Trust</li>
+                  <li>HP3 = Emotional Design</li>
+                  <li>HP4 = Personalization</li>
+                  <li>HP5 = Regulatory (SRO)</li>
+                  <li>HP6 = Premium Trust</li>
+                </ul>
+              </div>
               <div>
                 <strong className="text-foreground">Trust Landing (T):</strong>
                 <ul className="mt-1 space-y-0.5">
                   <li>T1 = Behörden (Zefix/UID)</li>
                   <li>T2 = Branchen (ASTAG/SMA)</li>
-                  <li>T3 = Konsumenten (Käuferschutz)</li>
+                  <li>T3 = Konsumenten</li>
                   <li>T4 = Synthese (Best-Of)</li>
                 </ul>
               </div>
@@ -603,7 +685,7 @@ export default function ABComparisonLab() {
               <div>
                 <strong className="text-foreground">Navigation (N):</strong>
                 <ul className="mt-1 space-y-0.5">
-                  <li>V1 = Original (Status Quo)</li>
+                  <li>V1 = Original</li>
                   <li>V10 = Golden Navigation</li>
                   <li>V15 = Mobile-First</li>
                   <li>... (17 total)</li>
@@ -612,7 +694,7 @@ export default function ABComparisonLab() {
               <div>
                 <strong className="text-foreground">Social Proof (S):</strong>
                 <ul className="mt-1 space-y-0.5">
-                  <li>A-F = Standalone Sections</li>
+                  <li>A-F = Standalone</li>
                   <li>G-H = Swiss-specific</li>
                   <li>I-M = Hero-Integrated</li>
                   <li>N-AB = Psychological+CRO</li>
