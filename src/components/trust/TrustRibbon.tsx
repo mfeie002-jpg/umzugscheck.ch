@@ -68,27 +68,10 @@ const TrustLogo = ({ src, alt, className = "", style }: TrustLogoProps) => (
   <img
     src={src}
     alt={alt}
-
-    export interface TrustRibbonProps {
-      className?: string;
-    }
-
-    const TrustRibbonBase = ({ className }: TrustRibbonProps) => {
-      // TODO: Füge hier deinen JSX-Inhalt ein (z.B. die Varianten-Logik, Logos etc.)
-      return (
-        <section className={cn("py-10 md:py-14", className)}>
-          {/* ... dein Inhalt ... */}
-        </section>
-      );
-    };
-
-    TrustRibbonBase.displayName = "TrustRibbon";
-
-    export const TrustRibbon = memo(TrustRibbonBase);
-        </div>
-      </div>
-    );
-  }
+    className={className}
+    style={style}
+  />
+);
 
 interface TrustRibbonProps {
   className?: string;
