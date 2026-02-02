@@ -6,6 +6,27 @@
  */
 
 import { useState, useCallback, useRef } from 'react';
+import React from 'react';
+// ErrorBoundary für die Seite
+class ErrorBoundary extends React.Component<{children: React.ReactNode}, {hasError: boolean}> {
+  constructor(props: {children: React.ReactNode}) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  componentDidCatch(error: any, info: any) {
+    // Optional: Logging
+    // console.error('ErrorBoundary:', error, info);
+  }
+  render() {
+    if (this.state.hasError) {
+      return <div className="p-8 text-center text-red-600">Ein unerwarteter Fehler ist aufgetreten. Bitte Seite neu laden.</div>;
+    }
+    return this.props.children;
+  }
+}
 import { Helmet } from 'react-helmet-async';
 import { Plus, Minus, Smartphone, Monitor, Tablet, Settings2, Copy, RefreshCw, Maximize2, Grid3X3, Shuffle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -134,22 +155,52 @@ export default function ABComparisonLab() {
   const [activePreset, setActivePreset] = useState<string>('custom');
   const iframeRefs = useRef<Record<string, HTMLIFrameElement | null>>({});
 
-  // Add a new device
+
+  // Add a new device (mit Fehlerabfang)
   const addDevice = useCallback(() => {
-    if (devices.length >= 8) return; // Max 8 devices
-    setDevices(prev => [...prev, DEFAULT_DEVICE()]);
+    try {
+      if (devices.length >= 8) return;
+      setDevices(prev => [...prev, DEFAULT_DEVICE()]);
+    } catch (e) {
+      // Optional: Fehler-Feedback
+      // alert('Gerät konnte nicht hinzugefügt werden.');
+    }
   }, [devices.length]);
 
-  // Remove a device
+  // Remove a device (mit Fehlerabfang)
   const removeDevice = useCallback((deviceId: string) => {
-    if (devices.length <= 1) return; // Min 1 device
-    setDevices(prev => prev.filter(d => d.id !== deviceId));
+    try {
+      if (devices.length <= 1) return;
+      setDevices(prev => prev.filter(d => d.id !== deviceId));
+    } catch (e) {
+      // alert('Gerät konnte nicht entfernt werden.');
+    }
   }, [devices.length]);
 
-  // Update device config
+  // Device-Parameter validieren
+  function validateDeviceConfig(config: Partial<DeviceConfig>): Partial<DeviceConfig> {
+    // Nur erlaubte Werte zulassen
+    const validPage = PAGE_VARIANTS.some(p => p.id === config.page) ? config.page : 'index';
+    const validHomepage = HOMEPAGE_VARIANTS.some(h => h.id === config.homepage) ? config.homepage : 'A';
+    const validNavigation = NAVIGATION_VARIANTS.some(n => n.id === config.navigation) ? config.navigation : 'V1';
+    const validSocialProof = SOCIAL_PROOF_VARIANTS.some(s => s.id === config.socialProof) ? config.socialProof : 'A';
+    const validTrustLanding = TRUST_LANDING_VARIANTS.some(t => t.id === config.trustLanding) ? config.trustLanding : 'none';
+    const validDeviceType = ['mobile','tablet','desktop'].includes(config.deviceType as string) ? config.deviceType : 'mobile';
+    return {
+      ...config,
+      page: validPage,
+      homepage: validHomepage,
+      navigation: validNavigation,
+      socialProof: validSocialProof,
+      trustLanding: validTrustLanding,
+      deviceType: validDeviceType,
+    };
+  }
+
+  // Update device config (mit Validierung)
   const updateDevice = useCallback((deviceId: string, updates: Partial<DeviceConfig>) => {
-    setDevices(prev => prev.map(d => 
-      d.id === deviceId ? { ...d, ...updates } : d
+    setDevices(prev => prev.map(d =>
+      d.id === deviceId ? { ...d, ...validateDeviceConfig(updates) } : d
     ));
   }, []);
 
@@ -306,6 +357,7 @@ export default function ABComparisonLab() {
   };
 
   return (
+    <ErrorBoundary>
     <TooltipProvider>
       <div className="min-h-screen bg-muted/30">
         <Helmet>
@@ -621,19 +673,42 @@ export default function ABComparisonLab() {
                           height: size.height * scale,
                         }}
                       >
-                        <iframe
+                        <IframeWithFallback
                           ref={(el) => { iframeRefs.current[device.id] = el; }}
                           src={buildDeviceUrl(device)}
-                          loading="lazy"
-                          className="absolute top-0 left-0 origin-top-left"
-                          style={{
-                            width: size.width,
-                            height: size.height,
-                            transform: `scale(${scale})`,
-                            border: 'none',
-                          }}
+                          width={size.width}
+                          height={size.height}
+                          scale={scale}
                           title={`Device ${device.id}`}
                         />
+                      // Iframe mit Fallback-Komponente
+                      const IframeWithFallback = React.forwardRef<HTMLIFrameElement, {src: string, width: number, height: number, scale: number, title: string}>(
+                        ({ src, width, height, scale, title }, ref) => {
+                          const [error, setError] = React.useState(false);
+                          return error ? (
+                            <div className="flex items-center justify-center h-full bg-red-50 text-red-600 text-xs p-2">
+                              Fehler beim Laden der Seite.<br />
+                              <span className="break-all">{src}</span>
+                            </div>
+                          ) : (
+                            <iframe
+                              ref={ref as any}
+                              src={src}
+                              loading="lazy"
+                              className="absolute top-0 left-0 origin-top-left"
+                              style={{
+                                width,
+                                height,
+                                transform: `scale(${scale})`,
+                                border: 'none',
+                              }}
+                              title={title}
+                              onError={() => setError(true)}
+                            />
+                          );
+                        }
+                      );
+                      IframeWithFallback.displayName = 'IframeWithFallback';
                       </div>
 
                       {/* Home Indicator (mobile only) */}
