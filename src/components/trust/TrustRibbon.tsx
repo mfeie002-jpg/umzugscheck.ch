@@ -224,7 +224,7 @@ export const TrustRibbon = memo(({ className }: TrustRibbonProps) => {
           </div>
         </motion.div>
       </div>
+
     </section>
->>>>>>> 3574a53fd8bf789e259d15eeafaaa94675023ece
   );
 };
