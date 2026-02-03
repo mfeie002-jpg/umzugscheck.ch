@@ -2,7 +2,7 @@
  * /umzugsofferten-v5e - Test Version V5.e (Reduced Motion)
  */
 
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import {
   AIInsightsBar,

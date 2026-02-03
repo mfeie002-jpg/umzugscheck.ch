@@ -14,7 +14,7 @@
  * 10. Visual selection confirmation in Step 1
  */
 
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { MultiStepCalculatorV1b } from "@/components/funnel-v1b/MultiStepCalculatorV1b";
 import { Link } from "react-router-dom";

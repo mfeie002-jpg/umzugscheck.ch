@@ -9,7 +9,7 @@
  * - No "100% Kostenlos" (Swiss market context)
  */
 
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { SmartRouterWizard } from "@/components/smart-router";
 import { GoldenSocialProof } from "@/components/golden";
 

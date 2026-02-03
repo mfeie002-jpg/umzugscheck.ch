@@ -2,7 +2,7 @@
  * /umzugsofferten-v5a - Test Version V5.a (High Contrast)
  */
 
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import {
   AIInsightsBar,
