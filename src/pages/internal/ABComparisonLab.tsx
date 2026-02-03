@@ -7,9 +7,9 @@
 
 import { useState, useCallback, useRef, useEffect, memo } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Plus, Minus, Smartphone, Monitor, Tablet, Settings2, Copy, RefreshCw, Maximize2, Grid3X3, Shuffle, Loader2 } from 'lucide-react';
+import { Plus, Minus, Smartphone, Monitor, Tablet, Settings2, Copy, RefreshCw, Maximize2, Grid3X3, Shuffle, Loader2, Zap, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -48,6 +48,113 @@ const TRUST_LANDING_VARIANTS = [
   { id: 'v3', label: 'T3 Konsumenten', description: 'Käuferschutz & Garantien' },
   { id: 'v4', label: 'T4 Synthese', description: 'Best-Of psychologisch optimiert' },
 ];
+
+// Flow Variants - All Offerten Flows grouped by family
+const FLOW_VARIANTS = [
+  // Default (Homepage)
+  { id: 'none', label: '— Homepage', path: null, group: 'default' },
+  
+  // V1 Familie
+  { id: 'v1', label: 'V1 Control', path: '/umzugsofferten-v1', group: 'v1' },
+  { id: 'v1a', label: 'V1a Feedback', path: '/umzugsofferten-v1a', group: 'v1' },
+  { id: 'v1b', label: 'V1b ChatGPT', path: '/umzugsofferten-v1b', group: 'v1' },
+  { id: 'v1c', label: 'V1c Strategic', path: '/umzugsofferten-v1c', group: 'v1' },
+  { id: 'v1d', label: 'V1d Optimized', path: '/umzugsofferten-v1d', group: 'v1' },
+  { id: 'v1e', label: 'V1e Enhanced', path: '/umzugsofferten-v1e', group: 'v1' },
+  { id: 'v1f', label: 'V1f Sticky CTA', path: '/umzugsofferten-v1f', group: 'v1' },
+  { id: 'v1g', label: 'V1g Trust Pills', path: '/umzugsofferten-v1g', group: 'v1' },
+  
+  // V2 Familie
+  { id: 'v2', label: 'V2 Premium', path: '/umzugsofferten-v2', group: 'v2' },
+  { id: 'v2a', label: 'V2a Variant', path: '/umzugsofferten-v2a', group: 'v2' },
+  { id: 'v2b', label: 'V2b Variant', path: '/umzugsofferten-v2b', group: 'v2' },
+  { id: 'v2c', label: 'V2c Variant', path: '/umzugsofferten-v2c', group: 'v2' },
+  { id: 'v2d', label: 'V2d Variant', path: '/umzugsofferten-v2d', group: 'v2' },
+  { id: 'v2f', label: 'V2f Variant', path: '/umzugsofferten-v2f', group: 'v2' },
+  { id: 'v2-archetyp', label: 'V2 Archetyp', path: '/umzugsofferten-v2-archetyp', group: 'v2' },
+  
+  // V3 Familie
+  { id: 'v3', label: 'V3 Expanded', path: '/umzugsofferten-v3', group: 'v3' },
+  { id: 'v3a', label: 'V3a Variant', path: '/umzugsofferten-v3a', group: 'v3' },
+  { id: 'v3b', label: 'V3b Variant', path: '/umzugsofferten-v3b', group: 'v3' },
+  { id: 'v3c', label: 'V3c Variant', path: '/umzugsofferten-v3c', group: 'v3' },
+  { id: 'v3d', label: 'V3d Variant', path: '/umzugsofferten-v3d', group: 'v3' },
+  { id: 'v3e', label: 'V3e Variant', path: '/umzugsofferten-v3e', group: 'v3' },
+  
+  // V4 Familie
+  { id: 'v4', label: 'V4 Full', path: '/umzugsofferten-v4', group: 'v4' },
+  { id: 'v4a', label: 'V4a Variant', path: '/umzugsofferten-v4a', group: 'v4' },
+  { id: 'v4b', label: 'V4b Variant', path: '/umzugsofferten-v4b', group: 'v4' },
+  { id: 'v4c', label: 'V4c Variant', path: '/umzugsofferten-v4c', group: 'v4' },
+  { id: 'v4d', label: 'V4d Variant', path: '/umzugsofferten-v4d', group: 'v4' },
+  { id: 'v4e', label: 'V4e Variant', path: '/umzugsofferten-v4e', group: 'v4' },
+  { id: 'v4f', label: 'V4f Variant', path: '/umzugsofferten-v4f', group: 'v4' },
+  
+  // V5 Familie (Marketplace)
+  { id: 'v5', label: 'V5 Marketplace', path: '/umzugsofferten-v5', group: 'v5' },
+  { id: 'v5a', label: 'V5a Variant', path: '/umzugsofferten-v5a', group: 'v5' },
+  { id: 'v5b', label: 'V5b Funnel', path: '/umzugsofferten-v5b', group: 'v5' },
+  { id: 'v5c', label: 'V5c Variant', path: '/umzugsofferten-v5c', group: 'v5' },
+  { id: 'v5d', label: 'V5d Variant', path: '/umzugsofferten-v5d', group: 'v5' },
+  { id: 'v5e', label: 'V5e Variant', path: '/umzugsofferten-v5e', group: 'v5' },
+  { id: 'v5f', label: 'V5f Feedback', path: '/umzugsofferten-v5f', group: 'v5' },
+  
+  // V6 Familie (Ultimate)
+  { id: 'v6', label: 'V6 Ultimate', path: '/umzugsofferten-v6', group: 'v6' },
+  { id: 'v6a', label: 'V6a Optimized', path: '/umzugsofferten-v6a', group: 'v6' },
+  { id: 'v6b', label: 'V6b Variant', path: '/umzugsofferten-v6b', group: 'v6' },
+  { id: 'v6c', label: 'V6c Variant', path: '/umzugsofferten-v6c', group: 'v6' },
+  { id: 'v6d', label: 'V6d Variant', path: '/umzugsofferten-v6d', group: 'v6' },
+  { id: 'v6e', label: 'V6e Variant', path: '/umzugsofferten-v6e', group: 'v6' },
+  { id: 'v6f', label: 'V6f Best-of-All', path: '/umzugsofferten-v6f', group: 'v6' },
+  
+  // V7 Familie
+  { id: 'v7', label: 'V7 Comprehensive', path: '/umzugsofferten-v7', group: 'v7' },
+  { id: 'v7a', label: 'V7a Variant', path: '/umzugsofferten-v7a', group: 'v7' },
+  
+  // V8 Familie (Decision-Free)
+  { id: 'v8', label: 'V8 Decision-Free', path: '/umzugsofferten-v8', group: 'v8' },
+  { id: 'v8a', label: 'V8a Feedback', path: '/umzugsofferten-v8a', group: 'v8' },
+  
+  // V9 Familie (Zero Friction)
+  { id: 'v9', label: 'V9 Zero Friction', path: '/umzugsofferten-v9', group: 'v9' },
+  { id: 'v9a', label: 'V9a Variant', path: '/umzugsofferten-v9a', group: 'v9' },
+  { id: 'v9b', label: 'V9b Variant', path: '/umzugsofferten-v9b', group: 'v9' },
+  { id: 'v9c', label: 'V9c Optimized', path: '/umzugsofferten-v9c', group: 'v9' },
+  { id: 'v9d', label: 'V9d Variant', path: '/umzugsofferten-v9d', group: 'v9' },
+  
+  // ChatGPT Flows
+  { id: 'chatgpt-1', label: 'ChatGPT Flow 1', path: '/chatgpt-flow-1', group: 'chatgpt' },
+  { id: 'chatgpt-2', label: 'ChatGPT Flow 2', path: '/chatgpt-flow-2', group: 'chatgpt' },
+  { id: 'chatgpt-3', label: 'ChatGPT Flow 3', path: '/chatgpt-flow-3', group: 'chatgpt' },
+  
+  // Swiss Premium Flows
+  { id: 'swiss-premium', label: 'Swiss Premium Choice ⭐', path: '/swiss-premium-choice', group: 'premium' },
+  { id: 'swiss-lightning', label: 'Swiss Lightning ⚡', path: '/swiss-lightning', group: 'premium' },
+  { id: 'swiss-concierge', label: 'Swiss Concierge Hybrid', path: '/swiss-concierge-hybrid', group: 'premium' },
+  
+  // Ultimate / Golden
+  { id: 'ultimate-best36', label: 'Ultimate Best36 🏆', path: '/umzugsofferten-ultimate-best36', group: 'ultimate' },
+  { id: 'ultimate-v7', label: 'Ultimate V7', path: '/umzugsofferten-ultimate-v7', group: 'ultimate' },
+  { id: 'golden-v10', label: 'V10 Golden Flow ✨', path: '/golden-flow-v10', group: 'ultimate' },
+];
+
+// Flow group labels for UI
+const FLOW_GROUPS = {
+  default: 'Standard',
+  v1: 'V1 Familie',
+  v2: 'V2 Familie',
+  v3: 'V3 Familie',
+  v4: 'V4 Familie',
+  v5: 'V5 Marketplace',
+  v6: 'V6 Ultimate',
+  v7: 'V7 Familie',
+  v8: 'V8 Decision-Free',
+  v9: 'V9 Zero Friction',
+  chatgpt: 'ChatGPT Flows',
+  premium: 'Swiss Premium',
+  ultimate: 'Ultimate & Golden',
+} as const;
 
 // All 28 Social Proof Variants (A-AB) matching SocialProofABContext
 const SOCIAL_PROOF_VARIANTS = [
@@ -94,6 +201,7 @@ interface DeviceConfig {
   navigation: string;
   socialProof: string;
   trustLanding: string; // 'none' = Normal page, 'v1'-'v4' = Trust Landing Pages
+  flow: string; // 'none' = Homepage, or flow variant ID
   deviceType: 'mobile' | 'tablet' | 'desktop';
 }
 
@@ -121,6 +229,7 @@ const DEFAULT_DEVICE: () => DeviceConfig = () => ({
   navigation: 'V10',
   socialProof: 'I',
   trustLanding: 'none',
+  flow: 'none',
   deviceType: 'mobile',
 });
 
@@ -249,6 +358,7 @@ export default function ABComparisonLab() {
     const randomNavigation = NAVIGATION_VARIANTS[Math.floor(Math.random() * NAVIGATION_VARIANTS.length)].id;
     const randomSocialProof = SOCIAL_PROOF_VARIANTS[Math.floor(Math.random() * SOCIAL_PROOF_VARIANTS.length)].id;
     const randomTrustLanding = TRUST_LANDING_VARIANTS[Math.floor(Math.random() * TRUST_LANDING_VARIANTS.length)].id;
+    const randomFlow = FLOW_VARIANTS[Math.floor(Math.random() * FLOW_VARIANTS.length)].id;
     
     updateDevice(deviceId, {
       page: randomPage,
@@ -256,6 +366,7 @@ export default function ABComparisonLab() {
       navigation: randomNavigation,
       socialProof: randomSocialProof,
       trustLanding: randomTrustLanding,
+      flow: randomFlow,
     });
   }, [updateDevice]);
 
@@ -273,6 +384,14 @@ export default function ABComparisonLab() {
     baseParams.set('ab-lab', '1');
     baseParams.set('ab-nav', device.navigation);
     baseParams.set('ab-social', device.socialProof);
+
+    // If a flow is selected, navigate directly to that flow
+    if (device.flow && device.flow !== 'none') {
+      const flowConfig = FLOW_VARIANTS.find(f => f.id === device.flow);
+      if (flowConfig?.path) {
+        return `${flowConfig.path}?${baseParams.toString()}`;
+      }
+    }
 
     // If a trust landing page is selected, navigate directly to that page
     if (device.trustLanding && device.trustLanding !== 'none') {
@@ -304,6 +423,7 @@ export default function ABComparisonLab() {
           navigation: 'V10',
           socialProof: 'I',
           trustLanding: 'none',
+          flow: 'none',
           deviceType: 'mobile' as const,
         })));
         break;
@@ -316,6 +436,7 @@ export default function ABComparisonLab() {
           navigation: 'V10',
           socialProof: sp.id,
           trustLanding: 'none',
+          flow: 'none',
           deviceType: 'mobile' as const,
         })));
         break;
@@ -328,6 +449,7 @@ export default function ABComparisonLab() {
           navigation: nav,
           socialProof: 'I',
           trustLanding: 'none',
+          flow: 'none',
           deviceType: 'mobile' as const,
         })));
         break;
@@ -340,6 +462,7 @@ export default function ABComparisonLab() {
           navigation: 'V10',
           socialProof: 'I',
           trustLanding: 'none',
+          flow: 'none',
           deviceType: 'mobile' as const,
         })));
         break;
@@ -352,15 +475,50 @@ export default function ABComparisonLab() {
           navigation: 'V10',
           socialProof: 'I',
           trustLanding: t.id,
+          flow: 'none',
           deviceType: 'mobile' as const,
         })));
         break;
       case 'responsive':
         // Show same config on different devices
         setDevices([
-          { id: 'device-1', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', deviceType: 'mobile' as const },
-          { id: 'device-2', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', deviceType: 'tablet' as const },
-          { id: 'device-3', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', deviceType: 'desktop' as const },
+          { id: 'device-1', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'none', deviceType: 'mobile' as const },
+          { id: 'device-2', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'none', deviceType: 'tablet' as const },
+          { id: 'device-3', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'none', deviceType: 'desktop' as const },
+        ]);
+        break;
+      // NEW: Flow Presets
+      case 'top-flows':
+        // Top 5 best-performing flows based on ChatGPT analysis
+        setDevices([
+          { id: 'device-1', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'chatgpt-1', deviceType: 'mobile' as const },
+          { id: 'device-2', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'v8a', deviceType: 'mobile' as const },
+          { id: 'device-3', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'v1f', deviceType: 'mobile' as const },
+          { id: 'device-4', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'ultimate-best36', deviceType: 'mobile' as const },
+          { id: 'device-5', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'golden-v10', deviceType: 'mobile' as const },
+        ]);
+        break;
+      case 'v1-family':
+        // V1 sub-variants comparison
+        setDevices(FLOW_VARIANTS.filter(f => f.group === 'v1').slice(0, 6).map((f, idx) => ({
+          id: `device-${idx + 1}`,
+          page: 'index',
+          homepage: 'C',
+          navigation: 'V10',
+          socialProof: 'I',
+          trustLanding: 'none',
+          flow: f.id,
+          deviceType: 'mobile' as const,
+        })));
+        break;
+      case 'premium-flows':
+        // Premium & ChatGPT flows
+        setDevices([
+          { id: 'device-1', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'swiss-premium', deviceType: 'mobile' as const },
+          { id: 'device-2', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'swiss-lightning', deviceType: 'mobile' as const },
+          { id: 'device-3', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'swiss-concierge', deviceType: 'mobile' as const },
+          { id: 'device-4', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'chatgpt-1', deviceType: 'mobile' as const },
+          { id: 'device-5', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'chatgpt-2', deviceType: 'mobile' as const },
         ]);
         break;
       default:
@@ -370,6 +528,13 @@ export default function ABComparisonLab() {
 
   // Get short label for device
   const getDeviceLabel = (device: DeviceConfig) => {
+    // If a flow is selected, show flow label
+    if (device.flow && device.flow !== 'none') {
+      const flowConfig = FLOW_VARIANTS.find(f => f.id === device.flow);
+      const flowLabel = flowConfig?.label.replace(/\s*[⭐⚡🏆✨]/g, '').substring(0, 12) || device.flow;
+      return `${flowLabel}-N${device.navigation.replace('V', '')}`;
+    }
+    
     if (device.trustLanding && device.trustLanding !== 'none') {
       return `Trust-${device.trustLanding.toUpperCase()}`;
     }
@@ -448,6 +613,38 @@ export default function ABComparisonLab() {
                   className="h-7 text-xs"
                 >
                   Responsive
+                </Button>
+                
+                {/* Flow Presets - with visual separator */}
+                <div className="h-4 w-px bg-border mx-1" />
+                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                  <Zap className="w-3 h-3" />
+                  Flows:
+                </span>
+                <Button
+                  variant={activePreset === 'top-flows' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => applyPreset('top-flows')}
+                  className="h-7 text-xs gap-1"
+                >
+                  <Star className="w-3 h-3" />
+                  Top 5
+                </Button>
+                <Button
+                  variant={activePreset === 'v1-family' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => applyPreset('v1-family')}
+                  className="h-7 text-xs"
+                >
+                  V1 Familie
+                </Button>
+                <Button
+                  variant={activePreset === 'premium-flows' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => applyPreset('premium-flows')}
+                  className="h-7 text-xs"
+                >
+                  Premium
                 </Button>
               </div>
 
@@ -543,12 +740,52 @@ export default function ABComparisonLab() {
                         </div>
                       </div>
 
-                      {/* Variant Selectors */}
-                      <div className="grid grid-cols-2 gap-1 mb-1">
+                      {/* Flow Selector (NEW) */}
+                      <div className="mb-1">
+                        <Select
+                          value={device.flow}
+                          onValueChange={(v) => updateDevice(device.id, { flow: v })}
+                        >
+                          <SelectTrigger className={cn(
+                            "h-7 text-[10px]",
+                            device.flow !== 'none' && "border-primary bg-primary/5"
+                          )}>
+                            <div className="flex items-center gap-1">
+                              <Zap className="w-3 h-3 text-primary" />
+                              <SelectValue placeholder="Flow wählen..." />
+                            </div>
+                          </SelectTrigger>
+                          <SelectContent className="max-h-80">
+                            {Object.entries(FLOW_GROUPS).map(([groupId, groupLabel]) => {
+                              const groupFlows = FLOW_VARIANTS.filter(f => f.group === groupId);
+                              if (groupFlows.length === 0) return null;
+                              return (
+                                <SelectGroup key={groupId}>
+                                  <SelectLabel className="text-[10px] font-semibold text-muted-foreground">
+                                    {groupLabel}
+                                  </SelectLabel>
+                                  {groupFlows.map((flow) => (
+                                    <SelectItem key={flow.id} value={flow.id} className="text-xs">
+                                      {flow.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectGroup>
+                              );
+                            })}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* Page/Trust Selectors (disabled when flow is active) */}
+                      <div className={cn(
+                        "grid grid-cols-2 gap-1 mb-1",
+                        device.flow !== 'none' && "opacity-50 pointer-events-none"
+                      )}>
                         {/* Page Selector */}
                         <Select
                           value={device.page}
                           onValueChange={(v) => updateDevice(device.id, { page: v })}
+                          disabled={device.flow !== 'none'}
                         >
                           <SelectTrigger className="h-7 text-[10px]">
                             <SelectValue />
@@ -566,6 +803,7 @@ export default function ABComparisonLab() {
                         <Select
                           value={device.trustLanding}
                           onValueChange={(v) => updateDevice(device.id, { trustLanding: v })}
+                          disabled={device.flow !== 'none'}
                         >
                           <SelectTrigger className="h-7 text-[10px]">
                             <SelectValue />
@@ -580,8 +818,8 @@ export default function ABComparisonLab() {
                         </Select>
                       </div>
 
-                      {/* A/B Params (only shown when trustLanding is 'none') */}
-                      {device.trustLanding === 'none' && (
+                      {/* A/B Params (only shown when flow is 'none' and trustLanding is 'none') */}
+                      {device.flow === 'none' && device.trustLanding === 'none' && (
                         <div className="grid grid-cols-3 gap-1">
                           {/* Homepage A/B (only for index page) */}
                           {device.page === 'index' ? (
@@ -635,6 +873,27 @@ export default function ABComparisonLab() {
                               {SOCIAL_PROOF_VARIANTS.map((sp) => (
                                 <SelectItem key={sp.id} value={sp.id} className="text-xs">
                                   S{sp.id}: {sp.label.replace(/^V\d+\s*/, '')}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      )}
+
+                      {/* Show Navigation selector for flows too */}
+                      {device.flow !== 'none' && (
+                        <div className="grid grid-cols-1 gap-1">
+                          <Select
+                            value={device.navigation}
+                            onValueChange={(v) => updateDevice(device.id, { navigation: v })}
+                          >
+                            <SelectTrigger className="h-7 text-[10px]">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {NAVIGATION_VARIANTS.map((nav) => (
+                                <SelectItem key={nav.id} value={nav.id} className="text-xs">
+                                  {nav.label}
                                 </SelectItem>
                               ))}
                             </SelectContent>
@@ -709,7 +968,21 @@ export default function ABComparisonLab() {
         <div className="container mx-auto px-4 pb-8">
           <Card className="p-4 bg-muted/30">
             <h3 className="font-semibold text-sm mb-2">Quick Reference</h3>
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4 text-xs text-muted-foreground">
+            <div className="grid grid-cols-1 md:grid-cols-6 gap-4 text-xs text-muted-foreground">
+              <div>
+                <strong className="text-foreground flex items-center gap-1">
+                  <Zap className="w-3 h-3 text-primary" />
+                  Flows:
+                </strong>
+                <ul className="mt-1 space-y-0.5">
+                  <li>V1-V9 = Hauptversionen</li>
+                  <li>V1a-V1g = Subvarianten</li>
+                  <li>ChatGPT 1-3 = AI-Optimiert</li>
+                  <li>Swiss Premium/Lightning</li>
+                  <li>Ultimate Best36 = Top</li>
+                  <li>Golden V10 = Best-of</li>
+                </ul>
+              </div>
               <div>
                 <strong className="text-foreground">Pages:</strong>
                 <ul className="mt-1 space-y-0.5">
