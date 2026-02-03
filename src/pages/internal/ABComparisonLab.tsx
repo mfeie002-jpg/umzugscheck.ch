@@ -202,6 +202,7 @@ interface DeviceConfig {
   socialProof: string;
   trustLanding: string; // 'none' = Normal page, 'v1'-'v4' = Trust Landing Pages
   flow: string; // 'none' = Homepage, or flow variant ID
+  flowDirect: boolean; // true = Show flow directly, false = Flow is CTA target
   deviceType: 'mobile' | 'tablet' | 'desktop';
 }
 
@@ -230,6 +231,7 @@ const DEFAULT_DEVICE: () => DeviceConfig = () => ({
   socialProof: 'I',
   trustLanding: 'none',
   flow: 'none',
+  flowDirect: true, // Default: show flow directly (not as CTA target)
   deviceType: 'mobile',
 });
 
@@ -390,8 +392,16 @@ export default function ABComparisonLab() {
     baseParams.set('ab-nav', device.navigation);
     baseParams.set('ab-social', device.socialProof);
 
-    // Pass flow as parameter - CTAs on homepage will use this to navigate
-    if (device.flow && device.flow !== 'none') {
+    // DIRECT FLOW MODE: Navigate directly to the flow page
+    if (device.flow && device.flow !== 'none' && device.flowDirect) {
+      const flowConfig = FLOW_VARIANTS.find(f => f.id === device.flow);
+      if (flowConfig?.path) {
+        return `${flowConfig.path}?${baseParams.toString()}`;
+      }
+    }
+
+    // CTA TARGET MODE: Pass flow as parameter for CTAs to use
+    if (device.flow && device.flow !== 'none' && !device.flowDirect) {
       baseParams.set('ab-flow', device.flow);
     }
 
@@ -426,6 +436,7 @@ export default function ABComparisonLab() {
           socialProof: 'I',
           trustLanding: 'none',
           flow: 'none',
+          flowDirect: true,
           deviceType: 'mobile' as const,
         })));
         break;
@@ -439,6 +450,7 @@ export default function ABComparisonLab() {
           socialProof: sp.id,
           trustLanding: 'none',
           flow: 'none',
+          flowDirect: true,
           deviceType: 'mobile' as const,
         })));
         break;
@@ -452,6 +464,7 @@ export default function ABComparisonLab() {
           socialProof: 'I',
           trustLanding: 'none',
           flow: 'none',
+          flowDirect: true,
           deviceType: 'mobile' as const,
         })));
         break;
@@ -465,6 +478,7 @@ export default function ABComparisonLab() {
           socialProof: 'I',
           trustLanding: 'none',
           flow: 'none',
+          flowDirect: true,
           deviceType: 'mobile' as const,
         })));
         break;
@@ -478,30 +492,31 @@ export default function ABComparisonLab() {
           socialProof: 'I',
           trustLanding: t.id,
           flow: 'none',
+          flowDirect: true,
           deviceType: 'mobile' as const,
         })));
         break;
       case 'responsive':
         // Show same config on different devices
         setDevices([
-          { id: 'device-1', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'none', deviceType: 'mobile' as const },
-          { id: 'device-2', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'none', deviceType: 'tablet' as const },
-          { id: 'device-3', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'none', deviceType: 'desktop' as const },
+          { id: 'device-1', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'none', flowDirect: true, deviceType: 'mobile' as const },
+          { id: 'device-2', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'none', flowDirect: true, deviceType: 'tablet' as const },
+          { id: 'device-3', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'none', flowDirect: true, deviceType: 'desktop' as const },
         ]);
         break;
       // NEW: Flow Presets
       case 'top-flows':
-        // Top 5 best-performing flows based on ChatGPT analysis
+        // Top 5 best-performing flows based on ChatGPT analysis - show DIRECTLY
         setDevices([
-          { id: 'device-1', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'chatgpt-1', deviceType: 'mobile' as const },
-          { id: 'device-2', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'v8a', deviceType: 'mobile' as const },
-          { id: 'device-3', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'v1f', deviceType: 'mobile' as const },
-          { id: 'device-4', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'ultimate-best36', deviceType: 'mobile' as const },
-          { id: 'device-5', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'golden-v10', deviceType: 'mobile' as const },
+          { id: 'device-1', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'chatgpt-1', flowDirect: true, deviceType: 'mobile' as const },
+          { id: 'device-2', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'v8a', flowDirect: true, deviceType: 'mobile' as const },
+          { id: 'device-3', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'v1f', flowDirect: true, deviceType: 'mobile' as const },
+          { id: 'device-4', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'ultimate-best36', flowDirect: true, deviceType: 'mobile' as const },
+          { id: 'device-5', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'golden-v10', flowDirect: true, deviceType: 'mobile' as const },
         ]);
         break;
       case 'v1-family':
-        // V1 sub-variants comparison
+        // V1 sub-variants comparison - show DIRECTLY
         setDevices(FLOW_VARIANTS.filter(f => f.group === 'v1').slice(0, 6).map((f, idx) => ({
           id: `device-${idx + 1}`,
           page: 'index',
@@ -510,17 +525,18 @@ export default function ABComparisonLab() {
           socialProof: 'I',
           trustLanding: 'none',
           flow: f.id,
+          flowDirect: true,
           deviceType: 'mobile' as const,
         })));
         break;
       case 'premium-flows':
-        // Premium & ChatGPT flows
+        // Premium & ChatGPT flows - show DIRECTLY
         setDevices([
-          { id: 'device-1', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'swiss-premium', deviceType: 'mobile' as const },
-          { id: 'device-2', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'swiss-lightning', deviceType: 'mobile' as const },
-          { id: 'device-3', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'swiss-concierge', deviceType: 'mobile' as const },
-          { id: 'device-4', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'chatgpt-1', deviceType: 'mobile' as const },
-          { id: 'device-5', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'chatgpt-2', deviceType: 'mobile' as const },
+          { id: 'device-1', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'swiss-premium', flowDirect: true, deviceType: 'mobile' as const },
+          { id: 'device-2', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'swiss-lightning', flowDirect: true, deviceType: 'mobile' as const },
+          { id: 'device-3', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'swiss-concierge', flowDirect: true, deviceType: 'mobile' as const },
+          { id: 'device-4', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'chatgpt-1', flowDirect: true, deviceType: 'mobile' as const },
+          { id: 'device-5', page: 'index', homepage: 'C', navigation: 'V10', socialProof: 'I', trustLanding: 'none', flow: 'chatgpt-2', flowDirect: true, deviceType: 'mobile' as const },
         ]);
         break;
       default:
@@ -530,6 +546,12 @@ export default function ABComparisonLab() {
 
   // Get short label for device
   const getDeviceLabel = (device: DeviceConfig) => {
+    // If showing flow DIRECTLY, use flow as primary label
+    if (device.flow && device.flow !== 'none' && device.flowDirect) {
+      const flowConfig = FLOW_VARIANTS.find(f => f.id === device.flow);
+      return flowConfig?.label.replace(/[⭐⚡🏆✨]/g, '').trim() || device.flow.toUpperCase();
+    }
+    
     // Trust landing page takes precedence for display
     if (device.trustLanding && device.trustLanding !== 'none') {
       return `Trust-${device.trustLanding.toUpperCase()}`;
@@ -539,8 +561,8 @@ export default function ABComparisonLab() {
     const pageLabel = device.page === 'index' ? `H${device.homepage}` : device.page.replace('homepage-', 'HP');
     let label = `${pageLabel}-N${device.navigation.replace('V', '')}-S${device.socialProof}`;
     
-    // Append flow indicator if a target flow is selected
-    if (device.flow && device.flow !== 'none') {
+    // Append flow indicator if a CTA target flow is selected (not direct)
+    if (device.flow && device.flow !== 'none' && !device.flowDirect) {
       const flowConfig = FLOW_VARIANTS.find(f => f.id === device.flow);
       const flowShort = flowConfig?.id.toUpperCase().substring(0, 4) || device.flow;
       label += ` → ${flowShort}`;
@@ -846,10 +868,22 @@ export default function ABComparisonLab() {
                         </div>
                       )}
 
-                      {/* Flow Selector - Target for CTAs */}
+                      {/* Flow Selector - Direct display OR CTA target */}
                       <div>
-                        <div className="flex items-center gap-1 mb-1">
-                          <span className="text-[9px] text-muted-foreground uppercase tracking-wide">CTA Ziel:</span>
+                        <div className="flex items-center justify-between gap-1 mb-1">
+                          <span className="text-[9px] text-muted-foreground uppercase tracking-wide">
+                            {device.flowDirect ? 'Flow anzeigen:' : 'CTA Ziel:'}
+                          </span>
+                          {device.flow !== 'none' && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-4 px-1 text-[9px] text-muted-foreground hover:text-foreground"
+                              onClick={() => updateDevice(device.id, { flowDirect: !device.flowDirect })}
+                            >
+                              {device.flowDirect ? '→ als CTA' : '→ direkt'}
+                            </Button>
+                          )}
                         </div>
                         <Select
                           value={device.flow}
@@ -857,10 +891,14 @@ export default function ABComparisonLab() {
                         >
                           <SelectTrigger className={cn(
                             "h-7 text-[10px]",
-                            device.flow !== 'none' && "border-primary bg-primary/5"
+                            device.flow !== 'none' && device.flowDirect && "border-green-500 bg-green-500/10",
+                            device.flow !== 'none' && !device.flowDirect && "border-primary bg-primary/5"
                           )}>
                             <div className="flex items-center gap-1">
-                              <Zap className="w-3 h-3 text-primary" />
+                              <Zap className={cn(
+                                "w-3 h-3",
+                                device.flow !== 'none' && device.flowDirect ? "text-green-600" : "text-primary"
+                              )} />
                               <SelectValue placeholder="Offerten-Flow wählen..." />
                             </div>
                           </SelectTrigger>
@@ -884,11 +922,25 @@ export default function ABComparisonLab() {
                           </SelectContent>
                         </Select>
                         {device.flow !== 'none' && (
-                          <div className="text-[9px] text-primary mt-0.5 flex items-center gap-1">
-                            <span>→ CTAs navigieren zu</span>
-                            <code className="bg-primary/10 px-1 rounded">
-                              {FLOW_VARIANTS.find(f => f.id === device.flow)?.path}
-                            </code>
+                          <div className={cn(
+                            "text-[9px] mt-0.5 flex items-center gap-1",
+                            device.flowDirect ? "text-green-600" : "text-primary"
+                          )}>
+                            {device.flowDirect ? (
+                              <>
+                                <span>✓ Zeigt direkt</span>
+                                <code className="bg-green-500/10 px-1 rounded">
+                                  {FLOW_VARIANTS.find(f => f.id === device.flow)?.path}
+                                </code>
+                              </>
+                            ) : (
+                              <>
+                                <span>→ CTAs navigieren zu</span>
+                                <code className="bg-primary/10 px-1 rounded">
+                                  {FLOW_VARIANTS.find(f => f.id === device.flow)?.path}
+                                </code>
+                              </>
+                            )}
                           </div>
                         )}
                       </div>
