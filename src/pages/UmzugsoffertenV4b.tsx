@@ -2,7 +2,7 @@
  * /umzugsofferten-v4b - Test Version V4.b (Social Proof)
  */
 
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import {
   AIInsightsBar,

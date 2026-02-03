@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { lazy, Suspense, useEffect } from "react";
 import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
 import IndexPremiumScreenshot from "@/pages/IndexPremiumScreenshot";

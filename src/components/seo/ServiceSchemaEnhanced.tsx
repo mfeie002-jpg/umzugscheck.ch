@@ -4,7 +4,7 @@
  * JSON-LD for service pages - improves service-related searches
  */
 
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { memo } from "react";
 
 interface ServiceSchemaEnhancedProps {

@@ -7,7 +7,7 @@
  * Route: /homepage-classic
  */
 
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { lazy, Suspense } from "react";
 import { SkipToContent } from "@/components/SkipToContent";
 import { ErrorBoundary } from "@/components/homepage/ErrorBoundary";

@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "sonner";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { Loader2, ArrowLeft } from "lucide-react";
 import { useProviderAuth } from "@/contexts/ProviderAuthContext";
 

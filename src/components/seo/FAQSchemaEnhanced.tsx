@@ -5,7 +5,7 @@
  * Can display FAQ directly on Google SERP
  */
 
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { memo } from "react";
 
 export interface FAQItem {

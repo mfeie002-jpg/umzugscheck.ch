@@ -2,7 +2,7 @@
  * /umzugsofferten-v4e - Test Version V4.e (Minimal Friction)
  */
 
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import {
   AIInsightsBar,

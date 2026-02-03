@@ -5,7 +5,7 @@
  * - Sticky CTA, simplified services, green "Both" option, etc.
  */
 
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { MultiStepCalculatorV1d } from "@/components/funnel-v1d";
 

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Mail, Phone, MapPin, Facebook, Linkedin, Instagram, Shield, Award, CheckCircle } from "lucide-react";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { FooterLogo } from "@/components/ui/footer-logo";
 
 const ORGANIZATION_SCHEMA = {

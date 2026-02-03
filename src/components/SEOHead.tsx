@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { generateMetaData, generateOGTags } from "@/lib/seo-meta";
 import { generatePageSchemas, generateSchemaScript } from "@/lib/schema-markup";
 import { getKeywordsForPage } from "@/lib/seo-keywords";

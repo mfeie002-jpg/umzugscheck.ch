@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { useRef } from "react";
 import { Printer } from "lucide-react";
 import Header from "@/components/Header";

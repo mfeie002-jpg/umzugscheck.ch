@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { useNavigate, Link } from "react-router-dom";
 import { useProviderAuth } from "@/contexts/ProviderAuthContext";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { Loader2, TrendingUp, Calendar, Users, Settings, AlertCircle, CheckCircle2, Clock, Gavel, Zap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Alert, AlertDescription } from "@/components/ui/alert";

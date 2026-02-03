@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { motion, useInView } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/homepage/Header";
