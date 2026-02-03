@@ -5,9 +5,9 @@
  * Like having multiple phones on a table - each independently scrollable/interactive
  */
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect, memo } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Plus, Minus, Smartphone, Monitor, Tablet, Settings2, Copy, RefreshCw, Maximize2, Grid3X3, Shuffle } from 'lucide-react';
+import { Plus, Minus, Smartphone, Monitor, Tablet, Settings2, Copy, RefreshCw, Maximize2, Grid3X3, Shuffle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card } from '@/components/ui/card';
@@ -109,6 +109,9 @@ const DEVICE_SCALE = {
   desktop: 0.35,
 };
 
+// Staggered load delay per device (ms)
+const STAGGER_DELAY_MS = 400;
+
 const generateDeviceId = () => `device-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
 const DEFAULT_DEVICE: () => DeviceConfig = () => ({
@@ -119,6 +122,75 @@ const DEFAULT_DEVICE: () => DeviceConfig = () => ({
   socialProof: 'I',
   trustLanding: 'none',
   deviceType: 'mobile',
+});
+
+/**
+ * Lazy-loaded iframe component that only loads when scheduled
+ * Uses staggered loading to prevent simultaneous network requests
+ */
+interface LazyDeviceIframeProps {
+  device: DeviceConfig;
+  url: string;
+  index: number;
+  iframeRef: (el: HTMLIFrameElement | null) => void;
+}
+
+const LazyDeviceIframe = memo(({ device, url, index, iframeRef }: LazyDeviceIframeProps) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [shouldLoad, setShouldLoad] = useState(index === 0); // First device loads immediately
+  const size = DEVICE_SIZES[device.deviceType];
+  const scale = DEVICE_SCALE[device.deviceType];
+
+  // Staggered loading: each device waits for its turn
+  useEffect(() => {
+    if (index === 0) {
+      setShouldLoad(true);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setShouldLoad(true);
+    }, index * STAGGER_DELAY_MS);
+
+    return () => clearTimeout(timer);
+  }, [index]);
+
+  return (
+    <div 
+      className="relative overflow-hidden rounded-lg bg-white"
+      style={{ 
+        width: size.width * scale,
+        height: size.height * scale,
+      }}
+    >
+      {/* Loading placeholder */}
+      {!isLoaded && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-muted/50 z-10">
+          <Loader2 className="w-8 h-8 animate-spin text-primary mb-2" />
+          <span className="text-xs text-muted-foreground">
+            {shouldLoad ? 'Laden...' : `Wartet... (${index + 1})`}
+          </span>
+        </div>
+      )}
+      
+      {shouldLoad && (
+        <iframe
+          ref={iframeRef}
+          src={url}
+          className="absolute top-0 left-0 origin-top-left transition-opacity duration-300"
+          style={{
+            width: size.width,
+            height: size.height,
+            transform: `scale(${scale})`,
+            border: 'none',
+            opacity: isLoaded ? 1 : 0,
+          }}
+          title={`Device ${device.id}`}
+          onLoad={() => setIsLoaded(true)}
+        />
+      )}
+    </div>
+  );
 });
 
 export default function ABComparisonLab() {
@@ -396,7 +468,7 @@ export default function ABComparisonLab() {
         {/* Device Grid */}
         <div className="container mx-auto px-4 py-6">
           <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory">
-            {devices.map((device) => {
+            {devices.map((device, index) => {
               const size = DEVICE_SIZES[device.deviceType];
               const scale = DEVICE_SCALE[device.deviceType];
               
@@ -613,28 +685,13 @@ export default function ABComparisonLab() {
                         <div className="absolute top-2 left-1/2 -translate-x-1/2 w-24 h-5 bg-black rounded-b-xl z-10" />
                       )}
 
-                      {/* Iframe Container */}
-                      <div 
-                        className="relative overflow-hidden rounded-lg bg-white"
-                        style={{ 
-                          width: size.width * scale,
-                          height: size.height * scale,
-                        }}
-                      >
-                        <iframe
-                          ref={(el) => { iframeRefs.current[device.id] = el; }}
-                          src={buildDeviceUrl(device)}
-                          loading="lazy"
-                          className="absolute top-0 left-0 origin-top-left"
-                          style={{
-                            width: size.width,
-                            height: size.height,
-                            transform: `scale(${scale})`,
-                            border: 'none',
-                          }}
-                          title={`Device ${device.id}`}
-                        />
-                      </div>
+                      {/* Lazy-loaded iframe with staggered loading */}
+                      <LazyDeviceIframe
+                        device={device}
+                        url={buildDeviceUrl(device)}
+                        index={index}
+                        iframeRef={(el) => { iframeRefs.current[device.id] = el; }}
+                      />
 
                       {/* Home Indicator (mobile only) */}
                       {device.deviceType === 'mobile' && (
