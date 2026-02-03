@@ -5,7 +5,7 @@
  * Google may show rich results with business info
  */
 
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { memo } from "react";
 
 interface LocalBusinessSchemaEnhancedProps {

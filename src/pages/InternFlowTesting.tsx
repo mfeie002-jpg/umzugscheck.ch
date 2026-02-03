@@ -34,7 +34,7 @@
  */
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { motion, AnimatePresence } from "framer-motion";

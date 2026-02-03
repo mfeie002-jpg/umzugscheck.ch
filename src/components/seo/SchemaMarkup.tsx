@@ -3,7 +3,7 @@
  * Provides rich snippets for Google search results
  */
 
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 interface LocalBusinessSchemaProps {
   name?: string;

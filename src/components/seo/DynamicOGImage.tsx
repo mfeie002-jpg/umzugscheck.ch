@@ -5,7 +5,7 @@
  * Improves social sharing and click-through rates.
  */
 
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { memo } from "react";
 
 export type PageType = 

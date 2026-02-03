@@ -6,7 +6,7 @@
  */
 
 import { useParams, Navigate } from "react-router-dom";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { UltimateSwissFlow } from "@/components/ultimate-flow";
 import { useMemo } from "react";
 

@@ -1,7 +1,7 @@
 /**
  * V5.b - Funnel Layout & Step Engine
  */
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { MarketplaceWizardV5b } from "@/components/marketplace-v5/MarketplaceWizardV5b";
 
 const UmzugsoffertenV5b = () => (

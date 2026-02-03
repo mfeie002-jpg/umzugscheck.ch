@@ -2,7 +2,7 @@
  * /umzugsofferten-v4d - Test Version V4.d (Gamified)
  */
 
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import {
   AIInsightsBar,

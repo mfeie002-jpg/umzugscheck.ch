@@ -9,7 +9,7 @@ import { FAQAccordion } from "@/components/FAQAccordion";
 import { motion } from "framer-motion";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { generateMetaData, generateOGTags } from "@/lib/seo-meta";
 import { generatePageSchemas, generateSchemaScript } from "@/lib/schema-markup";
 import { getKeywordsForPage } from "@/lib/seo-keywords";

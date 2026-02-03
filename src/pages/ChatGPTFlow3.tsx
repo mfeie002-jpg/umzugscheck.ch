@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { ChatGPTFlow3GuidedChat } from "@/components/calculator-variants/ChatGPTFlow3GuidedChat";
 
 const ChatGPTFlow3 = () => (

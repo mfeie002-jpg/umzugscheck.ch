@@ -6,7 +6,7 @@
  * Intent: Cold/Warm (informational → leads to Reinigung service)
  */
 
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 

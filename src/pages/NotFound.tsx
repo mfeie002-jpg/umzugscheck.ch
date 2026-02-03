@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Home, RefreshCw, HelpCircle, AlertCircle, MessageSquare, Loader2, Search, ArrowRight, Calculator, Building2, MapPin, Sparkles, FileText, Phone } from "lucide-react";
