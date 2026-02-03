@@ -8,6 +8,7 @@
  * - ab-homepage: A, B, or C
  * - ab-nav: V1-V17 (navigation variant)
  * - ab-social: A-AB (Social Proof variant - 28 total)
+ * - ab-flow: Flow variant ID (e.g., 'v9a', 'swiss-premium') - CTAs will navigate here
  * - ab-lab: 1 (hides the A/B toggle for lab mode)
  */
 
@@ -93,3 +94,9 @@ export function useIsABLabMode(): boolean {
   const [searchParams] = useSearchParams();
   return searchParams.get('ab-lab') === '1';
 }
+
+/**
+ * Get the target flow from URL params (for CTAs to use)
+ * Re-exported from useTargetFlow hook for convenience
+ */
+export { useTargetFlow, getFlowPath, FLOW_PATH_MAP } from '@/hooks/useTargetFlow';
