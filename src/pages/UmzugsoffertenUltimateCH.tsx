@@ -6,7 +6,7 @@
  * Flow-Code: ultimate-ch-v1
  */
 
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { UltimateSwissFlow } from "@/components/ultimate-flow";
 
 const UmzugsoffertenUltimateCH = () => (

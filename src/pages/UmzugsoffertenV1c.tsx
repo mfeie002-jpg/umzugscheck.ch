@@ -7,7 +7,7 @@
  * - Multi-step guided experience
  */
 
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { V1cFeedbackBased } from "@/components/calculator-variants";
 import { Link } from "react-router-dom";

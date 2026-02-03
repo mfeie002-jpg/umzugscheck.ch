@@ -14,7 +14,7 @@
  * - Price range explanations
  */
 
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import {
   AIInsightsBar,

@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { SkipToContent } from "@/components/SkipToContent";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { StickyMobileCTA } from "@/components/StickyMobileCTA";

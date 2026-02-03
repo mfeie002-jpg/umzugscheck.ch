@@ -101,3 +101,6 @@ verify_jwt = false
 
 [functions.predictive-trends]
 verify_jwt = false
+
+[functions.geo]
+verify_jwt = false

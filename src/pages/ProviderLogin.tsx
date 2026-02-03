@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "sonner";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { Loader2 } from "lucide-react";
 import { useProviderAuth } from "@/contexts/ProviderAuthContext";
 

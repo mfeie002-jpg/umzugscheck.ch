@@ -16,7 +16,7 @@
 import { GoldenFlowWizard } from "@/components/golden-flow";
 import { GoldenSocialProof, GoldenTrustBadges } from "@/components/golden";
 import { HeroTrustBlock } from "@/components/golden-flow/components/HeroTrustBlock";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 const GoldenFlowV10Page = () => {
   return (

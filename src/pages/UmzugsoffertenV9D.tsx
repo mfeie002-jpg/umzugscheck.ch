@@ -13,7 +13,7 @@
  * - Prio 10: Swissness Wording
  */
 
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ArchetypWizardV9D } from "@/components/zerofriction-v9/ArchetypWizardV9D";
 import { Link } from "react-router-dom";

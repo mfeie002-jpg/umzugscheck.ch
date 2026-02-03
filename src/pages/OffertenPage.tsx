@@ -14,7 +14,7 @@ import { z } from "zod";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { motion } from "framer-motion";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { CalculatorEvents, FormEvents, ConversionEvents } from "@/lib/analytics-tracking";
 
 const formSchema = z.object({

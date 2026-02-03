@@ -1,7 +1,7 @@
 /**
  * V5.c - Archetype 2026: Invisible Interface
  */
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { MarketplaceWizardV5c } from "@/components/marketplace-v5/MarketplaceWizardV5c";
 
 const UmzugsoffertenV5c = () => (

@@ -3,7 +3,7 @@
  * Generates XML sitemap for SEO
  */
 
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { memo } from "react";
 
 // All main routes for sitemap

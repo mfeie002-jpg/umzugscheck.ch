@@ -7,7 +7,7 @@
  * - Feels like talking to a real consultant
  */
 
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ChatFunnelV2e } from "@/components/funnel-v2e";
 

@@ -2,7 +2,7 @@
  * /umzugsofferten-v3d - Test Version V3.d (Thumb Zone)
  */
 
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import {
   AIInsightsBar,

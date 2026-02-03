@@ -2,7 +2,7 @@
  * /umzugsofferten-v8a - Test Version V8.a (Feedback Based)
  */
 
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import {
   AIInsightsBar,

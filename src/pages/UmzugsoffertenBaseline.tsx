@@ -6,7 +6,7 @@
  * Use this as the starting point for new test versions (V1b, V1c, etc.)
  */
 
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import {
   AIInsightsBar,

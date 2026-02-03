@@ -3,7 +3,7 @@
  * Comprehensive JSON-LD for Umzugscheck.ch
  */
 
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { memo } from "react";
 
 interface OrganizationSchemaProps {
