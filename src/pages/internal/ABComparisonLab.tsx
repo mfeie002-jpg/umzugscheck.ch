@@ -374,6 +374,11 @@ export default function ABComparisonLab() {
    * Build URL with variant params.
    * IMPORTANT: In Lovable preview, the page access token is passed via query params.
    * If we don't forward that token, the iframe requests can render blank.
+   * 
+   * Flow Selection Logic:
+   * - Flow is passed as `ab-flow` parameter, NOT as direct navigation
+   * - Homepage CTAs will read this param and navigate to the target flow
+   * - This allows testing Homepage + Flow combinations
    */
   const buildDeviceUrl = useCallback((device: DeviceConfig) => {
     const baseParams = new URLSearchParams(
@@ -385,12 +390,9 @@ export default function ABComparisonLab() {
     baseParams.set('ab-nav', device.navigation);
     baseParams.set('ab-social', device.socialProof);
 
-    // If a flow is selected, navigate directly to that flow
+    // Pass flow as parameter - CTAs on homepage will use this to navigate
     if (device.flow && device.flow !== 'none') {
-      const flowConfig = FLOW_VARIANTS.find(f => f.id === device.flow);
-      if (flowConfig?.path) {
-        return `${flowConfig.path}?${baseParams.toString()}`;
-      }
+      baseParams.set('ab-flow', device.flow);
     }
 
     // If a trust landing page is selected, navigate directly to that page
@@ -528,18 +530,23 @@ export default function ABComparisonLab() {
 
   // Get short label for device
   const getDeviceLabel = (device: DeviceConfig) => {
-    // If a flow is selected, show flow label
-    if (device.flow && device.flow !== 'none') {
-      const flowConfig = FLOW_VARIANTS.find(f => f.id === device.flow);
-      const flowLabel = flowConfig?.label.replace(/\s*[⭐⚡🏆✨]/g, '').substring(0, 12) || device.flow;
-      return `${flowLabel}-N${device.navigation.replace('V', '')}`;
-    }
-    
+    // Trust landing page takes precedence for display
     if (device.trustLanding && device.trustLanding !== 'none') {
       return `Trust-${device.trustLanding.toUpperCase()}`;
     }
+    
+    // Base label: Page-Nav-Social
     const pageLabel = device.page === 'index' ? `H${device.homepage}` : device.page.replace('homepage-', 'HP');
-    return `${pageLabel}-N${device.navigation.replace('V', '')}-S${device.socialProof}`;
+    let label = `${pageLabel}-N${device.navigation.replace('V', '')}-S${device.socialProof}`;
+    
+    // Append flow indicator if a target flow is selected
+    if (device.flow && device.flow !== 'none') {
+      const flowConfig = FLOW_VARIANTS.find(f => f.id === device.flow);
+      const flowShort = flowConfig?.id.toUpperCase().substring(0, 4) || device.flow;
+      label += ` → ${flowShort}`;
+    }
+    
+    return label;
   };
 
   return (
@@ -740,52 +747,12 @@ export default function ABComparisonLab() {
                         </div>
                       </div>
 
-                      {/* Flow Selector (NEW) */}
-                      <div className="mb-1">
-                        <Select
-                          value={device.flow}
-                          onValueChange={(v) => updateDevice(device.id, { flow: v })}
-                        >
-                          <SelectTrigger className={cn(
-                            "h-7 text-[10px]",
-                            device.flow !== 'none' && "border-primary bg-primary/5"
-                          )}>
-                            <div className="flex items-center gap-1">
-                              <Zap className="w-3 h-3 text-primary" />
-                              <SelectValue placeholder="Flow wählen..." />
-                            </div>
-                          </SelectTrigger>
-                          <SelectContent className="max-h-80">
-                            {Object.entries(FLOW_GROUPS).map(([groupId, groupLabel]) => {
-                              const groupFlows = FLOW_VARIANTS.filter(f => f.group === groupId);
-                              if (groupFlows.length === 0) return null;
-                              return (
-                                <SelectGroup key={groupId}>
-                                  <SelectLabel className="text-[10px] font-semibold text-muted-foreground">
-                                    {groupLabel}
-                                  </SelectLabel>
-                                  {groupFlows.map((flow) => (
-                                    <SelectItem key={flow.id} value={flow.id} className="text-xs">
-                                      {flow.label}
-                                    </SelectItem>
-                                  ))}
-                                </SelectGroup>
-                              );
-                            })}
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      {/* Page/Trust Selectors (disabled when flow is active) */}
-                      <div className={cn(
-                        "grid grid-cols-2 gap-1 mb-1",
-                        device.flow !== 'none' && "opacity-50 pointer-events-none"
-                      )}>
+                      {/* Page/Trust Selectors */}
+                      <div className="grid grid-cols-2 gap-1 mb-1">
                         {/* Page Selector */}
                         <Select
                           value={device.page}
                           onValueChange={(v) => updateDevice(device.id, { page: v })}
-                          disabled={device.flow !== 'none'}
                         >
                           <SelectTrigger className="h-7 text-[10px]">
                             <SelectValue />
@@ -803,7 +770,6 @@ export default function ABComparisonLab() {
                         <Select
                           value={device.trustLanding}
                           onValueChange={(v) => updateDevice(device.id, { trustLanding: v })}
-                          disabled={device.flow !== 'none'}
                         >
                           <SelectTrigger className="h-7 text-[10px]">
                             <SelectValue />
@@ -818,9 +784,9 @@ export default function ABComparisonLab() {
                         </Select>
                       </div>
 
-                      {/* A/B Params (only shown when flow is 'none' and trustLanding is 'none') */}
-                      {device.flow === 'none' && device.trustLanding === 'none' && (
-                        <div className="grid grid-cols-3 gap-1">
+                      {/* A/B Params (shown when trustLanding is 'none') */}
+                      {device.trustLanding === 'none' && (
+                        <div className="grid grid-cols-3 gap-1 mb-1">
                           {/* Homepage A/B (only for index page) */}
                           {device.page === 'index' ? (
                             <Select
@@ -880,26 +846,52 @@ export default function ABComparisonLab() {
                         </div>
                       )}
 
-                      {/* Show Navigation selector for flows too */}
-                      {device.flow !== 'none' && (
-                        <div className="grid grid-cols-1 gap-1">
-                          <Select
-                            value={device.navigation}
-                            onValueChange={(v) => updateDevice(device.id, { navigation: v })}
-                          >
-                            <SelectTrigger className="h-7 text-[10px]">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {NAVIGATION_VARIANTS.map((nav) => (
-                                <SelectItem key={nav.id} value={nav.id} className="text-xs">
-                                  {nav.label}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                      {/* Flow Selector - Target for CTAs */}
+                      <div>
+                        <div className="flex items-center gap-1 mb-1">
+                          <span className="text-[9px] text-muted-foreground uppercase tracking-wide">CTA Ziel:</span>
                         </div>
-                      )}
+                        <Select
+                          value={device.flow}
+                          onValueChange={(v) => updateDevice(device.id, { flow: v })}
+                        >
+                          <SelectTrigger className={cn(
+                            "h-7 text-[10px]",
+                            device.flow !== 'none' && "border-primary bg-primary/5"
+                          )}>
+                            <div className="flex items-center gap-1">
+                              <Zap className="w-3 h-3 text-primary" />
+                              <SelectValue placeholder="Offerten-Flow wählen..." />
+                            </div>
+                          </SelectTrigger>
+                          <SelectContent className="max-h-80">
+                            {Object.entries(FLOW_GROUPS).map(([groupId, groupLabel]) => {
+                              const groupFlows = FLOW_VARIANTS.filter(f => f.group === groupId);
+                              if (groupFlows.length === 0) return null;
+                              return (
+                                <SelectGroup key={groupId}>
+                                  <SelectLabel className="text-[10px] font-semibold text-muted-foreground">
+                                    {groupLabel}
+                                  </SelectLabel>
+                                  {groupFlows.map((flow) => (
+                                    <SelectItem key={flow.id} value={flow.id} className="text-xs">
+                                      {flow.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectGroup>
+                              );
+                            })}
+                          </SelectContent>
+                        </Select>
+                        {device.flow !== 'none' && (
+                          <div className="text-[9px] text-primary mt-0.5 flex items-center gap-1">
+                            <span>→ CTAs navigieren zu</span>
+                            <code className="bg-primary/10 px-1 rounded">
+                              {FLOW_VARIANTS.find(f => f.id === device.flow)?.path}
+                            </code>
+                          </div>
+                        )}
+                      </div>
 
                       {/* Device Type */}
                       <div className="flex items-center justify-center gap-1">
@@ -972,14 +964,14 @@ export default function ABComparisonLab() {
               <div>
                 <strong className="text-foreground flex items-center gap-1">
                   <Zap className="w-3 h-3 text-primary" />
-                  Flows:
+                  Flows (CTA-Ziel):
                 </strong>
                 <ul className="mt-1 space-y-0.5">
+                  <li>→ CTAs navigieren zum Flow</li>
                   <li>V1-V9 = Hauptversionen</li>
                   <li>V1a-V1g = Subvarianten</li>
                   <li>ChatGPT 1-3 = AI-Optimiert</li>
                   <li>Swiss Premium/Lightning</li>
-                  <li>Ultimate Best36 = Top</li>
                   <li>Golden V10 = Best-of</li>
                 </ul>
               </div>
