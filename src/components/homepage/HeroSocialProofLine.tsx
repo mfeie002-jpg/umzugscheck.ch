@@ -4,17 +4,21 @@
  * 
  * Single line format: ★ 4.8/5 (15k+) · 🟢 47 online · Genf → Zug (3 Min)
  * 
- * Replaces HeroLiveCounter + HeroMicroProofRow with one compact component
+ * Supports A/B testing with variant prop:
+ * - "full" (default): Rating + Online + Route
+ * - "simple": "Heute: 127 Anfragen" only
  */
 
-import { memo, useState, useEffect } from "react";
+import { memo, useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, Users, MapPin, Clock } from "lucide-react";
+import { Star, Users, MapPin, Clock, TrendingUp } from "lucide-react";
 import { TRUST } from "@/content/trust";
 
 interface HeroSocialProofLineProps {
   className?: string;
   baseOnlineCount?: number;
+  variant?: "full" | "simple";
+  onView?: () => void;
 }
 
 // Swiss routes for rotating ticker
@@ -27,6 +31,19 @@ const ROUTES = [
   { from: "Winterthur", to: "St. Gallen", minutesAgo: 4 },
 ];
 
+// Generate session-stable daily request count (100-200)
+const getDailyRequestCount = (): number => {
+  const today = new Date().toDateString();
+  const stored = sessionStorage.getItem('uc_daily_requests');
+  if (stored) {
+    const { date, count } = JSON.parse(stored);
+    if (date === today) return count;
+  }
+  const count = 100 + Math.floor(Math.random() * 100);
+  sessionStorage.setItem('uc_daily_requests', JSON.stringify({ date: today, count }));
+  return count;
+};
+
 // Green pulsing dot indicator
 const PulseDot = memo(function PulseDot() {
   return (
@@ -37,10 +54,27 @@ const PulseDot = memo(function PulseDot() {
   );
 });
 
+// Skeleton loading state
+const ProofLineSkeleton = memo(function ProofLineSkeleton() {
+  return (
+    <div className="flex items-center justify-center gap-2 animate-pulse">
+      <div className="h-4 w-20 bg-muted rounded" />
+      <span className="text-muted-foreground/40">·</span>
+      <div className="h-4 w-16 bg-muted rounded" />
+      <span className="text-muted-foreground/40 hidden sm:inline">·</span>
+      <div className="h-4 w-24 bg-muted rounded hidden sm:block" />
+    </div>
+  );
+});
+
 export const HeroSocialProofLine = memo(function HeroSocialProofLine({ 
   className = "",
-  baseOnlineCount = 47
+  baseOnlineCount = 47,
+  variant = "full",
+  onView
 }: HeroSocialProofLineProps) {
+  const [isLoaded, setIsLoaded] = useState(false);
+  
   // Session-persistent online count
   const [onlineCount, setOnlineCount] = useState(() => {
     if (typeof window === 'undefined') return baseOnlineCount;
@@ -51,9 +85,21 @@ export const HeroSocialProofLine = memo(function HeroSocialProofLine({
     return Math.max(25, baseOnlineCount + variation);
   });
   
+  // Daily request count for simple variant
+  const [dailyRequests] = useState(() => {
+    if (typeof window === 'undefined') return 127;
+    return getDailyRequestCount();
+  });
+  
   // Rotating route index
   const [routeIndex, setRouteIndex] = useState(0);
   const [showRoute, setShowRoute] = useState(true);
+  
+  // Track view for A/B testing
+  useEffect(() => {
+    setIsLoaded(true);
+    onView?.();
+  }, [onView]);
   
   // Initialize & update online count
   useEffect(() => {
@@ -74,6 +120,8 @@ export const HeroSocialProofLine = memo(function HeroSocialProofLine({
   
   // Rotate routes every 5 seconds with fade
   useEffect(() => {
+    if (variant === "simple") return;
+    
     const interval = setInterval(() => {
       setShowRoute(false);
       setTimeout(() => {
@@ -83,10 +131,29 @@ export const HeroSocialProofLine = memo(function HeroSocialProofLine({
     }, 5000);
     
     return () => clearInterval(interval);
-  }, []);
+  }, [variant]);
   
   const currentRoute = ROUTES[routeIndex];
   
+  // Show skeleton while loading
+  if (!isLoaded) {
+    return <ProofLineSkeleton />;
+  }
+  
+  // Simple variant: "Heute: 127 Anfragen"
+  if (variant === "simple") {
+    return (
+      <div className={`flex items-center justify-center gap-2 text-xs ${className}`}>
+        <PulseDot />
+        <span className="text-muted-foreground">
+          Heute: <span className="font-semibold text-foreground tabular-nums">{dailyRequests}</span> Anfragen
+        </span>
+        <TrendingUp className="w-3.5 h-3.5 text-emerald-500" />
+      </div>
+    );
+  }
+  
+  // Full variant: Rating + Online + Route
   return (
     <div className={`flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs ${className}`}>
       {/* Rating - Always visible */}
