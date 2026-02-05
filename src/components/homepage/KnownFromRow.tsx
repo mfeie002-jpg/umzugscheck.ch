@@ -1,35 +1,25 @@
 /**
- * KnownFromRow - Integrated trust element for hero section (Golden Flow V10)
+ * KnownFromRow - Integrated trust element for hero section
  * 
- * Based on detailed research:
+ * "Bekannt aus & Partner" - Shows media mentions and partner logos
+ * Uses real PNG logos with grayscale-to-color hover effects
  * 
- * Option 1 (below-cta): Trust block inside form card, below CTA button
- *   - Conversion-oriented: trust at the point of decision
- *   - Mobile: 3 logos + "+3" indicator
- *   - Desktop: all 6 logos in a row
- * 
- * Option 2 (hero-footer): Horizontal strip at bottom of hero section
- *   - Full-width with subtle background
- *   - Monochrome logos with hover color effect
- *   - "Bekannt aus" label with Shield icon
- * 
- * Option 3 (swiss-partners): 4 Swiss Partner Logos
- *   - eUmzugCH, Die Post, ASTAG, Swiss Made
- *   - Ordered by relevance, mobile-optimized
+ * Variants:
+ * - below-cta: Trust block inside form card, below CTA button
+ * - hero-footer: Horizontal strip at bottom of hero section
+ * - compact: Minimal inline display
+ * - swiss-partners: 4 Swiss Partner Logos (eUmzugCH, Post, ASTAG, Swiss Made)
  */
 
 import { memo } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Shield, Newspaper, Building2 } from "lucide-react";
-import { 
-  ColoredMediaLogo, 
-  MonochromeMediaLogo,
-} from "@/components/trust/media-logos";
+import { RealMediaLogo, SWISS_MEDIA_PARTNERS } from "@/components/trust/media-logos";
 
-// Top 6 media partners for trust display
-const DISPLAY_LOGOS = ["SRF", "NZZ", "Blick", "20 Minuten", "Watson", "newhome"];
-const MOBILE_LOGOS = ["SRF", "NZZ", "Blick"]; // Top 3 for mobile
+// Display order: SRF, NZZ, 20 Minuten, Watson, Mieterverband, newhome
+const DISPLAY_LOGOS = ["SRF", "NZZ", "20 Minuten", "Watson", "Mieterverband", "newhome"];
+const MOBILE_LOGOS = ["SRF", "NZZ", "20 Minuten", "Watson"]; // Top 4 for mobile
 const REMAINING_COUNT = DISPLAY_LOGOS.length - MOBILE_LOGOS.length;
 
 // Swiss Partner Logos (Infrastructure + Authority)
@@ -137,34 +127,24 @@ export const KnownFromRow = memo(function KnownFromRow({
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Newspaper className="w-4 h-4 text-primary" />
             <span className="font-semibold uppercase tracking-wide text-primary">
-              Bekannt aus
+              Bekannt aus & Partner
             </span>
           </div>
           
-          {/* Desktop: All logos monochrome with hover effect */}
+          {/* Desktop: All logos */}
           <div className="hidden md:flex items-center gap-4">
             {DISPLAY_LOGOS.map((name) => (
-              <div 
-                key={name}
-                className="grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-200 cursor-pointer"
-              >
-                <ColoredMediaLogo name={name} size="sm" />
-              </div>
+              <RealMediaLogo key={name} name={name} size="sm" grayscale />
             ))}
           </div>
           
-          {/* Mobile: 3 logos + "&amp; mehr" */}
+          {/* Mobile: 4 logos + "& 2 weitere" */}
           <div className="flex md:hidden items-center gap-3">
             {MOBILE_LOGOS.map((name) => (
-              <div 
-                key={name}
-                className="grayscale opacity-70"
-              >
-                <ColoredMediaLogo name={name} size="sm" />
-              </div>
+              <RealMediaLogo key={name} name={name} size="sm" grayscale />
             ))}
-            <span className="text-xs font-semibold text-muted-foreground">
-              & mehr
+            <span className="text-xs font-medium text-muted-foreground">
+              & {REMAINING_COUNT} weitere
             </span>
           </div>
         </div>
@@ -182,18 +162,18 @@ export const KnownFromRow = memo(function KnownFromRow({
         className={cn("flex items-center justify-center gap-2 py-2", className)}
       >
         <Shield className="w-3 h-3 text-primary/70 shrink-0" />
-        <span className="text-[10px] text-muted-foreground font-medium">Bekannt aus:</span>
+        <span className="text-[10px] text-muted-foreground font-medium">Bekannt aus & Partner:</span>
         <div className="flex items-center gap-2">
-          {MOBILE_LOGOS.map((name) => (
-            <MonochromeMediaLogo key={name} name={name} size="sm" />
+          {MOBILE_LOGOS.slice(0, 3).map((name) => (
+            <RealMediaLogo key={name} name={name} size="sm" grayscale />
           ))}
-          <span className="text-[10px] font-semibold text-muted-foreground/60">+{REMAINING_COUNT}</span>
+          <span className="text-[10px] font-semibold text-muted-foreground/60">+{DISPLAY_LOGOS.length - 3}</span>
         </div>
       </motion.div>
     );
   }
   
-  // Option 1 (default): Below CTA in form card
+  // Option 1 (default): Below CTA in form card - "Bekannt aus & Partner"
   return (
     <motion.div
       initial={{ opacity: 0, y: 5 }}
@@ -201,36 +181,26 @@ export const KnownFromRow = memo(function KnownFromRow({
       transition={{ delay: 0.4 }}
       className={cn("mt-3", className)}
     >
-      <div className="flex items-center justify-center gap-3 text-xs text-muted-foreground">
+      <div className="flex flex-col items-center gap-2">
         {/* Shield + Label */}
-        <div className="flex items-center gap-1.5 shrink-0">
+        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
           <Shield className="w-3 h-3 text-primary" />
-          <span className="font-semibold">Bekannt aus:</span>
+          <span className="font-semibold">Bekannt aus & Partner:</span>
         </div>
         
         {/* Desktop: All 6 logos */}
-        <div className="hidden sm:flex items-center gap-2">
+        <div className="hidden sm:flex items-center justify-center gap-3">
           {DISPLAY_LOGOS.map((name) => (
-            <div 
-              key={name}
-              className="grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-200"
-            >
-              <ColoredMediaLogo name={name} size="sm" />
-            </div>
+            <RealMediaLogo key={name} name={name} size="sm" grayscale />
           ))}
         </div>
         
-        {/* Mobile: 3 logos + "+3" */}
-        <div className="flex sm:hidden items-center gap-2">
+        {/* Mobile: 4 logos + "+2" */}
+        <div className="flex sm:hidden items-center justify-center gap-2">
           {MOBILE_LOGOS.map((name) => (
-            <div 
-              key={name}
-              className="grayscale opacity-60"
-            >
-              <ColoredMediaLogo name={name} size="sm" />
-            </div>
+            <RealMediaLogo key={name} name={name} size="sm" grayscale />
           ))}
-          <span className="font-semibold text-muted-foreground/60">+{REMAINING_COUNT}</span>
+          <span className="text-xs font-semibold text-muted-foreground/60">+{REMAINING_COUNT}</span>
         </div>
       </div>
     </motion.div>
