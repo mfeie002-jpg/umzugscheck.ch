@@ -12,17 +12,19 @@
  *   - Full-width with subtle background
  *   - Monochrome logos with hover color effect
  *   - "Bekannt aus" label with Shield icon
+ * 
+ * Option 3 (swiss-partners): 4 Swiss Partner Logos
+ *   - eUmzugCH, Die Post, ASTAG, Swiss Made
+ *   - Ordered by relevance, mobile-optimized
  */
 
 import { memo } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { Shield, Newspaper } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
+import { Shield, Newspaper, Building2 } from "lucide-react";
 import { 
   ColoredMediaLogo, 
   MonochromeMediaLogo,
-  SWISS_MEDIA_PARTNERS 
 } from "@/components/trust/media-logos";
 
 // Top 6 media partners for trust display
@@ -30,8 +32,40 @@ const DISPLAY_LOGOS = ["SRF", "NZZ", "Blick", "20 Minuten", "Watson", "newhome"]
 const MOBILE_LOGOS = ["SRF", "NZZ", "Blick"]; // Top 3 for mobile
 const REMAINING_COUNT = DISPLAY_LOGOS.length - MOBILE_LOGOS.length;
 
+// Swiss Partner Logos (Infrastructure + Authority)
+const SWISS_PARTNERS = [
+  {
+    id: "eumzug",
+    name: "eUmzugCH",
+    src: "/logos/eumzugch.png",
+    alt: "eUmzugCH - Offizielle Umzugsmeldung",
+    link: "https://www.eumzug.swiss/",
+  },
+  {
+    id: "post",
+    name: "Die Post",
+    src: "/logos/post-logo.png",
+    alt: "Die Post - Schweizer Post",
+    link: "https://www.post.ch/",
+  },
+  {
+    id: "astag",
+    name: "ASTAG",
+    src: "/logos/astag-logo.png",
+    alt: "ASTAG - Branchenverband",
+    link: "https://www.astag.ch/",
+  },
+  {
+    id: "swissmade",
+    name: "Swiss Made",
+    src: "/logos/swiss-made.png",
+    alt: "Swiss Made - Schweizer Qualität",
+    link: "https://swisslabel.ch/",
+  },
+];
+
 interface KnownFromRowProps {
-  variant?: "below-cta" | "hero-footer" | "compact";
+  variant?: "below-cta" | "hero-footer" | "compact" | "swiss-partners";
   className?: string;
 }
 
@@ -39,6 +73,52 @@ export const KnownFromRow = memo(function KnownFromRow({
   variant = "below-cta",
   className,
 }: KnownFromRowProps) {
+  
+  // Swiss Partners variant: 4 logos in a row (eUmzugCH, Post, ASTAG, Swiss Made)
+  if (variant === "swiss-partners") {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 5 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className={cn("mt-4", className)}
+      >
+        {/* Label */}
+        <div className="flex items-center justify-center gap-1.5 mb-3">
+          <Building2 className="w-3 h-3 text-primary/70" />
+          <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
+            Partner & Zertifizierungen
+          </span>
+        </div>
+        
+        {/* Logo Row - Mobile optimized */}
+        <div className="flex items-center justify-center gap-4 sm:gap-6">
+          {SWISS_PARTNERS.map((partner) => (
+            <a
+              key={partner.id}
+              href={partner.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(
+                "flex items-center justify-center",
+                "transition-all duration-300",
+                "grayscale opacity-50 hover:grayscale-0 hover:opacity-100",
+                "focus:outline-none focus:ring-2 focus:ring-primary/30 rounded"
+              )}
+              title={partner.name}
+            >
+              <img
+                src={partner.src}
+                alt={partner.alt}
+                className="h-5 sm:h-6 md:h-7 w-auto object-contain max-w-[55px] sm:max-w-[70px] md:max-w-[85px]"
+                loading="lazy"
+              />
+            </a>
+          ))}
+        </div>
+      </motion.div>
+    );
+  }
   
   // Option 2: Hero footer strip (full-width at bottom of hero)
   if (variant === "hero-footer") {
