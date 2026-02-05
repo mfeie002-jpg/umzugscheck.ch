@@ -1,128 +1,68 @@
 
-# Plan: Integration der Medien-Logos im Hero-Tab
+# Plan: Logos korrigieren - Hero-Form + Swiss Infrastructure Section
 
-## Übersicht
+## Problem-Analyse
 
-Die hochgeladenen echten Medien-Logos (SRF, NZZ, 20 Minuten, watson, Mieterverband, newhome) sollen unter dem "Offerte checken lassen"-Button im Hero-Tab integriert werden - als "Bekannt aus & Partner" Block.
+Basierend auf den Screenshots gibt es zwei Logo-Bereiche:
 
-## Aktuelle Situation
+### 1. Hero-Form Card (PARTNER & ZERTIFIZIERUNGEN)
+- **Aktuell**: 4 Logos werden als TEXT angezeigt (eUmzugCH, DIE POST, ASTAG, +)
+- **Soll**: Echte PNG-Logos wie im vorherigen Zustand
+- **Pfade in KnownFromRow**: `/logos/eumzugch.png`, `/logos/post-logo.png`, `/logos/astag-logo.png`, `/logos/swiss-made.png`
+- **Status**: Dateien existieren → sollten funktionieren
 
-Die aktuelle Implementierung in `KnownFromRow.tsx` und `media-logos.tsx` verwendet **CSS-basierte Logos** (Text/Badges statt echte Bilder). Die hochgeladenen PNG-Dateien zeigen die offiziellen Markenlogos:
-
-| Marke | Aktuell | Neu |
-|-------|---------|-----|
-| SRF | CSS-Badge (rot) | Echtes Logo-Bild |
-| NZZ | CSS serif text | Echtes Schrift-Logo |
-| 20 Minuten | CSS colored text | Neues blaues Logo |
-| watson | CSS mit W-Badge | Echtes Logo mit Pink-Strich |
-| MV (Mieterverband) | Nicht vorhanden | NEU - grün/blau Logo |
-| newhome | CSS + SVG icon | Echtes türkises Logo |
-
-## Empfohlene Bezeichnung
-
-**"Bekannt aus & Partner"** - da die Liste sowohl Medien (SRF, NZZ, 20min, watson) als auch Partnerorganisationen (Mieterverband, newhome) enthält.
+### 2. Swiss Infrastructure Section (nach Hero)
+- **Aktuell**: 4 Cards mit "eumzugch.svg fehlt", "die-post.svg fehlt" etc.
+- **Ursache**: SVG-Dateien in `/logos/trust/` sind leer oder fehlerhaft
+- **Lösung**: PNG-Logos verwenden statt SVGs
 
 ---
 
-## Umsetzungsschritte
+## Umsetzungsplan
 
-### Schritt 1: Logo-Assets speichern
+### Schritt 1: TrustRibbonVariantG - PNG statt SVG
 
-Alle hochgeladenen Logos in `public/logos/media/` speichern:
+Die Datei `src/components/trust/TrustRibbonVariantG.tsx` anpassen:
 
-```text
-public/logos/media/
-├── srf.png           (rotes SRF-Badge)
-├── nzz.png           (schwarzes NZZ-Logo)
-├── 20min.png         (neues blaues Logo)
-├── watson.png        (schwarz mit pink Strich)
-├── mieterverband.png (MV mit blau/grün Diamond)
-├── newhome.png       (türkis mit Home-Symbol)
-```
-
-### Schritt 2: Logo-Konfiguration erweitern
-
-`src/components/trust/media-logos.tsx` um MV ergänzen:
-
+**Vorher:**
 ```typescript
-export const SWISS_MEDIA_PARTNERS = [
-  { name: "SRF", logo: "/logos/media/srf.png", website: "srf.ch" },
-  { name: "NZZ", logo: "/logos/media/nzz.png", website: "nzz.ch" },
-  { name: "20 Minuten", logo: "/logos/media/20min.png", website: "20min.ch" },
-  { name: "Watson", logo: "/logos/media/watson.png", website: "watson.ch" },
-  { name: "Mieterverband", logo: "/logos/media/mieterverband.png", website: "mieterverband.ch" },
-  { name: "newhome", logo: "/logos/media/newhome.png", website: "newhome.ch" },
+const infrastructurePartners = [
+  { id: "eumzugch", logo: "/logos/trust/eumzugch.svg", ... },
+  { id: "post", logo: "/logos/trust/die-post.svg", ... },
+  { id: "astag", logo: "/logos/trust/astag.svg", ... },
+  { id: "swissmade", logo: "/logos/trust/swiss-label.svg", ... },
 ];
 ```
 
-### Schritt 3: Neue Logo-Komponente mit echten Bildern
-
-`ColoredMediaLogo` Component anpassen für echte PNG-Logos:
-
-```tsx
-export const RealMediaLogo = memo(({ name, size = "md" }) => {
-  const partner = SWISS_MEDIA_PARTNERS.find(p => p.name === name);
-  const heights = { sm: "h-4", md: "h-5 sm:h-6", lg: "h-6 sm:h-8" };
-  
-  if (!partner?.logo) return <span>{name}</span>;
-  
-  return (
-    <img 
-      src={partner.logo} 
-      alt={partner.name}
-      className={`${heights[size]} w-auto object-contain`}
-    />
-  );
-});
+**Nachher (PNG-Pfade aus public/logos):**
+```typescript
+const infrastructurePartners = [
+  { id: "eumzugch", logo: "/logos/eumzugch.png", ... },
+  { id: "post", logo: "/logos/post-logo.png", ... },
+  { id: "astag", logo: "/logos/astag-logo.png", ... },
+  { id: "swissmade", logo: "/logos/swiss-made.png", ... },
+];
 ```
 
-### Schritt 4: KnownFromRow aktualisieren
+### Schritt 2: Prüfen ob Hero-Form Logos korrekt angezeigt werden
 
-`src/components/homepage/KnownFromRow.tsx` anpassen:
+Die KnownFromRow-Komponente verwendet bereits die korrekten PNG-Pfade:
+- `/logos/eumzugch.png` ✓
+- `/logos/post-logo.png` ✓
+- `/logos/astag-logo.png` ✓
+- `/logos/swiss-made.png` ✓
 
-1. Label ändern: **"Bekannt aus:"** → **"Bekannt aus & Partner"**
-2. Logo-Liste erweitern: MV (Mieterverband) hinzufügen
-3. Echte `<img>` Tags statt CSS-Komponenten verwenden
-4. Mobile: 4 Logos anzeigen (SRF, NZZ, 20min, watson) + "+2"
-5. Desktop: Alle 6 Logos
-
-### Schritt 5: Mobile UX Optimierung
-
-```text
-Mobile Layout (390px):
-┌────────────────────────────────┐
-│  🛡️ Bekannt aus & Partner      │
-├────────────────────────────────┤
-│  [SRF] [NZZ] [20min] [watson]  │
-│           & 2 weitere          │
-└────────────────────────────────┘
-
-Desktop Layout:
-┌──────────────────────────────────────────────────────────────┐
-│  🛡️ Bekannt aus & Partner:                                   │
-│  [SRF] [NZZ] [20min] [watson] [MV] [newhome]                │
-└──────────────────────────────────────────────────────────────┘
-```
+Falls Logos trotzdem nicht erscheinen → Bildpfade oder onError-Handler prüfen.
 
 ---
 
-## Technische Details
+## Zu ändernde Dateien
 
-### Zu erstellende Dateien
-- `public/logos/media/srf.png`
-- `public/logos/media/nzz.png`
-- `public/logos/media/20min.png`
-- `public/logos/media/watson.png`
-- `public/logos/media/mieterverband.png`
-- `public/logos/media/newhome.png`
+| Datei | Änderung |
+|-------|----------|
+| `src/components/trust/TrustRibbonVariantG.tsx` | Logo-Pfade von SVG auf PNG umstellen |
 
-### Zu ändernde Dateien
-- `src/components/trust/media-logos.tsx` - Partner-Array mit Logo-Pfaden erweitern
-- `src/components/homepage/KnownFromRow.tsx` - Echte Logos + MV integrieren
+## Erwartetes Ergebnis
 
-### Logo-Styling
-- Grayscale by default: `grayscale opacity-50`
-- Hover: `grayscale-0 opacity-100`
-- Mobile height: `h-4` bis `h-5`
-- Desktop height: `h-5` bis `h-7`
-- Max-width: `max-w-[60px]` mobile, `max-w-[80px]` desktop
+1. **Hero-Form**: 4 echte Partner-Logos (eUmzugCH, Die Post, ASTAG, Swiss Made) mit grayscale Hover-Effekt
+2. **Swiss Infrastructure Section**: 4 Cards mit sichtbaren PNG-Logos statt "fehlt"-Meldungen
