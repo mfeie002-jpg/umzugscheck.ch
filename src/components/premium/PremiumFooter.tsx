@@ -68,9 +68,9 @@ export const PremiumFooter = memo(function PremiumFooter() {
                 <Mail className="h-4 w-4 text-uc-blue" />
                 info@umzugscheck.ch
               </a>
-              <a href="tel:+41445001234" className="flex items-center gap-3 text-sm text-uc-footer-text/80 hover:text-white transition-colors">
+              <a href="tel:+41446880404" className="flex items-center gap-3 text-sm text-uc-footer-text/80 hover:text-white transition-colors">
                 <Phone className="h-4 w-4 text-uc-blue" />
-                +41 44 500 12 34
+                +41 44 688 04 04
               </a>
               <div className="flex items-center gap-3 text-sm text-uc-footer-text/80">
                 <MapPin className="h-4 w-4 text-uc-blue" />

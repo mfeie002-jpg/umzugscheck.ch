@@ -43,9 +43,9 @@ export const SupportContact = memo(function SupportContact() {
             {/* Contact Options */}
             <div className="flex flex-wrap justify-center gap-3">
               <Button variant="outline" size="sm" className="gap-2" asChild>
-                <a href="tel:+41442001234">
+                <a href="tel:+41446880404">
                   <Phone className="w-4 h-4" />
-                  <span className="hidden sm:inline">044 200 12 34</span>
+                  <span className="hidden sm:inline">044 688 04 04</span>
                   <span className="sm:hidden">Anrufen</span>
                 </a>
               </Button>

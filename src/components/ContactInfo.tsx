@@ -27,8 +27,8 @@ export default function ContactInfo() {
               </div>
               <h3 className="font-semibold mb-1">Telefon</h3>
               <p className="text-sm text-muted-foreground mb-3">Mo-Fr 7-18h, Sa 8-14h</p>
-              <a href="tel:+41765681302" className="text-alpine font-semibold hover:underline">
-                +41 76 568 13 02
+              <a href="tel:+41446880404" className="text-alpine font-semibold hover:underline">
+                +41 44 688 04 04
               </a>
             </Card>
           </AnimatedSection>
@@ -54,8 +54,8 @@ export default function ContactInfo() {
               <h3 className="font-semibold mb-1">WhatsApp</h3>
               <p className="text-sm text-muted-foreground mb-3">Schnelle Antworten</p>
               <a 
-                href="https://wa.me/41765681302" 
-                target="_blank" 
+                href="https://wa.me/41446880404" 
+                target="_blank"
                 rel="noopener noreferrer"
                 className="text-[#25D366] font-semibold hover:underline"
               >

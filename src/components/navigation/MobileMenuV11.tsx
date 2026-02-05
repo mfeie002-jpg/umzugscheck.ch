@@ -123,7 +123,7 @@ export const MobileMenuV11 = ({ isOpen, onClose }: MobileMenuV11Props) => {
               </Link>
             </Button>
             <Button asChild variant="outline" className="flex-shrink-0 border-primary/30">
-              <a href="tel:+41445001234">
+              <a href="tel:+41446880404">
                 <Phone className="w-4 h-4" />
               </a>
             </Button>
@@ -295,7 +295,7 @@ export const MobileMenuV11 = ({ isOpen, onClose }: MobileMenuV11Props) => {
 
             {/* Personal Contact CTA */}
             <a
-              href="tel:+41445001234"
+              href="tel:+41446880404"
               className="flex items-center justify-between p-4 rounded-2xl bg-gradient-to-r from-rose-500/10 to-rose-500/5 border border-rose-500/20 hover:border-rose-500/40 transition-all duration-200"
             >
               <div className="flex items-center gap-3">

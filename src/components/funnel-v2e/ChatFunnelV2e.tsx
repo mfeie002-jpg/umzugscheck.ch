@@ -1266,7 +1266,7 @@ export function ChatFunnelV2e() {
             </Badge>
             {/* Issue #21, #27, #32, #33 - Proper 44px touch target for call button */}
             <a 
-              href="tel:+41445057070" 
+              href="tel:+41446880404"
               className="flex items-center justify-center w-11 h-11 sm:w-auto sm:h-auto sm:gap-1.5 sm:px-4 sm:py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full text-sm font-bold transition-all touch-manipulation active:scale-95 shadow-md"
               aria-label="Jetzt anrufen für persönliche Beratung"
               title="Rufen Sie uns an für persönliche Beratung"
