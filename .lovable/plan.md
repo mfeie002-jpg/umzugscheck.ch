@@ -1,184 +1,128 @@
 
-# Go-Live Ready: Alle Optimierungen für Varianten A, B & C
+# Plan: Integration der Medien-Logos im Hero-Tab
 
-## Zusammenfassung
-Die in Variante A implementierten Optimierungen (Touch-Targets, Social Proof, Loading States, Geolocation UX, Scroll-Verhalten) werden auf **Variante B (PremiumHeroSection)** und **Variante C (SmartRouterWizard)** übertragen. Zusätzlich wird das Exit-Intent Modal integriert und eine abschliessende Mobile UX-Überprüfung durchgeführt.
+## Übersicht
 
----
+Die hochgeladenen echten Medien-Logos (SRF, NZZ, 20 Minuten, watson, Mieterverband, newhome) sollen unter dem "Offerte checken lassen"-Button im Hero-Tab integriert werden - als "Bekannt aus & Partner" Block.
 
-## Phase 1: Variante B (Premium 4-Tab Hero) 
+## Aktuelle Situation
 
-### 1.1 HeroSocialProofLine integrieren
-**Datei:** `src/components/premium/PremiumHeroSection.tsx`
+Die aktuelle Implementierung in `KnownFromRow.tsx` und `media-logos.tsx` verwendet **CSS-basierte Logos** (Text/Badges statt echte Bilder). Die hochgeladenen PNG-Dateien zeigen die offiziellen Markenlogos:
 
-- Import hinzufügen: `HeroSocialProofLine`
-- Platzierung: Im Form-Card Header, unter der Subheadline "Wählen Sie Ihre bevorzugte Methode"
-- Position: Zeile ~432, vor den Tabs
+| Marke | Aktuell | Neu |
+|-------|---------|-----|
+| SRF | CSS-Badge (rot) | Echtes Logo-Bild |
+| NZZ | CSS serif text | Echtes Schrift-Logo |
+| 20 Minuten | CSS colored text | Neues blaues Logo |
+| watson | CSS mit W-Badge | Echtes Logo mit Pink-Strich |
+| MV (Mieterverband) | Nicht vorhanden | NEU - grün/blau Logo |
+| newhome | CSS + SVG icon | Echtes türkises Logo |
 
-### 1.2 HeroLiveActivityLine unter CTA-Buttons
-**Datei:** `src/components/premium/PremiumHeroSection.tsx`
+## Empfohlene Bezeichnung
 
-- Import hinzufügen: `HeroLiveActivityLine`
-- Platzierung: In jedem TabsContent, nach dem Haupt-CTA
-- Betrifft: Form-Tab, Video-Tab, Chat-Tab, WhatsApp-Tab
-
-### 1.3 Touch-Target Optimierung
-- CTA-Buttons: `h-14` (56px) statt `h-12`
-- Input-Felder: `h-[52px]` mit `text-base`
-- Mobile Tap-Targets: Mindestens 44x44px
-
-### 1.4 Loading States
-- Submit-Button mit Spinner + disabled State während Ladezustand
-
-### 1.5 useFormScrollBehavior Integration
-- Scroll-Verhalten für Mobile Keyboard
+**"Bekannt aus & Partner"** - da die Liste sowohl Medien (SRF, NZZ, 20min, watson) als auch Partnerorganisationen (Mieterverband, newhome) enthält.
 
 ---
 
-## Phase 2: Variante C (SmartRouter Wizard)
+## Umsetzungsschritte
 
-### 2.1 HeroSocialProofLine in SmartRouterHero
-**Datei:** `src/components/smart-router/components/SmartRouterHero.tsx`
+### Schritt 1: Logo-Assets speichern
 
-- Import hinzufügen: `HeroSocialProofLine`
-- Platzierung: Nach den Trust-Badges, vor der "Fast USP line"
-- Zeile ~62, nach den SWISS_TRUST_BADGES
+Alle hochgeladenen Logos in `public/logos/media/` speichern:
 
-### 2.2 HeroLiveActivityLine in PLZStep
-**Datei:** `src/components/smart-router/steps/PLZStep.tsx`
-
-- Import hinzufügen: `HeroLiveActivityLine`
-- Platzierung: Unter dem "Weiter"-Button
-
-### 2.3 Touch-Target Optimierung
-- CTA in PLZStep: `h-14` (56px)
-- Input-Felder: `h-[52px]`
-
-### 2.4 Loading States (bereits vorhanden)
-- `isSubmitting` State bereits implementiert in SmartRouterWizard
-
----
-
-## Phase 3: Exit-Intent Modal Global
-
-### 3.1 ExitIntentPopup Integration
-**Datei:** `src/pages/Index.tsx`
-
-- ExitIntentPopup ist bereits vorhanden
-- Sicherstellen, dass es mit formData aus dem aktiven Hero verbunden ist
-- Mobile Scroll-Velocity Trigger hinzufügen (>200px/s scroll-up bei >300px Tiefe)
-
-### 3.2 Exit-Intent für Mobile optimieren
-**Datei:** `src/components/ExitIntentPopup.tsx`
-
-Neue Features:
-- Scroll-velocity Detection für Mobile (da `mouseleave` auf Mobile nicht funktioniert)
-- Bottom-Sheet Stil für Mobile (via Vaul Drawer)
-- Testimonial-Rotation im Modal
-
----
-
-## Phase 4: Debug-Badges Production-Gate
-
-### 4.1 A/B Toggle nur in DEV
-**Betroffene Dateien:**
-- `src/components/UnifiedABToggle.tsx` (bereits geprüft)
-- Alle Debug-Badges: Gate mit `import.meta.env.DEV`
-
-```typescript
-// Beispiel:
-{import.meta.env.DEV && <UnifiedABToggle />}
+```text
+public/logos/media/
+├── srf.png           (rotes SRF-Badge)
+├── nzz.png           (schwarzes NZZ-Logo)
+├── 20min.png         (neues blaues Logo)
+├── watson.png        (schwarz mit pink Strich)
+├── mieterverband.png (MV mit blau/grün Diamond)
+├── newhome.png       (türkis mit Home-Symbol)
 ```
 
----
+### Schritt 2: Logo-Konfiguration erweitern
 
-## Phase 5: Mobile UX/UI Final Review
+`src/components/trust/media-logos.tsx` um MV ergänzen:
 
-### 5.1 Checkliste für alle Varianten
+```typescript
+export const SWISS_MEDIA_PARTNERS = [
+  { name: "SRF", logo: "/logos/media/srf.png", website: "srf.ch" },
+  { name: "NZZ", logo: "/logos/media/nzz.png", website: "nzz.ch" },
+  { name: "20 Minuten", logo: "/logos/media/20min.png", website: "20min.ch" },
+  { name: "Watson", logo: "/logos/media/watson.png", website: "watson.ch" },
+  { name: "Mieterverband", logo: "/logos/media/mieterverband.png", website: "mieterverband.ch" },
+  { name: "newhome", logo: "/logos/media/newhome.png", website: "newhome.ch" },
+];
+```
 
-| Check | Beschreibung |
-|-------|-------------|
-| ✅ Touch-Targets | Alle Buttons ≥44px, CTAs 56px |
-| ✅ Font-Size | Input-Felder ≥16px (verhindert iOS Zoom) |
-| ✅ Social Proof | Rating + Online + Route sichtbar |
-| ✅ Loading States | Spinner bei Submit |
-| ✅ Scroll-Verhalten | Kein Viewport-Jump bei Keyboard |
-| ✅ Exit-Intent | Funktioniert auf Mobile |
-| ✅ Above-the-fold | CTA ohne Scrollen erreichbar |
+### Schritt 3: Neue Logo-Komponente mit echten Bildern
 
-### 5.2 Browser Testing via Browser-Tool
-- Mobile Viewport öffnen (390x844 - iPhone)
-- Alle 3 Varianten durchspielen
-- Form-Interaktionen testen
-- Screenshots für Dokumentation
+`ColoredMediaLogo` Component anpassen für echte PNG-Logos:
+
+```tsx
+export const RealMediaLogo = memo(({ name, size = "md" }) => {
+  const partner = SWISS_MEDIA_PARTNERS.find(p => p.name === name);
+  const heights = { sm: "h-4", md: "h-5 sm:h-6", lg: "h-6 sm:h-8" };
+  
+  if (!partner?.logo) return <span>{name}</span>;
+  
+  return (
+    <img 
+      src={partner.logo} 
+      alt={partner.name}
+      className={`${heights[size]} w-auto object-contain`}
+    />
+  );
+});
+```
+
+### Schritt 4: KnownFromRow aktualisieren
+
+`src/components/homepage/KnownFromRow.tsx` anpassen:
+
+1. Label ändern: **"Bekannt aus:"** → **"Bekannt aus & Partner"**
+2. Logo-Liste erweitern: MV (Mieterverband) hinzufügen
+3. Echte `<img>` Tags statt CSS-Komponenten verwenden
+4. Mobile: 4 Logos anzeigen (SRF, NZZ, 20min, watson) + "+2"
+5. Desktop: Alle 6 Logos
+
+### Schritt 5: Mobile UX Optimierung
+
+```text
+Mobile Layout (390px):
+┌────────────────────────────────┐
+│  🛡️ Bekannt aus & Partner      │
+├────────────────────────────────┤
+│  [SRF] [NZZ] [20min] [watson]  │
+│           & 2 weitere          │
+└────────────────────────────────┘
+
+Desktop Layout:
+┌──────────────────────────────────────────────────────────────┐
+│  🛡️ Bekannt aus & Partner:                                   │
+│  [SRF] [NZZ] [20min] [watson] [MV] [newhome]                │
+└──────────────────────────────────────────────────────────────┘
+```
 
 ---
 
 ## Technische Details
 
-### Neue Imports für Variante B
-```typescript
-import { HeroSocialProofLine } from '@/components/homepage/HeroSocialProofLine';
-import { HeroLiveActivityLine } from '@/components/homepage/HeroLiveActivityLine';
-import { useFormScrollBehavior } from '@/hooks/useFormScrollBehavior';
-```
+### Zu erstellende Dateien
+- `public/logos/media/srf.png`
+- `public/logos/media/nzz.png`
+- `public/logos/media/20min.png`
+- `public/logos/media/watson.png`
+- `public/logos/media/mieterverband.png`
+- `public/logos/media/newhome.png`
 
-### Neue Imports für Variante C
-```typescript
-import { HeroSocialProofLine } from '@/components/homepage/HeroSocialProofLine';
-import { HeroLiveActivityLine } from '@/components/homepage/HeroLiveActivityLine';
-```
+### Zu ändernde Dateien
+- `src/components/trust/media-logos.tsx` - Partner-Array mit Logo-Pfaden erweitern
+- `src/components/homepage/KnownFromRow.tsx` - Echte Logos + MV integrieren
 
-### Exit-Intent Mobile Detection (Neuer Code)
-```typescript
-// In useEffect für Mobile Exit-Intent
-useEffect(() => {
-  let lastY = 0;
-  let lastTime = 0;
-  
-  const handleScroll = () => {
-    const currentY = window.scrollY;
-    const currentTime = Date.now();
-    const deltaY = lastY - currentY;
-    const deltaTime = currentTime - lastTime;
-    
-    // Scroll-up velocity > 200px/s bei > 300px depth
-    if (deltaY > 0 && currentY > 300 && deltaTime > 0) {
-      const velocity = (deltaY / deltaTime) * 1000;
-      if (velocity > 200 && !hasTriggered) {
-        setIsOpen(true);
-        setHasTriggered(true);
-      }
-    }
-    
-    lastY = currentY;
-    lastTime = currentTime;
-  };
-  
-  window.addEventListener('scroll', handleScroll, { passive: true });
-  return () => window.removeEventListener('scroll', handleScroll);
-}, [hasTriggered]);
-```
-
----
-
-## Dateien die geändert werden
-
-| Datei | Änderung |
-|-------|----------|
-| `src/components/premium/PremiumHeroSection.tsx` | Social Proof + Activity Line + Touch-Targets |
-| `src/components/smart-router/components/SmartRouterHero.tsx` | Social Proof Line |
-| `src/components/smart-router/steps/PLZStep.tsx` | Activity Line + Touch-Targets |
-| `src/components/ExitIntentPopup.tsx` | Mobile scroll-velocity trigger |
-| `src/pages/Index.tsx` | Exit-Intent formData binding |
-
----
-
-## Erwartetes Ergebnis
-
-Nach Implementierung:
-- **Alle 3 Hero-Varianten** haben konsistente Social-Proof-Elemente
-- **Mobile UX** ist auf allen Varianten optimiert (Touch-Targets, Scroll)
-- **Exit-Intent** funktioniert auf Desktop UND Mobile
-- **Debug-Badges** sind in Production versteckt
-- **Go-Live Ready** für Paid Ads
+### Logo-Styling
+- Grayscale by default: `grayscale opacity-50`
+- Hover: `grayscale-0 opacity-100`
+- Mobile height: `h-4` bis `h-5`
+- Desktop height: `h-5` bis `h-7`
+- Max-width: `max-w-[60px]` mobile, `max-w-[80px]` desktop
