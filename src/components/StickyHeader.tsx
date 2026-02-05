@@ -67,10 +67,10 @@ const StickyHeader = () => {
 
               <div className="flex items-center gap-3">
                 <a 
-                  href="tel:+41765681302" 
+                  href="tel:+41446880404" 
                   className="hidden sm:flex items-center gap-2 text-sm font-medium hover:text-alpine transition-colors"
                 >
-                  +41 76 568 13 02
+                  +41 44 688 04 04
                 </a>
                 <Link to="/contact">
                   <Button size="sm" className="bg-gradient-hero h-9">

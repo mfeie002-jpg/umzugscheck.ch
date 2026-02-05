@@ -44,7 +44,7 @@ export default function QuoteRequestCTA() {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
-              <a href="tel:+41765681302">
+              <a href="tel:+41446880404">
                 <Button size="lg" variant="outline" className="min-h-[52px]">
                   <Phone className="mr-2 h-5 w-5" />
                   Anrufen
@@ -85,7 +85,7 @@ export default function QuoteRequestCTA() {
               </Link>
 
               <p className="text-center text-xs opacity-70 mt-4">
-                Oder rufen Sie uns an: <a href="tel:+41765681302" className="underline">+41 76 568 13 02</a>
+                Oder rufen Sie uns an: <a href="tel:+41446880404" className="underline">+41 44 688 04 04</a>
               </p>
             </Card>
           </AnimatedSection>

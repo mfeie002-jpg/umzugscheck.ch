@@ -94,7 +94,7 @@ const CityBern = () => {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
-              <a href="tel:+41765681302">
+              <a href="tel:+41446880404">
                 <Button size="lg" variant="outline">
                   <Phone className="mr-2 h-5 w-5" />
                   Anrufen
@@ -282,7 +282,7 @@ const CityBern = () => {
                 Jetzt Offerte anfragen
               </Button>
             </Link>
-            <a href="tel:+41765681302">
+            <a href="tel:+41446880404">
               <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-primary">
                 Anrufen
               </Button>

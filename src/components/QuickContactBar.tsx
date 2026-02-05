@@ -11,9 +11,9 @@ export default function QuickContactBar() {
               <Clock className="h-4 w-4" />
               <span>Mo-Fr 7-18h, Sa 8-14h</span>
             </div>
-            <a href="tel:+41765681302" className="flex items-center gap-2 text-sm hover:underline">
+            <a href="tel:+41446880404" className="flex items-center gap-2 text-sm hover:underline">
               <Phone className="h-4 w-4" />
-              <span className="font-semibold">+41 76 568 13 02</span>
+              <span className="font-semibold">+41 44 688 04 04</span>
             </a>
             <a href="mailto:info@feierabend-umzuege.ch" className="hidden md:flex items-center gap-2 text-sm hover:underline">
               <Mail className="h-4 w-4" />
@@ -22,7 +22,7 @@ export default function QuickContactBar() {
           </div>
           <div className="flex items-center gap-3">
             <a
-              href="https://wa.me/41765681302"
+              href="https://wa.me/41446880404"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-sm px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-colors"

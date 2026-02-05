@@ -285,7 +285,7 @@ export function CommandCenter() {
           className="w-full h-14 text-base font-semibold gap-2"
           asChild
         >
-          <a href="tel:+41765681302">
+          <a href="tel:+41446880404">
             <Phone className="h-5 w-5" />
             Jetzt Lead anrufen
           </a>

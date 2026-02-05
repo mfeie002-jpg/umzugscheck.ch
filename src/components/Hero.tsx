@@ -9,8 +9,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
 
 export const Hero = () => {
-  const PHONE_DISPLAY = "044 500 12 34";
-  const PHONE_TEL = "+41445001234";
+  const PHONE_DISPLAY = "044 688 04 04";
+  const PHONE_TEL = "+41446880404";
   const trustBadges = [
     "Schweizer Familienunternehmen",
     "5.0★ Google-Bewertungen",

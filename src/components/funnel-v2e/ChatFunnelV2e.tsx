@@ -1734,7 +1734,7 @@ function CompanySelector({
   };
 
   const handleCall = () => {
-    window.location.href = "tel:+41445057070";
+    window.location.href = "tel:+41446880404";
   };
 
   return (

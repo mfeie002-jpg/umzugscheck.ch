@@ -73,7 +73,7 @@ const ServiceFurnitureLift = () => {
                   </Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="bg-white/10 border-white/30 text-white hover:bg-white/20">
-                  <a href="tel:+41765681302">
+                  <a href="tel:+41446880404">
                     <Phone className="mr-2 h-5 w-5" />
                     Jetzt anrufen
                   </a>
@@ -206,9 +206,9 @@ const ServiceFurnitureLift = () => {
                 <Link to="/contact">Jetzt anfragen</Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
-                <a href="tel:+41765681302">
+                <a href="tel:+41446880404">
                   <Phone className="mr-2 h-5 w-5" />
-                  +41 76 568 13 02
+                  +41 44 688 04 04
                 </a>
               </Button>
             </div>

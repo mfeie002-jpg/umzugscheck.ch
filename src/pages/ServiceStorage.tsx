@@ -108,7 +108,7 @@ const ServiceStorage = () => {
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
-                <a href="tel:+41765681302">
+                <a href="tel:+41446880404">
                   <Button size="lg" variant="outline">
                     Anrufen
                   </Button>
@@ -307,7 +307,7 @@ const ServiceStorage = () => {
                     Jetzt Offerte anfragen
                   </button>
                 </Link>
-                <a href="tel:+41765681302">
+                <a href="tel:+41446880404">
                   <button className="px-8 py-3 border-2 border-white text-white rounded-lg font-medium hover:bg-white hover:text-primary transition-colors">
                     Anrufen
                   </button>

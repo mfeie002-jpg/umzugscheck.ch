@@ -292,7 +292,7 @@ const ServiceSenior = () => {
                     Kontakt aufnehmen
                   </button>
                 </Link>
-                <a href="tel:+41765681302">
+                <a href="tel:+41446880404">
                   <button className="px-8 py-3 border-2 border-white text-white rounded-lg font-medium hover:bg-white hover:text-primary transition-colors">
                     <Phone className="inline mr-2 h-4 w-4" />
                     Anrufen

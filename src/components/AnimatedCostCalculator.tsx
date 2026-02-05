@@ -523,7 +523,7 @@ const AnimatedCostCalculator = () => {
                     </motion.div>
                     <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                       <Button variant="ghost" className="w-full gap-2" asChild>
-                        <a href="tel:+41765681302">
+                        <a href="tel:+41446880404">
                           <Phone className="w-4 h-4" />
                           Jetzt anrufen
                         </a>

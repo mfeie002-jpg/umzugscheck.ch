@@ -107,7 +107,7 @@ export const MobileMenuV13 = ({ isOpen, onClose }: MobileMenuV13Props) => {
               </Link>
             </Button>
             <Button asChild variant="outline" className="flex-shrink-0">
-              <a href="tel:+41445001234">
+              <a href="tel:+41446880404">
                 <Phone className="w-4 h-4" />
               </a>
             </Button>
@@ -358,7 +358,7 @@ export const MobileMenuV13 = ({ isOpen, onClose }: MobileMenuV13Props) => {
                       <p className="text-xs text-muted-foreground">Mo–Fr 8–18 Uhr</p>
                     </div>
                     <Button asChild size="sm" variant="outline">
-                      <a href="tel:+41445001234">
+                      <a href="tel:+41446880404">
                         <Phone className="w-3 h-3 mr-1" />
                         Anrufen
                       </a>

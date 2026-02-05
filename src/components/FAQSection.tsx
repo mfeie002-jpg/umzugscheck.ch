@@ -89,7 +89,7 @@ export default function FAQSection({
                 </Button>
               </Link>
               <p className="text-sm text-muted-foreground">
-                Noch Fragen? <a href="tel:+41765681302" className="text-alpine font-medium hover:underline">Rufen Sie uns an</a> – wir beraten Sie gerne!
+                Noch Fragen? <a href="tel:+41446880404" className="text-alpine font-medium hover:underline">Rufen Sie uns an</a> – wir beraten Sie gerne!
               </p>
             </div>
           )}

@@ -27,14 +27,14 @@ const EmergencyContactButton = () => {
             </div>
             
             <div className="p-3 space-y-2">
-              <a href="tel:+41765681302" className="block">
+              <a href="tel:+41446880404" className="block">
                 <Button variant="outline" className="w-full justify-start gap-2" size="sm">
                   <Phone className="w-4 h-4 text-green-500" />
-                  +41 76 568 13 02
+                  +41 44 688 04 04
                 </Button>
               </a>
               
-              <a href="https://wa.me/41765681302" target="_blank" rel="noopener noreferrer" className="block">
+              <a href="https://wa.me/41446880404" target="_blank" rel="noopener noreferrer" className="block">
                 <Button variant="outline" className="w-full justify-start gap-2" size="sm">
                   <MessageCircle className="w-4 h-4 text-green-500" />
                   WhatsApp

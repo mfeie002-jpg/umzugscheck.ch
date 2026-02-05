@@ -140,7 +140,7 @@ const CantonLandingTemplate = ({ canton }: CantonLandingTemplateProps) => {
                 </Link>
               </Button>
               <Button size="lg" variant="outline" asChild className="gap-2">
-                <a href="tel:+41765681302">
+                <a href="tel:+41446880404">
                   <Phone className="w-4 h-4" />
                   Jetzt anrufen
                 </a>

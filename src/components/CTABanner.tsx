@@ -51,7 +51,7 @@ export default function CTABanner({
             </Link>
 
             {showPhone && (
-              <a href="tel:+41765681302">
+              <a href="tel:+41446880404">
                 <Button
                   size="lg"
                   variant="outline"
@@ -65,7 +65,7 @@ export default function CTABanner({
 
             {showWhatsApp && (
               <a
-                href="https://wa.me/41765681302"
+                href="https://wa.me/41446880404"
                 target="_blank"
                 rel="noopener noreferrer"
               >

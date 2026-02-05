@@ -7,7 +7,7 @@ export interface WhatsAppMessageConfig {
   name?: string;
 }
 
-const DEFAULT_PHONE = "41765681302";
+const DEFAULT_PHONE = "41446880404";
 
 export const generateWhatsAppLink = (config: WhatsAppMessageConfig = {}): string => {
   const { phone = DEFAULT_PHONE, service, from, to, date, name } = config;

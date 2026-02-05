@@ -57,7 +57,7 @@ const QuoteSteps = () => {
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
-              <a href="tel:+41765681302">
+              <a href="tel:+41446880404">
                 <Button variant="outline" className="border-2">
                   <Phone className="h-4 w-4" />
                 </Button>
