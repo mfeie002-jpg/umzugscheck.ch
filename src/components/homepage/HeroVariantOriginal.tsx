@@ -7,7 +7,7 @@
  * - Background: Emotional family image
  */
 
-import { memo, useState, useMemo } from 'react';
+import { memo, useState, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -16,7 +16,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   ArrowRight, TrendingDown, Video, CheckCircle2, Shield, Clock, 
-  Trophy, Check
+  Trophy, Check, MapPin, Calculator
 } from 'lucide-react';
 import heroFamilyMoving from '@/assets/hero-family-moving.jpg';
 import { LiveActivityBadge } from '@/components/home/LiveActivityBadge';
@@ -31,6 +31,10 @@ import { useSocialProofAB } from '@/contexts/SocialProofABContext';
 import { HeroLiveCounter } from './HeroLiveCounter';
 import { HeroLiveActivityLine } from './HeroLiveActivityLine';
 import { HeroMicroProofRow } from './HeroMicroProofRow';
+import { ApartmentSizeChips } from './ApartmentSizeChips';
+import { useFieldValidation, validationRules, ValidationFeedback } from './FormValidation';
+import { useGeolocation } from '@/hooks/use-geolocation';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const APARTMENT_SIZES = [
   { value: '1', label: '1 Zimmer' },
@@ -49,10 +53,39 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
   const navigate = useNavigate();
   const flowPath = useFlowPath();
   const { variant: spVariant } = useSocialProofAB();
+  const isMobile = useIsMobile();
+  const { requestLocation, loading: geoLoading, nearestCanton } = useGeolocation();
   
   const [fromPostal, setFromPostal] = useState('');
   const [toPostal, setToPostal] = useState('');
   const [apartmentSize, setApartmentSize] = useState('');
+  
+  // Form validation
+  const fromValidation = useFieldValidation([
+    validationRules.required('Bitte Startort eingeben'),
+    validationRules.postalCode('Bitte gültige PLZ oder Ort eingeben'),
+  ]);
+  const toValidation = useFieldValidation([
+    validationRules.required('Bitte Zielort eingeben'),
+    validationRules.postalCode('Bitte gültige PLZ oder Ort eingeben'),
+  ]);
+  
+  // Handle geolocation for "From" field
+  const handleUseLocation = useCallback(() => {
+    requestLocation();
+  }, [requestLocation]);
+  
+  // Auto-fill canton when geolocation succeeds
+  useMemo(() => {
+    if (nearestCanton && !fromPostal) {
+      // Find a representative postal code for this canton
+      const cantonEntry = swissPostalCodes.find(p => p.canton === nearestCanton);
+      if (cantonEntry) {
+        setFromPostal(`${cantonEntry.code} ${cantonEntry.city}`);
+        fromValidation.validate(`${cantonEntry.code} ${cantonEntry.city}`);
+      }
+    }
+  }, [nearestCanton]);
   
   // Determine if we should show hero-integrated trust based on SP variant
   // New mapping: I-M are hero-integrated, N-Q are psychological
@@ -264,20 +297,40 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
 
                 {/* Form */}
                 <form onSubmit={handleSubmit} className="space-y-5">
-                  {/* From */}
+                  {/* From - with Geolocation button */}
                   <div className="space-y-2">
                     <Label htmlFor="from-postal" className="text-sm font-medium flex items-center gap-1">
                       Von (PLZ oder Ort)
                       <span className="text-primary/60 text-xs">*</span>
                     </Label>
-                    <Input
-                      id="from-postal"
-                      placeholder="z.B. 8001 oder Zürich"
-                      value={fromPostal}
-                      onChange={(e) => setFromPostal(e.target.value)}
-                      className="h-12 border-2 border-muted/60 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-                      required
-                    />
+                    <div className="relative">
+                      <Input
+                        id="from-postal"
+                        placeholder="z.B. 8001 oder Zürich"
+                        value={fromPostal}
+                        onChange={(e) => setFromPostal(e.target.value)}
+                        onBlur={() => fromValidation.validate(fromPostal)}
+                        className={`h-12 pr-12 border-2 transition-all ${
+                          fromValidation.state.isTouched 
+                            ? fromValidation.state.isValid 
+                              ? 'border-green-500/60 focus:border-green-500' 
+                              : 'border-destructive/60 focus:border-destructive'
+                            : 'border-muted/60 focus:border-primary'
+                        } focus:ring-2 focus:ring-primary/20`}
+                        required
+                      />
+                      {/* Geolocation button */}
+                      <button
+                        type="button"
+                        onClick={handleUseLocation}
+                        disabled={geoLoading}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-lg hover:bg-primary/10 transition-colors disabled:opacity-50"
+                        title="Meinen Standort verwenden"
+                      >
+                        <MapPin className={`w-5 h-5 text-primary ${geoLoading ? 'animate-pulse' : ''}`} />
+                      </button>
+                    </div>
+                    <ValidationFeedback validation={fromValidation.state} />
                   </div>
 
                   {/* To */}
@@ -291,46 +344,72 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
                       placeholder="z.B. 3011 oder Bern"
                       value={toPostal}
                       onChange={(e) => setToPostal(e.target.value)}
-                      className="h-12 border-2 border-muted/60 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                      onBlur={() => toValidation.validate(toPostal)}
+                      className={`h-12 border-2 transition-all ${
+                        toValidation.state.isTouched 
+                          ? toValidation.state.isValid 
+                            ? 'border-green-500/60 focus:border-green-500' 
+                            : 'border-destructive/60 focus:border-destructive'
+                          : 'border-muted/60 focus:border-primary'
+                      } focus:ring-2 focus:ring-primary/20`}
                       required
                     />
+                    <ValidationFeedback validation={toValidation.state} />
                   </div>
 
-                  {/* Apartment Size */}
+                  {/* Apartment Size - Chips on Mobile, Dropdown on Desktop */}
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <Label htmlFor="apartment-size" className="text-sm font-medium flex items-center gap-1">
                         Wohnungsgrösse
                         <span className="text-primary/60 text-xs">*</span>
                       </Label>
-                      <Link to="/umzugsrechner" className="text-xs text-primary hover:underline">
-                        Rechner →
+                      <Link to="/umzugsrechner">
+                        <Button type="button" variant="ghost" size="sm" className="h-7 px-2 text-xs gap-1 text-primary hover:text-primary">
+                          <Calculator className="w-3.5 h-3.5" />
+                          Rechner
+                        </Button>
                       </Link>
                     </div>
-                    <Select value={apartmentSize} onValueChange={setApartmentSize} required>
-                      <SelectTrigger id="apartment-size" className="h-12 border-2 border-muted/60 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all">
-                        <SelectValue placeholder="Wählen Sie..." />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {APARTMENT_SIZES.map((size) => (
-                          <SelectItem key={size.value} value={size.value}>
-                            {size.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    
+                    {/* Mobile: Chips */}
+                    {isMobile ? (
+                      <ApartmentSizeChips 
+                        value={apartmentSize} 
+                        onChange={setApartmentSize} 
+                      />
+                    ) : (
+                      /* Desktop: Dropdown */
+                      <Select value={apartmentSize} onValueChange={setApartmentSize} required>
+                        <SelectTrigger id="apartment-size" className="h-12 border-2 border-muted/60 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all">
+                          <SelectValue placeholder="Wählen Sie..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {APARTMENT_SIZES.map((size) => (
+                            <SelectItem key={size.value} value={size.value}>
+                              {size.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
                   </div>
 
-                  {/* Submit Button */}
-                  <Button 
-                    type="submit" 
-                    size="lg" 
-                    className="w-full h-14 text-lg font-bold bg-secondary hover:bg-secondary/90"
-                  >
-                    <CheckCircle2 className="mr-2 h-5 w-5" />
-                    Jetzt checken lassen
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
+                  {/* Submit Button with Subline */}
+                  <div className="space-y-1">
+                    <Button 
+                      type="submit" 
+                      size="lg" 
+                      className="w-full h-14 text-lg font-bold bg-secondary hover:bg-secondary/90"
+                    >
+                      <CheckCircle2 className="mr-2 h-5 w-5" />
+                      Jetzt checken lassen
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </Button>
+                    <p className="text-xs text-center text-muted-foreground">
+                      Kostenlos & unverbindlich
+                    </p>
+                  </div>
                   
                   {/* Live Activity Line - Shows rotating recent activity */}
                   <HeroLiveActivityLine className="mt-3" />
