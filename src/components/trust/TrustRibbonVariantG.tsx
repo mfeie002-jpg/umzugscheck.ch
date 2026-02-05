@@ -1,20 +1,16 @@
 /**
  * TrustRibbon VARIANT G - Swiss Infrastructure
  * 
- * VERSION 7: Focus on official Swiss infrastructure partners
+ * VERSION 8: Real logos instead of icons
  * - eUmzugCH (Official state platform)
  * - Die Post (Mail forwarding)
  * - ASTAG (Industry association)
  * - Swiss Made Software
  */
 
-import { memo } from "react";
+import { memo, useState } from "react";
 import { motion } from "framer-motion";
 import { 
-  Building2, 
-  Mail, 
-  Truck, 
-  Code2,
   ExternalLink,
   Shield,
   CheckCircle2
@@ -26,28 +22,28 @@ const infrastructurePartners = [
     id: "eumzugch",
     name: "eUmzugCH",
     description: "Offizielle Behörden-Umzugsmeldung",
-    icon: Building2,
+    logo: "/logos/trust/eumzugch.svg",
     url: "https://www.eumzug.swiss",
   },
   {
     id: "post",
     name: "Die Post",
     description: "Nachsendeauftrag & Adressänderung",
-    icon: Mail,
+    logo: "/logos/trust/die-post.svg",
     url: "https://www.post.ch/de/briefe-versenden/nachsendeauftrag",
   },
   {
     id: "astag",
     name: "ASTAG",
     description: "Schweizerischer Nutzfahrzeugverband",
-    icon: Truck,
+    logo: "/logos/trust/astag.svg",
     url: "https://www.astag.ch",
   },
   {
     id: "swissmade",
     name: "Swiss Made",
     description: "Entwickelt in der Schweiz",
-    icon: Code2,
+    logo: "/logos/trust/swiss-label.svg",
     url: "https://www.swissmadesoftware.org",
   },
 ];
@@ -61,6 +57,11 @@ export const TrustRibbonVariantG = memo(function TrustRibbonVariantG({
   variant = "full",
   className,
 }: TrustRibbonVariantGProps) {
+  const [imgErrors, setImgErrors] = useState<Record<string, boolean>>({});
+  
+  const handleImgError = (id: string) => {
+    setImgErrors(prev => ({ ...prev, [id]: true }));
+  };
   
   if (variant === "compact") {
     return (
@@ -70,7 +71,12 @@ export const TrustRibbonVariantG = memo(function TrustRibbonVariantG({
             <span className="text-xs text-muted-foreground">🇨🇭 Schweizer Standard:</span>
             {infrastructurePartners.slice(0, 3).map((p) => (
               <div key={p.id} className="flex items-center gap-1.5 text-sm font-medium text-foreground/70">
-                <p.icon className="w-3.5 h-3.5 text-primary" />
+                <img 
+                  src={p.logo} 
+                  alt={p.name} 
+                  className="w-4 h-4 object-contain"
+                  onError={() => handleImgError(p.id)}
+                />
                 <span>{p.name}</span>
               </div>
             ))}
@@ -99,7 +105,7 @@ export const TrustRibbonVariantG = memo(function TrustRibbonVariantG({
           </p>
         </motion.div>
 
-        {/* Infrastructure Partners Grid */}
+        {/* Infrastructure Partners Grid - Now with REAL logos */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -118,15 +124,26 @@ export const TrustRibbonVariantG = memo(function TrustRibbonVariantG({
               viewport={{ once: true }}
               transition={{ delay: 0.05 * index }}
               className="relative flex flex-col items-center p-4 rounded-xl 
-                         bg-primary/5 border border-primary/20
-                         hover:shadow-md transition-all duration-300 group"
+                         bg-card border border-border/60
+                         hover:shadow-md hover:border-primary/30 transition-all duration-300 group"
             >
-              <div className="w-10 h-10 rounded-full bg-card flex items-center justify-center mb-2
-                              group-hover:scale-110 transition-transform shadow-sm">
-                <partner.icon className="w-5 h-5 text-primary" />
+              {/* Logo Container */}
+              <div className="w-12 h-12 flex items-center justify-center mb-2">
+                {!imgErrors[partner.id] ? (
+                  <img 
+                    src={partner.logo} 
+                    alt={partner.name}
+                    className="w-full h-full object-contain grayscale group-hover:grayscale-0 transition-all"
+                    onError={() => handleImgError(partner.id)}
+                  />
+                ) : (
+                  <span className="text-xs font-bold text-primary">
+                    {partner.name.charAt(0)}
+                  </span>
+                )}
               </div>
               
-              <span className="text-sm font-semibold text-primary text-center">
+              <span className="text-sm font-semibold text-foreground text-center">
                 {partner.name}
               </span>
               <span className="text-[10px] text-muted-foreground text-center leading-tight mt-0.5">
