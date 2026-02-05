@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowRight, Star, Shield, CheckCircle2, Clock, Check, TrendingDown, Trophy, Video, Upload, FileText, Phone, MessageCircle, Bot } from "lucide-react";
+import { ArrowRight, Star, Shield, CheckCircle2, Clock, Check, TrendingDown, Trophy, Video, Upload, FileText, Phone, MessageCircle, Bot, Loader2 } from "lucide-react";
 import { TabMethodHint, useTabHintVariant } from "./TabMethodHint";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
@@ -18,6 +18,8 @@ import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
 import { useSmartAutofocus, useIsDesktop } from "@/hooks/useSmartAutofocus";
 import { useABTest } from "@/hooks/use-ab-test";
 import { useFlowPath } from "@/hooks/useUnifiedAB";
+import { HeroSocialProofLine } from "@/components/homepage/HeroSocialProofLine";
+import { HeroLiveActivityLine } from "@/components/homepage/HeroLiveActivityLine";
 
 // Animated Counter Component
 const AnimatedCounter = ({ 
@@ -429,6 +431,8 @@ export const PremiumHeroSection = () => {
                   <p className="text-[11px] sm:text-xs text-muted-foreground">
                     Wählen Sie Ihre bevorzugte Methode
                   </p>
+                  {/* Social Proof Line - Rating + Online + Route */}
+                  <HeroSocialProofLine className="pt-2" />
                 </div>
                 {/* Hint above tabs for variants C and D - OUTSIDE the tabs */}
                 <TabMethodHint position="above" className="pointer-events-none" />
@@ -691,7 +695,7 @@ export const PremiumHeroSection = () => {
                           inputMode="text"
                           pattern="[0-9]*|[a-zA-ZäöüÄÖÜ\s-]+"
                           enterKeyHint="next"
-                          className="h-10 sm:h-11 md:h-12 text-base bg-background border-2 border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                          className="h-[52px] text-base bg-background border-2 border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20"
                           autoComplete="address-level2"
                           required
                         />
@@ -713,7 +717,7 @@ export const PremiumHeroSection = () => {
                           inputMode="text"
                           pattern="[0-9]*|[a-zA-ZäöüÄÖÜ\s-]+"
                           enterKeyHint="done"
-                          className="h-10 sm:h-11 md:h-12 text-base bg-background border-2 border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                          className="h-[52px] text-base bg-background border-2 border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/20"
                           autoComplete="address-level2"
                           required
                         />
@@ -727,12 +731,15 @@ export const PremiumHeroSection = () => {
                       <Button 
                         type="submit" 
                         size="lg" 
-                        className="w-full h-11 sm:h-12 md:h-14 text-sm sm:text-base md:text-lg font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all group relative z-20 touch-manipulation"
+                        className="w-full h-14 text-sm sm:text-base md:text-lg font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all group relative z-20 touch-manipulation"
                       >
                         <CheckCircle2 className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                         {getCtaText()}
                         <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />
                       </Button>
+                      
+                      {/* Live Activity Line - Social Proof under CTA */}
+                      <HeroLiveActivityLine className="mt-2" />
                     </form>
                   </TabsContent>
                 </Tabs>

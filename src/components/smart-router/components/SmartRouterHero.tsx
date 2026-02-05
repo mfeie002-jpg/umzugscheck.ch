@@ -6,6 +6,7 @@
 import { motion } from 'framer-motion';
 import { Clock, ListChecks, Mail } from 'lucide-react';
 import { SWISS_TRUST_BADGES, HEADLINE_VARIANTS } from '../constants';
+import { HeroSocialProofLine } from '@/components/homepage/HeroSocialProofLine';
 
 interface SmartRouterHeroProps {
   variant?: keyof typeof HEADLINE_VARIANTS;
@@ -60,6 +61,9 @@ export function SmartRouterHero({
           </motion.div>
         ))}
       </motion.div>
+
+      {/* Social Proof Line - Rating + Online + Route */}
+      <HeroSocialProofLine className="mt-4" />
 
       {/* Fast USP line (time + steps) */}
       <motion.div
