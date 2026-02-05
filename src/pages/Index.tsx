@@ -249,8 +249,8 @@ const Index = () => {
           <CookieConsentBanner />
         </Suspense>
         
-        {/* A/B Testing Toggle (dev only - hidden in production) */}
-        {import.meta.env.DEV && <UnifiedABToggle />}
+        {/* A/B Testing Toggle */}
+        <UnifiedABToggle />
       </div>
     </ErrorBoundary>
     </SocialProofABProvider>
