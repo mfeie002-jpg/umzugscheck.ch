@@ -26,6 +26,7 @@ import { FontLoader } from "@/components/ui/font-loader";
 // Global optimization components
 const SocialProofTicker = lazy(() => import("./components/SocialProofTicker"));
 const CookieConsentBanner = lazy(() => import("./components/CookieConsentBanner").then(m => ({ default: m.CookieConsentBanner })));
+import { ExitIntentModal } from "@/components/home/ExitIntentModal";
 
 // ============================================
 // LAZY LOADED PAGES - Code Splitting
@@ -1030,6 +1031,8 @@ const App = () => (
                     <WebVitalsReporter debug={process.env.NODE_ENV === 'development'} />
                     <PreloadResources />
                     <PerformanceDebugOverlay />
+                    {/* Exit Intent Modal - Global, shows on homepage when leaving */}
+                    <ExitIntentModal />
                     <AppRouterContent />
                   </BrowserRouter>
                 </TooltipProvider>

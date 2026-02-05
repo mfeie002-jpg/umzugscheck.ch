@@ -9,6 +9,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import heroFamilyMoving from "@/assets/hero-family-moving.jpg";
 import { LiveActivityBadge } from "@/components/home/LiveActivityBadge";
+import { HeroLiveCounter } from "@/components/home/HeroLiveCounter";
+import { HeroLiveActivityLine } from "@/components/home/HeroLiveActivityLine";
 import { swissPostalCodes } from "@/lib/swiss-postal-codes";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { HeroGradient } from "@/components/common/HeroGradient";
@@ -364,6 +366,11 @@ export const PremiumHeroSection = () => {
               <span className="text-foreground">Der beste Deal</span>
               <span className="block text-primary mt-1 md:mt-2">der ganzen Schweiz.</span>
             </h1>
+            
+            {/* Live Counter - "47 Personen vergleichen gerade" */}
+            <div className="pt-2 md:pt-3 flex justify-center lg:justify-start">
+              <HeroLiveCounter />
+            </div>
             
             {/* Subheadline - Combined Value Proposition - Centered on mobile */}
             <p className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground max-w-xl leading-relaxed text-center lg:text-left mx-auto lg:mx-0">
@@ -776,6 +783,11 @@ export const PremiumHeroSection = () => {
                     </span>
                     <span className="font-semibold text-xs text-[#00A859]">newhome</span>
                   </span>
+                </div>
+                
+                {/* Live Activity Line - "Letzte Anfrage: Genf → Zug vor 8 Min" */}
+                <div className="pt-3 md:pt-4 pb-2 md:pb-3 border-t border-b border-border/30 flex justify-center">
+                  <HeroLiveActivityLine />
                 </div>
                 
                 {/* Trust Microcopy - Consistent Primary colors */}
