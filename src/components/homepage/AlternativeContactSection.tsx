@@ -8,8 +8,8 @@ import { Button } from "@/components/ui/button";
  * Displays phone, WhatsApp, and email options
  */
 export const AlternativeContactSection = memo(function AlternativeContactSection() {
-  const phoneNumber = "+41 44 123 45 67";
-  const whatsappNumber = "41441234567";
+  const phoneNumber = "+41 44 688 04 04";
+  const whatsappNumber = "41446880404";
   const email = "info@umzugscheck.ch";
 
   const handlePhoneClick = () => {

@@ -60,11 +60,11 @@ const AlternativeContact = () => (
       </p>
       <div className="flex flex-col sm:flex-row gap-4 justify-center">
         <a
-          href="tel:+41765681302"
+          href="tel:+41446880404"
           className="inline-flex items-center justify-center gap-2 bg-success text-white px-6 py-3 rounded-xl font-semibold hover:bg-success/90 transition-colors"
         >
           <Phone className="w-5 h-5" />
-          +41 76 568 13 02
+          +41 44 688 04 04
         </a>
         <a
           href="mailto:support@umzugscheck.ch"

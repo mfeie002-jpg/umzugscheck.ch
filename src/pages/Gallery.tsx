@@ -414,7 +414,7 @@ const Gallery = () => {
                 Offerte anfragen
               </motion.button>
             </a>
-            <a href="tel:+41765681302">
+            <a href="tel:+41446880404">
               <motion.button 
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}

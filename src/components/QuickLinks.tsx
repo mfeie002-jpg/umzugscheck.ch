@@ -6,7 +6,7 @@ import { trackCtaClick } from "@/hooks/useCtaTracking";
 const links = [
   { icon: Calculator, label: "Kostenrechner", href: "/calculator" },
   { icon: FileText, label: "Offerte", href: "/contact" },
-  { icon: Phone, label: "Anrufen", href: "tel:+41765681302" },
+  { icon: Phone, label: "Anrufen", href: "tel:+41446880404" },
   { icon: Calendar, label: "Termin", href: "/booking" },
   { icon: MapPin, label: "Regionen", href: "/map" },
   { icon: HelpCircle, label: "FAQ", href: "/faq" },

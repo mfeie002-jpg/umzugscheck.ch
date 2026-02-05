@@ -94,7 +94,7 @@ export default function LaChaux() {
                 </Link>
               </Button>
               <Button size="lg" variant="outline" asChild>
-                <a href="tel:+41765681302">
+                <a href="tel:+41446880404">
                   <Phone className="mr-2 w-5 h-5" />
                   Appeler maintenant
                 </a>

@@ -198,10 +198,10 @@ const ServiceLandingTemplate = memo(({
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
-                <a href="tel:+41765681302">
+                <a href="tel:+41446880404">
                   <Button size="lg" variant="outline" className="w-full sm:w-auto min-h-[52px] text-base bg-transparent border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
                     <Phone className="mr-2 h-5 w-5" />
-                    +41 76 568 13 02
+                    +41 44 688 04 04
                   </Button>
                 </a>
               </div>

@@ -129,7 +129,7 @@ export const NavigationV11 = () => {
             <Shield className="w-4 h-4 text-emerald-500" />
             <span>100% <strong className="text-foreground">geprüfte Partner</strong></span>
           </div>
-          <a href="tel:+41445001234" className="flex items-center gap-2 text-primary font-medium hover:underline">
+          <a href="tel:+41446880404" className="flex items-center gap-2 text-primary font-medium hover:underline">
             <Phone className="w-4 h-4" />
             <span>Gratis Beratung</span>
           </a>
@@ -191,7 +191,7 @@ export const NavigationV11 = () => {
             {/* Desktop CTAs */}
             <div className="hidden lg:flex items-center gap-2">
               <a 
-                href="tel:+41445001234" 
+                href="tel:+41446880404" 
                 className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors rounded-lg hover:bg-accent"
               >
                 <Phone className="w-4 h-4" />
@@ -394,7 +394,7 @@ const ServicesDropdownV11 = ({
                   </Link>
                 </Button>
                 <a 
-                  href="tel:+41445001234"
+                  href="tel:+41446880404"
                   className="w-full text-center py-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors flex items-center justify-center gap-2"
                 >
                   <Phone className="w-4 h-4" />

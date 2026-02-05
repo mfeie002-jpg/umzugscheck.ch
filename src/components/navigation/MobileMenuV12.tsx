@@ -114,7 +114,7 @@ export const MobileMenuV12 = ({ isOpen, onClose }: MobileMenuV12Props) => {
               </Link>
             </Button>
             <Button asChild variant="outline" className="flex-shrink-0">
-              <a href="tel:+41445001234">
+              <a href="tel:+41446880404">
                 <Phone className="w-4 h-4" />
               </a>
             </Button>

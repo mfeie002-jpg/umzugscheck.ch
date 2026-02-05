@@ -61,7 +61,7 @@ const FloatingCTABar = () => {
               </Button>
               
               <Button size="sm" variant="ghost" asChild>
-                <a href="tel:+41765681302" className="gap-2">
+                <a href="tel:+41446880404" className="gap-2">
                   <Phone className="w-4 h-4" />
                   Anrufen
                 </a>
@@ -89,7 +89,7 @@ const FloatingCTABar = () => {
               </Button>
               
               <Button size="sm" variant="outline" asChild>
-                <a href="tel:+41765681302">
+                <a href="tel:+41446880404">
                   <Phone className="w-4 h-4" />
                 </a>
               </Button>

@@ -75,7 +75,7 @@ const HeroSection = () => {
                   <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
-              <a href="tel:+41765681302" className="w-full sm:w-auto touch-manipulation" onClick={() => trackCtaClick('Jetzt anrufen', 'hero')}>
+              <a href="tel:+41446880404" className="w-full sm:w-auto touch-manipulation" onClick={() => trackCtaClick('Jetzt anrufen', 'hero')}>
                 <Button size="lg" variant="outline" className="w-full sm:w-auto min-h-[48px] sm:min-h-[52px] text-sm sm:text-base border-2 border-primary/30 hover:border-primary hover:bg-primary/5 hover:text-primary transition-colors">
                   <Phone className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                   Jetzt anrufen

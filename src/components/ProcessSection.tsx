@@ -78,10 +78,10 @@ const ProcessSection = () => {
                 <ArrowRight className="ml-1.5 sm:ml-2 h-4 w-4 sm:h-5 sm:w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-            <a href="tel:+41765681302" className="w-full sm:w-auto touch-manipulation" onClick={() => trackCtaClick('Anrufen', 'process')}>
+            <a href="tel:+41446880404" className="w-full sm:w-auto touch-manipulation" onClick={() => trackCtaClick('Anrufen', 'process')}>
               <Button size="lg" variant="outline" className="w-full sm:w-auto border-2 min-h-[48px] text-sm sm:text-base">
                 <Phone className="mr-1.5 sm:mr-2 h-4 w-4" />
-                +41 76 568 13 02
+                +41 44 688 04 04
               </Button>
             </a>
           </div>

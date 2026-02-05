@@ -32,13 +32,13 @@ export default function MobileContactSheet({ isOpen, onClose }: MobileContactShe
       <div className="px-4 py-4 space-y-5">
         {/* Quick Actions */}
         <div className="grid grid-cols-2 gap-3">
-          <a href="tel:+41765681302" className="block">
+          <a href="tel:+41446880404" className="block">
             <Button variant="outline" className="w-full h-auto py-4 flex flex-col items-center justify-center gap-2">
               <Phone className="h-5 w-5 text-alpine" />
               <span className="text-xs text-center">Anrufen</span>
             </Button>
           </a>
-          <a href="https://wa.me/41765681302" target="_blank" rel="noopener noreferrer" className="block">
+          <a href="https://wa.me/41446880404" target="_blank" rel="noopener noreferrer" className="block">
             <Button variant="outline" className="w-full h-auto py-4 flex flex-col items-center justify-center gap-2">
               <MessageCircle className="h-5 w-5 text-forest" />
               <span className="text-xs text-center">WhatsApp</span>

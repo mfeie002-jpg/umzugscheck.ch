@@ -252,7 +252,7 @@ export const MobileBottomNav = () => {
                       </Link>
                     </Button>
                     <Button asChild variant="outline" className="flex-shrink-0">
-                      <a href="tel:+41445001234" onClick={() => lightTap()}>
+                      <a href="tel:+41446880404" onClick={() => lightTap()}>
                         <Phone className="w-4 h-4" />
                       </a>
                     </Button>

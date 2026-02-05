@@ -155,7 +155,7 @@ export const GoldenMobileMenu = memo(({ isOpen, onClose }: GoldenMobileMenuProps
                 </p>
                 <div className="flex gap-2">
                   <Link
-                    to="tel:+41445001234"
+                    to="tel:+41446880404"
                     onClick={onClose}
                     className="flex-1 flex items-center justify-center gap-2 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
                   >

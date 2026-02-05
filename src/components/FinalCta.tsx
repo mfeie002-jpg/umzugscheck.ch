@@ -25,10 +25,10 @@ const FinalCta = () => {
               size="lg"
               variant="outline"
               className="border-white text-white hover:bg-white/10 w-full sm:w-auto"
-              onClick={() => window.location.href = "tel:+41765681302"}
+              onClick={() => window.location.href = "tel:+41446880404"}
             >
               <Phone className="mr-2 h-5 w-5" />
-              +41 76 568 13 02
+              +41 44 688 04 04
             </Button>
           </div>
         </AnimatedSection>

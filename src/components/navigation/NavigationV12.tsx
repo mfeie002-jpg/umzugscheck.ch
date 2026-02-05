@@ -173,7 +173,7 @@ export const NavigationV12 = () => {
               </Link>
               <div className="h-5 w-px bg-border" />
               <a 
-                href="tel:+41445001234" 
+                href="tel:+41446880404" 
                 className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
                 <Phone className="w-4 h-4" />
