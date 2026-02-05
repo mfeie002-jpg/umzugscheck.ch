@@ -8,6 +8,8 @@
 import { memo, useState } from "react";
 
 // Swiss Media & Partners with real logo paths
+// IMPORTANT: 6 unique Swiss media partners - no duplicates!
+// Order: SRF, NZZ, 20 Minuten, Watson, Mieterverband, newhome
 export const SWISS_MEDIA_PARTNERS = [
   {
     name: "SRF",
@@ -105,60 +107,11 @@ export const RealMediaLogo = memo(({
 
 RealMediaLogo.displayName = "RealMediaLogo";
 
-// Colored logo component (CSS-based fallback for legacy usage)
+// Colored logo component - NOW USES PNG IMAGES (same as RealMediaLogo)
+// Legacy wrapper for backwards compatibility
 export const ColoredMediaLogo = memo(({ name, size = "md" }: { name: string; size?: "sm" | "md" | "lg" }) => {
-  const sizeClasses = {
-    sm: { text: "text-sm", badge: "text-xs px-2 py-0.5" },
-    md: { text: "text-base sm:text-lg", badge: "text-xs sm:text-sm px-2 sm:px-3 py-1" },
-    lg: { text: "text-lg sm:text-xl", badge: "text-sm px-3 py-1.5" },
-  };
-  
-  const s = sizeClasses[size];
-  
-  const logos: Record<string, JSX.Element> = {
-    "20 Minuten": (
-      <div className="flex items-baseline gap-0.5">
-        <span className={`${size === "sm" ? "text-lg" : "text-xl sm:text-2xl"} font-black text-[#E3000F]`}>20</span>
-        <span className={`${s.text} font-semibold text-foreground`}>Minuten</span>
-      </div>
-    ),
-    "SRF": (
-      <div className={`bg-[#C8102E] text-white font-bold ${s.badge} rounded`}>
-        SRF
-      </div>
-    ),
-    "Blick": (
-      <div className={`bg-[#E30613] text-white font-black ${s.badge} rounded`}>
-        BLICK
-      </div>
-    ),
-    "NZZ": (
-      <span className={`font-serif font-bold ${size === "sm" ? "text-lg" : "text-xl sm:text-2xl"} text-foreground tracking-tight`}>
-        NZZ
-      </span>
-    ),
-    "Watson": (
-      <div className="flex items-center gap-1">
-        <div className={`${size === "sm" ? "w-4 h-4" : "w-5 h-5 sm:w-6 sm:h-6"} bg-[#FF6B35] rounded-full flex items-center justify-center`}>
-          <span className="text-white text-[10px] sm:text-xs font-bold">W</span>
-        </div>
-        <span className={`font-bold ${s.text} text-foreground lowercase`}>watson</span>
-      </div>
-    ),
-    "newhome": (
-      <div className="flex items-center gap-1">
-        <div className={`${size === "sm" ? "w-4 h-4" : "w-5 h-5 sm:w-6 sm:h-6"} bg-[#00A859] rounded flex items-center justify-center`}>
-          <svg viewBox="0 0 24 24" className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white" fill="currentColor">
-            <path d="M12 3L4 9v12h16V9l-8-6zm0 2.25L18 10v9H6v-9l6-4.75z"/>
-            <rect x="10" y="14" width="4" height="5"/>
-          </svg>
-        </div>
-        <span className={`font-semibold ${s.text} text-[#00A859]`}>newhome</span>
-      </div>
-    ),
-  };
-  
-  return logos[name] || <span className={`font-bold ${s.text}`}>{name}</span>;
+  // Use RealMediaLogo with colored (non-grayscale) styling
+  return <RealMediaLogo name={name} size={size} grayscale={false} />;
 });
 
 ColoredMediaLogo.displayName = "ColoredMediaLogo";
