@@ -12,14 +12,14 @@ export default function QuickContact() {
       description: 'Direkt verbinden',
       icon: Phone,
       color: 'bg-green-500',
-      action: () => window.location.href = 'tel:+41765681302',
+      action: () => window.location.href = 'tel:+41446880404',
     },
     {
       name: 'WhatsApp',
       description: 'Chat starten',
       icon: MessageCircle,
       color: 'bg-green-600',
-      action: () => window.open('https://wa.me/41765681302', '_blank'),
+      action: () => window.open('https://wa.me/41446880404', '_blank'),
     },
     {
       name: 'E-Mail',

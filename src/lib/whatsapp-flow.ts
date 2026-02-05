@@ -22,7 +22,7 @@ export interface WhatsAppLead {
  * Default WhatsApp number for Umzugscheck
  */
 export const WHATSAPP_CONFIG: WhatsAppConfig = {
-  phoneNumber: '+41445520000', // Placeholder - replace with actual number
+  phoneNumber: '+41446880404', // Official Umzugscheck number
   defaultMessage: 'Hallo! Ich interessiere mich für eine Umzugsofferte.',
 };
 

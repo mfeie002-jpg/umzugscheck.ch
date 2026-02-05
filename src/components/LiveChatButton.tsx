@@ -13,7 +13,7 @@ const LiveChatButton = () => {
       <Button
         size="lg"
         className="rounded-full w-14 h-14 bg-forest hover:bg-forest/90 shadow-lg"
-        onClick={() => window.open("https://wa.me/41765681302", "_blank")}
+        onClick={() => window.open("https://wa.me/41446880404", "_blank")}
       >
         <MessageCircle className="h-6 w-6" />
       </Button>

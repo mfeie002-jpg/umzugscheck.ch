@@ -8,15 +8,15 @@ const ContactCTA = () => {
     {
       icon: Phone,
       label: "Anrufen",
-      value: "+41 76 568 13 02",
-      href: "tel:+41765681302",
+      value: "+41 44 688 04 04",
+      href: "tel:+41446880404",
       color: "bg-primary",
     },
     {
       icon: MessageCircle,
       label: "WhatsApp",
       value: "Chat starten",
-      href: "https://wa.me/41765681302",
+      href: "https://wa.me/41446880404",
       color: "bg-forest",
     },
     {

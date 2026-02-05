@@ -336,8 +336,8 @@ const CustomerPortal = () => {
                     <p className="opacity-90 mb-4">
                       Bei dringenden Angelegenheiten während Ihres Umzugs
                     </p>
-                    <a href="tel:+41765681302" className="text-2xl font-bold">
-                      +41 76 568 13 02
+                    <a href="tel:+41446880404" className="text-2xl font-bold">
+                      +41 44 688 04 04
                     </a>
                   </Card>
                 </TabsContent>

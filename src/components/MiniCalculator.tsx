@@ -101,7 +101,7 @@ const MiniCalculator = () => {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
-              <a href="tel:+41765681302" className="w-full">
+              <a href="tel:+41446880404" className="w-full">
                 <Button size="lg" variant="outline" className="w-full border-2 h-12 sm:h-12 min-h-[48px] text-base touch-manipulation">
                   <Phone className="mr-2 h-5 w-5" />
                   Jetzt anrufen

@@ -28,9 +28,9 @@ const EmergencyHotline = () => {
             size="lg"
             className="font-semibold"
           >
-            <a href="tel:+41765681302" className="flex items-center gap-2">
+            <a href="tel:+41446880404" className="flex items-center gap-2">
               <Phone className="w-5 h-5" />
-              +41 76 568 13 02
+              +41 44 688 04 04
             </a>
           </Button>
         </motion.div>

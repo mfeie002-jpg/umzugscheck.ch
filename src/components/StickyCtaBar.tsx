@@ -51,7 +51,7 @@ const StickyCtaBar = () => {
             </div>
             
             <div className="flex items-center gap-2">
-              <a href="tel:+41765681302" onClick={() => trackCtaClick('Anrufen', 'sticky_bar')}>
+              <a href="tel:+41446880404" onClick={() => trackCtaClick('Anrufen', 'sticky_bar')}>
                 <Button 
                   size="sm" 
                   variant="ghost" 
@@ -62,7 +62,7 @@ const StickyCtaBar = () => {
                 </Button>
               </a>
               <a 
-                href="https://wa.me/41765681302" 
+                href="https://wa.me/41446880404" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 onClick={() => trackCtaClick('WhatsApp', 'sticky_bar')}
