@@ -95,7 +95,7 @@ const PartnerCard = memo(function PartnerCard({ partner, index }: PartnerCardPro
     >
       {/* Logo */}
       <div className="flex items-center gap-3 mb-3">
-        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-lg bg-white dark:bg-card shadow-sm flex items-center justify-center p-2 group-hover:shadow-md transition-shadow">
+        <div className="w-16 h-14 sm:w-20 sm:h-16 rounded-lg bg-white dark:bg-card shadow-sm flex items-center justify-center p-2 group-hover:shadow-md transition-shadow">
           {!imgError ? (
             <img
               src={partner.logo}

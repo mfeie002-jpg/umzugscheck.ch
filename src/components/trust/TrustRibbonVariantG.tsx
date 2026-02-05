@@ -127,8 +127,8 @@ export const TrustRibbonVariantG = memo(function TrustRibbonVariantG({
                          bg-card border border-border/60
                          hover:shadow-md hover:border-primary/30 transition-all duration-300 group"
             >
-              {/* Logo Container */}
-              <div className="w-12 h-12 flex items-center justify-center mb-2">
+              {/* Logo Container - Bigger logos */}
+              <div className="w-20 h-14 flex items-center justify-center mb-2">
                 {!imgErrors[partner.id] ? (
                   <img 
                     src={partner.logo} 
