@@ -736,6 +736,89 @@ export type Database = {
           },
         ]
       }
+      conversion_events: {
+        Row: {
+          client_ip: string | null
+          company_id: string | null
+          created_at: string
+          device_type: string | null
+          estimated_value: number | null
+          event_type: string
+          fbclid: string | null
+          gbraid: string | null
+          gclid: string | null
+          id: string
+          lead_id: string | null
+          metadata: Json | null
+          page_url: string | null
+          referrer: string | null
+          session_id: string | null
+          utm_campaign: string | null
+          utm_content: string | null
+          utm_medium: string | null
+          utm_source: string | null
+          utm_term: string | null
+          visitor_id: string
+          wbraid: string | null
+        }
+        Insert: {
+          client_ip?: string | null
+          company_id?: string | null
+          created_at?: string
+          device_type?: string | null
+          estimated_value?: number | null
+          event_type: string
+          fbclid?: string | null
+          gbraid?: string | null
+          gclid?: string | null
+          id?: string
+          lead_id?: string | null
+          metadata?: Json | null
+          page_url?: string | null
+          referrer?: string | null
+          session_id?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+          visitor_id: string
+          wbraid?: string | null
+        }
+        Update: {
+          client_ip?: string | null
+          company_id?: string | null
+          created_at?: string
+          device_type?: string | null
+          estimated_value?: number | null
+          event_type?: string
+          fbclid?: string | null
+          gbraid?: string | null
+          gclid?: string | null
+          id?: string
+          lead_id?: string | null
+          metadata?: Json | null
+          page_url?: string | null
+          referrer?: string | null
+          session_id?: string | null
+          utm_campaign?: string | null
+          utm_content?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+          utm_term?: string | null
+          visitor_id?: string
+          wbraid?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversion_events_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       custom_flow_configs: {
         Row: {
           color: string
@@ -2511,6 +2594,7 @@ export type Database = {
       leads: {
         Row: {
           assigned_provider_ids: string[] | null
+          auto_reply_sent_at: string | null
           bid_count: number | null
           bidding_closes_at: string | null
           bidding_enabled: boolean | null
@@ -2523,8 +2607,10 @@ export type Database = {
           current_highest_bid: number | null
           email: string
           estimate_session_id: string | null
+          fbclid: string | null
           from_city: string
           from_postal: string
+          gclid: string | null
           id: string
           lead_source: string | null
           move_date: string | null
@@ -2535,10 +2621,14 @@ export type Database = {
           status: string | null
           to_city: string
           to_postal: string
+          utm_campaign: string | null
+          utm_medium: string | null
+          utm_source: string | null
           winning_provider_id: string | null
         }
         Insert: {
           assigned_provider_ids?: string[] | null
+          auto_reply_sent_at?: string | null
           bid_count?: number | null
           bidding_closes_at?: string | null
           bidding_enabled?: boolean | null
@@ -2551,8 +2641,10 @@ export type Database = {
           current_highest_bid?: number | null
           email: string
           estimate_session_id?: string | null
+          fbclid?: string | null
           from_city: string
           from_postal: string
+          gclid?: string | null
           id?: string
           lead_source?: string | null
           move_date?: string | null
@@ -2563,10 +2655,14 @@ export type Database = {
           status?: string | null
           to_city: string
           to_postal: string
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
           winning_provider_id?: string | null
         }
         Update: {
           assigned_provider_ids?: string[] | null
+          auto_reply_sent_at?: string | null
           bid_count?: number | null
           bidding_closes_at?: string | null
           bidding_enabled?: boolean | null
@@ -2579,8 +2675,10 @@ export type Database = {
           current_highest_bid?: number | null
           email?: string
           estimate_session_id?: string | null
+          fbclid?: string | null
           from_city?: string
           from_postal?: string
+          gclid?: string | null
           id?: string
           lead_source?: string | null
           move_date?: string | null
@@ -2591,6 +2689,9 @@ export type Database = {
           status?: string | null
           to_city?: string
           to_postal?: string
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
           winning_provider_id?: string | null
         }
         Relationships: [
