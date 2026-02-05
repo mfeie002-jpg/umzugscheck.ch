@@ -5,10 +5,15 @@
  * - Left: Headlines, USPs, CTAs ("Der beste Deal der ganzen Schweiz")
  * - Right: Form card with Von/Nach/Wohnungsgrösse
  * - Background: Emotional family image
+ * 
+ * Optimizations (Phase 5):
+ * - Touch targets: 56px CTA, 52px inputs
+ * - Geolocation UX: loading spinner, success feedback, error fallback
+ * - Scroll behavior: prevent keyboard jumps
  */
 
-import { memo, useState, useMemo, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import { memo, useState, useMemo, useCallback, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,7 +21,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   ArrowRight, TrendingDown, Video, CheckCircle2, Shield, Clock, 
-  Trophy, Check, MapPin, Calculator
+  Trophy, Check, MapPin, Calculator, Loader2, CheckCircle
 } from 'lucide-react';
 import heroFamilyMoving from '@/assets/hero-family-moving.jpg';
 import { LiveActivityBadge } from '@/components/home/LiveActivityBadge';
@@ -34,6 +39,7 @@ import { ApartmentSizeChips } from './ApartmentSizeChips';
 import { useFieldValidation, validationRules, ValidationFeedback } from './FormValidation';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useFormScrollBehavior } from '@/hooks/useFormScrollBehavior';
 
 const APARTMENT_SIZES = [
   { value: '1', label: '1 Zimmer' },
@@ -53,11 +59,16 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
   const flowPath = useFlowPath();
   const { variant: spVariant } = useSocialProofAB();
   const isMobile = useIsMobile();
-  const { requestLocation, loading: geoLoading, nearestCanton } = useGeolocation();
+  const { requestLocation, loading: geoLoading, nearestCanton, cantonName, error: geoError, success: geoSuccess } = useGeolocation();
   
   const [fromPostal, setFromPostal] = useState('');
   const [toPostal, setToPostal] = useState('');
   const [apartmentSize, setApartmentSize] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Form ref for scroll behavior
+  const formRef = useRef<HTMLFormElement>(null);
+  const { lockScrollForSubmit } = useFormScrollBehavior({ formRef: formRef as React.RefObject<HTMLElement> });
   
   // Form validation
   const fromValidation = useFieldValidation([
@@ -108,8 +119,12 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
   // V17 (Q): In-Form Container (was V)
   const showInFormContainer = spVariant === 'Q';
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Lock scroll position to prevent jumps
+    lockScrollForSubmit();
+    setIsSubmitting(true);
     
     const prefillData = {
       from: fromPostal,
@@ -128,8 +143,12 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
     if (fromPostal) params.set('from', fromPostal);
     if (toPostal) params.set('to', toPostal);
     if (apartmentSize) params.set('rooms', apartmentSize);
-    navigate(`${flowPath}?${params.toString()}`);
-  };
+    
+    // Small delay for visual feedback
+    setTimeout(() => {
+      navigate(`${flowPath}?${params.toString()}`);
+    }, 150);
+  }, [fromPostal, toPostal, apartmentSize, flowPath, navigate, lockScrollForSubmit]);
 
   return (
     <section className="relative sm:min-h-[62vh] lg:min-h-[55vh] flex items-start sm:items-center overflow-hidden">
@@ -293,7 +312,7 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
                 </div>
 
                 {/* Form */}
-                <form onSubmit={handleSubmit} className="space-y-5">
+                <form ref={formRef} onSubmit={handleSubmit} className="space-y-5">
                   {/* From - with Geolocation button */}
                   <div className="space-y-2">
                     <Label htmlFor="from-postal" className="text-sm font-medium flex items-center gap-1">
@@ -307,26 +326,61 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
                         value={fromPostal}
                         onChange={(e) => setFromPostal(e.target.value)}
                         onBlur={() => fromValidation.validate(fromPostal)}
-                        className={`h-12 pr-12 border-2 transition-all ${
+                        className={`h-[52px] pr-14 border-2 transition-all text-base ${
                           fromValidation.state.isTouched 
                             ? fromValidation.state.isValid 
-                              ? 'border-green-500/60 focus:border-green-500' 
+                              ? 'border-primary/60 focus:border-primary' 
                               : 'border-destructive/60 focus:border-destructive'
                             : 'border-muted/60 focus:border-primary'
                         } focus:ring-2 focus:ring-primary/20`}
                         required
                       />
-                      {/* Geolocation button */}
+                      {/* Geolocation button with loading/success states */}
                       <button
                         type="button"
                         onClick={handleUseLocation}
                         disabled={geoLoading}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-lg hover:bg-primary/10 transition-colors disabled:opacity-50"
-                        title="Meinen Standort verwenden"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg hover:bg-primary/10 transition-colors disabled:opacity-50"
+                        title={geoLoading ? "Standort wird ermittelt..." : "Meinen Standort verwenden"}
                       >
-                        <MapPin className={`w-5 h-5 text-primary ${geoLoading ? 'animate-pulse' : ''}`} />
+                        <AnimatePresence mode="wait">
+                          {geoLoading ? (
+                            <motion.div
+                              key="loading"
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              exit={{ opacity: 0, scale: 0.8 }}
+                            >
+                              <Loader2 className="w-5 h-5 text-primary animate-spin" />
+                            </motion.div>
+                          ) : geoSuccess ? (
+                            <motion.div
+                              key="success"
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              exit={{ opacity: 0, scale: 0.8 }}
+                            >
+                              <CheckCircle className="w-5 h-5 text-primary" />
+                            </motion.div>
+                          ) : (
+                            <motion.div
+                              key="default"
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              exit={{ opacity: 0, scale: 0.8 }}
+                            >
+                              <MapPin className="w-5 h-5 text-primary" />
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
                       </button>
                     </div>
+                    {/* Geolocation error message */}
+                    {geoError && (
+                      <p className="text-xs text-destructive flex items-center gap-1">
+                        <span>⚠️</span> {geoError}
+                      </p>
+                    )}
                     <ValidationFeedback validation={fromValidation.state} />
                   </div>
 
@@ -342,10 +396,10 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
                       value={toPostal}
                       onChange={(e) => setToPostal(e.target.value)}
                       onBlur={() => toValidation.validate(toPostal)}
-                      className={`h-12 border-2 transition-all ${
+                      className={`h-[52px] border-2 transition-all text-base ${
                         toValidation.state.isTouched 
                           ? toValidation.state.isValid 
-                            ? 'border-green-500/60 focus:border-green-500' 
+                            ? 'border-primary/60 focus:border-primary' 
                             : 'border-destructive/60 focus:border-destructive'
                           : 'border-muted/60 focus:border-primary'
                       } focus:ring-2 focus:ring-primary/20`}
@@ -378,12 +432,12 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
                     ) : (
                       /* Desktop: Dropdown */
                       <Select value={apartmentSize} onValueChange={setApartmentSize} required>
-                        <SelectTrigger id="apartment-size" className="h-12 border-2 border-muted/60 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all">
+                        <SelectTrigger id="apartment-size" className="h-[52px] border-2 border-muted/60 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-base">
                           <SelectValue placeholder="Wählen Sie..." />
                         </SelectTrigger>
                         <SelectContent>
                           {APARTMENT_SIZES.map((size) => (
-                            <SelectItem key={size.value} value={size.value}>
+                            <SelectItem key={size.value} value={size.value} className="min-h-[44px]">
                               {size.label}
                             </SelectItem>
                           ))}
@@ -392,16 +446,26 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
                     )}
                   </div>
 
-                  {/* Submit Button with Subline */}
-                  <div className="space-y-1">
+                  {/* Submit Button with Subline - 56px touch target */}
+                  <div className="space-y-1.5">
                     <Button 
                       type="submit" 
                       size="lg" 
-                      className="w-full h-14 text-lg font-bold bg-secondary hover:bg-secondary/90"
+                      disabled={isSubmitting}
+                      className="w-full h-14 min-h-[56px] text-lg font-bold bg-secondary hover:bg-secondary/90 disabled:opacity-70"
                     >
-                      <CheckCircle2 className="mr-2 h-5 w-5" />
-                      Jetzt checken lassen
-                      <ArrowRight className="ml-2 h-5 w-5" />
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                          Wird verarbeitet...
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle2 className="mr-2 h-5 w-5" />
+                          Jetzt checken lassen
+                          <ArrowRight className="ml-2 h-5 w-5" />
+                        </>
+                      )}
                     </Button>
                     <p className="text-xs text-center text-muted-foreground">
                       Kostenlos & unverbindlich

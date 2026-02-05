@@ -1,15 +1,18 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 interface GeolocationState {
   latitude: number | null;
   longitude: number | null;
   error: string | null;
   loading: boolean;
+  success: boolean;
 }
 
 interface GeolocationResult extends GeolocationState {
   requestLocation: () => void;
   nearestCanton: string | null;
+  cantonName: string | null;
+  reset: () => void;
 }
 
 // Approximate coordinates for Swiss canton capitals
@@ -56,15 +59,15 @@ function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: numbe
 }
 
 // Find nearest canton to given coordinates
-function findNearestCanton(lat: number, lng: number): string | null {
-  let nearestCanton: string | null = null;
+function findNearestCanton(lat: number, lng: number): { code: string; name: string } | null {
+  let nearestCanton: { code: string; name: string } | null = null;
   let minDistance = Infinity;
 
   Object.entries(cantonCoordinates).forEach(([code, coords]) => {
     const distance = calculateDistance(lat, lng, coords.lat, coords.lng);
     if (distance < minDistance) {
       minDistance = distance;
-      nearestCanton = code;
+      nearestCanton = { code, name: coords.name };
     }
   });
 
@@ -76,21 +79,24 @@ export const useGeolocation = (): GeolocationResult => {
     latitude: null,
     longitude: null,
     error: null,
-    loading: false
+    loading: false,
+    success: false
   });
 
   const [nearestCanton, setNearestCanton] = useState<string | null>(null);
+  const [cantonName, setCantonName] = useState<string | null>(null);
 
-  const requestLocation = () => {
+  const requestLocation = useCallback(() => {
     if (!navigator.geolocation) {
       setState(prev => ({
         ...prev,
-        error: "Geolocation wird von Ihrem Browser nicht unterstützt"
+        error: "Geolocation wird von Ihrem Browser nicht unterstützt",
+        success: false
       }));
       return;
     }
 
-    setState(prev => ({ ...prev, loading: true, error: null }));
+    setState(prev => ({ ...prev, loading: true, error: null, success: false }));
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -99,25 +105,34 @@ export const useGeolocation = (): GeolocationResult => {
           latitude,
           longitude,
           error: null,
-          loading: false
+          loading: false,
+          success: true
         });
 
         // Find nearest canton
         const canton = findNearestCanton(latitude, longitude);
-        setNearestCanton(canton);
+        if (canton) {
+          setNearestCanton(canton.code);
+          setCantonName(canton.name);
+        }
+        
+        // Reset success state after 2 seconds for visual feedback
+        setTimeout(() => {
+          setState(prev => ({ ...prev, success: false }));
+        }, 2000);
       },
       (error) => {
         let errorMessage = "Standort konnte nicht ermittelt werden";
         
         switch (error.code) {
           case error.PERMISSION_DENIED:
-            errorMessage = "Standortzugriff wurde verweigert";
+            errorMessage = "Standortzugriff wurde verweigert. Bitte erlauben Sie den Zugriff in Ihren Browser-Einstellungen.";
             break;
           case error.POSITION_UNAVAILABLE:
             errorMessage = "Standortinformationen nicht verfügbar";
             break;
           case error.TIMEOUT:
-            errorMessage = "Standortabfrage hat zu lange gedauert";
+            errorMessage = "Standortabfrage hat zu lange gedauert. Bitte versuchen Sie es erneut.";
             break;
         }
 
@@ -125,7 +140,8 @@ export const useGeolocation = (): GeolocationResult => {
           latitude: null,
           longitude: null,
           error: errorMessage,
-          loading: false
+          loading: false,
+          success: false
         });
       },
       {
@@ -134,11 +150,25 @@ export const useGeolocation = (): GeolocationResult => {
         maximumAge: 300000 // 5 minutes
       }
     );
-  };
+  }, []);
+
+  const reset = useCallback(() => {
+    setState({
+      latitude: null,
+      longitude: null,
+      error: null,
+      loading: false,
+      success: false
+    });
+    setNearestCanton(null);
+    setCantonName(null);
+  }, []);
 
   return {
     ...state,
     nearestCanton,
-    requestLocation
+    cantonName,
+    requestLocation,
+    reset
   };
 };
