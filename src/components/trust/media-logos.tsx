@@ -1,53 +1,111 @@
 /**
  * Swiss Media Partners - Shared Logo Components
  * 
- * Used across TrustRibbon variants and MediaTrustSection.
- * Features real brand colors and website URLs for the 6 key media partners.
+ * Used across TrustRibbon variants, KnownFromRow, and MediaTrustSection.
+ * Features real PNG logos with grayscale hover effects.
  */
 
-import { memo } from "react";
+import { memo, useState } from "react";
 
-// Swiss Media Partners with real brand styling
+// Swiss Media & Partners with real logo paths
 export const SWISS_MEDIA_PARTNERS = [
-  {
-    name: "20 Minuten",
-    shortName: "20min",
-    website: "20min.ch",
-    brandColor: "#E3000F",
-  },
   {
     name: "SRF",
     shortName: "SRF",
     website: "srf.ch",
     brandColor: "#C8102E",
-  },
-  {
-    name: "Blick",
-    shortName: "BLICK",
-    website: "blick.ch",
-    brandColor: "#E30613",
+    logo: "/logos/media/srf.png",
   },
   {
     name: "NZZ",
     shortName: "NZZ",
     website: "nzz.ch",
     brandColor: "#1A1A1A",
+    logo: "/logos/media/nzz.png",
+  },
+  {
+    name: "20 Minuten",
+    shortName: "20min",
+    website: "20min.ch",
+    brandColor: "#0066B3",
+    logo: "/logos/media/20min-new.png",
   },
   {
     name: "Watson",
     shortName: "watson",
     website: "watson.ch",
     brandColor: "#FF6B35",
+    logo: "/logos/media/watson.png",
+  },
+  {
+    name: "Mieterverband",
+    shortName: "MV",
+    website: "mieterverband.ch",
+    brandColor: "#00A859",
+    logo: "/logos/media/mieterverband.png",
   },
   {
     name: "newhome",
     shortName: "newhome",
     website: "newhome.ch",
-    brandColor: "#00A859",
+    brandColor: "#00B4D8",
+    logo: "/logos/media/newhome-new.png",
   },
 ] as const;
 
-// Colored logo component (for prominent usage)
+// Real Media Logo component using actual PNG images
+export const RealMediaLogo = memo(({ 
+  name, 
+  size = "md",
+  grayscale = true,
+}: { 
+  name: string; 
+  size?: "sm" | "md" | "lg";
+  grayscale?: boolean;
+}) => {
+  const [hasError, setHasError] = useState(false);
+  const partner = SWISS_MEDIA_PARTNERS.find(p => p.name === name);
+  
+  const heights = {
+    sm: "h-4 sm:h-5",
+    md: "h-5 sm:h-6",
+    lg: "h-6 sm:h-8",
+  };
+  
+  const maxWidths = {
+    sm: "max-w-[50px] sm:max-w-[60px]",
+    md: "max-w-[60px] sm:max-w-[80px]",
+    lg: "max-w-[80px] sm:max-w-[100px]",
+  };
+  
+  if (!partner?.logo || hasError) {
+    return (
+      <span className={`font-bold text-xs text-foreground/50`}>
+        {partner?.shortName || name}
+      </span>
+    );
+  }
+  
+  return (
+    <img 
+      src={partner.logo} 
+      alt={partner.name}
+      className={`
+        ${heights[size]} 
+        ${maxWidths[size]} 
+        w-auto object-contain
+        ${grayscale ? 'grayscale opacity-50 hover:grayscale-0 hover:opacity-100' : ''}
+        transition-all duration-300
+      `}
+      loading="lazy"
+      onError={() => setHasError(true)}
+    />
+  );
+});
+
+RealMediaLogo.displayName = "RealMediaLogo";
+
+// Colored logo component (CSS-based fallback for legacy usage)
 export const ColoredMediaLogo = memo(({ name, size = "md" }: { name: string; size?: "sm" | "md" | "lg" }) => {
   const sizeClasses = {
     sm: { text: "text-sm", badge: "text-xs px-2 py-0.5" },
