@@ -187,6 +187,34 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Speed-to-Lead: Send immediate auto-reply to customer
+    try {
+      await fetch(
+        `${supabaseUrl}/functions/v1/lead-auto-reply`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${supabaseKey}`,
+          },
+          body: JSON.stringify({
+            leadId: lead.id,
+            customerEmail: contact.email,
+            customerName: contact.name,
+            fromCity: moveDetails.fromCity,
+            toCity: moveDetails.toCity,
+            moveDate: moveDetails.moveDate,
+            selectedProviderCount: selectedCompanyIds.length,
+            estimatedResponse: '2-4 Stunden',
+          }),
+        }
+      );
+      console.log('Customer auto-reply triggered for lead:', lead.id);
+    } catch (autoReplyError) {
+      // Don't fail lead creation if auto-reply fails
+      console.error('Error triggering auto-reply:', autoReplyError);
+    }
+
     return new Response(
       JSON.stringify({ success: true, data: lead }),
       { status: 201, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
