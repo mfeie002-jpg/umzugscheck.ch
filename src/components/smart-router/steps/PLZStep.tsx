@@ -9,6 +9,7 @@ import { MapPin, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { SmartRouterData } from '../types';
+import { HeroLiveActivityLine } from '@/components/homepage/HeroLiveActivityLine';
 
 interface PLZStepProps {
   formData: SmartRouterData;
@@ -111,7 +112,7 @@ export function PLZStep({ formData, onUpdate, onNext }: PLZStepProps) {
             type="submit"
             size="lg"
             disabled={!isValid}
-            className="shrink-0 h-12 w-12 sm:h-14 sm:w-14 rounded-xl p-0"
+            className="shrink-0 h-14 w-14 rounded-xl p-0"
             aria-label="Weiter"
           >
             <ArrowRight className="h-6 w-6" />
@@ -145,6 +146,9 @@ export function PLZStep({ formData, onUpdate, onNext }: PLZStepProps) {
       <p className="mt-10 text-center text-sm text-muted-foreground">
         Wo ziehen Sie aktuell weg?
       </p>
+      
+      {/* Live Activity Line */}
+      <HeroLiveActivityLine className="mt-4" />
     </motion.form>
   );
 }
