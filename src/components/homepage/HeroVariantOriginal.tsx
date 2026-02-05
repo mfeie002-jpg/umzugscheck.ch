@@ -234,16 +234,17 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="order-1 lg:order-2"
           >
-            <div className="bg-card rounded-2xl shadow-xl border border-border p-4 md:p-6 relative">
+            {/* Form Card with primary border accent like 4-Tab Hero */}
+            <div className="bg-card rounded-2xl shadow-xl border-2 border-primary/20 hover:border-primary/40 transition-colors p-4 md:p-6 relative ring-1 ring-primary/10">
               {/* Best Price Badge - positioned inside card with proper spacing */}
-              <div className="flex justify-center mb-3">
+              <div className="flex justify-center mb-4">
                 <span className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-secondary text-white text-xs font-bold rounded-full shadow-lg whitespace-nowrap">
                   <Trophy className="w-3.5 h-3.5" />
                   Bester Preis garantiert
                 </span>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-5">
                 {/* Form Header */}
                 <div className="text-center space-y-1">
                   <h2 className="text-xl md:text-2xl font-bold text-foreground">
@@ -255,42 +256,52 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
                 </div>
 
                 {/* Form */}
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-5">
                   {/* From */}
-                  <div className="space-y-1.5">
-                    <Label htmlFor="from-postal" className="text-sm font-medium">
+                  <div className="space-y-2">
+                    <Label htmlFor="from-postal" className="text-sm font-medium flex items-center gap-1">
                       Von (PLZ oder Ort)
+                      <span className="text-primary/60 text-xs">*</span>
                     </Label>
                     <Input
                       id="from-postal"
                       placeholder="z.B. 8001 oder Zürich"
                       value={fromPostal}
                       onChange={(e) => setFromPostal(e.target.value)}
-                      className="h-12"
+                      className="h-12 border-2 border-muted/60 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                      required
                     />
                   </div>
 
                   {/* To */}
-                  <div className="space-y-1.5">
-                    <Label htmlFor="to-postal" className="text-sm font-medium">
+                  <div className="space-y-2">
+                    <Label htmlFor="to-postal" className="text-sm font-medium flex items-center gap-1">
                       Nach (PLZ oder Ort)
+                      <span className="text-primary/60 text-xs">*</span>
                     </Label>
                     <Input
                       id="to-postal"
                       placeholder="z.B. 3011 oder Bern"
                       value={toPostal}
                       onChange={(e) => setToPostal(e.target.value)}
-                      className="h-12"
+                      className="h-12 border-2 border-muted/60 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                      required
                     />
                   </div>
 
                   {/* Apartment Size */}
-                  <div className="space-y-1.5">
-                    <Label htmlFor="apartment-size" className="text-sm font-medium">
-                      Wohnungsgrösse
-                    </Label>
-                    <Select value={apartmentSize} onValueChange={setApartmentSize}>
-                      <SelectTrigger id="apartment-size" className="h-12">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="apartment-size" className="text-sm font-medium flex items-center gap-1">
+                        Wohnungsgrösse
+                        <span className="text-primary/60 text-xs">*</span>
+                      </Label>
+                      <Link to="/umzugsrechner" className="text-xs text-primary hover:underline">
+                        Rechner →
+                      </Link>
+                    </div>
+                    <Select value={apartmentSize} onValueChange={setApartmentSize} required>
+                      <SelectTrigger id="apartment-size" className="h-12 border-2 border-muted/60 focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all">
                         <SelectValue placeholder="Wählen Sie..." />
                       </SelectTrigger>
                       <SelectContent>
