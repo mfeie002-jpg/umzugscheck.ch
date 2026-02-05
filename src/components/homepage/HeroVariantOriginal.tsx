@@ -30,6 +30,7 @@ import { KnownFromRow } from './KnownFromRow';
 import { useSocialProofAB } from '@/contexts/SocialProofABContext';
 import { HeroLiveCounter } from './HeroLiveCounter';
 import { HeroLiveActivityLine } from './HeroLiveActivityLine';
+import { HeroMicroProofRow } from './HeroMicroProofRow';
 
 const APARTMENT_SIZES = [
   { value: '1', label: '1 Zimmer' },
@@ -257,6 +258,8 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
                   </p>
                   {/* Live Counter - Social Proof */}
                   <HeroLiveCounter baseValue={47} />
+                  {/* Micro Proof Row - Rating + Online + Last Request */}
+                  <HeroMicroProofRow className="pt-1" />
                 </div>
 
                 {/* Form */}
