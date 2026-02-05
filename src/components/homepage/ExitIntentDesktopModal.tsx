@@ -121,7 +121,7 @@ export const ExitIntentDesktopModal = memo(function ExitIntentDesktopModal({
                 <X className="w-5 h-5 text-muted-foreground" />
               </button>
               
-              {/* Header */}
+              {/* Header with Live Counter */}
               <div className="bg-gradient-to-r from-primary/10 to-secondary/10 p-6 pb-4 text-center">
                 <h3 className="text-xl font-bold mb-1">
                   Bevor Sie gehen...
@@ -129,6 +129,15 @@ export const ExitIntentDesktopModal = memo(function ExitIntentDesktopModal({
                 <p className="text-sm text-muted-foreground">
                   Verpassen Sie nicht Ihre Chance zu sparen!
                 </p>
+                {/* Live Social Proof */}
+                <div className="flex items-center justify-center gap-2 mt-3 text-sm">
+                  <span className="relative flex h-2.5 w-2.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500" />
+                  </span>
+                  <span className="font-medium text-foreground">327 Personen</span>
+                  <span className="text-muted-foreground">haben heute ihr bestes Angebot gefunden</span>
+                </div>
               </div>
               
               {/* Testimonial */}
