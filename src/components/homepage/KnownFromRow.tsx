@@ -17,10 +17,10 @@ import { cn } from "@/lib/utils";
 import { Shield, Newspaper, Building2 } from "lucide-react";
 import { RealMediaLogo, SWISS_MEDIA_PARTNERS } from "@/components/trust/media-logos";
 
-// Display order: SRF, NZZ, 20 Minuten, Watson, Mieterverband, newhome
-const DISPLAY_LOGOS = ["SRF", "NZZ", "20 Minuten", "Watson", "Mieterverband", "newhome"];
-const MOBILE_LOGOS = ["SRF", "NZZ", "20 Minuten", "Watson"]; // Top 4 for mobile
-const REMAINING_COUNT = DISPLAY_LOGOS.length - MOBILE_LOGOS.length;
+// Display order is the order in SWISS_MEDIA_PARTNERS (single source of truth)
+const DISPLAY_LOGOS = SWISS_MEDIA_PARTNERS.map((p) => p.name);
+const MOBILE_LOGOS = DISPLAY_LOGOS.slice(0, 4); // Top 4 for mobile
+const REMAINING_COUNT = Math.max(0, DISPLAY_LOGOS.length - MOBILE_LOGOS.length);
 
 // Swiss Partner Logos (Infrastructure + Authority)
 const SWISS_PARTNERS = [
