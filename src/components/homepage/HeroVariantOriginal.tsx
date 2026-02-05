@@ -28,9 +28,8 @@ import { PressTrustBar } from './PressTrustBar';
 import { HeroTrustInline } from './HeroTrustInline';
 import { KnownFromRow } from './KnownFromRow';
 import { useSocialProofAB } from '@/contexts/SocialProofABContext';
-import { HeroLiveCounter } from './HeroLiveCounter';
 import { HeroLiveActivityLine } from './HeroLiveActivityLine';
-import { HeroMicroProofRow } from './HeroMicroProofRow';
+import { HeroSocialProofLine } from './HeroSocialProofLine';
 import { ApartmentSizeChips } from './ApartmentSizeChips';
 import { useFieldValidation, validationRules, ValidationFeedback } from './FormValidation';
 import { useGeolocation } from '@/hooks/use-geolocation';
@@ -289,10 +288,8 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
                   <p className="text-sm text-muted-foreground">
                     Wir finden den günstigsten Anbieter für Sie
                   </p>
-                  {/* Live Counter - Social Proof */}
-                  <HeroLiveCounter baseValue={47} />
-                  {/* Micro Proof Row - Rating + Online + Last Request */}
-                  <HeroMicroProofRow className="pt-1" />
+                  {/* Consolidated Social Proof Line - Rating + Online + Route */}
+                  <HeroSocialProofLine className="pt-2" />
                 </div>
 
                 {/* Form */}
