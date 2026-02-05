@@ -744,45 +744,72 @@ export const PremiumHeroSection = () => {
                   </TabsContent>
                 </Tabs>
                 
-                {/* "Bekannt aus:" Media Logos Row - Matches reference design */}
-                <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 pt-2 border-t border-border/30">
-                  <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <Shield className="h-3 w-3 text-primary" />
-                    <span className="font-medium">Bekannt aus:</span>
-                  </span>
-                  {/* SRF Badge */}
-                  <span className="bg-[#C8102E] text-white font-bold text-[10px] px-2 py-0.5 rounded">
-                    SRF
-                  </span>
-                  {/* NZZ */}
-                  <span className="font-serif font-bold text-sm text-foreground">
-                    NZZ
-                  </span>
-                  {/* BLICK Badge */}
-                  <span className="bg-[#E30613] text-white font-black text-[10px] px-2 py-0.5 rounded">
-                    BLICK
-                  </span>
-                  {/* 20 Minuten */}
-                  <span className="flex items-baseline gap-0.5">
-                    <span className="text-base font-black text-[#E3000F]">20</span>
-                    <span className="text-xs font-semibold text-foreground">Minuten</span>
-                  </span>
-                  {/* Watson */}
-                  <span className="flex items-center gap-0.5">
-                    <span className="w-4 h-4 bg-[#FF6B35] rounded-full flex items-center justify-center">
-                      <span className="text-white text-[8px] font-bold">W</span>
+                {/* Swiss Partner Logos - eUmzugCH, Die Post, ASTAG, Swiss Made */}
+                <div className="pt-3 border-t border-border/30">
+                  <div className="flex items-center justify-center gap-1.5 mb-2">
+                    <Shield className="w-3 h-3 text-primary/70" />
+                    <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
+                      Partner & Zertifizierungen
                     </span>
-                    <span className="font-bold text-xs text-foreground lowercase">watson</span>
-                  </span>
-                  {/* newhome */}
-                  <span className="flex items-center gap-0.5">
-                    <span className="w-4 h-4 bg-[#00A859] rounded flex items-center justify-center">
-                      <svg viewBox="0 0 24 24" className="w-2.5 h-2.5 text-white" fill="currentColor">
-                        <path d="M12 3L4 9v12h16V9l-8-6z"/>
-                      </svg>
-                    </span>
-                    <span className="font-semibold text-xs text-[#00A859]">newhome</span>
-                  </span>
+                  </div>
+                  <div className="flex items-center justify-center gap-3 sm:gap-5">
+                    <a
+                      href="https://www.eumzug.swiss/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300"
+                      title="eUmzugCH"
+                    >
+                      <img
+                        src="/logos/eumzugch.png"
+                        alt="eUmzugCH - Offizielle Umzugsmeldung"
+                        className="h-5 sm:h-6 w-auto object-contain max-w-[55px] sm:max-w-[70px]"
+                        loading="lazy"
+                      />
+                    </a>
+                    <a
+                      href="https://www.post.ch/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300"
+                      title="Die Post"
+                    >
+                      <img
+                        src="/logos/post-logo.png"
+                        alt="Die Post - Schweizer Post"
+                        className="h-5 sm:h-6 w-auto object-contain max-w-[55px] sm:max-w-[70px]"
+                        loading="lazy"
+                      />
+                    </a>
+                    <a
+                      href="https://www.astag.ch/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300"
+                      title="ASTAG"
+                    >
+                      <img
+                        src="/logos/astag-logo.png"
+                        alt="ASTAG - Branchenverband"
+                        className="h-5 sm:h-6 w-auto object-contain max-w-[55px] sm:max-w-[70px]"
+                        loading="lazy"
+                      />
+                    </a>
+                    <a
+                      href="https://swisslabel.ch/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300"
+                      title="Swiss Made"
+                    >
+                      <img
+                        src="/logos/swiss-made.png"
+                        alt="Swiss Made - Schweizer Qualität"
+                        className="h-5 sm:h-6 w-auto object-contain max-w-[45px] sm:max-w-[55px]"
+                        loading="lazy"
+                      />
+                    </a>
+                  </div>
                 </div>
                 
                 {/* Trust Microcopy - Consistent Primary colors */}
