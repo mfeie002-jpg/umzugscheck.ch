@@ -310,6 +310,7 @@ const AdminRankings = lazy(() => import("./pages/admin/Rankings"));
 const ConversionAnalytics = lazy(() => import("./pages/admin/ConversionAnalytics"));
 const EmailAutomation = lazy(() => import("./pages/admin/EmailAutomation"));
 const ABTesting = lazy(() => import("./pages/admin/ABTestingComplete"));
+const HeroABDashboard = lazy(() => import("./pages/admin/HeroABDashboard"));
 const PaidMedia = lazy(() => import("./pages/admin/PaidMedia"));
 const OperationsCenterPage = lazy(() => import("./pages/admin/OperationsCenter"));
 const LocalizedUmzugsofferten = lazy(() => import("./pages/LocalizedUmzugsofferten"));
@@ -497,6 +498,7 @@ const AdminRoutes = () => (
       <Route path="/admin/conversion-analytics" element={<ConversionAnalytics />} />
       <Route path="/admin/email-automation" element={<EmailAutomation />} />
       <Route path="/admin/ab-testing" element={<ABTesting />} />
+      <Route path="/admin/hero-ab" element={<HeroABDashboard />} />
       <Route path="/admin/paid-media" element={<PaidMedia />} />
       <Route path="/admin/operations-center" element={<OperationsCenterPage />} />
       <Route path="/admin/availability" element={<ProviderAvailability />} />
@@ -1027,7 +1029,7 @@ const App = () => (
                     <ResourceHints />
                     <PrefetchManager />
                     <PerformanceMonitor />
-                    <WebVitalsReporter debug={process.env.NODE_ENV === 'development'} />
+                    <WebVitalsReporter />
                     <PreloadResources />
                     <PerformanceDebugOverlay />
                     <AppRouterContent />
