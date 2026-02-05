@@ -8,8 +8,8 @@
 import { memo, useState } from "react";
 
 // Swiss Media & Partners with real logo paths
-// IMPORTANT: 6 unique Swiss media partners - no duplicates!
-// Order: SRF, NZZ, 20 Minuten, Watson, Mieterverband, newhome
+// IMPORTANT: 7 unique Swiss media partners - no duplicates!
+// Order: SRF, NZZ, 20 Minuten, Watson, Mieterverband, TCS, Trustpilot
 export const SWISS_MEDIA_PARTNERS = [
   {
     name: "SRF",
@@ -29,29 +29,36 @@ export const SWISS_MEDIA_PARTNERS = [
     name: "20 Minuten",
     shortName: "20min",
     website: "20min.ch",
-    brandColor: "#0066B3",
+    brandColor: "#4361EE",
     logo: "/logos/media/20min-new.png",
   },
   {
     name: "Watson",
     shortName: "watson",
     website: "watson.ch",
-    brandColor: "#FF6B35",
+    brandColor: "#1A1A1A",
     logo: "/logos/media/watson.png",
   },
   {
     name: "Mieterverband",
     shortName: "MV",
     website: "mieterverband.ch",
-    brandColor: "#00A859",
+    brandColor: "#003D7A",
     logo: "/logos/media/mieterverband.png",
   },
   {
-    name: "newhome",
-    shortName: "newhome",
-    website: "newhome.ch",
-    brandColor: "#00B4D8",
-    logo: "/logos/media/newhome-new.png",
+    name: "TCS",
+    shortName: "TCS",
+    website: "tcs.ch",
+    brandColor: "#1E4B8E",
+    logo: "/logos/media/tcs.png",
+  },
+  {
+    name: "Trustpilot",
+    shortName: "Trustpilot",
+    website: "trustpilot.com",
+    brandColor: "#00B67A",
+    logo: "/logos/media/trustpilot.png",
   },
 ] as const;
 
@@ -69,15 +76,15 @@ export const RealMediaLogo = memo(({
   const partner = SWISS_MEDIA_PARTNERS.find(p => p.name === name);
   
   const heights = {
-    sm: "h-5 sm:h-6",
-    md: "h-6 sm:h-7",
-    lg: "h-7 sm:h-9",
+    sm: "h-7 sm:h-8",
+    md: "h-8 sm:h-10",
+    lg: "h-10 sm:h-12",
   };
   
   const maxWidths = {
-    sm: "max-w-[60px] sm:max-w-[75px]",
-    md: "max-w-[75px] sm:max-w-[95px]",
-    lg: "max-w-[95px] sm:max-w-[120px]",
+    sm: "max-w-[80px] sm:max-w-[100px]",
+    md: "max-w-[100px] sm:max-w-[130px]",
+    lg: "max-w-[130px] sm:max-w-[160px]",
   };
   
   if (!partner?.logo || hasError) {
@@ -96,7 +103,7 @@ export const RealMediaLogo = memo(({
         ${heights[size]} 
         ${maxWidths[size]} 
         w-auto object-contain
-        ${grayscale ? 'grayscale opacity-50 hover:grayscale-0 hover:opacity-100' : ''}
+        ${grayscale ? 'grayscale opacity-70 hover:grayscale-0 hover:opacity-100' : ''}
         transition-all duration-300
       `}
       loading="lazy"
