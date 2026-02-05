@@ -76,15 +76,15 @@ export const RealMediaLogo = memo(({
   const partner = SWISS_MEDIA_PARTNERS.find(p => p.name === name);
   
   const heights = {
-    sm: "h-7 sm:h-8",
-    md: "h-8 sm:h-10",
-    lg: "h-10 sm:h-12",
+    sm: "h-5 sm:h-6",
+    md: "h-6 sm:h-7",
+    lg: "h-7 sm:h-8",
   };
   
   const maxWidths = {
-    sm: "max-w-[80px] sm:max-w-[100px]",
-    md: "max-w-[100px] sm:max-w-[130px]",
-    lg: "max-w-[130px] sm:max-w-[160px]",
+    sm: "max-w-[60px] sm:max-w-[75px]",
+    md: "max-w-[75px] sm:max-w-[90px]",
+    lg: "max-w-[90px] sm:max-w-[110px]",
   };
   
   if (!partner?.logo || hasError) {
