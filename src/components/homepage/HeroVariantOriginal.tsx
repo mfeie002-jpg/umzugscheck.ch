@@ -475,8 +475,8 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
                   {/* Live Activity Line - Shows rotating recent activity */}
                   <HeroLiveActivityLine className="mt-3" />
                   
-                  {/* Trust integration: Swiss Partner Logos (eUmzugCH, Post, ASTAG, Swiss Made) */}
-                  <KnownFromRow variant="swiss-partners" />
+                  {/* Trust integration: Media Logos (SRF, NZZ, etc.) */}
+                  <KnownFromRow variant="below-cta" />
                 </form>
 
                 {/* Trust Badges */}
