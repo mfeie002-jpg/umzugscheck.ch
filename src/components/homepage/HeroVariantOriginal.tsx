@@ -28,6 +28,8 @@ import { PressTrustBar } from './PressTrustBar';
 import { HeroTrustInline } from './HeroTrustInline';
 import { KnownFromRow } from './KnownFromRow';
 import { useSocialProofAB } from '@/contexts/SocialProofABContext';
+import { HeroLiveCounter } from './HeroLiveCounter';
+import { HeroLiveActivityLine } from './HeroLiveActivityLine';
 
 const APARTMENT_SIZES = [
   { value: '1', label: '1 Zimmer' },
@@ -246,13 +248,15 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
 
               <div className="space-y-5">
                 {/* Form Header */}
-                <div className="text-center space-y-1">
+                <div className="text-center space-y-2">
                   <h2 className="text-xl md:text-2xl font-bold text-foreground">
                     200+ Firmen vergleichen
                   </h2>
                   <p className="text-sm text-muted-foreground">
                     Wir finden den günstigsten Anbieter für Sie
                   </p>
+                  {/* Live Counter - Social Proof */}
+                  <HeroLiveCounter baseValue={47} />
                 </div>
 
                 {/* Form */}
@@ -324,6 +328,9 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
                     Jetzt checken lassen
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
+                  
+                  {/* Live Activity Line - Shows rotating recent activity */}
+                  <HeroLiveActivityLine className="mt-3" />
                   
                   {/* Trust integration: Always show KnownFrom below CTA (research-backed) */}
                   <KnownFromRow variant="below-cta" />
