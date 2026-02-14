@@ -1,68 +1,32 @@
 
-# Plan: Logos korrigieren - Hero-Form + Swiss Infrastructure Section
 
-## Problem-Analyse
+# Passwort zurücksetzen fuer mfeie002@gmail.com
 
-Basierend auf den Screenshots gibt es zwei Logo-Bereiche:
+## Problem
+Du kannst dich nicht einloggen und die bestehende `admin-reset-password` Edge Function erfordert einen authentifizierten Admin-User -- ein Henne-Ei-Problem.
 
-### 1. Hero-Form Card (PARTNER & ZERTIFIZIERUNGEN)
-- **Aktuell**: 4 Logos werden als TEXT angezeigt (eUmzugCH, DIE POST, ASTAG, +)
-- **Soll**: Echte PNG-Logos wie im vorherigen Zustand
-- **Pfade in KnownFromRow**: `/logos/eumzugch.png`, `/logos/post-logo.png`, `/logos/astag-logo.png`, `/logos/swiss-made.png`
-- **Status**: Dateien existieren → sollten funktionieren
+## Loesung
+Eine temporaere Edge Function erstellen, die das Passwort einmalig ohne Authentifizierung zuruecksetzt. Nach erfolgreicher Ausfuehrung wird die Funktion sofort wieder entfernt.
 
-### 2. Swiss Infrastructure Section (nach Hero)
-- **Aktuell**: 4 Cards mit "eumzugch.svg fehlt", "die-post.svg fehlt" etc.
-- **Ursache**: SVG-Dateien in `/logos/trust/` sind leer oder fehlerhaft
-- **Lösung**: PNG-Logos verwenden statt SVGs
+## Schritte
 
----
+1. **Temporaere Edge Function erstellen** (`supabase/functions/temp-password-reset/index.ts`)
+   - Verwendet den Service Role Key (server-seitig, kein Client-Zugriff)
+   - Setzt das Passwort fuer `mfeie002@gmail.com` auf `passwort123`
+   - Kein Auth-Check noetig, da einmalige Verwendung
 
-## Umsetzungsplan
+2. **Funktion deployen und ausfuehren**
+   - Einmaliger Aufruf per Edge Function Curl-Tool
 
-### Schritt 1: TrustRibbonVariantG - PNG statt SVG
+3. **Temporaere Funktion sofort loeschen**
+   - Dateien entfernen und deployed Function loeschen
+   - Kein Sicherheitsrisiko, da die Funktion nur kurz existiert
 
-Die Datei `src/components/trust/TrustRibbonVariantG.tsx` anpassen:
+4. **Login testen**
+   - Verifizieren, dass der Login mit dem neuen Passwort funktioniert
 
-**Vorher:**
-```typescript
-const infrastructurePartners = [
-  { id: "eumzugch", logo: "/logos/trust/eumzugch.svg", ... },
-  { id: "post", logo: "/logos/trust/die-post.svg", ... },
-  { id: "astag", logo: "/logos/trust/astag.svg", ... },
-  { id: "swissmade", logo: "/logos/trust/swiss-label.svg", ... },
-];
-```
+## Sicherheitshinweis
+- Die temporaere Funktion existiert nur fuer Sekunden
+- Das Passwort `passwort123` ist relativ schwach -- nach dem Login solltest du es aendern
+- Alternativ: Eine "Passwort vergessen"-Funktion auf der Admin-Login-Seite einbauen, damit das Problem kuenftig nicht mehr auftritt
 
-**Nachher (PNG-Pfade aus public/logos):**
-```typescript
-const infrastructurePartners = [
-  { id: "eumzugch", logo: "/logos/eumzugch.png", ... },
-  { id: "post", logo: "/logos/post-logo.png", ... },
-  { id: "astag", logo: "/logos/astag-logo.png", ... },
-  { id: "swissmade", logo: "/logos/swiss-made.png", ... },
-];
-```
-
-### Schritt 2: Prüfen ob Hero-Form Logos korrekt angezeigt werden
-
-Die KnownFromRow-Komponente verwendet bereits die korrekten PNG-Pfade:
-- `/logos/eumzugch.png` ✓
-- `/logos/post-logo.png` ✓
-- `/logos/astag-logo.png` ✓
-- `/logos/swiss-made.png` ✓
-
-Falls Logos trotzdem nicht erscheinen → Bildpfade oder onError-Handler prüfen.
-
----
-
-## Zu ändernde Dateien
-
-| Datei | Änderung |
-|-------|----------|
-| `src/components/trust/TrustRibbonVariantG.tsx` | Logo-Pfade von SVG auf PNG umstellen |
-
-## Erwartetes Ergebnis
-
-1. **Hero-Form**: 4 echte Partner-Logos (eUmzugCH, Die Post, ASTAG, Swiss Made) mit grayscale Hover-Effekt
-2. **Swiss Infrastructure Section**: 4 Cards mit sichtbaren PNG-Logos statt "fehlt"-Meldungen
