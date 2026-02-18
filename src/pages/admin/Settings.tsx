@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,17 @@ export default function AdminSettings() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user?.email) {
+        setUserEmail(data.user.email);
+      } else {
+        navigate("/admin/login");
+      }
+    });
+  }, [navigate]);
 
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,15 +50,14 @@ export default function AdminSettings() {
     setLoading(true);
 
     try {
-      // First verify current password by re-signing in
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user?.email) {
-        setError("Kein angemeldeter Benutzer gefunden.");
+      if (!userEmail) {
+        setError("Kein angemeldeter Benutzer gefunden. Bitte neu einloggen.");
+        navigate("/admin/login");
         return;
       }
 
       const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: userData.user.email,
+        email: userEmail,
         password: currentPassword,
       });
 
