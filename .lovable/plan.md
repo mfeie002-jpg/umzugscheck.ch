@@ -1,160 +1,237 @@
 
+# KI Video-Analyse: Build Error Fixes + Komplettes Export-Bundle für feierabendservices.ch
 
-# KI Video-Analyse: Frame-basierte Inventar-Erkennung
+## Was gebaut wird
 
-## Uebersicht
+Zwei separate Ziele in einem Durchgang:
 
-Die bestehende Video-Analyse wird von "ganzes Video als base64" auf eine robuste Frame-Extraktion umgebaut. Der Client extrahiert 8-12 Frames aus dem Video, komprimiert sie, und schickt nur die Frames an eine neue Edge Function. Das System wird erweiterbar fuer Umzug, Raeumung, Entsorgung und Firmenumzug.
-
-Zusaetzlich werden die Build-Fehler in `ScreenshotRenderModeRoot.tsx` und `use-push-notifications.tsx` behoben.
+1. **Build-Fehler beheben** in `ScreenshotRenderModeRoot.tsx` und `use-push-notifications.tsx`
+2. **Frame-basierte Video-Analyse** – Upgrade der bestehenden Komponente + neue Edge Function + DB-Tabelle
+3. **Komplettes Export-Bundle** für das andere Projekt (feierabendservices.ch) – alle nötigen Dateien mit angepasstem Prompt und Kontext
 
 ---
 
-## Architektur
+## Teil 1: Build-Fehler beheben
+
+### Fix A – `ScreenshotRenderModeRoot.tsx` (Zeile 42)
+
+**Problem:** `UCIntersectionObserver` implementiert das Interface `IntersectionObserver`, aber `scrollMargin` (eine `readonly string`-Property) fehlt – TypeScript TS2420 und TS2345.
+
+**Fix:** `readonly scrollMargin: string = "0px"` zur Klasse hinzufügen (direkt nach `thresholds`).
 
 ```text
-[Handy-Video]
-     |
-     v
-[Client: extractVideoFrames()]
-     | 8-12 JPEG frames (max 1024px, quality 0.7)
-     v
-[Edge Function: analyze-inventory-frames]
-     | frames[] + serviceType + metadata
-     v
-[Lovable AI Gateway (gemini-2.5-flash)]
-     | STRICT JSON response
-     v
-[DB: video_surveys] + [UI: Result Card mit CTAs]
+class UCIntersectionObserver implements IntersectionObserver {
+  readonly root: ...
+  readonly rootMargin: ...
+  readonly thresholds: ...
+  readonly scrollMargin: string = "0px";   // <-- NEU
+  ...
 ```
+
+### Fix B – `use-push-notifications.tsx` (Zeilen 19 und 38)
+
+**Problem:** `registration.pushManager` existiert nicht auf dem TypeScript-Typ `ServiceWorkerRegistration` in dieser Environment-Konfiguration (TS2339).
+
+**Fix:** Type-Assertion via `(registration as any).pushManager` an beiden Stellen.
 
 ---
 
-## Deliverables
+## Teil 2: Frame-basierte Video-Analyse (Upgrade auf diesem Projekt)
 
-### A) Utility: `src/utils/extractVideoFrames.ts`
+### A) Neue Utility: `src/utils/extractVideoFrames.ts`
 
-Neue Utility-Funktion die:
-- Ein `File`-Objekt (Video) entgegennimmt
-- Ein unsichtbares `<video>` + `<canvas>` Element erstellt
-- 8-12 gleichmaessig verteilte Frames extrahiert (seek via `currentTime`)
-- Jeden Frame auf max 1024px skaliert und als JPEG base64 (quality 0.7) exportiert
-- `Promise<string[]>` zurueckgibt (array of `data:image/jpeg;base64,...`)
+Client-seitige Frame-Extraktion:
+- Nimmt ein `File`-Objekt (Video) entgegen
+- Erstellt ein unsichtbares `<video>` + `<canvas>` (offscreen, nicht im DOM)
+- Extrahiert 10 gleichmässig verteilte Frames via `currentTime` seek
+- Skaliert jeden Frame auf max 1024px (Aspect Ratio behalten)
+- Exportiert als JPEG base64 (quality 0.75)
+- Gibt `Promise<string[]>` zurück (array of `data:image/jpeg;base64,...`)
+- Beinhaltet Cleanup der Object URL
 
-### B) Edge Function: `supabase/functions/analyze-inventory-frames/index.ts`
+### B) Neue Edge Function: `supabase/functions/analyze-inventory-frames/index.ts`
 
-Neue Edge Function (die alte `analyze-moving-video` bleibt als Fallback):
+Neue robuste Edge Function (alte `analyze-moving-video` bleibt als Fallback):
 
-- **Input:** `{ frames: string[], serviceType, zip?, city?, rooms?, floor?, elevator?, urgency?, notes?, gclid? }`
-- **Max 10 Frames** - wenn mehr, werden gleichmaessig 10 ausgewaehlt
-- **Prompt variiert nach serviceType:**
-  - `umzug` / `firmenumzug`: Fokus auf Inventar, Volumen, Team, Fahrzeuge
-  - `raeumung` / `entsorgung`: Fokus auf disposal_breakdown, Gewicht, Entsorgungskategorien
-- **Output STRICT JSON:**
-  ```text
-  {
-    serviceType, estimated_volume_m3, estimated_weight_kg|null,
-    bulky_items[{item,count,notes}],
-    disposal_breakdown|null (fuer raeumung/entsorgung),
-    recommended_team{people,hours,vehicles,lift_needed},
-    price_range_chf{low,high,rationale},
-    confidence (0..1),
-    followup_questions[], red_flags[], assumptions[]
-  }
-  ```
-- Robustes JSON-Parsing (```json``` wrapper, fallback)
-- CORS korrekt mit allen Supabase-Headers
-- Rate limiting via bestehende `check_rate_limit` RPC
+**Input:**
+```text
+{
+  frames: string[],          // JPEG base64 frames
+  serviceType: "umzug" | "raeumung" | "entsorgung" | "firmenumzug",
+  zip?, city?, rooms?, floor?, elevator?, urgency?, notes?, gclid?
+}
+```
+
+**Output STRICT JSON:**
+```text
+{
+  serviceType,
+  estimated_volume_m3,
+  estimated_weight_kg | null,
+  bulky_items: [{item, count, notes}],
+  disposal_breakdown | null,   // nur für raeumung/entsorgung
+  recommended_team: {people, hours, vehicles, lift_needed},
+  price_range_chf: {low, high, rationale},
+  confidence,
+  followup_questions[],
+  red_flags[],
+  assumptions[]
+}
+```
+
+**Prompt-Strategie nach serviceType:**
+- `umzug` / `firmenumzug`: Fokus auf Inventar, Volumen m³, Team, Fahrzeuge, CHF-Preisrange
+- `raeumung`: Fokus auf disposal_breakdown (Sperrgut, Elektro, Sonderabfall), Entsorgungskosten
+- `entsorgung`: Fokus auf Gewicht, Entsorgungskategorien, Kosten CHF
+
+**Technische Details:**
+- Max 10 Frames; wenn mehr übergeben werden, werden sie gleichmässig ausgewählt
+- Robustes JSON-Parsing (```json``` wrapper, Fallback mit sinnvollen Defaults)
+- Rate limiting via bestehende `check_rate_limit` RPC (5 Requests/h)
+- CORS mit allen Supabase-Headers
+- LOVABLE_API_KEY aus Environment; Modell `google/gemini-2.5-flash`
+- 402/429 Fehler werden sauber an Client weitergeleitet
 
 ### C) Datenbank: `video_surveys` Tabelle
 
-SQL-Migration fuer eine neue Tabelle:
+SQL-Migration für neue Tabelle:
 
-| Spalte | Typ | Beschreibung |
-|--------|-----|--------------|
-| id | uuid PK | |
-| created_at | timestamptz | |
+| Spalte | Typ | Notes |
+|---|---|---|
+| id | uuid PK | default gen_random_uuid() |
+| created_at | timestamptz | default now() |
 | service_type | text | umzug/raeumung/entsorgung/firmenumzug |
-| frames_count | int | Anzahl analysierte Frames |
-| analysis_json | jsonb | Vollstaendiges AI-Resultat |
-| confidence | numeric | 0-1 |
-| gclid | text | Google Click ID |
-| gbraid | text | |
-| wbraid | text | |
-| fbclid | text | Meta Click ID |
+| frames_count | int | Anzahl analysierter Frames |
+| analysis_json | jsonb | Vollständiges AI-Resultat |
+| confidence | numeric(3,2) | 0.00 bis 1.00 |
+| gclid | text | nullable |
+| gbraid | text | nullable |
+| wbraid | text | nullable |
+| fbclid | text | nullable |
 | landing_path | text | URL-Pfad bei Einstieg |
-| city | text | |
-| zip | text | |
-| phone | text | Optional |
-| email | text | Optional |
-| status | text | pending/completed/error |
-| lead_id | uuid | Spaetere Verknuepfung mit leads-Tabelle |
+| city | text | nullable |
+| zip | text | nullable |
+| phone | text | nullable |
+| email | text | nullable |
+| status | text | default 'completed' |
+| lead_id | uuid | nullable, für spätere Verknüpfung |
 
-RLS: INSERT fuer anon (oeffentlich, da kein Login noetig), SELECT/UPDATE nur fuer admins.
+**RLS:**
+- `INSERT` für anon (öffentlich, kein Login nötig)
+- `SELECT` / `UPDATE` nur für authentifizierte Admins
 
-### D) Frontend-Komponente: Rework `VideoInventoryAnalysis.tsx`
+**config.toml:** Neuer Eintrag `[functions.analyze-inventory-frames]` mit `verify_jwt = false`
 
-Die bestehende Komponente wird erweitert:
+### D) Frontend: `VideoInventoryAnalysis.tsx` – Rework
 
-1. **ServiceType-Auswahl** als optionale Prop (default: umzug)
-2. **Frame-Extraktion** statt base64-Upload des ganzen Videos
-3. **Analyse-Fortschritt** mit Steps: "Frames extrahieren..." -> "KI analysiert..." -> "Fertig"
-4. **Result-Card** zeigt:
-   - Geschaetztes Volumen + Preisrange CHF
+Die bestehende Komponente wird erweitert (nicht ersetzt):
+
+1. **Neuer `serviceType` Prop** (default: `"umzug"`)
+2. **Frame-Extraktion** statt base64 des ganzen Videos (ruft `extractVideoFrames` auf)
+3. **Neue Result-Typen** passend zur neuen Edge Function
+4. **Fortschritts-Steps** sichtbar:
+   - Step 1: "Frames werden extrahiert..." (mit Counter: 1/10, 2/10...)
+   - Step 2: "KI analysiert Frames..."
+   - Step 3: "Fertig ✓"
+5. **Erweiterte Result-Card:**
+   - Volumen m³ + Preisrange CHF (prominent)
    - Bulky Items Liste
-   - Team-Empfehlung (Personen, Stunden)
-   - Confidence-Badge
-   - Follow-up Fragen der KI
+   - Team-Empfehlung (Personen, Stunden, Fahrzeuge)
+   - Confidence-Badge (grün/gelb/rot)
+   - Follow-up Fragen der KI (als Accordion)
    - Red Flags (z.B. "Enge Treppe erkannt")
-5. **Dual CTA nach Analyse:**
-   - "Remote Offerte fixieren" -> WhatsApp/Anruf (bestehende WhatsApp-Utils)
-   - "Vor-Ort Besichtigung buchen" -> Link zu Terminbuchung oder Kontaktformular
-6. **DB-Persistenz:** Nach erfolgreicher Analyse wird das Resultat in `video_surveys` gespeichert inkl. GCLID/URL-Params
-
-### E) Build-Fehler beheben
-
-1. **ScreenshotRenderModeRoot.tsx (Zeile 42):** `scrollMargin` Property zur `UCIntersectionObserver` Klasse hinzufuegen (`readonly scrollMargin: string = "0px"`)
-2. **use-push-notifications.tsx (Zeile 19, 38):** TypeScript `pushManager` Fehler mit Type-Assertion beheben (`(registration as any).pushManager`)
-
-### F) Config
-
-- `supabase/config.toml`: Neuer Eintrag `[functions.analyze-inventory-frames]` mit `verify_jwt = false`
-- Bestehende Funktion `analyze-moving-video` bleibt als Fallback
+6. **Dual CTA nach Analyse:**
+   - "Remote Offerte fixieren" → WhatsApp (nutzt `generateWhatsAppLink` aus `src/utils/whatsapp.ts`)
+   - "Vor-Ort Besichtigung buchen" → Link zu Kontaktformular
+7. **DB-Persistenz:** Nach erfolgreicher Analyse Speichern in `video_surveys` inkl. GCLID aus URL-Params
 
 ---
 
-## Technische Details
+## Teil 3: Export-Bundle für feierabendservices.ch
 
-### Frame-Extraktion (Client-seitig)
+Das ist das wichtigste Deliverable: alle Dateien, die das andere Projekt braucht, um die KI-Video-Analyse zu implementieren. Diese werden als vollständige, copy-pasteable Dateien in einem dedizierten Ordner `src/exports/feierabend-video-analyzer/` abgelegt.
+
+### Inhalt des Bundles:
+
+**Datei 1: `FEIERABEND_SETUP.md`**
+Schritt-für-Schritt Anleitung:
+1. Welche Dateien wohin kopieren
+2. Edge Function deployen
+3. Datenbank-Migration ausführen (SQL beigefügt)
+4. config.toml Eintrag hinzufügen
+5. Komponente einbinden
+6. Testen
+
+**Datei 2: `feierabend-edge-function.ts`** (ready to paste als `supabase/functions/analyze-inventory-frames/index.ts`)
+Identisch mit der Edge Function aus Teil 2, aber mit angepasstem Prompt für Feierabend Services:
+- Fokus auf **Haushaltsauflösung, Räumung, Entsorgung, Firmenräumung** (Feierabend's Kernservices)
+- Preislogik für Zürich/Deutschschweiz
+- Branding: "Feierabend Services" in Fehler- und Hinweistexten
+- Fallback-Daten angepasst
+
+**Datei 3: `feierabend-extract-frames.ts`** (ready to paste als `src/utils/extractVideoFrames.ts`)
+Identisch mit Utility aus Teil A – keine Anpassungen nötig, ist UI-agnostisch.
+
+**Datei 4: `feierabend-video-component.tsx`** (ready to paste, angepasste Variante)
+Variante der VideoInventoryAnalysis-Komponente, angepasst für Feierabend:
+- Kein Umzugs-Fokus, sondern: Räumung, Haushaltsauflösung, Entsorgung, Firmenräumung
+- ServiceType-Auswahl als erstes UI-Element (Tabs: Räumung / Entsorgung / Firmenräumung)
+- Texte in Schweizerdeutsch/Hochdeutsch angepasst: "Räumungsgut erfassen", "Entsorgungsvolumen schätzen"
+- CTAs angepasst: "Jetzt Offerte anfordern" (zu Feierabend Kontaktformular), "Direkt anrufen" (Feierabend Tel)
+- WhatsApp CTA mit Feierabend-Nummer (Platzhalter, konfigurierbar)
+- Kein `onInventoryChange` Callback-Zwang – standalone funktionsfähig
+
+**Datei 5: `feierabend-db-migration.sql`**
+Vollständige SQL-Migration für `video_surveys` Tabelle inkl. RLS-Policies – copy-paste ready.
+
+**Datei 6: `feierabend-config-snippet.toml`**
+TOML-Snippet zum Einfügen in `supabase/config.toml`.
+
+---
+
+## Dateiänderungen-Übersicht
 
 ```text
-1. Erstelle HTMLVideoElement + Canvas (offscreen)
-2. Lade Video-File als Object URL
-3. Warte auf "loadedmetadata" Event
-4. Berechne Timestamps: duration / (targetFrames + 1) * i
-5. Fuer jeden Timestamp: video.currentTime = t, warte auf "seeked"
-6. Zeichne Frame auf Canvas (max 1024px), exportiere als JPEG base64
-7. Raeume Object URL auf
+GEÄNDERT:
+- src/components/ScreenshotRenderModeRoot.tsx     (Build-Fix: scrollMargin)
+- src/hooks/use-push-notifications.tsx            (Build-Fix: pushManager cast)
+- src/components/offerten-v2/VideoInventoryAnalysis.tsx  (Frame-Analyse Upgrade)
+- supabase/config.toml                            (neuer Function-Eintrag)
+
+NEU (für dieses Projekt):
+- src/utils/extractVideoFrames.ts                 (Frame-Extraktion Utility)
+- supabase/functions/analyze-inventory-frames/index.ts  (neue Edge Function)
+- DB Migration: video_surveys Tabelle
+
+NEU (Export-Bundle für feierabendservices.ch):
+- src/exports/feierabend-video-analyzer/FEIERABEND_SETUP.md
+- src/exports/feierabend-video-analyzer/feierabend-edge-function.ts
+- src/exports/feierabend-video-analyzer/feierabend-extract-frames.ts
+- src/exports/feierabend-video-analyzer/feierabend-video-component.tsx
+- src/exports/feierabend-video-analyzer/feierabend-db-migration.sql
+- src/exports/feierabend-video-analyzer/feierabend-config-snippet.toml
 ```
-
-### Prompt-Strategie nach ServiceType
-
-- **umzug/firmenumzug:** "Schaetze Umzugsvolumen, Inventar, Team-Groesse, Fahrzeuge, Preisrange CHF"
-- **raeumung:** "Schaetze Raeumungsaufwand, Entsorgungskategorien (Sperrgut, Elektro, Sondermuell), Team, Preisrange CHF"
-- **entsorgung:** "Schaetze Entsorgungsvolumen und -gewicht, Kategorien, Kosten CHF"
-
-### GCLID/Attribution Tracking
-
-Beim Laden der Komponente werden URL-Parameter (`gclid`, `gbraid`, `wbraid`, `fbclid`) aus `window.location.search` gelesen und mit dem Survey gespeichert.
 
 ---
 
-## Testen
+## Testen nach Implementierung
 
-1. Oeffne `/umzugsofferten` oder eine Seite mit der VideoInventoryAnalysis-Komponente
-2. Waehle ein kurzes Handyvideo (10-30 Sek. Wohnungsrundgang)
-3. Die Frames werden extrahiert (sichtbar im Fortschritt)
-4. Die KI analysiert die Frames und liefert Inventar + Preisrange
-5. Pruefe die Resultate und die CTAs
-6. Pruefe in der Datenbank, ob ein `video_surveys`-Eintrag erstellt wurde
+1. Build läuft ohne TS-Fehler durch (scrollMargin + pushManager fixes)
+2. Öffne `/umzugsofferten` → VideoInventoryAnalysis ist sichtbar
+3. Lade ein kurzes Handyvideo hoch (10–30 Sek)
+4. Sieh Frame-Extraktion: "Frames extrahieren 1/10, 2/10..."
+5. KI-Analyse läuft: "KI analysiert..."
+6. Result-Card zeigt: Volumen, CHF-Preisrange, Bulky Items, Team-Empfehlung, Confidence
+7. Dual CTAs sind sichtbar und klickbar
+8. In der Datenbank erscheint ein neuer Eintrag in `video_surveys`
+9. Das Export-Bundle unter `src/exports/feierabend-video-analyzer/` ist vollständig und dokumentiert
 
+## Hinweis für feierabendservices.ch
+
+Das Bundle in `src/exports/feierabend-video-analyzer/` ist selbsterklärend – der Entwickler des anderen Projekts kann:
+1. `FEIERABEND_SETUP.md` lesen
+2. Die 5 Dateien an die richtigen Orte kopieren
+3. Die Migration ausführen
+4. Die Komponente in einer Page einbinden
+
+Keine weiteren Abhängigkeiten als Supabase + Lovable AI (LOVABLE_API_KEY ist in jedem Lovable Cloud Projekt automatisch gesetzt).
