@@ -6146,6 +6146,66 @@ export type Database = {
           },
         ]
       }
+      video_surveys: {
+        Row: {
+          analysis_json: Json | null
+          city: string | null
+          confidence: number | null
+          created_at: string
+          email: string | null
+          fbclid: string | null
+          frames_count: number | null
+          gbraid: string | null
+          gclid: string | null
+          id: string
+          landing_path: string | null
+          lead_id: string | null
+          phone: string | null
+          service_type: string
+          status: string
+          wbraid: string | null
+          zip: string | null
+        }
+        Insert: {
+          analysis_json?: Json | null
+          city?: string | null
+          confidence?: number | null
+          created_at?: string
+          email?: string | null
+          fbclid?: string | null
+          frames_count?: number | null
+          gbraid?: string | null
+          gclid?: string | null
+          id?: string
+          landing_path?: string | null
+          lead_id?: string | null
+          phone?: string | null
+          service_type?: string
+          status?: string
+          wbraid?: string | null
+          zip?: string | null
+        }
+        Update: {
+          analysis_json?: Json | null
+          city?: string | null
+          confidence?: number | null
+          created_at?: string
+          email?: string | null
+          fbclid?: string | null
+          frames_count?: number | null
+          gbraid?: string | null
+          gclid?: string | null
+          id?: string
+          landing_path?: string | null
+          lead_id?: string | null
+          phone?: string | null
+          service_type?: string
+          status?: string
+          wbraid?: string | null
+          zip?: string | null
+        }
+        Relationships: []
+      }
       video_upload_sessions: {
         Row: {
           created_at: string

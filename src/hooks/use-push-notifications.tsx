@@ -16,7 +16,7 @@ export const usePushNotifications = () => {
   const checkSubscription = async () => {
     try {
       const registration = await navigator.serviceWorker.ready;
-      const sub = await registration.pushManager.getSubscription();
+      const sub = await (registration as any).pushManager.getSubscription();
       setSubscription(sub);
       setIsSubscribed(!!sub);
     } catch (error) {
@@ -35,7 +35,7 @@ export const usePushNotifications = () => {
       }
 
       // Subscribe to push notifications
-      const sub = await registration.pushManager.subscribe({
+      const sub = await (registration as any).pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(
           import.meta.env.VITE_VAPID_PUBLIC_KEY || ""

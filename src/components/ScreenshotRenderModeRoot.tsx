@@ -43,6 +43,7 @@ if (typeof window !== "undefined") {
           readonly root: Element | Document | null;
           readonly rootMargin: string;
           readonly thresholds: ReadonlyArray<number>;
+          readonly scrollMargin: string = "0px";
           private _callback: IntersectionObserverCallback;
 
           constructor(callback: IntersectionObserverCallback, options?: IntersectionObserverInit) {

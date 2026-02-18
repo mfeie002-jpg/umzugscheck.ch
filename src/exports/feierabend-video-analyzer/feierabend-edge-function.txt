@@ -1,0 +1,277 @@
+// =============================================================================
+// FEIERABEND SERVICES – Edge Function: analyze-inventory-frames
+// 
+// Kopiere diese Datei nach: supabase/functions/analyze-inventory-frames/index.ts
+// 
+// Erfordert: LOVABLE_API_KEY (automatisch in Lovable Cloud verfügbar)
+// =============================================================================
+
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1';
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
+};
+
+const MAX_FRAMES = 10;
+
+type ServiceType = "umzug" | "raeumung" | "entsorgung" | "firmenumzug";
+
+function buildSystemPrompt(serviceType: ServiceType, context: Record<string, string | undefined>): string {
+  const contextStr = [
+    context.city && `Ort: ${context.city}${context.zip ? ` (${context.zip})` : ""}`,
+    context.rooms && `Zimmer: ${context.rooms}`,
+    context.floor && `Stockwerk: ${context.floor}`,
+    context.elevator === "true" ? "Lift: vorhanden" : context.elevator === "false" ? "Lift: keiner" : null,
+    context.urgency && `Dringlichkeit: ${context.urgency}`,
+    context.notes && `Kundennotiz: ${context.notes}`,
+  ].filter(Boolean).join("\n");
+
+  const baseContext = contextStr ? `\nKundeninfos:\n${contextStr}\n` : "";
+
+  const servicePrompts: Record<ServiceType, string> = {
+    raeumung: `Du bist ein Experte für Haushaltsauflösungen und Räumungen in der Deutschschweiz (Raum Zürich).
+Analysiere diese ${MAX_FRAMES} Frames aus einem Handyvideo-Rundgang.
+${baseContext}
+Feierabend Services bietet professionelle Räumungen in der Deutschschweiz an.
+
+Schweizer Räumungspreise (Richtwerte Feierabend Services):
+- Studio / 1 Zimmer (bis 20m³): CHF 800–1'800
+- 2–3 Zimmer (20–40m³): CHF 1'800–4'500
+- 4–5 Zimmer (40–70m³): CHF 4'500–9'000
+- Haus / grosse Wohnung (70m³+): CHF 9'000–20'000
+- Sonderentsorgung (Asbest, Sondermüll): +CHF 500–5'000
+
+Entsorgungskategorien Schweiz:
+- Sperrgut: Kehrichthof oder kostenpflichtige Abfuhr
+- Elektroschrott: SENS/SWICO reguliert (gratis oder günstig)
+- Sondermüll (Farben, Batterien): Gemeindeentsorgungsstelle
+- Wertgegenstände: Wiederverkauf, Brockenhaus`,
+
+    entsorgung: `Du bist ein Entsorgungsfachmann für die Deutschschweiz (Raum Zürich).
+Analysiere diese ${MAX_FRAMES} Frames aus einem Video-Rundgang.
+${baseContext}
+Feierabend Services bietet Entsorgungsservices in der Deutschschweiz an.
+
+Schweizer Entsorgungskosten (Richtwerte):
+- Sperrgut pro m³: CHF 80–150
+- Elektroschrott: CHF 0 (SENS) bis CHF 200 je nach Gerät
+- Sondermüll pro 10kg: CHF 100–300
+- Pauschal Wohnungsentsorgung: CHF 500–2'000`,
+
+    firmenumzug: `Du bist ein Experte für Firmenräumungen und Betriebsauflösungen in der Deutschschweiz.
+Analysiere diese ${MAX_FRAMES} Frames aus einem Video-Rundgang.
+${baseContext}
+Feierabend Services bietet professionelle Firmenräumungen in der Deutschschweiz an.
+
+Schweizer Preise Firmenräumung (Richtwerte):
+- Kleines Büro (1–3 Arbeitsplätze): CHF 1'500–4'000
+- Mittleres Büro (4–10 AP): CHF 4'000–10'000
+- Grosses Büro (10+ AP): CHF 10'000–30'000
+- Lager / Betrieb: je nach Grösse CHF 5'000–50'000`,
+
+    umzug: `Du bist ein Umzugsvolumen-Schätzer für Schweizer Umzugsfirmen (Deutschschweiz).
+Analysiere diese ${MAX_FRAMES} Frames aus einem Handyvideo-Rundgang.
+${baseContext}
+Feierabend Services bietet Umzugsservices in der Deutschschweiz an.
+
+Schweizer Umzugspreise (Richtwerte):
+- Klein (bis 20m³, 1–2 Zimmer): CHF 800–1'500
+- Mittel (20–40m³, 3–4 Zimmer): CHF 1'500–3'500
+- Gross (40–70m³, 5+ Zimmer): CHF 3'500–7'000`,
+  };
+
+  return servicePrompts[serviceType] || servicePrompts.raeumung;
+}
+
+function buildOutputSchema(serviceType: ServiceType): string {
+  const isDisposal = serviceType === "raeumung" || serviceType === "entsorgung";
+  
+  return `
+Antworte NUR mit diesem JSON (kein Markdown, kein Text drumherum):
+{
+  "serviceType": "${serviceType}",
+  "estimated_volume_m3": <Zahl>,
+  "estimated_weight_kg": ${isDisposal ? "<Zahl>" : "null"},
+  "bulky_items": [
+    {"item": "<Name>", "count": <Zahl>, "notes": "<Hinweis oder null>"}
+  ],
+  "disposal_breakdown": ${isDisposal ? `{
+    "sperrgut_m3": <Zahl>,
+    "elektroschrott_stueck": <Zahl>,
+    "sondermuell_kg": <Zahl>,
+    "normalabfall_m3": <Zahl>,
+    "wertgegenstaende": ["<Liste>"]
+  }` : "null"},
+  "recommended_team": {
+    "people": <1-6>,
+    "hours": <1-16>,
+    "vehicles": <1-3 oder null>,
+    "lift_needed": <true/false/null>
+  },
+  "price_range_chf": {
+    "low": <Zahl>,
+    "high": <Zahl>,
+    "rationale": "<Begründung auf Deutsch>"
+  },
+  "confidence": <0.0-1.0>,
+  "followup_questions": ["<Frage>"],
+  "red_flags": ["<z.B. Enge Treppe, Keller nicht zugänglich>"],
+  "assumptions": ["<z.B. Keller nicht im Video>"]
+}`;
+}
+
+function extractJson(text: string): any {
+  try { return JSON.parse(text); } catch {}
+  const jsonBlock = text.match(/```json\s*([\s\S]*?)\s*```/);
+  if (jsonBlock) { try { return JSON.parse(jsonBlock[1]); } catch {} }
+  const codeBlock = text.match(/```\s*([\s\S]*?)\s*```/);
+  if (codeBlock) { try { return JSON.parse(codeBlock[1]); } catch {} }
+  const braceBlock = text.match(/\{[\s\S]*\}/);
+  if (braceBlock) { try { return JSON.parse(braceBlock[0]); } catch {} }
+  return null;
+}
+
+function buildFallback(serviceType: ServiceType): Record<string, any> {
+  const isDisposal = serviceType === "raeumung" || serviceType === "entsorgung";
+  return {
+    serviceType,
+    estimated_volume_m3: 20,
+    estimated_weight_kg: isDisposal ? 2000 : null,
+    bulky_items: [
+      { item: "Sofa", count: 1, notes: null },
+      { item: "Bett", count: 1, notes: null },
+      { item: "Kleiderschrank", count: 1, notes: null },
+    ],
+    disposal_breakdown: isDisposal ? {
+      sperrgut_m3: 6,
+      elektroschrott_stueck: 2,
+      sondermuell_kg: 10,
+      normalabfall_m3: 2,
+      wertgegenstaende: [],
+    } : null,
+    recommended_team: { people: 2, hours: 5, vehicles: 1, lift_needed: null },
+    price_range_chf: {
+      low: serviceType === "entsorgung" ? 600 : 1500,
+      high: serviceType === "entsorgung" ? 1800 : 4500,
+      rationale: "Standardschätzung (automatische Analyse nicht verfügbar) – für genaue Offerte bitte Feierabend Services kontaktieren",
+    },
+    confidence: 0.3,
+    followup_questions: [
+      "Gibt es besondere Gegenstände (Klavier, Safe, grosse Aquarien)?",
+      "Wie ist die Zugänglichkeit (Lift, Treppe, Parkmöglichkeit)?",
+      "Gibt es einen Keller oder Estrich mit zusätzlichem Räumungsgut?",
+    ],
+    red_flags: ["Analyse konnte nicht vollständig durchgeführt werden"],
+    assumptions: ["Standardwerte verwendet da Videoanalyse fehlschlug"],
+  };
+}
+
+serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  try {
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? ''
+    );
+
+    const clientIp = req.headers.get('x-forwarded-for')?.split(',')[0].trim() || 
+                     req.headers.get('x-real-ip') || 'anonymous';
+
+    const { data: rateLimitOk } = await supabaseClient.rpc('check_rate_limit', {
+      p_identifier: clientIp,
+      p_action_type: 'feierabend_video_analysis',
+      p_max_attempts: 5,
+      p_window_minutes: 60
+    });
+
+    if (!rateLimitOk) {
+      return new Response(
+        JSON.stringify({ error: 'Zu viele Anfragen. Bitte in einer Stunde erneut versuchen.', code: 'RATE_LIMIT' }),
+        { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const body = await req.json();
+    const { frames, serviceType = "raeumung", zip, city, rooms, floor, elevator, urgency, notes } = body;
+
+    if (!frames || !Array.isArray(frames) || frames.length === 0) {
+      return new Response(
+        JSON.stringify({ error: 'Keine Frames übergeben' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    let selectedFrames: string[] = frames;
+    if (frames.length > MAX_FRAMES) {
+      const step = frames.length / MAX_FRAMES;
+      selectedFrames = Array.from({ length: MAX_FRAMES }, (_, i) => frames[Math.floor(i * step)]);
+    }
+
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    if (!LOVABLE_API_KEY) throw new Error('LOVABLE_API_KEY not configured');
+
+    const systemPrompt = buildSystemPrompt(serviceType as ServiceType, { zip, city, rooms, floor, elevator, urgency, notes });
+    const outputSchema = buildOutputSchema(serviceType as ServiceType);
+
+    const content: any[] = [
+      { type: "text", text: `${systemPrompt}\n\n${outputSchema}\n\nAnalysiere diese ${selectedFrames.length} Frames:` },
+      ...selectedFrames.map(frame => ({ type: "image_url", image_url: { url: frame, detail: "auto" } })),
+    ];
+
+    const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${LOVABLE_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'google/gemini-2.5-flash',
+        messages: [{ role: 'user', content }],
+        temperature: 0.3,
+        max_tokens: 2000,
+      }),
+    });
+
+    if (!aiResponse.ok) {
+      const errorText = await aiResponse.text();
+      console.error('AI Gateway error:', aiResponse.status, errorText);
+      if (aiResponse.status === 429) return new Response(JSON.stringify({ error: 'KI-Ratenlimit. Später erneut versuchen.', code: 'AI_RATE_LIMIT' }), { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      if (aiResponse.status === 402) return new Response(JSON.stringify({ error: 'KI-Credits erschöpft.', code: 'AI_CREDITS' }), { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      throw new Error(`AI Gateway error: ${aiResponse.status}`);
+    }
+
+    const aiData = await aiResponse.json();
+    const rawText = aiData.choices?.[0]?.message?.content ?? "";
+    let analysis = extractJson(rawText);
+
+    if (!analysis || typeof analysis !== 'object') {
+      console.warn('JSON parse failed, using fallback');
+      analysis = buildFallback(serviceType as ServiceType);
+    } else {
+      analysis.serviceType = analysis.serviceType ?? serviceType;
+      analysis.estimated_volume_m3 = analysis.estimated_volume_m3 ?? 20;
+      analysis.confidence = analysis.confidence ?? 0.6;
+      analysis.bulky_items = analysis.bulky_items ?? [];
+      analysis.recommended_team = analysis.recommended_team ?? { people: 2, hours: 5, vehicles: 1, lift_needed: null };
+      analysis.price_range_chf = analysis.price_range_chf ?? { low: 1500, high: 4000, rationale: "Schätzung" };
+      analysis.followup_questions = analysis.followup_questions ?? [];
+      analysis.red_flags = analysis.red_flags ?? [];
+      analysis.assumptions = analysis.assumptions ?? [];
+    }
+
+    return new Response(
+      JSON.stringify({ success: true, data: analysis, frames_analyzed: selectedFrames.length }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+
+  } catch (error) {
+    console.error('Error in Feierabend analyze-inventory-frames:', error);
+    const msg = error instanceof Error ? error.message : 'Internal server error';
+    return new Response(
+      JSON.stringify({ success: false, error: msg }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+});
