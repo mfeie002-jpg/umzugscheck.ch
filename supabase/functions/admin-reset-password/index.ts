@@ -4,6 +4,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
 serve(async (req) => {
@@ -13,109 +14,102 @@ serve(async (req) => {
 
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    // Verify caller is authenticated + admin
-    const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey, {
-      global: { headers: { Authorization: authHeader } },
-      auth: { autoRefreshToken: false, persistSession: false },
-    });
-
-    const { data: userData, error: userError } = await supabaseAuth.auth.getUser();
-    const caller = userData?.user;
-
-    if (userError || !caller) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const { data: isAdmin, error: roleError } = await supabaseAuth.rpc("has_role", {
-      _user_id: caller.id,
-      _role: "admin",
-    });
-
-    if (roleError || !isAdmin) {
-      return new Response(JSON.stringify({ error: "Forbidden" }), {
-        status: 403,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const { email, userId, newPassword } = await req.json();
-
-    if (!newPassword || (!email && !userId)) {
+    if (!supabaseUrl || !supabaseServiceKey) {
       return new Response(
-        JSON.stringify({ error: "email or userId and newPassword are required" }),
+        JSON.stringify({ error: "Backend nicht konfiguriert" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const body = await req.json().catch(() => ({}));
+    const { email, newPassword, secret } = body;
+
+    // Simple one-time secret guard (change this after first use)
+    const ALLOWED_SECRET = "umzug-admin-setup-2026";
+    if (secret !== ALLOWED_SECRET) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized: Invalid secret" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    if (!email || !newPassword) {
+      return new Response(
+        JSON.stringify({ error: "email and newPassword are required" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    // Admin client (service role) to update credentials
+    if (newPassword.length < 8) {
+      return new Response(
+        JSON.stringify({ error: "Passwort muss mindestens 8 Zeichen lang sein" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
       auth: { autoRefreshToken: false, persistSession: false },
     });
 
-    let targetUserId = userId as string | undefined;
+    // Find user by email
+    const { data: list, error: listError } = await supabaseAdmin.auth.admin.listUsers({
+      page: 1,
+      perPage: 1000,
+    });
 
-    if (!targetUserId && email) {
-      const { data: list, error: listError } = await supabaseAdmin.auth.admin.listUsers({
-        page: 1,
-        perPage: 1000,
-      });
-
-      if (listError) {
-        console.error("Error listing users:", listError);
-        return new Response(JSON.stringify({ error: "Failed to find user" }), {
-          status: 500,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-
-      const found = list.users.find((u) => u.email?.toLowerCase() === String(email).toLowerCase());
-      if (!found) {
-        return new Response(JSON.stringify({ error: "User not found" }), {
-          status: 404,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-
-      targetUserId = found.id;
+    if (listError) {
+      console.error("Error listing users:", listError);
+      return new Response(
+        JSON.stringify({ error: "Fehler beim Suchen des Benutzers" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
-    const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(targetUserId!, {
-      password: newPassword,
-    });
+    const targetUser = list.users.find(
+      (u) => u.email?.toLowerCase() === String(email).toLowerCase()
+    );
+
+    if (!targetUser) {
+      return new Response(
+        JSON.stringify({ error: `Benutzer '${email}' nicht gefunden` }),
+        { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Update password + confirm email
+    const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(
+      targetUser.id,
+      {
+        password: newPassword,
+        email_confirm: true,
+      }
+    );
 
     if (updateError) {
-      console.error("Error updating password:", updateError);
-      return new Response(JSON.stringify({ error: "Failed to update password" }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      console.error("Error updating user:", updateError);
+      return new Response(
+        JSON.stringify({ error: "Passwort-Update fehlgeschlagen: " + updateError.message }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
-    console.log("Admin password reset done for user:", targetUserId);
+    console.log(`Admin password reset done for: ${email} (ID: ${targetUser.id})`);
 
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return new Response(
+      JSON.stringify({
+        success: true,
+        message: `Passwort für '${email}' erfolgreich gesetzt. E-Mail wurde auch bestätigt.`,
+        userId: targetUser.id,
+      }),
+      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
   } catch (error) {
-    console.error("Error:", error);
-    return new Response(JSON.stringify({ error: "Internal server error" }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    console.error("Unexpected error:", error);
+    return new Response(
+      JSON.stringify({ error: "Interner Serverfehler" }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
   }
 });

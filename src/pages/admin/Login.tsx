@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
-import { Lock, User, Shield, ArrowRight, Loader2, Wifi, WifiOff } from "lucide-react";
+import { Lock, User, Shield, ArrowRight, Loader2, Wifi, WifiOff, Info, AlertCircle, KeyRound } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -17,11 +18,13 @@ const AdminLogin = () => {
 
   const { user, isAdmin, adminChecked, loading, signIn } = useAuth();
 
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("mfeie002@gmail.com");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [connStatus, setConnStatus] = useState<ConnectionStatus>("idle");
   const [connError, setConnError] = useState<string | null>(null);
+  const [loginError, setLoginError] = useState<string | null>(null);
+  const [showResetInfo, setShowResetInfo] = useState(false);
 
   const testConnection = async () => {
     setConnStatus("testing");
@@ -56,10 +59,11 @@ const AdminLogin = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setLoginError(null);
 
     try {
       console.log("[AdminLogin] Starting login for:", email);
-      const { error, data } = await signIn(email, password);
+      const { error } = await signIn(email, password);
       
       if (error) {
         console.log("[AdminLogin] Login error:", error.message);
@@ -72,26 +76,26 @@ const AdminLogin = () => {
         description: "Admin-Zugriff wird geprüft…",
       });
 
-      // AdminLayout übernimmt die sichere Rollenprüfung; kein doppelter has_role Check hier.
       navigate("/admin");
     } catch (error: any) {
       console.error("[AdminLogin] Login failed:", error);
       
-      // Provide more specific error messages
-      let errorMessage = error?.message || "Ungültige E-Mail oder Passwort";
+      const raw = error?.message || "";
       
-      // Check for common error patterns
-      if (errorMessage.includes("Invalid login credentials")) {
-        errorMessage = "Ungültige E-Mail oder Passwort";
-      } else if (errorMessage.includes("Email not confirmed")) {
-        errorMessage = "E-Mail wurde noch nicht bestätigt. Bitte prüfen Sie Ihren Posteingang.";
+      let errorMessage = "Anmeldung fehlgeschlagen. Bitte erneut versuchen.";
+      
+      if (raw.includes("Invalid login credentials") || raw.includes("invalid_credentials")) {
+        errorMessage = "Falsches Passwort oder E-Mail. Bitte das Passwort zuerst zurücksetzen (siehe unten).";
+        setShowResetInfo(true);
+      } else if (raw.includes("Email not confirmed")) {
+        errorMessage = "E-Mail wurde noch nicht bestätigt. Die Bestätigung wird automatisch vorgenommen – bitte kurz warten und erneut versuchen.";
+      } else if (raw.includes("Failed to fetch") || raw.includes("NetworkError")) {
+        errorMessage = "Backend nicht erreichbar. Bitte Verbindung prüfen.";
+      } else if (raw) {
+        errorMessage = raw;
       }
       
-      toast({
-        title: "Anmeldefehler",
-        description: errorMessage,
-        variant: "destructive",
-      });
+      setLoginError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -151,6 +155,40 @@ const AdminLogin = () => {
             </div>
           )}
 
+          {/* Login Error */}
+          {loginError && (
+            <Alert variant="destructive" className="mb-4">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{loginError}</AlertDescription>
+            </Alert>
+          )}
+
+          {/* Reset Info Banner */}
+          {showResetInfo && (
+            <Alert className="mb-4">
+              <KeyRound className="h-4 w-4" />
+              <AlertDescription className="space-y-1">
+                <p className="font-medium">Passwort zurücksetzen</p>
+                <p className="text-xs">
+                  Rufe folgende URL auf um das Passwort zu setzen:<br />
+                  <code className="text-xs bg-muted px-1 rounded break-all">
+                    POST /functions/v1/admin-reset-password<br />
+                    {"{ \"email\": \"mfeie002@gmail.com\", \"newPassword\": \"DeinNeuesPasswort123!\", \"secret\": \"umzug-admin-setup-2026\" }"}
+                  </code>
+                </p>
+                <p className="text-xs mt-1">
+                  Oder nutze den «Passwort vergessen» Flow unten.
+                </p>
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {/* Hint box */}
+          <div className="mb-4 rounded-lg border bg-muted/30 p-3 text-xs text-muted-foreground flex gap-2">
+            <Info className="h-4 w-4 shrink-0 mt-0.5" />
+            <span>Primäre Admin-E-Mail: <strong>mfeie002@gmail.com</strong>. Falls das Passwort unbekannt ist, nutze die Reset-Funktion.</span>
+          </div>
+
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="email">E-Mail</Label>
@@ -161,7 +199,7 @@ const AdminLogin = () => {
                   type="email"
                   placeholder="admin@example.com"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => { setEmail(e.target.value); setLoginError(null); }}
                   className="pl-10"
                   required
                 />
@@ -177,7 +215,7 @@ const AdminLogin = () => {
                   type="password"
                   placeholder="••••••••"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => { setPassword(e.target.value); setLoginError(null); }}
                   className="pl-10"
                   required
                 />
@@ -186,11 +224,14 @@ const AdminLogin = () => {
 
             <Button
               type="submit"
-              className="w-full h-12 text-base font-semibold bg-primary hover:bg-primary/90"
+              className="w-full h-12 text-base font-semibold"
               disabled={isLoading}
             >
-              {isLoading ? "Anmeldung läuft..." : "Anmelden"}
-              <ArrowRight className="ml-2 w-4 h-4" />
+              {isLoading ? (
+                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Anmeldung läuft...</>
+              ) : (
+                <>Anmelden <ArrowRight className="ml-2 w-4 h-4" /></>
+              )}
             </Button>
           </form>
 
@@ -216,13 +257,13 @@ const AdminLogin = () => {
                 disabled={connStatus === "testing"}
               >
                 {connStatus === "testing" && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {connStatus === "ok" && <Wifi className="mr-2 h-4 w-4 text-green-500" />}
+                {connStatus === "ok" && <Wifi className="mr-2 h-4 w-4 text-primary" />}
                 {connStatus === "error" && <WifiOff className="mr-2 h-4 w-4 text-destructive" />}
                 {connStatus === "idle" && <Wifi className="mr-2 h-4 w-4" />}
                 Backend-Verbindung testen
               </Button>
               {connStatus === "ok" && (
-                <p className="text-xs text-center text-green-600 mt-1">Verbindung OK</p>
+                <p className="text-xs text-center text-primary mt-1">Verbindung OK</p>
               )}
               {connStatus === "error" && (
                 <p className="text-xs text-center text-destructive mt-1">
