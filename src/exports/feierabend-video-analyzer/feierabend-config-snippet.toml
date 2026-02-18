@@ -1,0 +1,6 @@
+# Feierabend Services – supabase/config.toml Snippet
+# 
+# Einfügen in supabase/config.toml am Ende der Datei:
+
+[functions.analyze-inventory-frames]
+verify_jwt = false
