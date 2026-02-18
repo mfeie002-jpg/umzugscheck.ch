@@ -39,6 +39,18 @@ const getDeviceType = (): 'mobile' | 'tablet' | 'desktop' => {
 // Queue for batching metrics
 let metricsQueue: MetricsPayload[] = [];
 let flushTimeout: NodeJS.Timeout | null = null;
+const MAX_BUFFER_SIZE = 500;
+
+const persistFallbackBuffer = (batch: MetricsPayload[]) => {
+  const existing = JSON.parse(localStorage.getItem('metrics_buffer') || '[]');
+  const updated = [...existing, ...batch].slice(-MAX_BUFFER_SIZE);
+  localStorage.setItem('metrics_buffer', JSON.stringify(updated));
+};
+
+const sendBatchToSupabase = async (batch: MetricsPayload[]) => {
+  const { error } = await supabase.from('conversion_analytics').insert(batch);
+  if (error) throw error;
+};
 
 // Flush metrics to backend
 const flushMetrics = async () => {
@@ -53,16 +65,11 @@ const flushMetrics = async () => {
       console.log('[Metrics] Flushing batch:', batch.length, 'events');
     }
     
-    // Store in localStorage for now (can be sent to Supabase)
-    const existing = JSON.parse(localStorage.getItem('metrics_buffer') || '[]');
-    const updated = [...existing, ...batch].slice(-500); // Keep last 500
-    localStorage.setItem('metrics_buffer', JSON.stringify(updated));
-    
-    // TODO: Send to Supabase conversion_analytics table
-    // await supabase.from('conversion_analytics').insert(batch);
+    await sendBatchToSupabase(batch);
     
   } catch (error) {
     console.error('[Metrics] Flush failed:', error);
+    persistFallbackBuffer(batch);
     // Re-add failed items to queue
     metricsQueue = [...batch, ...metricsQueue];
   }
