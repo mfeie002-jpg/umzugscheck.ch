@@ -292,6 +292,7 @@ const Vergleich = lazy(() => import("./pages/Vergleich"));
 // Admin pages
 const Auth = lazy(() => import("./pages/Auth"));
 const AdminDashboard = lazy(() => import("./pages/admin/Dashboard"));
+const AdminSettings = lazy(() => import("./pages/admin/Settings"));
 const Admin = lazy(() => import("./pages/Admin"));
 const AdminReviews = lazy(() => import("./pages/admin/Reviews"));
 const CompaniesAdmin = lazy(() => import("./pages/admin/Companies"));
@@ -481,6 +482,7 @@ const AdminRoutes = () => (
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/admin" element={<AdminDashboard />} />
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
+      <Route path="/admin/settings" element={<AdminSettings />} />
       <Route path="/admin/companies" element={<CompaniesAdmin />} />
       <Route path="/admin/reviews" element={<AdminReviews />} />
       <Route path="/admin/leads" element={<LeadsAdmin />} />
