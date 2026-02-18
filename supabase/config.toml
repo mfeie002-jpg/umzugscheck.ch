@@ -104,3 +104,9 @@ verify_jwt = false
 
 [functions.geo]
 verify_jwt = false
+
+[functions.analyze-inventory-frames]
+verify_jwt = false
+
+[functions.analyze-moving-video]
+verify_jwt = false
