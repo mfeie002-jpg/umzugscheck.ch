@@ -439,7 +439,7 @@ export const PremiumHeroSection = () => {
                 
                 {/* 4 Options: Formular, Video, KI-Chat, WhatsApp - Clean 4-column layout */}
                 <Tabs defaultValue="form" className="w-full">
-                  <TabsList className="grid w-full grid-cols-4 h-auto p-1.5 sm:p-2 bg-muted/30 rounded-xl gap-1 sm:gap-1.5">
+                  <TabsList className="grid w-full grid-cols-4 h-auto p-1.5 sm:p-2 bg-muted/30 rounded-xl gap-2 sm:gap-2.5 mb-4 sm:mb-5">
                     {/* Formular Tab - Primary Blue */}
                     <TabsTrigger 
                       value="form" 
@@ -663,9 +663,9 @@ export const PremiumHeroSection = () => {
                   </TabsContent>
                   
                   {/* Form Tab - Default with Video Hint */}
-                  <TabsContent value="form" className="mt-3 pt-1 space-y-3 md:space-y-4">
+                  <TabsContent value="form" className="mt-2 pt-3 space-y-3 md:space-y-4">
                     {/* Video Hint Banner - with clear separation from tabs */}
-                    <Link to="/video-offerte" className="block group mt-1">
+                    <Link to="/video-offerte" className="block group">
                       <div className="flex items-center gap-3 p-2.5 bg-secondary/10 hover:bg-secondary/15 rounded-lg border border-secondary/20 transition-colors">
                         <div className="w-8 h-8 rounded-lg bg-secondary/20 flex items-center justify-center flex-shrink-0">
                           <Video className="h-4 w-4 text-secondary" />

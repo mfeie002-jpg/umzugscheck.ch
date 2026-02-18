@@ -356,7 +356,7 @@ export const UnifiedHero = ({
                 )}
                 
                 {/* Form Tab - with Video Hint */}
-                <TabsContent value="form" className="space-y-3">
+                <TabsContent value="form" className="mt-4 pt-2 space-y-3">
                   {/* Video Hint Banner */}
                   {showVideoOption && (
                     <Link to="/video-offerte" className="block group">
