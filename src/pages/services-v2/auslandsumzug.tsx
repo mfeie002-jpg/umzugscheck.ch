@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { motion, useInView } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
@@ -29,17 +29,18 @@ const relatedServices = [
 ];
 
 const destinations = [
-  { country: "Deutschland", flag: "🇩🇪", priceRange: "CHF 2'500 – 6'000", popular: true },
-  { country: "Frankreich", flag: "🇫🇷", priceRange: "CHF 3'000 – 7'000", popular: true },
-  { country: "Österreich", flag: "🇦🇹", priceRange: "CHF 2'000 – 5'000", popular: true },
-  { country: "Italien", flag: "🇮🇹", priceRange: "CHF 3'000 – 7'000", popular: false },
-  { country: "UK", flag: "🇬🇧", priceRange: "CHF 4'000 – 10'000", popular: true },
-  { country: "USA", flag: "🇺🇸", priceRange: "CHF 8'000 – 20'000", popular: true },
-  { country: "Spanien", flag: "🇪🇸", priceRange: "CHF 4'000 – 9'000", popular: false },
-  { country: "Weltweit", flag: "🌍", priceRange: "Auf Anfrage", popular: false },
+  { country: "Deutschland", flag: "ðŸ‡©ðŸ‡ª", priceRange: "CHF 2'500 â€“ 6'000", popular: true },
+  { country: "Frankreich", flag: "ðŸ‡«ðŸ‡·", priceRange: "CHF 3'000 â€“ 7'000", popular: true },
+  { country: "Ã–sterreich", flag: "ðŸ‡¦ðŸ‡¹", priceRange: "CHF 2'000 â€“ 5'000", popular: true },
+  { country: "Italien", flag: "ðŸ‡®ðŸ‡¹", priceRange: "CHF 3'000 â€“ 7'000", popular: false },
+  { country: "UK", flag: "ðŸ‡¬ðŸ‡§", priceRange: "CHF 4'000 â€“ 10'000", popular: true },
+  { country: "USA", flag: "ðŸ‡ºðŸ‡¸", priceRange: "CHF 8'000 â€“ 20'000", popular: true },
+  { country: "Spanien", flag: "ðŸ‡ªðŸ‡¸", priceRange: "CHF 4'000 â€“ 9'000", popular: false },
+  { country: "Weltweit", flag: "ðŸŒ", priceRange: "Auf Anfrage", popular: false },
 ];
 
 const companies = [
+  { id: "feierabend-services-gmbh", name: "Feierabend Services GmbH", rating: 4.9, reviewCount: 312, badges: ["Demo", "Top bewertet"], services: ["Umzug", "Firmenumzug", "Reinigung"], priceLevel: "Premium", isPopular: true, responseTime: "< 1h" },
   { 
     id: "swiss-global", 
     name: "Swiss Global Relocations", 
@@ -48,110 +49,110 @@ const companies = [
     badges: ["FIDI-zertifiziert", "Weltweit"], 
     priceLevel: "Premium", 
     isPopular: true,
-    quote: "Wir begleiten Sie ans andere Ende der Welt – und zurück."
+    quote: "Wir begleiten Sie ans andere Ende der Welt â€“ und zurÃ¼ck."
   },
   { 
     id: "euro-move", 
     name: "EuroMove Express", 
     rating: 4.8, 
     reviewCount: 356, 
-    badges: ["EU-Spezialist", "Wöchentliche Touren"], 
+    badges: ["EU-Spezialist", "WÃ¶chentliche Touren"], 
     priceLevel: "Mittel", 
     isBestPrice: true,
-    quote: "Europa ist unser Zuhause – und bald auch Ihres."
+    quote: "Europa ist unser Zuhause â€“ und bald auch Ihres."
   },
   { 
     id: "intercontinental", 
     name: "Intercontinental Movers", 
     rating: 4.9, 
     reviewCount: 287, 
-    badges: ["Übersee", "Containerservice"], 
+    badges: ["Ãœbersee", "Containerservice"], 
     priceLevel: "Premium",
-    quote: "Von Zürich in die Welt – sicher und zuverlässig."
+    quote: "Von ZÃ¼rich in die Welt â€“ sicher und zuverlÃ¤ssig."
   },
 ];
 
 const howItWorks = [
-  { step: 1, title: "Zielland angeben", description: "Wohin geht die Reise?", icon: Globe, time: "2 Min.", emoji: "🌍" },
-  { step: 2, title: "Inventar erfassen", description: "Was kommt mit?", icon: Package, time: "5 Min.", emoji: "📦" },
-  { step: 3, title: "Offerten vergleichen", description: "3-5 spezialisierte Angebote", icon: FileText, time: "24-48h", emoji: "📬" },
-  { step: 4, title: "Entspannt ankommen", description: "Wir kümmern uns um alles", icon: Heart, time: "Ihr Tag", emoji: "🏠" },
+  { step: 1, title: "Zielland angeben", description: "Wohin geht die Reise?", icon: Globe, time: "2 Min.", emoji: "ðŸŒ" },
+  { step: 2, title: "Inventar erfassen", description: "Was kommt mit?", icon: Package, time: "5 Min.", emoji: "ðŸ“¦" },
+  { step: 3, title: "Offerten vergleichen", description: "3-5 spezialisierte Angebote", icon: FileText, time: "24-48h", emoji: "ðŸ“¬" },
+  { step: 4, title: "Entspannt ankommen", description: "Wir kÃ¼mmern uns um alles", icon: Heart, time: "Ihr Tag", emoji: "ðŸ " },
 ];
 
 const testimonials = [
   { 
     name: "Familie Keller", 
-    route: "Zürich → München", 
+    route: "ZÃ¼rich â†’ MÃ¼nchen", 
     rating: 5, 
-    text: "Der Umzug nach Deutschland war ein Kinderspiel! Zollformalitäten, Transport, alles wurde für uns erledigt. Nach 2 Tagen standen wir in unserer neuen Wohnung – alles da, nichts beschädigt.", 
+    text: "Der Umzug nach Deutschland war ein Kinderspiel! ZollformalitÃ¤ten, Transport, alles wurde fÃ¼r uns erledigt. Nach 2 Tagen standen wir in unserer neuen Wohnung â€“ alles da, nichts beschÃ¤digt.", 
     verified: true, 
     savedAmount: 2100,
-    emotion: "Erleichtert 😌"
+    emotion: "Erleichtert ðŸ˜Œ"
   },
   { 
     name: "Dr. M. Schmid", 
-    route: "Basel → London", 
+    route: "Basel â†’ London", 
     rating: 5, 
-    text: "Brexit-Zoll? Kein Problem! Das Team kannte jeden Trick. Mein komplettes Büro und Haushalt kam pünktlich an. Die Investition hat sich gelohnt – kein Stress.", 
+    text: "Brexit-Zoll? Kein Problem! Das Team kannte jeden Trick. Mein komplettes BÃ¼ro und Haushalt kam pÃ¼nktlich an. Die Investition hat sich gelohnt â€“ kein Stress.", 
     verified: true, 
     savedAmount: 3500,
-    emotion: "Begeistert 🎉"
+    emotion: "Begeistert ðŸŽ‰"
   },
   { 
     name: "Thomas & Sarah", 
-    route: "Genf → New York", 
+    route: "Genf â†’ New York", 
     rating: 5, 
-    text: "Ein Umzug über den Atlantik klingt beängstigend. Aber mit den Profis war es wie ein langer Urlaub. Container kam pünktlich, alles intakt. Danke für diesen Service!", 
+    text: "Ein Umzug Ã¼ber den Atlantik klingt beÃ¤ngstigend. Aber mit den Profis war es wie ein langer Urlaub. Container kam pÃ¼nktlich, alles intakt. Danke fÃ¼r diesen Service!", 
     verified: true, 
     savedAmount: 5200,
-    emotion: "Überwältigt 🥹"
+    emotion: "ÃœberwÃ¤ltigt ðŸ¥¹"
   },
 ];
 
 const services = [
-  { title: "Zollformalitäten", icon: FileText, description: "Wir erledigen alle Papiere für Sie" },
+  { title: "ZollformalitÃ¤ten", icon: FileText, description: "Wir erledigen alle Papiere fÃ¼r Sie" },
   { title: "Verpackungsservice", icon: Package, description: "Professionelles Ein- & Auspacken" },
   { title: "Containertransport", icon: Ship, description: "See- oder Luftfracht weltweit" },
-  { title: "Versicherung", icon: Shield, description: "Vollversicherung für Ihre Güter" },
+  { title: "Versicherung", icon: Shield, description: "Vollversicherung fÃ¼r Ihre GÃ¼ter" },
   { title: "Einlagerung", icon: Building2, description: "Zwischenlagerung bei Bedarf" },
   { title: "Haustier-Umzug", icon: Heart, description: "Auch Ihre Lieblinge kommen mit" },
 ];
 
 const guarantees = [
-  { title: "Rundum-Sorglos", description: "Alles aus einer Hand – von A bis Z", icon: ShieldCheck },
-  { title: "Zollexperten", description: "EU, UK, USA – wir kennen die Regeln", icon: BadgeCheck },
+  { title: "Rundum-Sorglos", description: "Alles aus einer Hand â€“ von A bis Z", icon: ShieldCheck },
+  { title: "Zollexperten", description: "EU, UK, USA â€“ wir kennen die Regeln", icon: BadgeCheck },
   { title: "Tracking", description: "Verfolgen Sie Ihren Umzug live", icon: Globe },
-  { title: "Versichert", description: "Vollversicherung für alle Güter", icon: Shield },
+  { title: "Versichert", description: "Vollversicherung fÃ¼r alle GÃ¼ter", icon: Shield },
 ];
 
 const faqs = [
   { 
     question: "Was kostet ein Auslandsumzug?", 
-    answer: "Richtpreise: Deutschland ab CHF 2'500, Frankreich/Österreich ab CHF 2'000-3'000, UK ab CHF 4'000, USA ab CHF 8'000. Faktoren: Volumen, Distanz, Zielland, gewählte Services (Verpackung, Zoll, etc.)." 
+    answer: "Richtpreise: Deutschland ab CHF 2'500, Frankreich/Ã–sterreich ab CHF 2'000-3'000, UK ab CHF 4'000, USA ab CHF 8'000. Faktoren: Volumen, Distanz, Zielland, gewÃ¤hlte Services (Verpackung, Zoll, etc.)." 
   },
   { 
     question: "Wie lange dauert ein internationaler Umzug?", 
-    answer: "Innerhalb Europas: 2-7 Tage. Übersee per Seefracht: 4-8 Wochen. Per Luftfracht: 1-2 Wochen. Die Dauer hängt von Distanz, Zollprozessen und gewähltem Transportweg ab." 
+    answer: "Innerhalb Europas: 2-7 Tage. Ãœbersee per Seefracht: 4-8 Wochen. Per Luftfracht: 1-2 Wochen. Die Dauer hÃ¤ngt von Distanz, Zollprozessen und gewÃ¤hltem Transportweg ab." 
   },
   { 
-    question: "Wer kümmert sich um die Zollformalitäten?", 
-    answer: "Unsere Partner übernehmen alle Zollformalitäten für Sie – Ausfuhrdeklaration in der Schweiz, Einfuhrpapiere im Zielland, eventuelle Sondergenehmigungen. Sie müssen nur unterschreiben." 
+    question: "Wer kÃ¼mmert sich um die ZollformalitÃ¤ten?", 
+    answer: "Unsere Partner Ã¼bernehmen alle ZollformalitÃ¤ten fÃ¼r Sie â€“ Ausfuhrdeklaration in der Schweiz, Einfuhrpapiere im Zielland, eventuelle Sondergenehmigungen. Sie mÃ¼ssen nur unterschreiben." 
   },
   { 
     question: "Ist mein Umzugsgut versichert?", 
-    answer: "Ja, alle internationalen Umzüge werden vollversichert durchgeführt. Die Standardversicherung deckt typischerweise den Neuwert. Für besonders wertvolle Gegenstände kann eine Zusatzversicherung abgeschlossen werden." 
+    answer: "Ja, alle internationalen UmzÃ¼ge werden vollversichert durchgefÃ¼hrt. Die Standardversicherung deckt typischerweise den Neuwert. FÃ¼r besonders wertvolle GegenstÃ¤nde kann eine Zusatzversicherung abgeschlossen werden." 
   },
   { 
-    question: "Kann ich auch nur einzelne Möbel ins Ausland transportieren?", 
-    answer: "Ja, bei sogenannten Beiladungen wird Ihr Gut mit anderen Transporten kombiniert. Das spart Kosten (oft 30-50% günstiger), dauert aber etwas länger. Ideal für einzelne Möbel oder kleine Mengen." 
+    question: "Kann ich auch nur einzelne MÃ¶bel ins Ausland transportieren?", 
+    answer: "Ja, bei sogenannten Beiladungen wird Ihr Gut mit anderen Transporten kombiniert. Das spart Kosten (oft 30-50% gÃ¼nstiger), dauert aber etwas lÃ¤nger. Ideal fÃ¼r einzelne MÃ¶bel oder kleine Mengen." 
   },
   { 
     question: "Was passiert mit meinen Haustieren?", 
-    answer: "Viele unserer Partner bieten spezialisierte Haustier-Umzüge an. Für Hunde und Katzen werden EU-Heimtierausweise, Impfungen und ggf. Quarantänebestimmungen organisiert. Auch exotische Tiere können transportiert werden." 
+    answer: "Viele unserer Partner bieten spezialisierte Haustier-UmzÃ¼ge an. FÃ¼r Hunde und Katzen werden EU-Heimtierausweise, Impfungen und ggf. QuarantÃ¤nebestimmungen organisiert. Auch exotische Tiere kÃ¶nnen transportiert werden." 
   },
 ];
 
-const popularCountries = ["Deutschland", "Frankreich", "Österreich", "UK", "USA", "Italien", "Spanien", "Niederlande", "Belgien", "Anderes"];
+const popularCountries = ["Deutschland", "Frankreich", "Ã–sterreich", "UK", "USA", "Italien", "Spanien", "Niederlande", "Belgien", "Anderes"];
 
 const AnimatedCounter = ({ end, suffix = "", duration = 2000 }: { end: number; suffix?: string; duration?: number }) => {
   const [count, setCount] = useState(0);
@@ -231,10 +232,10 @@ export default function AuslandsumzugPage() {
       <Helmet>
         <html lang="de-CH" />
         <title>Auslandsumzug Schweiz | International Umziehen | Zoll & Versicherung inkl.</title>
-        <meta name="description" content="Auslandsumzug ab der Schweiz ✓ Weltweit ✓ Zollformalitäten inklusive ✓ Vollversichert ✓ Kostenlose Offerten ✓ Deutschland, Frankreich, UK, USA & mehr!" />
+        <meta name="description" content="Auslandsumzug ab der Schweiz âœ“ Weltweit âœ“ ZollformalitÃ¤ten inklusive âœ“ Vollversichert âœ“ Kostenlose Offerten âœ“ Deutschland, Frankreich, UK, USA & mehr!" />
         <link rel="canonical" href="https://umzugscheck.ch/services/auslandsumzug" />
-        <meta property="og:title" content="Auslandsumzug ab der Schweiz – Ihr neues Abenteuer beginnt" />
-        <meta property="og:description" content="Professioneller Auslandsumzug mit Rundum-Service. Zoll, Transport, Versicherung – alles aus einer Hand." />
+        <meta property="og:title" content="Auslandsumzug ab der Schweiz â€“ Ihr neues Abenteuer beginnt" />
+        <meta property="og:description" content="Professioneller Auslandsumzug mit Rundum-Service. Zoll, Transport, Versicherung â€“ alles aus einer Hand." />
         <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
       </Helmet>
 
@@ -259,16 +260,16 @@ export default function AuslandsumzugPage() {
 
                 <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/20 border border-blue-500/30 rounded-full text-blue-300 text-sm font-medium mb-6">
                   <Plane className="w-4 h-4" />
-                  <span className="font-medium">In 150+ Länder weltweit</span>
+                  <span className="font-medium">In 150+ LÃ¤nder weltweit</span>
                 </motion.div>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-5 leading-tight">
                   Ihr Abenteuer beginnt <br className="hidden md:block" />
-                  <span className="text-blue-400">– wir kümmern uns um den Rest</span>
+                  <span className="text-blue-400">â€“ wir kÃ¼mmern uns um den Rest</span>
                 </h1>
 
                 <p className="text-lg md:text-xl text-white/85 mb-6 max-w-xl mx-auto lg:mx-0">
-                  Egal ob München, London oder New York – wir bringen 
+                  Egal ob MÃ¼nchen, London oder New York â€“ wir bringen 
                   <strong className="text-blue-300"> Ihr Zuhause ans Ziel</strong>. 
                   <span className="block mt-2 text-green-400">Zoll inklusive. Vollversichert. Stressfrei.</span>
                 </p>
@@ -276,11 +277,11 @@ export default function AuslandsumzugPage() {
                 <div className="grid grid-cols-3 gap-4 mb-8 max-w-lg mx-auto lg:mx-0">
                   <div className="text-center lg:text-left">
                     <div className="text-2xl font-bold text-white"><AnimatedCounter end={3520} suffix="+" /></div>
-                    <div className="text-xs text-white/60">Auslandsumzüge</div>
+                    <div className="text-xs text-white/60">AuslandsumzÃ¼ge</div>
                   </div>
                   <div className="text-center lg:text-left">
                     <div className="text-2xl font-bold text-white">150+</div>
-                    <div className="text-xs text-white/60">Länder</div>
+                    <div className="text-xs text-white/60">LÃ¤nder</div>
                   </div>
                   <div className="text-2xl font-bold text-amber-400 flex items-center gap-1 justify-center lg:justify-start">
                     <Star className="w-6 h-6 fill-amber-400" />4.9
@@ -289,7 +290,7 @@ export default function AuslandsumzugPage() {
 
                 <div className="lg:hidden space-y-3">
                   <Button asChild size="lg" className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold text-lg py-6">
-                    <Link to="/umzugsofferten">🌍 Auslandsumzug planen<ArrowRight className="ml-2 w-5 h-5" /></Link>
+                    <Link to="/umzugsofferten">ðŸŒ Auslandsumzug planen<ArrowRight className="ml-2 w-5 h-5" /></Link>
                   </Button>
                 </div>
               </motion.div>
@@ -302,7 +303,7 @@ export default function AuslandsumzugPage() {
                   </div>
                   <CardContent className="p-8">
                     <div className="text-center mb-6">
-                      <span className="text-4xl mb-3 block">✈️</span>
+                      <span className="text-4xl mb-3 block">âœˆï¸</span>
                       <h2 className="text-xl font-bold mb-2">Wohin geht die Reise?</h2>
                       <p className="text-sm text-muted-foreground">Kostenlose Beratung & Offerten</p>
                     </div>
@@ -317,14 +318,14 @@ export default function AuslandsumzugPage() {
                       <div>
                         <Label className="text-sm font-medium">In welches Land?</Label>
                         <Select value={toCountry} onValueChange={setToCountry}>
-                          <SelectTrigger className="mt-1"><SelectValue placeholder="Zielland wählen..." /></SelectTrigger>
+                          <SelectTrigger className="mt-1"><SelectValue placeholder="Zielland wÃ¤hlen..." /></SelectTrigger>
                           <SelectContent>
                             {popularCountries.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
                           </SelectContent>
                         </Select>
                       </div>
                       <div>
-                        <Label className="text-sm font-medium">Gewünschter Zeitraum</Label>
+                        <Label className="text-sm font-medium">GewÃ¼nschter Zeitraum</Label>
                         <Input type="date" value={moveDate} onChange={e => setMoveDate(e.target.value)} className="mt-1" />
                       </div>
                       <Button type="submit" size="lg" className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold text-lg py-6">
@@ -344,7 +345,7 @@ export default function AuslandsumzugPage() {
         {/* DESTINATION PRICES */}
         <section className="py-12 bg-gradient-to-r from-blue-50 to-indigo-50 border-y">
           <div className="container px-4">
-            <h2 className="text-xl font-bold text-center mb-6">Beliebte Zielländer</h2>
+            <h2 className="text-xl font-bold text-center mb-6">Beliebte ZiellÃ¤nder</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {destinations.filter(d => d.popular).map((d, i) => (
                 <Card key={i} className="text-center hover:shadow-md transition-shadow cursor-pointer" onClick={() => { setToCountry(d.country); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
@@ -364,7 +365,7 @@ export default function AuslandsumzugPage() {
           <div className="container px-4">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold mb-3">So funktioniert Ihr Auslandsumzug</h2>
-              <p className="text-muted-foreground">Von der Planung bis zur Ankunft – alles aus einer Hand</p>
+              <p className="text-muted-foreground">Von der Planung bis zur Ankunft â€“ alles aus einer Hand</p>
             </div>
             <div className="grid md:grid-cols-4 gap-6 max-w-5xl mx-auto">
               {howItWorks.map((step, i) => (
@@ -393,7 +394,7 @@ export default function AuslandsumzugPage() {
         <section className="py-16 bg-gradient-to-b from-muted/30 to-background">
           <div className="container px-4">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-3">Glücklich angekommen</h2>
+              <h2 className="text-3xl font-bold mb-3">GlÃ¼cklich angekommen</h2>
               <p className="text-muted-foreground">Geschichten von Menschen, die den Schritt gewagt haben</p>
             </div>
             <div className="grid md:grid-cols-3 gap-6">
@@ -433,7 +434,7 @@ export default function AuslandsumzugPage() {
           <div className="container px-4">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold mb-3">Alles inklusive</h2>
-              <p className="text-muted-foreground">Full-Service für Ihren internationalen Umzug</p>
+              <p className="text-muted-foreground">Full-Service fÃ¼r Ihren internationalen Umzug</p>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
               {services.map((s, i) => (
@@ -451,13 +452,13 @@ export default function AuslandsumzugPage() {
         <section className="py-16 bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
           <div className="container px-4 text-center">
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-              <span className="text-5xl mb-6 block">🌍</span>
+              <span className="text-5xl mb-6 block">ðŸŒ</span>
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Bereit für Ihr neues Abenteuer?
+                Bereit fÃ¼r Ihr neues Abenteuer?
               </h2>
               <p className="text-lg text-white/90 mb-8 max-w-2xl mx-auto">
-                Egal ob EU oder Übersee – erhalten Sie kostenlos Offerten von internationalen Umzugsspezialisten. 
-                Wir kümmern uns um alles, damit Sie sich auf das Wichtige konzentrieren können: Ihr neues Leben.
+                Egal ob EU oder Ãœbersee â€“ erhalten Sie kostenlos Offerten von internationalen Umzugsspezialisten. 
+                Wir kÃ¼mmern uns um alles, damit Sie sich auf das Wichtige konzentrieren kÃ¶nnen: Ihr neues Leben.
               </p>
               <Button asChild size="lg" className="bg-white text-blue-600 hover:bg-white/90 font-bold text-lg px-8 py-6">
                 <Link to="/umzugsofferten">
@@ -473,8 +474,8 @@ export default function AuslandsumzugPage() {
         <section className="py-16 bg-background">
           <div className="container px-4 max-w-3xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-3">Häufige Fragen zum Auslandsumzug</h2>
-              <p className="text-muted-foreground">Alles, was Sie wissen müssen</p>
+              <h2 className="text-3xl font-bold mb-3">HÃ¤ufige Fragen zum Auslandsumzug</h2>
+              <p className="text-muted-foreground">Alles, was Sie wissen mÃ¼ssen</p>
             </div>
             <Accordion type="single" collapsible className="space-y-3">
               {faqs.map((faq, i) => (
@@ -502,10 +503,11 @@ export default function AuslandsumzugPage() {
           className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg z-50 py-3 px-4 lg:hidden"
         >
           <Button asChild className="w-full bg-blue-500 hover:bg-blue-600 font-bold py-5">
-            <Link to="/umzugsofferten">🌍 Jetzt Offerte anfragen</Link>
+            <Link to="/umzugsofferten">ðŸŒ Jetzt Offerte anfragen</Link>
           </Button>
         </motion.div>
       )}
     </div>
   );
 }
+

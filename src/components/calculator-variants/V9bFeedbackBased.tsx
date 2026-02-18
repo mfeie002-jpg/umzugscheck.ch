@@ -126,6 +126,7 @@ const EXTRAS = [
 
 // Mock Firmen (Feedback #6: 3 Empfehlungen vorselektiert)
 const COMPANIES = [
+  { id: 'fsg-1', name: 'Feierabend Services GmbH', rating: 4.9, reviews: 312, responseTime: '< 1h', recommended: true, premium: true },
   { id: '1', name: 'Züri Zügel AG', rating: 4.9, reviews: 342, responseTime: '< 2h', recommended: true, premium: true },
   { id: '2', name: 'SwissMove GmbH', rating: 4.8, reviews: 218, responseTime: '< 4h', recommended: true },
   { id: '3', name: 'Profi Transport', rating: 4.7, reviews: 156, responseTime: '< 3h', recommended: true },

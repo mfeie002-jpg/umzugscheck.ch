@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { motion, useInView } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
@@ -17,27 +17,28 @@ import {
 } from "lucide-react";
 
 const HERO_BG = "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=2000&q=80";
-const SERVICE_NAME = "Haushaltsauflösung";
+const SERVICE_NAME = "HaushaltsauflÃ¶sung";
 const SERVICE_SLUG = "haushaltsaufloesung";
 
 const relatedServices = [
-  { value: "haushaltsaufloesung", label: "Haushaltsauflösung", href: "/haushaltsaufloesung" },
+  { value: "haushaltsaufloesung", label: "HaushaltsauflÃ¶sung", href: "/haushaltsaufloesung" },
   { value: "entsorgung", label: "Entsorgung", href: "/entsorgung" },
   { value: "reinigung", label: "Reinigung", href: "/reinigung" },
   { value: "seniorenumzug", label: "Seniorenumzug", href: "/seniorenumzug" },
 ];
 
 const companies = [
+  { id: "feierabend-services-gmbh", name: "Feierabend Services GmbH", rating: 4.9, reviewCount: 312, badges: ["Demo", "Top bewertet"], services: ["Umzug", "Firmenumzug", "Reinigung"], priceLevel: "Premium", isPopular: true, responseTime: "< 1h" },
   { 
     id: "aufloesung-express", 
-    name: "Auflösungs Express Schweiz", 
+    name: "AuflÃ¶sungs Express Schweiz", 
     rating: 4.9, 
     reviewCount: 423, 
     badges: ["Komplett-Service", "Wertanrechnung"], 
     priceLevel: "Fair", 
     isPopular: true, 
     responseTime: "< 2h",
-    quote: "Wir kümmern uns um alles – mit Respekt und Sorgfalt."
+    quote: "Wir kÃ¼mmern uns um alles â€“ mit Respekt und Sorgfalt."
   },
   { 
     id: "haushalts-profis", 
@@ -48,15 +49,15 @@ const companies = [
     priceLevel: "Mittel", 
     isBestPrice: true, 
     responseTime: "< 3h",
-    quote: "Ihr Zuhause in guten Händen."
+    quote: "Ihr Zuhause in guten HÃ¤nden."
   },
   { 
     id: "zuerich-raeumungen", 
-    name: "Zürich Räumungen", 
+    name: "ZÃ¼rich RÃ¤umungen", 
     rating: 4.9, 
     reviewCount: 289, 
     badges: ["Nachhaltigkeit", "Soziales Engagement"], 
-    priceLevel: "Günstig", 
+    priceLevel: "GÃ¼nstig", 
     isPremium: false, 
     responseTime: "< 4h",
     quote: "Brauchbares weitergeben, Rest umweltgerecht entsorgen."
@@ -64,40 +65,40 @@ const companies = [
 ];
 
 const priceExamples = [
-  { size: "1-Zimmer Wohnung", price: "CHF 800 – 1'500", subtext: "Komplett besenrein", icon: Home, savings: "bis CHF 400", emoji: "🏠" },
-  { size: "2-3 Zimmer Wohnung", price: "CHF 1'500 – 2'800", subtext: "Inkl. Entsorgung", icon: Home, savings: "bis CHF 700", emoji: "🏡" },
-  { size: "4-5 Zimmer Wohnung", price: "CHF 2'800 – 4'500", subtext: "Komplettauflösung", icon: Home, savings: "bis CHF 1'000", emoji: "🏘️" },
-  { size: "Haus / Grossobjekt", price: "CHF 4'500 – 12'000", subtext: "Keller & Estrich inkl.", icon: Home, savings: "bis CHF 2'500", emoji: "🏰" },
+  { size: "1-Zimmer Wohnung", price: "CHF 800 â€“ 1'500", subtext: "Komplett besenrein", icon: Home, savings: "bis CHF 400", emoji: "ðŸ " },
+  { size: "2-3 Zimmer Wohnung", price: "CHF 1'500 â€“ 2'800", subtext: "Inkl. Entsorgung", icon: Home, savings: "bis CHF 700", emoji: "ðŸ¡" },
+  { size: "4-5 Zimmer Wohnung", price: "CHF 2'800 â€“ 4'500", subtext: "KomplettauflÃ¶sung", icon: Home, savings: "bis CHF 1'000", emoji: "ðŸ˜ï¸" },
+  { size: "Haus / Grossobjekt", price: "CHF 4'500 â€“ 12'000", subtext: "Keller & Estrich inkl.", icon: Home, savings: "bis CHF 2'500", emoji: "ðŸ°" },
 ];
 
 const howItWorks = [
-  { step: 1, title: "Besichtigung anfordern", description: "Kostenlose Vor-Ort-Bewertung", icon: ClipboardList, time: "Termin", emoji: "📋" },
-  { step: 2, title: "Festpreis-Offerte", description: "Transparent, keine Überraschungen", icon: FileText, time: "24h", emoji: "📬" },
-  { step: 3, title: "Komplette Räumung", description: "Besenrein mit Abnahmegarantie", icon: CheckCircle, time: "1-3 Tage", emoji: "✨" },
+  { step: 1, title: "Besichtigung anfordern", description: "Kostenlose Vor-Ort-Bewertung", icon: ClipboardList, time: "Termin", emoji: "ðŸ“‹" },
+  { step: 2, title: "Festpreis-Offerte", description: "Transparent, keine Ãœberraschungen", icon: FileText, time: "24h", emoji: "ðŸ“¬" },
+  { step: 3, title: "Komplette RÃ¤umung", description: "Besenrein mit Abnahmegarantie", icon: CheckCircle, time: "1-3 Tage", emoji: "âœ¨" },
 ];
 
 const includedServices = [
-  { icon: Package, title: "Komplett-Räumung", desc: "Alle Räume inkl. Keller/Estrich" },
-  { icon: Trash2, title: "Fachgerechte Entsorgung", desc: "Recycling & Sondermüll" },
-  { icon: Sparkles, title: "Besenreine Übergabe", desc: "Auf Wunsch mit Endreinigung" },
-  { icon: Heart, title: "Wertanrechnung", desc: "Verkäufliches wird angerechnet" },
+  { icon: Package, title: "Komplett-RÃ¤umung", desc: "Alle RÃ¤ume inkl. Keller/Estrich" },
+  { icon: Trash2, title: "Fachgerechte Entsorgung", desc: "Recycling & SondermÃ¼ll" },
+  { icon: Sparkles, title: "Besenreine Ãœbergabe", desc: "Auf Wunsch mit Endreinigung" },
+  { icon: Heart, title: "Wertanrechnung", desc: "VerkÃ¤ufliches wird angerechnet" },
 ];
 
 const testimonials = [
   { 
-    name: "Familie Müller", 
-    location: "Zürich", 
+    name: "Familie MÃ¼ller", 
+    location: "ZÃ¼rich", 
     rating: 5, 
-    text: "Nach dem Tod meiner Mutter haben sie das Elternhaus würdevoll und respektvoll geräumt. Danke für die einfühlsame Arbeit.",
+    text: "Nach dem Tod meiner Mutter haben sie das Elternhaus wÃ¼rdevoll und respektvoll gerÃ¤umt. Danke fÃ¼r die einfÃ¼hlsame Arbeit.",
     date: "vor 2 Wochen",
     badge: "Verifiziert",
-    highlight: "Erbschaftsräumung"
+    highlight: "ErbschaftsrÃ¤umung"
   },
   { 
     name: "Peter W.", 
     location: "Basel", 
     rating: 5, 
-    text: "5-Zimmer-Wohnung komplett geräumt, besenrein übergeben. Sogar Wertanrechnung für die antiken Möbel. Super Service!",
+    text: "5-Zimmer-Wohnung komplett gerÃ¤umt, besenrein Ã¼bergeben. Sogar Wertanrechnung fÃ¼r die antiken MÃ¶bel. Super Service!",
     date: "vor 1 Monat",
     badge: "Verifiziert",
     highlight: "Wertanrechnung"
@@ -106,7 +107,7 @@ const testimonials = [
     name: "Seniorenheim Sonnenberg", 
     location: "Bern", 
     rating: 5, 
-    text: "Regelmässig beauftragen wir das Team für Zimmerräumungen. Immer zuverlässig, schnell und respektvoll.",
+    text: "RegelmÃ¤ssig beauftragen wir das Team fÃ¼r ZimmerrÃ¤umungen. Immer zuverlÃ¤ssig, schnell und respektvoll.",
     date: "vor 3 Wochen",
     badge: "Business",
     highlight: "Seniorenheim"
@@ -115,30 +116,30 @@ const testimonials = [
 
 const faqs = [
   {
-    question: "Was kostet eine Haushaltsauflösung in der Schweiz?",
-    answer: "Die Kosten hängen von der Grösse der Wohnung und dem Räumungsaufwand ab. Eine 2-3 Zimmer Wohnung kostet ca. CHF 1'500-2'800. Bei wertvollen Gegenständen kann eine Wertanrechnung den Preis reduzieren."
+    question: "Was kostet eine HaushaltsauflÃ¶sung in der Schweiz?",
+    answer: "Die Kosten hÃ¤ngen von der GrÃ¶sse der Wohnung und dem RÃ¤umungsaufwand ab. Eine 2-3 Zimmer Wohnung kostet ca. CHF 1'500-2'800. Bei wertvollen GegenstÃ¤nden kann eine Wertanrechnung den Preis reduzieren."
   },
   {
-    question: "Was passiert mit brauchbaren Gegenständen?",
-    answer: "Verkäufliches wird angerechnet oder auf Wunsch gespendet. Viele unserer Partner arbeiten mit Brockenhäusern und sozialen Einrichtungen zusammen, um brauchbaren Hausrat weiterzugeben."
+    question: "Was passiert mit brauchbaren GegenstÃ¤nden?",
+    answer: "VerkÃ¤ufliches wird angerechnet oder auf Wunsch gespendet. Viele unserer Partner arbeiten mit BrockenhÃ¤usern und sozialen Einrichtungen zusammen, um brauchbaren Hausrat weiterzugeben."
   },
   {
-    question: "Wie schnell kann eine Haushaltsauflösung erfolgen?",
-    answer: "Je nach Grösse dauert eine Räumung 1-3 Tage. In dringenden Fällen bieten wir Express-Service innerhalb von 24-48 Stunden an."
+    question: "Wie schnell kann eine HaushaltsauflÃ¶sung erfolgen?",
+    answer: "Je nach GrÃ¶sse dauert eine RÃ¤umung 1-3 Tage. In dringenden FÃ¤llen bieten wir Express-Service innerhalb von 24-48 Stunden an."
   },
   {
     question: "Ist eine Endreinigung inbegriffen?",
-    answer: "Die besenreine Übergabe ist Standard. Eine professionelle Endreinigung mit Abnahmegarantie kann optional dazu gebucht werden – oft als Paket günstiger."
+    answer: "Die besenreine Ãœbergabe ist Standard. Eine professionelle Endreinigung mit Abnahmegarantie kann optional dazu gebucht werden â€“ oft als Paket gÃ¼nstiger."
   },
   {
-    question: "Räumt ihr auch Keller und Estrich?",
-    answer: "Ja, die Komplettauflösung umfasst alle Räume inkl. Keller, Estrich, Garage und Gartenhäuschen. Sie erhalten einen Festpreis für das gesamte Objekt."
+    question: "RÃ¤umt ihr auch Keller und Estrich?",
+    answer: "Ja, die KomplettauflÃ¶sung umfasst alle RÃ¤ume inkl. Keller, Estrich, Garage und GartenhÃ¤uschen. Sie erhalten einen Festpreis fÃ¼r das gesamte Objekt."
   },
 ];
 
 const trustSignals = [
   { icon: Shield, text: "Festpreis-Garantie", color: "text-green-600" },
-  { icon: Award, text: "Über 10'000 Auflösungen", color: "text-blue-600" },
+  { icon: Award, text: "Ãœber 10'000 AuflÃ¶sungen", color: "text-blue-600" },
   { icon: Heart, text: "Respektvoller Umgang", color: "text-pink-600" },
   { icon: Sparkles, text: "Besenrein-Garantie", color: "text-purple-600" },
 ];
@@ -146,8 +147,8 @@ const trustSignals = [
 const pageSchema = {
   "@context": "https://schema.org",
   "@type": "Service",
-  "name": "Haushaltsauflösung Schweiz",
-  "description": "Professionelle Haushaltsauflösung in der Schweiz. Komplette Räumung, Entsorgung und besenreine Übergabe zum Festpreis.",
+  "name": "HaushaltsauflÃ¶sung Schweiz",
+  "description": "Professionelle HaushaltsauflÃ¶sung in der Schweiz. Komplette RÃ¤umung, Entsorgung und besenreine Ãœbergabe zum Festpreis.",
   "provider": {
     "@type": "Organization",
     "name": "Umzugscheck.ch",
@@ -157,7 +158,7 @@ const pageSchema = {
     "@type": "Country",
     "name": "Switzerland"
   },
-  "serviceType": "Haushaltsauflösung"
+  "serviceType": "HaushaltsauflÃ¶sung"
 };
 
 export default function HaushaltsaufloesungPage() {
@@ -180,12 +181,12 @@ export default function HaushaltsaufloesungPage() {
   return (
     <>
       <Helmet>
-        <title>Haushaltsauflösung Schweiz | Komplett-Service zum Festpreis | Umzugscheck.ch</title>
-        <meta name="description" content="Professionelle Haushaltsauflösung in der Schweiz ✓ Festpreis-Garantie ✓ Besenrein ✓ Wertanrechnung ✓ Jetzt kostenlose Offerten vergleichen!" />
-        <meta name="keywords" content="Haushaltsauflösung, Wohnungsauflösung, Räumung, Entrümpelung, Nachlassauflösung, Schweiz" />
+        <title>HaushaltsauflÃ¶sung Schweiz | Komplett-Service zum Festpreis | Umzugscheck.ch</title>
+        <meta name="description" content="Professionelle HaushaltsauflÃ¶sung in der Schweiz âœ“ Festpreis-Garantie âœ“ Besenrein âœ“ Wertanrechnung âœ“ Jetzt kostenlose Offerten vergleichen!" />
+        <meta name="keywords" content="HaushaltsauflÃ¶sung, WohnungsauflÃ¶sung, RÃ¤umung, EntrÃ¼mpelung, NachlassauflÃ¶sung, Schweiz" />
         <link rel="canonical" href="https://umzugscheck.ch/haushaltsaufloesung" />
-        <meta property="og:title" content="Haushaltsauflösung Schweiz | Komplett-Service" />
-        <meta property="og:description" content="Professionelle Haushaltsauflösung zum Festpreis. Besenrein mit Wertanrechnung." />
+        <meta property="og:title" content="HaushaltsauflÃ¶sung Schweiz | Komplett-Service" />
+        <meta property="og:description" content="Professionelle HaushaltsauflÃ¶sung zum Festpreis. Besenrein mit Wertanrechnung." />
         <meta property="og:url" content="https://umzugscheck.ch/haushaltsaufloesung" />
         <meta property="og:type" content="website" />
         <script type="application/ld+json">{JSON.stringify(pageSchema)}</script>
@@ -212,18 +213,18 @@ export default function HaushaltsaufloesungPage() {
               className="max-w-4xl mx-auto text-center text-white"
             >
               <Badge className="bg-primary/90 text-white mb-4 text-sm px-4 py-1">
-                🏠 Komplett-Service
+                ðŸ  Komplett-Service
               </Badge>
               
               <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-                Haushaltsauflösung Schweiz
+                HaushaltsauflÃ¶sung Schweiz
                 <span className="block text-2xl md:text-3xl font-normal mt-2 text-white/90">
                   Festpreis. Besenrein. Stressfrei.
                 </span>
               </h1>
               
               <p className="text-lg md:text-xl text-white/80 mb-8 max-w-2xl mx-auto">
-                Wir kümmern uns um alles – von der Räumung bis zur besenreinen Übergabe. Respektvoll und professionell.
+                Wir kÃ¼mmern uns um alles â€“ von der RÃ¤umung bis zur besenreinen Ãœbergabe. Respektvoll und professionell.
               </p>
 
               {/* Trust Signals */}
@@ -242,10 +243,10 @@ export default function HaushaltsaufloesungPage() {
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="zimmer" className="text-foreground">Wohnungsgrösse</Label>
+                        <Label htmlFor="zimmer" className="text-foreground">WohnungsgrÃ¶sse</Label>
                         <Select onValueChange={(v) => setFormData({...formData, zimmer: v})}>
                           <SelectTrigger>
-                            <SelectValue placeholder="Grösse wählen" />
+                            <SelectValue placeholder="GrÃ¶sse wÃ¤hlen" />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="1">1 Zimmer</SelectItem>
@@ -259,7 +260,7 @@ export default function HaushaltsaufloesungPage() {
                         <Label htmlFor="grund" className="text-foreground">Anlass</Label>
                         <Select onValueChange={(v) => setFormData({...formData, grund: v})}>
                           <SelectTrigger>
-                            <SelectValue placeholder="Anlass wählen" />
+                            <SelectValue placeholder="Anlass wÃ¤hlen" />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="umzug">Umzug</SelectItem>
@@ -288,7 +289,7 @@ export default function HaushaltsaufloesungPage() {
                             <SelectValue placeholder="Wann?" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="sofort">So schnell wie möglich</SelectItem>
+                            <SelectItem value="sofort">So schnell wie mÃ¶glich</SelectItem>
                             <SelectItem value="1-2wochen">In 1-2 Wochen</SelectItem>
                             <SelectItem value="1monat">In ca. 1 Monat</SelectItem>
                             <SelectItem value="flexibel">Flexibel</SelectItem>
@@ -301,7 +302,7 @@ export default function HaushaltsaufloesungPage() {
                       <ArrowRight className="ml-2 w-5 h-5" />
                     </Button>
                     <p className="text-xs text-center text-muted-foreground">
-                      ✓ 100% kostenlos & unverbindlich • ✓ Festpreis-Garantie • ✓ Schweizweit
+                      âœ“ 100% kostenlos & unverbindlich â€¢ âœ“ Festpreis-Garantie â€¢ âœ“ Schweizweit
                     </p>
                   </form>
                 </CardContent>
@@ -355,9 +356,9 @@ export default function HaushaltsaufloesungPage() {
         {/* Price Examples */}
         <section className="py-16 bg-muted/30">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-4">Haushaltsauflösung Preise</h2>
+            <h2 className="text-3xl font-bold text-center mb-4">HaushaltsauflÃ¶sung Preise</h2>
             <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
-              Transparente Richtpreise für Ihre Haushaltsauflösung in der Schweiz
+              Transparente Richtpreise fÃ¼r Ihre HaushaltsauflÃ¶sung in der Schweiz
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
               {priceExamples.map((price, i) => (
@@ -394,7 +395,7 @@ export default function HaushaltsaufloesungPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <div className="font-semibold">{t.name}</div>
-                        <div className="text-sm text-muted-foreground">{t.location} • {t.date}</div>
+                        <div className="text-sm text-muted-foreground">{t.location} â€¢ {t.date}</div>
                       </div>
                       <Badge variant="secondary">{t.badge}</Badge>
                     </div>
@@ -408,7 +409,7 @@ export default function HaushaltsaufloesungPage() {
         {/* FAQs */}
         <section className="py-16 bg-muted/30">
           <div className="container mx-auto px-4 max-w-3xl">
-            <h2 className="text-3xl font-bold text-center mb-12">Häufige Fragen</h2>
+            <h2 className="text-3xl font-bold text-center mb-12">HÃ¤ufige Fragen</h2>
             <Accordion type="single" collapsible className="space-y-4">
               {faqs.map((faq, i) => (
                 <AccordionItem key={i} value={`faq-${i}`} className="border rounded-lg px-4 bg-background">
@@ -428,10 +429,10 @@ export default function HaushaltsaufloesungPage() {
         <section className="py-20 bg-primary text-primary-foreground">
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Bereit für Ihre Haushaltsauflösung?
+              Bereit fÃ¼r Ihre HaushaltsauflÃ¶sung?
             </h2>
             <p className="text-lg opacity-90 mb-8 max-w-2xl mx-auto">
-              Erhalten Sie jetzt kostenlose Festpreis-Offerten von geprüften Räumungs-Experten
+              Erhalten Sie jetzt kostenlose Festpreis-Offerten von geprÃ¼ften RÃ¤umungs-Experten
             </p>
             <Button 
               size="lg" 
@@ -450,3 +451,4 @@ export default function HaushaltsaufloesungPage() {
     </>
   );
 }
+

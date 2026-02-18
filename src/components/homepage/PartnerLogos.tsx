@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 
 const partners = [
+  { name: "Feierabend Services GmbH", logo: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=200&q=80&auto=format&fit=crop" },
   { name: "TCS", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/TCS_Logo.svg/200px-TCS_Logo.svg.png" },
   { name: "ASTAG", logo: "https://www.astag.ch/fileadmin/user_upload/astag-logo.svg" },
   { name: "20 Minuten", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/20_Minuten_Logo.svg/200px-20_Minuten_Logo.svg.png" },

@@ -25,6 +25,7 @@ interface Partner {
 }
 
 const mockPartners: Partner[] = [
+  { id: 'P0', name: 'Feierabend Services GmbH', region: 'Schweizweit', rating: 4.9, responseTime: 35, acceptRate: 92, disputeRate: 1, leadsReceived: 30, leadsWon: 11, revenue: 22800, status: 'active' },
   { id: 'P1', name: 'Müller Umzüge AG', region: 'Zürich', rating: 4.8, responseTime: 45, acceptRate: 85, disputeRate: 2, leadsReceived: 24, leadsWon: 8, revenue: 14400, status: 'active' },
   { id: 'P2', name: 'Bern Express GmbH', region: 'Bern', rating: 4.5, responseTime: 90, acceptRate: 72, disputeRate: 5, leadsReceived: 18, leadsWon: 5, revenue: 8500, status: 'active' },
   { id: 'P3', name: 'Basel Movers', region: 'Basel', rating: 4.2, responseTime: 120, acceptRate: 65, disputeRate: 12, leadsReceived: 15, leadsWon: 3, revenue: 4200, status: 'probation' },

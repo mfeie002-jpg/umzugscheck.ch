@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { motion, useInView } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
@@ -29,53 +29,54 @@ const relatedServices = [
 ];
 
 const companies = [
-  { id: "senioren-umzug", name: "Senioren-Umzug Schweiz", rating: 4.9, reviewCount: 312, badges: ["Spezialisiert", "Einfühlsam"], priceLevel: "Mittel", isPopular: true, responseTime: "< 2h" },
-  { id: "golden-move", name: "Golden Move AG", rating: 4.8, reviewCount: 234, badges: ["Preis-Sieger", "Komplett-Service"], priceLevel: "Günstig", isBestPrice: true, responseTime: "< 1h" },
+  { id: "feierabend-services-gmbh", name: "Feierabend Services GmbH", rating: 4.9, reviewCount: 312, badges: ["Demo", "Top bewertet"], services: ["Umzug", "Firmenumzug", "Reinigung"], priceLevel: "Premium", isPopular: true, responseTime: "< 1h" },
+  { id: "senioren-umzug", name: "Senioren-Umzug Schweiz", rating: 4.9, reviewCount: 312, badges: ["Spezialisiert", "EinfÃ¼hlsam"], priceLevel: "Mittel", isPopular: true, responseTime: "< 2h" },
+  { id: "golden-move", name: "Golden Move AG", rating: 4.8, reviewCount: 234, badges: ["Preis-Sieger", "Komplett-Service"], priceLevel: "GÃ¼nstig", isBestPrice: true, responseTime: "< 1h" },
   { id: "comfort-umzug", name: "Comfort Umzug Plus", rating: 4.9, reviewCount: 189, badges: ["Premium", "Full-Service"], priceLevel: "Premium", isPremium: true, responseTime: "< 4h" },
 ];
 
 const priceExamples = [
-  { size: "1-2 Zimmer", price: "CHF 1'500 – 2'500", subtext: "Kleine Wohnung / Altersheim", icon: Home, savings: "bis CHF 600" },
-  { size: "2.5-3.5 Zimmer", price: "CHF 2'500 – 4'000", subtext: "Mittlere Wohnung", icon: Home, savings: "bis CHF 1'000" },
-  { size: "4+ Zimmer", price: "CHF 4'000 – 6'500", subtext: "Grosse Wohnung / Haus", icon: Home, savings: "bis CHF 1'600" },
+  { size: "1-2 Zimmer", price: "CHF 1'500 â€“ 2'500", subtext: "Kleine Wohnung / Altersheim", icon: Home, savings: "bis CHF 600" },
+  { size: "2.5-3.5 Zimmer", price: "CHF 2'500 â€“ 4'000", subtext: "Mittlere Wohnung", icon: Home, savings: "bis CHF 1'000" },
+  { size: "4+ Zimmer", price: "CHF 4'000 â€“ 6'500", subtext: "Grosse Wohnung / Haus", icon: Home, savings: "bis CHF 1'600" },
   { size: "Full-Service", price: "ab CHF 3'000", subtext: "Inkl. Ein-/Auspacken", icon: Package, savings: "bis CHF 1'200" },
 ];
 
 const additionalServices = [
-  { title: "Entrümpelung", icon: Trash2, description: "Aussortieren & Entsorgen", link: "/services/entsorgung" },
+  { title: "EntrÃ¼mpelung", icon: Trash2, description: "Aussortieren & Entsorgen", link: "/services/entsorgung" },
   { title: "Reinigung", icon: Sparkles, description: "Endreinigung mit Garantie", link: "/services/reinigung" },
   { title: "Einlagerung", icon: Warehouse, description: "Sichere Zwischenlagerung", link: "/services/lagerung" },
-  { title: "Packservice", icon: Package, description: "Wir packen für Sie", link: "/services/packservice" },
+  { title: "Packservice", icon: Package, description: "Wir packen fÃ¼r Sie", link: "/services/packservice" },
 ];
 
 const howItWorks = [
-  { step: 1, title: "Beratungsgespräch", description: "Persönliche Bedarfsanalyse vor Ort", icon: ClipboardList, time: "Kostenlos" },
-  { step: 2, title: "Offerten erhalten", description: "Spezialisierte Angebote für Senioren", icon: FileText, time: "24-48h" },
-  { step: 3, title: "Stressfreier Umzug", description: "Einfühlsame Betreuung von A bis Z", icon: CheckCircle, time: "Ihr Wunschtermin" },
+  { step: 1, title: "BeratungsgesprÃ¤ch", description: "PersÃ¶nliche Bedarfsanalyse vor Ort", icon: ClipboardList, time: "Kostenlos" },
+  { step: 2, title: "Offerten erhalten", description: "Spezialisierte Angebote fÃ¼r Senioren", icon: FileText, time: "24-48h" },
+  { step: 3, title: "Stressfreier Umzug", description: "EinfÃ¼hlsame Betreuung von A bis Z", icon: CheckCircle, time: "Ihr Wunschtermin" },
 ];
 
 const testimonials = [
-  { name: "Margrit S., 78", location: "Zürich", rating: 5, text: "Der Umzug ins Altersheim war emotional schwer, aber das Team war so einfühlsam. Sie haben alles übernommen, sogar die Bilder aufgehängt.", date: "vor 1 Woche", verified: true, savedAmount: 800 },
-  { name: "Hans P., 82", location: "Bern", rating: 5, text: "Von der Entrümpelung bis zum Einrichten – alles aus einer Hand. Ich musste mich um nichts kümmern.", date: "vor 2 Wochen", verified: true, savedAmount: 650 },
-  { name: "Familie Müller", location: "Basel", rating: 5, text: "Wir haben den Umzug unserer Mutter (85) organisiert. Das Team war geduldig und respektvoll. Sehr empfehlenswert!", date: "vor 3 Wochen", verified: true, savedAmount: 720 },
+  { name: "Margrit S., 78", location: "ZÃ¼rich", rating: 5, text: "Der Umzug ins Altersheim war emotional schwer, aber das Team war so einfÃ¼hlsam. Sie haben alles Ã¼bernommen, sogar die Bilder aufgehÃ¤ngt.", date: "vor 1 Woche", verified: true, savedAmount: 800 },
+  { name: "Hans P., 82", location: "Bern", rating: 5, text: "Von der EntrÃ¼mpelung bis zum Einrichten â€“ alles aus einer Hand. Ich musste mich um nichts kÃ¼mmern.", date: "vor 2 Wochen", verified: true, savedAmount: 650 },
+  { name: "Familie MÃ¼ller", location: "Basel", rating: 5, text: "Wir haben den Umzug unserer Mutter (85) organisiert. Das Team war geduldig und respektvoll. Sehr empfehlenswert!", date: "vor 3 Wochen", verified: true, savedAmount: 720 },
 ];
 
 const guarantees = [
-  { title: "Einfühlsam & Geduldig", description: "Teams spezialisiert auf Senioren", icon: Heart },
+  { title: "EinfÃ¼hlsam & Geduldig", description: "Teams spezialisiert auf Senioren", icon: Heart },
   { title: "Alles aus einer Hand", description: "Packen, Transport, Einrichten", icon: Package },
-  { title: "Vollversicherung", description: "Umfassender Schutz für Ihre Möbel", icon: ShieldCheck },
-  { title: "Behördenhilfe", description: "Unterstützung bei An-/Abmeldung", icon: FileText },
+  { title: "Vollversicherung", description: "Umfassender Schutz fÃ¼r Ihre MÃ¶bel", icon: ShieldCheck },
+  { title: "BehÃ¶rdenhilfe", description: "UnterstÃ¼tzung bei An-/Abmeldung", icon: FileText },
 ];
 
 const faqs = [
-  { question: "Was kostet ein Seniorenumzug?", answer: "Ein Seniorenumzug kostet je nach Umfang ab CHF 1'500 für kleine Wohnungen bis CHF 6'500+ für grosse Haushalte. Im Preis enthalten sind meist: Beratung, Verpackung, Transport, Auspacken und Einrichten am neuen Ort." },
-  { question: "Welche Zusatzleistungen gibt es?", answer: "Typische Zusatzleistungen: Entrümpelung & Entsorgung, Behördengänge (An-/Abmeldung), Möbelentsorgung, Bilder aufhängen, Einrichten der neuen Wohnung, Kabelinstallation für TV/Telefon." },
-  { question: "Wie einfühlsam sind die Teams?", answer: "Unsere Partner sind auf Seniorenumzüge spezialisiert. Die Teams sind geschult in: Geduld und Verständnis, respektvoller Umgang, Eingehen auf individuelle Bedürfnisse, Umgang mit emotionalen Situationen." },
-  { question: "Können Angehörige dabei sein?", answer: "Ja, Angehörige sind jederzeit willkommen. Viele Firmen bieten auch Beratungsgespräche mit der Familie an, um alle Wünsche und Bedenken zu besprechen." },
-  { question: "Was passiert mit nicht benötigten Möbeln?", answer: "Die Umzugsfirmen können nicht benötigte Möbel entsorgen, spenden oder verkaufen. Oft wird eine Wertanrechnung für gut erhaltene Stücke angeboten." },
+  { question: "Was kostet ein Seniorenumzug?", answer: "Ein Seniorenumzug kostet je nach Umfang ab CHF 1'500 fÃ¼r kleine Wohnungen bis CHF 6'500+ fÃ¼r grosse Haushalte. Im Preis enthalten sind meist: Beratung, Verpackung, Transport, Auspacken und Einrichten am neuen Ort." },
+  { question: "Welche Zusatzleistungen gibt es?", answer: "Typische Zusatzleistungen: EntrÃ¼mpelung & Entsorgung, BehÃ¶rdengÃ¤nge (An-/Abmeldung), MÃ¶belentsorgung, Bilder aufhÃ¤ngen, Einrichten der neuen Wohnung, Kabelinstallation fÃ¼r TV/Telefon." },
+  { question: "Wie einfÃ¼hlsam sind die Teams?", answer: "Unsere Partner sind auf SeniorenumzÃ¼ge spezialisiert. Die Teams sind geschult in: Geduld und VerstÃ¤ndnis, respektvoller Umgang, Eingehen auf individuelle BedÃ¼rfnisse, Umgang mit emotionalen Situationen." },
+  { question: "KÃ¶nnen AngehÃ¶rige dabei sein?", answer: "Ja, AngehÃ¶rige sind jederzeit willkommen. Viele Firmen bieten auch BeratungsgesprÃ¤che mit der Familie an, um alle WÃ¼nsche und Bedenken zu besprechen." },
+  { question: "Was passiert mit nicht benÃ¶tigten MÃ¶beln?", answer: "Die Umzugsfirmen kÃ¶nnen nicht benÃ¶tigte MÃ¶bel entsorgen, spenden oder verkaufen. Oft wird eine Wertanrechnung fÃ¼r gut erhaltene StÃ¼cke angeboten." },
 ];
 
-const regions = ["Zürich", "Bern", "Basel", "Luzern", "Aargau", "St. Gallen", "Zug", "Thurgau"];
+const regions = ["ZÃ¼rich", "Bern", "Basel", "Luzern", "Aargau", "St. Gallen", "Zug", "Thurgau"];
 
 const AnimatedCounter = ({ end, suffix = "", duration = 2000 }: { end: number; suffix?: string; duration?: number }) => {
   const [count, setCount] = useState(0);
@@ -130,7 +131,7 @@ export default function SeniorenumzugPage() {
   const schemaOrg = {
     "@context": "https://schema.org",
     "@graph": [
-      { "@type": "Service", "name": SERVICE_NAME, "description": `Einfühlsamer ${SERVICE_NAME} in der Schweiz. Spezialisierte Teams für ältere Menschen.`, "provider": { "@type": "Organization", "name": "Umzugscheck.ch" }, "areaServed": { "@type": "Country", "name": "Schweiz" }, "priceRange": "CHF 1500 - CHF 7000" },
+      { "@type": "Service", "name": SERVICE_NAME, "description": `EinfÃ¼hlsamer ${SERVICE_NAME} in der Schweiz. Spezialisierte Teams fÃ¼r Ã¤ltere Menschen.`, "provider": { "@type": "Organization", "name": "Umzugscheck.ch" }, "areaServed": { "@type": "Country", "name": "Schweiz" }, "priceRange": "CHF 1500 - CHF 7000" },
       { "@type": "FAQPage", "mainEntity": faqs.map(faq => ({ "@type": "Question", "name": faq.question, "acceptedAnswer": { "@type": "Answer", "text": faq.answer } })) }
     ]
   };
@@ -139,8 +140,8 @@ export default function SeniorenumzugPage() {
     <div className="min-h-screen bg-background">
       <Helmet>
         <html lang="de-CH" />
-        <title>{SERVICE_NAME} Schweiz | Einfühlsam & Professionell | Bis 40% sparen</title>
-        <meta name="description" content={`Einfühlsamer ${SERVICE_NAME} in der Schweiz ✓ Spezialisierte Teams ✓ Alles aus einer Hand ✓ Kostenlose Offerten!`} />
+        <title>{SERVICE_NAME} Schweiz | EinfÃ¼hlsam & Professionell | Bis 40% sparen</title>
+        <meta name="description" content={`EinfÃ¼hlsamer ${SERVICE_NAME} in der Schweiz âœ“ Spezialisierte Teams âœ“ Alles aus einer Hand âœ“ Kostenlose Offerten!`} />
         <link rel="canonical" href={`https://umzugscheck.ch/services/${SERVICE_SLUG}`} />
         <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
       </Helmet>
@@ -170,16 +171,16 @@ export default function SeniorenumzugPage() {
                 </motion.div>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-5 leading-tight">
-                  {SERVICE_NAME} – <br className="hidden md:block" /><span className="text-secondary">mit Herz & Verstand</span>
+                  {SERVICE_NAME} â€“ <br className="hidden md:block" /><span className="text-secondary">mit Herz & Verstand</span>
                 </h1>
 
                 <p className="text-lg md:text-xl text-white/85 mb-6 max-w-xl mx-auto lg:mx-0">
-                  <strong>Einfühlsame Teams</strong> für einen stressfreien Umzug im Alter.
+                  <strong>EinfÃ¼hlsame Teams</strong> fÃ¼r einen stressfreien Umzug im Alter.
                   <span className="text-green-400 font-semibold"> Alles aus einer Hand.</span>
                 </p>
 
                 <div className="grid grid-cols-3 gap-4 mb-8 max-w-lg mx-auto lg:mx-0">
-                  <div className="text-center lg:text-left"><div className="text-2xl font-bold text-white"><AnimatedCounter end={735} suffix="+" /></div><div className="text-xs text-white/60">Seniorenumzüge</div></div>
+                  <div className="text-center lg:text-left"><div className="text-2xl font-bold text-white"><AnimatedCounter end={735} suffix="+" /></div><div className="text-xs text-white/60">SeniorenumzÃ¼ge</div></div>
                   <div className="text-center lg:text-left"><div className="text-2xl font-bold text-white"><AnimatedCounter end={50} suffix="+" /></div><div className="text-xs text-white/60">Spezialisten</div></div>
                   <div className="text-2xl font-bold text-amber-400 flex items-center gap-1"><Star className="w-6 h-6 fill-amber-400" />4.9</div>
                 </div>
@@ -196,7 +197,7 @@ export default function SeniorenumzugPage() {
                   <CardContent className="p-8">
                     <div className="text-center mb-6">
                       <h2 className="text-xl font-bold mb-2">Kostenlose Beratung</h2>
-                      <p className="text-sm text-muted-foreground">Einfühlsame Umzugsofferten für Senioren</p>
+                      <p className="text-sm text-muted-foreground">EinfÃ¼hlsame Umzugsofferten fÃ¼r Senioren</p>
                     </div>
                     <form onSubmit={handleFormSubmit} className="space-y-4">
                       <div>
@@ -207,9 +208,9 @@ export default function SeniorenumzugPage() {
                         </div>
                       </div>
                       <div>
-                        <Label>Wohnungsgrösse</Label>
+                        <Label>WohnungsgrÃ¶sse</Label>
                         <Select value={apartmentSize} onValueChange={setApartmentSize}>
-                          <SelectTrigger className="mt-1"><SelectValue placeholder="Wählen..." /></SelectTrigger>
+                          <SelectTrigger className="mt-1"><SelectValue placeholder="WÃ¤hlen..." /></SelectTrigger>
                           <SelectContent>
                             <SelectItem value="1-2">1-2 Zimmer</SelectItem>
                             <SelectItem value="2.5-3">2.5-3 Zimmer</SelectItem>
@@ -238,10 +239,10 @@ export default function SeniorenumzugPage() {
         <section className="py-8 bg-muted/30 border-y">
           <div className="container px-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-              <div><div className="text-2xl font-bold text-primary">735+</div><div className="text-sm text-muted-foreground">Seniorenumzüge</div></div>
-              <div><div className="text-2xl font-bold text-primary">100%</div><div className="text-sm text-muted-foreground">Einfühlsam</div></div>
+              <div><div className="text-2xl font-bold text-primary">735+</div><div className="text-sm text-muted-foreground">SeniorenumzÃ¼ge</div></div>
+              <div><div className="text-2xl font-bold text-primary">100%</div><div className="text-sm text-muted-foreground">EinfÃ¼hlsam</div></div>
               <div><div className="text-2xl font-bold text-primary">4.9/5</div><div className="text-sm text-muted-foreground">Bewertung</div></div>
-              <div><div className="text-2xl font-bold text-primary">Full-Service</div><div className="text-sm text-muted-foreground">verfügbar</div></div>
+              <div><div className="text-2xl font-bold text-primary">Full-Service</div><div className="text-sm text-muted-foreground">verfÃ¼gbar</div></div>
             </div>
           </div>
         </section>
@@ -326,7 +327,7 @@ export default function SeniorenumzugPage() {
         {/* ADDITIONAL SERVICES */}
         <section className="py-16 bg-background">
           <div className="container px-4">
-            <h2 className="text-3xl font-bold text-center mb-12">Ergänzende Services</h2>
+            <h2 className="text-3xl font-bold text-center mb-12">ErgÃ¤nzende Services</h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {additionalServices.map((s, i) => (
                 <Link key={i} to={s.link}>
@@ -346,7 +347,7 @@ export default function SeniorenumzugPage() {
         {/* FAQ */}
         <section className="py-16 bg-muted/30">
           <div className="container px-4 max-w-3xl">
-            <h2 className="text-3xl font-bold text-center mb-12">Häufige Fragen zum Seniorenumzug</h2>
+            <h2 className="text-3xl font-bold text-center mb-12">HÃ¤ufige Fragen zum Seniorenumzug</h2>
             <Accordion type="single" collapsible className="space-y-4">
               {faqs.map((faq, i) => (
                 <AccordionItem key={i} value={`faq-${i}`} className="bg-background rounded-lg border px-6">
@@ -377,8 +378,8 @@ export default function SeniorenumzugPage() {
         {/* FINAL CTA */}
         <section className="py-20 bg-primary text-primary-foreground">
           <div className="container px-4 text-center">
-            <h2 className="text-3xl font-bold mb-4">Einfühlsamer Umzugsservice für Senioren</h2>
-            <p className="text-lg mb-8 opacity-90 max-w-2xl mx-auto">Spezialisierte Teams begleiten Sie oder Ihre Angehörigen stressfrei durch den Umzug – mit Geduld, Verständnis und Professionalität.</p>
+            <h2 className="text-3xl font-bold mb-4">EinfÃ¼hlsamer Umzugsservice fÃ¼r Senioren</h2>
+            <p className="text-lg mb-8 opacity-90 max-w-2xl mx-auto">Spezialisierte Teams begleiten Sie oder Ihre AngehÃ¶rigen stressfrei durch den Umzug â€“ mit Geduld, VerstÃ¤ndnis und ProfessionalitÃ¤t.</p>
             <Button asChild size="lg" variant="secondary" className="font-bold px-8 py-6">
               <Link to="/umzugsofferten">Jetzt kostenlos Offerten erhalten<ArrowRight className="ml-2 w-5 h-5" /></Link>
             </Button>
@@ -399,3 +400,4 @@ export default function SeniorenumzugPage() {
     </div>
   );
 }
+

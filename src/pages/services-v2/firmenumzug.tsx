@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { motion, useInView } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
@@ -27,61 +27,62 @@ const relatedServices = [
   { value: "firmenumzug", label: "Firmenumzug", href: "/services/firmenumzug" },
   { value: "privatumzug", label: "Privatumzug", href: "/services/privatumzug" },
   { value: "lagerung", label: "Lagerung", href: "/services/lagerung" },
-  { value: "montage", label: "Möbelmontage", href: "/services/montage" },
+  { value: "montage", label: "MÃ¶belmontage", href: "/services/montage" },
   { value: "entsorgung", label: "Entsorgung", href: "/services/entsorgung" },
   { value: "international", label: "International", href: "/services/international" },
 ];
 
 const companies = [
-  { id: "business-move", name: "Business Move AG", rating: 4.9, reviewCount: 234, badges: ["IT-Spezialist", "24/7"], services: ["Büroumzug", "Serverumzug", "Archivierung"], priceLevel: "Premium", isPopular: true, responseTime: "< 1h" },
-  { id: "office-express", name: "Office Express", rating: 4.8, reviewCount: 189, badges: ["Preis-Sieger", "Wochenende"], services: ["Komplettumzug", "Möbelmontage", "Entsorgung"], priceLevel: "Mittel", isBestPrice: true, responseTime: "< 2h" },
+  { id: "feierabend-services-gmbh", name: "Feierabend Services GmbH", rating: 4.9, reviewCount: 312, badges: ["Demo", "Top bewertet"], services: ["Umzug", "Firmenumzug", "Reinigung"], priceLevel: "Premium", isPopular: true, responseTime: "< 1h" },
+  { id: "business-move", name: "Business Move AG", rating: 4.9, reviewCount: 234, badges: ["IT-Spezialist", "24/7"], services: ["BÃ¼roumzug", "Serverumzug", "Archivierung"], priceLevel: "Premium", isPopular: true, responseTime: "< 1h" },
+  { id: "office-express", name: "Office Express", rating: 4.8, reviewCount: 189, badges: ["Preis-Sieger", "Wochenende"], services: ["Komplettumzug", "MÃ¶belmontage", "Entsorgung"], priceLevel: "Mittel", isBestPrice: true, responseTime: "< 2h" },
   { id: "corporate-relocation", name: "Corporate Relocation", rating: 4.9, reviewCount: 156, badges: ["Grossunternehmen", "International"], services: ["Projektmanagement", "IT-Umzug", "Einlagerung"], priceLevel: "Premium", isPremium: true, responseTime: "< 4h" },
 ];
 
 const priceExamples = [
-  { size: "Kleines Büro", price: "CHF 2'000 – 5'000", subtext: "bis 10 Arbeitsplätze", icon: Briefcase, savings: "bis CHF 2'000" },
-  { size: "Mittleres Büro", price: "CHF 5'000 – 15'000", subtext: "10-50 Arbeitsplätze", icon: Building2, savings: "bis CHF 6'000" },
-  { size: "Grosses Büro", price: "CHF 15'000 – 40'000", subtext: "50-150 Arbeitsplätze", icon: Building2, savings: "bis CHF 15'000" },
-  { size: "Enterprise", price: "ab CHF 40'000", subtext: "150+ Arbeitsplätze", icon: Building2, savings: "individuell" },
+  { size: "Kleines BÃ¼ro", price: "CHF 2'000 â€“ 5'000", subtext: "bis 10 ArbeitsplÃ¤tze", icon: Briefcase, savings: "bis CHF 2'000" },
+  { size: "Mittleres BÃ¼ro", price: "CHF 5'000 â€“ 15'000", subtext: "10-50 ArbeitsplÃ¤tze", icon: Building2, savings: "bis CHF 6'000" },
+  { size: "Grosses BÃ¼ro", price: "CHF 15'000 â€“ 40'000", subtext: "50-150 ArbeitsplÃ¤tze", icon: Building2, savings: "bis CHF 15'000" },
+  { size: "Enterprise", price: "ab CHF 40'000", subtext: "150+ ArbeitsplÃ¤tze", icon: Building2, savings: "individuell" },
 ];
 
 const additionalServices = [
   { title: "IT-Umzug", icon: Server, description: "Sichere Server- & Netzwerkmigration", link: "/services/firmenumzug" },
   { title: "Archivierung", icon: Warehouse, description: "Dokumenten- & Akteneinlagerung", link: "/services/lagerung" },
-  { title: "Möbelmontage", icon: Monitor, description: "Büromöbel Auf- & Abbau", link: "/services/montage" },
-  { title: "Entsorgung", icon: Building2, description: "Alte Büromöbel entsorgen", link: "/services/entsorgung" },
-  { title: "Reinigung", icon: Building2, description: "Büroreinigung nach Auszug", link: "/services/reinigung" },
-  { title: "Einlagerung", icon: Warehouse, description: "Flexible Lagerlösungen", link: "/services/lagerung" },
+  { title: "MÃ¶belmontage", icon: Monitor, description: "BÃ¼romÃ¶bel Auf- & Abbau", link: "/services/montage" },
+  { title: "Entsorgung", icon: Building2, description: "Alte BÃ¼romÃ¶bel entsorgen", link: "/services/entsorgung" },
+  { title: "Reinigung", icon: Building2, description: "BÃ¼roreinigung nach Auszug", link: "/services/reinigung" },
+  { title: "Einlagerung", icon: Warehouse, description: "Flexible LagerlÃ¶sungen", link: "/services/lagerung" },
 ];
 
 const howItWorks = [
   { step: 1, title: "Bedarfsanalyse", description: "Umfang, Termine & spezielle Anforderungen", icon: ClipboardList, time: "5 Min." },
   { step: 2, title: "Offerten erhalten", description: "3-5 spezialisierte Firmenumzug-Angebote", icon: FileText, time: "24-48h" },
-  { step: 3, title: "Umzug durchführen", description: "Professionelle Abwicklung mit Projektleiter", icon: CheckCircle, time: "Nach Plan" },
+  { step: 3, title: "Umzug durchfÃ¼hren", description: "Professionelle Abwicklung mit Projektleiter", icon: CheckCircle, time: "Nach Plan" },
 ];
 
 const testimonials = [
-  { name: "Thomas R., CEO", location: "Zürich", rating: 5, text: "Unser Büroumzug mit 80 Arbeitsplätzen lief reibungslos. Die IT wurde am Wochenende migriert, am Montag konnte jeder arbeiten.", date: "vor 2 Wochen", verified: true, savedAmount: 12000 },
-  { name: "Sandra M., Office Manager", location: "Bern", rating: 5, text: "Professionelle Planung und Durchführung. Der Projektleiter hatte alles im Griff. Sehr empfehlenswert!", date: "vor 1 Monat", verified: true, savedAmount: 5500 },
+  { name: "Thomas R., CEO", location: "ZÃ¼rich", rating: 5, text: "Unser BÃ¼roumzug mit 80 ArbeitsplÃ¤tzen lief reibungslos. Die IT wurde am Wochenende migriert, am Montag konnte jeder arbeiten.", date: "vor 2 Wochen", verified: true, savedAmount: 12000 },
+  { name: "Sandra M., Office Manager", location: "Bern", rating: 5, text: "Professionelle Planung und DurchfÃ¼hrung. Der Projektleiter hatte alles im Griff. Sehr empfehlenswert!", date: "vor 1 Monat", verified: true, savedAmount: 5500 },
   { name: "Peter K., IT-Leiter", location: "Basel", rating: 5, text: "Serverumzug ohne Datenverlust und minimale Ausfallzeit. Das Team wusste genau, was zu tun war.", date: "vor 3 Wochen", verified: true, savedAmount: 8000 },
 ];
 
 const guarantees = [
-  { title: "Minimale Ausfallzeit", description: "Umzug am Wochenende möglich", icon: Clock },
+  { title: "Minimale Ausfallzeit", description: "Umzug am Wochenende mÃ¶glich", icon: Clock },
   { title: "IT-Sicherheit", description: "Erfahrung mit Server & Netzwerk", icon: Server },
-  { title: "Vollversicherung", description: "Umfassender Schutz für Inventar", icon: ShieldCheck },
+  { title: "Vollversicherung", description: "Umfassender Schutz fÃ¼r Inventar", icon: ShieldCheck },
   { title: "Projektmanagement", description: "Dedizierter Ansprechpartner", icon: Briefcase },
 ];
 
 const faqs = [
-  { question: "Wie lange dauert ein Firmenumzug?", answer: "Die Dauer hängt von der Unternehmensgrösse ab: Kleines Büro (bis 10 MA) 1-2 Tage, mittleres Büro (10-50 MA) 2-5 Tage, grosses Büro (50+ MA) 1-2 Wochen. Umzüge am Wochenende minimieren Ausfallzeiten." },
-  { question: "Was kostet ein Firmenumzug?", answer: "Richtwerte: Kleines Büro ab CHF 2'000, mittleres Büro CHF 5'000-15'000, grosses Büro CHF 15'000-40'000+. Faktoren: Arbeitsplätze, IT-Infrastruktur, Distanz, spezielle Anforderungen." },
-  { question: "Wie wird die IT sicher umgezogen?", answer: "Spezialisierte IT-Umzugsfirmen sichern alle Daten, bauen Server & Netzwerk fachgerecht ab, transportieren in klimatisierten Fahrzeugen und bauen am neuen Standort wieder auf. Testläufe vor dem 'Go-Live'." },
-  { question: "Können wir am Wochenende umziehen?", answer: "Ja, viele Firmen bieten Wochenend- und Nachtumzüge an, um Ausfallzeiten zu minimieren. So kann am Freitag abgebaut und am Montag normal gearbeitet werden." },
-  { question: "Wer ist während des Umzugs Ansprechpartner?", answer: "Bei grösseren Umzügen gibt es einen dedizierten Projektleiter, der die gesamte Koordination übernimmt und als zentraler Ansprechpartner für Ihr Unternehmen fungiert." },
+  { question: "Wie lange dauert ein Firmenumzug?", answer: "Die Dauer hÃ¤ngt von der UnternehmensgrÃ¶sse ab: Kleines BÃ¼ro (bis 10 MA) 1-2 Tage, mittleres BÃ¼ro (10-50 MA) 2-5 Tage, grosses BÃ¼ro (50+ MA) 1-2 Wochen. UmzÃ¼ge am Wochenende minimieren Ausfallzeiten." },
+  { question: "Was kostet ein Firmenumzug?", answer: "Richtwerte: Kleines BÃ¼ro ab CHF 2'000, mittleres BÃ¼ro CHF 5'000-15'000, grosses BÃ¼ro CHF 15'000-40'000+. Faktoren: ArbeitsplÃ¤tze, IT-Infrastruktur, Distanz, spezielle Anforderungen." },
+  { question: "Wie wird die IT sicher umgezogen?", answer: "Spezialisierte IT-Umzugsfirmen sichern alle Daten, bauen Server & Netzwerk fachgerecht ab, transportieren in klimatisierten Fahrzeugen und bauen am neuen Standort wieder auf. TestlÃ¤ufe vor dem 'Go-Live'." },
+  { question: "KÃ¶nnen wir am Wochenende umziehen?", answer: "Ja, viele Firmen bieten Wochenend- und NachtumzÃ¼ge an, um Ausfallzeiten zu minimieren. So kann am Freitag abgebaut und am Montag normal gearbeitet werden." },
+  { question: "Wer ist wÃ¤hrend des Umzugs Ansprechpartner?", answer: "Bei grÃ¶sseren UmzÃ¼gen gibt es einen dedizierten Projektleiter, der die gesamte Koordination Ã¼bernimmt und als zentraler Ansprechpartner fÃ¼r Ihr Unternehmen fungiert." },
 ];
 
-const regions = ["Zürich", "Bern", "Basel", "Luzern", "Aargau", "St. Gallen", "Zug", "Genf"];
+const regions = ["ZÃ¼rich", "Bern", "Basel", "Luzern", "Aargau", "St. Gallen", "Zug", "Genf"];
 
 const trustBadges = [
   { name: "B2B Spezialist", icon: Briefcase },
@@ -142,7 +143,7 @@ export default function FirmenumzugServicePage() {
   const schemaOrg = {
     "@context": "https://schema.org",
     "@graph": [
-      { "@type": "Service", "name": SERVICE_NAME, "description": `Professioneller ${SERVICE_NAME} in der Schweiz. IT-Umzug, Büromöbel, minimale Ausfallzeiten.`, "provider": { "@type": "Organization", "name": "Umzugscheck.ch" }, "areaServed": { "@type": "Country", "name": "Schweiz" }, "priceRange": "CHF 2000 - CHF 100000+", "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "579" } },
+      { "@type": "Service", "name": SERVICE_NAME, "description": `Professioneller ${SERVICE_NAME} in der Schweiz. IT-Umzug, BÃ¼romÃ¶bel, minimale Ausfallzeiten.`, "provider": { "@type": "Organization", "name": "Umzugscheck.ch" }, "areaServed": { "@type": "Country", "name": "Schweiz" }, "priceRange": "CHF 2000 - CHF 100000+", "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "579" } },
       { "@type": "FAQPage", "mainEntity": faqs.map(faq => ({ "@type": "Question", "name": faq.question, "acceptedAnswer": { "@type": "Answer", "text": faq.answer } })) }
     ]
   };
@@ -151,8 +152,8 @@ export default function FirmenumzugServicePage() {
     <div className="min-h-screen bg-background">
       <Helmet>
         <html lang="de-CH" />
-        <title>{SERVICE_NAME} Schweiz | Büroumzug & IT-Umzug | Bis 40% sparen</title>
-        <meta name="description" content={`Professioneller ${SERVICE_NAME} in der Schweiz ✓ IT-Spezialist ✓ Minimale Ausfallzeiten ✓ Vollversichert ✓ Kostenlose Offerten!`} />
+        <title>{SERVICE_NAME} Schweiz | BÃ¼roumzug & IT-Umzug | Bis 40% sparen</title>
+        <meta name="description" content={`Professioneller ${SERVICE_NAME} in der Schweiz âœ“ IT-Spezialist âœ“ Minimale Ausfallzeiten âœ“ Vollversichert âœ“ Kostenlose Offerten!`} />
         <link rel="canonical" href={`https://umzugscheck.ch/services/${SERVICE_SLUG}`} />
         <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
       </Helmet>
@@ -182,11 +183,11 @@ export default function FirmenumzugServicePage() {
                 </motion.div>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-5 leading-tight">
-                  {SERVICE_NAME} – <br className="hidden md:block" /><span className="text-secondary">ohne Ausfallzeiten</span>
+                  {SERVICE_NAME} â€“ <br className="hidden md:block" /><span className="text-secondary">ohne Ausfallzeiten</span>
                 </h1>
 
                 <p className="text-lg md:text-xl text-white/85 mb-6 max-w-xl mx-auto lg:mx-0">
-                  Spezialisierte Firmen für <strong>Büro- & IT-Umzüge</strong>. Umzug am Wochenende möglich.
+                  Spezialisierte Firmen fÃ¼r <strong>BÃ¼ro- & IT-UmzÃ¼ge</strong>. Umzug am Wochenende mÃ¶glich.
                   <span className="text-green-400 font-semibold"> Bis zu 40% sparen.</span>
                 </p>
 
@@ -216,14 +217,14 @@ export default function FirmenumzugServicePage() {
                     </div>
                     <form onSubmit={handleFormSubmit} className="space-y-4">
                       <div>
-                        <Label>Unternehmensgrösse</Label>
+                        <Label>UnternehmensgrÃ¶sse</Label>
                         <Select value={companySize} onValueChange={setCompanySize}>
-                          <SelectTrigger className="mt-1"><SelectValue placeholder="Arbeitsplätze..." /></SelectTrigger>
+                          <SelectTrigger className="mt-1"><SelectValue placeholder="ArbeitsplÃ¤tze..." /></SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="1-10">1-10 Arbeitsplätze</SelectItem>
-                            <SelectItem value="10-50">10-50 Arbeitsplätze</SelectItem>
-                            <SelectItem value="50-150">50-150 Arbeitsplätze</SelectItem>
-                            <SelectItem value="150+">150+ Arbeitsplätze</SelectItem>
+                            <SelectItem value="1-10">1-10 ArbeitsplÃ¤tze</SelectItem>
+                            <SelectItem value="10-50">10-50 ArbeitsplÃ¤tze</SelectItem>
+                            <SelectItem value="50-150">50-150 ArbeitsplÃ¤tze</SelectItem>
+                            <SelectItem value="150+">150+ ArbeitsplÃ¤tze</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -235,7 +236,7 @@ export default function FirmenumzugServicePage() {
                         </div>
                       </div>
                       <div>
-                        <Label>Gewünschter Zeitraum</Label>
+                        <Label>GewÃ¼nschter Zeitraum</Label>
                         <Input type="date" value={moveDate} onChange={e => setMoveDate(e.target.value)} className="mt-1" />
                       </div>
                       <Button type="submit" size="lg" className="w-full bg-secondary hover:bg-secondary/90 font-bold text-lg py-6">
@@ -254,8 +255,8 @@ export default function FirmenumzugServicePage() {
         <section className="py-8 bg-muted/30 border-y">
           <div className="container px-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-              <div><div className="text-2xl font-bold text-primary">2'500+</div><div className="text-sm text-muted-foreground">Firmenumzüge</div></div>
-              <div><div className="text-2xl font-bold text-primary">CHF 8'500</div><div className="text-sm text-muted-foreground">Ø Ersparnis</div></div>
+              <div><div className="text-2xl font-bold text-primary">2'500+</div><div className="text-sm text-muted-foreground">FirmenumzÃ¼ge</div></div>
+              <div><div className="text-2xl font-bold text-primary">CHF 8'500</div><div className="text-sm text-muted-foreground">Ã˜ Ersparnis</div></div>
               <div><div className="text-2xl font-bold text-primary">99.8%</div><div className="text-sm text-muted-foreground">Termingenau</div></div>
               <div><div className="text-2xl font-bold text-primary">0</div><div className="text-sm text-muted-foreground">Datenverluste</div></div>
             </div>
@@ -265,7 +266,7 @@ export default function FirmenumzugServicePage() {
         {/* TESTIMONIALS */}
         <section className="py-16 bg-background">
           <div className="container px-4">
-            <h2 className="text-3xl font-bold text-center mb-12">Erfolgreiche Firmenumzüge</h2>
+            <h2 className="text-3xl font-bold text-center mb-12">Erfolgreiche FirmenumzÃ¼ge</h2>
             <div className="grid md:grid-cols-3 gap-6">
               {testimonials.map((t, i) => (
                 <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
@@ -274,7 +275,7 @@ export default function FirmenumzugServicePage() {
                       <div className="flex items-center gap-1 mb-3">{[...Array(t.rating)].map((_, j) => <Star key={j} className="w-4 h-4 fill-amber-400 text-amber-400" />)}</div>
                       <p className="text-muted-foreground mb-4">"{t.text}"</p>
                       <div className="flex items-center justify-between">
-                        <div><p className="font-medium">{t.name}</p><p className="text-sm text-muted-foreground">{t.location} · {t.date}</p></div>
+                        <div><p className="font-medium">{t.name}</p><p className="text-sm text-muted-foreground">{t.location} Â· {t.date}</p></div>
                         {t.verified && <Badge variant="secondary"><Check className="w-3 h-3 mr-1" />Verifiziert</Badge>}
                       </div>
                       {t.savedAmount && <div className="mt-3 pt-3 border-t"><p className="text-sm text-green-600 font-medium">Ersparnis: CHF {t.savedAmount.toLocaleString()}</p></div>}
@@ -338,7 +339,7 @@ export default function FirmenumzugServicePage() {
         {/* ADDITIONAL SERVICES */}
         <section className="py-16 bg-muted/30">
           <div className="container px-4">
-            <h2 className="text-3xl font-bold text-center mb-12">Ergänzende Services</h2>
+            <h2 className="text-3xl font-bold text-center mb-12">ErgÃ¤nzende Services</h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {additionalServices.map((s, i) => (
                 <Link key={i} to={s.link}>
@@ -363,7 +364,7 @@ export default function FirmenumzugServicePage() {
               {howItWorks.map((step, i) => (
                 <div key={i} className="text-center">
                   <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4"><step.icon className="w-8 h-8 text-primary" /></div>
-                  <div className="text-sm text-primary font-medium mb-2">Schritt {step.step} · {step.time}</div>
+                  <div className="text-sm text-primary font-medium mb-2">Schritt {step.step} Â· {step.time}</div>
                   <h3 className="text-xl font-bold mb-2">{step.title}</h3>
                   <p className="text-muted-foreground">{step.description}</p>
                 </div>
@@ -407,7 +408,7 @@ export default function FirmenumzugServicePage() {
         {/* FAQ */}
         <section className="py-16 bg-muted/30">
           <div className="container px-4 max-w-3xl">
-            <h2 className="text-3xl font-bold text-center mb-12">Häufige Fragen</h2>
+            <h2 className="text-3xl font-bold text-center mb-12">HÃ¤ufige Fragen</h2>
             <Accordion type="single" collapsible className="space-y-4">
               {faqs.map((faq, i) => (
                 <AccordionItem key={i} value={`faq-${i}`} className="bg-background rounded-lg border px-6">
@@ -443,3 +444,4 @@ export default function FirmenumzugServicePage() {
     </div>
   );
 }
+

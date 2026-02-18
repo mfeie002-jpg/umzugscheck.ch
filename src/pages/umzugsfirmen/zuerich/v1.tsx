@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
@@ -20,14 +20,14 @@ const HERO_BG = "https://images.unsplash.com/photo-1515263487990-61b07816b324?au
 
 // SEO-optimized meta data based on ChatGPT feedback
 const SEO_META = {
-  title: "Umzug Zürich – geprüfte Umzugsfirmen & bis 40% sparen | Umzugscheck",
-  description: "Kostenlose Offerten von geprüften Umzugsfirmen in Zürich. Preise & Bewertungen vergleichen – stressfrei bis 40% sparen mit Umzugscheck.",
+  title: "Umzug ZÃ¼rich â€“ geprÃ¼fte Umzugsfirmen & bis 40% sparen | Umzugscheck",
+  description: "Kostenlose Offerten von geprÃ¼ften Umzugsfirmen in ZÃ¼rich. Preise & Bewertungen vergleichen â€“ stressfrei bis 40% sparen mit Umzugscheck.",
   canonical: "https://www.umzugscheck.ch/umzugsfirmen/zuerich",
   ogImage: "https://www.umzugscheck.ch/images/umzug-zuerich.jpg",
 };
 
 const cantons = [
-  { value: "zuerich", label: "Zürich", href: "/umzugsfirmen/zuerich/v1" },
+  { value: "zuerich", label: "ZÃ¼rich", href: "/umzugsfirmen/zuerich/v1" },
   { value: "bern", label: "Bern", href: "/umzugsfirmen/bern" },
   { value: "zug", label: "Zug", href: "/umzugsfirmen/zug" },
   { value: "basel", label: "Basel", href: "/umzugsfirmen/basel" },
@@ -36,72 +36,73 @@ const cantons = [
 ];
 
 const companies = [
-  { id: "zuerich-umzug", name: "Zürich Umzug AG", rating: 4.9, reviewCount: 312, badges: ["Top Bewertung", "Lokal"], priceLevel: "Mittel", isPopular: true, responseTime: "< 2h" },
-  { id: "limmat-transporte", name: "Limmat Transporte", rating: 4.8, reviewCount: 245, badges: ["Preis-Sieger"], priceLevel: "Günstig", isBestPrice: true, responseTime: "< 1h" },
-  { id: "city-movers-zh", name: "City Movers Zürich", rating: 4.9, reviewCount: 198, badges: ["Premium", "Express"], priceLevel: "Premium", isPremium: true, responseTime: "< 3h" },
+  { id: "feierabend-services-gmbh", name: "Feierabend Services GmbH", rating: 4.9, reviewCount: 312, badges: ["Demo", "Top bewertet"], services: ["Umzug", "Firmenumzug", "Reinigung"], priceLevel: "Premium", isPopular: true, responseTime: "< 1h" },
+  { id: "zuerich-umzug", name: "ZÃ¼rich Umzug AG", rating: 4.9, reviewCount: 312, badges: ["Top Bewertung", "Lokal"], priceLevel: "Mittel", isPopular: true, responseTime: "< 2h" },
+  { id: "limmat-transporte", name: "Limmat Transporte", rating: 4.8, reviewCount: 245, badges: ["Preis-Sieger"], priceLevel: "GÃ¼nstig", isBestPrice: true, responseTime: "< 1h" },
+  { id: "city-movers-zh", name: "City Movers ZÃ¼rich", rating: 4.9, reviewCount: 198, badges: ["Premium", "Express"], priceLevel: "Premium", isPremium: true, responseTime: "< 3h" },
 ];
 
 const priceExamples = [
-  { size: "1.5 - 2.5 Zimmer", price: "CHF 800 – 1'500", subtext: "Studio / kleine Wohnung", icon: Home, savings: "bis CHF 600" },
-  { size: "3.5 - 4.5 Zimmer", price: "CHF 1'200 – 2'000", subtext: "Familienwohnung", icon: Building2, savings: "bis CHF 800" },
+  { size: "1.5 - 2.5 Zimmer", price: "CHF 800 â€“ 1'500", subtext: "Studio / kleine Wohnung", icon: Home, savings: "bis CHF 600" },
+  { size: "3.5 - 4.5 Zimmer", price: "CHF 1'200 â€“ 2'000", subtext: "Familienwohnung", icon: Building2, savings: "bis CHF 800" },
   { size: "5+ Zimmer / Haus", price: "ab CHF 3'000", subtext: "Villa / Einfamilienhaus", icon: Home, savings: "bis CHF 1'200" },
 ];
 
 const services = [
   { title: "Endreinigung", icon: Sparkles, description: "Mit Abnahmegarantie", link: "/services/reinigung" },
   { title: "Ein-/Auspackservice", icon: Package, description: "Professionelles Verpacken", link: "/services/packservice" },
-  { title: "Möbelmontage", icon: Sofa, description: "Auf- & Abbau vor Ort", link: "/services/moebelmontage" },
-  { title: "Möbellift", icon: Truck, description: "Für enge Treppenhäuser", link: "/services/moebellift" },
-  { title: "Einlagerung", icon: Warehouse, description: "Sichere Lagerräume", link: "/services/lagerung" },
+  { title: "MÃ¶belmontage", icon: Sofa, description: "Auf- & Abbau vor Ort", link: "/services/moebelmontage" },
+  { title: "MÃ¶bellift", icon: Truck, description: "FÃ¼r enge TreppenhÃ¤user", link: "/services/moebellift" },
+  { title: "Einlagerung", icon: Warehouse, description: "Sichere LagerrÃ¤ume", link: "/services/lagerung" },
   { title: "Entsorgung", icon: Trash2, description: "Fachgerechte Entsorgung", link: "/services/entsorgung" },
 ];
 
 const howItWorks = [
-  { step: 1, title: "Anfrage ausfüllen", description: "Start, Ziel & Wohnungsgrösse eingeben", icon: ClipboardList, time: "30 Sek." },
+  { step: 1, title: "Anfrage ausfÃ¼llen", description: "Start, Ziel & WohnungsgrÃ¶sse eingeben", icon: ClipboardList, time: "30 Sek." },
   { step: 2, title: "Offerten vergleichen", description: "3-5 Festpreis-Angebote erhalten", icon: FileText, time: "24-48h" },
-  { step: 3, title: "Über Umzugscheck buchen", description: "Bestes Angebot wählen & sparen", icon: CheckCircle, time: "Ihr Termin" },
+  { step: 3, title: "Ãœber Umzugscheck buchen", description: "Bestes Angebot wÃ¤hlen & sparen", icon: CheckCircle, time: "Ihr Termin" },
 ];
 
 const testimonials = [
-  { name: "Thomas M.", location: "Zürich → Winterthur", rating: 5, text: "Perfekter Umzug! Die Firma war pünktlich, professionell und hat alles vorsichtig transportiert. CHF 620 gespart dank Vergleich.", date: "vor 3 Tagen", verified: true, savedAmount: 620 },
-  { name: "Lisa K.", location: "Altstetten → Oerlikon", rating: 5, text: "Unkompliziert und transparent. 4 Offerten erhalten und die beste gewählt. Klare Empfehlung!", date: "vor 5 Tagen", verified: true, savedAmount: 480 },
-  { name: "Marco S.", location: "Wallisellen → Zürich City", rating: 5, text: "Trotz Altstadt-Umzug alles reibungslos. Die Firma kannte sich bestens mit Halteverbotszonen aus.", date: "vor 1 Woche", verified: true, savedAmount: 550 },
+  { name: "Thomas M.", location: "ZÃ¼rich â†’ Winterthur", rating: 5, text: "Perfekter Umzug! Die Firma war pÃ¼nktlich, professionell und hat alles vorsichtig transportiert. CHF 620 gespart dank Vergleich.", date: "vor 3 Tagen", verified: true, savedAmount: 620 },
+  { name: "Lisa K.", location: "Altstetten â†’ Oerlikon", rating: 5, text: "Unkompliziert und transparent. 4 Offerten erhalten und die beste gewÃ¤hlt. Klare Empfehlung!", date: "vor 5 Tagen", verified: true, savedAmount: 480 },
+  { name: "Marco S.", location: "Wallisellen â†’ ZÃ¼rich City", rating: 5, text: "Trotz Altstadt-Umzug alles reibungslos. Die Firma kannte sich bestens mit Halteverbotszonen aus.", date: "vor 1 Woche", verified: true, savedAmount: 550 },
 ];
 
 const guarantees = [
-  { title: "Kostenlos-Garantie", description: "100% gratis, keine versteckten Gebühren", icon: CircleDollarSign },
+  { title: "Kostenlos-Garantie", description: "100% gratis, keine versteckten GebÃ¼hren", icon: CircleDollarSign },
   { title: "Datenschutz-Garantie", description: "Schweizer Hosting, DSGVO-konform", icon: ShieldCheck },
-  { title: "Qualitäts-Garantie", description: "Nur geprüfte & versicherte Firmen", icon: BadgeCheck },
-  { title: "Durchführungs-Garantie", description: "Ihr Umzug findet garantiert statt", icon: ThumbsUp },
+  { title: "QualitÃ¤ts-Garantie", description: "Nur geprÃ¼fte & versicherte Firmen", icon: BadgeCheck },
+  { title: "DurchfÃ¼hrungs-Garantie", description: "Ihr Umzug findet garantiert statt", icon: ThumbsUp },
 ];
 
 // SEO-optimized FAQs based on ChatGPT feedback
 const faqs = [
   { 
-    question: "Was kostet ein Umzug in Zürich?", 
-    answer: "Die Umzugskosten hängen vom Umfang, der Distanz und weiteren Faktoren ab. Eine kleine Wohnung (1-2 Zimmer) kostet ca. CHF 800–1'500, größere Umzüge (4-5 Zimmer) ca. CHF 1'200–2'000. Der Schweizer Durchschnitt liegt bei ca. CHF 1'600 pro Umzug. Durch unseren Offertenvergleich sparen Kunden im Schnitt bis zu 40%." 
+    question: "Was kostet ein Umzug in ZÃ¼rich?", 
+    answer: "Die Umzugskosten hÃ¤ngen vom Umfang, der Distanz und weiteren Faktoren ab. Eine kleine Wohnung (1-2 Zimmer) kostet ca. CHF 800â€“1'500, grÃ¶ÃŸere UmzÃ¼ge (4-5 Zimmer) ca. CHF 1'200â€“2'000. Der Schweizer Durchschnitt liegt bei ca. CHF 1'600 pro Umzug. Durch unseren Offertenvergleich sparen Kunden im Schnitt bis zu 40%." 
   },
   { 
-    question: "Worauf muss ich bei einem Umzug in Zürich besonders achten?", 
-    answer: "In Zürich sollten Sie frühzeitig eine Halteverbotszone für den Umzugstag beantragen (3–7 Tage Vorlauf bei der Stadtpolizei nötig). Planen Sie mind. 6–8 Wochen Vorlaufzeit ein, besonders zum Monatsende. Unsere Partner kennen die lokalen Gegebenheiten und helfen bei Parkplatz-Reservierungen." 
+    question: "Worauf muss ich bei einem Umzug in ZÃ¼rich besonders achten?", 
+    answer: "In ZÃ¼rich sollten Sie frÃ¼hzeitig eine Halteverbotszone fÃ¼r den Umzugstag beantragen (3â€“7 Tage Vorlauf bei der Stadtpolizei nÃ¶tig). Planen Sie mind. 6â€“8 Wochen Vorlaufzeit ein, besonders zum Monatsende. Unsere Partner kennen die lokalen Gegebenheiten und helfen bei Parkplatz-Reservierungen." 
   },
   { 
-    question: "Wie finde ich eine zuverlässige Umzugsfirma in Zürich?", 
-    answer: "Achten Sie auf Kundenbewertungen, Versicherungsschutz und transparente Preise. Über Umzugscheck erhalten Sie Angebote von geprüften, lokal bewerteten Umzugsfirmen. Alle 80+ Partner sind vollständig versichert und durchlaufen unseren Qualitätscheck." 
+    question: "Wie finde ich eine zuverlÃ¤ssige Umzugsfirma in ZÃ¼rich?", 
+    answer: "Achten Sie auf Kundenbewertungen, Versicherungsschutz und transparente Preise. Ãœber Umzugscheck erhalten Sie Angebote von geprÃ¼ften, lokal bewerteten Umzugsfirmen. Alle 80+ Partner sind vollstÃ¤ndig versichert und durchlaufen unseren QualitÃ¤tscheck." 
   },
   { 
-    question: "Bietet Umzugscheck auch Unterstützung bei der Reinigung oder Lagerung?", 
-    answer: "Ja, viele unserer Zürcher Partner bieten Zusatzleistungen wie Endreinigung mit Abnahmegarantie, Möbellagerung, Verpackungsservice oder Möbelmontage an. Bei der Offertanfrage können Sie einfach angeben, welche Extras Sie benötigen." 
+    question: "Bietet Umzugscheck auch UnterstÃ¼tzung bei der Reinigung oder Lagerung?", 
+    answer: "Ja, viele unserer ZÃ¼rcher Partner bieten Zusatzleistungen wie Endreinigung mit Abnahmegarantie, MÃ¶bellagerung, Verpackungsservice oder MÃ¶belmontage an. Bei der Offertanfrage kÃ¶nnen Sie einfach angeben, welche Extras Sie benÃ¶tigen." 
   },
   { 
-    question: "Welche Vorteile haben lokale Umzugsfirmen in Zürich?", 
-    answer: "Lokale Firmen kennen Verkehrssituationen, behördliche Abläufe und die schnellsten Routen. Kurze Anfahrtswege schonen die Umwelt und ermöglichen günstigere Preise. Zudem sind sie auch bei kurzfristigen Umzügen oft verfügbar." 
+    question: "Welche Vorteile haben lokale Umzugsfirmen in ZÃ¼rich?", 
+    answer: "Lokale Firmen kennen Verkehrssituationen, behÃ¶rdliche AblÃ¤ufe und die schnellsten Routen. Kurze Anfahrtswege schonen die Umwelt und ermÃ¶glichen gÃ¼nstigere Preise. Zudem sind sie auch bei kurzfristigen UmzÃ¼gen oft verfÃ¼gbar." 
   },
 ];
 
 const nearbyMunicipalities = [
   { name: "Umzug Winterthur", href: "/winterthur/umzugsfirmen" },
-  { name: "Umzug Dübendorf", href: "/duebendorf/umzugsfirmen" },
+  { name: "Umzug DÃ¼bendorf", href: "/duebendorf/umzugsfirmen" },
   { name: "Umzug Uster", href: "/uster/umzugsfirmen" },
   { name: "Umzug Dietikon", href: "/dietikon/umzugsfirmen" },
   { name: "Umzug Kloten", href: "/kloten/umzugsfirmen" },
@@ -118,8 +119,8 @@ const otherCantons = [
 const trustBadges = [
   { name: "Swiss Made", icon: Shield },
   { name: "SSL Encrypted", icon: Lock },
-  { name: "Geprüft", icon: BadgeCheck },
-  { name: "4.8★ Bewertung", icon: Star },
+  { name: "GeprÃ¼ft", icon: BadgeCheck },
+  { name: "4.8â˜… Bewertung", icon: Star },
 ];
 
 const AnimatedCounter = ({ end, suffix = "", duration = 2000 }: { end: number; suffix?: string; duration?: number }) => {
@@ -175,9 +176,9 @@ const QuickPriceEstimate = ({ size }: { size: string }) => {
     >
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-xs text-green-700 font-medium">Geschätzte Kosten</p>
+          <p className="text-xs text-green-700 font-medium">GeschÃ¤tzte Kosten</p>
           <p className="text-lg font-bold text-green-800">
-            CHF {estimate.min.toLocaleString()} – {estimate.max.toLocaleString()}
+            CHF {estimate.min.toLocaleString()} â€“ {estimate.max.toLocaleString()}
           </p>
         </div>
         <div className="text-right">
@@ -191,7 +192,7 @@ const QuickPriceEstimate = ({ size }: { size: string }) => {
 
 const WhatsAppButton = () => (
   <motion.a
-    href="https://wa.me/41791234567?text=Hallo,%20ich%20möchte%20eine%20Umzugsofferte%20für%20Zürich"
+    href="https://wa.me/41791234567?text=Hallo,%20ich%20mÃ¶chte%20eine%20Umzugsofferte%20fÃ¼r%20ZÃ¼rich"
     target="_blank"
     rel="noopener noreferrer"
     initial={{ scale: 0 }}
@@ -253,13 +254,13 @@ const ZuerichV1LandingPage = () => {
     "@graph": [
       {
         "@type": "LocalBusiness",
-        "name": "Umzugscheck.ch - Kanton Zürich",
-        "description": "Vergleiche 80+ geprüfte Umzugsfirmen im Kanton Zürich. Kostenlose Offerten, transparente Preise, bis zu 40% sparen.",
+        "name": "Umzugscheck.ch - Kanton ZÃ¼rich",
+        "description": "Vergleiche 80+ geprÃ¼fte Umzugsfirmen im Kanton ZÃ¼rich. Kostenlose Offerten, transparente Preise, bis zu 40% sparen.",
         "url": SEO_META.canonical,
         "telephone": "+41 44 123 45 67",
         "areaServed": {
           "@type": "Place",
-          "name": "Kanton Zürich, Schweiz"
+          "name": "Kanton ZÃ¼rich, Schweiz"
         },
         "priceRange": "CHF 800 - CHF 6000",
         "aggregateRating": {
@@ -370,14 +371,14 @@ const ZuerichV1LandingPage = () => {
 
                 {/* H1 Headline - SEO optimized */}
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-5 leading-tight">
-                  Umzug Zürich – <br className="hidden md:block" />
-                  <span className="text-secondary">geprüfte Firmen & bis 40% sparen</span>
+                  Umzug ZÃ¼rich â€“ <br className="hidden md:block" />
+                  <span className="text-secondary">geprÃ¼fte Firmen & bis 40% sparen</span>
                 </h1>
 
                 {/* Sub-headline with USPs */}
                 <p className="text-lg md:text-xl text-white/85 mb-6 max-w-xl mx-auto lg:mx-0">
-                  Kostenlose Offerten von <strong>80+ geprüften Umzugsfirmen</strong> in Zürich.
-                  Preise & Bewertungen vergleichen – <span className="text-green-400 font-semibold">stressfrei sparen.</span>
+                  Kostenlose Offerten von <strong>80+ geprÃ¼ften Umzugsfirmen</strong> in ZÃ¼rich.
+                  Preise & Bewertungen vergleichen â€“ <span className="text-green-400 font-semibold">stressfrei sparen.</span>
                 </p>
 
                 {/* Stats Row */}
@@ -453,7 +454,7 @@ const ZuerichV1LandingPage = () => {
                           id="from"
                           value={fromLocation}
                           onChange={(e) => setFromLocation(e.target.value)}
-                          placeholder="z.B. 8001 oder Zürich"
+                          placeholder="z.B. 8001 oder ZÃ¼rich"
                           className="h-12"
                         />
                       </div>
@@ -470,10 +471,10 @@ const ZuerichV1LandingPage = () => {
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="size">Wohnungsgrösse</Label>
+                        <Label htmlFor="size">WohnungsgrÃ¶sse</Label>
                         <Select value={apartmentSize} onValueChange={setApartmentSize}>
                           <SelectTrigger id="size" className="h-12">
-                            <SelectValue placeholder="Bitte wählen" />
+                            <SelectValue placeholder="Bitte wÃ¤hlen" />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="1-2">1-2 Zimmer</SelectItem>
@@ -512,7 +513,7 @@ const ZuerichV1LandingPage = () => {
               <Badge variant="outline" className="mb-4">So funktioniert's</Badge>
               <h2 className="text-3xl md:text-4xl font-bold mb-4">In 3 Schritten zum besten Angebot</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                Vergleichen Sie kostenlos und unverbindlich – ohne Verpflichtungen
+                Vergleichen Sie kostenlos und unverbindlich â€“ ohne Verpflichtungen
               </p>
             </div>
 
@@ -552,27 +553,27 @@ const ZuerichV1LandingPage = () => {
           <div className="container px-4">
             <div className="max-w-4xl mx-auto">
               <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">Umziehen in Zürich – stressfrei mit den richtigen Partnern</h2>
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">Umziehen in ZÃ¼rich â€“ stressfrei mit den richtigen Partnern</h2>
               </div>
 
               <div className="prose prose-lg max-w-none">
                 <p className="text-lg text-muted-foreground leading-relaxed">
-                  Zürich ist die grösste Stadt der Schweiz und ein attraktiver, aber auch anspruchsvoller Ort für Umzüge. 
-                  Enge Stadtquartiere, begrenzte Parkplätze und behördliche Vorgaben erfordern eine gute Planung. 
-                  <strong> In der Stadt Zürich muss eine temporäre Halteverbotszone je nach Gebiet 3–7 Tage im Voraus bei der Stadtpolizei beantragt werden</strong> – 
-                  ein wichtiger Faktor, den Sie früh berücksichtigen sollten.
+                  ZÃ¼rich ist die grÃ¶sste Stadt der Schweiz und ein attraktiver, aber auch anspruchsvoller Ort fÃ¼r UmzÃ¼ge. 
+                  Enge Stadtquartiere, begrenzte ParkplÃ¤tze und behÃ¶rdliche Vorgaben erfordern eine gute Planung. 
+                  <strong> In der Stadt ZÃ¼rich muss eine temporÃ¤re Halteverbotszone je nach Gebiet 3â€“7 Tage im Voraus bei der Stadtpolizei beantragt werden</strong> â€“ 
+                  ein wichtiger Faktor, den Sie frÃ¼h berÃ¼cksichtigen sollten.
                 </p>
 
                 <div className="grid md:grid-cols-2 gap-8 my-8">
                   <Card className="p-6">
                     <h3 className="text-xl font-bold mb-3 flex items-center gap-2">
                       <Banknote className="w-5 h-5 text-primary" />
-                      Umzugskosten in Zürich
+                      Umzugskosten in ZÃ¼rich
                     </h3>
                     <p className="text-muted-foreground text-sm">
                       Durchschnittlich liegen die Umzugskosten in der Schweiz bei ca. <strong>CHF 1'600</strong> pro Umzug. 
-                      Eine kleine 1–2-Zimmer-Wohnung innerhalb Zürich kostet etwa <strong>CHF 800–1'500</strong>, 
-                      während ein grosser Umzug (5 Zimmer) mit <strong>CHF 3'000–6'000</strong> zu veranschlagen ist.
+                      Eine kleine 1â€“2-Zimmer-Wohnung innerhalb ZÃ¼rich kostet etwa <strong>CHF 800â€“1'500</strong>, 
+                      wÃ¤hrend ein grosser Umzug (5 Zimmer) mit <strong>CHF 3'000â€“6'000</strong> zu veranschlagen ist.
                     </p>
                   </Card>
 
@@ -582,8 +583,8 @@ const ZuerichV1LandingPage = () => {
                       Regionale Vorteile
                     </h3>
                     <p className="text-muted-foreground text-sm">
-                      Lokale Umzugsfirmen kennen Verkehrssituationen, behördliche Abläufe und die schnellsten Routen in Zürich. 
-                      Kurze Anfahrtswege schonen die Umwelt und ermöglichen <strong>günstigere Preise</strong>.
+                      Lokale Umzugsfirmen kennen Verkehrssituationen, behÃ¶rdliche AblÃ¤ufe und die schnellsten Routen in ZÃ¼rich. 
+                      Kurze Anfahrtswege schonen die Umwelt und ermÃ¶glichen <strong>gÃ¼nstigere Preise</strong>.
                     </p>
                   </Card>
                 </div>
@@ -596,7 +597,7 @@ const ZuerichV1LandingPage = () => {
                   <ul className="space-y-2 text-green-800">
                     <li className="flex items-start gap-2">
                       <Check className="w-5 h-5 shrink-0 mt-0.5" />
-                      <span>Alle 80+ Partner sind <strong>geprüft und versichert</strong></span>
+                      <span>Alle 80+ Partner sind <strong>geprÃ¼ft und versichert</strong></span>
                     </li>
                     <li className="flex items-start gap-2">
                       <Check className="w-5 h-5 shrink-0 mt-0.5" />
@@ -604,11 +605,11 @@ const ZuerichV1LandingPage = () => {
                     </li>
                     <li className="flex items-start gap-2">
                       <Check className="w-5 h-5 shrink-0 mt-0.5" />
-                      <span><strong>Festpreis-Offerten</strong> – keine versteckten Kosten</span>
+                      <span><strong>Festpreis-Offerten</strong> â€“ keine versteckten Kosten</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <Check className="w-5 h-5 shrink-0 mt-0.5" />
-                      <span><strong>Durchführungsgarantie</strong> am vereinbarten Datum</span>
+                      <span><strong>DurchfÃ¼hrungsgarantie</strong> am vereinbarten Datum</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <Check className="w-5 h-5 shrink-0 mt-0.5" />
@@ -625,10 +626,10 @@ const ZuerichV1LandingPage = () => {
         <section className="py-16 md:py-20 bg-muted/30">
           <div className="container px-4">
             <div className="text-center mb-12">
-              <Badge variant="outline" className="mb-4">Preisbeispiele Zürich</Badge>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">Was kostet ein Umzug in Zürich?</h2>
+              <Badge variant="outline" className="mb-4">Preisbeispiele ZÃ¼rich</Badge>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">Was kostet ein Umzug in ZÃ¼rich?</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                Transparente Preisbeispiele für Umzüge im Kanton Zürich
+                Transparente Preisbeispiele fÃ¼r UmzÃ¼ge im Kanton ZÃ¼rich
               </p>
             </div>
 
@@ -675,7 +676,7 @@ const ZuerichV1LandingPage = () => {
           <div className="container px-4">
             <div className="text-center mb-12">
               <Badge variant="outline" className="mb-4">Kundenstimmen</Badge>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">Das sagen unsere Kunden in Zürich</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">Das sagen unsere Kunden in ZÃ¼rich</h2>
               <div className="flex items-center justify-center gap-2 text-amber-500">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} className="w-6 h-6 fill-amber-400" />
@@ -732,8 +733,8 @@ const ZuerichV1LandingPage = () => {
           <div className="container px-4">
             <div className="max-w-3xl mx-auto">
               <div className="text-center mb-12">
-                <Badge variant="outline" className="mb-4">Häufige Fragen</Badge>
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">FAQ zum Umzug in Zürich</h2>
+                <Badge variant="outline" className="mb-4">HÃ¤ufige Fragen</Badge>
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">FAQ zum Umzug in ZÃ¼rich</h2>
               </div>
 
               <Accordion type="single" collapsible className="space-y-4">
@@ -804,7 +805,7 @@ const ZuerichV1LandingPage = () => {
           <div className="container px-4">
             <div className="grid md:grid-cols-2 gap-12">
               <div>
-                <h3 className="text-xl font-bold mb-4">Umzüge in der Nähe</h3>
+                <h3 className="text-xl font-bold mb-4">UmzÃ¼ge in der NÃ¤he</h3>
                 <div className="flex flex-wrap gap-2">
                   {nearbyMunicipalities.map((m) => (
                     <Link key={m.name} to={m.href} className="text-sm px-3 py-1.5 bg-muted rounded-full hover:bg-muted/80 transition-colors">
@@ -830,9 +831,9 @@ const ZuerichV1LandingPage = () => {
         {/* 10. FINAL CTA */}
         <section className="py-16 md:py-20 bg-gradient-to-br from-primary to-primary/80 text-white">
           <div className="container px-4 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Bereit für Ihren Umzug in Zürich?</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Bereit fÃ¼r Ihren Umzug in ZÃ¼rich?</h2>
             <p className="text-lg text-white/80 mb-8 max-w-2xl mx-auto">
-              Vergleichen Sie jetzt kostenlos 80+ geprüfte Umzugsfirmen und sparen Sie bis zu 40%.
+              Vergleichen Sie jetzt kostenlos 80+ geprÃ¼fte Umzugsfirmen und sparen Sie bis zu 40%.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-6">
@@ -870,7 +871,7 @@ const ZuerichV1LandingPage = () => {
             <div className="flex items-center gap-3">
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-bold">Bis 40% sparen</p>
-                <p className="text-xs text-muted-foreground">80+ geprüfte Firmen in Zürich</p>
+                <p className="text-xs text-muted-foreground">80+ geprÃ¼fte Firmen in ZÃ¼rich</p>
               </div>
               <Button asChild size="lg" className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold shrink-0">
                 <Link to="/umzugsofferten">Gratis Offerten</Link>
@@ -884,3 +885,4 @@ const ZuerichV1LandingPage = () => {
 };
 
 export default ZuerichV1LandingPage;
+

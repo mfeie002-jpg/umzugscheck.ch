@@ -57,6 +57,28 @@ const MOCK_KPIS_30D: MarketplaceKPIs = {
 
 const MOCK_PARTNERS: Partner[] = [
   {
+    id: '0',
+    name: 'Feierabend Services GmbH',
+    canton: 'Schweizweit',
+    capacityStatus: 'open',
+    services: ['moving', 'packing', 'cleaning', 'storage'],
+    priceTier: 'premium',
+    acceptanceRate: 88,
+    avgResponseMinutes: 10,
+    closeRateEstimate: 33,
+    disputeRate: 1.1,
+    avgRevenuePerLead: 72,
+    partnerROI: 8.4,
+    contractModel: 'hybrid',
+    cplPrice: 40,
+    commissionPercent: 14,
+    maxLeadsPerWeek: 30,
+    minRoomRequirement: 1.5,
+    status: 'active',
+    notes: 'Demo partner for local/offline QA checks',
+    createdAt: new Date('2025-01-10'),
+  },
+  {
     id: '1',
     name: 'Züri-Move GmbH',
     canton: 'Zürich',

@@ -248,6 +248,7 @@ export const MarketplaceWizardV5b = () => {
     const elevatorDiscount = (locationData.fromElevator ? -50 : 0) + (locationData.toElevator ? -50 : 0);
 
     const partners = [
+      { name: "Feierabend Services GmbH", rating: 4.9, reviews: 312, baseRate: 34, badge: "Demo Partner", recommended: true },
       { name: "SwissMove AG", rating: 4.9, reviews: 423, baseRate: 35, badge: "Empfohlen", recommended: true },
       { name: "ZüriZügel", rating: 4.7, reviews: 189, baseRate: 32, badge: "Günstig" },
       { name: "Premium Transporte", rating: 5.0, reviews: 87, baseRate: 42, badge: "Premium" },

@@ -21,6 +21,16 @@ interface Partner {
 
 const FEATURED_PARTNERS: Partner[] = [
   {
+    id: 'fsg',
+    name: 'Feierabend Services GmbH',
+    tier: 'gold',
+    rating: 4.9,
+    reviews: 312,
+    completedMoves: 980,
+    responseTime: '< 1h',
+    badges: ['ASTAG', 'Versichert', 'UID'],
+  },
+  {
     id: '1',
     name: 'Welti-Furrer AG',
     tier: 'gold',

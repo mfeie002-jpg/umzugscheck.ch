@@ -121,6 +121,7 @@ const SWISS_CITIES: Record<string, string> = {
 };
 
 const DEMO_COMPANIES: MatchedCompany[] = [
+  { id: 'fsg-1', name: 'Feierabend Services GmbH', logo: 'FS', rating: 4.9, reviewCount: 312, priceLevel: 'premium', responseTime: '< 1 Std.' },
   { id: '1', name: 'Premium Zügel AG', logo: '🏆', rating: 4.9, reviewCount: 247, priceLevel: 'premium', responseTime: '< 2 Std.' },
   { id: '2', name: 'SwissMove GmbH', logo: '🚚', rating: 4.7, reviewCount: 189, priceLevel: 'fair', responseTime: '< 4 Std.' },
   { id: '3', name: 'Express Zügle', logo: '⚡', rating: 4.6, reviewCount: 156, priceLevel: 'günstig', responseTime: '< 1 Std.' },

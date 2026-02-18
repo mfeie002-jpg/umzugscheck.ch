@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { motion, useInView } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
@@ -30,64 +30,65 @@ const relatedServices = [
   { value: "reinigung", label: "Reinigung", href: "/services/reinigung" },
   { value: "entsorgung", label: "Entsorgung", href: "/services/entsorgung" },
   { value: "lagerung", label: "Lagerung", href: "/services/lagerung" },
-  { value: "montage", label: "Möbelmontage", href: "/services/montage" },
+  { value: "montage", label: "MÃ¶belmontage", href: "/services/montage" },
 ];
 
 const companies = [
-  { id: "umzug-express", name: "Umzug Express AG", rating: 4.9, reviewCount: 487, badges: ["Top Bewertung", "Express"], services: ["Komplettumzug", "Verpackung", "Möbelmontage"], priceLevel: "Mittel", isPopular: true, responseTime: "< 2h" },
-  { id: "swiss-move", name: "Swiss Move GmbH", rating: 4.8, reviewCount: 356, badges: ["Preis-Sieger"], services: ["Privatumzug", "Seniorenumzug", "Studentenumzug"], priceLevel: "Günstig", isBestPrice: true, responseTime: "< 1h" },
+  { id: "feierabend-services-gmbh", name: "Feierabend Services GmbH", rating: 4.9, reviewCount: 312, badges: ["Demo", "Top bewertet"], services: ["Umzug", "Firmenumzug", "Reinigung"], priceLevel: "Premium", isPopular: true, responseTime: "< 1h" },
+  { id: "umzug-express", name: "Umzug Express AG", rating: 4.9, reviewCount: 487, badges: ["Top Bewertung", "Express"], services: ["Komplettumzug", "Verpackung", "MÃ¶belmontage"], priceLevel: "Mittel", isPopular: true, responseTime: "< 2h" },
+  { id: "swiss-move", name: "Swiss Move GmbH", rating: 4.8, reviewCount: 356, badges: ["Preis-Sieger"], services: ["Privatumzug", "Seniorenumzug", "Studentenumzug"], priceLevel: "GÃ¼nstig", isBestPrice: true, responseTime: "< 1h" },
   { id: "premium-umzug", name: "Premium Umzug", rating: 4.9, reviewCount: 298, badges: ["Premium", "Versichert"], services: ["Full-Service", "Kunsttransport", "Klaviertransport"], priceLevel: "Premium", isPremium: true, responseTime: "< 4h" },
 ];
 
 const priceExamples = [
-  { size: "1-2 Zimmer", price: "CHF 600 – 1'200", subtext: "Studio / kleine Wohnung", icon: Home, savings: "bis CHF 400" },
-  { size: "3-3.5 Zimmer", price: "CHF 1'200 – 2'000", subtext: "Standard Wohnung", icon: Building2, savings: "bis CHF 800" },
-  { size: "4-5 Zimmer", price: "CHF 1'800 – 3'500", subtext: "Grosse Wohnung", icon: Home, savings: "bis CHF 1'400" },
+  { size: "1-2 Zimmer", price: "CHF 600 â€“ 1'200", subtext: "Studio / kleine Wohnung", icon: Home, savings: "bis CHF 400" },
+  { size: "3-3.5 Zimmer", price: "CHF 1'200 â€“ 2'000", subtext: "Standard Wohnung", icon: Building2, savings: "bis CHF 800" },
+  { size: "4-5 Zimmer", price: "CHF 1'800 â€“ 3'500", subtext: "Grosse Wohnung", icon: Home, savings: "bis CHF 1'400" },
   { size: "Haus / Villa", price: "ab CHF 3'000", subtext: "Einfamilienhaus", icon: Home, savings: "bis CHF 1'500" },
 ];
 
 const additionalServices = [
   { title: "Reinigung", icon: Sparkles, description: "Umzugsreinigung mit Abnahmegarantie", link: "/services/reinigung" },
-  { title: "Entsorgung", icon: Trash2, description: "Professionelle Räumung", link: "/services/entsorgung" },
-  { title: "Möbelmontage", icon: Wrench, description: "Auf- & Abbau Service", link: "/services/montage" },
-  { title: "Einlagerung", icon: Warehouse, description: "Sichere Lagerräume", link: "/services/lagerung" },
-  { title: "Möbellift", icon: Package, description: "Für schwere Stücke", link: "/services/moebellift" },
-  { title: "Packservice", icon: Package, description: "Wir packen für Sie", link: "/services/packservice" },
+  { title: "Entsorgung", icon: Trash2, description: "Professionelle RÃ¤umung", link: "/services/entsorgung" },
+  { title: "MÃ¶belmontage", icon: Wrench, description: "Auf- & Abbau Service", link: "/services/montage" },
+  { title: "Einlagerung", icon: Warehouse, description: "Sichere LagerrÃ¤ume", link: "/services/lagerung" },
+  { title: "MÃ¶bellift", icon: Package, description: "FÃ¼r schwere StÃ¼cke", link: "/services/moebellift" },
+  { title: "Packservice", icon: Package, description: "Wir packen fÃ¼r Sie", link: "/services/packservice" },
 ];
 
 const howItWorks = [
-  { step: 1, title: "Anfrage stellen", description: "Von/Nach, Wohnungsgrösse und Termin angeben", icon: ClipboardList, time: "30 Sek." },
+  { step: 1, title: "Anfrage stellen", description: "Von/Nach, WohnungsgrÃ¶sse und Termin angeben", icon: ClipboardList, time: "30 Sek." },
   { step: 2, title: "Offerten erhalten", description: "3-5 unverbindliche Angebote", icon: FileText, time: "24-48h" },
-  { step: 3, title: "Firma wählen & umziehen", description: "Vergleichen und beauftragen", icon: CheckCircle, time: "Ihr Termin" },
+  { step: 3, title: "Firma wÃ¤hlen & umziehen", description: "Vergleichen und beauftragen", icon: CheckCircle, time: "Ihr Termin" },
 ];
 
 const testimonials = [
-  { name: "Michael S.", location: "Zürich", rating: 5, text: "Der Umzug lief reibungslos. Das Team war pünktlich, professionell und hat alles sicher transportiert. Durch den Vergleich CHF 600 gespart!", date: "vor 3 Tagen", verified: true, savedAmount: 600 },
-  { name: "Anna B.", location: "Bern", rating: 5, text: "Fantastischer Service! Die Möbel wurden sorgfältig behandelt und der Preis war fair. Absolut empfehlenswert.", date: "vor 1 Woche", verified: true, savedAmount: 450 },
-  { name: "Peter M.", location: "Basel", rating: 5, text: "Von der Offerte bis zum Einzug alles perfekt. Die Firma hat sogar die Möbel montiert. Top!", date: "vor 2 Wochen", verified: true, savedAmount: 800 },
+  { name: "Michael S.", location: "ZÃ¼rich", rating: 5, text: "Der Umzug lief reibungslos. Das Team war pÃ¼nktlich, professionell und hat alles sicher transportiert. Durch den Vergleich CHF 600 gespart!", date: "vor 3 Tagen", verified: true, savedAmount: 600 },
+  { name: "Anna B.", location: "Bern", rating: 5, text: "Fantastischer Service! Die MÃ¶bel wurden sorgfÃ¤ltig behandelt und der Preis war fair. Absolut empfehlenswert.", date: "vor 1 Woche", verified: true, savedAmount: 450 },
+  { name: "Peter M.", location: "Basel", rating: 5, text: "Von der Offerte bis zum Einzug alles perfekt. Die Firma hat sogar die MÃ¶bel montiert. Top!", date: "vor 2 Wochen", verified: true, savedAmount: 800 },
 ];
 
 const guarantees = [
-  { title: "Versicherungsschutz", description: "Vollversicherung für Ihre Möbel", icon: ShieldCheck },
+  { title: "Versicherungsschutz", description: "Vollversicherung fÃ¼r Ihre MÃ¶bel", icon: ShieldCheck },
   { title: "Fixpreis-Garantie", description: "Keine versteckten Kosten", icon: CircleDollarSign },
-  { title: "Geprüfte Firmen", description: "Nur zertifizierte Umzugsunternehmen", icon: BadgeCheck },
+  { title: "GeprÃ¼fte Firmen", description: "Nur zertifizierte Umzugsunternehmen", icon: BadgeCheck },
   { title: "Zufriedenheits-Garantie", description: "Wir helfen bei Problemen", icon: ThumbsUp },
 ];
 
 const faqs = [
-  { question: "Was kostet ein Privatumzug?", answer: "Die Kosten variieren je nach Wohnungsgrösse und Distanz: 2-Zimmer ca. CHF 600-1'200, 3-4 Zimmer ca. CHF 1'200-2'500, 5+ Zimmer ab CHF 2'500. Mit unserem Vergleich sparen Sie bis zu 40%." },
-  { question: "Was ist im Umzugsservice inbegriffen?", answer: "Ein Standard-Umzug beinhaltet: Transport aller Möbel und Kartons, Be- und Entladen, Fahrzeug inkl. Fahrer. Optional: Verpackungsmaterial, Ein-/Auspacken, Möbelmontage, Reinigung." },
-  { question: "Wie lange dauert ein Umzug?", answer: "Je nach Wohnungsgrösse: 2-3 Zimmer ca. 4-6 Stunden, 4-5 Zimmer ca. 6-8 Stunden, Haus/Villa ganztägig. Faktoren: Stockwerk, Lift, Distanz, Möbelmenge." },
-  { question: "Muss ich selbst einpacken?", answer: "Nein, die meisten Firmen bieten einen Packservice an. Sie können zwischen Selbstpacken, Teilpacken (z.B. nur Fragiles) oder Vollpackservice wählen." },
-  { question: "Wie weit im Voraus sollte ich buchen?", answer: "Wir empfehlen 4-8 Wochen Vorlaufzeit, in der Hochsaison (Frühling/Sommer) eher 8-12 Wochen. Für kurzfristige Umzüge finden wir oft noch Lösungen." },
+  { question: "Was kostet ein Privatumzug?", answer: "Die Kosten variieren je nach WohnungsgrÃ¶sse und Distanz: 2-Zimmer ca. CHF 600-1'200, 3-4 Zimmer ca. CHF 1'200-2'500, 5+ Zimmer ab CHF 2'500. Mit unserem Vergleich sparen Sie bis zu 40%." },
+  { question: "Was ist im Umzugsservice inbegriffen?", answer: "Ein Standard-Umzug beinhaltet: Transport aller MÃ¶bel und Kartons, Be- und Entladen, Fahrzeug inkl. Fahrer. Optional: Verpackungsmaterial, Ein-/Auspacken, MÃ¶belmontage, Reinigung." },
+  { question: "Wie lange dauert ein Umzug?", answer: "Je nach WohnungsgrÃ¶sse: 2-3 Zimmer ca. 4-6 Stunden, 4-5 Zimmer ca. 6-8 Stunden, Haus/Villa ganztÃ¤gig. Faktoren: Stockwerk, Lift, Distanz, MÃ¶belmenge." },
+  { question: "Muss ich selbst einpacken?", answer: "Nein, die meisten Firmen bieten einen Packservice an. Sie kÃ¶nnen zwischen Selbstpacken, Teilpacken (z.B. nur Fragiles) oder Vollpackservice wÃ¤hlen." },
+  { question: "Wie weit im Voraus sollte ich buchen?", answer: "Wir empfehlen 4-8 Wochen Vorlaufzeit, in der Hochsaison (FrÃ¼hling/Sommer) eher 8-12 Wochen. FÃ¼r kurzfristige UmzÃ¼ge finden wir oft noch LÃ¶sungen." },
 ];
 
-const regions = ["Zürich", "Bern", "Basel", "Luzern", "Aargau", "St. Gallen", "Zug", "Thurgau"];
+const regions = ["ZÃ¼rich", "Bern", "Basel", "Luzern", "Aargau", "St. Gallen", "Zug", "Thurgau"];
 
 const trustBadges = [
   { name: "Swiss Made", icon: Shield },
   { name: "SSL Encrypted", icon: Lock },
-  { name: "Geprüft", icon: BadgeCheck },
+  { name: "GeprÃ¼ft", icon: BadgeCheck },
 ];
 
 const AnimatedCounter = ({ end, suffix = "", duration = 2000 }: { end: number; suffix?: string; duration?: number }) => {
@@ -137,8 +138,8 @@ const QuickPriceEstimate = ({ size }: { size: string }) => {
     <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="bg-green-50 border border-green-200 rounded-lg p-3 mt-3">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-xs text-green-700 font-medium">Geschätzte Kosten</p>
-          <p className="text-lg font-bold text-green-800">CHF {estimate.min.toLocaleString()} – {estimate.max.toLocaleString()}</p>
+          <p className="text-xs text-green-700 font-medium">GeschÃ¤tzte Kosten</p>
+          <p className="text-lg font-bold text-green-800">CHF {estimate.min.toLocaleString()} â€“ {estimate.max.toLocaleString()}</p>
         </div>
         <div className="text-right">
           <p className="text-xs text-green-700">Potenzielle Ersparnis</p>
@@ -150,7 +151,7 @@ const QuickPriceEstimate = ({ size }: { size: string }) => {
 };
 
 const WhatsAppButton = () => (
-  <motion.a href={`https://wa.me/41791234567?text=Hallo,%20ich%20möchte%20eine%20Offerte%20für%20einen%20${SERVICE_NAME}`} target="_blank" rel="noopener noreferrer" initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 2, type: "spring" }} className="fixed bottom-24 right-4 lg:bottom-6 lg:right-6 z-40 w-14 h-14 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all group">
+  <motion.a href={`https://wa.me/41791234567?text=Hallo,%20ich%20mÃ¶chte%20eine%20Offerte%20fÃ¼r%20einen%20${SERVICE_NAME}`} target="_blank" rel="noopener noreferrer" initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 2, type: "spring" }} className="fixed bottom-24 right-4 lg:bottom-6 lg:right-6 z-40 w-14 h-14 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all group">
     <MessageCircle className="w-7 h-7 text-white" />
     <span className="absolute right-full mr-3 px-3 py-1.5 bg-card border border-border rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">WhatsApp Chat</span>
   </motion.a>
@@ -207,7 +208,7 @@ export default function PrivatumzugServicePage() {
       <Helmet>
         <html lang="de-CH" />
         <title>{SERVICE_NAME} Schweiz | Umzugsfirmen vergleichen & bis 40% sparen</title>
-        <meta name="description" content={`Professioneller ${SERVICE_NAME} in der Schweiz ✓ Geprüfte Umzugsfirmen ✓ Kostenlose Offerten ✓ Vollversicherung ✓ Bis zu 40% sparen!`} />
+        <meta name="description" content={`Professioneller ${SERVICE_NAME} in der Schweiz âœ“ GeprÃ¼fte Umzugsfirmen âœ“ Kostenlose Offerten âœ“ Vollversicherung âœ“ Bis zu 40% sparen!`} />
         <link rel="canonical" href={`https://umzugscheck.ch/services/${SERVICE_SLUG}`} />
         <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
       </Helmet>
@@ -245,12 +246,12 @@ export default function PrivatumzugServicePage() {
                 </motion.div>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-5 leading-tight">
-                  {SERVICE_NAME} – <br className="hidden md:block" />
+                  {SERVICE_NAME} â€“ <br className="hidden md:block" />
                   <span className="text-secondary">stressfrei umziehen</span>
                 </h1>
 
                 <p className="text-lg md:text-xl text-white/85 mb-6 max-w-xl mx-auto lg:mx-0">
-                  Vergleichen Sie <strong>200+ geprüfte Umzugsfirmen</strong> in der Schweiz.
+                  Vergleichen Sie <strong>200+ geprÃ¼fte Umzugsfirmen</strong> in der Schweiz.
                   <span className="text-green-400 font-semibold"> Bis zu 40% sparen.</span>
                 </p>
 
@@ -293,13 +294,13 @@ export default function PrivatumzugServicePage() {
                         <Label htmlFor="location" className="text-sm font-medium">Von (PLZ oder Ort)</Label>
                         <div className="relative mt-1">
                           <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                          <Input id="location" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="z.B. 8001 Zürich" className="pl-10" required />
+                          <Input id="location" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="z.B. 8001 ZÃ¼rich" className="pl-10" required />
                         </div>
                       </div>
                       <div>
-                        <Label htmlFor="size" className="text-sm font-medium">Wohnungsgrösse</Label>
+                        <Label htmlFor="size" className="text-sm font-medium">WohnungsgrÃ¶sse</Label>
                         <Select value={apartmentSize} onValueChange={setApartmentSize}>
-                          <SelectTrigger id="size" className="mt-1"><SelectValue placeholder="Wählen..." /></SelectTrigger>
+                          <SelectTrigger id="size" className="mt-1"><SelectValue placeholder="WÃ¤hlen..." /></SelectTrigger>
                           <SelectContent>
                             <SelectItem value="1-2">1-2 Zimmer</SelectItem>
                             <SelectItem value="2.5-3">2.5-3 Zimmer</SelectItem>
@@ -332,8 +333,8 @@ export default function PrivatumzugServicePage() {
         <section className="py-8 bg-muted/30 border-y border-border">
           <div className="container px-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-              <div><div className="text-2xl md:text-3xl font-bold text-primary">15'000+</div><div className="text-sm text-muted-foreground">Umzüge vermittelt</div></div>
-              <div><div className="text-2xl md:text-3xl font-bold text-primary">CHF 850</div><div className="text-sm text-muted-foreground">Ø Ersparnis</div></div>
+              <div><div className="text-2xl md:text-3xl font-bold text-primary">15'000+</div><div className="text-sm text-muted-foreground">UmzÃ¼ge vermittelt</div></div>
+              <div><div className="text-2xl md:text-3xl font-bold text-primary">CHF 850</div><div className="text-sm text-muted-foreground">Ã˜ Ersparnis</div></div>
               <div><div className="text-2xl md:text-3xl font-bold text-primary">4.8/5</div><div className="text-sm text-muted-foreground">Kundenbewertung</div></div>
               <div><div className="text-2xl md:text-3xl font-bold text-primary">100%</div><div className="text-sm text-muted-foreground">Kostenlos</div></div>
             </div>
@@ -356,7 +357,7 @@ export default function PrivatumzugServicePage() {
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="font-medium">{t.name}</p>
-                          <p className="text-sm text-muted-foreground">{t.location} · {t.date}</p>
+                          <p className="text-sm text-muted-foreground">{t.location} Â· {t.date}</p>
                         </div>
                         {t.verified && <Badge variant="secondary" className="text-xs"><Check className="w-3 h-3 mr-1" />Verifiziert</Badge>}
                       </div>
@@ -373,7 +374,7 @@ export default function PrivatumzugServicePage() {
         <section className="py-16 bg-muted/30">
           <div className="container px-4">
             <h2 className="text-3xl font-bold text-center mb-4">Top Umzugsfirmen</h2>
-            <p className="text-center text-muted-foreground mb-12">Geprüfte Partner mit besten Bewertungen</p>
+            <p className="text-center text-muted-foreground mb-12">GeprÃ¼fte Partner mit besten Bewertungen</p>
             <div className="grid md:grid-cols-3 gap-6">
               {companies.map((c, i) => (
                 <Card key={c.id} className="relative overflow-hidden hover:shadow-lg transition-shadow">
@@ -405,7 +406,7 @@ export default function PrivatumzugServicePage() {
         <section className="py-16 bg-background">
           <div className="container px-4">
             <h2 className="text-3xl font-bold text-center mb-4">Preisbeispiele {SERVICE_NAME}</h2>
-            <p className="text-center text-muted-foreground mb-12">Durchschnittliche Kosten nach Wohnungsgrösse</p>
+            <p className="text-center text-muted-foreground mb-12">Durchschnittliche Kosten nach WohnungsgrÃ¶sse</p>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {priceExamples.map((p, i) => (
                 <Card key={i} className="text-center hover:shadow-lg transition-shadow">
@@ -425,8 +426,8 @@ export default function PrivatumzugServicePage() {
         {/* ADDITIONAL SERVICES */}
         <section className="py-16 bg-muted/30">
           <div className="container px-4">
-            <h2 className="text-3xl font-bold text-center mb-4">Ergänzende Services</h2>
-            <p className="text-center text-muted-foreground mb-12">Alles aus einer Hand für Ihren Umzug</p>
+            <h2 className="text-3xl font-bold text-center mb-4">ErgÃ¤nzende Services</h2>
+            <p className="text-center text-muted-foreground mb-12">Alles aus einer Hand fÃ¼r Ihren Umzug</p>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {additionalServices.map((s, i) => (
                 <Link key={i} to={s.link}>
@@ -456,7 +457,7 @@ export default function PrivatumzugServicePage() {
                   <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <step.icon className="w-8 h-8 text-primary" />
                   </div>
-                  <div className="text-sm text-primary font-medium mb-2">Schritt {step.step} · {step.time}</div>
+                  <div className="text-sm text-primary font-medium mb-2">Schritt {step.step} Â· {step.time}</div>
                   <h3 className="text-xl font-bold mb-2">{step.title}</h3>
                   <p className="text-muted-foreground">{step.description}</p>
                 </div>
@@ -502,7 +503,7 @@ export default function PrivatumzugServicePage() {
         {/* FAQ */}
         <section className="py-16 bg-muted/30">
           <div className="container px-4 max-w-3xl">
-            <h2 className="text-3xl font-bold text-center mb-12">Häufige Fragen</h2>
+            <h2 className="text-3xl font-bold text-center mb-12">HÃ¤ufige Fragen</h2>
             <Accordion type="single" collapsible className="space-y-4">
               {faqs.map((faq, i) => (
                 <AccordionItem key={i} value={`faq-${i}`} className="bg-background rounded-lg border px-6">
@@ -517,7 +518,7 @@ export default function PrivatumzugServicePage() {
         {/* FINAL CTA */}
         <section className="py-20 bg-primary text-primary-foreground">
           <div className="container px-4 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Bereit für Ihren stressfreien Umzug?</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Bereit fÃ¼r Ihren stressfreien Umzug?</h2>
             <p className="text-lg mb-8 opacity-90">Vergleichen Sie jetzt kostenlos und sparen Sie bis zu 40%</p>
             <Button asChild size="lg" variant="secondary" className="font-bold text-lg px-8 py-6">
               <Link to="/umzugsofferten">Jetzt Offerten erhalten<ArrowRight className="ml-2 w-5 h-5" /></Link>
@@ -540,3 +541,4 @@ export default function PrivatumzugServicePage() {
     </div>
   );
 }
+

@@ -24,6 +24,15 @@ interface Partner {
 
 const SAMPLE_PARTNERS: Partner[] = [
   {
+    id: 'fsg',
+    name: 'Feierabend Services GmbH',
+    rating: 4.9,
+    reviews: 312,
+    badges: { sma: true, iso: true, trustedShops: true, verified: true },
+    completedMoves: 980,
+    responseTime: '< 1h',
+  },
+  {
     id: '1',
     name: 'Welti-Furrer AG',
     rating: 4.9,

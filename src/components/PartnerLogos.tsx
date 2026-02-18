@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 
 const partners = [
+  { name: 'Feierabend Services GmbH', logo: 'FS' },
   { name: 'Swiss Quality', logo: '🇨🇭' },
   { name: 'Trusted Shops', logo: '⭐' },
   { name: 'TÜV Zertifiziert', logo: '✓' },

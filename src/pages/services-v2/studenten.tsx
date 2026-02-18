@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { motion, useInView } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
@@ -29,53 +29,54 @@ const relatedServices = [
 ];
 
 const companies = [
-  { id: "student-move", name: "Student Move CH", rating: 4.8, reviewCount: 456, badges: ["Studenten-Rabatt", "Flexibel"], priceLevel: "Günstig", isPopular: true, responseTime: "< 1h" },
-  { id: "budget-umzug", name: "Budget Umzug", rating: 4.7, reviewCount: 312, badges: ["Preis-Sieger", "Wochenende"], priceLevel: "Günstig", isBestPrice: true, responseTime: "< 2h" },
+  { id: "feierabend-services-gmbh", name: "Feierabend Services GmbH", rating: 4.9, reviewCount: 312, badges: ["Demo", "Top bewertet"], services: ["Umzug", "Firmenumzug", "Reinigung"], priceLevel: "Premium", isPopular: true, responseTime: "< 1h" },
+  { id: "student-move", name: "Student Move CH", rating: 4.8, reviewCount: 456, badges: ["Studenten-Rabatt", "Flexibel"], priceLevel: "GÃ¼nstig", isPopular: true, responseTime: "< 1h" },
+  { id: "budget-umzug", name: "Budget Umzug", rating: 4.7, reviewCount: 312, badges: ["Preis-Sieger", "Wochenende"], priceLevel: "GÃ¼nstig", isBestPrice: true, responseTime: "< 2h" },
   { id: "campus-express", name: "Campus Express", rating: 4.9, reviewCount: 234, badges: ["Uni-Partner", "Express"], priceLevel: "Mittel", isPremium: false, responseTime: "< 2h" },
 ];
 
 const priceExamples = [
-  { size: "WG-Zimmer", price: "CHF 300 – 500", subtext: "10-15 m³", icon: Home, savings: "bis CHF 150" },
-  { size: "Studio", price: "CHF 500 – 800", subtext: "15-25 m³", icon: Home, savings: "bis CHF 250" },
-  { size: "1-2 Zimmer", price: "CHF 700 – 1'200", subtext: "25-40 m³", icon: Home, savings: "bis CHF 400" },
+  { size: "WG-Zimmer", price: "CHF 300 â€“ 500", subtext: "10-15 mÂ³", icon: Home, savings: "bis CHF 150" },
+  { size: "Studio", price: "CHF 500 â€“ 800", subtext: "15-25 mÂ³", icon: Home, savings: "bis CHF 250" },
+  { size: "1-2 Zimmer", price: "CHF 700 â€“ 1'200", subtext: "25-40 mÂ³", icon: Home, savings: "bis CHF 400" },
   { size: "Semesterwechsel", price: "ab CHF 250", subtext: "Mini-Umzug", icon: Package, savings: "bis CHF 100" },
 ];
 
 const additionalServices = [
   { title: "Einlagerung", icon: Warehouse, description: "Semesterferien-Lager", link: "/services/lagerung" },
   { title: "Reinigung", icon: Sparkles, description: "WG-Endreinigung", link: "/services/reinigung" },
-  { title: "Packservice", icon: Package, description: "Wir packen für dich", link: "/services/packservice" },
-  { title: "Möbellift", icon: Truck, description: "Für schwere Stücke", link: "/services/moebellift" },
+  { title: "Packservice", icon: Package, description: "Wir packen fÃ¼r dich", link: "/services/packservice" },
+  { title: "MÃ¶bellift", icon: Truck, description: "FÃ¼r schwere StÃ¼cke", link: "/services/moebellift" },
 ];
 
 const howItWorks = [
   { step: 1, title: "Anfrage stellen", description: "WG-Zimmer oder Studio angeben", icon: ClipboardList, time: "30 Sek." },
-  { step: 2, title: "Günstige Offerten", description: "Spezielle Studenten-Tarife", icon: FileText, time: "24h" },
+  { step: 2, title: "GÃ¼nstige Offerten", description: "Spezielle Studenten-Tarife", icon: FileText, time: "24h" },
   { step: 3, title: "Flexibel umziehen", description: "Auch am Wochenende", icon: CheckCircle, time: "Dein Termin" },
 ];
 
 const testimonials = [
-  { name: "Lena M., ETH", location: "Zürich", rating: 5, text: "Super günstig und flexibel! Der Umzug in meine neue WG hat nur CHF 350 gekostet. Absolut empfehlenswert für Studis!", date: "vor 4 Tagen", verified: true, savedAmount: 150 },
-  { name: "Tim R., Uni Bern", location: "Bern", rating: 5, text: "Mit dem Studentenausweis 15% Rabatt bekommen. Das Team war pünktlich und schnell.", date: "vor 1 Woche", verified: true, savedAmount: 120 },
+  { name: "Lena M., ETH", location: "ZÃ¼rich", rating: 5, text: "Super gÃ¼nstig und flexibel! Der Umzug in meine neue WG hat nur CHF 350 gekostet. Absolut empfehlenswert fÃ¼r Studis!", date: "vor 4 Tagen", verified: true, savedAmount: 150 },
+  { name: "Tim R., Uni Bern", location: "Bern", rating: 5, text: "Mit dem Studentenausweis 15% Rabatt bekommen. Das Team war pÃ¼nktlich und schnell.", date: "vor 1 Woche", verified: true, savedAmount: 120 },
   { name: "Sarah K., ZHAW", location: "Winterthur", rating: 5, text: "Semesteranfang-Stress? Nicht mit diesem Service! Alles war in 2 Stunden erledigt.", date: "vor 2 Wochen", verified: true, savedAmount: 100 },
 ];
 
 const guarantees = [
-  { title: "Studenten-Rabatt", description: "10-20% mit gültigem Ausweis", icon: GraduationCap },
+  { title: "Studenten-Rabatt", description: "10-20% mit gÃ¼ltigem Ausweis", icon: GraduationCap },
   { title: "Flexible Termine", description: "Auch Wochenende & Abend", icon: Calendar },
-  { title: "Budget-freundlich", description: "Ab CHF 300 möglich", icon: CircleDollarSign },
+  { title: "Budget-freundlich", description: "Ab CHF 300 mÃ¶glich", icon: CircleDollarSign },
   { title: "Schnell & Unkompliziert", description: "In wenigen Stunden erledigt", icon: Clock },
 ];
 
 const faqs = [
-  { question: "Was kostet ein Studentenumzug?", answer: "Studentenumzüge sind besonders günstig: WG-Zimmer ab CHF 300, Studio ab CHF 500, 1-2 Zimmer ab CHF 700. Mit Studentenausweis gibt's oft 10-20% Rabatt zusätzlich!" },
-  { question: "Gibt es Studenten-Rabatte?", answer: "Ja! Die meisten unserer Partner bieten 10-20% Rabatt für Studierende mit gültigem Studentenausweis oder Immatrikulationsbescheinigung. Einfach bei der Anfrage angeben." },
-  { question: "Kann ich auch am Wochenende umziehen?", answer: "Ja, Wochenend-Termine sind sehr beliebt bei Studenten und in der Regel verfügbar. Manche Firmen bieten sogar Abend-Termine an." },
-  { question: "Was mache ich in den Semesterferien mit meinen Sachen?", answer: "Viele Firmen bieten günstige Einlagerung für Semesterferien an. So musst du nicht alles nach Hause transportieren. Frag nach Studenten-Lagertarifen!" },
-  { question: "Brauche ich alles selbst einpacken?", answer: "Für ein kleines Budget: ja, selbst packen spart Geld. Es gibt aber auch günstigen Packservice speziell für Studenten ab ca. CHF 100 extra." },
+  { question: "Was kostet ein Studentenumzug?", answer: "StudentenumzÃ¼ge sind besonders gÃ¼nstig: WG-Zimmer ab CHF 300, Studio ab CHF 500, 1-2 Zimmer ab CHF 700. Mit Studentenausweis gibt's oft 10-20% Rabatt zusÃ¤tzlich!" },
+  { question: "Gibt es Studenten-Rabatte?", answer: "Ja! Die meisten unserer Partner bieten 10-20% Rabatt fÃ¼r Studierende mit gÃ¼ltigem Studentenausweis oder Immatrikulationsbescheinigung. Einfach bei der Anfrage angeben." },
+  { question: "Kann ich auch am Wochenende umziehen?", answer: "Ja, Wochenend-Termine sind sehr beliebt bei Studenten und in der Regel verfÃ¼gbar. Manche Firmen bieten sogar Abend-Termine an." },
+  { question: "Was mache ich in den Semesterferien mit meinen Sachen?", answer: "Viele Firmen bieten gÃ¼nstige Einlagerung fÃ¼r Semesterferien an. So musst du nicht alles nach Hause transportieren. Frag nach Studenten-Lagertarifen!" },
+  { question: "Brauche ich alles selbst einpacken?", answer: "FÃ¼r ein kleines Budget: ja, selbst packen spart Geld. Es gibt aber auch gÃ¼nstigen Packservice speziell fÃ¼r Studenten ab ca. CHF 100 extra." },
 ];
 
-const cities = ["Zürich", "Bern", "Basel", "Lausanne", "Genf", "St. Gallen", "Luzern", "Winterthur"];
+const cities = ["ZÃ¼rich", "Bern", "Basel", "Lausanne", "Genf", "St. Gallen", "Luzern", "Winterthur"];
 
 const AnimatedCounter = ({ end, suffix = "", duration = 2000 }: { end: number; suffix?: string; duration?: number }) => {
   const [count, setCount] = useState(0);
@@ -130,7 +131,7 @@ export default function StudentenumzugPage() {
   const schemaOrg = {
     "@context": "https://schema.org",
     "@graph": [
-      { "@type": "Service", "name": SERVICE_NAME, "description": `Günstiger ${SERVICE_NAME} in der Schweiz. Spezielle Studenten-Tarife ab CHF 300.`, "provider": { "@type": "Organization", "name": "Umzugscheck.ch" }, "areaServed": { "@type": "Country", "name": "Schweiz" }, "priceRange": "CHF 300 - CHF 1200" },
+      { "@type": "Service", "name": SERVICE_NAME, "description": `GÃ¼nstiger ${SERVICE_NAME} in der Schweiz. Spezielle Studenten-Tarife ab CHF 300.`, "provider": { "@type": "Organization", "name": "Umzugscheck.ch" }, "areaServed": { "@type": "Country", "name": "Schweiz" }, "priceRange": "CHF 300 - CHF 1200" },
       { "@type": "FAQPage", "mainEntity": faqs.map(faq => ({ "@type": "Question", "name": faq.question, "acceptedAnswer": { "@type": "Answer", "text": faq.answer } })) }
     ]
   };
@@ -139,8 +140,8 @@ export default function StudentenumzugPage() {
     <div className="min-h-screen bg-background">
       <Helmet>
         <html lang="de-CH" />
-        <title>{SERVICE_NAME} Schweiz | Günstig & Flexibel | Ab CHF 300</title>
-        <meta name="description" content={`Günstiger ${SERVICE_NAME} in der Schweiz ✓ Studenten-Rabatte ✓ Ab CHF 300 ✓ Flexible Termine ✓ Auch am Wochenende!`} />
+        <title>{SERVICE_NAME} Schweiz | GÃ¼nstig & Flexibel | Ab CHF 300</title>
+        <meta name="description" content={`GÃ¼nstiger ${SERVICE_NAME} in der Schweiz âœ“ Studenten-Rabatte âœ“ Ab CHF 300 âœ“ Flexible Termine âœ“ Auch am Wochenende!`} />
         <link rel="canonical" href={`https://umzugscheck.ch/services/${SERVICE_SLUG}`} />
         <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
       </Helmet>
@@ -170,16 +171,16 @@ export default function StudentenumzugPage() {
                 </motion.div>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-5 leading-tight">
-                  {SERVICE_NAME} – <br className="hidden md:block" /><span className="text-secondary">günstig & flexibel</span>
+                  {SERVICE_NAME} â€“ <br className="hidden md:block" /><span className="text-secondary">gÃ¼nstig & flexibel</span>
                 </h1>
 
                 <p className="text-lg md:text-xl text-white/85 mb-6 max-w-xl mx-auto lg:mx-0">
-                  Spezielle Tarife für Studierende.
-                  <span className="text-green-400 font-semibold"> Ab CHF 300 – mit Studenten-Rabatt!</span>
+                  Spezielle Tarife fÃ¼r Studierende.
+                  <span className="text-green-400 font-semibold"> Ab CHF 300 â€“ mit Studenten-Rabatt!</span>
                 </p>
 
                 <div className="grid grid-cols-3 gap-4 mb-8 max-w-lg mx-auto lg:mx-0">
-                  <div className="text-center lg:text-left"><div className="text-2xl font-bold text-white"><AnimatedCounter end={2100} suffix="+" /></div><div className="text-xs text-white/60">Studentenumzüge</div></div>
+                  <div className="text-center lg:text-left"><div className="text-2xl font-bold text-white"><AnimatedCounter end={2100} suffix="+" /></div><div className="text-xs text-white/60">StudentenumzÃ¼ge</div></div>
                   <div className="text-center lg:text-left"><div className="text-2xl font-bold text-white">ab 300</div><div className="text-xs text-white/60">CHF</div></div>
                   <div className="text-2xl font-bold text-amber-400 flex items-center gap-1"><Star className="w-6 h-6 fill-amber-400" />4.8</div>
                 </div>
@@ -197,7 +198,7 @@ export default function StudentenumzugPage() {
                     <div className="text-center mb-6">
                       <Badge className="mb-2 bg-green-500/20 text-green-700 border-green-500/30"><GraduationCap className="w-3 h-3 mr-1" />Studenten-Special</Badge>
                       <h2 className="text-xl font-bold mb-2">Studenten-Offerte</h2>
-                      <p className="text-sm text-muted-foreground">Günstige Tarife ab CHF 300</p>
+                      <p className="text-sm text-muted-foreground">GÃ¼nstige Tarife ab CHF 300</p>
                     </div>
                     <form onSubmit={handleFormSubmit} className="space-y-4">
                       <div>
@@ -210,7 +211,7 @@ export default function StudentenumzugPage() {
                       <div>
                         <Label>Wohnungstyp</Label>
                         <Select value={roomType} onValueChange={setRoomType}>
-                          <SelectTrigger className="mt-1"><SelectValue placeholder="Wählen..." /></SelectTrigger>
+                          <SelectTrigger className="mt-1"><SelectValue placeholder="WÃ¤hlen..." /></SelectTrigger>
                           <SelectContent>
                             <SelectItem value="wg">WG-Zimmer</SelectItem>
                             <SelectItem value="studio">Studio</SelectItem>
@@ -238,7 +239,7 @@ export default function StudentenumzugPage() {
         <section className="py-8 bg-muted/30 border-y">
           <div className="container px-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-              <div><div className="text-2xl font-bold text-primary">2'100+</div><div className="text-sm text-muted-foreground">Studentenumzüge</div></div>
+              <div><div className="text-2xl font-bold text-primary">2'100+</div><div className="text-sm text-muted-foreground">StudentenumzÃ¼ge</div></div>
               <div><div className="text-2xl font-bold text-primary">ab CHF 300</div><div className="text-sm text-muted-foreground">WG-Zimmer</div></div>
               <div><div className="text-2xl font-bold text-primary">10-20%</div><div className="text-sm text-muted-foreground">Studenten-Rabatt</div></div>
               <div><div className="text-2xl font-bold text-primary">7 Tage</div><div className="text-sm text-muted-foreground">die Woche</div></div>
@@ -271,7 +272,7 @@ export default function StudentenumzugPage() {
         {/* PRICES */}
         <section className="py-16 bg-muted/30">
           <div className="container px-4">
-            <h2 className="text-3xl font-bold text-center mb-12">Preisbeispiele für Studenten</h2>
+            <h2 className="text-3xl font-bold text-center mb-12">Preisbeispiele fÃ¼r Studenten</h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {priceExamples.map((p, i) => (
                 <Card key={i} className="text-center hover:shadow-lg transition-shadow">
@@ -326,7 +327,7 @@ export default function StudentenumzugPage() {
         {/* ADDITIONAL SERVICES */}
         <section className="py-16 bg-background">
           <div className="container px-4">
-            <h2 className="text-3xl font-bold text-center mb-12">Ergänzende Services</h2>
+            <h2 className="text-3xl font-bold text-center mb-12">ErgÃ¤nzende Services</h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {additionalServices.map((s, i) => (
                 <Link key={i} to={s.link}>
@@ -346,7 +347,7 @@ export default function StudentenumzugPage() {
         {/* FAQ */}
         <section className="py-16 bg-muted/30">
           <div className="container px-4 max-w-3xl">
-            <h2 className="text-3xl font-bold text-center mb-12">Häufige Fragen</h2>
+            <h2 className="text-3xl font-bold text-center mb-12">HÃ¤ufige Fragen</h2>
             <Accordion type="single" collapsible className="space-y-4">
               {faqs.map((faq, i) => (
                 <AccordionItem key={i} value={`faq-${i}`} className="bg-background rounded-lg border px-6">
@@ -377,8 +378,8 @@ export default function StudentenumzugPage() {
         {/* FINAL CTA */}
         <section className="py-20 bg-primary text-primary-foreground">
           <div className="container px-4 text-center">
-            <h2 className="text-3xl font-bold mb-4">Günstig umziehen als Student</h2>
-            <p className="text-lg mb-8 opacity-90 max-w-2xl mx-auto">Spezielle Studenten-Tarife ab CHF 300 – mit 10-20% Rabatt für alle mit gültigem Studentenausweis!</p>
+            <h2 className="text-3xl font-bold mb-4">GÃ¼nstig umziehen als Student</h2>
+            <p className="text-lg mb-8 opacity-90 max-w-2xl mx-auto">Spezielle Studenten-Tarife ab CHF 300 â€“ mit 10-20% Rabatt fÃ¼r alle mit gÃ¼ltigem Studentenausweis!</p>
             <Button asChild size="lg" variant="secondary" className="font-bold px-8 py-6">
               <Link to="/umzugsofferten">Jetzt Studenten-Offerte erhalten<ArrowRight className="ml-2 w-5 h-5" /></Link>
             </Button>
@@ -399,3 +400,4 @@ export default function StudentenumzugPage() {
     </div>
   );
 }
+

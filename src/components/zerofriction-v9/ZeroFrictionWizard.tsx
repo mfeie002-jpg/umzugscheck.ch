@@ -198,6 +198,19 @@ const ADDONS = [
 // Demo companies for selection
 const DEMO_COMPANIES = [
   {
+    id: 'fsg-1',
+    name: 'Feierabend Services GmbH',
+    logo: 'FS',
+    rating: 4.9,
+    reviewCount: 312,
+    priceLevel: 'premium' as const,
+    location: 'Schweizweit',
+    features: ['Komplettservice', 'Firmenumzug', 'Reinigung'],
+    isSponsored: true,
+    responseTime: '< 1 Std.',
+    priceEstimate: 1580,
+  },
+  {
     id: 'zurich-1',
     name: 'Premium Umzug AG',
     logo: '🏆',

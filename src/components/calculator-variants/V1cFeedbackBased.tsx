@@ -142,6 +142,18 @@ const SERVICES = [
 
 // Mock Companies with ASTAG/Zertifikate
 const COMPANIES = [
+  {
+    id: 'fsg-1',
+    name: 'Feierabend Services GmbH',
+    location: 'Schweizweit',
+    rating: 4.9,
+    reviews: 312,
+    match: 99,
+    priceMin: 1580,
+    priceMax: 2140,
+    isASTAG: true,
+    badges: ['ASTAG', 'Demo Partner'],
+  },
   { 
     id: '1', 
     name: 'Müller Umzüge AG', 

@@ -29,6 +29,7 @@ interface CantonCoverage {
 }
 
 const MOCK_PARTNERS: Partner[] = [
+  { name: 'Feierabend Services GmbH', canton: 'CH', capacity: 'open', acceptanceRate: 89, responseMinutes: 9, closeRate: 34, rpl: 225, disputeRate: 1.3, roi: 8.9, status: 'active' },
   { name: 'Müller Transport', canton: 'ZH', capacity: 'open', acceptanceRate: 85, responseMinutes: 12, closeRate: 32, rpl: 185, disputeRate: 3.2, roi: 7.2, status: 'active' },
   { name: 'Züri Move AG', canton: 'ZH', capacity: 'limited', acceptanceRate: 72, responseMinutes: 25, closeRate: 28, rpl: 155, disputeRate: 5.8, roi: 5.4, status: 'probation' },
   { name: 'Swiss Umzüge', canton: 'AG', capacity: 'open', acceptanceRate: 90, responseMinutes: 8, closeRate: 35, rpl: 210, disputeRate: 1.5, roi: 8.5, status: 'active' },

@@ -181,6 +181,7 @@ export const MarketplaceWizardV5c = () => {
   // Generate offers
   const offers = useMemo(() => {
     const partners = [
+      { name: "Feierabend Services GmbH", rating: 4.9, reviews: 312, priceOffset: 0, badge: "Demo Partner", recommended: true },
       { name: "SwissMove AG", rating: 4.9, reviews: 423, priceOffset: 0, badge: "Empfohlen", recommended: true },
       { name: "ZüriZügel", rating: 4.7, reviews: 189, priceOffset: -80, badge: "Günstigster" },
       { name: "Premium Transporte", rating: 5.0, reviews: 87, priceOffset: 150, badge: "Bestbewertet" },

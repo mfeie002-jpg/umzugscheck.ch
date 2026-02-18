@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { motion, useInView } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
@@ -23,26 +23,27 @@ const SERVICE_SLUG = "spezialtransporte";
 const relatedServices = [
   { value: "spezialtransporte", label: "Spezialtransporte", href: "/services/spezialtransporte" },
   { value: "privatumzug", label: "Privatumzug", href: "/services/privatumzug" },
-  { value: "moebellift", label: "Möbellift", href: "/services/moebellift" },
+  { value: "moebellift", label: "MÃ¶bellift", href: "/services/moebellift" },
   { value: "lagerung", label: "Lagerung", href: "/services/lagerung" },
   { value: "packservice", label: "Packservice", href: "/services/packservice" },
 ];
 
 const companies = [
+  { id: "feierabend-services-gmbh", name: "Feierabend Services GmbH", rating: 4.9, reviewCount: 312, badges: ["Demo", "Top bewertet"], services: ["Umzug", "Firmenumzug", "Reinigung"], priceLevel: "Premium", isPopular: true, responseTime: "< 1h" },
   { id: "klavier-transport", name: "Klavier-Transport Schweiz", rating: 4.9, reviewCount: 234, badges: ["Klavierspezialist", "Versichert"], priceLevel: "Mittel", isPopular: true, responseTime: "< 2h" },
   { id: "tresor-express", name: "Tresor Express AG", rating: 4.9, reviewCount: 189, badges: ["Tresore & Safes", "24/7"], priceLevel: "Premium", isBestPrice: false, responseTime: "< 4h" },
   { id: "kunst-transport", name: "Kunst-Transport Plus", rating: 4.8, reviewCount: 156, badges: ["Kunstwerke", "Klimatisiert"], priceLevel: "Premium", isPremium: true, responseTime: "< 4h" },
 ];
 
 const priceExamples = [
-  { size: "Klavier/Flügel", price: "CHF 400 – 1'200", subtext: "Je nach Grösse & Stockwerk", icon: Music, savings: "bis CHF 400" },
-  { size: "Tresor", price: "CHF 300 – 2'000", subtext: "Je nach Gewicht", icon: Key, savings: "bis CHF 600" },
-  { size: "Kunstwerk", price: "CHF 200 – 800", subtext: "Inkl. Spezialverpackung", icon: Palette, savings: "bis CHF 300" },
-  { size: "Antiquitäten", price: "CHF 150 – 600", subtext: "Einzelstück oder Set", icon: Package, savings: "bis CHF 200" },
+  { size: "Klavier/FlÃ¼gel", price: "CHF 400 â€“ 1'200", subtext: "Je nach GrÃ¶sse & Stockwerk", icon: Music, savings: "bis CHF 400" },
+  { size: "Tresor", price: "CHF 300 â€“ 2'000", subtext: "Je nach Gewicht", icon: Key, savings: "bis CHF 600" },
+  { size: "Kunstwerk", price: "CHF 200 â€“ 800", subtext: "Inkl. Spezialverpackung", icon: Palette, savings: "bis CHF 300" },
+  { size: "AntiquitÃ¤ten", price: "CHF 150 â€“ 600", subtext: "EinzelstÃ¼ck oder Set", icon: Package, savings: "bis CHF 200" },
 ];
 
 const additionalServices = [
-  { title: "Möbellift", icon: Truck, description: "Für schwere Objekte", link: "/services/moebellift" },
+  { title: "MÃ¶bellift", icon: Truck, description: "FÃ¼r schwere Objekte", link: "/services/moebellift" },
   { title: "Verpackung", icon: Package, description: "Spezialverpackung", link: "/services/packservice" },
   { title: "Einlagerung", icon: Package, description: "Klimatisierte Lager", link: "/services/lagerung" },
   { title: "Montage", icon: Wrench, description: "Auf- & Abbau", link: "/services/montage" },
@@ -55,29 +56,29 @@ const howItWorks = [
 ];
 
 const testimonials = [
-  { name: "Thomas M.", location: "Zürich", rating: 5, text: "Mein Steinway-Flügel wurde perfekt transportiert. Das Team wusste genau, was zu tun war. Nicht ein Kratzer!", date: "vor 1 Woche", verified: true, savedAmount: 350 },
-  { name: "Bank Müller AG", location: "Basel", rating: 5, text: "400kg Tresor in den 3. Stock – professionell und pünktlich. Sehr empfehlenswert für Geschäftskunden.", date: "vor 2 Wochen", verified: true, savedAmount: 500 },
-  { name: "Galerie Kunsthaus", location: "Bern", rating: 5, text: "Wertvolle Gemälde für eine Ausstellung transportiert. Klimatisiertes Fahrzeug und weisse Handschuhe – perfekt!", date: "vor 3 Wochen", verified: true, savedAmount: 280 },
+  { name: "Thomas M.", location: "ZÃ¼rich", rating: 5, text: "Mein Steinway-FlÃ¼gel wurde perfekt transportiert. Das Team wusste genau, was zu tun war. Nicht ein Kratzer!", date: "vor 1 Woche", verified: true, savedAmount: 350 },
+  { name: "Bank MÃ¼ller AG", location: "Basel", rating: 5, text: "400kg Tresor in den 3. Stock â€“ professionell und pÃ¼nktlich. Sehr empfehlenswert fÃ¼r GeschÃ¤ftskunden.", date: "vor 2 Wochen", verified: true, savedAmount: 500 },
+  { name: "Galerie Kunsthaus", location: "Bern", rating: 5, text: "Wertvolle GemÃ¤lde fÃ¼r eine Ausstellung transportiert. Klimatisiertes Fahrzeug und weisse Handschuhe â€“ perfekt!", date: "vor 3 Wochen", verified: true, savedAmount: 280 },
 ];
 
 const guarantees = [
-  { title: "Vollversicherung", description: "Wertvolle Objekte umfassend geschützt", icon: ShieldCheck },
+  { title: "Vollversicherung", description: "Wertvolle Objekte umfassend geschÃ¼tzt", icon: ShieldCheck },
   { title: "Spezialfahrzeuge", description: "Luftfederung & Klimatisierung", icon: Truck },
   { title: "Erfahrene Teams", description: "Geschulte Spezialisten", icon: BadgeCheck },
   { title: "Handling-Garantie", description: "Professionelle Behandlung", icon: ThumbsUp },
 ];
 
 const faqs = [
-  { question: "Was kostet ein Klaviertransport?", answer: "Ein Klaviertransport kostet je nach Grösse und Stockwerk CHF 400-1'200. Faktoren: Klaviertyp (Klavier vs. Flügel), Stockwerk (mit/ohne Lift), Distanz, enge Treppen oder Möbellift-Bedarf." },
-  { question: "Wie werden empfindliche Gegenstände geschützt?", answer: "Spezialisten verwenden: Spezialdeck und Polsterung, klimatisierte Fahrzeuge mit Luftfederung, Spezialverpackungen für Kunstwerke, weisse Handschuhe für empfindliche Oberflächen." },
-  { question: "Was kostet ein Tresortransport?", answer: "Tresortransporte werden nach Gewicht berechnet: bis 200kg ab CHF 300, 200-500kg CHF 500-1'000, über 500kg ab CHF 1'000. Faktoren: Stockwerk, Zugänglichkeit, Sicherheitsanforderungen." },
-  { question: "Sind die Transporte versichert?", answer: "Ja, alle Spezialtransporte sind vollversichert. Die Versicherungssumme wird individuell nach Objektwert festgelegt. Kunstwerke können mit Spezialversicherung bis zu CHF 1 Mio. abgesichert werden." },
-  { question: "Kann auch am Wochenende transportiert werden?", answer: "Ja, viele Spezialisten bieten Wochenend- und Abendtermine an. Für Geschäftskunden auch ausserhalb der Geschäftszeiten möglich (z.B. Tresorlieferung nachts)." },
+  { question: "Was kostet ein Klaviertransport?", answer: "Ein Klaviertransport kostet je nach GrÃ¶sse und Stockwerk CHF 400-1'200. Faktoren: Klaviertyp (Klavier vs. FlÃ¼gel), Stockwerk (mit/ohne Lift), Distanz, enge Treppen oder MÃ¶bellift-Bedarf." },
+  { question: "Wie werden empfindliche GegenstÃ¤nde geschÃ¼tzt?", answer: "Spezialisten verwenden: Spezialdeck und Polsterung, klimatisierte Fahrzeuge mit Luftfederung, Spezialverpackungen fÃ¼r Kunstwerke, weisse Handschuhe fÃ¼r empfindliche OberflÃ¤chen." },
+  { question: "Was kostet ein Tresortransport?", answer: "Tresortransporte werden nach Gewicht berechnet: bis 200kg ab CHF 300, 200-500kg CHF 500-1'000, Ã¼ber 500kg ab CHF 1'000. Faktoren: Stockwerk, ZugÃ¤nglichkeit, Sicherheitsanforderungen." },
+  { question: "Sind die Transporte versichert?", answer: "Ja, alle Spezialtransporte sind vollversichert. Die Versicherungssumme wird individuell nach Objektwert festgelegt. Kunstwerke kÃ¶nnen mit Spezialversicherung bis zu CHF 1 Mio. abgesichert werden." },
+  { question: "Kann auch am Wochenende transportiert werden?", answer: "Ja, viele Spezialisten bieten Wochenend- und Abendtermine an. FÃ¼r GeschÃ¤ftskunden auch ausserhalb der GeschÃ¤ftszeiten mÃ¶glich (z.B. Tresorlieferung nachts)." },
 ];
 
-const objectTypes = ["Klavier", "Flügel", "Tresor", "Kunstwerk", "Antiquität", "Medizingerät", "Industriemaschine", "Andere"];
+const objectTypes = ["Klavier", "FlÃ¼gel", "Tresor", "Kunstwerk", "AntiquitÃ¤t", "MedizingerÃ¤t", "Industriemaschine", "Andere"];
 
-const regions = ["Zürich", "Bern", "Basel", "Luzern", "Aargau", "St. Gallen", "Zug", "Genf"];
+const regions = ["ZÃ¼rich", "Bern", "Basel", "Luzern", "Aargau", "St. Gallen", "Zug", "Genf"];
 
 const AnimatedCounter = ({ end, suffix = "", duration = 2000 }: { end: number; suffix?: string; duration?: number }) => {
   const [count, setCount] = useState(0);
@@ -132,7 +133,7 @@ export default function SpezialtransportePage() {
   const schemaOrg = {
     "@context": "https://schema.org",
     "@graph": [
-      { "@type": "Service", "name": SERVICE_NAME, "description": `${SERVICE_NAME} in der Schweiz. Klaviere, Tresore, Kunstwerke – sicher & vollversichert.`, "provider": { "@type": "Organization", "name": "Umzugscheck.ch" }, "areaServed": { "@type": "Country", "name": "Schweiz" }, "priceRange": "CHF 150 - CHF 2000+" },
+      { "@type": "Service", "name": SERVICE_NAME, "description": `${SERVICE_NAME} in der Schweiz. Klaviere, Tresore, Kunstwerke â€“ sicher & vollversichert.`, "provider": { "@type": "Organization", "name": "Umzugscheck.ch" }, "areaServed": { "@type": "Country", "name": "Schweiz" }, "priceRange": "CHF 150 - CHF 2000+" },
       { "@type": "FAQPage", "mainEntity": faqs.map(faq => ({ "@type": "Question", "name": faq.question, "acceptedAnswer": { "@type": "Answer", "text": faq.answer } })) }
     ]
   };
@@ -142,7 +143,7 @@ export default function SpezialtransportePage() {
       <Helmet>
         <html lang="de-CH" />
         <title>{SERVICE_NAME} Schweiz | Klavier, Tresor, Kunst | Vollversichert</title>
-        <meta name="description" content={`${SERVICE_NAME} in der Schweiz ✓ Klaviere ✓ Tresore ✓ Kunstwerke ✓ Vollversichert ✓ Spezialfahrzeuge!`} />
+        <meta name="description" content={`${SERVICE_NAME} in der Schweiz âœ“ Klaviere âœ“ Tresore âœ“ Kunstwerke âœ“ Vollversichert âœ“ Spezialfahrzeuge!`} />
         <link rel="canonical" href={`https://umzugscheck.ch/services/${SERVICE_SLUG}`} />
         <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
       </Helmet>
@@ -172,17 +173,17 @@ export default function SpezialtransportePage() {
                 </motion.div>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-5 leading-tight">
-                  {SERVICE_NAME} – <br className="hidden md:block" /><span className="text-secondary">für wertvolle Güter</span>
+                  {SERVICE_NAME} â€“ <br className="hidden md:block" /><span className="text-secondary">fÃ¼r wertvolle GÃ¼ter</span>
                 </h1>
 
                 <p className="text-lg md:text-xl text-white/85 mb-6 max-w-xl mx-auto lg:mx-0">
-                  <strong>Klaviere, Tresore, Kunstwerke</strong> – sicher transportiert.
+                  <strong>Klaviere, Tresore, Kunstwerke</strong> â€“ sicher transportiert.
                   <span className="text-green-400 font-semibold"> Vollversichert & mit Spezialfahrzeugen.</span>
                 </p>
 
                 <div className="grid grid-cols-3 gap-4 mb-8 max-w-lg mx-auto lg:mx-0">
                   <div className="text-center lg:text-left"><div className="text-2xl font-bold text-white"><AnimatedCounter end={1520} suffix="+" /></div><div className="text-xs text-white/60">Spezialtransporte</div></div>
-                  <div className="text-center lg:text-left"><div className="text-2xl font-bold text-white">0</div><div className="text-xs text-white/60">Schäden</div></div>
+                  <div className="text-center lg:text-left"><div className="text-2xl font-bold text-white">0</div><div className="text-xs text-white/60">SchÃ¤den</div></div>
                   <div className="text-2xl font-bold text-amber-400 flex items-center gap-1"><Star className="w-6 h-6 fill-amber-400" />4.9</div>
                 </div>
 
@@ -211,13 +212,13 @@ export default function SpezialtransportePage() {
                       <div>
                         <Label>Was soll transportiert werden?</Label>
                         <Select value={objectType} onValueChange={setObjectType}>
-                          <SelectTrigger className="mt-1"><SelectValue placeholder="Objekttyp wählen..." /></SelectTrigger>
+                          <SelectTrigger className="mt-1"><SelectValue placeholder="Objekttyp wÃ¤hlen..." /></SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="klavier">Klavier / Flügel</SelectItem>
+                            <SelectItem value="klavier">Klavier / FlÃ¼gel</SelectItem>
                             <SelectItem value="tresor">Tresor / Safe</SelectItem>
-                            <SelectItem value="kunst">Kunstwerk / Gemälde</SelectItem>
-                            <SelectItem value="antiquitaet">Antiquität</SelectItem>
-                            <SelectItem value="medizin">Medizingerät</SelectItem>
+                            <SelectItem value="kunst">Kunstwerk / GemÃ¤lde</SelectItem>
+                            <SelectItem value="antiquitaet">AntiquitÃ¤t</SelectItem>
+                            <SelectItem value="medizin">MedizingerÃ¤t</SelectItem>
                             <SelectItem value="industrie">Industriemaschine</SelectItem>
                             <SelectItem value="anderes">Anderes</SelectItem>
                           </SelectContent>
@@ -244,7 +245,7 @@ export default function SpezialtransportePage() {
           <div className="container px-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
               <div><div className="text-2xl font-bold text-primary">1'520+</div><div className="text-sm text-muted-foreground">Spezialtransporte</div></div>
-              <div><div className="text-2xl font-bold text-primary">0</div><div className="text-sm text-muted-foreground">Schäden</div></div>
+              <div><div className="text-2xl font-bold text-primary">0</div><div className="text-sm text-muted-foreground">SchÃ¤den</div></div>
               <div><div className="text-2xl font-bold text-primary">100%</div><div className="text-sm text-muted-foreground">Versichert</div></div>
               <div><div className="text-2xl font-bold text-primary">Spezialfahrzeuge</div><div className="text-sm text-muted-foreground">Luftfederung</div></div>
             </div>
@@ -331,7 +332,7 @@ export default function SpezialtransportePage() {
         {/* ADDITIONAL SERVICES */}
         <section className="py-16 bg-background">
           <div className="container px-4">
-            <h2 className="text-3xl font-bold text-center mb-12">Ergänzende Services</h2>
+            <h2 className="text-3xl font-bold text-center mb-12">ErgÃ¤nzende Services</h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {additionalServices.map((s, i) => (
                 <Link key={i} to={s.link}>
@@ -351,7 +352,7 @@ export default function SpezialtransportePage() {
         {/* FAQ */}
         <section className="py-16 bg-muted/30">
           <div className="container px-4 max-w-3xl">
-            <h2 className="text-3xl font-bold text-center mb-12">Häufige Fragen</h2>
+            <h2 className="text-3xl font-bold text-center mb-12">HÃ¤ufige Fragen</h2>
             <Accordion type="single" collapsible className="space-y-4">
               {faqs.map((faq, i) => (
                 <AccordionItem key={i} value={`faq-${i}`} className="bg-background rounded-lg border px-6">
@@ -382,8 +383,8 @@ export default function SpezialtransportePage() {
         {/* FINAL CTA */}
         <section className="py-20 bg-primary text-primary-foreground">
           <div className="container px-4 text-center">
-            <h2 className="text-3xl font-bold mb-4">Wertvolle Güter sicher transportieren</h2>
-            <p className="text-lg mb-8 opacity-90 max-w-2xl mx-auto">Spezialisten für Klaviere, Tresore, Kunstwerke & mehr – vollversichert und mit professionellem Equipment.</p>
+            <h2 className="text-3xl font-bold mb-4">Wertvolle GÃ¼ter sicher transportieren</h2>
+            <p className="text-lg mb-8 opacity-90 max-w-2xl mx-auto">Spezialisten fÃ¼r Klaviere, Tresore, Kunstwerke & mehr â€“ vollversichert und mit professionellem Equipment.</p>
             <Button asChild size="lg" variant="secondary" className="font-bold px-8 py-6">
               <Link to="/umzugsofferten">Jetzt Offerten erhalten<ArrowRight className="ml-2 w-5 h-5" /></Link>
             </Button>
@@ -404,3 +405,4 @@ export default function SpezialtransportePage() {
     </div>
   );
 }
+

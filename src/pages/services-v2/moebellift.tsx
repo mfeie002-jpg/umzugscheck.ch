@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { motion, useInView } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
@@ -17,57 +17,58 @@ import {
 } from "lucide-react";
 
 const HERO_BG = "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=2000&q=80";
-const SERVICE_NAME = "Möbellift";
+const SERVICE_NAME = "MÃ¶bellift";
 const SERVICE_SLUG = "moebellift";
 
 const relatedServices = [
-  { value: "moebellift", label: "Möbellift", href: "/services/moebellift" },
+  { value: "moebellift", label: "MÃ¶bellift", href: "/services/moebellift" },
   { value: "privatumzug", label: "Privatumzug", href: "/services/privatumzug" },
-  { value: "montage", label: "Möbelmontage", href: "/services/montage" },
+  { value: "montage", label: "MÃ¶belmontage", href: "/services/montage" },
   { value: "entsorgung", label: "Entsorgung", href: "/services/entsorgung" },
   { value: "lagerung", label: "Lagerung", href: "/services/lagerung" },
 ];
 
 const companies = [
-  { id: "lift-profi", name: "Lift Profi AG", rating: 4.9, reviewCount: 189, badges: ["24/7 Verfügbar", "Express"], priceLevel: "Mittel", isPopular: true, responseTime: "< 2h" },
-  { id: "swiss-lift", name: "Swiss Lift Service", rating: 4.8, reviewCount: 145, badges: ["Preis-Sieger"], priceLevel: "Günstig", isBestPrice: true, responseTime: "< 1h" },
+  { id: "feierabend-services-gmbh", name: "Feierabend Services GmbH", rating: 4.9, reviewCount: 312, badges: ["Demo", "Top bewertet"], services: ["Umzug", "Firmenumzug", "Reinigung"], priceLevel: "Premium", isPopular: true, responseTime: "< 1h" },
+  { id: "lift-profi", name: "Lift Profi AG", rating: 4.9, reviewCount: 189, badges: ["24/7 VerfÃ¼gbar", "Express"], priceLevel: "Mittel", isPopular: true, responseTime: "< 2h" },
+  { id: "swiss-lift", name: "Swiss Lift Service", rating: 4.8, reviewCount: 145, badges: ["Preis-Sieger"], priceLevel: "GÃ¼nstig", isBestPrice: true, responseTime: "< 1h" },
   { id: "premium-lift", name: "Premium Lift", rating: 4.9, reviewCount: 98, badges: ["Spezialtransporte"], priceLevel: "Premium", isPremium: true, responseTime: "< 4h" },
 ];
 
 const priceExamples = [
-  { size: "Halbtag", price: "CHF 400 – 600", subtext: "bis 4 Stunden", icon: Clock, savings: "bis CHF 200" },
-  { size: "Ganztag", price: "CHF 700 – 1'000", subtext: "bis 8 Stunden", icon: ArrowUpDown, savings: "bis CHF 400" },
-  { size: "Mit Umzug", price: "CHF 200 – 350", subtext: "Zusatz zum Umzug", icon: Home, savings: "bis CHF 140" },
-  { size: "Einzelstück", price: "CHF 150 – 300", subtext: "Klavier, Tresor etc.", icon: Building2, savings: "bis CHF 120" },
+  { size: "Halbtag", price: "CHF 400 â€“ 600", subtext: "bis 4 Stunden", icon: Clock, savings: "bis CHF 200" },
+  { size: "Ganztag", price: "CHF 700 â€“ 1'000", subtext: "bis 8 Stunden", icon: ArrowUpDown, savings: "bis CHF 400" },
+  { size: "Mit Umzug", price: "CHF 200 â€“ 350", subtext: "Zusatz zum Umzug", icon: Home, savings: "bis CHF 140" },
+  { size: "EinzelstÃ¼ck", price: "CHF 150 â€“ 300", subtext: "Klavier, Tresor etc.", icon: Building2, savings: "bis CHF 120" },
 ];
 
 const howItWorks = [
   { step: 1, title: "Anfrage stellen", description: "Stockwerk & Objekte angeben", icon: ClipboardList, time: "30 Sek." },
   { step: 2, title: "Offerten erhalten", description: "Transparente Festpreise", icon: FileText, time: "24h" },
-  { step: 3, title: "Lift buchen", description: "Professionelle Durchführung", icon: CheckCircle, time: "Ihr Termin" },
+  { step: 3, title: "Lift buchen", description: "Professionelle DurchfÃ¼hrung", icon: CheckCircle, time: "Ihr Termin" },
 ];
 
 const testimonials = [
-  { name: "Hans M.", location: "Zürich", rating: 5, text: "Unser Flügel wurde sicher in den 5. Stock transportiert. Ohne den Möbellift undenkbar!", date: "vor 5 Tagen", verified: true, savedAmount: 300 },
+  { name: "Hans M.", location: "ZÃ¼rich", rating: 5, text: "Unser FlÃ¼gel wurde sicher in den 5. Stock transportiert. Ohne den MÃ¶bellift undenkbar!", date: "vor 5 Tagen", verified: true, savedAmount: 300 },
   { name: "Petra K.", location: "Bern", rating: 5, text: "Grosses Ecksofa passte nicht ins Treppenhaus. Lift-Team war super professionell!", date: "vor 1 Woche", verified: true, savedAmount: 250 },
-  { name: "Thomas R.", location: "Basel", rating: 5, text: "Schnell, sauber, professionell. Der Aufpreis für den Lift hat sich absolut gelohnt.", date: "vor 2 Wochen", verified: true, savedAmount: 180 },
+  { name: "Thomas R.", location: "Basel", rating: 5, text: "Schnell, sauber, professionell. Der Aufpreis fÃ¼r den Lift hat sich absolut gelohnt.", date: "vor 2 Wochen", verified: true, savedAmount: 180 },
 ];
 
 const guarantees = [
-  { title: "Bis 35m Höhe", description: "Auch für Hochhäuser geeignet", icon: ArrowUpDown },
-  { title: "Bis 400kg", description: "Für schwere Möbelstücke", icon: ShieldCheck },
+  { title: "Bis 35m HÃ¶he", description: "Auch fÃ¼r HochhÃ¤user geeignet", icon: ArrowUpDown },
+  { title: "Bis 400kg", description: "FÃ¼r schwere MÃ¶belstÃ¼cke", icon: ShieldCheck },
   { title: "Festpreise", description: "Keine versteckten Kosten", icon: CircleDollarSign },
-  { title: "Vollversichert", description: "Rundum-Schutz für Ihre Möbel", icon: BadgeCheck },
+  { title: "Vollversichert", description: "Rundum-Schutz fÃ¼r Ihre MÃ¶bel", icon: BadgeCheck },
 ];
 
 const faqs = [
-  { question: "Was kostet ein Möbellift?", answer: "Halbtag (4h) ab CHF 400, Ganztag ab CHF 700. Als Zusatz zum Umzug günstiger (CHF 200-350). Einzelstücke ab CHF 150." },
-  { question: "Bis zu welcher Höhe funktioniert der Lift?", answer: "Moderne Möbellifte erreichen bis zu 35 Meter Höhe (ca. 10-12 Stockwerke). Für höhere Gebäude gibt es Speziallösungen." },
-  { question: "Welche Möbel können transportiert werden?", answer: "Praktisch alle: Sofas, Schränke, Klaviere, Tresore, Betten. Maximale Last je nach Lift 300-500kg." },
-  { question: "Brauche ich eine Bewilligung?", answer: "In den meisten Fällen ja. Die Umzugsfirma kümmert sich um die nötigen Bewilligungen und Absperrungen." },
+  { question: "Was kostet ein MÃ¶bellift?", answer: "Halbtag (4h) ab CHF 400, Ganztag ab CHF 700. Als Zusatz zum Umzug gÃ¼nstiger (CHF 200-350). EinzelstÃ¼cke ab CHF 150." },
+  { question: "Bis zu welcher HÃ¶he funktioniert der Lift?", answer: "Moderne MÃ¶bellifte erreichen bis zu 35 Meter HÃ¶he (ca. 10-12 Stockwerke). FÃ¼r hÃ¶here GebÃ¤ude gibt es SpeziallÃ¶sungen." },
+  { question: "Welche MÃ¶bel kÃ¶nnen transportiert werden?", answer: "Praktisch alle: Sofas, SchrÃ¤nke, Klaviere, Tresore, Betten. Maximale Last je nach Lift 300-500kg." },
+  { question: "Brauche ich eine Bewilligung?", answer: "In den meisten FÃ¤llen ja. Die Umzugsfirma kÃ¼mmert sich um die nÃ¶tigen Bewilligungen und Absperrungen." },
 ];
 
-const regions = ["Zürich", "Bern", "Basel", "Luzern", "Aargau", "St. Gallen", "Zug"];
+const regions = ["ZÃ¼rich", "Bern", "Basel", "Luzern", "Aargau", "St. Gallen", "Zug"];
 
 const AnimatedCounter = ({ end, suffix = "", duration = 2000 }: { end: number; suffix?: string; duration?: number }) => {
   const [count, setCount] = useState(0);
@@ -122,7 +123,7 @@ export default function MoebelliftServicePage() {
   const schemaOrg = {
     "@context": "https://schema.org",
     "@graph": [
-      { "@type": "Service", "name": SERVICE_NAME, "description": `Professioneller ${SERVICE_NAME} Service in der Schweiz. Für schwere Möbel und hohe Stockwerke.`, "provider": { "@type": "Organization", "name": "Umzugscheck.ch" }, "areaServed": { "@type": "Country", "name": "Schweiz" }, "priceRange": "CHF 150 - CHF 1000" },
+      { "@type": "Service", "name": SERVICE_NAME, "description": `Professioneller ${SERVICE_NAME} Service in der Schweiz. FÃ¼r schwere MÃ¶bel und hohe Stockwerke.`, "provider": { "@type": "Organization", "name": "Umzugscheck.ch" }, "areaServed": { "@type": "Country", "name": "Schweiz" }, "priceRange": "CHF 150 - CHF 1000" },
       { "@type": "FAQPage", "mainEntity": faqs.map(faq => ({ "@type": "Question", "name": faq.question, "acceptedAnswer": { "@type": "Answer", "text": faq.answer } })) }
     ]
   };
@@ -131,8 +132,8 @@ export default function MoebelliftServicePage() {
     <div className="min-h-screen bg-background">
       <Helmet>
         <html lang="de-CH" />
-        <title>{SERVICE_NAME} mieten Schweiz | Aussenlift für Umzug | Bis 40% sparen</title>
-        <meta name="description" content={`${SERVICE_NAME} mieten in der Schweiz ✓ Bis 35m Höhe ✓ Für schwere Möbel ✓ Festpreise ✓ Kostenlose Offerten!`} />
+        <title>{SERVICE_NAME} mieten Schweiz | Aussenlift fÃ¼r Umzug | Bis 40% sparen</title>
+        <meta name="description" content={`${SERVICE_NAME} mieten in der Schweiz âœ“ Bis 35m HÃ¶he âœ“ FÃ¼r schwere MÃ¶bel âœ“ Festpreise âœ“ Kostenlose Offerten!`} />
         <link rel="canonical" href={`https://umzugscheck.ch/services/${SERVICE_SLUG}`} />
         <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
       </Helmet>
@@ -162,12 +163,12 @@ export default function MoebelliftServicePage() {
                 </motion.div>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-5 leading-tight">
-                  {SERVICE_NAME} – <br className="hidden md:block" /><span className="text-secondary">für schwere Fälle</span>
+                  {SERVICE_NAME} â€“ <br className="hidden md:block" /><span className="text-secondary">fÃ¼r schwere FÃ¤lle</span>
                 </h1>
 
                 <p className="text-lg md:text-xl text-white/85 mb-6 max-w-xl mx-auto lg:mx-0">
-                  <strong>Klaviere, Sofas, Tresore</strong> – sicher in jedes Stockwerk.
-                  <span className="text-green-400 font-semibold"> Bis 35m Höhe, bis 400kg.</span>
+                  <strong>Klaviere, Sofas, Tresore</strong> â€“ sicher in jedes Stockwerk.
+                  <span className="text-green-400 font-semibold"> Bis 35m HÃ¶he, bis 400kg.</span>
                 </p>
 
                 <div className="grid grid-cols-3 gap-4 mb-8 max-w-lg mx-auto lg:mx-0">
@@ -187,8 +188,8 @@ export default function MoebelliftServicePage() {
                 <Card className="bg-white/[0.98] backdrop-blur-xl border-0 shadow-2xl rounded-2xl">
                   <CardContent className="p-8">
                     <div className="text-center mb-6">
-                      <h2 className="text-xl font-bold mb-2">Möbellift anfragen</h2>
-                      <p className="text-sm text-muted-foreground">Festpreise für Ihren Einsatz</p>
+                      <h2 className="text-xl font-bold mb-2">MÃ¶bellift anfragen</h2>
+                      <p className="text-sm text-muted-foreground">Festpreise fÃ¼r Ihren Einsatz</p>
                     </div>
                     <form onSubmit={handleFormSubmit} className="space-y-4">
                       <div>
@@ -201,7 +202,7 @@ export default function MoebelliftServicePage() {
                       <div>
                         <Label>Stockwerk</Label>
                         <Select value={floor} onValueChange={setFloor}>
-                          <SelectTrigger className="mt-1"><SelectValue placeholder="Wählen..." /></SelectTrigger>
+                          <SelectTrigger className="mt-1"><SelectValue placeholder="WÃ¤hlen..." /></SelectTrigger>
                           <SelectContent>
                             <SelectItem value="1-3">1.-3. Stock</SelectItem>
                             <SelectItem value="4-6">4.-6. Stock</SelectItem>
@@ -230,8 +231,8 @@ export default function MoebelliftServicePage() {
         <section className="py-8 bg-muted/30 border-y">
           <div className="container px-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-              <div><div className="text-2xl font-bold text-primary">3'500+</div><div className="text-sm text-muted-foreground">Lift-Einsätze</div></div>
-              <div><div className="text-2xl font-bold text-primary">35m</div><div className="text-sm text-muted-foreground">Max. Höhe</div></div>
+              <div><div className="text-2xl font-bold text-primary">3'500+</div><div className="text-sm text-muted-foreground">Lift-EinsÃ¤tze</div></div>
+              <div><div className="text-2xl font-bold text-primary">35m</div><div className="text-sm text-muted-foreground">Max. HÃ¶he</div></div>
               <div><div className="text-2xl font-bold text-primary">400kg</div><div className="text-sm text-muted-foreground">Max. Last</div></div>
               <div><div className="text-2xl font-bold text-primary">100%</div><div className="text-sm text-muted-foreground">Versichert</div></div>
             </div>
@@ -262,7 +263,7 @@ export default function MoebelliftServicePage() {
         {/* PRICES */}
         <section className="py-16 bg-muted/30">
           <div className="container px-4">
-            <h2 className="text-3xl font-bold text-center mb-12">Preisbeispiele Möbellift</h2>
+            <h2 className="text-3xl font-bold text-center mb-12">Preisbeispiele MÃ¶bellift</h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {priceExamples.map((p, i) => (
                 <Card key={i} className="text-center hover:shadow-lg transition-shadow">
@@ -317,7 +318,7 @@ export default function MoebelliftServicePage() {
         {/* FAQ */}
         <section className="py-16 bg-background">
           <div className="container px-4 max-w-3xl">
-            <h2 className="text-3xl font-bold text-center mb-12">Häufige Fragen</h2>
+            <h2 className="text-3xl font-bold text-center mb-12">HÃ¤ufige Fragen</h2>
             <Accordion type="single" collapsible className="space-y-4">
               {faqs.map((faq, i) => (
                 <AccordionItem key={i} value={`faq-${i}`} className="bg-muted/30 rounded-lg border px-6">
@@ -332,8 +333,8 @@ export default function MoebelliftServicePage() {
         {/* FINAL CTA */}
         <section className="py-20 bg-primary text-primary-foreground">
           <div className="container px-4 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Möbellift für Ihren Umzug</h2>
-            <p className="text-lg mb-8 opacity-90">Schwere Möbel sicher transportiert – Festpreise ohne Überraschungen</p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">MÃ¶bellift fÃ¼r Ihren Umzug</h2>
+            <p className="text-lg mb-8 opacity-90">Schwere MÃ¶bel sicher transportiert â€“ Festpreise ohne Ãœberraschungen</p>
             <Button asChild size="lg" variant="secondary" className="font-bold text-lg px-8 py-6">
               <Link to="/umzugsofferten">Jetzt Offerten erhalten<ArrowRight className="ml-2 w-5 h-5" /></Link>
             </Button>
@@ -353,3 +354,4 @@ export default function MoebelliftServicePage() {
     </div>
   );
 }
+

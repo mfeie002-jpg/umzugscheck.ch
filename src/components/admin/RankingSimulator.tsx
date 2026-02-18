@@ -10,6 +10,18 @@ import { calculateOrganicScore, generateRanking, type CompanyData } from "@/lib/
 
 const MOCK_COMPANIES: CompanyData[] = [
   {
+    id: "fsg-1",
+    name: "Feierabend Services GmbH",
+    rating: 4.9,
+    review_count: 312,
+    price_level: "premium",
+    is_featured: true,
+    featured_position: 0,
+    service_areas: ["Schweizweit"],
+    services_offered: ["Umzug", "Firmenumzug", "Reinigung", "Entsorgung", "Lagerung", "Packservice"],
+    profile_completeness: 98,
+  },
+  {
     id: "1",
     name: "SwissMove AG",
     rating: 4.8,

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { motion, useInView } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
@@ -29,16 +29,17 @@ const relatedServices = [
 ];
 
 const companies = [
+  { id: "feierabend-services-gmbh", name: "Feierabend Services GmbH", rating: 4.9, reviewCount: 312, badges: ["Demo", "Top bewertet"], services: ["Umzug", "Firmenumzug", "Reinigung"], priceLevel: "Premium", isPopular: true, responseTime: "< 1h" },
   { id: "pack-profi", name: "Pack Profi AG", rating: 4.9, reviewCount: 234, badges: ["Fragiles-Spezialist", "Express"], priceLevel: "Mittel", isPopular: true, responseTime: "< 2h" },
-  { id: "swiss-pack", name: "Swiss Pack Service", rating: 4.8, reviewCount: 189, badges: ["Preis-Sieger"], priceLevel: "Günstig", isBestPrice: true, responseTime: "< 1h" },
+  { id: "swiss-pack", name: "Swiss Pack Service", rating: 4.8, reviewCount: 189, badges: ["Preis-Sieger"], priceLevel: "GÃ¼nstig", isBestPrice: true, responseTime: "< 1h" },
   { id: "premium-pack", name: "Premium Packing", rating: 4.9, reviewCount: 156, badges: ["Kunsttransport", "Versichert"], priceLevel: "Premium", isPremium: true, responseTime: "< 4h" },
 ];
 
 const priceExamples = [
-  { size: "Nur Fragiles", price: "CHF 200 – 400", subtext: "Glas, Porzellan, Bilder", icon: Package, savings: "bis CHF 150" },
-  { size: "Teilservice", price: "CHF 400 – 800", subtext: "Küche & fragile Gegenstände", icon: Box, savings: "bis CHF 300" },
-  { size: "Vollservice", price: "CHF 800 – 1'500", subtext: "Komplette Wohnung", icon: Home, savings: "bis CHF 600" },
-  { size: "Auspacken inkl.", price: "CHF 1'200 – 2'000", subtext: "Ein- und Auspacken", icon: Package, savings: "bis CHF 800" },
+  { size: "Nur Fragiles", price: "CHF 200 â€“ 400", subtext: "Glas, Porzellan, Bilder", icon: Package, savings: "bis CHF 150" },
+  { size: "Teilservice", price: "CHF 400 â€“ 800", subtext: "KÃ¼che & fragile GegenstÃ¤nde", icon: Box, savings: "bis CHF 300" },
+  { size: "Vollservice", price: "CHF 800 â€“ 1'500", subtext: "Komplette Wohnung", icon: Home, savings: "bis CHF 600" },
+  { size: "Auspacken inkl.", price: "CHF 1'200 â€“ 2'000", subtext: "Ein- und Auspacken", icon: Package, savings: "bis CHF 800" },
 ];
 
 const howItWorks = [
@@ -48,26 +49,26 @@ const howItWorks = [
 ];
 
 const testimonials = [
-  { name: "Claudia M.", location: "Zürich", rating: 5, text: "Das Pack-Team war unglaublich effizient! In 4 Stunden war die ganze Wohnung verpackt. Alles heil angekommen.", date: "vor 4 Tagen", verified: true, savedAmount: 350 },
-  { name: "Stefan R.", location: "Bern", rating: 5, text: "Fragiles wurde super sorgfältig verpackt. Jedes Glas in Seidenpapier. Sehr professionell!", date: "vor 1 Woche", verified: true, savedAmount: 280 },
+  { name: "Claudia M.", location: "ZÃ¼rich", rating: 5, text: "Das Pack-Team war unglaublich effizient! In 4 Stunden war die ganze Wohnung verpackt. Alles heil angekommen.", date: "vor 4 Tagen", verified: true, savedAmount: 350 },
+  { name: "Stefan R.", location: "Bern", rating: 5, text: "Fragiles wurde super sorgfÃ¤ltig verpackt. Jedes Glas in Seidenpapier. Sehr professionell!", date: "vor 1 Woche", verified: true, savedAmount: 280 },
   { name: "Maria K.", location: "Basel", rating: 5, text: "Der Vollservice hat sich absolut gelohnt. Kein Stress, kein Chaos. Klare Empfehlung!", date: "vor 2 Wochen", verified: true, savedAmount: 500 },
 ];
 
 const guarantees = [
   { title: "Material inklusive", description: "Kartons, Papier, Folie", icon: Box },
-  { title: "Bruch-Garantie", description: "Versicherung für Fragiles", icon: ShieldCheck },
+  { title: "Bruch-Garantie", description: "Versicherung fÃ¼r Fragiles", icon: ShieldCheck },
   { title: "Festpreise", description: "Keine versteckten Kosten", icon: CircleDollarSign },
   { title: "Profi-Team", description: "Erfahrene Packer", icon: BadgeCheck },
 ];
 
 const faqs = [
   { question: "Was kostet ein Packservice?", answer: "Nur Fragiles ab CHF 200, Teilservice CHF 400-800, Vollservice CHF 800-1'500. Material (Kartons, Papier) ist inklusive." },
-  { question: "Was ist im Material enthalten?", answer: "Alle nötigen Kartons, Packpapier, Luftpolsterfolie, Klebeband, Beschriftungsmaterial. Nach dem Umzug können Kartons abgeholt werden." },
-  { question: "Wie lange dauert das Packen?", answer: "2-3 Zimmer ca. 3-4 Stunden, 4-5 Zimmer ca. 5-7 Stunden. Profis arbeiten zu zweit oder dritt für maximale Effizienz." },
-  { question: "Wird auch ausgepackt?", answer: "Ja, viele Firmen bieten Ein- und Auspack-Service an. So sind Sie am neuen Ort sofort eingerichtet, ohne selbst auspacken zu müssen." },
+  { question: "Was ist im Material enthalten?", answer: "Alle nÃ¶tigen Kartons, Packpapier, Luftpolsterfolie, Klebeband, Beschriftungsmaterial. Nach dem Umzug kÃ¶nnen Kartons abgeholt werden." },
+  { question: "Wie lange dauert das Packen?", answer: "2-3 Zimmer ca. 3-4 Stunden, 4-5 Zimmer ca. 5-7 Stunden. Profis arbeiten zu zweit oder dritt fÃ¼r maximale Effizienz." },
+  { question: "Wird auch ausgepackt?", answer: "Ja, viele Firmen bieten Ein- und Auspack-Service an. So sind Sie am neuen Ort sofort eingerichtet, ohne selbst auspacken zu mÃ¼ssen." },
 ];
 
-const regions = ["Zürich", "Bern", "Basel", "Luzern", "Aargau", "St. Gallen", "Zug"];
+const regions = ["ZÃ¼rich", "Bern", "Basel", "Luzern", "Aargau", "St. Gallen", "Zug"];
 
 const AnimatedCounter = ({ end, suffix = "", duration = 2000 }: { end: number; suffix?: string; duration?: number }) => {
   const [count, setCount] = useState(0);
@@ -132,7 +133,7 @@ export default function PackserviceServicePage() {
       <Helmet>
         <html lang="de-CH" />
         <title>{SERVICE_NAME} Schweiz | Professionell Ein- & Auspacken | Bis 40% sparen</title>
-        <meta name="description" content={`Professioneller ${SERVICE_NAME} in der Schweiz ✓ Material inklusive ✓ Fragiles-Spezialist ✓ Festpreise ✓ Kostenlose Offerten!`} />
+        <meta name="description" content={`Professioneller ${SERVICE_NAME} in der Schweiz âœ“ Material inklusive âœ“ Fragiles-Spezialist âœ“ Festpreise âœ“ Kostenlose Offerten!`} />
         <link rel="canonical" href={`https://umzugscheck.ch/services/${SERVICE_SLUG}`} />
         <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
       </Helmet>
@@ -162,11 +163,11 @@ export default function PackserviceServicePage() {
                 </motion.div>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-5 leading-tight">
-                  {SERVICE_NAME} – <br className="hidden md:block" /><span className="text-secondary">stressfrei packen lassen</span>
+                  {SERVICE_NAME} â€“ <br className="hidden md:block" /><span className="text-secondary">stressfrei packen lassen</span>
                 </h1>
 
                 <p className="text-lg md:text-xl text-white/85 mb-6 max-w-xl mx-auto lg:mx-0">
-                  <strong>Profis packen für Sie</strong> – Material inklusive.
+                  <strong>Profis packen fÃ¼r Sie</strong> â€“ Material inklusive.
                   <span className="text-green-400 font-semibold"> Fragiles sicher verpackt.</span>
                 </p>
 
@@ -199,9 +200,9 @@ export default function PackserviceServicePage() {
                         </div>
                       </div>
                       <div>
-                        <Label>Wohnungsgrösse</Label>
+                        <Label>WohnungsgrÃ¶sse</Label>
                         <Select value={apartmentSize} onValueChange={setApartmentSize}>
-                          <SelectTrigger className="mt-1"><SelectValue placeholder="Wählen..." /></SelectTrigger>
+                          <SelectTrigger className="mt-1"><SelectValue placeholder="WÃ¤hlen..." /></SelectTrigger>
                           <SelectContent>
                             <SelectItem value="1-2">1-2 Zimmer</SelectItem>
                             <SelectItem value="2.5-3">2.5-3 Zimmer</SelectItem>
@@ -232,7 +233,7 @@ export default function PackserviceServicePage() {
           <div className="container px-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
               <div><div className="text-2xl font-bold text-primary">8'000+</div><div className="text-sm text-muted-foreground">Wohnungen gepackt</div></div>
-              <div><div className="text-2xl font-bold text-primary">0</div><div className="text-sm text-muted-foreground">Bruchschäden</div></div>
+              <div><div className="text-2xl font-bold text-primary">0</div><div className="text-sm text-muted-foreground">BruchschÃ¤den</div></div>
               <div><div className="text-2xl font-bold text-primary">4.8/5</div><div className="text-sm text-muted-foreground">Bewertung</div></div>
               <div><div className="text-2xl font-bold text-primary">100%</div><div className="text-sm text-muted-foreground">Material inkl.</div></div>
             </div>
@@ -318,7 +319,7 @@ export default function PackserviceServicePage() {
         {/* FAQ */}
         <section className="py-16 bg-background">
           <div className="container px-4 max-w-3xl">
-            <h2 className="text-3xl font-bold text-center mb-12">Häufige Fragen</h2>
+            <h2 className="text-3xl font-bold text-center mb-12">HÃ¤ufige Fragen</h2>
             <Accordion type="single" collapsible className="space-y-4">
               {faqs.map((faq, i) => (
                 <AccordionItem key={i} value={`faq-${i}`} className="bg-muted/30 rounded-lg border px-6">
@@ -334,7 +335,7 @@ export default function PackserviceServicePage() {
         <section className="py-20 bg-primary text-primary-foreground">
           <div className="container px-4 text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Lassen Sie packen statt selbst zu packen</h2>
-            <p className="text-lg mb-8 opacity-90">Professioneller Packservice – Material inklusive, Festpreise</p>
+            <p className="text-lg mb-8 opacity-90">Professioneller Packservice â€“ Material inklusive, Festpreise</p>
             <Button asChild size="lg" variant="secondary" className="font-bold text-lg px-8 py-6">
               <Link to="/umzugsofferten">Jetzt Offerten erhalten<ArrowRight className="ml-2 w-5 h-5" /></Link>
             </Button>
@@ -354,3 +355,4 @@ export default function PackserviceServicePage() {
     </div>
   );
 }
+

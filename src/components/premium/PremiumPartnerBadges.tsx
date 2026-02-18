@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 
 const partners = [
+  { name: "Feierabend Services GmbH", logo: "FS" },
   { name: "Swisscom", logo: "🔵" },
   { name: "SBB", logo: "🔴" },
   { name: "Post", logo: "📬" },

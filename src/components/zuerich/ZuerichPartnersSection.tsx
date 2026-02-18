@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-const partners = ["SRF", "20 Minuten", "Blick", "NZZ", "Watson", "Tages-Anzeiger"];
+const partners = ["Feierabend Services GmbH", "SRF", "20 Minuten", "Blick", "NZZ", "Watson", "Tages-Anzeiger"];
 
 export const ZuerichPartnersSection = () => {
   return (

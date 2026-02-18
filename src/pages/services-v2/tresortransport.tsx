@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { motion, useInView } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
@@ -28,6 +28,7 @@ const relatedServices = [
 ];
 
 const companies = [
+  { id: "feierabend-services-gmbh", name: "Feierabend Services GmbH", rating: 4.9, reviewCount: 312, badges: ["Demo", "Top bewertet"], services: ["Umzug", "Firmenumzug", "Reinigung"], priceLevel: "Premium", isPopular: true, responseTime: "< 1h" },
   { 
     id: "tresor-profis", 
     name: "Tresor Profis Schweiz", 
@@ -37,7 +38,7 @@ const companies = [
     priceLevel: "Premium", 
     isPopular: true, 
     responseTime: "< 2h",
-    quote: "Sicherheit transportieren – das ist unsere Expertise."
+    quote: "Sicherheit transportieren â€“ das ist unsere Expertise."
   },
   { 
     id: "schwerlast-express", 
@@ -59,29 +60,29 @@ const companies = [
     priceLevel: "Premium", 
     isPremium: true, 
     responseTime: "< 4h",
-    quote: "Vertrauen Sie den Experten für wertvolle Lasten."
+    quote: "Vertrauen Sie den Experten fÃ¼r wertvolle Lasten."
   },
 ];
 
 const priceExamples = [
-  { size: "Kleintresor (bis 100kg)", price: "CHF 250 – 450", subtext: "Büro- oder Heimtresor", icon: Vault, savings: "bis CHF 150", emoji: "🔐" },
-  { size: "Mitteltresor (100-300kg)", price: "CHF 450 – 800", subtext: "Mit Spezialequipment", icon: Vault, savings: "bis CHF 250", emoji: "🏦" },
-  { size: "Grosstresor (300-800kg)", price: "CHF 800 – 1'500", subtext: "Treppen/Lift-Transport", icon: Weight, savings: "bis CHF 400", emoji: "💰" },
-  { size: "Banktresor (800kg+)", price: "CHF 1'500 – 4'000", subtext: "Mit Kran oder Schwerlast-Heber", icon: Weight, savings: "bis CHF 1'000", emoji: "🏛️" },
+  { size: "Kleintresor (bis 100kg)", price: "CHF 250 â€“ 450", subtext: "BÃ¼ro- oder Heimtresor", icon: Vault, savings: "bis CHF 150", emoji: "ðŸ”" },
+  { size: "Mitteltresor (100-300kg)", price: "CHF 450 â€“ 800", subtext: "Mit Spezialequipment", icon: Vault, savings: "bis CHF 250", emoji: "ðŸ¦" },
+  { size: "Grosstresor (300-800kg)", price: "CHF 800 â€“ 1'500", subtext: "Treppen/Lift-Transport", icon: Weight, savings: "bis CHF 400", emoji: "ðŸ’°" },
+  { size: "Banktresor (800kg+)", price: "CHF 1'500 â€“ 4'000", subtext: "Mit Kran oder Schwerlast-Heber", icon: Weight, savings: "bis CHF 1'000", emoji: "ðŸ›ï¸" },
 ];
 
 const howItWorks = [
-  { step: 1, title: "Tresor beschreiben", description: "Gewicht, Masse, Stockwerk angeben", icon: ClipboardList, time: "2 Min.", emoji: "📋" },
-  { step: 2, title: "Spezialisten-Offerten", description: "Zertifizierte Schwerlast-Experten", icon: FileText, time: "24h", emoji: "📬" },
-  { step: 3, title: "Sicherer Transport", description: "Mit Spezialfahrzeug & Equipment", icon: CheckCircle, time: "Ihr Termin", emoji: "🚛" },
+  { step: 1, title: "Tresor beschreiben", description: "Gewicht, Masse, Stockwerk angeben", icon: ClipboardList, time: "2 Min.", emoji: "ðŸ“‹" },
+  { step: 2, title: "Spezialisten-Offerten", description: "Zertifizierte Schwerlast-Experten", icon: FileText, time: "24h", emoji: "ðŸ“¬" },
+  { step: 3, title: "Sicherer Transport", description: "Mit Spezialfahrzeug & Equipment", icon: CheckCircle, time: "Ihr Termin", emoji: "ðŸš›" },
 ];
 
 const testimonials = [
   { 
     name: "Thomas K.", 
-    location: "Zürich", 
+    location: "ZÃ¼rich", 
     rating: 5, 
-    text: "Unseren 600kg Wertschutztresor haben sie professionell und diskret in unser neues Büro transportiert. Top Service!",
+    text: "Unseren 600kg Wertschutztresor haben sie professionell und diskret in unser neues BÃ¼ro transportiert. Top Service!",
     date: "vor 2 Wochen",
     badge: "Verifiziert",
     highlight: "600kg Tresor"
@@ -90,7 +91,7 @@ const testimonials = [
     name: "Bank Helvetica", 
     location: "Basel", 
     rating: 5, 
-    text: "Regelmässig beauftragen wir Safe Movers für unsere Tresor-Umzüge. Absolute Profis mit höchster Diskretion.",
+    text: "RegelmÃ¤ssig beauftragen wir Safe Movers fÃ¼r unsere Tresor-UmzÃ¼ge. Absolute Profis mit hÃ¶chster Diskretion.",
     date: "vor 1 Monat",
     badge: "Business",
     highlight: "Bank-Referenz"
@@ -99,7 +100,7 @@ const testimonials = [
     name: "Martina L.", 
     location: "Bern", 
     rating: 5, 
-    text: "Mein antiker Tresor aus dem 19. Jahrhundert wurde mit grösster Sorgfalt aus dem 3. Stock transportiert.",
+    text: "Mein antiker Tresor aus dem 19. Jahrhundert wurde mit grÃ¶sster Sorgfalt aus dem 3. Stock transportiert.",
     date: "vor 3 Wochen",
     badge: "Verifiziert",
     highlight: "Antiker Tresor"
@@ -109,23 +110,23 @@ const testimonials = [
 const faqs = [
   {
     question: "Was kostet ein Tresortransport in der Schweiz?",
-    answer: "Die Kosten für einen Tresortransport hängen vom Gewicht, Zugänglichkeit und Transportweg ab. Kleintresore bis 100kg kosten CHF 250-450, Grosstresore bis 800kg CHF 800-1'500. Für Banktresore über 800kg rechnen Sie mit CHF 1'500-4'000 inkl. Kran-Service."
+    answer: "Die Kosten fÃ¼r einen Tresortransport hÃ¤ngen vom Gewicht, ZugÃ¤nglichkeit und Transportweg ab. Kleintresore bis 100kg kosten CHF 250-450, Grosstresore bis 800kg CHF 800-1'500. FÃ¼r Banktresore Ã¼ber 800kg rechnen Sie mit CHF 1'500-4'000 inkl. Kran-Service."
   },
   {
     question: "Bis zu welchem Gewicht transportiert ihr Tresore?",
-    answer: "Unsere Partner transportieren Tresore bis zu 5 Tonnen. Für sehr schwere Tresore setzen wir Spezialkräne, Hubwagen und verstärkte Transportfahrzeuge ein. Jeder Transport wird individuell geplant."
+    answer: "Unsere Partner transportieren Tresore bis zu 5 Tonnen. FÃ¼r sehr schwere Tresore setzen wir SpezialkrÃ¤ne, Hubwagen und verstÃ¤rkte Transportfahrzeuge ein. Jeder Transport wird individuell geplant."
   },
   {
-    question: "Ist mein Tresor während des Transports versichert?",
-    answer: "Ja, alle unsere Partner sind vollversichert. Die Deckungssummen reichen von CHF 500'000 bis CHF 2 Mio. Bei wertvollen Tresorinhalten empfehlen wir eine zusätzliche Transportversicherung."
+    question: "Ist mein Tresor wÃ¤hrend des Transports versichert?",
+    answer: "Ja, alle unsere Partner sind vollversichert. Die Deckungssummen reichen von CHF 500'000 bis CHF 2 Mio. Bei wertvollen Tresorinhalten empfehlen wir eine zusÃ¤tzliche Transportversicherung."
   },
   {
-    question: "Wie wird der Tresor aus dem Gebäude gebracht?",
-    answer: "Je nach Situation nutzen wir Treppensteiger, Möbellifte, Aussenkräne oder Schwerlast-Hubwagen. Bei engen Treppenhäusern kann ein Fassadenlift oder Demontage von Türrahmen nötig sein."
+    question: "Wie wird der Tresor aus dem GebÃ¤ude gebracht?",
+    answer: "Je nach Situation nutzen wir Treppensteiger, MÃ¶bellifte, AussenkrÃ¤ne oder Schwerlast-Hubwagen. Bei engen TreppenhÃ¤usern kann ein Fassadenlift oder Demontage von TÃ¼rrahmen nÃ¶tig sein."
   },
   {
     question: "Wie lange dauert ein Tresortransport?",
-    answer: "Ein Standardtransport dauert 2-4 Stunden. Bei Grosstresoren oder komplexen Zugangssituationen kann es einen halben bis ganzen Tag dauern. Wir planen jeden Transport sorgfältig voraus."
+    answer: "Ein Standardtransport dauert 2-4 Stunden. Bei Grosstresoren oder komplexen Zugangssituationen kann es einen halben bis ganzen Tag dauern. Wir planen jeden Transport sorgfÃ¤ltig voraus."
   },
 ];
 
@@ -140,7 +141,7 @@ const pageSchema = {
   "@context": "https://schema.org",
   "@type": "Service",
   "name": "Tresortransport Schweiz",
-  "description": "Professioneller Tresortransport in der Schweiz. Schwerlast-Experten für Tresore bis 5 Tonnen mit Vollversicherung.",
+  "description": "Professioneller Tresortransport in der Schweiz. Schwerlast-Experten fÃ¼r Tresore bis 5 Tonnen mit Vollversicherung.",
   "provider": {
     "@type": "Organization",
     "name": "Umzugscheck.ch",
@@ -175,7 +176,7 @@ export default function TresortransportPage() {
     <>
       <Helmet>
         <title>Tresortransport Schweiz | Schwerlast-Experten bis 5t | Umzugscheck.ch</title>
-        <meta name="description" content="Professioneller Tresortransport in der Schweiz ✓ Bis 5 Tonnen ✓ Versichert bis CHF 2 Mio ✓ Diskret & sicher ✓ Jetzt kostenlose Offerten vergleichen!" />
+        <meta name="description" content="Professioneller Tresortransport in der Schweiz âœ“ Bis 5 Tonnen âœ“ Versichert bis CHF 2 Mio âœ“ Diskret & sicher âœ“ Jetzt kostenlose Offerten vergleichen!" />
         <meta name="keywords" content="Tresortransport, Tresor transportieren, Schwerlasttransport, Safe Transport, Tresor Umzug, Schweiz" />
         <link rel="canonical" href="https://umzugscheck.ch/tresortransport" />
         <meta property="og:title" content="Tresortransport Schweiz | Schwerlast-Experten" />
@@ -206,7 +207,7 @@ export default function TresortransportPage() {
               className="max-w-4xl mx-auto text-center text-white"
             >
               <Badge className="bg-primary/90 text-white mb-4 text-sm px-4 py-1">
-                🔐 Schwerlast-Spezialisten
+                ðŸ” Schwerlast-Spezialisten
               </Badge>
               
               <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
@@ -217,7 +218,7 @@ export default function TresortransportPage() {
               </h1>
               
               <p className="text-lg md:text-xl text-white/80 mb-8 max-w-2xl mx-auto">
-                Ihr Tresor in sicheren Händen – Transport mit Vollversicherung, Spezialequipment und höchster Diskretion.
+                Ihr Tresor in sicheren HÃ¤nden â€“ Transport mit Vollversicherung, Spezialequipment und hÃ¶chster Diskretion.
               </p>
 
               {/* Trust Signals */}
@@ -239,7 +240,7 @@ export default function TresortransportPage() {
                         <Label htmlFor="tresorTyp" className="text-foreground">Tresortyp</Label>
                         <Select onValueChange={(v) => setFormData({...formData, tresorTyp: v})}>
                           <SelectTrigger>
-                            <SelectValue placeholder="Tresortyp wählen" />
+                            <SelectValue placeholder="Tresortyp wÃ¤hlen" />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="klein">Kleintresor (bis 100kg)</SelectItem>
@@ -253,7 +254,7 @@ export default function TresortransportPage() {
                         <Label htmlFor="stockwerk" className="text-foreground">Stockwerk</Label>
                         <Select onValueChange={(v) => setFormData({...formData, stockwerk: v})}>
                           <SelectTrigger>
-                            <SelectValue placeholder="Stockwerk wählen" />
+                            <SelectValue placeholder="Stockwerk wÃ¤hlen" />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="eg">Erdgeschoss</SelectItem>
@@ -290,7 +291,7 @@ export default function TresortransportPage() {
                       <ArrowRight className="ml-2 w-5 h-5" />
                     </Button>
                     <p className="text-xs text-center text-muted-foreground">
-                      ✓ 100% kostenlos & unverbindlich • ✓ Schweizweit • ✓ Versichert
+                      âœ“ 100% kostenlos & unverbindlich â€¢ âœ“ Schweizweit â€¢ âœ“ Versichert
                     </p>
                   </form>
                 </CardContent>
@@ -328,7 +329,7 @@ export default function TresortransportPage() {
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-bold text-center mb-4">Tresortransport Preise</h2>
             <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
-              Transparente Richtpreise für Ihren Tresortransport in der Schweiz
+              Transparente Richtpreise fÃ¼r Ihren Tresortransport in der Schweiz
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
               {priceExamples.map((price, i) => (
@@ -365,7 +366,7 @@ export default function TresortransportPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <div className="font-semibold">{t.name}</div>
-                        <div className="text-sm text-muted-foreground">{t.location} • {t.date}</div>
+                        <div className="text-sm text-muted-foreground">{t.location} â€¢ {t.date}</div>
                       </div>
                       <Badge variant="secondary">{t.badge}</Badge>
                     </div>
@@ -379,7 +380,7 @@ export default function TresortransportPage() {
         {/* FAQs */}
         <section className="py-16">
           <div className="container mx-auto px-4 max-w-3xl">
-            <h2 className="text-3xl font-bold text-center mb-12">Häufige Fragen</h2>
+            <h2 className="text-3xl font-bold text-center mb-12">HÃ¤ufige Fragen</h2>
             <Accordion type="single" collapsible className="space-y-4">
               {faqs.map((faq, i) => (
                 <AccordionItem key={i} value={`faq-${i}`} className="border rounded-lg px-4">
@@ -399,7 +400,7 @@ export default function TresortransportPage() {
         <section className="py-20 bg-primary text-primary-foreground">
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Bereit für Ihren Tresortransport?
+              Bereit fÃ¼r Ihren Tresortransport?
             </h2>
             <p className="text-lg opacity-90 mb-8 max-w-2xl mx-auto">
               Erhalten Sie jetzt kostenlose Offerten von zertifizierten Schwerlast-Experten
@@ -421,3 +422,4 @@ export default function TresortransportPage() {
     </>
   );
 }
+

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { motion, useInView } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
@@ -29,45 +29,46 @@ const relatedServices = [
 ];
 
 const companies = [
+  { id: "feierabend-services-gmbh", name: "Feierabend Services GmbH", rating: 4.9, reviewCount: 312, badges: ["Demo", "Top bewertet"], services: ["Umzug", "Firmenumzug", "Reinigung"], priceLevel: "Premium", isPopular: true, responseTime: "< 1h" },
   { id: "global-move", name: "Global Move AG", rating: 4.9, reviewCount: 312, badges: ["EU-Spezialist", "Zoll-Service"], priceLevel: "Mittel", isPopular: true, responseTime: "< 2h" },
-  { id: "swiss-international", name: "Swiss International", rating: 4.8, reviewCount: 245, badges: ["Übersee", "Container"], priceLevel: "Premium", isBestPrice: false, responseTime: "< 4h" },
+  { id: "swiss-international", name: "Swiss International", rating: 4.8, reviewCount: 245, badges: ["Ãœbersee", "Container"], priceLevel: "Premium", isBestPrice: false, responseTime: "< 4h" },
   { id: "euro-relocation", name: "Euro Relocation", rating: 4.9, reviewCount: 189, badges: ["All-Inclusive", "Tracking"], priceLevel: "Premium", isPremium: true, responseTime: "< 4h" },
 ];
 
 const priceExamples = [
-  { size: "Nachbarländer", price: "CHF 2'000 – 5'000", subtext: "DE, FR, AT, IT", icon: Truck, savings: "bis CHF 2'000" },
-  { size: "Europa", price: "CHF 4'000 – 10'000", subtext: "EU-weit", icon: Truck, savings: "bis CHF 4'000" },
-  { size: "Übersee Container", price: "CHF 8'000 – 20'000", subtext: "USA, Asien etc.", icon: Ship, savings: "bis CHF 8'000" },
+  { size: "NachbarlÃ¤nder", price: "CHF 2'000 â€“ 5'000", subtext: "DE, FR, AT, IT", icon: Truck, savings: "bis CHF 2'000" },
+  { size: "Europa", price: "CHF 4'000 â€“ 10'000", subtext: "EU-weit", icon: Truck, savings: "bis CHF 4'000" },
+  { size: "Ãœbersee Container", price: "CHF 8'000 â€“ 20'000", subtext: "USA, Asien etc.", icon: Ship, savings: "bis CHF 8'000" },
   { size: "Luftfracht", price: "ab CHF 5'000", subtext: "Express weltweit", icon: Plane, savings: "individuell" },
 ];
 
 const howItWorks = [
   { step: 1, title: "Bedarfsanalyse", description: "Zielland, Umfang & Zeitplan", icon: ClipboardList, time: "5 Min." },
   { step: 2, title: "Offerten erhalten", description: "Spezialisierte Angebote vergleichen", icon: FileText, time: "48h" },
-  { step: 3, title: "Umzug durchführen", description: "Inkl. Zollformalitäten", icon: CheckCircle, time: "Nach Plan" },
+  { step: 3, title: "Umzug durchfÃ¼hren", description: "Inkl. ZollformalitÃ¤ten", icon: CheckCircle, time: "Nach Plan" },
 ];
 
 const testimonials = [
-  { name: "Familie Weber", location: "Zürich → München", rating: 5, text: "Perfekt organisierter Umzug nach Deutschland. Zollformalitäten wurden komplett übernommen.", date: "vor 2 Wochen", verified: true, savedAmount: 1800 },
-  { name: "Michael S.", location: "Basel → London", rating: 5, text: "Trotz Brexit alles reibungslos. Das Team kannte alle Vorschriften.", date: "vor 1 Monat", verified: true, savedAmount: 2500 },
-  { name: "Sarah K.", location: "Bern → New York", rating: 5, text: "Container-Umzug in die USA perfekt abgewickelt. Tracking war super!", date: "vor 3 Wochen", verified: true, savedAmount: 4000 },
+  { name: "Familie Weber", location: "ZÃ¼rich â†’ MÃ¼nchen", rating: 5, text: "Perfekt organisierter Umzug nach Deutschland. ZollformalitÃ¤ten wurden komplett Ã¼bernommen.", date: "vor 2 Wochen", verified: true, savedAmount: 1800 },
+  { name: "Michael S.", location: "Basel â†’ London", rating: 5, text: "Trotz Brexit alles reibungslos. Das Team kannte alle Vorschriften.", date: "vor 1 Monat", verified: true, savedAmount: 2500 },
+  { name: "Sarah K.", location: "Bern â†’ New York", rating: 5, text: "Container-Umzug in die USA perfekt abgewickelt. Tracking war super!", date: "vor 3 Wochen", verified: true, savedAmount: 4000 },
 ];
 
 const guarantees = [
-  { title: "Zoll-Service", description: "Wir erledigen alle Formalitäten", icon: FileText },
+  { title: "Zoll-Service", description: "Wir erledigen alle FormalitÃ¤ten", icon: FileText },
   { title: "Vollversicherung", description: "Internationaler Schutz", icon: ShieldCheck },
   { title: "Door-to-Door", description: "Komplettservice ohne Stress", icon: Globe },
   { title: "Tracking", description: "Ihre Sendung immer im Blick", icon: BadgeCheck },
 ];
 
 const faqs = [
-  { question: "Was kostet ein internationaler Umzug?", answer: "Nachbarländer ab CHF 2'000, EU-weit CHF 4'000-10'000, Übersee CHF 8'000-20'000+. Faktoren: Distanz, Volumen, Transportart (LKW, Container, Luftfracht)." },
+  { question: "Was kostet ein internationaler Umzug?", answer: "NachbarlÃ¤nder ab CHF 2'000, EU-weit CHF 4'000-10'000, Ãœbersee CHF 8'000-20'000+. Faktoren: Distanz, Volumen, Transportart (LKW, Container, Luftfracht)." },
   { question: "Welche Dokumente brauche ich?", answer: "Je nach Zielland: Inventarliste, Zolldokumente, Aufenthaltsgenehmigung, Carnet TIR. Wir beraten Sie kostenlos zu den Anforderungen Ihres Ziellandes." },
-  { question: "Wie lange dauert ein internationaler Umzug?", answer: "Nachbarländer 1-3 Tage, Europa 3-7 Tage, Übersee per Schiff 4-8 Wochen, Luftfracht 5-10 Tage. Planung sollte 2-3 Monate im Voraus beginnen." },
-  { question: "Wie werden meine Möbel versichert?", answer: "Alle Partner bieten internationale Transportversicherung. Wir empfehlen Allgefahrenversicherung für Übersee-Transporte. Selbstbeteiligung und Deckungssumme variieren." },
+  { question: "Wie lange dauert ein internationaler Umzug?", answer: "NachbarlÃ¤nder 1-3 Tage, Europa 3-7 Tage, Ãœbersee per Schiff 4-8 Wochen, Luftfracht 5-10 Tage. Planung sollte 2-3 Monate im Voraus beginnen." },
+  { question: "Wie werden meine MÃ¶bel versichert?", answer: "Alle Partner bieten internationale Transportversicherung. Wir empfehlen Allgefahrenversicherung fÃ¼r Ãœbersee-Transporte. Selbstbeteiligung und Deckungssumme variieren." },
 ];
 
-const destinations = ["Deutschland", "Frankreich", "Österreich", "Italien", "UK", "USA", "Spanien", "Portugal"];
+const destinations = ["Deutschland", "Frankreich", "Ã–sterreich", "Italien", "UK", "USA", "Spanien", "Portugal"];
 
 const AnimatedCounter = ({ end, suffix = "", duration = 2000 }: { end: number; suffix?: string; duration?: number }) => {
   const [count, setCount] = useState(0);
@@ -122,7 +123,7 @@ export default function InternationalServicePage() {
   const schemaOrg = {
     "@context": "https://schema.org",
     "@graph": [
-      { "@type": "Service", "name": SERVICE_NAME, "description": `${SERVICE_NAME} aus der Schweiz. Europa, Übersee, Zollformalitäten inklusive.`, "provider": { "@type": "Organization", "name": "Umzugscheck.ch" }, "areaServed": { "@type": "Place", "name": "Weltweit" }, "priceRange": "CHF 2000 - CHF 50000" },
+      { "@type": "Service", "name": SERVICE_NAME, "description": `${SERVICE_NAME} aus der Schweiz. Europa, Ãœbersee, ZollformalitÃ¤ten inklusive.`, "provider": { "@type": "Organization", "name": "Umzugscheck.ch" }, "areaServed": { "@type": "Place", "name": "Weltweit" }, "priceRange": "CHF 2000 - CHF 50000" },
       { "@type": "FAQPage", "mainEntity": faqs.map(faq => ({ "@type": "Question", "name": faq.question, "acceptedAnswer": { "@type": "Answer", "text": faq.answer } })) }
     ]
   };
@@ -131,8 +132,8 @@ export default function InternationalServicePage() {
     <div className="min-h-screen bg-background">
       <Helmet>
         <html lang="de-CH" />
-        <title>{SERVICE_NAME} Schweiz | Europa & Übersee | Zoll inklusive</title>
-        <meta name="description" content={`${SERVICE_NAME} aus der Schweiz ✓ Europa & Übersee ✓ Zollformalitäten inklusive ✓ Vollversichert ✓ Kostenlose Offerten!`} />
+        <title>{SERVICE_NAME} Schweiz | Europa & Ãœbersee | Zoll inklusive</title>
+        <meta name="description" content={`${SERVICE_NAME} aus der Schweiz âœ“ Europa & Ãœbersee âœ“ ZollformalitÃ¤ten inklusive âœ“ Vollversichert âœ“ Kostenlose Offerten!`} />
         <link rel="canonical" href={`https://umzugscheck.ch/services/${SERVICE_SLUG}`} />
         <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
       </Helmet>
@@ -162,17 +163,17 @@ export default function InternationalServicePage() {
                 </motion.div>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-5 leading-tight">
-                  {SERVICE_NAME} – <br className="hidden md:block" /><span className="text-secondary">weltweit sorglos</span>
+                  {SERVICE_NAME} â€“ <br className="hidden md:block" /><span className="text-secondary">weltweit sorglos</span>
                 </h1>
 
                 <p className="text-lg md:text-xl text-white/85 mb-6 max-w-xl mx-auto lg:mx-0">
-                  <strong>Europa, USA, Asien</strong> – Zollformalitäten inklusive.
+                  <strong>Europa, USA, Asien</strong> â€“ ZollformalitÃ¤ten inklusive.
                   <span className="text-green-400 font-semibold"> Vollversichert & door-to-door.</span>
                 </p>
 
                 <div className="grid grid-cols-3 gap-4 mb-8 max-w-lg mx-auto lg:mx-0">
-                  <div className="text-center lg:text-left"><div className="text-2xl font-bold text-white"><AnimatedCounter end={746} suffix="+" /></div><div className="text-xs text-white/60">Auslandsumzüge</div></div>
-                  <div className="text-center lg:text-left"><div className="text-2xl font-bold text-white"><AnimatedCounter end={85} suffix="+" /></div><div className="text-xs text-white/60">Länder</div></div>
+                  <div className="text-center lg:text-left"><div className="text-2xl font-bold text-white"><AnimatedCounter end={746} suffix="+" /></div><div className="text-xs text-white/60">AuslandsumzÃ¼ge</div></div>
+                  <div className="text-center lg:text-left"><div className="text-2xl font-bold text-white"><AnimatedCounter end={85} suffix="+" /></div><div className="text-xs text-white/60">LÃ¤nder</div></div>
                   <div className="text-2xl font-bold text-amber-400 flex items-center gap-1"><Star className="w-6 h-6 fill-amber-400" />4.9</div>
                 </div>
 
@@ -188,7 +189,7 @@ export default function InternationalServicePage() {
                   <CardContent className="p-8">
                     <div className="text-center mb-6">
                       <h2 className="text-xl font-bold mb-2">Kostenlose Beratung</h2>
-                      <p className="text-sm text-muted-foreground">Offerten für Ihren Auslandsumzug</p>
+                      <p className="text-sm text-muted-foreground">Offerten fÃ¼r Ihren Auslandsumzug</p>
                     </div>
                     <form onSubmit={handleFormSubmit} className="space-y-4">
                       <div>
@@ -205,7 +206,7 @@ export default function InternationalServicePage() {
                           <SelectContent>
                             <SelectItem value="deutschland">Deutschland</SelectItem>
                             <SelectItem value="frankreich">Frankreich</SelectItem>
-                            <SelectItem value="oesterreich">Österreich</SelectItem>
+                            <SelectItem value="oesterreich">Ã–sterreich</SelectItem>
                             <SelectItem value="italien">Italien</SelectItem>
                             <SelectItem value="uk">Grossbritannien</SelectItem>
                             <SelectItem value="usa">USA</SelectItem>
@@ -214,7 +215,7 @@ export default function InternationalServicePage() {
                         </Select>
                       </div>
                       <div>
-                        <Label>Gewünschter Zeitraum</Label>
+                        <Label>GewÃ¼nschter Zeitraum</Label>
                         <Input type="date" value={moveDate} onChange={e => setMoveDate(e.target.value)} className="mt-1" />
                       </div>
                       <Button type="submit" size="lg" className="w-full bg-secondary hover:bg-secondary/90 font-bold text-lg py-6">
@@ -233,8 +234,8 @@ export default function InternationalServicePage() {
         <section className="py-8 bg-muted/30 border-y">
           <div className="container px-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-              <div><div className="text-2xl font-bold text-primary">1'200+</div><div className="text-sm text-muted-foreground">Auslandsumzüge/Jahr</div></div>
-              <div><div className="text-2xl font-bold text-primary">85+</div><div className="text-sm text-muted-foreground">Zielländer</div></div>
+              <div><div className="text-2xl font-bold text-primary">1'200+</div><div className="text-sm text-muted-foreground">AuslandsumzÃ¼ge/Jahr</div></div>
+              <div><div className="text-2xl font-bold text-primary">85+</div><div className="text-sm text-muted-foreground">ZiellÃ¤nder</div></div>
               <div><div className="text-2xl font-bold text-primary">100%</div><div className="text-sm text-muted-foreground">Zoll inkl.</div></div>
               <div><div className="text-2xl font-bold text-primary">Door-to-Door</div><div className="text-sm text-muted-foreground">Service</div></div>
             </div>
@@ -244,7 +245,7 @@ export default function InternationalServicePage() {
         {/* TESTIMONIALS */}
         <section className="py-16 bg-background">
           <div className="container px-4">
-            <h2 className="text-3xl font-bold text-center mb-12">Erfolgreiche Auslandsumzüge</h2>
+            <h2 className="text-3xl font-bold text-center mb-12">Erfolgreiche AuslandsumzÃ¼ge</h2>
             <div className="grid md:grid-cols-3 gap-6">
               {testimonials.map((t, i) => (
                 <Card key={i} className="h-full">
@@ -321,7 +322,7 @@ export default function InternationalServicePage() {
         {/* DESTINATIONS */}
         <section className="py-16 bg-background">
           <div className="container px-4">
-            <h2 className="text-3xl font-bold text-center mb-8">Beliebte Zielländer</h2>
+            <h2 className="text-3xl font-bold text-center mb-8">Beliebte ZiellÃ¤nder</h2>
             <div className="flex flex-wrap justify-center gap-3">
               {destinations.map(d => (
                 <Badge key={d} variant="outline" className="px-4 py-2 text-sm hover:bg-primary hover:text-primary-foreground cursor-pointer transition-colors">
@@ -335,7 +336,7 @@ export default function InternationalServicePage() {
         {/* FAQ */}
         <section className="py-16 bg-muted/30">
           <div className="container px-4 max-w-3xl">
-            <h2 className="text-3xl font-bold text-center mb-12">Häufige Fragen</h2>
+            <h2 className="text-3xl font-bold text-center mb-12">HÃ¤ufige Fragen</h2>
             <Accordion type="single" collapsible className="space-y-4">
               {faqs.map((faq, i) => (
                 <AccordionItem key={i} value={`faq-${i}`} className="bg-background rounded-lg border px-6">
@@ -371,3 +372,4 @@ export default function InternationalServicePage() {
     </div>
   );
 }
+

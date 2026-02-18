@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { motion, useInView } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
@@ -23,11 +23,12 @@ const SERVICE_SLUG = "klaviertransport";
 const relatedServices = [
   { value: "klaviertransport", label: "Klaviertransport", href: "/services/klaviertransport" },
   { value: "spezialtransporte", label: "Spezialtransporte", href: "/services/spezialtransporte" },
-  { value: "moebellift", label: "Möbellift", href: "/services/moebellift" },
+  { value: "moebellift", label: "MÃ¶bellift", href: "/services/moebellift" },
   { value: "privatumzug", label: "Privatumzug", href: "/services/privatumzug" },
 ];
 
 const companies = [
+  { id: "feierabend-services-gmbh", name: "Feierabend Services GmbH", rating: 4.9, reviewCount: 312, badges: ["Demo", "Top bewertet"], services: ["Umzug", "Firmenumzug", "Reinigung"], priceLevel: "Premium", isPopular: true, responseTime: "< 1h" },
   { 
     id: "piano-express", 
     name: "Piano Express Schweiz", 
@@ -37,18 +38,18 @@ const companies = [
     priceLevel: "Premium", 
     isPopular: true, 
     responseTime: "< 2h",
-    quote: "Jedes Klavier erzählt eine Geschichte – wir transportieren sie mit Respekt."
+    quote: "Jedes Klavier erzÃ¤hlt eine Geschichte â€“ wir transportieren sie mit Respekt."
   },
   { 
     id: "klavier-meister", 
     name: "Klaviermeister Transport", 
     rating: 4.9, 
     reviewCount: 287, 
-    badges: ["Flügel-Experte", "Klimatisiert"], 
+    badges: ["FlÃ¼gel-Experte", "Klimatisiert"], 
     priceLevel: "Mittel", 
     isBestPrice: true, 
     responseTime: "< 3h",
-    quote: "Seit 25 Jahren transportieren wir Träume."
+    quote: "Seit 25 Jahren transportieren wir TrÃ¤ume."
   },
   { 
     id: "harmonie-transport", 
@@ -59,96 +60,96 @@ const companies = [
     priceLevel: "Mittel", 
     isPremium: false, 
     responseTime: "< 4h",
-    quote: "Mit Liebe zum Detail – wie Sie es verdienen."
+    quote: "Mit Liebe zum Detail â€“ wie Sie es verdienen."
   },
 ];
 
 const priceExamples = [
-  { size: "Klavier (aufrecht)", price: "CHF 380 – 650", subtext: "Standard-Klavier, EG-2. OG", icon: Music, savings: "bis CHF 200", emoji: "🎹" },
-  { size: "Klavier (höhere Etagen)", price: "CHF 550 – 900", subtext: "Mit Möbellift oder Kran", icon: Music, savings: "bis CHF 350", emoji: "🏢" },
-  { size: "Stutzflügel", price: "CHF 600 – 1'000", subtext: "Bis 180cm Länge", icon: Music, savings: "bis CHF 400", emoji: "🎵" },
-  { size: "Konzertflügel", price: "CHF 900 – 1'800", subtext: "Steinway, Bösendorfer etc.", icon: Music, savings: "bis CHF 600", emoji: "🎼" },
+  { size: "Klavier (aufrecht)", price: "CHF 380 â€“ 650", subtext: "Standard-Klavier, EG-2. OG", icon: Music, savings: "bis CHF 200", emoji: "ðŸŽ¹" },
+  { size: "Klavier (hÃ¶here Etagen)", price: "CHF 550 â€“ 900", subtext: "Mit MÃ¶bellift oder Kran", icon: Music, savings: "bis CHF 350", emoji: "ðŸ¢" },
+  { size: "StutzflÃ¼gel", price: "CHF 600 â€“ 1'000", subtext: "Bis 180cm LÃ¤nge", icon: Music, savings: "bis CHF 400", emoji: "ðŸŽµ" },
+  { size: "KonzertflÃ¼gel", price: "CHF 900 â€“ 1'800", subtext: "Steinway, BÃ¶sendorfer etc.", icon: Music, savings: "bis CHF 600", emoji: "ðŸŽ¼" },
 ];
 
 const howItWorks = [
-  { step: 1, title: "Klavier beschreiben", description: "Typ, Marke, Stockwerk angeben", icon: ClipboardList, time: "2 Min.", emoji: "📝" },
-  { step: 2, title: "Spezialisten-Offerten", description: "3-5 Klaviertransport-Profis", icon: FileText, time: "24h", emoji: "📬" },
-  { step: 3, title: "Sicherer Transport", description: "Mit Liebe & Spezialfahrzeug", icon: CheckCircle, time: "Ihr Termin", emoji: "🚚" },
+  { step: 1, title: "Klavier beschreiben", description: "Typ, Marke, Stockwerk angeben", icon: ClipboardList, time: "2 Min.", emoji: "ðŸ“" },
+  { step: 2, title: "Spezialisten-Offerten", description: "3-5 Klaviertransport-Profis", icon: FileText, time: "24h", emoji: "ðŸ“¬" },
+  { step: 3, title: "Sicherer Transport", description: "Mit Liebe & Spezialfahrzeug", icon: CheckCircle, time: "Ihr Termin", emoji: "ðŸšš" },
 ];
 
 const testimonials = [
   { 
-    name: "Familie Müller", 
-    location: "Zürich", 
+    name: "Familie MÃ¼ller", 
+    location: "ZÃ¼rich", 
     rating: 5, 
-    text: "Unser Steinway B aus Grossmutters Erbe wurde wie ein Schatz behandelt. Das Team hat sogar die Schuhe ausgezogen! Nach 3 Generationen in der Familie – jetzt sicher bei uns.", 
+    text: "Unser Steinway B aus Grossmutters Erbe wurde wie ein Schatz behandelt. Das Team hat sogar die Schuhe ausgezogen! Nach 3 Generationen in der Familie â€“ jetzt sicher bei uns.", 
     date: "vor 1 Woche", 
     verified: true, 
     savedAmount: 380,
-    emotion: "Tränen der Freude 🥹"
+    emotion: "TrÃ¤nen der Freude ðŸ¥¹"
   },
   { 
     name: "Prof. Dr. S. Weber", 
     location: "Basel", 
     rating: 5, 
-    text: "Als Konzertpianist war ich skeptisch. Aber die Profis haben meinen Bösendorfer Imperial perfekt transportiert – gestimmt und spielbereit. Bravo!", 
+    text: "Als Konzertpianist war ich skeptisch. Aber die Profis haben meinen BÃ¶sendorfer Imperial perfekt transportiert â€“ gestimmt und spielbereit. Bravo!", 
     date: "vor 2 Wochen", 
     verified: true, 
     savedAmount: 520,
-    emotion: "Erleichtert 😌"
+    emotion: "Erleichtert ðŸ˜Œ"
   },
   { 
     name: "Musikschule Bern", 
     location: "Bern", 
     rating: 5, 
-    text: "5 Klaviere in einem Tag umgezogen. Kein Kratzer, keine Verstimmung. Das nenne ich Professionalität! Die Kinder konnten direkt weiterspielen.", 
+    text: "5 Klaviere in einem Tag umgezogen. Kein Kratzer, keine Verstimmung. Das nenne ich ProfessionalitÃ¤t! Die Kinder konnten direkt weiterspielen.", 
     date: "vor 3 Wochen", 
     verified: true, 
     savedAmount: 1200,
-    emotion: "Begeistert 🎉"
+    emotion: "Begeistert ðŸŽ‰"
   },
 ];
 
 const guarantees = [
-  { title: "Vollversicherung", description: "Ihr Instrument bis CHF 500'000 geschützt", icon: ShieldCheck, detail: "Steinway, Bösendorfer, Yamaha – alle versichert" },
+  { title: "Vollversicherung", description: "Ihr Instrument bis CHF 500'000 geschÃ¼tzt", icon: ShieldCheck, detail: "Steinway, BÃ¶sendorfer, Yamaha â€“ alle versichert" },
   { title: "Erfahrene Spezialisten", description: "Nur geschulte Klaviertransporteure", icon: BadgeCheck, detail: "Mindestens 5 Jahre Erfahrung" },
-  { title: "Spezialfahrzeuge", description: "Luftfederung & Klimakontrolle", icon: Award, detail: "Keine Erschütterungen, konstante Temperatur" },
-  { title: "Mit Liebe behandelt", description: "Jedes Klavier ist für uns einzigartig", icon: Heart, detail: "Weisse Handschuhe, Filzschoner, Samtdecken" },
+  { title: "Spezialfahrzeuge", description: "Luftfederung & Klimakontrolle", icon: Award, detail: "Keine ErschÃ¼tterungen, konstante Temperatur" },
+  { title: "Mit Liebe behandelt", description: "Jedes Klavier ist fÃ¼r uns einzigartig", icon: Heart, detail: "Weisse Handschuhe, Filzschoner, Samtdecken" },
 ];
 
 const faqs = [
   { 
     question: "Was kostet ein Klaviertransport in der Schweiz?", 
-    answer: "Ein Klaviertransport kostet zwischen CHF 380-1'800, abhängig von: Klaviertyp (Klavier vs. Flügel), Stockwerk (CHF 80-160 pro Stockwerk), Zugänglichkeit (enge Treppen, Möbellift nötig?), Distanz. Ein Standard-Klavier im EG kostet ca. CHF 380-500, ein Konzertflügel in den 4. Stock CHF 1'200-1'800." 
+    answer: "Ein Klaviertransport kostet zwischen CHF 380-1'800, abhÃ¤ngig von: Klaviertyp (Klavier vs. FlÃ¼gel), Stockwerk (CHF 80-160 pro Stockwerk), ZugÃ¤nglichkeit (enge Treppen, MÃ¶bellift nÃ¶tig?), Distanz. Ein Standard-Klavier im EG kostet ca. CHF 380-500, ein KonzertflÃ¼gel in den 4. Stock CHF 1'200-1'800." 
   },
   { 
-    question: "Wie wird mein Klavier beim Transport geschützt?", 
-    answer: "Klavierspezialisten verwenden: Samtdecken und Filzschoner für alle Oberflächen, spezielle Klaviergurte (keine Kratzer!), Fahrzeuge mit Luftfederung (keine Erschütterungen), Klimakontrolle (konstante Temperatur). Ihr Klavier wird wie ein kostbares Kunstwerk behandelt – denn das ist es." 
+    question: "Wie wird mein Klavier beim Transport geschÃ¼tzt?", 
+    answer: "Klavierspezialisten verwenden: Samtdecken und Filzschoner fÃ¼r alle OberflÃ¤chen, spezielle Klaviergurte (keine Kratzer!), Fahrzeuge mit Luftfederung (keine ErschÃ¼tterungen), Klimakontrolle (konstante Temperatur). Ihr Klavier wird wie ein kostbares Kunstwerk behandelt â€“ denn das ist es." 
   },
   { 
     question: "Muss mein Klavier nach dem Transport gestimmt werden?", 
-    answer: "Wir empfehlen, 2-3 Wochen nach dem Transport stimmen zu lassen. Das Instrument braucht Zeit, sich an die neue Umgebung (Luftfeuchtigkeit, Temperatur) anzupassen. Viele unserer Partner-Firmen können Ihnen einen Klavierstimmer empfehlen." 
+    answer: "Wir empfehlen, 2-3 Wochen nach dem Transport stimmen zu lassen. Das Instrument braucht Zeit, sich an die neue Umgebung (Luftfeuchtigkeit, Temperatur) anzupassen. Viele unserer Partner-Firmen kÃ¶nnen Ihnen einen Klavierstimmer empfehlen." 
   },
   { 
-    question: "Kann ein Klavier über enge Treppen transportiert werden?", 
-    answer: "Ja! Erfahrene Klaviertransporteure können Klaviere auch über enge Wendeltreppen transportieren. Ist es zu eng, kommen Möbellifte oder Autokräne zum Einsatz (durchs Fenster). Die Spezialisten prüfen vorab die Machbarkeit." 
+    question: "Kann ein Klavier Ã¼ber enge Treppen transportiert werden?", 
+    answer: "Ja! Erfahrene Klaviertransporteure kÃ¶nnen Klaviere auch Ã¼ber enge Wendeltreppen transportieren. Ist es zu eng, kommen MÃ¶bellifte oder AutokrÃ¤ne zum Einsatz (durchs Fenster). Die Spezialisten prÃ¼fen vorab die Machbarkeit." 
   },
   { 
-    question: "Sind antike Klaviere und Flügel versichert?", 
-    answer: "Ja, alle Klaviere sind während des Transports vollversichert. Für besonders wertvolle antike Instrumente oder Konzertflügel können Versicherungssummen bis CHF 500'000 vereinbart werden. Der Wert wird vorab dokumentiert." 
+    question: "Sind antike Klaviere und FlÃ¼gel versichert?", 
+    answer: "Ja, alle Klaviere sind wÃ¤hrend des Transports vollversichert. FÃ¼r besonders wertvolle antike Instrumente oder KonzertflÃ¼gel kÃ¶nnen Versicherungssummen bis CHF 500'000 vereinbart werden. Der Wert wird vorab dokumentiert." 
   },
   { 
-    question: "Wann ist der beste Zeitpunkt für einen Klaviertransport?", 
-    answer: "Idealerweise bei stabilen Temperaturen (Frühling/Herbst). Extreme Kälte oder Hitze können dem Instrument schaden. Bei unvermeidlichen Transporten im Winter/Sommer werden klimatisierte Fahrzeuge verwendet." 
+    question: "Wann ist der beste Zeitpunkt fÃ¼r einen Klaviertransport?", 
+    answer: "Idealerweise bei stabilen Temperaturen (FrÃ¼hling/Herbst). Extreme KÃ¤lte oder Hitze kÃ¶nnen dem Instrument schaden. Bei unvermeidlichen Transporten im Winter/Sommer werden klimatisierte Fahrzeuge verwendet." 
   },
 ];
 
 const pianoTypes = [
   { value: "klavier", label: "Klavier (aufrecht)" },
-  { value: "stutzfluegel", label: "Stutzflügel (bis 180cm)" },
-  { value: "salonflügel", label: "Salonflügel (180-210cm)" },
-  { value: "konzertfluegel", label: "Konzertflügel (210cm+)" },
-  { value: "antik", label: "Antikes Klavier/Flügel" },
+  { value: "stutzfluegel", label: "StutzflÃ¼gel (bis 180cm)" },
+  { value: "salonflÃ¼gel", label: "SalonflÃ¼gel (180-210cm)" },
+  { value: "konzertfluegel", label: "KonzertflÃ¼gel (210cm+)" },
+  { value: "antik", label: "Antikes Klavier/FlÃ¼gel" },
   { value: "digital", label: "Digitalpiano/Stage Piano" },
 ];
 
@@ -219,7 +220,7 @@ export default function KlaviertransportPage() {
       { 
         "@type": "Service", 
         "name": "Klaviertransport Schweiz", 
-        "description": "Professioneller Klaviertransport in der Schweiz. Klavier, Flügel, Konzertflügel – vollversichert bis CHF 500'000.", 
+        "description": "Professioneller Klaviertransport in der Schweiz. Klavier, FlÃ¼gel, KonzertflÃ¼gel â€“ vollversichert bis CHF 500'000.", 
         "provider": { "@type": "Organization", "name": "Umzugscheck.ch" }, 
         "areaServed": { "@type": "Country", "name": "Schweiz" }, 
         "priceRange": "CHF 380 - CHF 1800",
@@ -233,10 +234,10 @@ export default function KlaviertransportPage() {
     <div className="min-h-screen bg-background">
       <Helmet>
         <html lang="de-CH" />
-        <title>Klaviertransport Schweiz | Flügel & Klavier sicher transportieren | Ab CHF 380</title>
-        <meta name="description" content="Klaviertransport Schweiz ✓ Klavier & Flügel sicher transportieren ✓ Vollversichert bis CHF 500k ✓ Spezialfahrzeuge ✓ Ab CHF 380 ✓ Kostenlose Offerten!" />
+        <title>Klaviertransport Schweiz | FlÃ¼gel & Klavier sicher transportieren | Ab CHF 380</title>
+        <meta name="description" content="Klaviertransport Schweiz âœ“ Klavier & FlÃ¼gel sicher transportieren âœ“ Vollversichert bis CHF 500k âœ“ Spezialfahrzeuge âœ“ Ab CHF 380 âœ“ Kostenlose Offerten!" />
         <link rel="canonical" href="https://umzugscheck.ch/services/klaviertransport" />
-        <meta property="og:title" content="Klaviertransport Schweiz – Ihr Instrument in besten Händen" />
+        <meta property="og:title" content="Klaviertransport Schweiz â€“ Ihr Instrument in besten HÃ¤nden" />
         <meta property="og:description" content="Professioneller Klaviertransport mit Liebe zum Detail. Vollversichert, Spezialfahrzeuge, erfahrene Teams." />
         <meta property="og:type" content="website" />
         <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
@@ -268,11 +269,11 @@ export default function KlaviertransportPage() {
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-5 leading-tight">
                   Ihr Klavier verdient <br className="hidden md:block" />
-                  <span className="text-amber-400">die besten Hände</span>
+                  <span className="text-amber-400">die besten HÃ¤nde</span>
                 </h1>
 
                 <p className="text-lg md:text-xl text-white/85 mb-6 max-w-xl mx-auto lg:mx-0">
-                  Ob Erbstück, Steinway oder erstes Klavier – wir transportieren 
+                  Ob ErbstÃ¼ck, Steinway oder erstes Klavier â€“ wir transportieren 
                   <strong className="text-amber-300"> mit Respekt und Erfahrung</strong>. 
                   <span className="block mt-2 text-green-400">Vollversichert. Spezialisten. Garantiert.</span>
                 </p>
@@ -286,7 +287,7 @@ export default function KlaviertransportPage() {
                     <div className="text-2xl font-bold text-white flex items-center justify-center lg:justify-start gap-1">
                       <Heart className="w-5 h-5 fill-red-500 text-red-500" /> 0
                     </div>
-                    <div className="text-xs text-white/60">Schäden je</div>
+                    <div className="text-xs text-white/60">SchÃ¤den je</div>
                   </div>
                   <div className="text-2xl font-bold text-amber-400 flex items-center gap-1 justify-center lg:justify-start">
                     <Star className="w-6 h-6 fill-amber-400" />4.9
@@ -295,7 +296,7 @@ export default function KlaviertransportPage() {
 
                 <div className="lg:hidden space-y-3">
                   <Button asChild size="lg" className="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold text-lg py-6">
-                    <Link to="/umzugsofferten">🎹 Klaviertransport anfragen<ArrowRight className="ml-2 w-5 h-5" /></Link>
+                    <Link to="/umzugsofferten">ðŸŽ¹ Klaviertransport anfragen<ArrowRight className="ml-2 w-5 h-5" /></Link>
                   </Button>
                   <p className="text-xs text-white/60 text-center">Kostenlos & unverbindlich</p>
                 </div>
@@ -309,15 +310,15 @@ export default function KlaviertransportPage() {
                   </div>
                   <CardContent className="p-8">
                     <div className="text-center mb-6">
-                      <span className="text-4xl mb-3 block">🎹</span>
+                      <span className="text-4xl mb-3 block">ðŸŽ¹</span>
                       <h2 className="text-xl font-bold mb-2">Kostenlose Offerte</h2>
-                      <p className="text-sm text-muted-foreground">In 60 Sekunden ausgefüllt</p>
+                      <p className="text-sm text-muted-foreground">In 60 Sekunden ausgefÃ¼llt</p>
                     </div>
                     <form onSubmit={handleFormSubmit} className="space-y-4">
                       <div>
                         <Label className="text-sm font-medium">Welches Instrument?</Label>
                         <Select value={pianoType} onValueChange={setPianoType}>
-                          <SelectTrigger className="mt-1"><SelectValue placeholder="Klavier oder Flügel..." /></SelectTrigger>
+                          <SelectTrigger className="mt-1"><SelectValue placeholder="Klavier oder FlÃ¼gel..." /></SelectTrigger>
                           <SelectContent>
                             {pianoTypes.map(t => <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>)}
                           </SelectContent>
@@ -362,13 +363,13 @@ export default function KlaviertransportPage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
               <div>
                 <div className="text-2xl font-bold text-amber-600">2'847+</div>
-                <div className="text-sm text-muted-foreground">glückliche Klavierbesitzer</div>
+                <div className="text-sm text-muted-foreground">glÃ¼ckliche Klavierbesitzer</div>
               </div>
               <div>
                 <div className="text-2xl font-bold text-amber-600 flex items-center justify-center gap-1">
                   <Heart className="w-5 h-5 fill-red-500 text-red-500" /> 0
                 </div>
-                <div className="text-sm text-muted-foreground">Schäden in 25 Jahren</div>
+                <div className="text-sm text-muted-foreground">SchÃ¤den in 25 Jahren</div>
               </div>
               <div>
                 <div className="text-2xl font-bold text-amber-600">Ab CHF 380</div>
@@ -417,7 +418,7 @@ export default function KlaviertransportPage() {
           <div className="container px-4">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold mb-3">Echte Geschichten, echte Emotionen</h2>
-              <p className="text-muted-foreground">Was unsere Kunden über ihren Klaviertransport sagen</p>
+              <p className="text-muted-foreground">Was unsere Kunden Ã¼ber ihren Klaviertransport sagen</p>
             </div>
             <div className="grid md:grid-cols-3 gap-6">
               {testimonials.map((t, i) => (
@@ -458,7 +459,7 @@ export default function KlaviertransportPage() {
           <div className="container px-4">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold mb-3">Transparente Preise</h2>
-              <p className="text-muted-foreground">Faire Preise – keine versteckten Kosten</p>
+              <p className="text-muted-foreground">Faire Preise â€“ keine versteckten Kosten</p>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {priceExamples.map((p, i) => (
@@ -484,7 +485,7 @@ export default function KlaviertransportPage() {
               ))}
             </div>
             <p className="text-center text-sm text-muted-foreground mt-6">
-              * Preise variieren je nach Distanz, Zugänglichkeit und speziellen Anforderungen
+              * Preise variieren je nach Distanz, ZugÃ¤nglichkeit und speziellen Anforderungen
             </p>
           </div>
         </section>
@@ -494,7 +495,7 @@ export default function KlaviertransportPage() {
           <div className="container px-4">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold mb-3">Warum uns vertrauen?</h2>
-              <p className="text-muted-foreground">25 Jahre Erfahrung – 0 Schäden – 100% Zufriedenheit</p>
+              <p className="text-muted-foreground">25 Jahre Erfahrung â€“ 0 SchÃ¤den â€“ 100% Zufriedenheit</p>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {guarantees.map((g, i) => (
@@ -521,13 +522,13 @@ export default function KlaviertransportPage() {
         <section className="py-16 bg-gradient-to-r from-amber-500 to-orange-500 text-white">
           <div className="container px-4 text-center">
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-              <span className="text-5xl mb-6 block">🎹</span>
+              <span className="text-5xl mb-6 block">ðŸŽ¹</span>
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Bereit für den stressfreien Klaviertransport?
+                Bereit fÃ¼r den stressfreien Klaviertransport?
               </h2>
               <p className="text-lg text-white/90 mb-8 max-w-2xl mx-auto">
                 Erhalten Sie kostenlos 3-5 Offerten von spezialisierten Klaviertransporteuren. 
-                Vergleichen Sie und wählen Sie den besten für Ihr Instrument.
+                Vergleichen Sie und wÃ¤hlen Sie den besten fÃ¼r Ihr Instrument.
               </p>
               <Button asChild size="lg" className="bg-white text-amber-600 hover:bg-white/90 font-bold text-lg px-8 py-6">
                 <Link to="/umzugsofferten">
@@ -535,7 +536,7 @@ export default function KlaviertransportPage() {
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Link>
               </Button>
-              <p className="text-sm text-white/70 mt-4">Unverbindlich • Kostenlos • In 60 Sekunden</p>
+              <p className="text-sm text-white/70 mt-4">Unverbindlich â€¢ Kostenlos â€¢ In 60 Sekunden</p>
             </motion.div>
           </div>
         </section>
@@ -544,8 +545,8 @@ export default function KlaviertransportPage() {
         <section className="py-16 bg-background">
           <div className="container px-4 max-w-3xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-3">Häufige Fragen</h2>
-              <p className="text-muted-foreground">Alles, was Sie über Klaviertransport wissen müssen</p>
+              <h2 className="text-3xl font-bold mb-3">HÃ¤ufige Fragen</h2>
+              <p className="text-muted-foreground">Alles, was Sie Ã¼ber Klaviertransport wissen mÃ¼ssen</p>
             </div>
             <Accordion type="single" collapsible className="space-y-3">
               {faqs.map((faq, i) => (
@@ -625,10 +626,11 @@ export default function KlaviertransportPage() {
           className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg z-50 py-3 px-4 lg:hidden"
         >
           <Button asChild className="w-full bg-amber-500 hover:bg-amber-600 font-bold py-5">
-            <Link to="/umzugsofferten">🎹 Jetzt Offerte anfragen</Link>
+            <Link to="/umzugsofferten">ðŸŽ¹ Jetzt Offerte anfragen</Link>
           </Button>
         </motion.div>
       )}
     </div>
   );
 }
+

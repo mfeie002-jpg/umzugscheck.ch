@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Shield, Award, Building2, Truck } from "lucide-react";
 
 const partners = [
+  { name: "Feierabend Services GmbH", desc: "Demo-Partner fuer QA", icon: Building2 },
   { name: "Stadt Bern", desc: "Offizieller Kooperationspartner", icon: Building2 },
   { name: "Swiss Movers", desc: "Zertifizierter Verband", icon: Award },
   { name: "TCS Partner", desc: "Mitgliedervorteil", icon: Shield },

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { motion, useInView } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
@@ -17,11 +17,11 @@ import {
 } from "lucide-react";
 
 const HERO_BG = "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=2000&q=80";
-const SERVICE_NAME = "Möbelmontage";
+const SERVICE_NAME = "MÃ¶belmontage";
 const SERVICE_SLUG = "montage";
 
 const relatedServices = [
-  { value: "montage", label: "Möbelmontage", href: "/services/montage" },
+  { value: "montage", label: "MÃ¶belmontage", href: "/services/montage" },
   { value: "privatumzug", label: "Privatumzug", href: "/services/privatumzug" },
   { value: "reinigung", label: "Reinigung", href: "/services/reinigung" },
   { value: "entsorgung", label: "Entsorgung", href: "/services/entsorgung" },
@@ -30,52 +30,53 @@ const relatedServices = [
 ];
 
 const companies = [
+  { id: "feierabend-services-gmbh", name: "Feierabend Services GmbH", rating: 4.9, reviewCount: 312, badges: ["Demo", "Top bewertet"], services: ["Umzug", "Firmenumzug", "Reinigung"], priceLevel: "Premium", isPopular: true, responseTime: "< 1h" },
   { id: "montage-profi", name: "Montage Profi AG", rating: 4.9, reviewCount: 267, badges: ["IKEA Spezialist", "Express"], priceLevel: "Mittel", isPopular: true, responseTime: "< 2h" },
-  { id: "swiss-assembly", name: "Swiss Assembly", rating: 4.8, reviewCount: 198, badges: ["Preis-Sieger"], priceLevel: "Günstig", isBestPrice: true, responseTime: "< 1h" },
-  { id: "premium-montage", name: "Premium Montage", rating: 4.9, reviewCount: 145, badges: ["Designermöbel", "Versichert"], priceLevel: "Premium", isPremium: true, responseTime: "< 4h" },
+  { id: "swiss-assembly", name: "Swiss Assembly", rating: 4.8, reviewCount: 198, badges: ["Preis-Sieger"], priceLevel: "GÃ¼nstig", isBestPrice: true, responseTime: "< 1h" },
+  { id: "premium-montage", name: "Premium Montage", rating: 4.9, reviewCount: 145, badges: ["DesignermÃ¶bel", "Versichert"], priceLevel: "Premium", isPremium: true, responseTime: "< 4h" },
 ];
 
 const priceExamples = [
-  { size: "Einzelmöbel", price: "CHF 50 – 150", subtext: "Schrank, Bett, Tisch", icon: Sofa, savings: "bis CHF 60" },
-  { size: "Kleiner Auftrag", price: "CHF 150 – 350", subtext: "3-5 Möbelstücke", icon: BedDouble, savings: "bis CHF 140" },
-  { size: "Wohnung komplett", price: "CHF 400 – 800", subtext: "Alle Möbel", icon: Sofa, savings: "bis CHF 320" },
-  { size: "Küchenmontage", price: "CHF 500 – 1'500", subtext: "Einbauküche", icon: Sofa, savings: "bis CHF 600" },
+  { size: "EinzelmÃ¶bel", price: "CHF 50 â€“ 150", subtext: "Schrank, Bett, Tisch", icon: Sofa, savings: "bis CHF 60" },
+  { size: "Kleiner Auftrag", price: "CHF 150 â€“ 350", subtext: "3-5 MÃ¶belstÃ¼cke", icon: BedDouble, savings: "bis CHF 140" },
+  { size: "Wohnung komplett", price: "CHF 400 â€“ 800", subtext: "Alle MÃ¶bel", icon: Sofa, savings: "bis CHF 320" },
+  { size: "KÃ¼chenmontage", price: "CHF 500 â€“ 1'500", subtext: "EinbaukÃ¼che", icon: Sofa, savings: "bis CHF 600" },
 ];
 
 const additionalServices = [
   { title: "Privatumzug", icon: Sofa, description: "Kompletter Umzugsservice", link: "/services/privatumzug" },
-  { title: "Entsorgung", icon: Sofa, description: "Alte Möbel entsorgen", link: "/services/entsorgung" },
+  { title: "Entsorgung", icon: Sofa, description: "Alte MÃ¶bel entsorgen", link: "/services/entsorgung" },
   { title: "Reinigung", icon: Sofa, description: "Umzugsreinigung", link: "/services/reinigung" },
-  { title: "Einlagerung", icon: Sofa, description: "Möbel zwischenlagern", link: "/services/lagerung" },
+  { title: "Einlagerung", icon: Sofa, description: "MÃ¶bel zwischenlagern", link: "/services/lagerung" },
 ];
 
 const howItWorks = [
-  { step: 1, title: "Anfrage stellen", description: "Möbel & Termin angeben", icon: ClipboardList, time: "30 Sek." },
+  { step: 1, title: "Anfrage stellen", description: "MÃ¶bel & Termin angeben", icon: ClipboardList, time: "30 Sek." },
   { step: 2, title: "Offerten erhalten", description: "Transparente Preise", icon: FileText, time: "24h" },
   { step: 3, title: "Montage buchen", description: "Fachmann kommt zu Ihnen", icon: CheckCircle, time: "Ihr Termin" },
 ];
 
 const testimonials = [
-  { name: "Lisa M.", location: "Zürich", rating: 5, text: "IKEA PAX Schrank in 2 Stunden perfekt montiert. Super professionell und sauber gearbeitet!", date: "vor 3 Tagen", verified: true, savedAmount: 80 },
-  { name: "Marco T.", location: "Bern", rating: 5, text: "Ganze Wohnung mit neuen Möbeln - alles an einem Tag erledigt. Sehr empfehlenswert!", date: "vor 1 Woche", verified: true, savedAmount: 200 },
+  { name: "Lisa M.", location: "ZÃ¼rich", rating: 5, text: "IKEA PAX Schrank in 2 Stunden perfekt montiert. Super professionell und sauber gearbeitet!", date: "vor 3 Tagen", verified: true, savedAmount: 80 },
+  { name: "Marco T.", location: "Bern", rating: 5, text: "Ganze Wohnung mit neuen MÃ¶beln - alles an einem Tag erledigt. Sehr empfehlenswert!", date: "vor 1 Woche", verified: true, savedAmount: 200 },
   { name: "Sarah K.", location: "Basel", rating: 5, text: "Komplizierter Eckschrank wurde problemlos aufgebaut. Toller Service!", date: "vor 2 Wochen", verified: true, savedAmount: 120 },
 ];
 
 const guarantees = [
   { title: "Festpreis-Garantie", description: "Keine versteckten Kosten", icon: CircleDollarSign },
-  { title: "Erfahrene Monteure", description: "Geschulte Fachkräfte", icon: BadgeCheck },
+  { title: "Erfahrene Monteure", description: "Geschulte FachkrÃ¤fte", icon: BadgeCheck },
   { title: "Werkzeug inklusive", description: "Wir bringen alles mit", icon: Wrench },
   { title: "Zufriedenheits-Garantie", description: "Nachbesserung kostenlos", icon: ThumbsUp },
 ];
 
 const faqs = [
-  { question: "Was kostet eine Möbelmontage?", answer: "Einzelmöbel ab CHF 50, komplette Wohnung CHF 400-800. IKEA-Möbel sind günstiger als Designermöbel. Wir bieten transparente Festpreise." },
-  { question: "Welche Möbel werden montiert?", answer: "Alle Arten: IKEA, Designer, Küchen, Schränke, Betten, Regale, Büromöbel. Auch Abbau bei Umzug." },
-  { question: "Muss ich Werkzeug bereitstellen?", answer: "Nein, unsere Monteure bringen professionelles Werkzeug mit. Sie müssen nur die Möbel und Anleitungen bereithalten." },
-  { question: "Wie lange dauert die Montage?", answer: "Einzelmöbel 30-90 Min, komplexe Schränke 2-4 Std, ganze Wohnung 4-8 Std. Wir geben Ihnen vorab eine Zeitschätzung." },
+  { question: "Was kostet eine MÃ¶belmontage?", answer: "EinzelmÃ¶bel ab CHF 50, komplette Wohnung CHF 400-800. IKEA-MÃ¶bel sind gÃ¼nstiger als DesignermÃ¶bel. Wir bieten transparente Festpreise." },
+  { question: "Welche MÃ¶bel werden montiert?", answer: "Alle Arten: IKEA, Designer, KÃ¼chen, SchrÃ¤nke, Betten, Regale, BÃ¼romÃ¶bel. Auch Abbau bei Umzug." },
+  { question: "Muss ich Werkzeug bereitstellen?", answer: "Nein, unsere Monteure bringen professionelles Werkzeug mit. Sie mÃ¼ssen nur die MÃ¶bel und Anleitungen bereithalten." },
+  { question: "Wie lange dauert die Montage?", answer: "EinzelmÃ¶bel 30-90 Min, komplexe SchrÃ¤nke 2-4 Std, ganze Wohnung 4-8 Std. Wir geben Ihnen vorab eine ZeitschÃ¤tzung." },
 ];
 
-const regions = ["Zürich", "Bern", "Basel", "Luzern", "Aargau", "St. Gallen", "Zug"];
+const regions = ["ZÃ¼rich", "Bern", "Basel", "Luzern", "Aargau", "St. Gallen", "Zug"];
 
 const AnimatedCounter = ({ end, suffix = "", duration = 2000 }: { end: number; suffix?: string; duration?: number }) => {
   const [count, setCount] = useState(0);
@@ -130,7 +131,7 @@ export default function MontageServicePage() {
   const schemaOrg = {
     "@context": "https://schema.org",
     "@graph": [
-      { "@type": "Service", "name": SERVICE_NAME, "description": `Professionelle ${SERVICE_NAME} in der Schweiz. IKEA, Designermöbel, Küchen.`, "provider": { "@type": "Organization", "name": "Umzugscheck.ch" }, "areaServed": { "@type": "Country", "name": "Schweiz" }, "priceRange": "CHF 50 - CHF 1500" },
+      { "@type": "Service", "name": SERVICE_NAME, "description": `Professionelle ${SERVICE_NAME} in der Schweiz. IKEA, DesignermÃ¶bel, KÃ¼chen.`, "provider": { "@type": "Organization", "name": "Umzugscheck.ch" }, "areaServed": { "@type": "Country", "name": "Schweiz" }, "priceRange": "CHF 50 - CHF 1500" },
       { "@type": "FAQPage", "mainEntity": faqs.map(faq => ({ "@type": "Question", "name": faq.question, "acceptedAnswer": { "@type": "Answer", "text": faq.answer } })) }
     ]
   };
@@ -139,8 +140,8 @@ export default function MontageServicePage() {
     <div className="min-h-screen bg-background">
       <Helmet>
         <html lang="de-CH" />
-        <title>{SERVICE_NAME} Schweiz | IKEA & Möbel Aufbau | Bis 40% sparen</title>
-        <meta name="description" content={`Professionelle ${SERVICE_NAME} in der Schweiz ✓ IKEA-Spezialist ✓ Festpreise ✓ Erfahrene Monteure ✓ Kostenlose Offerten!`} />
+        <title>{SERVICE_NAME} Schweiz | IKEA & MÃ¶bel Aufbau | Bis 40% sparen</title>
+        <meta name="description" content={`Professionelle ${SERVICE_NAME} in der Schweiz âœ“ IKEA-Spezialist âœ“ Festpreise âœ“ Erfahrene Monteure âœ“ Kostenlose Offerten!`} />
         <link rel="canonical" href={`https://umzugscheck.ch/services/${SERVICE_SLUG}`} />
         <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
       </Helmet>
@@ -170,12 +171,12 @@ export default function MontageServicePage() {
                 </motion.div>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-5 leading-tight">
-                  {SERVICE_NAME} – <br className="hidden md:block" /><span className="text-secondary">vom Profi</span>
+                  {SERVICE_NAME} â€“ <br className="hidden md:block" /><span className="text-secondary">vom Profi</span>
                 </h1>
 
                 <p className="text-lg md:text-xl text-white/85 mb-6 max-w-xl mx-auto lg:mx-0">
-                  <strong>IKEA, Designermöbel, Küchen</strong> – professionell aufgebaut.
-                  <span className="text-green-400 font-semibold"> Festpreise ohne Überraschungen.</span>
+                  <strong>IKEA, DesignermÃ¶bel, KÃ¼chen</strong> â€“ professionell aufgebaut.
+                  <span className="text-green-400 font-semibold"> Festpreise ohne Ãœberraschungen.</span>
                 </p>
 
                 <div className="grid grid-cols-3 gap-4 mb-8 max-w-lg mx-auto lg:mx-0">
@@ -196,7 +197,7 @@ export default function MontageServicePage() {
                   <CardContent className="p-8">
                     <div className="text-center mb-6">
                       <h2 className="text-xl font-bold mb-2">Jetzt Offerte anfordern</h2>
-                      <p className="text-sm text-muted-foreground">Festpreise für Ihre Möbelmontage</p>
+                      <p className="text-sm text-muted-foreground">Festpreise fÃ¼r Ihre MÃ¶belmontage</p>
                     </div>
                     <form onSubmit={handleFormSubmit} className="space-y-4">
                       <div>
@@ -207,14 +208,14 @@ export default function MontageServicePage() {
                         </div>
                       </div>
                       <div>
-                        <Label>Art der Möbel</Label>
+                        <Label>Art der MÃ¶bel</Label>
                         <Select value={furniture} onValueChange={setFurniture}>
-                          <SelectTrigger className="mt-1"><SelectValue placeholder="Wählen..." /></SelectTrigger>
+                          <SelectTrigger className="mt-1"><SelectValue placeholder="WÃ¤hlen..." /></SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="ikea">IKEA Möbel</SelectItem>
-                            <SelectItem value="designer">Designermöbel</SelectItem>
-                            <SelectItem value="kueche">Einbauküche</SelectItem>
-                            <SelectItem value="buero">Büromöbel</SelectItem>
+                            <SelectItem value="ikea">IKEA MÃ¶bel</SelectItem>
+                            <SelectItem value="designer">DesignermÃ¶bel</SelectItem>
+                            <SelectItem value="kueche">EinbaukÃ¼che</SelectItem>
+                            <SelectItem value="buero">BÃ¼romÃ¶bel</SelectItem>
                             <SelectItem value="gemischt">Gemischt</SelectItem>
                           </SelectContent>
                         </Select>
@@ -240,7 +241,7 @@ export default function MontageServicePage() {
           <div className="container px-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
               <div><div className="text-2xl font-bold text-primary">5'000+</div><div className="text-sm text-muted-foreground">Montagen</div></div>
-              <div><div className="text-2xl font-bold text-primary">ab CHF 50</div><div className="text-sm text-muted-foreground">Einzelmöbel</div></div>
+              <div><div className="text-2xl font-bold text-primary">ab CHF 50</div><div className="text-sm text-muted-foreground">EinzelmÃ¶bel</div></div>
               <div><div className="text-2xl font-bold text-primary">4.8/5</div><div className="text-sm text-muted-foreground">Bewertung</div></div>
               <div><div className="text-2xl font-bold text-primary">100%</div><div className="text-sm text-muted-foreground">Festpreis</div></div>
             </div>
@@ -353,7 +354,7 @@ export default function MontageServicePage() {
         {/* FAQ */}
         <section className="py-16 bg-muted/30">
           <div className="container px-4 max-w-3xl">
-            <h2 className="text-3xl font-bold text-center mb-12">Häufige Fragen</h2>
+            <h2 className="text-3xl font-bold text-center mb-12">HÃ¤ufige Fragen</h2>
             <Accordion type="single" collapsible className="space-y-4">
               {faqs.map((faq, i) => (
                 <AccordionItem key={i} value={`faq-${i}`} className="bg-background rounded-lg border px-6">
@@ -368,8 +369,8 @@ export default function MontageServicePage() {
         {/* FINAL CTA */}
         <section className="py-20 bg-primary text-primary-foreground">
           <div className="container px-4 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Möbel vom Profi montieren lassen</h2>
-            <p className="text-lg mb-8 opacity-90">Festpreise, erfahrene Monteure, keine Überraschungen</p>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">MÃ¶bel vom Profi montieren lassen</h2>
+            <p className="text-lg mb-8 opacity-90">Festpreise, erfahrene Monteure, keine Ãœberraschungen</p>
             <Button asChild size="lg" variant="secondary" className="font-bold text-lg px-8 py-6">
               <Link to="/umzugsofferten">Jetzt Offerten erhalten<ArrowRight className="ml-2 w-5 h-5" /></Link>
             </Button>
@@ -389,3 +390,4 @@ export default function MontageServicePage() {
     </div>
   );
 }
+

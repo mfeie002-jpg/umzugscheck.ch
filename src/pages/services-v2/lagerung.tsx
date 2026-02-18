@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { motion, useInView } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
@@ -28,64 +28,65 @@ const relatedServices = [
   { value: "lagerung", label: "Lagerung", href: "/services/lagerung" },
   { value: "reinigung", label: "Reinigung", href: "/services/reinigung" },
   { value: "entsorgung", label: "Entsorgung", href: "/services/entsorgung" },
-  { value: "montage", label: "Möbelmontage", href: "/services/montage" },
+  { value: "montage", label: "MÃ¶belmontage", href: "/services/montage" },
   { value: "privatumzug", label: "Privatumzug", href: "/services/privatumzug" },
   { value: "firmenumzug", label: "Firmenumzug", href: "/services/firmenumzug" },
 ];
 
 const companies = [
-  { id: "swiss-storage", name: "Swiss Storage AG", rating: 4.9, reviewCount: 234, badges: ["Klimatisiert", "Top Bewertung"], services: ["Selfstorage", "Möbellager", "24/7 Zugang"], priceLevel: "Mittel", isPopular: true, responseTime: "< 2h" },
-  { id: "lagerprofis", name: "LagerProfis GmbH", rating: 4.7, reviewCount: 178, badges: ["Preis-Sieger"], services: ["Günstige Lager", "Flexibel", "Versichert"], priceLevel: "Günstig", isBestPrice: true, responseTime: "< 1h" },
-  { id: "premium-lager", name: "Premium Lager Plus", rating: 4.8, reviewCount: 145, badges: ["Premium", "Videoüberwacht"], services: ["Klimakontrolle", "Concierge", "Abholservice"], priceLevel: "Premium", isPremium: true, responseTime: "< 4h" },
+  { id: "feierabend-services-gmbh", name: "Feierabend Services GmbH", rating: 4.9, reviewCount: 312, badges: ["Demo", "Top bewertet"], services: ["Umzug", "Firmenumzug", "Reinigung"], priceLevel: "Premium", isPopular: true, responseTime: "< 1h" },
+  { id: "swiss-storage", name: "Swiss Storage AG", rating: 4.9, reviewCount: 234, badges: ["Klimatisiert", "Top Bewertung"], services: ["Selfstorage", "MÃ¶bellager", "24/7 Zugang"], priceLevel: "Mittel", isPopular: true, responseTime: "< 2h" },
+  { id: "lagerprofis", name: "LagerProfis GmbH", rating: 4.7, reviewCount: 178, badges: ["Preis-Sieger"], services: ["GÃ¼nstige Lager", "Flexibel", "Versichert"], priceLevel: "GÃ¼nstig", isBestPrice: true, responseTime: "< 1h" },
+  { id: "premium-lager", name: "Premium Lager Plus", rating: 4.8, reviewCount: 145, badges: ["Premium", "VideoÃ¼berwacht"], services: ["Klimakontrolle", "Concierge", "Abholservice"], priceLevel: "Premium", isPremium: true, responseTime: "< 4h" },
 ];
 
 const priceExamples = [
-  { size: "2-4 m³", price: "ab CHF 60/Mt.", subtext: "Kartons & Kleinmöbel", icon: Package, savings: "bis CHF 25" },
-  { size: "5-8 m³", price: "ab CHF 90/Mt.", subtext: "1-2 Zimmer Inhalt", icon: Home, savings: "bis CHF 35" },
-  { size: "10-15 m³", price: "ab CHF 150/Mt.", subtext: "3-4 Zimmer Inhalt", icon: Building2, savings: "bis CHF 60" },
-  { size: "20+ m³", price: "ab CHF 250/Mt.", subtext: "Ganzer Haushalt", icon: Warehouse, savings: "bis CHF 100" },
+  { size: "2-4 mÂ³", price: "ab CHF 60/Mt.", subtext: "Kartons & KleinmÃ¶bel", icon: Package, savings: "bis CHF 25" },
+  { size: "5-8 mÂ³", price: "ab CHF 90/Mt.", subtext: "1-2 Zimmer Inhalt", icon: Home, savings: "bis CHF 35" },
+  { size: "10-15 mÂ³", price: "ab CHF 150/Mt.", subtext: "3-4 Zimmer Inhalt", icon: Building2, savings: "bis CHF 60" },
+  { size: "20+ mÂ³", price: "ab CHF 250/Mt.", subtext: "Ganzer Haushalt", icon: Warehouse, savings: "bis CHF 100" },
 ];
 
 const additionalServices = [
   { title: "Privatumzug", icon: Truck, description: "Kompletter Umzugsservice", link: "/services/privatumzug" },
   { title: "Reinigung", icon: Sparkles, description: "Endreinigung mit Garantie", link: "/services/reinigung" },
-  { title: "Entsorgung", icon: Trash2, description: "Professionelle Räumung", link: "/services/entsorgung" },
-  { title: "Möbelmontage", icon: Wrench, description: "Auf- & Abbau Service", link: "/services/montage" },
-  { title: "Firmenumzug", icon: Building2, description: "Büro & Gewerbe", link: "/services/firmenumzug" },
-  { title: "Möbellift", icon: Package, description: "Für schwere Stücke", link: "/services/moebellift" },
+  { title: "Entsorgung", icon: Trash2, description: "Professionelle RÃ¤umung", link: "/services/entsorgung" },
+  { title: "MÃ¶belmontage", icon: Wrench, description: "Auf- & Abbau Service", link: "/services/montage" },
+  { title: "Firmenumzug", icon: Building2, description: "BÃ¼ro & Gewerbe", link: "/services/firmenumzug" },
+  { title: "MÃ¶bellift", icon: Package, description: "FÃ¼r schwere StÃ¼cke", link: "/services/moebellift" },
 ];
 
 const howItWorks = [
-  { step: 1, title: "Bedarf ermitteln", description: "Wie viel Platz benötigen Sie?", icon: ClipboardList, time: "30 Sek." },
+  { step: 1, title: "Bedarf ermitteln", description: "Wie viel Platz benÃ¶tigen Sie?", icon: ClipboardList, time: "30 Sek." },
   { step: 2, title: "Offerten vergleichen", description: "Preise & Standorte vergleichen", icon: FileText, time: "Sofort" },
   { step: 3, title: "Lager mieten & einlagern", description: "Flexibel, sicher, 24/7 Zugang", icon: Key, time: "Ab sofort" },
 ];
 
 const testimonials = [
-  { name: "Marco S.", location: "Bern", rating: 5, text: "Perfekt für unseren Umzug. Die Möbel waren 2 Monate sicher eingelagert. Alles war in einwandfreiem Zustand!", date: "vor 4 Tagen", verified: true, savedAmount: 120 },
-  { name: "Anna K.", location: "Zürich", rating: 5, text: "Super Preis-Leistung. Der 24/7 Zugang ist Gold wert. Sehr zu empfehlen!", date: "vor 1 Woche", verified: true, savedAmount: 85 },
-  { name: "Stefan M.", location: "Basel", rating: 5, text: "Klimatisiertes Lager für meine Kunstsammlung. Absolut professionell!", date: "vor 2 Wochen", verified: true, savedAmount: 150 },
+  { name: "Marco S.", location: "Bern", rating: 5, text: "Perfekt fÃ¼r unseren Umzug. Die MÃ¶bel waren 2 Monate sicher eingelagert. Alles war in einwandfreiem Zustand!", date: "vor 4 Tagen", verified: true, savedAmount: 120 },
+  { name: "Anna K.", location: "ZÃ¼rich", rating: 5, text: "Super Preis-Leistung. Der 24/7 Zugang ist Gold wert. Sehr zu empfehlen!", date: "vor 1 Woche", verified: true, savedAmount: 85 },
+  { name: "Stefan M.", location: "Basel", rating: 5, text: "Klimatisiertes Lager fÃ¼r meine Kunstsammlung. Absolut professionell!", date: "vor 2 Wochen", verified: true, savedAmount: 150 },
 ];
 
 const guarantees = [
-  { title: "Sicherheits-Garantie", description: "Alarmgesichert & videoüberwacht", icon: ShieldCheck },
-  { title: "Flexibilitäts-Garantie", description: "Jederzeit kündbar, keine Mindestlaufzeit", icon: Key },
+  { title: "Sicherheits-Garantie", description: "Alarmgesichert & videoÃ¼berwacht", icon: ShieldCheck },
+  { title: "FlexibilitÃ¤ts-Garantie", description: "Jederzeit kÃ¼ndbar, keine Mindestlaufzeit", icon: Key },
   { title: "Versicherungs-Garantie", description: "Grundversicherung inklusive", icon: BadgeCheck },
   { title: "Zugangs-Garantie", description: "24/7 Zugang zu Ihren Sachen", icon: Clock },
 ];
 
 const faqs = [
-  { question: "Wie groß sollte mein Lagerraum sein?", answer: "Faustregel: Pro Zimmer ca. 3-5 m³. Ein 3-Zimmer-Haushalt braucht etwa 10-15 m³. Unsere Partner helfen Ihnen bei der Berechnung." },
-  { question: "Sind meine Sachen versichert?", answer: "Ja, eine Grundversicherung ist bei den meisten Anbietern inklusive. Für wertvolle Gegenstände empfehlen wir eine Zusatzversicherung." },
-  { question: "Kann ich jederzeit an meine Sachen?", answer: "Bei den meisten Anbietern haben Sie 24/7 Zugang per PIN-Code oder Schlüsselkarte. Einige bieten auch Concierge-Service." },
-  { question: "Wie lange ist die Mindestmietdauer?", answer: "Viele Anbieter vermieten bereits ab 1 Monat, ohne lange Kündigungsfristen. Ideal für Umzüge oder temporäre Lösungen." },
-  { question: "Gibt es klimatisierte Lagerräume?", answer: "Ja, viele Anbieter bieten klimatisierte Räume für empfindliche Gegenstände wie Kunstwerke, Wein oder Elektronik." },
+  { question: "Wie groÃŸ sollte mein Lagerraum sein?", answer: "Faustregel: Pro Zimmer ca. 3-5 mÂ³. Ein 3-Zimmer-Haushalt braucht etwa 10-15 mÂ³. Unsere Partner helfen Ihnen bei der Berechnung." },
+  { question: "Sind meine Sachen versichert?", answer: "Ja, eine Grundversicherung ist bei den meisten Anbietern inklusive. FÃ¼r wertvolle GegenstÃ¤nde empfehlen wir eine Zusatzversicherung." },
+  { question: "Kann ich jederzeit an meine Sachen?", answer: "Bei den meisten Anbietern haben Sie 24/7 Zugang per PIN-Code oder SchlÃ¼sselkarte. Einige bieten auch Concierge-Service." },
+  { question: "Wie lange ist die Mindestmietdauer?", answer: "Viele Anbieter vermieten bereits ab 1 Monat, ohne lange KÃ¼ndigungsfristen. Ideal fÃ¼r UmzÃ¼ge oder temporÃ¤re LÃ¶sungen." },
+  { question: "Gibt es klimatisierte LagerrÃ¤ume?", answer: "Ja, viele Anbieter bieten klimatisierte RÃ¤ume fÃ¼r empfindliche GegenstÃ¤nde wie Kunstwerke, Wein oder Elektronik." },
 ];
 
-const regions = ["Zürich", "Bern", "Basel", "Luzern", "Genf", "Lausanne", "Winterthur", "St. Gallen"];
+const regions = ["ZÃ¼rich", "Bern", "Basel", "Luzern", "Genf", "Lausanne", "Winterthur", "St. Gallen"];
 
 const trustBadges = [
-  { name: "Videoüberwacht", icon: Shield },
+  { name: "VideoÃ¼berwacht", icon: Shield },
   { name: "Versichert", icon: BadgeCheck },
   { name: "24/7 Zugang", icon: Key },
 ];
@@ -160,7 +161,7 @@ export default function LagerungServicePage() {
       <Helmet>
         <html lang="de-CH" />
         <title>Lagerung & Selfstorage Schweiz | Sicher & flexibel ab CHF 60</title>
-        <meta name="description" content="Sichere Lagerung in der Schweiz ✓ Selfstorage ab CHF 60/Mt. ✓ 24/7 Zugang ✓ Versichert ✓ Flexibel kündbar!" />
+        <meta name="description" content="Sichere Lagerung in der Schweiz âœ“ Selfstorage ab CHF 60/Mt. âœ“ 24/7 Zugang âœ“ Versichert âœ“ Flexibel kÃ¼ndbar!" />
         <link rel="canonical" href={`https://umzugscheck.ch/services/${SERVICE_SLUG}`} />
         <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
       </Helmet>
@@ -198,12 +199,12 @@ export default function LagerungServicePage() {
                 </motion.div>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-5 leading-tight">
-                  {SERVICE_NAME} – <br className="hidden md:block" />
+                  {SERVICE_NAME} â€“ <br className="hidden md:block" />
                   <span className="text-amber-400">sicher & flexibel</span>
                 </h1>
 
                 <p className="text-lg md:text-xl text-white/85 mb-6 max-w-xl mx-auto lg:mx-0">
-                  Finden Sie <strong>100+ sichere Lagerräume</strong> in der Schweiz.
+                  Finden Sie <strong>100+ sichere LagerrÃ¤ume</strong> in der Schweiz.
                   <span className="text-amber-400 font-semibold"> Ab CHF 60/Monat.</span>
                 </p>
 
@@ -243,22 +244,22 @@ export default function LagerungServicePage() {
                     <form onSubmit={handleFormSubmit} className="space-y-4 mt-4">
                       <div>
                         <Label htmlFor="location" className="text-sm font-medium">Standort (PLZ oder Ort)</Label>
-                        <Input id="location" placeholder="z.B. 8000 Zürich" value={location} onChange={(e) => setLocation(e.target.value)} className="mt-1.5 h-12" autoFocus />
+                        <Input id="location" placeholder="z.B. 8000 ZÃ¼rich" value={location} onChange={(e) => setLocation(e.target.value)} className="mt-1.5 h-12" autoFocus />
                       </div>
                       <div>
-                        <Label htmlFor="size" className="text-sm font-medium">Benötigte Grösse</Label>
+                        <Label htmlFor="size" className="text-sm font-medium">BenÃ¶tigte GrÃ¶sse</Label>
                         <Select value={storageSize} onValueChange={setStorageSize}>
-                          <SelectTrigger className="mt-1.5 h-12"><SelectValue placeholder="Bitte wählen..." /></SelectTrigger>
+                          <SelectTrigger className="mt-1.5 h-12"><SelectValue placeholder="Bitte wÃ¤hlen..." /></SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="2-4">2-4 m³ (Kartons & Kleinmöbel)</SelectItem>
-                            <SelectItem value="5-8">5-8 m³ (1-2 Zimmer)</SelectItem>
-                            <SelectItem value="10-15">10-15 m³ (3-4 Zimmer)</SelectItem>
-                            <SelectItem value="20+">20+ m³ (Ganzer Haushalt)</SelectItem>
+                            <SelectItem value="2-4">2-4 mÂ³ (Kartons & KleinmÃ¶bel)</SelectItem>
+                            <SelectItem value="5-8">5-8 mÂ³ (1-2 Zimmer)</SelectItem>
+                            <SelectItem value="10-15">10-15 mÂ³ (3-4 Zimmer)</SelectItem>
+                            <SelectItem value="20+">20+ mÂ³ (Ganzer Haushalt)</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
                       <Button type="submit" size="lg" className="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold text-lg py-6 shadow-[0_4px_20px_rgba(245,158,11,0.4)]">
-                        Lagerräume vergleichen<ArrowRight className="ml-2 w-5 h-5" />
+                        LagerrÃ¤ume vergleichen<ArrowRight className="ml-2 w-5 h-5" />
                       </Button>
                       <p className="text-xs text-center text-muted-foreground flex items-center justify-center gap-2"><Lock className="w-3.5 h-3.5" />Unverbindlich & kostenlos</p>
                     </form>
@@ -275,8 +276,8 @@ export default function LagerungServicePage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
               <div><div className="text-2xl font-bold text-amber-600">100+</div><div className="text-xs text-muted-foreground">Standorte</div></div>
               <div><div className="text-2xl font-bold text-amber-600">1'400+</div><div className="text-xs text-muted-foreground">Bewertungen</div></div>
-              <div><div className="text-2xl font-bold text-amber-600">4.8★</div><div className="text-xs text-muted-foreground">Durchschnitt</div></div>
-              <div><div className="text-2xl font-bold text-amber-600">24/7</div><div className="text-xs text-muted-foreground">Zugang möglich</div></div>
+              <div><div className="text-2xl font-bold text-amber-600">4.8â˜…</div><div className="text-xs text-muted-foreground">Durchschnitt</div></div>
+              <div><div className="text-2xl font-bold text-amber-600">24/7</div><div className="text-xs text-muted-foreground">Zugang mÃ¶glich</div></div>
             </div>
           </div>
         </section>
@@ -354,7 +355,7 @@ export default function LagerungServicePage() {
             <div className="text-center mb-10">
               <Badge variant="secondary" className="mb-3">Preise</Badge>
               <h2 className="text-2xl md:text-3xl font-bold mb-3">Lagerung Kosten 2024</h2>
-              <p className="text-muted-foreground">Monatliche Preise für sichere Lagerräume</p>
+              <p className="text-muted-foreground">Monatliche Preise fÃ¼r sichere LagerrÃ¤ume</p>
             </div>
             <div className="grid md:grid-cols-4 gap-6 max-w-5xl mx-auto">
               {priceExamples.map((price, i) => (
@@ -409,11 +410,11 @@ export default function LagerungServicePage() {
                     <div className="p-8 flex flex-col justify-center">
                       <Badge className="w-fit mb-4 bg-amber-100 text-amber-700 border-amber-200"><Thermometer className="w-3 h-3 mr-1" />Klimatisiert</Badge>
                       <h2 className="text-2xl font-bold mb-3">Optimale Lagerbedingungen</h2>
-                      <p className="text-muted-foreground mb-6">Für empfindliche Gegenstände wie Kunstwerke, Wein oder Elektronik bieten wir klimatisierte Lagerräume mit konstanter Temperatur und Luftfeuchtigkeit.</p>
+                      <p className="text-muted-foreground mb-6">FÃ¼r empfindliche GegenstÃ¤nde wie Kunstwerke, Wein oder Elektronik bieten wir klimatisierte LagerrÃ¤ume mit konstanter Temperatur und Luftfeuchtigkeit.</p>
                       <ul className="space-y-2 mb-6">
                         <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-amber-600" />Konstante Temperatur</li>
                         <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-amber-600" />Kontrollierte Luftfeuchtigkeit</li>
-                        <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-amber-600" />Ideal für Wertgegenstände</li>
+                        <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-amber-600" />Ideal fÃ¼r WertgegenstÃ¤nde</li>
                       </ul>
                       <Button asChild size="lg" className="w-fit bg-amber-500 hover:bg-amber-600"><Link to={flowPath}><Warehouse className="mr-2 w-4 h-4" />Klimatisiertes Lager finden</Link></Button>
                     </div>
@@ -474,12 +475,12 @@ export default function LagerungServicePage() {
             <div className="max-w-3xl mx-auto">
               <h2 className="text-2xl font-bold mb-6">Lagerung & Selfstorage in der Schweiz</h2>
               <div className="prose prose-sm max-w-none text-muted-foreground">
-                <p>Ob Umzug, Renovierung oder einfach Platzmangel – sichere Lagerräume sind in der Schweiz gefragter denn je. Selfstorage bietet flexible Lösungen für jeden Bedarf.</p>
-                <p>Unsere Partner bieten moderne, videoüberwachte Lagerräume mit 24/7 Zugang. Von kleinen Boxen für Kartons bis hin zu grossen Lagerräumen für ganze Haushalte ist alles verfügbar.</p>
-                <p>Die meisten Anbieter vermieten bereits ab 1 Monat ohne lange Kündigungsfristen. Ideal für temporäre Lagerlösungen während eines Umzugs.</p>
+                <p>Ob Umzug, Renovierung oder einfach Platzmangel â€“ sichere LagerrÃ¤ume sind in der Schweiz gefragter denn je. Selfstorage bietet flexible LÃ¶sungen fÃ¼r jeden Bedarf.</p>
+                <p>Unsere Partner bieten moderne, videoÃ¼berwachte LagerrÃ¤ume mit 24/7 Zugang. Von kleinen Boxen fÃ¼r Kartons bis hin zu grossen LagerrÃ¤umen fÃ¼r ganze Haushalte ist alles verfÃ¼gbar.</p>
+                <p>Die meisten Anbieter vermieten bereits ab 1 Monat ohne lange KÃ¼ndigungsfristen. Ideal fÃ¼r temporÃ¤re LagerlÃ¶sungen wÃ¤hrend eines Umzugs.</p>
               </div>
               <div className="mt-8">
-                <h3 className="font-bold mb-4">Verfügbare Regionen</h3>
+                <h3 className="font-bold mb-4">VerfÃ¼gbare Regionen</h3>
                 <div className="flex flex-wrap gap-2">
                   {regions.map(r => (<Link key={r} to={`/umzugsfirmen/${r.toLowerCase()}`}><Badge variant="outline" className="hover:bg-amber-50 cursor-pointer">{r}</Badge></Link>))}
                 </div>
@@ -490,7 +491,7 @@ export default function LagerungServicePage() {
                   <Link to="/services/reinigung"><Badge variant="outline" className="hover:bg-amber-50">Reinigung</Badge></Link>
                   <Link to="/services/privatumzug"><Badge variant="outline" className="hover:bg-amber-50">Privatumzug</Badge></Link>
                   <Link to="/services/entsorgung"><Badge variant="outline" className="hover:bg-amber-50">Entsorgung</Badge></Link>
-                  <Link to="/services/montage"><Badge variant="outline" className="hover:bg-amber-50">Möbelmontage</Badge></Link>
+                  <Link to="/services/montage"><Badge variant="outline" className="hover:bg-amber-50">MÃ¶belmontage</Badge></Link>
                 </div>
               </div>
             </div>
@@ -502,7 +503,7 @@ export default function LagerungServicePage() {
           <div className="container px-4">
             <div className="text-center mb-10">
               <Badge variant="secondary" className="mb-3">FAQ</Badge>
-              <h2 className="text-2xl md:text-3xl font-bold mb-3">Häufige Fragen zur Lagerung</h2>
+              <h2 className="text-2xl md:text-3xl font-bold mb-3">HÃ¤ufige Fragen zur Lagerung</h2>
             </div>
             <div className="max-w-3xl mx-auto">
               <Accordion type="single" collapsible className="space-y-2">
@@ -522,8 +523,8 @@ export default function LagerungServicePage() {
           <div className="container px-4">
             <div className="max-w-3xl mx-auto text-center">
               <Badge className="bg-white/20 text-white border-white/30 mb-6">Jetzt starten</Badge>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">Bereit für sicheres Einlagern?</h2>
-              <p className="text-lg text-white/80 mb-8">Finden Sie jetzt den perfekten Lagerraum in Ihrer Nähe. Flexibel, sicher und günstig.</p>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">Bereit fÃ¼r sicheres Einlagern?</h2>
+              <p className="text-lg text-white/80 mb-8">Finden Sie jetzt den perfekten Lagerraum in Ihrer NÃ¤he. Flexibel, sicher und gÃ¼nstig.</p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button asChild size="lg" className="bg-white text-amber-700 hover:bg-white/90 font-bold text-lg py-6 px-8 shadow-xl">
                   <Link to={flowPath}>Lagerraum finden<ArrowRight className="ml-2 w-5 h-5" /></Link>
@@ -532,7 +533,7 @@ export default function LagerungServicePage() {
                   <Link to="/firmen?service=lagerung">Anbieter ansehen</Link>
                 </Button>
               </div>
-              <p className="mt-6 text-sm text-white/60 flex items-center justify-center gap-2"><Shield className="w-4 h-4" />Unverbindlich · Versichert · 24/7 Zugang</p>
+              <p className="mt-6 text-sm text-white/60 flex items-center justify-center gap-2"><Shield className="w-4 h-4" />Unverbindlich Â· Versichert Â· 24/7 Zugang</p>
             </div>
           </div>
         </section>
@@ -551,3 +552,4 @@ export default function LagerungServicePage() {
     </div>
   );
 }
+

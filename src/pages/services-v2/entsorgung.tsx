@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { motion, useInView } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
@@ -29,31 +29,32 @@ const relatedServices = [
   { value: "entsorgung", label: "Entsorgung", href: "/services/entsorgung" },
   { value: "reinigung", label: "Reinigung", href: "/services/reinigung" },
   { value: "lagerung", label: "Lagerung", href: "/services/lagerung" },
-  { value: "montage", label: "Möbelmontage", href: "/services/montage" },
+  { value: "montage", label: "MÃ¶belmontage", href: "/services/montage" },
   { value: "privatumzug", label: "Privatumzug", href: "/services/privatumzug" },
   { value: "firmenumzug", label: "Firmenumzug", href: "/services/firmenumzug" },
 ];
 
 const companies = [
-  { id: "swiss-recycling", name: "Swiss Recycling AG", rating: 4.9, reviewCount: 287, badges: ["Umweltzertifiziert", "Top Bewertung"], services: ["Haushaltsauflösung", "Sperrgut", "Recycling"], priceLevel: "Mittel", isPopular: true, responseTime: "< 2h" },
-  { id: "raeum-profis", name: "Räum-Profis GmbH", rating: 4.7, reviewCount: 198, badges: ["Preis-Sieger"], services: ["Entrümpelung", "Schnellservice", "Wertanrechnung"], priceLevel: "Günstig", isBestPrice: true, responseTime: "< 1h" },
-  { id: "oeko-entsorger", name: "Öko-Entsorger Plus", rating: 4.8, reviewCount: 167, badges: ["Premium", "Express 24h"], services: ["Kompletträumung", "Umweltgerecht", "Dokumentation"], priceLevel: "Premium", isPremium: true, responseTime: "< 4h" },
+  { id: "feierabend-services-gmbh", name: "Feierabend Services GmbH", rating: 4.9, reviewCount: 312, badges: ["Demo", "Top bewertet"], services: ["Umzug", "Firmenumzug", "Reinigung"], priceLevel: "Premium", isPopular: true, responseTime: "< 1h" },
+  { id: "swiss-recycling", name: "Swiss Recycling AG", rating: 4.9, reviewCount: 287, badges: ["Umweltzertifiziert", "Top Bewertung"], services: ["HaushaltsauflÃ¶sung", "Sperrgut", "Recycling"], priceLevel: "Mittel", isPopular: true, responseTime: "< 2h" },
+  { id: "raeum-profis", name: "RÃ¤um-Profis GmbH", rating: 4.7, reviewCount: 198, badges: ["Preis-Sieger"], services: ["EntrÃ¼mpelung", "Schnellservice", "Wertanrechnung"], priceLevel: "GÃ¼nstig", isBestPrice: true, responseTime: "< 1h" },
+  { id: "oeko-entsorger", name: "Ã–ko-Entsorger Plus", rating: 4.8, reviewCount: 167, badges: ["Premium", "Express 24h"], services: ["KomplettrÃ¤umung", "Umweltgerecht", "Dokumentation"], priceLevel: "Premium", isPremium: true, responseTime: "< 4h" },
 ];
 
 const priceExamples = [
-  { size: "Einzelmöbel", price: "CHF 80 – 150", subtext: "Sofa, Schrank, Matratze", icon: Package, savings: "bis CHF 60" },
-  { size: "Sperrgut 5-10 Stk", price: "CHF 200 – 400", subtext: "Mehrere Möbelstücke", icon: Trash2, savings: "bis CHF 160" },
-  { size: "Zimmerräumung", price: "CHF 400 – 800", subtext: "Komplettes Zimmer", icon: Home, savings: "bis CHF 320" },
-  { size: "Haushaltsauflösung", price: "ab CHF 1'200", subtext: "Ganzer Haushalt", icon: Building2, savings: "bis CHF 500" },
+  { size: "EinzelmÃ¶bel", price: "CHF 80 â€“ 150", subtext: "Sofa, Schrank, Matratze", icon: Package, savings: "bis CHF 60" },
+  { size: "Sperrgut 5-10 Stk", price: "CHF 200 â€“ 400", subtext: "Mehrere MÃ¶belstÃ¼cke", icon: Trash2, savings: "bis CHF 160" },
+  { size: "ZimmerrÃ¤umung", price: "CHF 400 â€“ 800", subtext: "Komplettes Zimmer", icon: Home, savings: "bis CHF 320" },
+  { size: "HaushaltsauflÃ¶sung", price: "ab CHF 1'200", subtext: "Ganzer Haushalt", icon: Building2, savings: "bis CHF 500" },
 ];
 
 const additionalServices = [
   { title: "Privatumzug", icon: Truck, description: "Kompletter Umzugsservice", link: "/services/privatumzug" },
   { title: "Reinigung", icon: Sparkles, description: "Endreinigung mit Garantie", link: "/services/reinigung" },
-  { title: "Möbelmontage", icon: Wrench, description: "Auf- & Abbau Service", link: "/services/montage" },
-  { title: "Einlagerung", icon: Warehouse, description: "Sichere Lagerräume", link: "/services/lagerung" },
-  { title: "Firmenumzug", icon: Building2, description: "Büro & Gewerbe", link: "/services/firmenumzug" },
-  { title: "Möbellift", icon: Package, description: "Für schwere Stücke", link: "/services/moebellift" },
+  { title: "MÃ¶belmontage", icon: Wrench, description: "Auf- & Abbau Service", link: "/services/montage" },
+  { title: "Einlagerung", icon: Warehouse, description: "Sichere LagerrÃ¤ume", link: "/services/lagerung" },
+  { title: "Firmenumzug", icon: Building2, description: "BÃ¼ro & Gewerbe", link: "/services/firmenumzug" },
+  { title: "MÃ¶bellift", icon: Package, description: "FÃ¼r schwere StÃ¼cke", link: "/services/moebellift" },
 ];
 
 const howItWorks = [
@@ -63,32 +64,32 @@ const howItWorks = [
 ];
 
 const testimonials = [
-  { name: "Peter K.", location: "Basel", rating: 5, text: "Musste einen kompletten Haushalt auflösen. Die Firma war sehr professionell und einfühlsam. Alles in einem Tag erledigt!", date: "vor 5 Tagen", verified: true, savedAmount: 450 },
-  { name: "Ursula B.", location: "Zürich", rating: 5, text: "Schnell, sauber und fair im Preis. Die Wertanrechnung für noch brauchbare Möbel hat die Kosten deutlich gesenkt.", date: "vor 1 Woche", verified: true, savedAmount: 320 },
+  { name: "Peter K.", location: "Basel", rating: 5, text: "Musste einen kompletten Haushalt auflÃ¶sen. Die Firma war sehr professionell und einfÃ¼hlsam. Alles in einem Tag erledigt!", date: "vor 5 Tagen", verified: true, savedAmount: 450 },
+  { name: "Ursula B.", location: "ZÃ¼rich", rating: 5, text: "Schnell, sauber und fair im Preis. Die Wertanrechnung fÃ¼r noch brauchbare MÃ¶bel hat die Kosten deutlich gesenkt.", date: "vor 1 Woche", verified: true, savedAmount: 320 },
   { name: "Hans M.", location: "Bern", rating: 5, text: "Innerhalb von 48h war alles weg. Super Service!", date: "vor 2 Wochen", verified: true, savedAmount: 280 },
 ];
 
 const guarantees = [
   { title: "Umwelt-Garantie", description: "Fachgerechte Trennung & Recycling", icon: Leaf },
   { title: "Fixpreis-Garantie", description: "Keine versteckten Zusatzkosten", icon: CircleDollarSign },
-  { title: "Qualitäts-Garantie", description: "Nur geprüfte & versicherte Firmen", icon: BadgeCheck },
-  { title: "Schnell-Garantie", description: "Oft innerhalb von 48h möglich", icon: Clock },
+  { title: "QualitÃ¤ts-Garantie", description: "Nur geprÃ¼fte & versicherte Firmen", icon: BadgeCheck },
+  { title: "Schnell-Garantie", description: "Oft innerhalb von 48h mÃ¶glich", icon: Clock },
 ];
 
 const faqs = [
-  { question: "Was kann alles entsorgt werden?", answer: "Praktisch alles: Möbel, Elektrogeräte, Matratzen, Teppiche, Bücher, Kleider, Hausrat, Gartenabfälle. Sondermüll (Farben, Chemikalien) wird separat und fachgerecht behandelt." },
-  { question: "Wie werden die Kosten berechnet?", answer: "Die Kosten richten sich nach Menge, Art der Gegenstände und Aufwand. Die meisten Firmen bieten Pauschalpreise nach Besichtigung oder Fotobewertung an." },
-  { question: "Was passiert mit noch brauchbaren Sachen?", answer: "Viele Anbieter prüfen, ob Gegenstände gespendet oder weiterverkauft werden können. Dies wird oft auf die Entsorgungskosten angerechnet (Wertanrechnung)." },
-  { question: "Wie schnell kann eine Entsorgung erfolgen?", answer: "Bei Standardentsorgungen oft innerhalb von 48-72 Stunden. Für größere Haushaltsauflösungen wird ein Termin nach Aufwand vereinbart." },
-  { question: "Sind die Firmen versichert?", answer: "Ja, alle unsere Partnerfirmen sind vollständig versichert. Bei Schäden am Gebäude oder Treppenhaus sind Sie abgesichert." },
+  { question: "Was kann alles entsorgt werden?", answer: "Praktisch alles: MÃ¶bel, ElektrogerÃ¤te, Matratzen, Teppiche, BÃ¼cher, Kleider, Hausrat, GartenabfÃ¤lle. SondermÃ¼ll (Farben, Chemikalien) wird separat und fachgerecht behandelt." },
+  { question: "Wie werden die Kosten berechnet?", answer: "Die Kosten richten sich nach Menge, Art der GegenstÃ¤nde und Aufwand. Die meisten Firmen bieten Pauschalpreise nach Besichtigung oder Fotobewertung an." },
+  { question: "Was passiert mit noch brauchbaren Sachen?", answer: "Viele Anbieter prÃ¼fen, ob GegenstÃ¤nde gespendet oder weiterverkauft werden kÃ¶nnen. Dies wird oft auf die Entsorgungskosten angerechnet (Wertanrechnung)." },
+  { question: "Wie schnell kann eine Entsorgung erfolgen?", answer: "Bei Standardentsorgungen oft innerhalb von 48-72 Stunden. FÃ¼r grÃ¶ÃŸere HaushaltsauflÃ¶sungen wird ein Termin nach Aufwand vereinbart." },
+  { question: "Sind die Firmen versichert?", answer: "Ja, alle unsere Partnerfirmen sind vollstÃ¤ndig versichert. Bei SchÃ¤den am GebÃ¤ude oder Treppenhaus sind Sie abgesichert." },
 ];
 
-const regions = ["Zürich", "Bern", "Basel", "Luzern", "Aargau", "Solothurn", "Zug", "Thurgau"];
+const regions = ["ZÃ¼rich", "Bern", "Basel", "Luzern", "Aargau", "Solothurn", "Zug", "Thurgau"];
 
 const trustBadges = [
   { name: "Umweltzertifiziert", icon: Leaf },
   { name: "Versichert", icon: Shield },
-  { name: "Geprüft", icon: BadgeCheck },
+  { name: "GeprÃ¼ft", icon: BadgeCheck },
 ];
 
 const AnimatedCounter = ({ end, suffix = "", duration = 2000 }: { end: number; suffix?: string; duration?: number }) => {
@@ -110,7 +111,7 @@ const AnimatedCounter = ({ end, suffix = "", duration = 2000 }: { end: number; s
 };
 
 const WhatsAppButton = () => (
-  <motion.a href={`https://wa.me/41791234567?text=Hallo,%20ich%20möchte%20eine%20Offerte%20für%20${SERVICE_NAME}`} target="_blank" rel="noopener noreferrer" initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 2, type: "spring" }} className="fixed bottom-24 right-4 lg:bottom-6 lg:right-6 z-40 w-14 h-14 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all group">
+  <motion.a href={`https://wa.me/41791234567?text=Hallo,%20ich%20mÃ¶chte%20eine%20Offerte%20fÃ¼r%20${SERVICE_NAME}`} target="_blank" rel="noopener noreferrer" initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 2, type: "spring" }} className="fixed bottom-24 right-4 lg:bottom-6 lg:right-6 z-40 w-14 h-14 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all group">
     <MessageCircle className="w-7 h-7 text-white" />
     <span className="absolute right-full mr-3 px-3 py-1.5 bg-card border border-border rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">WhatsApp Chat</span>
   </motion.a>
@@ -151,7 +152,7 @@ export default function EntsorgungServicePage() {
   const schemaOrg = {
     "@context": "https://schema.org",
     "@graph": [
-      { "@type": "Service", "name": SERVICE_NAME, "description": `Professionelle ${SERVICE_NAME} und Räumung in der Schweiz. Umweltgerecht und versichert.`, "provider": { "@type": "Organization", "name": "Umzugscheck.ch" }, "areaServed": { "@type": "Country", "name": "Schweiz" }, "priceRange": "CHF 80 - CHF 3000", "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.8", "reviewCount": "1856" } },
+      { "@type": "Service", "name": SERVICE_NAME, "description": `Professionelle ${SERVICE_NAME} und RÃ¤umung in der Schweiz. Umweltgerecht und versichert.`, "provider": { "@type": "Organization", "name": "Umzugscheck.ch" }, "areaServed": { "@type": "Country", "name": "Schweiz" }, "priceRange": "CHF 80 - CHF 3000", "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.8", "reviewCount": "1856" } },
       { "@type": "FAQPage", "mainEntity": faqs.map(faq => ({ "@type": "Question", "name": faq.question, "acceptedAnswer": { "@type": "Answer", "text": faq.answer } })) }
     ]
   };
@@ -160,8 +161,8 @@ export default function EntsorgungServicePage() {
     <div className="min-h-screen bg-background">
       <Helmet>
         <html lang="de-CH" />
-        <title>{SERVICE_NAME} & Räumung Schweiz | Umweltgerecht & günstig</title>
-        <meta name="description" content={`Professionelle ${SERVICE_NAME} in der Schweiz ✓ Umweltgerecht ✓ Kostenlose Offerten ✓ Geprüfte Firmen ✓ Bis zu 40% sparen!`} />
+        <title>{SERVICE_NAME} & RÃ¤umung Schweiz | Umweltgerecht & gÃ¼nstig</title>
+        <meta name="description" content={`Professionelle ${SERVICE_NAME} in der Schweiz âœ“ Umweltgerecht âœ“ Kostenlose Offerten âœ“ GeprÃ¼fte Firmen âœ“ Bis zu 40% sparen!`} />
         <link rel="canonical" href={`https://umzugscheck.ch/services/${SERVICE_SLUG}`} />
         <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
       </Helmet>
@@ -199,12 +200,12 @@ export default function EntsorgungServicePage() {
                 </motion.div>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-5 leading-tight">
-                  {SERVICE_NAME} & Räumung – <br className="hidden md:block" />
-                  <span className="text-green-400">umweltgerecht & günstig</span>
+                  {SERVICE_NAME} & RÃ¤umung â€“ <br className="hidden md:block" />
+                  <span className="text-green-400">umweltgerecht & gÃ¼nstig</span>
                 </h1>
 
                 <p className="text-lg md:text-xl text-white/85 mb-6 max-w-xl mx-auto lg:mx-0">
-                  Vergleichen Sie <strong>120+ geprüfte Entsorgungsfirmen</strong> in der Schweiz.
+                  Vergleichen Sie <strong>120+ geprÃ¼fte Entsorgungsfirmen</strong> in der Schweiz.
                   <span className="text-green-400 font-semibold"> Bis zu 40% sparen.</span>
                 </p>
 
@@ -244,18 +245,18 @@ export default function EntsorgungServicePage() {
                     <form onSubmit={handleFormSubmit} className="space-y-4 mt-4">
                       <div>
                         <Label htmlFor="location" className="text-sm font-medium">Standort (PLZ oder Ort)</Label>
-                        <Input id="location" placeholder="z.B. 8000 Zürich" value={location} onChange={(e) => setLocation(e.target.value)} className="mt-1.5 h-12" autoFocus />
+                        <Input id="location" placeholder="z.B. 8000 ZÃ¼rich" value={location} onChange={(e) => setLocation(e.target.value)} className="mt-1.5 h-12" autoFocus />
                       </div>
                       <div>
                         <Label htmlFor="type" className="text-sm font-medium">Was soll entsorgt werden?</Label>
                         <Select value={disposalType} onValueChange={setDisposalType}>
-                          <SelectTrigger className="mt-1.5 h-12"><SelectValue placeholder="Bitte wählen..." /></SelectTrigger>
+                          <SelectTrigger className="mt-1.5 h-12"><SelectValue placeholder="Bitte wÃ¤hlen..." /></SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="einzelmoebel">Einzelmöbel</SelectItem>
-                            <SelectItem value="sperrgut">Sperrgut (mehrere Stücke)</SelectItem>
-                            <SelectItem value="zimmer">Zimmerräumung</SelectItem>
-                            <SelectItem value="wohnung">Wohnungsauflösung</SelectItem>
-                            <SelectItem value="haus">Haushaltsauflösung</SelectItem>
+                            <SelectItem value="einzelmoebel">EinzelmÃ¶bel</SelectItem>
+                            <SelectItem value="sperrgut">Sperrgut (mehrere StÃ¼cke)</SelectItem>
+                            <SelectItem value="zimmer">ZimmerrÃ¤umung</SelectItem>
+                            <SelectItem value="wohnung">WohnungsauflÃ¶sung</SelectItem>
+                            <SelectItem value="haus">HaushaltsauflÃ¶sung</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -275,10 +276,10 @@ export default function EntsorgungServicePage() {
         <section className="py-6 bg-muted/50 border-y">
           <div className="container px-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-              <div><div className="text-2xl font-bold text-green-600">120+</div><div className="text-xs text-muted-foreground">Geprüfte Firmen</div></div>
+              <div><div className="text-2xl font-bold text-green-600">120+</div><div className="text-xs text-muted-foreground">GeprÃ¼fte Firmen</div></div>
               <div><div className="text-2xl font-bold text-green-600">1'800+</div><div className="text-xs text-muted-foreground">Bewertungen</div></div>
-              <div><div className="text-2xl font-bold text-green-600">4.8★</div><div className="text-xs text-muted-foreground">Durchschnitt</div></div>
-              <div><div className="text-2xl font-bold text-green-600">48h</div><div className="text-xs text-muted-foreground">Express möglich</div></div>
+              <div><div className="text-2xl font-bold text-green-600">4.8â˜…</div><div className="text-xs text-muted-foreground">Durchschnitt</div></div>
+              <div><div className="text-2xl font-bold text-green-600">48h</div><div className="text-xs text-muted-foreground">Express mÃ¶glich</div></div>
             </div>
           </div>
         </section>
@@ -356,7 +357,7 @@ export default function EntsorgungServicePage() {
             <div className="text-center mb-10">
               <Badge variant="secondary" className="mb-3">Preise</Badge>
               <h2 className="text-2xl md:text-3xl font-bold mb-3">{SERVICE_NAME} Kosten 2024</h2>
-              <p className="text-muted-foreground">Durchschnittliche Preise für professionelle Entsorgung</p>
+              <p className="text-muted-foreground">Durchschnittliche Preise fÃ¼r professionelle Entsorgung</p>
             </div>
             <div className="grid md:grid-cols-4 gap-6 max-w-5xl mx-auto">
               {priceExamples.map((price, i) => (
@@ -415,7 +416,7 @@ export default function EntsorgungServicePage() {
                       <ul className="space-y-2 mb-6">
                         <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-600" />Fachgerechte Trennung</li>
                         <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-600" />Maximales Recycling</li>
-                        <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-600" />Wertanrechnung möglich</li>
+                        <li className="flex items-center gap-2 text-sm"><Check className="w-4 h-4 text-green-600" />Wertanrechnung mÃ¶glich</li>
                       </ul>
                       <Button asChild size="lg" className="w-fit bg-green-600 hover:bg-green-700"><Link to={flowPath}><Recycle className="mr-2 w-4 h-4" />Umweltgerechte Offerten anfordern</Link></Button>
                     </div>
@@ -476,12 +477,12 @@ export default function EntsorgungServicePage() {
             <div className="max-w-3xl mx-auto">
               <h2 className="text-2xl font-bold mb-6">{SERVICE_NAME} in der Schweiz</h2>
               <div className="prose prose-sm max-w-none text-muted-foreground">
-                <p>Professionelle Entsorgung und Räumung ist mehr als nur "Dinge wegwerfen". In der Schweiz gelten strenge Umweltvorschriften, die eine fachgerechte Trennung und Entsorgung vorschreiben.</p>
-                <p>Unsere geprüften Entsorgungsfirmen kümmern sich um alles: von der Abholung über die Sortierung bis zur umweltgerechten Entsorgung oder Wiederverwertung. Viele Firmen bieten auch eine Wertanrechnung für noch brauchbare Gegenstände an.</p>
-                <p>Durch den Vergleich von über 120 Firmen sparen unsere Kunden im Durchschnitt 30-40% bei gleichbleibender Qualität.</p>
+                <p>Professionelle Entsorgung und RÃ¤umung ist mehr als nur "Dinge wegwerfen". In der Schweiz gelten strenge Umweltvorschriften, die eine fachgerechte Trennung und Entsorgung vorschreiben.</p>
+                <p>Unsere geprÃ¼ften Entsorgungsfirmen kÃ¼mmern sich um alles: von der Abholung Ã¼ber die Sortierung bis zur umweltgerechten Entsorgung oder Wiederverwertung. Viele Firmen bieten auch eine Wertanrechnung fÃ¼r noch brauchbare GegenstÃ¤nde an.</p>
+                <p>Durch den Vergleich von Ã¼ber 120 Firmen sparen unsere Kunden im Durchschnitt 30-40% bei gleichbleibender QualitÃ¤t.</p>
               </div>
               <div className="mt-8">
-                <h3 className="font-bold mb-4">Verfügbare Regionen</h3>
+                <h3 className="font-bold mb-4">VerfÃ¼gbare Regionen</h3>
                 <div className="flex flex-wrap gap-2">
                   {regions.map(r => (<Link key={r} to={`/umzugsfirmen/${r.toLowerCase()}`}><Badge variant="outline" className="hover:bg-green-50 cursor-pointer">{r}</Badge></Link>))}
                 </div>
@@ -492,7 +493,7 @@ export default function EntsorgungServicePage() {
                   <Link to="/services/reinigung"><Badge variant="outline" className="hover:bg-green-50">Reinigung</Badge></Link>
                   <Link to="/services/privatumzug"><Badge variant="outline" className="hover:bg-green-50">Privatumzug</Badge></Link>
                   <Link to="/services/lagerung"><Badge variant="outline" className="hover:bg-green-50">Lagerung</Badge></Link>
-                  <Link to="/services/montage"><Badge variant="outline" className="hover:bg-green-50">Möbelmontage</Badge></Link>
+                  <Link to="/services/montage"><Badge variant="outline" className="hover:bg-green-50">MÃ¶belmontage</Badge></Link>
                 </div>
               </div>
             </div>
@@ -504,7 +505,7 @@ export default function EntsorgungServicePage() {
           <div className="container px-4">
             <div className="text-center mb-10">
               <Badge variant="secondary" className="mb-3">FAQ</Badge>
-              <h2 className="text-2xl md:text-3xl font-bold mb-3">Häufige Fragen zur {SERVICE_NAME}</h2>
+              <h2 className="text-2xl md:text-3xl font-bold mb-3">HÃ¤ufige Fragen zur {SERVICE_NAME}</h2>
             </div>
             <div className="max-w-3xl mx-auto">
               <Accordion type="single" collapsible className="space-y-2">
@@ -524,8 +525,8 @@ export default function EntsorgungServicePage() {
           <div className="container px-4">
             <div className="max-w-3xl mx-auto text-center">
               <Badge className="bg-white/20 text-white border-white/30 mb-6">Jetzt starten</Badge>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">Bereit für eine stressfreie Entsorgung?</h2>
-              <p className="text-lg text-white/80 mb-8">Vergleichen Sie jetzt kostenlos Offerten von geprüften Entsorgungsfirmen und sparen Sie bis zu 40%.</p>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">Bereit fÃ¼r eine stressfreie Entsorgung?</h2>
+              <p className="text-lg text-white/80 mb-8">Vergleichen Sie jetzt kostenlos Offerten von geprÃ¼ften Entsorgungsfirmen und sparen Sie bis zu 40%.</p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button asChild size="lg" className="bg-white text-green-700 hover:bg-white/90 font-bold text-lg py-6 px-8 shadow-xl">
                   <Link to={flowPath}>Kostenlos Offerten erhalten<ArrowRight className="ml-2 w-5 h-5" /></Link>
@@ -534,7 +535,7 @@ export default function EntsorgungServicePage() {
                   <Link to="/firmen?service=entsorgung">Firmen ansehen</Link>
                 </Button>
               </div>
-              <p className="mt-6 text-sm text-white/60 flex items-center justify-center gap-2"><Shield className="w-4 h-4" />100% kostenlos · Unverbindlich · Geprüfte Anbieter</p>
+              <p className="mt-6 text-sm text-white/60 flex items-center justify-center gap-2"><Shield className="w-4 h-4" />100% kostenlos Â· Unverbindlich Â· GeprÃ¼fte Anbieter</p>
             </div>
           </div>
         </section>
@@ -553,3 +554,4 @@ export default function EntsorgungServicePage() {
     </div>
   );
 }
+

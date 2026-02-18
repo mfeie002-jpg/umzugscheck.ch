@@ -7,6 +7,15 @@ import { Link } from "react-router-dom";
 
 const partners = [
   {
+    id: 0,
+    name: "Feierabend Services GmbH",
+    rating: 4.9,
+    reviewCount: 312,
+    description: "Demo-Partnerprofil fuer QA. Vollservice fuer Privat- und Firmenumzuege schweizweit.",
+    badges: ["Demo", "Top bewertet"],
+    slug: "feierabend-services-gmbh",
+  },
+  {
     id: 1,
     name: "Umzug Profi Zürich AG",
     rating: 4.9,

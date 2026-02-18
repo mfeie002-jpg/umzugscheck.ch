@@ -4,6 +4,23 @@ import { CompanyData } from "@/lib/ranking-algorithm";
 export const DEMO_COMPANIES: CompanyData[] = [
   // Sponsored Companies
   {
+    id: "fsg-1",
+    name: "Feierabend Services GmbH",
+    slug: "feierabend-services-gmbh",
+    rating: 4.9,
+    review_count: 312,
+    price_level: "premium",
+    is_featured: true,
+    featured_position: 0,
+    service_areas: ["Zürich", "Bern", "Basel-Stadt", "Zug", "Luzern", "Aargau", "Schweizweit"],
+    services_offered: ["Umzug", "Firmenumzug", "Reinigung", "Entsorgung", "Lagerung", "Packservice", "Möbelmontage"],
+    profile_completeness: 98,
+    conversion_rate: 39,
+    response_time_avg_hours: 1,
+    short_description: "Demo-Partnerprofil für QA: Premium-Umzüge mit Komplettservice schweizweit.",
+    certifications: ["ASTAG", "Versichert", "UID-geprüft"],
+  },
+  {
     id: "1",
     name: "SwissReloc Pro",
     rating: 4.9,

@@ -8,6 +8,15 @@ import { useSwipeable } from "react-swipeable";
 
 const companies = [
   {
+    name: "Feierabend Services GmbH",
+    rating: 4.9,
+    reviews: 312,
+    location: "Schweizweit",
+    price: "Ab CHF 490",
+    badges: ["Demo", "Top bewertet"],
+    image: "https://images.unsplash.com/photo-1483058712412-4245e9b90334?w=400&q=80&auto=format&fit=crop"
+  },
+  {
     name: "Züri Umzüge AG",
     rating: 4.9,
     reviews: 324,

@@ -98,6 +98,18 @@ const SERVICES = [
 
 // Mock companies
 const COMPANIES = [
+  {
+    id: 'fsg-1',
+    name: 'Feierabend Services GmbH',
+    location: 'Schweizweit',
+    rating: 4.9,
+    reviews: 312,
+    match: 99,
+    priceMin: 1580,
+    priceMax: 2140,
+    isPremium: true,
+    services: ['Privatumzug', 'Firmenumzug', 'Reinigung'],
+  },
   { 
     id: '1', 
     name: 'Müller Umzüge AG', 
