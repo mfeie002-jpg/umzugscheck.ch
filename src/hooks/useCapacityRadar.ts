@@ -7,6 +7,7 @@ import {
   generateWeeklyAvailability,
   calculateCapacityScore,
 } from '@/lib/capacity-radar';
+import { supabase } from '@/integrations/supabase/client';
 
 interface UseCapacityRadarOptions {
   providerId: string;
@@ -40,12 +41,13 @@ export function useCapacityRadar({
       setIsLoading(true);
       setError(null);
 
-      // TODO: Replace with actual Supabase query when capacity table is created
-      // For now, simulate capacity data based on provider ID
-      await new Promise(resolve => setTimeout(resolve, 300));
-
-      const mockCapacity = generateMockCapacity(providerId, moveDate);
-      setCapacity(mockCapacity);
+      const dbCapacity = await fetchCapacityFromDatabase(providerId, moveDate);
+      if (dbCapacity) {
+        setCapacity(dbCapacity);
+      } else {
+        const mockCapacity = generateMockCapacity(providerId, moveDate);
+        setCapacity(mockCapacity);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch capacity');
     } finally {
@@ -108,6 +110,53 @@ function generateMockCapacity(providerId: string, moveDate: Date): ProviderCapac
   const nextAvailableSlot = weeklyAvailability.find(s => !s.isFullyBooked);
   const nextAvailableDate = nextAvailableSlot?.date || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
   
+  return {
+    providerId,
+    currentJobs,
+    maxCapacity,
+    availableSlots,
+    nextAvailableDate,
+    weeklyAvailability,
+    urgencyLevel: calculateUrgencyLevel(availableSlots, maxCapacity, daysUntilMove),
+    lastUpdated: new Date(),
+  };
+}
+
+async function fetchCapacityFromDatabase(providerId: string, moveDate: Date): Promise<ProviderCapacity | null> {
+  const fromDate = new Date();
+  const toDate = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+
+  const { data, error } = await supabase
+    .from('provider_capacity')
+    .select('date,max_jobs,booked_jobs')
+    .eq('provider_id', providerId)
+    .gte('date', fromDate.toISOString().split('T')[0])
+    .lte('date', toDate.toISOString().split('T')[0])
+    .order('date', { ascending: true });
+
+  if (error || !data || data.length === 0) {
+    return null;
+  }
+
+  const weeklyAvailability = data.map((slot) => ({
+    date: new Date(slot.date),
+    totalSlots: slot.max_jobs,
+    bookedSlots: slot.booked_jobs,
+    availableSlots: Math.max(0, slot.max_jobs - slot.booked_jobs),
+    isFullyBooked: slot.booked_jobs >= slot.max_jobs,
+  }));
+
+  const capacityForMoveDate = weeklyAvailability.find(
+    (slot) => slot.date.toISOString().split('T')[0] === moveDate.toISOString().split('T')[0],
+  );
+
+  const maxCapacity = capacityForMoveDate?.totalSlots ?? Math.max(...weeklyAvailability.map((slot) => slot.totalSlots));
+  const currentJobs = capacityForMoveDate?.bookedSlots ?? 0;
+  const availableSlots = Math.max(0, maxCapacity - currentJobs);
+  const nextAvailableDate = weeklyAvailability.find((slot) => !slot.isFullyBooked)?.date ?? moveDate;
+
+  const daysUntilMove = Math.ceil((moveDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+
   return {
     providerId,
     currentJobs,

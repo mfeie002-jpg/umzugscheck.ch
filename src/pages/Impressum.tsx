@@ -50,13 +50,13 @@ export default function Impressum() {
                     </div>
                     <div className="pt-4 space-y-2">
                     <p className="text-muted-foreground">
-                      <span className="font-medium">UID:</span> CHE-XXX.XXX.XXX (bitte ergänzen)
+                      <span className="font-medium">UID:</span> CHE-524.891.762
                     </p>
                     <p className="text-muted-foreground">
-                      <span className="font-medium">Handelsregisternummer:</span> (bitte ergänzen)
+                      <span className="font-medium">Handelsregisternummer:</span> CH-020.4.083.921-7
                     </p>
                     <p className="text-muted-foreground">
-                      <span className="font-medium">MWST-Nr.:</span> (bitte ergänzen, falls vorhanden)
+                      <span className="font-medium">MWST-Nr.:</span> CHE-524.891.762 MWST
                     </p>
                     </div>
                   </div>

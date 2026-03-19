@@ -41,6 +41,16 @@ Kopiere diese Tabelle jede Woche und fülle sie mit Testergebnissen:
 
 ---
 
+## 🤖 Latest Automated Snapshot
+
+Last generated: pending
+
+| # | Funnel Name | Route | Status | Score | Notes | Last Test | Agent |
+|---|-------------|-------|--------|-------|-------|-----------|-------|
+| - | Pending | - | ❓ | -/10 | Run `npm run test:e2e` | - | - |
+
+---
+
 ## 📋 Legend
 
 | Status | Meaning | Description |

@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { GA_MEASUREMENT_ID, isGaEnabled } from '@/lib/analytics-config';
 
 interface ThirdPartyScript {
   id: string;
@@ -11,27 +12,28 @@ interface ThirdPartyScript {
 }
 
 // Scripts to load after user interaction
-const DEFERRED_SCRIPTS: ThirdPartyScript[] = [
-  // Google Analytics 4
-  {
-    id: 'ga4-script',
-    src: 'https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX',
-    async: true,
-  },
-  {
-    id: 'ga4-config',
-    innerHTML: `
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-XXXXXXXXXX', {
-        page_path: window.location.pathname,
-        anonymize_ip: true,
-        cookie_flags: 'SameSite=None;Secure'
-      });
-    `,
-  },
-];
+const DEFERRED_SCRIPTS: ThirdPartyScript[] = isGaEnabled
+  ? [
+      {
+        id: 'ga4-script',
+        src: `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`,
+        async: true,
+      },
+      {
+        id: 'ga4-config',
+        innerHTML: `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', '${GA_MEASUREMENT_ID}', {
+            page_path: window.location.pathname,
+            anonymize_ip: true,
+            cookie_flags: 'SameSite=None;Secure'
+          });
+        `,
+      },
+    ]
+  : [];
 
 // User interaction events that trigger script loading
 const INTERACTION_EVENTS = [
@@ -175,15 +177,15 @@ export const trackEvent = (
   eventName: string,
   eventParams?: Record<string, unknown>
 ) => {
-  if (typeof window !== 'undefined' && (window as any).gtag) {
+  if (isGaEnabled && typeof window !== 'undefined' && (window as any).gtag) {
     (window as any).gtag('event', eventName, eventParams);
   }
 };
 
 // Page view tracking
 export const trackPageView = (path: string, title?: string) => {
-  if (typeof window !== 'undefined' && (window as any).gtag) {
-    (window as any).gtag('config', 'G-XXXXXXXXXX', {
+  if (isGaEnabled && typeof window !== 'undefined' && (window as any).gtag) {
+    (window as any).gtag('config', GA_MEASUREMENT_ID, {
       page_path: path,
       page_title: title,
     });

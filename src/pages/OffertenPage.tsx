@@ -352,9 +352,9 @@ const OffertenPage = () => {
 
               {/* Recent Activity */}
               <div className="mt-8 text-center">
-                <div className="inline-flex items-center gap-2 px-6 py-3 bg-green-50 border border-green-200 rounded-full">
-                  <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                  <span className="text-sm font-medium text-green-800">
+                <div className="inline-flex items-center gap-2 px-6 py-3 bg-success/10 border border-success/30 rounded-full">
+                  <span className="w-2 h-2 bg-success rounded-full animate-pulse" />
+                  <span className="text-sm font-medium text-foreground">
                     {recentActivity} hat vor 3 Minuten eine Offerte erhalten.
                   </span>
                 </div>

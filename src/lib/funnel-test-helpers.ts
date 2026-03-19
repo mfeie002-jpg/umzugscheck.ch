@@ -193,7 +193,7 @@ export const CORE_20_FUNNELS: FunnelDefinition[] = [
   {
     id: 8,
     name: 'Firmenprofil',
-    route: '/firma/:slug',
+    route: '/firma/feierabend-umzuege',
     priority: 'High',
     persona: 'P1_PRIVATE_ZUG',
     entryPoint: 'Company detail page',

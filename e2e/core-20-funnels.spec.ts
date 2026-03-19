@@ -1,13 +1,10 @@
 import { test, expect, Page, Browser, BrowserContext } from '@playwright/test';
 import {
   CORE_20_FUNNELS,
-  TEST_PERSONAS,
   DEFAULT_TEST_CONFIG,
   MOBILE_TEST_CONFIG,
   TEST_SELECTORS,
   getPersonaData,
-  generateFakeEmail,
-  generateFakePhone,
   generateTestMetadata,
   FunnelDefinition,
 } from '../src/lib/funnel-test-helpers';
@@ -23,8 +20,9 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const BASE_URL = process.env.TEST_URL || DEFAULT_TEST_CONFIG.baseUrl;
-const REPORT_DIR = path.join(__dirname, '../../test-reports');
+const REPORT_DIR = path.join(__dirname, '../test-reports');
 const SCREENSHOTS_DIR = path.join(REPORT_DIR, 'screenshots');
+const RESULTS_TRACKING_DOC = path.join(__dirname, '../docs/FUNNEL_TEST_RESULTS.md');
 
 // Ensure directories exist
 if (!fs.existsSync(REPORT_DIR)) {
@@ -140,7 +138,7 @@ test.describe('Umzugscheck Core 20 Funnels - QA Testing', () => {
   }
 
   // Test medium priority funnels (spot checks)
-  const mediumFunnels = CORE_20_FUNNELS.filter((f) => f.priority === 'Medium').slice(0, 3); // Sample 3
+  const mediumFunnels = CORE_20_FUNNELS.filter((f) => f.priority === 'Medium');
 
   for (const funnel of mediumFunnels) {
     test(`Funnel #${funnel.id}: ${funnel.name} (Sample)`, async ({ page }) => {
@@ -277,7 +275,10 @@ async function testFunnel(
     // STEP 6: Calculate metrics
     if (consoleErrors.length > 0) {
       result.errorMessage = consoleErrors.slice(0, 3).join('\n');
-      result.severity = 'P0';
+      result.severity = classifyConsoleSeverity(consoleErrors);
+      if (result.status === 'PASS' && result.severity !== 'P3') {
+        result.status = 'PARTIAL';
+      }
       result.conversionScore -= 3;
     }
 
@@ -291,6 +292,17 @@ async function testFunnel(
   }
 
   return finishResult(result, screenshots, startTime);
+}
+
+function classifyConsoleSeverity(errors: string[]): 'P0' | 'P1' | 'P2' | 'P3' {
+  const combined = errors.join(' ').toLowerCase();
+  if (combined.includes('chunkloaderror') || combined.includes('failed to fetch') || combined.includes('typeerror')) {
+    return 'P1';
+  }
+  if (combined.includes('deprecated') || combined.includes('warning')) {
+    return 'P3';
+  }
+  return 'P2';
 }
 
 // ============================================
@@ -369,14 +381,28 @@ async function testVideoFlow(
   page: Page,
   result: FlowTestResult,
   screenshots: string[],
-  personaData: any,
+  _personaData: any,
 ) {
-  // Video upload is complex - just verify interface is present
+  // Video upload assertion with lightweight synthetic file.
   const videoUpload = page.locator(TEST_SELECTORS.VIDEO_UPLOAD).first();
   const uploadVisible = await videoUpload.isVisible({ timeout: 3000 }).catch(() => false);
 
   if (uploadVisible) {
-    result.uxFrictionNotes.push('Video upload interface accessible');
+    await videoUpload.setInputFiles({
+      name: 'test-video.webm',
+      mimeType: 'video/webm',
+      buffer: Buffer.from('RIFFxxxxWEBMTEST'),
+    }).catch(() => {
+      result.uxFrictionNotes.push('Video file could not be set programmatically');
+      result.conversionScore -= 1;
+    });
+
+    const submitVisible = await page.locator(TEST_SELECTORS.VIDEO_SUBMIT).first().isVisible({ timeout: 1500 }).catch(() => false);
+    if (submitVisible) {
+      await clickButton(page, TEST_SELECTORS.VIDEO_SUBMIT).catch(() => {});
+      await page.waitForLoadState('networkidle').catch(() => {});
+    }
+    result.trustNotes.push('Video upload interaction executed');
   } else {
     result.uxFrictionNotes.push('Video upload input not visible');
     result.conversionScore -= 3;
@@ -391,14 +417,32 @@ async function testAIPhotoFlow(
   page: Page,
   result: FlowTestResult,
   screenshots: string[],
-  personaData: any,
+  _personaData: any,
 ) {
   // Photo upload interface check
   const photoUpload = page.locator(TEST_SELECTORS.PHOTO_UPLOAD).first();
   const uploadVisible = await photoUpload.isVisible({ timeout: 3000 }).catch(() => false);
 
   if (uploadVisible) {
-    result.trustNotes.push('AI photo upload interface clearly visible');
+    await photoUpload.setInputFiles({
+      name: 'test-photo.png',
+      mimeType: 'image/png',
+      buffer: Buffer.from(
+        'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9sXnkwAAAABJRU5ErkJggg==',
+        'base64',
+      ),
+    }).catch(() => {
+      result.uxFrictionNotes.push('Photo file could not be set programmatically');
+      result.conversionScore -= 1;
+    });
+
+    const aiResultVisible = await page.locator(TEST_SELECTORS.AI_RESULT).first().isVisible({ timeout: 3000 }).catch(() => false);
+    if (aiResultVisible) {
+      result.trustNotes.push('AI result container visible after upload');
+    } else {
+      result.status = 'PARTIAL';
+      result.uxFrictionNotes.push('AI result was not visible after photo upload');
+    }
   } else {
     result.uxFrictionNotes.push('Photo upload not accessible');
     result.conversionScore -= 2;
@@ -782,9 +826,58 @@ ${r.trustNotes.map((n) => `- ${n}`).join('\n')}
   const jsonPath = path.join(REPORT_DIR, `results-${Date.now()}.json`);
   fs.writeFileSync(jsonPath, JSON.stringify({ metadata, results }, null, 2));
 
+  updateResultsTrackingDoc(results);
+
   console.log(`\n📊 Test report generated: ${reportPath}`);
   console.log(`📊 JSON results: ${jsonPath}`);
   console.log(`📸 Screenshots: ${SCREENSHOTS_DIR}`);
 
   return { reportPath, jsonPath };
+}
+
+function updateResultsTrackingDoc(results: FlowTestResult[]) {
+  if (!fs.existsSync(RESULTS_TRACKING_DOC)) return;
+
+  const dateLabel = new Date().toISOString().split('T')[0];
+  const rows = CORE_20_FUNNELS.map((funnel) => {
+    const funnelResults = results.filter((r) => r.funnelId === funnel.id);
+    if (funnelResults.length === 0) {
+      return `| ${funnel.id} | ${funnel.name} | \`${funnel.route}\` | ❓ | -/10 | Not run | - | - |`;
+    }
+
+    const worstStatus = funnelResults.some((r) => r.status === 'FAIL')
+      ? '❌'
+      : funnelResults.some((r) => r.status === 'PARTIAL')
+        ? '⚠️'
+        : '✅';
+    const avgScore = (
+      funnelResults.reduce((sum, current) => sum + current.conversionScore, 0) / funnelResults.length
+    ).toFixed(1);
+
+    return `| ${funnel.id} | ${funnel.name} | \`${funnel.route}\` | ${worstStatus} | ${avgScore}/10 | Auto snapshot | ${dateLabel} | Playwright |`;
+  }).join('\n');
+
+  const snapshot = [
+    '## 🤖 Latest Automated Snapshot',
+    '',
+    `Last generated: ${dateLabel}`,
+    '',
+    '| # | Funnel Name | Route | Status | Score | Notes | Last Test | Agent |',
+    '|---|-------------|-------|--------|-------|-------|-----------|-------|',
+    rows,
+    '',
+  ].join('\n');
+
+  const source = fs.readFileSync(RESULTS_TRACKING_DOC, 'utf8');
+  const markerStart = '## 🤖 Latest Automated Snapshot';
+  const markerEnd = '## 📋 Legend';
+
+  if (source.includes(markerStart) && source.includes(markerEnd)) {
+    const [before, afterStart] = source.split(markerStart);
+    const [, after] = afterStart.split(markerEnd);
+    fs.writeFileSync(RESULTS_TRACKING_DOC, `${before}${snapshot}\n${markerEnd}${after}`);
+    return;
+  }
+
+  fs.writeFileSync(RESULTS_TRACKING_DOC, `${source}\n\n${snapshot}`);
 }
