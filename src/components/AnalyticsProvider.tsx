@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
 // GA4 Measurement ID - replace with actual ID in production
-const GA_MEASUREMENT_ID = 'G-XXXXXXXXXX';
+const GA_MEASUREMENT_ID = 'G-TP9R5ZEHM8';
 
 export const AnalyticsProvider = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
