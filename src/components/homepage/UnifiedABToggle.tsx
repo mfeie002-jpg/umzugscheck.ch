@@ -326,7 +326,7 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
                 </TabsContent>
 
                 {/* Hero Tab Hints */}
-                <TabsContent value="hero" className="p-3 pt-2 max-h-[50vh] overflow-y-auto">
+                <TabsContent value="hero" className="p-3 pt-2 max-h-[60vh] sm:max-h-[50vh] overflow-y-auto">
                   <div className="space-y-2">
                     {(Object.keys(tabHintVariants) as TabHintVariant[]).map((thv) => {
                       const info = tabHintVariants[thv];
