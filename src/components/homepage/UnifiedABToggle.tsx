@@ -357,8 +357,8 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
                     })}
                   </div>
                   
-                  {/* Legend */}
-                  <div className="mt-4 p-3 bg-muted/30 rounded-lg text-xs text-muted-foreground space-y-1">
+                  {/* Legend - hidden on mobile */}
+                  <div className="hidden sm:block mt-4 p-3 bg-muted/30 rounded-lg text-xs text-muted-foreground space-y-1">
                     <div><strong>1:</strong> Standard - keine Hinweise</div>
                     <div><strong>2:</strong> "ODER"-Linie unterhalb Tabs</div>
                     <div><strong>3:</strong> Puls + "Klicken für andere Methoden"</div>
