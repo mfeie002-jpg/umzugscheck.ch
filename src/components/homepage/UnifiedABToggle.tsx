@@ -146,12 +146,12 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
             />
             
             {/* Panel */}
-            <motion.div
-              initial={{ opacity: 0, y: 20, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 20, scale: 0.9 }}
-              className="fixed bottom-24 left-4 right-4 sm:right-auto sm:w-[400px] bg-background border-2 border-primary rounded-2xl shadow-2xl overflow-hidden z-[90]"
-            >
+             <motion.div
+               initial={{ opacity: 0, y: 20, scale: 0.9 }}
+               animate={{ opacity: 1, y: 0, scale: 1 }}
+               exit={{ opacity: 0, y: 20, scale: 0.9 }}
+               className="fixed bottom-0 left-0 right-0 sm:bottom-24 sm:left-4 sm:right-auto sm:w-[400px] bg-background border-2 border-primary rounded-t-2xl sm:rounded-2xl shadow-2xl overflow-hidden z-[90]"
+             >
               {/* Header */}
               <div className="flex items-center justify-between p-4 bg-muted/50 border-b border-border">
                 <div className="flex items-center gap-3">
