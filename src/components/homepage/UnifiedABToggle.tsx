@@ -236,7 +236,7 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
                 </TabsContent>
 
                 {/* Navigation Variants */}
-                <TabsContent value="nav" className="p-3 pt-2 max-h-[50vh] overflow-y-auto">
+                <TabsContent value="nav" className="p-3 pt-2 max-h-[60vh] sm:max-h-[50vh] overflow-y-auto">
                   <div className="space-y-2">
                     {NAV_VARIANTS.map((nv) => {
                       const isActive = navVariant?.id === nv.id;
