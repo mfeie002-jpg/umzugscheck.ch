@@ -129,7 +129,7 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
     <div 
       className="fixed z-[90] pointer-events-auto"
       style={{ 
-        bottom: 'calc(env(safe-area-inset-bottom, 0px) + 96px)',
+        bottom: 'calc(env(safe-area-inset-bottom, 0px) + 72px)',
         left: '16px'
       }}
     >
@@ -146,12 +146,12 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
             />
             
             {/* Panel */}
-            <motion.div
-              initial={{ opacity: 0, y: 20, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 20, scale: 0.9 }}
-              className="fixed bottom-24 left-4 right-4 sm:right-auto sm:w-[400px] bg-background border-2 border-primary rounded-2xl shadow-2xl overflow-hidden z-[90]"
-            >
+             <motion.div
+               initial={{ opacity: 0, y: 20, scale: 0.9 }}
+               animate={{ opacity: 1, y: 0, scale: 1 }}
+               exit={{ opacity: 0, y: 20, scale: 0.9 }}
+               className="fixed bottom-0 left-0 right-0 sm:bottom-24 sm:left-4 sm:right-auto sm:w-[400px] bg-background border-2 border-primary rounded-t-2xl sm:rounded-2xl shadow-2xl overflow-hidden z-[90]"
+             >
               {/* Header */}
               <div className="flex items-center justify-between p-4 bg-muted/50 border-b border-border">
                 <div className="flex items-center gap-3">
@@ -173,27 +173,27 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
 
               {/* Tabs */}
               <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as 'homepage' | 'nav' | 'social' | 'hero')} className="w-full">
-                <TabsList className="w-full grid grid-cols-4 p-1 m-3 mb-0 bg-muted/50">
-                  <TabsTrigger value="homepage" className="gap-1 text-[10px] px-1">
-                    <LayoutTemplate className="w-3 h-3" />
+                <TabsList className="w-full grid grid-cols-4 p-1 m-3 mb-0 bg-muted/50 h-auto min-h-[44px]">
+                  <TabsTrigger value="homepage" className="gap-1 text-xs px-1.5 py-2 min-h-[40px]">
+                    <LayoutTemplate className="w-3.5 h-3.5" />
                     Hero
                   </TabsTrigger>
-                  <TabsTrigger value="nav" className="gap-1 text-[10px] px-1">
-                    <Navigation className="w-3 h-3" />
+                  <TabsTrigger value="nav" className="gap-1 text-xs px-1.5 py-2 min-h-[40px]">
+                    <Navigation className="w-3.5 h-3.5" />
                     Nav
                   </TabsTrigger>
-                  <TabsTrigger value="social" className="gap-1 text-[10px] px-1">
-                    <Sparkles className="w-3 h-3" />
+                  <TabsTrigger value="social" className="gap-1 text-xs px-1.5 py-2 min-h-[40px]">
+                    <Sparkles className="w-3.5 h-3.5" />
                     Social
                   </TabsTrigger>
-                  <TabsTrigger value="hero" className="gap-1 text-[10px] px-1">
-                    <MousePointerClick className="w-3 h-3" />
+                  <TabsTrigger value="hero" className="gap-1 text-xs px-1.5 py-2 min-h-[40px]">
+                    <MousePointerClick className="w-3.5 h-3.5" />
                     Tabs
                   </TabsTrigger>
                 </TabsList>
 
                 {/* Homepage Hero Variants - NEW */}
-                <TabsContent value="homepage" className="p-3 pt-2 max-h-[50vh] overflow-y-auto">
+                <TabsContent value="homepage" className="p-3 pt-2 max-h-[60vh] sm:max-h-[50vh] overflow-y-auto">
                   <div className="space-y-2">
                     {(Object.keys(homepageVariants) as HomepageVariant[]).map((hv) => {
                       const info = homepageVariants[hv];
@@ -227,8 +227,8 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
                     })}
                   </div>
                   
-                  {/* Legend */}
-                  <div className="mt-4 p-3 bg-muted/30 rounded-lg text-xs text-muted-foreground space-y-1">
+                  {/* Legend - hidden on mobile */}
+                  <div className="hidden sm:block mt-4 p-3 bg-muted/30 rounded-lg text-xs text-muted-foreground space-y-1">
                     <div><strong>A:</strong> Original - Split mit Formular rechts (Screenshot)</div>
                     <div><strong>B:</strong> Premium - 4 Tabs (Formular/Video/Chat/WA)</div>
                     <div><strong>C:</strong> SmartRouter - PLZ-first Wizard</div>
@@ -236,7 +236,7 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
                 </TabsContent>
 
                 {/* Navigation Variants */}
-                <TabsContent value="nav" className="p-3 pt-2 max-h-[50vh] overflow-y-auto">
+                <TabsContent value="nav" className="p-3 pt-2 max-h-[60vh] sm:max-h-[50vh] overflow-y-auto">
                   <div className="space-y-2">
                     {NAV_VARIANTS.map((nv) => {
                       const isActive = navVariant?.id === nv.id;
@@ -259,7 +259,7 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
                             )}>
                               {variantNum}
                             </span>
-                            <span className="truncate max-w-[180px]">{nv.name.replace(/^\d+\.\s*/, '')}</span>
+                            <span className="truncate max-w-[calc(100%-60px)]">{nv.name.replace(/^\d+\.\s*/, '')}</span>
                           </span>
                           {isActive && <Check className="w-4 h-4 flex-shrink-0" />}
                         </button>
@@ -269,7 +269,7 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
                 </TabsContent>
 
                 {/* Social Proof Variants */}
-                <TabsContent value="social" className="p-3 pt-2 max-h-[50vh] overflow-y-auto">
+                <TabsContent value="social" className="p-3 pt-2 max-h-[60vh] sm:max-h-[50vh] overflow-y-auto">
                   <div className="space-y-2">
                     {(Object.keys(socialProofVariants) as Array<keyof typeof socialProofVariants>).map((sv) => {
                       const info = socialProofVariants[sv];
@@ -300,8 +300,8 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
                     })}
                   </div>
                   
-                  {/* Legend */}
-                  <div className="mt-4 p-3 bg-muted/30 rounded-lg text-xs text-muted-foreground space-y-1 max-h-40 overflow-y-auto">
+                  {/* Legend - hidden on mobile */}
+                  <div className="hidden sm:block mt-4 p-3 bg-muted/30 rounded-lg text-xs text-muted-foreground space-y-1 max-h-40 overflow-y-auto">
                     <div><strong>V1:</strong> Original (farbige Logos)</div>
                     <div><strong>V2:</strong> Live Dashboard + Deal Cards</div>
                     <div><strong>V3:</strong> Trust Hierarchy (Logos oben)</div>
@@ -326,7 +326,7 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
                 </TabsContent>
 
                 {/* Hero Tab Hints */}
-                <TabsContent value="hero" className="p-3 pt-2 max-h-[50vh] overflow-y-auto">
+                <TabsContent value="hero" className="p-3 pt-2 max-h-[60vh] sm:max-h-[50vh] overflow-y-auto">
                   <div className="space-y-2">
                     {(Object.keys(tabHintVariants) as TabHintVariant[]).map((thv) => {
                       const info = tabHintVariants[thv];
@@ -357,8 +357,8 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
                     })}
                   </div>
                   
-                  {/* Legend */}
-                  <div className="mt-4 p-3 bg-muted/30 rounded-lg text-xs text-muted-foreground space-y-1">
+                  {/* Legend - hidden on mobile */}
+                  <div className="hidden sm:block mt-4 p-3 bg-muted/30 rounded-lg text-xs text-muted-foreground space-y-1">
                     <div><strong>1:</strong> Standard - keine Hinweise</div>
                     <div><strong>2:</strong> "ODER"-Linie unterhalb Tabs</div>
                     <div><strong>3:</strong> Puls + "Klicken für andere Methoden"</div>
@@ -376,7 +376,7 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
       <motion.button
         onClick={() => setIsExpanded(!isExpanded)}
         className={cn(
-          "flex items-center gap-1 px-2.5 py-2 rounded-full shadow-2xl border-2 text-white font-bold transition-all",
+          "flex items-center gap-1 px-3 py-2.5 min-h-[44px] rounded-full shadow-2xl border-2 text-white font-bold transition-all",
           "bg-gradient-to-r from-primary to-primary/80 border-white/30 hover:scale-105"
         )}
         whileTap={{ scale: 0.95 }}

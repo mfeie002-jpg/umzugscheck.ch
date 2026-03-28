@@ -1,102 +1,40 @@
 
-# Admin Login Fix: Passwort-Reset + Account-Bestätigung
 
-## Problem-Diagnose
+# Mobile UX Fix: UnifiedABToggle
 
-Die Datenbank zeigt **3 existierende Accounts**, alle korrekt mit der `admin`-Rolle verknüpft:
-- `mfeie002@gmail.com` (ID: ad0e4c55)
-- `mfeie002+admin2@gmail.com` (ID: b87e399e)
-- `mfeie001@gmail.com` (ID: 55a823f7)
+## Problem
+The A/B toggle panel is not mobile-optimized on 390px viewports:
+- Panel position `bottom-24 left-4 right-4` can overlap with sticky CTAs
+- Tab labels at `text-[10px]` are cramped in 4-column grid
+- `max-h-[50vh]` may not leave enough room on small screens with keyboard/bottom bars
+- The floating button at `bottom: calc(safe-area + 96px)` may collide with other fixed elements
+- Nav variant text truncation at `max-w-[180px]` doesn't adapt to screen width
+- Legend sections add unnecessary scroll weight on mobile
 
-Der Login-Code in `AuthContext.tsx` und `src/pages/admin/Login.tsx` ist technisch korrekt. Das Problem ist eines der folgenden:
+## Changes
 
-1. **Passwörter unbekannt** – die Accounts wurden seinerzeit mit unbekannten Passwörtern angelegt
-2. **E-Mail nicht bestätigt** – in Lovable Cloud ist standardmässig E-Mail-Bestätigung aktiv; ohne Bestätigung schlägt `signInWithPassword` mit "Email not confirmed" fehl
-3. **Beides kombiniert**
+**File: `src/components/homepage/UnifiedABToggle.tsx`**
 
-## Lösung
+1. **Panel positioning** — Make panel full-width on mobile with proper safe-area spacing:
+   - Change to `fixed bottom-0 left-0 right-0 sm:bottom-24 sm:left-4 sm:right-auto sm:w-[400px]`
+   - Add `rounded-t-2xl sm:rounded-2xl` for mobile bottom-sheet feel
+   - Reduce `max-h-[50vh]` to `max-h-[60vh]` on mobile (more room since anchored to bottom)
 
-### Schritt A: E-Mail-Bestätigung via SQL-Migration erzwingen
+2. **Floating toggle button** — Reposition for mobile:
+   - Move from `bottom: calc(safe-area + 96px)` to `bottom: calc(safe-area + 72px)` to avoid overlap with sticky CTA
+   - Increase touch target: `py-2.5 px-3` and min-height 44px
 
-Mit einer SQL-Migration werden alle 3 Admin-Accounts direkt als "email confirmed" markiert (ohne dass eine E-Mail angeklickt werden muss):
+3. **Tab grid** — Improve touch targets:
+   - `TabsList`: add `h-auto min-h-[44px]`
+   - `TabsTrigger`: increase to `text-xs py-2` with `min-h-[40px]`
 
-```sql
--- Alle 3 Admin-Accounts als bestätigt markieren
-UPDATE auth.users
-SET email_confirmed_at = now(),
-    updated_at = now()
-WHERE email IN (
-  'mfeie002@gmail.com',
-  'mfeie002+admin2@gmail.com',
-  'mfeie001@gmail.com'
-)
-AND email_confirmed_at IS NULL;
-```
+4. **Nav variant buttons** — Fix text overflow:
+   - Replace `max-w-[180px]` with `max-w-[calc(100%-60px)]` to be viewport-relative
+   - Ensure all buttons have `min-h-[44px]` touch targets
 
-### Schritt B: Passwort für Haupt-Admin setzen
+5. **Legend sections** — Collapse on mobile:
+   - Hide legends by default on mobile with `hidden sm:block` or wrap in a collapsible
+   - Keep them visible on desktop
 
-Via SQL (bcrypt-kompatibler Hash oder direkt über Supabase Admin API in einer Edge Function) wird ein bekanntes Passwort gesetzt.
+6. **Backdrop** — Ensure z-index consistency and proper dismiss area
 
-Da wir keine direkte Admin-API vom Frontend haben, erstellen wir eine **einmalige Reset-Edge-Function** (`admin-set-password`), die:
-- Nur mit dem `SUPABASE_SERVICE_ROLE_KEY` läuft
-- Das Passwort für `mfeie002@gmail.com` auf einen definierten Wert setzt
-- Nach dem ersten Aufruf sich selbst deaktiviert (einmaliger Use)
-
-**Alternativ (sauberer):** SQL direkt auf `auth.users` – Supabase speichert Passwörter in `encrypted_password` als bcrypt. Wir generieren via SQL-Funktion einen validen bcrypt-Hash.
-
-### Schritt C: Login-Seite verbessern
-
-Auf `src/pages/admin/Login.tsx` werden Debug-Informationen hinzugefügt:
-- Anzeige von konkreten Fehlermeldungen ("E-Mail nicht bestätigt" vs. "Falsches Passwort")
-- Direkte Hinweise welche E-Mail-Adresse zu verwenden ist
-- "Passwort vergessen" Link / Reset-Flow
-
-## Konkrete Umsetzung
-
-### 1. SQL-Migration: E-Mail-Bestätigung
-
-Alle 3 existierenden Admin-Accounts werden als `email_confirmed_at = now()` markiert. Das behebt den "Email not confirmed"-Fehler sofort.
-
-### 2. Edge Function `reset-admin-password`
-
-Eine temporäre Edge Function die:
-- `SUPABASE_SERVICE_ROLE_KEY` verwendet (Server-only)
-- `supabase.auth.admin.updateUserById(userId, { password: newPassword })` aufruft
-- Passwort für `mfeie002@gmail.com` auf einen sicheren, bekannten Wert setzt
-
-Das neue Passwort wird in der Antwort der Edge Function zurückgegeben (einmalig, dann im Admin-Dashboard änderbar).
-
-### 3. Login-Seite: Bessere Fehlermeldungen
-
-Bestehende Error-Handling-Logik in `admin/Login.tsx` wird erweitert:
-- "Email not confirmed" → Klare deutsche Meldung mit Erklärung
-- "Invalid login credentials" → Klare Meldung
-- Tipp-Text: Welche E-Mail-Adresse ist die primäre Admin-E-Mail
-
-## Dateiänderungen
-
-```text
-NEU:
-- supabase/functions/reset-admin-password/index.ts   (temporäre One-Shot Funktion)
-
-DB-MIGRATION:
-- auth.users: email_confirmed_at für 3 Admin-Accounts setzen
-
-GEÄNDERT:
-- src/pages/admin/Login.tsx    (bessere Fehlermeldungen + Hinweistext)
-```
-
-## Nach der Implementierung
-
-1. Die 3 Admin-Accounts sind sofort bestätigt (kein E-Mail-Klick nötig)
-2. Die Edge Function `reset-admin-password` kann einmalig aufgerufen werden um das Passwort zu setzen
-3. Login mit `mfeie002@gmail.com` + neuem Passwort funktioniert
-4. Nach erfolgreichem Login: Passwort im Profil auf ein permanentes Wunsch-Passwort ändern
-5. Die temporäre Reset-Funktion kann danach gelöscht werden
-
-## Testen
-
-1. Geh zu `/admin/login`
-2. E-Mail: `mfeie002@gmail.com`
-3. Passwort: wird nach Implementierung bekannt sein
-4. Sollte direkt zum Admin-Dashboard weiterleiten
