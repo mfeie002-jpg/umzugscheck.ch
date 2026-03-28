@@ -290,7 +290,7 @@ Deno.serve(async (req) => {
 
         return new Response(JSON.stringify({
           error: 'Unknown action',
-          available_actions: ['next', 'complete', 'pending', 'debug-last', 'stats'],
+          available_actions: ['create', 'next', 'complete', 'pending', 'debug-last', 'stats'],
         }), {
           status: 400,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
