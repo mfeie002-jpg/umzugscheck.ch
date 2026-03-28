@@ -193,7 +193,7 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
                 </TabsList>
 
                 {/* Homepage Hero Variants - NEW */}
-                <TabsContent value="homepage" className="p-3 pt-2 max-h-[50vh] overflow-y-auto">
+                <TabsContent value="homepage" className="p-3 pt-2 max-h-[60vh] sm:max-h-[50vh] overflow-y-auto">
                   <div className="space-y-2">
                     {(Object.keys(homepageVariants) as HomepageVariant[]).map((hv) => {
                       const info = homepageVariants[hv];
