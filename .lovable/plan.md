@@ -1,27 +1,40 @@
 
 
-# Webhook Update: "create" Action + "openclaw" Agent freischalten
+# Mobile UX Fix: UnifiedABToggle
 
 ## Problem
+The A/B toggle panel is not mobile-optimized on 390px viewports:
+- Panel position `bottom-24 left-4 right-4` can overlap with sticky CTAs
+- Tab labels at `text-[10px]` are cramped in 4-column grid
+- `max-h-[50vh]` may not leave enough room on small screens with keyboard/bottom bars
+- The floating button at `bottom: calc(safe-area + 96px)` may collide with other fixed elements
+- Nav variant text truncation at `max-w-[180px]` doesn't adapt to screen width
+- Legend sections add unnecessary scroll weight on mobile
 
-Die Edge Function hat einen Bug in der Action-Routing-Logik:
-- Zeile 48: `if (body?.action)` fängt alle Requests mit `action` ab
-- Zeile 243: Nur `next`, `complete`, `pending`, `debug-last`, `stats` sind erlaubt → "create" wird als "Unknown action" abgelehnt
-- Die eigentliche "create"-Logik existiert bereits (Zeile 281), wird aber nie erreicht, weil der Action-Router vorher abbricht
-- Agents sind überall auf `codex` und `copilot` hardcoded
+## Changes
 
-## Lösung
+**File: `src/components/homepage/UnifiedABToggle.tsx`**
 
-**1 Datei ändern:** `supabase/functions/ai-task-webhook/index.ts`
+1. **Panel positioning** — Make panel full-width on mobile with proper safe-area spacing:
+   - Change to `fixed bottom-0 left-0 right-0 sm:bottom-24 sm:left-4 sm:right-auto sm:w-[400px]`
+   - Add `rounded-t-2xl sm:rounded-2xl` for mobile bottom-sheet feel
+   - Reduce `max-h-[50vh]` to `max-h-[60vh]` on mobile (more room since anchored to bottom)
 
-- **"create" in den Action-Router aufnehmen** (Zeile ~48-249): Wenn `requestedAction === 'create'`, die bestehende Create-Logik (Zeile 281-320) ausführen
-- **Agent-Whitelist erweitern** auf `['codex', 'copilot', 'openclaw']` an allen 4 Stellen (POST action next, POST action create, GET next, GET complete)
-- **"create" zur `available_actions`-Liste hinzufügen** in der Fehlermeldung
+2. **Floating toggle button** — Reposition for mobile:
+   - Move from `bottom: calc(safe-area + 96px)` to `bottom: calc(safe-area + 72px)` to avoid overlap with sticky CTA
+   - Increase touch target: `py-2.5 px-3` and min-height 44px
 
-Damit kann OpenClaw sofort:
-- `action: "create"` mit `agent: "openclaw"` Tasks erstellen
-- `action: "next"` mit `agent: "openclaw"` Tasks abholen
-- `action: "complete"` Tasks abschliessen
+3. **Tab grid** — Improve touch targets:
+   - `TabsList`: add `h-auto min-h-[44px]`
+   - `TabsTrigger`: increase to `text-xs py-2` with `min-h-[40px]`
 
-Kein DB-Schema-Change nötig – das `agent`-Feld ist ein freier Text.
+4. **Nav variant buttons** — Fix text overflow:
+   - Replace `max-w-[180px]` with `max-w-[calc(100%-60px)]` to be viewport-relative
+   - Ensure all buttons have `min-h-[44px]` touch targets
+
+5. **Legend sections** — Collapse on mobile:
+   - Hide legends by default on mobile with `hidden sm:block` or wrap in a collapsible
+   - Keep them visible on desktop
+
+6. **Backdrop** — Ensure z-index consistency and proper dismiss area
 
