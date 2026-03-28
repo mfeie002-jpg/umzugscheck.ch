@@ -167,7 +167,7 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
 
       {/* Content */}
       <div className="container mx-auto px-4 sm:px-6 pt-2 pb-3 sm:py-7 md:py-8 lg:py-8 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-4 sm:gap-8 lg:gap-12 items-center">
           
           {/* Left Column - Text & CTAs */}
           <motion.div 
