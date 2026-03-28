@@ -167,7 +167,7 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
 
       {/* Content */}
       <div className="container mx-auto px-4 sm:px-6 pt-2 pb-3 sm:py-7 md:py-8 lg:py-8 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-4 sm:gap-8 lg:gap-12 items-center">
           
           {/* Left Column - Text & CTAs */}
           <motion.div 
@@ -289,30 +289,30 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
             className="order-1 lg:order-2"
           >
             {/* Form Card with primary border accent like 4-Tab Hero */}
-            <div className="bg-card rounded-2xl shadow-xl border-2 border-primary/20 hover:border-primary/40 transition-colors p-4 md:p-6 relative ring-1 ring-primary/10">
+            <div className="bg-card rounded-2xl shadow-xl border-2 border-primary/20 hover:border-primary/40 transition-colors p-4 md:p-6 relative ring-1 ring-primary/10 overflow-hidden">
               {/* Best Price Badge - positioned inside card with proper spacing */}
-              <div className="flex justify-center mb-4">
-                <span className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-secondary text-white text-xs font-bold rounded-full shadow-lg whitespace-nowrap">
-                  <Trophy className="w-3.5 h-3.5" />
+              <div className="flex justify-center mb-3 sm:mb-4">
+                <span className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 bg-secondary text-white text-xs font-bold rounded-full shadow-lg whitespace-nowrap">
+                  <Trophy className="w-3.5 h-3.5 shrink-0" />
                   Bester Preis garantiert
                 </span>
               </div>
 
-              <div className="space-y-5">
+              <div className="space-y-4 sm:space-y-5">
                 {/* Form Header */}
-                <div className="text-center space-y-2">
-                  <h2 className="text-xl md:text-2xl font-bold text-foreground">
+                <div className="text-center space-y-1 sm:space-y-2">
+                  <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground">
                     200+ Firmen vergleichen
                   </h2>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-xs sm:text-sm text-muted-foreground">
                     Wir finden den günstigsten Anbieter für Sie
                   </p>
                   {/* Consolidated Social Proof Line - Rating + Online + Route */}
-                  <HeroSocialProofLine className="pt-2" />
+                  <HeroSocialProofLine className="pt-1 sm:pt-2" />
                 </div>
 
                 {/* Form */}
-                <form ref={formRef} onSubmit={handleSubmit} className="space-y-5">
+                <form ref={formRef} onSubmit={handleSubmit} className="space-y-3 sm:space-y-5">
                   {/* From - with Geolocation button */}
                   <div className="space-y-2">
                     <Label htmlFor="from-postal" className="text-sm font-medium flex items-center gap-1">
