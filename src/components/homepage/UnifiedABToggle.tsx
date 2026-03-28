@@ -129,7 +129,7 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
     <div 
       className="fixed z-[90] pointer-events-auto"
       style={{ 
-        bottom: 'calc(env(safe-area-inset-bottom, 0px) + 96px)',
+        bottom: 'calc(env(safe-area-inset-bottom, 0px) + 72px)',
         left: '16px'
       }}
     >
