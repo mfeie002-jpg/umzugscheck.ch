@@ -259,7 +259,7 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
                             )}>
                               {variantNum}
                             </span>
-                            <span className="truncate max-w-[180px]">{nv.name.replace(/^\d+\.\s*/, '')}</span>
+                            <span className="truncate max-w-[calc(100%-60px)]">{nv.name.replace(/^\d+\.\s*/, '')}</span>
                           </span>
                           {isActive && <Check className="w-4 h-4 flex-shrink-0" />}
                         </button>
