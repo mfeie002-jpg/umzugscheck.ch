@@ -227,8 +227,8 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
                     })}
                   </div>
                   
-                  {/* Legend */}
-                  <div className="mt-4 p-3 bg-muted/30 rounded-lg text-xs text-muted-foreground space-y-1">
+                  {/* Legend - hidden on mobile */}
+                  <div className="hidden sm:block mt-4 p-3 bg-muted/30 rounded-lg text-xs text-muted-foreground space-y-1">
                     <div><strong>A:</strong> Original - Split mit Formular rechts (Screenshot)</div>
                     <div><strong>B:</strong> Premium - 4 Tabs (Formular/Video/Chat/WA)</div>
                     <div><strong>C:</strong> SmartRouter - PLZ-first Wizard</div>
