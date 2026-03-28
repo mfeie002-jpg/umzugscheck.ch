@@ -376,7 +376,7 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
       <motion.button
         onClick={() => setIsExpanded(!isExpanded)}
         className={cn(
-          "flex items-center gap-1 px-2.5 py-2 rounded-full shadow-2xl border-2 text-white font-bold transition-all",
+          "flex items-center gap-1 px-3 py-2.5 min-h-[44px] rounded-full shadow-2xl border-2 text-white font-bold transition-all",
           "bg-gradient-to-r from-primary to-primary/80 border-white/30 hover:scale-105"
         )}
         whileTap={{ scale: 0.95 }}
