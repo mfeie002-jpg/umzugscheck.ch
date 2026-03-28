@@ -328,8 +328,8 @@ Deno.serve(async (req) => {
       // Format 4: Direct task creation (for scheduled tasks / direct API)
       if (body.action === 'create' && body.task) {
         const task = body.task
-        if (!task.agent || !['codex', 'copilot'].includes(task.agent)) {
-          return new Response(JSON.stringify({ error: 'task.agent must be codex or copilot' }), {
+        if (!task.agent || !['codex', 'copilot', 'openclaw'].includes(task.agent)) {
+          return new Response(JSON.stringify({ error: 'task.agent must be codex, copilot, or openclaw' }), {
             status: 400,
             headers: { ...corsHeaders, 'Content-Type': 'application/json' }
           })
