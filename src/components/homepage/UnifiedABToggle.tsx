@@ -173,21 +173,21 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
 
               {/* Tabs */}
               <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as 'homepage' | 'nav' | 'social' | 'hero')} className="w-full">
-                <TabsList className="w-full grid grid-cols-4 p-1 m-3 mb-0 bg-muted/50">
-                  <TabsTrigger value="homepage" className="gap-1 text-[10px] px-1">
-                    <LayoutTemplate className="w-3 h-3" />
+                <TabsList className="w-full grid grid-cols-4 p-1 m-3 mb-0 bg-muted/50 h-auto min-h-[44px]">
+                  <TabsTrigger value="homepage" className="gap-1 text-xs px-1.5 py-2 min-h-[40px]">
+                    <LayoutTemplate className="w-3.5 h-3.5" />
                     Hero
                   </TabsTrigger>
-                  <TabsTrigger value="nav" className="gap-1 text-[10px] px-1">
-                    <Navigation className="w-3 h-3" />
+                  <TabsTrigger value="nav" className="gap-1 text-xs px-1.5 py-2 min-h-[40px]">
+                    <Navigation className="w-3.5 h-3.5" />
                     Nav
                   </TabsTrigger>
-                  <TabsTrigger value="social" className="gap-1 text-[10px] px-1">
-                    <Sparkles className="w-3 h-3" />
+                  <TabsTrigger value="social" className="gap-1 text-xs px-1.5 py-2 min-h-[40px]">
+                    <Sparkles className="w-3.5 h-3.5" />
                     Social
                   </TabsTrigger>
-                  <TabsTrigger value="hero" className="gap-1 text-[10px] px-1">
-                    <MousePointerClick className="w-3 h-3" />
+                  <TabsTrigger value="hero" className="gap-1 text-xs px-1.5 py-2 min-h-[40px]">
+                    <MousePointerClick className="w-3.5 h-3.5" />
                     Tabs
                   </TabsTrigger>
                 </TabsList>
