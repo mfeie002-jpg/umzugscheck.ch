@@ -102,7 +102,7 @@ const Index = () => {
     <ErrorBoundary>
       {/* Initialize A/B variants from URL params (for Comparison Lab) */}
       <ABUrlInitializer />
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background overflow-x-clip md:overflow-x-visible">
         <Helmet>
           <html lang="de-CH" />
           <title>Umzugsfirmen vergleichen Schweiz 2025 – Kostenlos Offerten erhalten | Umzugscheck.ch</title>
@@ -229,12 +229,14 @@ const Index = () => {
           <MobileStickyBar />
         </Suspense>
         
-        {/* WhatsApp floating button - appears after 30 seconds */}
-        <FloatingWhatsApp 
-          phoneNumber="41780980000" 
-          message="Hallo! Ich interessiere mich für einen Umzug und hätte gerne mehr Informationen."
-          delayMs={30000}
-        />
+        {/* WhatsApp floating button - desktop only to avoid mobile overlap with sticky CTA/form */}
+        <div className="hidden md:block">
+          <FloatingWhatsApp 
+            phoneNumber="41780980000" 
+            message="Hallo! Ich interessiere mich für einen Umzug und hätte gerne mehr Informationen."
+            delayMs={30000}
+          />
+        </div>
         
         {/* Exit Intent - Mobile (scroll velocity) + Desktop (mouse leave) */}
         <ExitIntentMobileSheet />

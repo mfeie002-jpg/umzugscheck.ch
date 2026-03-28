@@ -45,7 +45,7 @@ export function SmartRouterHero({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.2 }}
-        className="flex flex-wrap items-center justify-center gap-3 sm:gap-4"
+        className="mx-auto flex max-w-full flex-wrap items-center justify-center gap-2 sm:gap-4"
       >
         {SWISS_TRUST_BADGES.map((badge, index) => (
           <motion.div
@@ -53,7 +53,7 @@ export function SmartRouterHero({
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 + index * 0.05 }}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-muted/50 rounded-full text-sm"
+            className="flex max-w-full items-center gap-1.5 rounded-full bg-muted/50 px-2.5 py-1.5 text-xs sm:px-3 sm:text-sm"
             title={badge.description}
           >
             <span className="text-base">{badge.icon}</span>

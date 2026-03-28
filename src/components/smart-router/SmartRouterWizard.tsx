@@ -283,7 +283,7 @@ export function SmartRouterWizard() {
         )}
       </AnimatePresence>
 
-      <div className="w-full max-w-2xl mx-auto">
+      <div className="w-full max-w-2xl mx-auto overflow-x-clip px-0">
         {/* Hero with Festpreis headline - only on PLZ step */}
         {showHero && (
           <SmartRouterHero variant="festpreis" className="mb-8" />
@@ -306,8 +306,8 @@ export function SmartRouterWizard() {
         )}
 
         {/* Main content card */}
-        <Card className="border-0 shadow-xl bg-card/95 backdrop-blur">
-          <CardContent className="p-6 sm:p-8">
+        <Card className="w-full max-w-full overflow-hidden border-0 shadow-xl bg-card/95 backdrop-blur">
+          <CardContent className="p-4 sm:p-6 md:p-8">
             <AnimatePresence mode="wait">
               {currentStep === 'plz' && (
                 <PLZStep

@@ -24,8 +24,8 @@ import { SmartRouterWizard } from '@/components/smart-router';
 
 const SmartRouterHero = memo(function SmartRouterHero() {
   return (
-    <section className="relative bg-gradient-to-b from-background to-muted/30 py-6 sm:py-8">
-      <div className="container mx-auto px-4">
+    <section className="relative overflow-x-clip bg-gradient-to-b from-background to-muted/30 py-4 sm:py-6">
+      <div className="container mx-auto max-w-full px-3 sm:px-4 overflow-x-clip">
         {/* Smart Router Wizard - Social Proof is handled by TrustRibbonAB in Index.tsx */}
         <SmartRouterWizard />
       </div>

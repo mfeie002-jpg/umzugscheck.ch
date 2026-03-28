@@ -91,7 +91,7 @@ export const MobileBottomNav = () => {
   if (shouldHide) return null;
 
   return (
-    <nav className="site-bottom-nav fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-border shadow-lg pb-safe" aria-label="Mobile Navigation">
+    <nav className="site-bottom-nav fixed bottom-0 left-0 right-0 z-40 bg-background border-t border-border shadow-lg pb-safe" aria-label="Mobile Navigation">
       <div className="flex items-center justify-around h-14 min-h-[56px]">
         {dynamicNavItems.map((item) => {
           const isMenu = item.href === "menu";

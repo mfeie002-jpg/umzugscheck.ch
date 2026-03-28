@@ -50,7 +50,7 @@ export const MobileStickyBar = memo(() => {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
           transition={{ type: "spring", stiffness: 400, damping: 30 }}
-          className="md:hidden fixed bottom-0 left-0 right-0 z-50 safe-area-bottom"
+          className="md:hidden fixed bottom-0 left-0 right-0 z-40 safe-area-bottom"
         >
           {/* Gradient fade effect at top */}
           <div className="absolute inset-x-0 -top-6 h-6 bg-gradient-to-t from-background to-transparent pointer-events-none" />

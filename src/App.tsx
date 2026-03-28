@@ -204,6 +204,7 @@ const Contact = lazy(() => import("./pages/Contact"));
 const About = lazy(() => import("./pages/About"));
 const FAQ = lazy(() => import("./pages/FAQ"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+const ErrorPage = lazy(() => import("./pages/ErrorPage"));
 const Sitemap = lazy(() => import("./pages/Sitemap"));
 const RoomPlannerDemo = lazy(() => import("./pages/RoomPlannerDemo"));
 const DataJournalismPage = lazy(() => import("./pages/DataJournalismPage"));
@@ -1000,7 +1001,7 @@ const AppRouterContent = () => {
           <Route path="/test/trust-v4" element={<TrustLandingV4 />} />
           <Route path="/test/trust-comparison" element={<TrustComparisonHub />} />
 
-          <Route path="*" element={<NotFound />} />
+          <Route path="*" element={<ErrorPage />} />
         </AnimatedRoutes>
       </Suspense>
     </MainLayout>
@@ -1047,3 +1048,4 @@ const App = () => (
 );
 
 export default App;
+
