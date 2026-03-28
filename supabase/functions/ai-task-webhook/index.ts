@@ -500,8 +500,8 @@ Deno.serve(async (req) => {
       const agent = url.searchParams.get('agent')
       const autoGenerate = url.searchParams.get('auto_generate') !== 'false' // Default: true
       
-      if (!agent || !['codex', 'copilot'].includes(agent)) {
-        return new Response(JSON.stringify({ error: 'agent must be codex or copilot' }), {
+      if (!agent || !['codex', 'copilot', 'openclaw'].includes(agent)) {
+        return new Response(JSON.stringify({ error: 'agent must be codex, copilot, or openclaw' }), {
           status: 400,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         })
