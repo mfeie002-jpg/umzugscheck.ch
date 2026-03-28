@@ -1,0 +1,42 @@
+{
+  "slug": "bern",
+  "name": "Bern",
+  "canton": "BE",
+  "plz": [
+    "3000",
+    "3001",
+    "3004",
+    "3005",
+    "3006",
+    "3007",
+    "3008",
+    "3011",
+    "3012",
+    "3013",
+    "3014",
+    "3015",
+    "3018",
+    "3027"
+  ],
+  "population": 134506,
+  "h1": "Umzug Bern – Offerten vergleichen & sparen",
+  "metaTitle": "Umzug Bern | Umzugsfirmen vergleichen",
+  "metaDescription": "Planst du einen Umzug nach Bern? Kostenlose Offerten vergleichen, Steuerfuss checken (154%) und Abfallkalender downloaden.",
+  "intro": "Ein Umzug nach Bern bringt viele Vorteile. Mit einer Bevölkerung von 134'506 bietet die Stadt eine hervorragende Infrastruktur. Vergiss nicht, dich rechtzeitig beim Einwohneramt unter https://www.bern.ch/themen/umzug-und-wohnen/umzug/anmelden anzumelden.",
+  "localTips": [
+    "Aktueller Steuerfuss in Bern: 154%",
+    "Melde dich innert 14 Tagen nach Zuzug an.",
+    "Lade dir den offiziellen Abfallkalender für Bern herunter: https://www.bern.ch/themen/abfall/abfuhrdaten"
+  ],
+  "faqs": [
+    {
+      "q": "Wie hoch ist der Steuerfuss in Bern?",
+      "a": "Der aktuelle kombinierte Steuerfuss liegt bei 154%."
+    },
+    {
+      "q": "Wo melde ich mich in Bern an?",
+      "a": "Die Anmeldung erfolgt bei der Einwohnerkontrolle. Du findest das Formular hier: https://www.bern.ch/themen/umzug-und-wohnen/umzug/anmelden"
+    }
+  ],
+  "nearbyGemeinden": []
+}

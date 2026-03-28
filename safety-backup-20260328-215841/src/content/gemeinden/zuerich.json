@@ -1,0 +1,52 @@
+{
+  "slug": "zuerich",
+  "name": "Zürich",
+  "canton": "ZH",
+  "plz": [
+    "8000",
+    "8001",
+    "8002",
+    "8003",
+    "8004",
+    "8005",
+    "8006",
+    "8008",
+    "8032",
+    "8037",
+    "8038",
+    "8041",
+    "8044",
+    "8045",
+    "8046",
+    "8047",
+    "8048",
+    "8049",
+    "8050",
+    "8051",
+    "8052",
+    "8053",
+    "8055",
+    "8057"
+  ],
+  "population": 443037,
+  "h1": "Umzug Zürich – Offerten vergleichen & sparen",
+  "metaTitle": "Umzug Zürich | Umzugsfirmen vergleichen",
+  "metaDescription": "Planst du einen Umzug nach Zürich? Kostenlose Offerten vergleichen, Steuerfuss checken (218%) und Abfallkalender downloaden.",
+  "intro": "Ein Umzug nach Zürich bringt viele Vorteile. Mit einer Bevölkerung von 443'037 bietet die Stadt eine hervorragende Infrastruktur. Vergiss nicht, dich rechtzeitig beim Einwohneramt unter https://www.stadt-zuerich.ch/prd/de/index/bevoelkerungsamt/personenmeldeamt.html anzumelden.",
+  "localTips": [
+    "Aktueller Steuerfuss in Zürich: 218%",
+    "Melde dich innert 14 Tagen nach Zuzug an.",
+    "Lade dir den offiziellen Abfallkalender für Zürich herunter: https://www.stadt-zuerich.ch/ted/de/index/entsorgung_recycling/entsorgungskalender.html"
+  ],
+  "faqs": [
+    {
+      "q": "Wie hoch ist der Steuerfuss in Zürich?",
+      "a": "Der aktuelle kombinierte Steuerfuss liegt bei 218%."
+    },
+    {
+      "q": "Wo melde ich mich in Zürich an?",
+      "a": "Die Anmeldung erfolgt bei der Einwohnerkontrolle. Du findest das Formular hier: https://www.stadt-zuerich.ch/prd/de/index/bevoelkerungsamt/personenmeldeamt.html"
+    }
+  ],
+  "nearbyGemeinden": []
+}

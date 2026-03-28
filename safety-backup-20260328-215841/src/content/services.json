@@ -1,0 +1,56 @@
+[
+  {
+    "id": "privatumzug",
+    "name": "Privatumzug",
+    "description": "Komplettservice für Ihren privaten Umzug",
+    "icon": "🏠",
+    "link": "/dienstleistungen/privatumzug",
+    "category": "main",
+    "order": 1
+  },
+  {
+    "id": "firmenumzug",
+    "name": "Firmenumzug",
+    "description": "Professioneller Umzug für Ihr Unternehmen",
+    "icon": "🏢",
+    "link": "/dienstleistungen/firmenumzug",
+    "category": "main",
+    "order": 2
+  },
+  {
+    "id": "reinigung",
+    "name": "Reinigung",
+    "description": "Professionelle End- und Grundreinigung",
+    "icon": "✨",
+    "link": "/dienstleistungen/reinigung",
+    "category": "additional",
+    "order": 3
+  },
+  {
+    "id": "entsorgung",
+    "name": "Entsorgung",
+    "description": "Fachgerechte Entsorgung und Recycling",
+    "icon": "♻️",
+    "link": "/dienstleistungen/entsorgung",
+    "category": "additional",
+    "order": 4
+  },
+  {
+    "id": "moebellift",
+    "name": "Möbellift",
+    "description": "Sichere Beförderung über Außenfassade",
+    "icon": "⬆️",
+    "link": "/dienstleistungen/moebellift",
+    "category": "additional",
+    "order": 5
+  },
+  {
+    "id": "verpackung",
+    "name": "Verpackungsservice",
+    "description": "Professionelles Verpacken Ihres Eigentums",
+    "icon": "📦",
+    "link": "/dienstleistungen/verpackung",
+    "category": "additional",
+    "order": 6
+  }
+]

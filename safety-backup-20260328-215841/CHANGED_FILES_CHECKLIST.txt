@@ -1,0 +1,19 @@
+Files currently detected as changed:
+
+package-lock.json
+src/App.tsx
+src/components/MobileBottomNav.tsx
+src/components/homepage/HomepageHeroAB.tsx
+src/components/homepage/MobileStickyBar.tsx
+src/components/smart-router/SmartRouterWizard.tsx
+src/components/smart-router/components/SmartRouterHero.tsx
+src/components/ui/FloatingWhatsApp.tsx
+src/pages/Index.tsx
+src/components/FlowErrorDisplay.tsx
+src/hooks/useFlowNavigation.ts
+src/pages/ErrorPage.tsx
+src/content/gemeinden/basel.json
+src/content/gemeinden/bern.json
+src/content/gemeinden/genf-genève.json
+src/content/gemeinden/lausanne.json
+src/content/gemeinden/zuerich.json

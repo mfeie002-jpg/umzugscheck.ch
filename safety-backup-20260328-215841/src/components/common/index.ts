@@ -1,0 +1,160 @@
+// Common reusable components
+export { TrustBadges, InlineTrustBadge } from './TrustBadges';
+export { CTASection } from './CTASection';
+export { SectionHeader } from './SectionHeader';
+export { InternalLinksBlock, QuickLinks } from './InternalLinksBlock';
+export { StatCounter } from './StatCounter';
+export { GradientText } from './GradientText';
+export { PulseDot } from './PulseDot';
+export { FeatureBadge } from './FeatureBadge';
+export { SectionDivider } from './SectionDivider';
+export { IconBox } from './IconBox';
+export { FloatingElement } from './FloatingElement';
+export { ProgressBar } from './ProgressBar';
+
+// New optimized components
+export { ShimmerButton } from './ShimmerButton';
+export { GlassCard } from './GlassCard';
+export { FloatingBadge } from './FloatingBadge';
+export { TrustBadge } from './TrustBadge';
+export { SectionTitle } from './SectionTitle';
+export { CompactStats } from './CompactStats';
+export { MiniCarousel } from './MiniCarousel';
+export { StarRating } from '@/components/ui/rating-stars';
+export { PriceBadge } from './PriceBadge';
+
+// Advanced components
+export { OptimizedImage } from './OptimizedImage';
+export { AnimatedBadge } from './AnimatedBadge';
+export { CountUpNumber } from '@/components/ui/animated-counter';
+export { SectionWrapper } from './SectionWrapper';
+export { CardHover } from './CardHover';
+export { CTAButton } from './CTAButton';
+export { LoadingSkeleton } from './LoadingSkeleton';
+export { TrustIndicator } from './TrustIndicator';
+export { FeatureCard } from './FeatureCard';
+export { StepCard } from './StepCard';
+export { ServiceCard } from './ServiceCard';
+export { StatsRow } from './StatsRow';
+export { BackgroundShapes } from './BackgroundShapes';
+export { ScrollToTopButton } from './ScrollToTopButton';
+export { TestimonialCard } from './TestimonialCard';
+export { RegionLink } from './RegionLink';
+export { FAQItem } from './FAQItem';
+export { CompanyCardCompact } from './CompanyCardCompact';
+export { TypewriterText } from './TypewriterText';
+export { InfoBanner } from './InfoBanner';
+
+// Wave 4 - Animation & UX components
+export { AnimatedGradient } from './AnimatedGradient';
+export { RippleButton } from './RippleButton';
+export { ParallaxSection } from './ParallaxSection';
+export { CountdownTimer } from './CountdownTimer';
+export { HighlightText } from './HighlightText';
+export { StatCard } from './StatCard';
+export { ScrollIndicator } from './ScrollIndicator';
+export { AnimatedCheckmark } from './AnimatedCheckmark';
+export { FloatingLabel } from './FloatingLabel';
+export { ProgressSteps } from './ProgressSteps';
+export { Tooltip } from './Tooltip';
+export { Badge3D } from './Badge3D';
+export { AnimatedList } from './AnimatedList';
+export { PriceDisplay } from './PriceDisplay';
+export { QuoteCard } from './QuoteCard';
+export { FeatureList } from './FeatureList';
+export { AccordionCard } from './AccordionCard';
+export { InfoTooltip } from './InfoTooltip';
+export { LiveIndicator } from './LiveIndicator';
+export { ComparisonTable } from './ComparisonTable';
+export { TagCloud } from './TagCloud';
+export { EmptyState } from './EmptyState';
+export { NotificationBadge } from './NotificationBadge';
+
+// Wave 5 - Advanced Animation Components
+export { GradientBorder } from './GradientBorder';
+export { BlurReveal } from './BlurReveal';
+export { MagneticButton } from './MagneticButton';
+export { TextReveal } from './TextReveal';
+export { NumberTicker } from '@/components/ui/animated-counter';
+export { Marquee } from './Marquee';
+export { FloatingDock } from './FloatingDock';
+export { BentoGrid, BentoCard } from './BentoGrid';
+export { GlowingCard } from './GlowingCard';
+export { StackedCards } from './StackedCards';
+export { Confetti } from './Confetti';
+export { AnimatedCounter } from '@/components/ui/animated-counter';
+export { Beam } from './Beam';
+export { SplitText } from './SplitText';
+export { Dock, DockIcon } from './Dock';
+export { HeroGradient } from './HeroGradient';
+export { GridPattern } from './GridPattern';
+export { DotPattern } from './DotPattern';
+export { FloatingIcon } from './FloatingIcon';
+export { BorderBeam } from './BorderBeam';
+export { ShinyText } from './ShinyText';
+export { RetroGrid } from './RetroGrid';
+
+// Wave 6 - New Premium Components
+export { AnimatedBackground } from './AnimatedBackground';
+export { TypewriterHeadline } from './TypewriterHeadline';
+export { FloatingCard } from './FloatingCard';
+export { AnimatedPrice } from './AnimatedPrice';
+export { PulsingBadge } from './PulsingBadge';
+export { ScrollProgress } from './ScrollProgress';
+export { AnimatedGradientBorder } from './AnimatedGradientBorder';
+export { CountdownBadge } from './CountdownBadge';
+export { StaggeredList } from './StaggeredList';
+export { GlowingButton } from './GlowingButton';
+export { AnimatedIcon } from './AnimatedIcon';
+export { SpotlightCard } from './SpotlightCard';
+export { AnimatedCheckList } from './AnimatedCheckList';
+export { ParticleField } from './ParticleField';
+export { MorphingText } from './MorphingText';
+export { RatingStars } from '@/components/ui/rating-stars';
+export { WaveSection } from './WaveSection';
+export { GlassmorphismCard } from './GlassmorphismCard';
+export { RevealOnScroll } from './RevealOnScroll';
+export { InteractiveCard } from './InteractiveCard';
+export { TextShimmer } from './TextShimmer';
+export { AnimatedArrow } from './AnimatedArrow';
+
+// Wave 7 - Advanced Animation & UI Components
+export { FloatingParticles } from './FloatingParticles';
+export { GradientBorderCard } from './GradientBorderCard';
+export { SmoothReveal } from './SmoothReveal';
+export { MouseFollower } from './MouseFollower';
+export { AnimatedGradientText } from './AnimatedGradientText';
+export { PulseRing } from './PulseRing';
+export { TypingText } from './TypingText';
+export { ShineEffect } from './ShineEffect';
+export { StaggerContainer, StaggerItem } from './StaggerContainer';
+export { CountBadge } from './CountBadge';
+export { AnimatedDivider } from './AnimatedDivider';
+export { HoverScale } from './HoverScale';
+export { GlowEffect } from './GlowEffect';
+export { AnimatedBorder } from './AnimatedBorder';
+export { SectionBadge } from './SectionBadge';
+export { AnimatedCheck } from './AnimatedCheck';
+export { ScrollRevealSection } from './ScrollRevealSection';
+export { LiveDot } from './LiveDot';
+export { GradientBackground } from './GradientBackground';
+export { BadgeWithIcon } from './BadgeWithIcon';
+
+// Wave 8 - Archetyp Edition Components
+export { SwissTrustBadges, HeroTrustStrip, ASTAGBadge, GuaranteeBadge, MiniTrustIndicator } from './SwissTrustBadges';
+export { StickyCTABar, FloatingCTAButton } from './StickyCTABar';
+export { PriceRangeDisplay, ZuegeltagIndicator, FlexDateBadge } from './PriceRangeDisplay';
+
+// Global UX Fixes - Applied across all flows
+export { 
+  StickyFooterSafeArea,
+  ProgressIndicatorFixed,
+  TouchTarget,
+  NoHorizontalScroll,
+  ValidationHint,
+  StickyFooter,
+  ResponsiveGrid,
+  NavigationButtons,
+  GLOBAL_UX_CLASSES,
+  STICKY_FOOTER_HEIGHTS 
+} from './GlobalUXFixes';

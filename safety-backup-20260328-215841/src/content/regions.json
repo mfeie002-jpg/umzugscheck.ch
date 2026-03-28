@@ -1,0 +1,82 @@
+[
+  {
+    "id": "zuerich",
+    "name": "Zürich",
+    "slug": "zuerich",
+    "canton": "ZH",
+    "isMainCity": true,
+    "order": 1
+  },
+  {
+    "id": "bern",
+    "name": "Bern",
+    "slug": "bern",
+    "canton": "BE",
+    "isMainCity": true,
+    "order": 2
+  },
+  {
+    "id": "basel",
+    "name": "Basel",
+    "slug": "basel",
+    "canton": "BS",
+    "isMainCity": true,
+    "order": 3
+  },
+  {
+    "id": "luzern",
+    "name": "Luzern",
+    "slug": "luzern",
+    "canton": "LU",
+    "isMainCity": true,
+    "order": 4
+  },
+  {
+    "id": "stgallen",
+    "name": "St. Gallen",
+    "slug": "stgallen",
+    "canton": "SG",
+    "isMainCity": true,
+    "order": 5
+  },
+  {
+    "id": "aargau",
+    "name": "Aargau",
+    "slug": "aargau",
+    "canton": "AG",
+    "isMainCity": false,
+    "order": 6
+  },
+  {
+    "id": "zug",
+    "name": "Zug",
+    "slug": "zug",
+    "canton": "ZG",
+    "isMainCity": true,
+    "order": 7
+  },
+  {
+    "id": "genf",
+    "name": "Genf",
+    "slug": "genf",
+    "canton": "GE",
+    "isMainCity": true,
+    "order": 8
+  },
+  {
+    "id": "waadt",
+    "name": "Waadt",
+    "slug": "waadt",
+    "canton": "VD",
+    "isMainCity": false,
+    "order": 9
+  },
+  {
+    "id": "tessin",
+    "name": "Tessin",
+    "slug": "tessin",
+    "canton": "TI",
+    "isMainCity": false,
+    "order": 10
+  }
+]

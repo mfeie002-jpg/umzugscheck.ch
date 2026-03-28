@@ -1,0 +1,666 @@
+import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowRight, MapPin, Home, CheckCircle2, AlertCircle } from "lucide-react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { calculatorApi } from "@/lib/api";
+import { useAnalytics } from "@/lib/analytics";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { swissPostalCodes, PostalCodeEntry } from "@/lib/swiss-postal-codes";
+
+const formSchema = z.object({
+  fromPostal: z.string().min(4, "Bitte gültige PLZ eingeben").max(10),
+  fromCity: z.string().min(2, "Bitte Ort eingeben"),
+  toPostal: z.string().min(4, "Bitte gültige PLZ eingeben").max(10),
+  toCity: z.string().min(2, "Bitte Ort eingeben"),
+  rooms: z.string().min(1, "Bitte Zimmerzahl wählen"),
+  movingType: z.string().min(1, "Bitte Umzugsart wählen"),
+  floorsFrom: z.string(),
+  floorsTo: z.string(),
+  hasElevatorFrom: z.boolean(),
+  hasElevatorTo: z.boolean(),
+});
+
+const parseAddress = (address: string): { postal: string; city: string } => {
+  // Try to match "CODE - CITY" format from datalist selection
+  const datalistMatch = address.match(/^(\d{4})\s*-\s*(.+)$/);
+  if (datalistMatch) {
+    return { postal: datalistMatch[1], city: datalistMatch[2].trim() };
+  }
+  // Try to match "CODE CITY" format
+  const spaceMatch = address.match(/^(\d{4,5})\s+(.+)$/);
+  if (spaceMatch) {
+    return { postal: spaceMatch[1], city: spaceMatch[2] };
+  }
+  return { postal: "", city: address };
+};
+
+const filterPostalCodes = (query: string): PostalCodeEntry[] => {
+  if (!query || query.trim().length < 1) {
+    return swissPostalCodes.slice(0, 30);
+  }
+  
+  const lowerQuery = query.toLowerCase().trim();
+  
+  return swissPostalCodes
+    .filter(entry => 
+      entry.code.startsWith(lowerQuery) || 
+      entry.city.toLowerCase().startsWith(lowerQuery) ||
+      entry.city.toLowerCase().includes(lowerQuery)
+    )
+    .slice(0, 50);
+};
+
+export const QuickCalculator = ({ embedded = false }: { embedded?: boolean }) => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const analytics = useAnalytics();
+  const [searchParams] = useSearchParams();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [fromPostalQuery, setFromPostalQuery] = useState("");
+  const [toPostalQuery, setToPostalQuery] = useState("");
+
+  const fromParam = searchParams.get("from") || "";
+  const toParam = searchParams.get("to") || "";
+  const fromAddress = parseAddress(fromParam);
+  const toAddress = parseAddress(toParam);
+  const hasUrlParams = !!(fromParam && toParam);
+
+  useEffect(() => {
+    analytics.trackCalculatorStarted('quick');
+  }, []);
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      fromPostal: fromAddress.postal,
+      fromCity: fromAddress.city,
+      toPostal: toAddress.postal,
+      toCity: toAddress.city,
+      rooms: hasUrlParams ? "3" : "", // Default to 3 rooms when coming from homepage
+      movingType: "local",
+      floorsFrom: "0",
+      floorsTo: "0",
+      hasElevatorFrom: false,
+      hasElevatorTo: false,
+    },
+  });
+
+  // Auto-submit when coming from homepage mini calculator
+  useEffect(() => {
+    if (hasUrlParams && fromAddress.postal && toAddress.postal) {
+      // Small delay to ensure form is fully initialized
+      const timer = setTimeout(() => {
+        form.handleSubmit(onSubmit)();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [hasUrlParams, fromAddress.postal, toAddress.postal]);
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setIsSubmitting(true);
+    setError(null);
+    
+    try {
+      // Call API with properly typed data
+      const requestData: any = {
+        fromPostal: values.fromPostal,
+        fromCity: values.fromCity,
+        toPostal: values.toPostal,
+        toCity: values.toCity,
+        rooms: values.rooms,
+        movingType: values.movingType,
+        floorsFrom: values.floorsFrom,
+        floorsTo: values.floorsTo,
+        hasElevatorFrom: values.hasElevatorFrom,
+        hasElevatorTo: values.hasElevatorTo,
+      };
+
+      const response = await calculatorApi.quick(requestData);
+      
+      if (response.error) {
+        setError(response.error);
+        analytics.trackError('calculator_api_error', { 
+          calculator_type: 'quick',
+          error: response.error 
+        });
+        toast({
+          title: "Berechnung fehlgeschlagen",
+          description: response.error,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (!response.data) {
+        throw new Error('Keine Daten erhalten');
+      }
+
+      // Track completion
+      analytics.trackCalculatorCompleted('quick', response.data);
+      
+      // Create estimate session
+      const { data: sessionData, error: sessionError } = await supabase.functions.invoke(
+        'create-estimate-session',
+        {
+          body: {
+            moveDetails: values,
+            estimate: response.data,
+          },
+        }
+      );
+
+      if (sessionError || !sessionData?.success) {
+        throw new Error(sessionData?.error?.message || 'Failed to create estimate session');
+      }
+
+      // Navigate to new result page
+      navigate(`/ergebnis/${sessionData.data.id}`);
+      
+      toast({
+        title: "Erfolg",
+        description: "Kostenschätzung erfolgreich berechnet!",
+      });
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Ein unerwarteter Fehler ist aufgetreten';
+      setError(errorMsg);
+      analytics.trackError('calculator_error', { 
+        calculator_type: 'quick',
+        error: errorMsg 
+      });
+      toast({
+        title: "Fehler",
+        description: errorMsg,
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (embedded) {
+    return (
+      <div className="bg-white rounded-xl sm:rounded-2xl shadow-strong p-4 sm:p-6 md:p-8 text-foreground">
+        <div className="space-y-4 sm:space-y-6">
+          <div>
+            <h3 className="text-xl sm:text-2xl font-bold mb-2">Schnell-Rechner</h3>
+            <p className="text-sm sm:text-base text-muted-foreground">Erhalten Sie in 60 Sekunden eine präzise Kostenschätzung</p>
+          </div>
+
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              {error && (
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
+              
+              <FormField
+                control={form.control}
+                name="fromPostal"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium">Von (PLZ/Ort)</FormLabel>
+                    <FormControl>
+                      <>
+                        <Input 
+                          placeholder="PLZ oder Ort eingeben..." 
+                          {...field}
+                          value={fromPostalQuery || field.value}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            setFromPostalQuery(value);
+                            // Check if user selected from datalist
+                            const match = value.match(/^(\d{4})\s*-\s*([^(]+)(?:\(([^)]+)\))?$/);
+                            if (match) {
+                              const [, code, city] = match;
+                              field.onChange(code);
+                              form.setValue('fromCity', city.trim());
+                            } else {
+                              field.onChange(value);
+                            }
+                          }}
+                          list="fromPostalListEmbedded"
+                          className="h-11" 
+                        />
+                        <datalist id="fromPostalListEmbedded">
+                          {filterPostalCodes(fromPostalQuery || field.value).map((entry) => (
+                            <option key={`${entry.code}-${entry.city}`} value={`${entry.code} - ${entry.city} (${entry.canton})`} />
+                          ))}
+                        </datalist>
+                      </>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="fromCity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium">Von (Ort)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="z.B. Zürich" {...field} className="h-11" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="toPostal"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium">Nach (PLZ/Ort)</FormLabel>
+                    <FormControl>
+                      <>
+                        <Input 
+                          placeholder="PLZ oder Ort eingeben..." 
+                          {...field}
+                          value={toPostalQuery || field.value}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            setToPostalQuery(value);
+                            // Check if user selected from datalist
+                            const match = value.match(/^(\d{4})\s*-\s*([^(]+)(?:\(([^)]+)\))?$/);
+                            if (match) {
+                              const [, code, city] = match;
+                              field.onChange(code);
+                              form.setValue('toCity', city.trim());
+                            } else {
+                              field.onChange(value);
+                            }
+                          }}
+                          list="toPostalListEmbedded"
+                          className="h-11" 
+                        />
+                        <datalist id="toPostalListEmbedded">
+                          {filterPostalCodes(toPostalQuery || field.value).map((entry) => (
+                            <option key={`${entry.code}-${entry.city}`} value={`${entry.code} - ${entry.city} (${entry.canton})`} />
+                          ))}
+                        </datalist>
+                      </>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="toCity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium">Nach (Ort)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="z.B. Bern" {...field} className="h-11" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="rooms"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium">Wohnungsgrösse</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="h-11">
+                          <SelectValue placeholder="Wählen" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="1">1 Zimmer (Studio)</SelectItem>
+                        <SelectItem value="2">2 Zimmer</SelectItem>
+                        <SelectItem value="3">3 Zimmer</SelectItem>
+                        <SelectItem value="4">4 Zimmer</SelectItem>
+                        <SelectItem value="5">5 Zimmer</SelectItem>
+                        <SelectItem value="6+">6+ Zimmer</SelectItem>
+                        <SelectItem value="house">Haus</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <Button 
+                type="submit" 
+                className="w-full bg-primary hover:bg-primary/90 shadow-medium group h-11 sm:h-12 text-sm sm:text-base"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Berechnen..." : "Offerten vergleichen"}
+                <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </form>
+          </Form>
+
+          <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground pt-2 border-t">
+            <CheckCircle2 className="w-4 h-4 text-success flex-shrink-0" />
+            <span>Keine Kreditkarte erforderlich</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <Card className="shadow-strong">
+      <CardHeader className="px-4 sm:px-6 py-4 sm:py-6">
+        <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+          <Home className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+          Schnell-Rechner
+        </CardTitle>
+        <CardDescription className="text-sm">
+          Grundlegende Angaben für eine erste Kostenschätzung. Dauert nur 60 Sekunden.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="px-4 sm:px-6 pb-4 sm:pb-6">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 sm:space-y-6">
+            {/* From Location */}
+            <div className="space-y-3 sm:space-y-4">
+              <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-muted-foreground">
+                <MapPin className="w-4 h-4" />
+                Von (Aktueller Wohnort)
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <FormField
+                  control={form.control}
+                  name="fromPostal"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs sm:text-sm">PLZ / Ort</FormLabel>
+                      <FormControl>
+                        <>
+                          <Input 
+                            placeholder="PLZ oder Ort eingeben..." 
+                            {...field}
+                            value={fromPostalQuery || field.value}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              setFromPostalQuery(value);
+                              const match = value.match(/^(\d{4})\s*-\s*([^(]+)(?:\(([^)]+)\))?$/);
+                              if (match) {
+                                const [, code, city] = match;
+                                field.onChange(code);
+                                form.setValue('fromCity', city.trim());
+                              } else {
+                                field.onChange(value);
+                              }
+                            }}
+                            list="fromPostalListFull"
+                            className="h-11 sm:h-12 text-base"
+                          />
+                          <datalist id="fromPostalListFull">
+                            {filterPostalCodes(fromPostalQuery || field.value).map((entry) => (
+                              <option key={`f-${entry.code}-${entry.city}`} value={`${entry.code} - ${entry.city} (${entry.canton})`} />
+                            ))}
+                          </datalist>
+                        </>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="fromCity"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs sm:text-sm">Ort</FormLabel>
+                      <FormControl>
+                        <Input placeholder="z.B. Zürich" {...field} className="h-11 sm:h-12 text-base" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            {/* To Location */}
+            <div className="space-y-3 sm:space-y-4">
+              <div className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-muted-foreground">
+                <MapPin className="w-4 h-4" />
+                Nach (Neuer Wohnort)
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <FormField
+                  control={form.control}
+                  name="toPostal"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs sm:text-sm">PLZ / Ort</FormLabel>
+                      <FormControl>
+                        <>
+                          <Input 
+                            placeholder="PLZ oder Ort eingeben..." 
+                            {...field}
+                            value={toPostalQuery || field.value}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              setToPostalQuery(value);
+                              const match = value.match(/^(\d{4})\s*-\s*([^(]+)(?:\(([^)]+)\))?$/);
+                              if (match) {
+                                const [, code, city] = match;
+                                field.onChange(code);
+                                form.setValue('toCity', city.trim());
+                              } else {
+                                field.onChange(value);
+                              }
+                            }}
+                            list="toPostalListFull"
+                            className="h-11 sm:h-12 text-base"
+                          />
+                          <datalist id="toPostalListFull">
+                            {filterPostalCodes(toPostalQuery || field.value).map((entry) => (
+                              <option key={`t-${entry.code}-${entry.city}`} value={`${entry.code} - ${entry.city} (${entry.canton})`} />
+                            ))}
+                          </datalist>
+                        </>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="toCity"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs sm:text-sm">Ort</FormLabel>
+                      <FormControl>
+                        <Input placeholder="z.B. Bern" {...field} className="h-11 sm:h-12 text-base" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            {/* Rooms & Type */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              <FormField
+                control={form.control}
+                name="rooms"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xs sm:text-sm">Wohnungsgrösse</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="h-11 sm:h-12 text-base">
+                          <SelectValue placeholder="Zimmer wählen" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="1" className="py-3">1 Zimmer (Studio)</SelectItem>
+                        <SelectItem value="2" className="py-3">2 Zimmer</SelectItem>
+                        <SelectItem value="3" className="py-3">3 Zimmer</SelectItem>
+                        <SelectItem value="4" className="py-3">4 Zimmer</SelectItem>
+                        <SelectItem value="5" className="py-3">5 Zimmer</SelectItem>
+                        <SelectItem value="6+" className="py-3">6+ Zimmer</SelectItem>
+                        <SelectItem value="house" className="py-3">Haus</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="movingType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xs sm:text-sm">Umzugsart</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="h-11 sm:h-12 text-base">
+                          <SelectValue placeholder="Art wählen" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="local" className="py-3">Lokal (gleiche Stadt)</SelectItem>
+                        <SelectItem value="longDistance" className="py-3">Fernumzug</SelectItem>
+                        <SelectItem value="international" className="py-3">International</SelectItem>
+                        <SelectItem value="office" className="py-3">Büroumzug</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {/* Floors and Elevator */}
+            <div className="space-y-3 sm:space-y-4">
+              <div className="text-xs sm:text-sm font-semibold text-muted-foreground">Stockwerke & Lift</div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                <div className="space-y-3">
+                  <FormField
+                    control={form.control}
+                    name="floorsFrom"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs sm:text-sm">Stockwerk (von)</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="h-11 sm:h-12 text-base">
+                              <SelectValue placeholder="Stockwerk" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="0" className="py-3">Erdgeschoss</SelectItem>
+                            <SelectItem value="1" className="py-3">1. Stock</SelectItem>
+                            <SelectItem value="2" className="py-3">2. Stock</SelectItem>
+                            <SelectItem value="3" className="py-3">3. Stock</SelectItem>
+                            <SelectItem value="4" className="py-3">4. Stock</SelectItem>
+                            <SelectItem value="5" className="py-3">5+ Stock</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="hasElevatorFrom"
+                    render={({ field }) => (
+                      <FormItem className="flex items-center space-x-3 space-y-0 py-2">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            className="h-5 w-5"
+                          />
+                        </FormControl>
+                        <FormLabel className="font-normal cursor-pointer text-sm">
+                          Lift vorhanden
+                        </FormLabel>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="space-y-3">
+                  <FormField
+                    control={form.control}
+                    name="floorsTo"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs sm:text-sm">Stockwerk (nach)</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="h-11 sm:h-12 text-base">
+                              <SelectValue placeholder="Stockwerk" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="0" className="py-3">Erdgeschoss</SelectItem>
+                            <SelectItem value="1" className="py-3">1. Stock</SelectItem>
+                            <SelectItem value="2" className="py-3">2. Stock</SelectItem>
+                            <SelectItem value="3" className="py-3">3. Stock</SelectItem>
+                            <SelectItem value="4" className="py-3">4. Stock</SelectItem>
+                            <SelectItem value="5" className="py-3">5+ Stock</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="hasElevatorTo"
+                    render={({ field }) => (
+                      <FormItem className="flex items-center space-x-3 space-y-0 py-2">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            className="h-5 w-5"
+                          />
+                        </FormControl>
+                        <FormLabel className="font-normal cursor-pointer text-sm">
+                          Lift vorhanden
+                        </FormLabel>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <Button 
+              type="submit" 
+              className="w-full bg-primary hover:bg-primary/90 shadow-medium group h-12 sm:h-14 text-base sm:text-lg active:scale-[0.98] transition-transform" 
+              size="lg"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Wird berechnet..." : "Kostenschätzung erhalten"}
+              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
+  );
+};

@@ -1,0 +1,37 @@
+{
+  "slug": "lausanne",
+  "name": "Lausanne",
+  "canton": "VD",
+  "plz": [
+    "1000",
+    "1003",
+    "1004",
+    "1005",
+    "1006",
+    "1007",
+    "1011",
+    "1012",
+    "1018"
+  ],
+  "population": 140619,
+  "h1": "Umzug Lausanne – Offerten vergleichen & sparen",
+  "metaTitle": "Umzug Lausanne | Umzugsfirmen vergleichen",
+  "metaDescription": "Planst du einen Umzug nach Lausanne? Kostenlose Offerten vergleichen, Steuerfuss checken (78.5%) und Abfallkalender downloaden.",
+  "intro": "Ein Umzug nach Lausanne bringt viele Vorteile. Mit einer Bevölkerung von 140'619 bietet die Stadt eine hervorragende Infrastruktur. Vergiss nicht, dich rechtzeitig beim Einwohneramt unter https://www.lausanne.ch/vie-pratique/population/controle-des-habitants.html anzumelden.",
+  "localTips": [
+    "Aktueller Steuerfuss in Lausanne: 78.5%",
+    "Melde dich innert 14 Tagen nach Zuzug an.",
+    "Lade dir den offiziellen Abfallkalender für Lausanne herunter: https://www.lausanne.ch/vie-pratique/environnement/dechets-et-recyclage/calendrier-collectes.html"
+  ],
+  "faqs": [
+    {
+      "q": "Wie hoch ist der Steuerfuss in Lausanne?",
+      "a": "Der aktuelle kombinierte Steuerfuss liegt bei 78.5%."
+    },
+    {
+      "q": "Wo melde ich mich in Lausanne an?",
+      "a": "Die Anmeldung erfolgt bei der Einwohnerkontrolle. Du findest das Formular hier: https://www.lausanne.ch/vie-pratique/population/controle-des-habitants.html"
+    }
+  ],
+  "nearbyGemeinden": []
+}

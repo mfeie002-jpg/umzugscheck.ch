@@ -1,0 +1,157 @@
+// Sitemap generator for SEO optimization
+// Now with dynamic company URLs from database
+
+interface SitemapUrl {
+  loc: string;
+  lastmod?: string;
+  changefreq?: 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never';
+  priority?: number;
+}
+
+const BASE_URL = 'https://umzugscheck.ch';
+
+const cantons = [
+  'zuerich', 'bern', 'luzern', 'uri', 'schwyz', 'obwalden', 'nidwalden',
+  'glarus', 'zug', 'freiburg', 'solothurn', 'basel-stadt', 'basel-landschaft',
+  'schaffhausen', 'appenzell-ausserrhoden', 'appenzell-innerrhoden', 'st-gallen',
+  'graubuenden', 'aargau', 'thurgau', 'tessin', 'waadt', 'wallis', 'neuenburg',
+  'genf', 'jura'
+];
+
+const cities = [
+  'zuerich', 'basel', 'bern', 'genf', 'lausanne', 'luzern', 
+  'winterthur', 'stgallen', 'zug', 'lugano', 'biel', 'aarau',
+  'schaffhausen', 'chur', 'thun', 'fribourg', 'neuenburg', 
+  'sion', 'bellinzona', 'olten', 'baden', 'wil', 'frauenfeld',
+  'rapperswil', 'uster', 'dietikon', 'horgen', 'wetzikon',
+  'dübendorf', 'kloten', 'köniz', 'emmen', 'kriens'
+];
+
+const services = [
+  'umzug', 'reinigung', 'raeumung', 'firmenumzug',
+  'entsorgung', 'lagerung', 'transport', 'umzug-mit-reinigung',
+  'privatumzug', 'seniorenumzug', 'studenten', 'bueroumzug',
+  'moebellift', 'montage', 'packservice', 'international',
+  'klaviertransport', 'spezialtransporte', 'auslandsumzug',
+  'tresortransport', 'haushaltsaufloesung', 'umzugshelfer'
+];
+
+// Additional high-value SEO pages
+const seoPages = [
+  'umzugskosten-berechnen', 'umzugsfirma-vergleichen',
+  'beste-umzugsfirma', 'guenstige-umzugsfirma',
+  'umzug-checkliste', 'umzugsplanung'
+];
+
+// Store for dynamic company slugs (populated async)
+let companySlugCache: string[] = [];
+
+export const setCompanySlugs = (slugs: string[]) => {
+  companySlugCache = slugs;
+};
+
+export const generateSitemapUrls = (companySlugs?: string[]): SitemapUrl[] => {
+  const urls: SitemapUrl[] = [];
+  const today = new Date().toISOString().split('T')[0];
+  const slugsToUse = companySlugs || companySlugCache;
+
+  // Core pages
+  const corePages: SitemapUrl[] = [
+    { loc: `${BASE_URL}/`, changefreq: 'daily', priority: 1.0, lastmod: today },
+    { loc: `${BASE_URL}/umzugsfirmen-schweiz/`, changefreq: 'daily', priority: 0.95, lastmod: today },
+    { loc: `${BASE_URL}/offerten/`, changefreq: 'daily', priority: 0.9, lastmod: today },
+    { loc: `${BASE_URL}/preise/`, changefreq: 'weekly', priority: 0.8, lastmod: today },
+    { loc: `${BASE_URL}/vergleich/`, changefreq: 'daily', priority: 0.9, lastmod: today },
+    { loc: `${BASE_URL}/firmen/`, changefreq: 'daily', priority: 0.9, lastmod: today },
+    { loc: `${BASE_URL}/beste-umzugsfirma/`, changefreq: 'daily', priority: 0.9, lastmod: today },
+    { loc: `${BASE_URL}/guenstige-umzugsfirma/`, changefreq: 'daily', priority: 0.9, lastmod: today },
+    { loc: `${BASE_URL}/umzugsofferten/`, changefreq: 'daily', priority: 0.9, lastmod: today },
+    { loc: `${BASE_URL}/faq/`, changefreq: 'monthly', priority: 0.7, lastmod: today },
+    { loc: `${BASE_URL}/ueber-uns/`, changefreq: 'monthly', priority: 0.6, lastmod: today },
+    { loc: `${BASE_URL}/kontakt/`, changefreq: 'monthly', priority: 0.5, lastmod: today },
+    { loc: `${BASE_URL}/impressum/`, changefreq: 'yearly', priority: 0.3, lastmod: today },
+    { loc: `${BASE_URL}/datenschutz/`, changefreq: 'yearly', priority: 0.3, lastmod: today },
+    { loc: `${BASE_URL}/preisrechner/`, changefreq: 'weekly', priority: 0.85, lastmod: today },
+    { loc: `${BASE_URL}/reinigungsrechner/`, changefreq: 'weekly', priority: 0.8, lastmod: today },
+    { loc: `${BASE_URL}/entsorgungsrechner/`, changefreq: 'weekly', priority: 0.8, lastmod: today },
+  ];
+
+  urls.push(...corePages);
+
+  // Canton region pages (new archetyp structure)
+  cantons.forEach(canton => {
+    urls.push({
+      loc: `${BASE_URL}/umzugsfirmen/kanton-${canton}/`,
+      changefreq: 'daily',
+      priority: 0.9,
+      lastmod: today
+    });
+  });
+
+  // City pages
+  cities.forEach(city => {
+    urls.push({
+      loc: `${BASE_URL}/umzugsfirmen/${city}/`,
+      changefreq: 'daily',
+      priority: 0.85,
+      lastmod: today
+    });
+  });
+
+  // Service pages
+  services.forEach(service => {
+    urls.push({
+      loc: `${BASE_URL}/${service}/`,
+      changefreq: 'weekly',
+      priority: 0.8,
+      lastmod: today
+    });
+  });
+
+  // City + Service combinations
+  cities.forEach(city => {
+    services.forEach(service => {
+      urls.push({
+        loc: `${BASE_URL}/${city}/${service}/`,
+        changefreq: 'weekly',
+        priority: 0.75,
+        lastmod: today
+      });
+    });
+  });
+
+  // Company profile pages (dynamic from DB)
+  slugsToUse.forEach(slug => {
+    if (slug) {
+      urls.push({
+        loc: `${BASE_URL}/firma/${slug}/`,
+        changefreq: 'weekly',
+        priority: 0.7,
+        lastmod: today
+      });
+    }
+  });
+
+  return urls;
+};
+
+export const generateSitemapXML = (companySlugs?: string[]): string => {
+  const urls = generateSitemapUrls(companySlugs);
+  
+  const urlsXML = urls.map(url => `
+  <url>
+    <loc>${url.loc}</loc>
+    ${url.lastmod ? `<lastmod>${url.lastmod}</lastmod>` : ''}
+    ${url.changefreq ? `<changefreq>${url.changefreq}</changefreq>` : ''}
+    ${url.priority !== undefined ? `<priority>${url.priority.toFixed(1)}</priority>` : ''}
+  </url>`).join('');
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urlsXML}
+</urlset>`;
+};
+
+export const getTotalUrls = (companySlugs?: string[]): number => {
+  return generateSitemapUrls(companySlugs).length;
+};

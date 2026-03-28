@@ -1,0 +1,264 @@
+import { Helmet } from "react-helmet-async";
+import { lazy, Suspense, useEffect } from "react";
+import { isScreenshotRenderMode } from "@/lib/screenshot-render-mode";
+import IndexPremiumScreenshot from "@/pages/IndexPremiumScreenshot";
+import { SkipToContent } from "@/components/SkipToContent";
+// SimplifiedFooter removed - Footer is rendered by MainLayout
+import { ErrorBoundary } from "@/components/homepage/ErrorBoundary";
+import { ScrollProgress } from "@/components/ui/scroll-progress";
+import { FloatingWhatsApp } from "@/components/ui/FloatingWhatsApp";
+import { HotjarScript } from "@/components/analytics/HotjarScript";
+// A/B Testing for Social Proof sections
+import { SocialProofABProvider } from "@/contexts/SocialProofABContext";
+import { TabHintABProvider } from "@/contexts/TabHintABContext";
+import { HomepageABProvider } from "@/contexts/HomepageABContext";
+import { UnifiedABToggle } from "@/components/homepage/UnifiedABToggle";
+import { ABUrlInitializer, useIsABLabMode } from "@/components/ABUrlInitializer";
+// Conversion & Analytics
+import { ScrollDepthTracker } from "@/components/conversion/ScrollDepthTracker";
+import { initMetrics } from "@/lib/realtime-metrics";
+import { trackPageView } from "@/lib/conversion-events";
+// Homepage Hero A/B - Renders variant A, B, or C
+import { HomepageHeroAB } from "@/components/homepage/HomepageHeroAB";
+// Performance: Resource hints for LCP optimization
+import { ResourceHints } from "@/components/performance/ResourceHints";
+
+// CLS-optimized skeletons for zero layout shift
+import { 
+  HeroSkeleton, 
+  CompanyCardsSkeleton, 
+  TrustSkeleton 
+} from "@/components/performance/CLSOptimizedSections";
+
+// Lazy loaded components (below the fold) - CONSOLIDATED for optimal page length
+const EnhancedHowItWorks = lazy(() => import("@/components/homepage/EnhancedHowItWorks").then(m => ({ default: m.EnhancedHowItWorks })));
+const CompanyComparisonSection = lazy(() => import("@/components/homepage/CompanyComparisonSection").then(m => ({ default: m.CompanyComparisonSection })));
+const EnhancedServicesGrid = lazy(() => import("@/components/homepage/EnhancedServicesGrid").then(m => ({ default: m.EnhancedServicesGrid })));
+// Trust & Conversion Sections (consolidated)
+const PainGainSection = lazy(() => import("@/components/homepage/PainGainSection").then(m => ({ default: m.PainGainSection })));
+const GuaranteesSection = lazy(() => import("@/components/homepage/GuaranteesSection").then(m => ({ default: m.GuaranteesSection })));
+const SEOContentAccordion = lazy(() => import("@/components/homepage/SEOContentAccordion").then(m => ({ default: m.SEOContentAccordion })));
+// A/B tested components
+const TrustRibbonAB = lazy(() => import("@/components/trust/TrustRibbonAB").then(m => ({ default: m.TrustRibbonAB })));
+const EnhancedTestimonialsAB = lazy(() => import("@/components/homepage/EnhancedTestimonialsAB").then(m => ({ default: m.EnhancedTestimonialsAB })));
+const EnhancedRegionsGrid = lazy(() => import("@/components/homepage/EnhancedRegionsGrid").then(m => ({ default: m.EnhancedRegionsGrid })));
+const EnhancedFAQ = lazy(() => import("@/components/homepage/EnhancedFAQ").then(m => ({ default: m.EnhancedFAQ })));
+const EnhancedFinalCTA = lazy(() => import("@/components/homepage/EnhancedFinalCTA").then(m => ({ default: m.EnhancedFinalCTA })));
+const CookieConsentBanner = lazy(() => import("@/components/CookieConsentBanner").then(m => ({ default: m.CookieConsentBanner })));
+// Lazy load mobile sticky bar
+const MobileStickyBar = lazy(() => import("@/components/homepage/MobileStickyBar").then(m => ({ default: m.MobileStickyBar })));
+// Cherry-Pick Components (consolidated)
+const TrustScoreWidget = lazy(() => import("@/components/homepage/TrustScoreWidget").then(m => ({ default: m.TrustScoreWidget })));
+const CityPricesSection = lazy(() => import("@/components/homepage/CityPricesSection").then(m => ({ default: m.CityPricesSection })));
+// New utility components
+const InlineMobileCTA = lazy(() => import("@/components/homepage/InlineMobileCTA").then(m => ({ default: m.InlineMobileCTA })));
+const ScrollProgressDots = lazy(() => import("@/components/homepage/ScrollProgressDots").then(m => ({ default: m.ScrollProgressDots })));
+const ExitIntentDesktopModal = lazy(() => import("@/components/homepage/ExitIntentDesktopModal").then(m => ({ default: m.ExitIntentDesktopModal })));
+// ExitIntentMobileSheet - imported directly (not lazy) for scroll detection
+import { ExitIntentMobileSheet } from "@/components/ExitIntentMobileSheet";
+
+// Legacy skeleton import (for fallback)
+import { SectionSkeleton, TestimonialsSkeleton } from "@/components/ui/skeleton-section";
+
+const Index = () => {
+  // Initialize metrics tracking & page view - MUST be before any early returns
+  useEffect(() => {
+    if (!isScreenshotRenderMode()) {
+      initMetrics();
+      trackPageView('homepage', { variant: 'index' });
+    }
+  }, []);
+
+  if (isScreenshotRenderMode()) {
+    return <IndexPremiumScreenshot />;
+  }
+
+  const faqItems = [
+    { question: "Wie funktioniert der Vergleich genau?", answer: "Sie füllen unser kurzes Formular mit Ihren Umzugsdetails aus. Unser Experten-System analysiert Ihre Anforderungen und findet passende, geprüfte Umzugsfirmen. Innerhalb von 24-48 Stunden erhalten Sie mehrere unverbindliche Offerten." },
+    { question: "Kostet mich der Service etwas?", answer: "Nein, unser Vergleichsservice ist für Sie als Kunde zu 100% kostenlos und unverbindlich. Es entstehen keinerlei Verpflichtungen." },
+    { question: "Wie werden die Umzugsfirmen ausgewählt?", answer: "Alle Partner durchlaufen einen strengen Prüfprozess. Wir verifizieren Versicherungen, Bewilligungen, Kundenbewertungen und Qualitätsstandards." },
+    { question: "Wie schnell erhalte ich Offerten?", answer: "In der Regel erhalten Sie innerhalb von 24-48 Stunden 3–5 Offerten von passenden Umzugsfirmen per E-Mail." },
+    { question: "Sind die Offerten verbindlich?", answer: "Die Offerten sind Richtpreise basierend auf Ihren Angaben. Nach einer Besichtigung erstellt die Firma eine verbindliche Offerte." },
+    { question: "Was passiert, wenn etwas beschädigt wird?", answer: "Alle unsere Partnerfirmen sind vollumfänglich versichert. Im unwahrscheinlichen Fall eines Schadens sind Sie geschützt." },
+    { question: "Kann ich auch Firmenumzüge vergleichen?", answer: "Ja, unser Service deckt sowohl Privatumzüge als auch Firmen- und Büroumzüge ab." },
+    { question: "In welchen Regionen ist der Service verfügbar?", answer: "Unser Service ist schweizweit verfügbar. Wir haben Partner in allen 26 Kantonen." }
+  ];
+
+  const schemaOrg = {
+    "@context": "https://schema.org",
+    "@graph": [
+      { "@type": "Organization", "@id": "https://umzugscheck.ch/#organization", "name": "Umzugscheck.ch", "url": "https://umzugscheck.ch", "logo": "https://umzugscheck.ch/logo.png", "description": "Die führende Vergleichsplattform für Umzüge in der Schweiz.", "areaServed": { "@type": "Country", "name": "Switzerland" }, "contactPoint": { "@type": "ContactPoint", "telephone": "+41-44-123-45-67", "contactType": "customer service", "availableLanguage": ["German", "French", "Italian"] } },
+      { "@type": "WebSite", "@id": "https://umzugscheck.ch/#website", "url": "https://umzugscheck.ch", "name": "Umzugscheck.ch", "potentialAction": { "@type": "SearchAction", "target": "https://umzugscheck.ch/suche?q={search_term_string}", "query-input": "required name=search_term_string" } },
+      { "@type": "FAQPage", "mainEntity": faqItems.map(item => ({ "@type": "Question", "name": item.question, "acceptedAnswer": { "@type": "Answer", "text": item.answer } })) },
+      { "@type": "AggregateRating", "itemReviewed": { "@type": "Organization", "name": "Umzugscheck.ch" }, "ratingValue": "4.8", "bestRating": "5", "worstRating": "1", "ratingCount": "2847" },
+      { "@type": "Service", "name": "Umzugsvergleich Schweiz", "provider": { "@type": "Organization", "name": "Umzugscheck.ch" }, "serviceType": "Moving Quote Comparison", "areaServed": { "@type": "Country", "name": "Switzerland" }, "description": "Kostenloser Vergleich von über 200 Schweizer Umzugsfirmen" }
+    ]
+  };
+
+  return (
+    <HomepageABProvider>
+    <TabHintABProvider>
+    <SocialProofABProvider>
+    <ErrorBoundary>
+      {/* Initialize A/B variants from URL params (for Comparison Lab) */}
+      <ABUrlInitializer />
+      <div className="min-h-screen bg-background overflow-x-clip md:overflow-x-visible">
+        <Helmet>
+          <html lang="de-CH" />
+          <title>Umzugsfirmen vergleichen Schweiz 2025 – Kostenlos Offerten erhalten | Umzugscheck.ch</title>
+          <meta name="description" content="Kostenlose Umzugsofferten von 200+ geprüften Schweizer Umzugsfirmen. Smart-Preisrechner, transparente Preise, echte Bewertungen. Jetzt vergleichen & bis zu 40% sparen!" />
+          <meta name="keywords" content="Umzug Schweiz, Umzugsfirma vergleichen, Umzugsofferten, Umzugskosten, Zürich, Bern, Basel, günstig umziehen" />
+          <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+          <link rel="canonical" href="https://umzugscheck.ch/" />
+          <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+          <meta property="og:type" content="website" />
+          <meta property="og:url" content="https://umzugscheck.ch/" />
+          <meta property="og:title" content="Umzugscheck.ch – Die Nr. 1 für Umzugsvergleiche in der Schweiz" />
+          <meta property="og:description" content="Kostenlose Umzugsofferten von 200+ geprüften Schweizer Umzugsfirmen. Bis zu 40% sparen!" />
+          <meta property="og:image" content="https://umzugscheck.ch/og-image.jpg" />
+          <meta property="og:locale" content="de_CH" />
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:title" content="Umzugscheck.ch – Umzugsfirmen vergleichen" />
+          <meta name="twitter:description" content="Kostenlose Umzugsofferten von 200+ geprüften Schweizer Umzugsfirmen." />
+          <meta name="theme-color" content="#0050A8" />
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+          <script type="application/ld+json">{JSON.stringify(schemaOrg)}</script>
+        </Helmet>
+
+        {/* Performance: Resource preloading for LCP */}
+        <ResourceHints />
+        
+        <ScrollProgress />
+        <SkipToContent />
+        
+        {/* Conversion tracking (no intrusive popups) */}
+        <ScrollDepthTracker />
+
+        <main id="main-content" role="main">
+          {/* 1. Homepage Hero A/B - Variant A, B, or C (includes Trust in form) */}
+          <HomepageHeroAB />
+          
+          {/* 2. TRUST RIBBON - BEKANNT AUS + 15'000+ Stats (A/B TESTED) */}
+          <Suspense fallback={<TrustSkeleton />}>
+            <TrustRibbonAB variant="full" />
+          </Suspense>
+          
+          {/* 3. Pain vs Gain + How It Works (consolidated) */}
+          <Suspense fallback={<SectionSkeleton height="300px" />}>
+            <PainGainSection />
+          </Suspense>
+          
+          <Suspense fallback={<SectionSkeleton height="350px" />}>
+            <EnhancedHowItWorks />
+          </Suspense>
+          
+          {/* Mobile CTA #1 - After How It Works */}
+          <Suspense fallback={null}>
+            <InlineMobileCTA variant="compact" text="Jetzt vergleichen" />
+          </Suspense>
+          
+          {/* 4. Company comparison - core value */}
+          <Suspense fallback={<CompanyCardsSkeleton count={3} />}>
+            <CompanyComparisonSection />
+          </Suspense>
+          
+          {/* 5. City Prices + Testimonials + TrustScore (consolidated local relevance) */}
+          <Suspense fallback={<SectionSkeleton height="350px" />}>
+            <CityPricesSection />
+          </Suspense>
+          
+          {/* Mobile CTA #2 - After City Prices */}
+          <Suspense fallback={null}>
+            <InlineMobileCTA variant="secondary" text="Kostenlos vergleichen" />
+          </Suspense>
+          
+          <Suspense fallback={<TestimonialsSkeleton />}>
+            <EnhancedTestimonialsAB />
+          </Suspense>
+          
+          <Suspense fallback={<SectionSkeleton height="250px" />}>
+            <TrustScoreWidget />
+          </Suspense>
+          
+          {/* 6. Guarantees - Risk Reversal */}
+          <Suspense fallback={<SectionSkeleton height="350px" />}>
+            <GuaranteesSection />
+          </Suspense>
+          
+          {/* Mobile CTA #3 - After Guarantees */}
+          <Suspense fallback={null}>
+            <InlineMobileCTA variant="primary" text="Offerten erhalten" />
+          </Suspense>
+
+          {/* 7. Services grid (compact) */}
+          <Suspense fallback={<SectionSkeleton height="400px" variant="cards" />}>
+            <EnhancedServicesGrid />
+          </Suspense>
+          
+          {/* 8. Regions (compact) */}
+          <Suspense fallback={<SectionSkeleton height="300px" />}>
+            <EnhancedRegionsGrid />
+          </Suspense>
+
+          {/* 9. FAQ (Top questions only) */}
+          <Suspense fallback={<SectionSkeleton height="400px" />}>
+            <EnhancedFAQ />
+          </Suspense>
+          
+          {/* 10. SEO Content Accordion (collapsed by default) */}
+          <Suspense fallback={<SectionSkeleton height="200px" />}>
+            <SEOContentAccordion />
+          </Suspense>
+          
+          {/* 11. Final CTA */}
+          <Suspense fallback={<SectionSkeleton height="300px" />}>
+            <EnhancedFinalCTA />
+          </Suspense>
+        </main>
+
+        {/* Footer is rendered by MainLayout - do NOT add SimplifiedFooter here */}
+        
+        {/* Desktop: Scroll Progress Dots (right side) */}
+        <Suspense fallback={null}>
+          <ScrollProgressDots />
+        </Suspense>
+        
+        {/* Single mobile CTA approach - lazy loaded */}
+        <Suspense fallback={null}>
+          <MobileStickyBar />
+        </Suspense>
+        
+        {/* WhatsApp floating button - desktop only to avoid mobile overlap with sticky CTA/form */}
+        <div className="hidden md:block">
+          <FloatingWhatsApp 
+            phoneNumber="41780980000" 
+            message="Hallo! Ich interessiere mich für einen Umzug und hätte gerne mehr Informationen."
+            delayMs={30000}
+          />
+        </div>
+        
+        {/* Exit Intent - Mobile (scroll velocity) + Desktop (mouse leave) */}
+        <ExitIntentMobileSheet />
+        <Suspense fallback={null}>
+          <ExitIntentDesktopModal />
+        </Suspense>
+        
+        {/* Hotjar session recording & heatmaps */}
+        <HotjarScript />
+        
+        <Suspense fallback={null}>
+          <CookieConsentBanner />
+        </Suspense>
+        
+        {/* A/B Testing Toggle */}
+        <UnifiedABToggle />
+      </div>
+    </ErrorBoundary>
+    </SocialProofABProvider>
+    </TabHintABProvider>
+    </HomepageABProvider>
+  );
+};
+
+export default Index;

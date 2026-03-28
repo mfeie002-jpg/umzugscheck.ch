@@ -1,0 +1,26 @@
+[
+  {
+    "id": "small",
+    "title": "1.5-Zimmer",
+    "description": "Kleine Wohnung, lokaler Umzug",
+    "priceFrom": "ab CHF 680",
+    "icon": "Home",
+    "order": 1
+  },
+  {
+    "id": "medium",
+    "title": "2.5-Zimmer",
+    "description": "Standard Wohnung, mittlere Distanz",
+    "priceFrom": "ab CHF 980",
+    "icon": "Building2",
+    "order": 2
+  },
+  {
+    "id": "large",
+    "title": "4.5-Zimmer",
+    "description": "Große Wohnung oder Haus",
+    "priceFrom": "ab CHF 1'650",
+    "icon": "Building",
+    "order": 3
+  }
+]

@@ -1,0 +1,7 @@
+Backup created: 2026-03-28T21:59:16
+Folder: safety-backup-20260328-215841
+
+Restore:
+1) Copy files from this backup back into project root
+2) Run npm install (or npm install --force if peer conflicts appear)
+3) Run npm run dev

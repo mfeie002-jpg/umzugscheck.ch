@@ -1,0 +1,37 @@
+{
+  "slug": "basel",
+  "name": "Basel",
+  "canton": "BS",
+  "plz": [
+    "4000",
+    "4051",
+    "4052",
+    "4053",
+    "4054",
+    "4055",
+    "4056",
+    "4057",
+    "4058"
+  ],
+  "population": 173552,
+  "h1": "Umzug Basel – Offerten vergleichen & sparen",
+  "metaTitle": "Umzug Basel | Umzugsfirmen vergleichen",
+  "metaDescription": "Planst du einen Umzug nach Basel? Kostenlose Offerten vergleichen, Steuerfuss checken (Combined (Cantonal/Municipal)) und Abfallkalender downloaden.",
+  "intro": "Ein Umzug nach Basel bringt viele Vorteile. Mit einer Bevölkerung von 173'552 bietet die Stadt eine hervorragende Infrastruktur. Vergiss nicht, dich rechtzeitig beim Einwohneramt unter https://www.bdm.bs.ch/Wohnen/einwohneramt.html anzumelden.",
+  "localTips": [
+    "Aktueller Steuerfuss in Basel: Combined (Cantonal/Municipal)",
+    "Melde dich innert 14 Tagen nach Zuzug an.",
+    "Lade dir den offiziellen Abfallkalender für Basel herunter: https://www.tiefbauamt.bs.ch/entsorgung-sauberkeit/abfallentsorgung/abfuhrplan.html"
+  ],
+  "faqs": [
+    {
+      "q": "Wie hoch ist der Steuerfuss in Basel?",
+      "a": "Der aktuelle kombinierte Steuerfuss liegt bei Combined (Cantonal/Municipal)."
+    },
+    {
+      "q": "Wo melde ich mich in Basel an?",
+      "a": "Die Anmeldung erfolgt bei der Einwohnerkontrolle. Du findest das Formular hier: https://www.bdm.bs.ch/Wohnen/einwohneramt.html"
+    }
+  ],
+  "nearbyGemeinden": []
+}
