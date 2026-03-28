@@ -300,8 +300,8 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
                     })}
                   </div>
                   
-                  {/* Legend */}
-                  <div className="mt-4 p-3 bg-muted/30 rounded-lg text-xs text-muted-foreground space-y-1 max-h-40 overflow-y-auto">
+                  {/* Legend - hidden on mobile */}
+                  <div className="hidden sm:block mt-4 p-3 bg-muted/30 rounded-lg text-xs text-muted-foreground space-y-1 max-h-40 overflow-y-auto">
                     <div><strong>V1:</strong> Original (farbige Logos)</div>
                     <div><strong>V2:</strong> Live Dashboard + Deal Cards</div>
                     <div><strong>V3:</strong> Trust Hierarchy (Logos oben)</div>
