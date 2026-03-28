@@ -47,13 +47,61 @@ Deno.serve(async (req) => {
       // Example: { action: 'next', agent: 'codex' }
       if (body?.action) {
         const requestedAction = String(body.action)
+        const ALLOWED_AGENTS = ['codex', 'copilot', 'openclaw']
+
+        if (requestedAction === 'create') {
+          const task = body.task
+          if (!task) {
+            return new Response(JSON.stringify({ error: 'task object required for create action' }), {
+              status: 400,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            })
+          }
+          if (!task.agent || !ALLOWED_AGENTS.includes(task.agent)) {
+            return new Response(JSON.stringify({ error: `task.agent must be one of: ${ALLOWED_AGENTS.join(', ')}` }), {
+              status: 400,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            })
+          }
+          if (!task.title || !task.prompt) {
+            return new Response(JSON.stringify({ error: 'task.title and task.prompt are required' }), {
+              status: 400,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            })
+          }
+
+          const { data, error } = await supabase
+            .from('ai_task_queue')
+            .insert({
+              agent: task.agent,
+              title: task.title,
+              description: task.description || null,
+              prompt: task.prompt,
+              target_files: task.target_files || task.files || [],
+              priority: task.priority || 5,
+              source: task.source || 'api',
+              zapier_run_id: body.zapier_run_id || null,
+            })
+            .select()
+            .single()
+
+          if (error) throw error
+
+          return new Response(JSON.stringify({
+            success: true,
+            task_id: data.id,
+            message: `Task für ${task.agent} erstellt`,
+          }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          })
+        }
 
         if (requestedAction === 'next') {
           const agent = body.agent
           const autoGenerate = body.auto_generate !== false // Default: true
 
-          if (!agent || !['codex', 'copilot'].includes(agent)) {
-            return new Response(JSON.stringify({ error: 'agent must be codex or copilot' }), {
+          if (!agent || !ALLOWED_AGENTS.includes(agent)) {
+            return new Response(JSON.stringify({ error: `agent must be one of: ${ALLOWED_AGENTS.join(', ')}` }), {
               status: 400,
               headers: { ...corsHeaders, 'Content-Type': 'application/json' },
             })
