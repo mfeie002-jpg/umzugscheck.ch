@@ -312,7 +312,7 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
                 </div>
 
                 {/* Form */}
-                <form ref={formRef} onSubmit={handleSubmit} className="space-y-5">
+                <form ref={formRef} onSubmit={handleSubmit} className="space-y-3 sm:space-y-5">
                   {/* From - with Geolocation button */}
                   <div className="space-y-2">
                     <Label htmlFor="from-postal" className="text-sm font-medium flex items-center gap-1">
