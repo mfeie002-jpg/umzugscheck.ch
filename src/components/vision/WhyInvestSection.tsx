@@ -6,6 +6,8 @@ import {
   Zap, Eye, Users, BarChart3, FileCheck, Video, Search, Star,
   Building2, Phone, Target, Cpu, GitBranch, Database, Gauge,
   PiggyBank, Handshake, Scale, BadgeCheck, Network,
+  MessageCircle, Milestone, Bot, MousePointerClick, ShieldCheck,
+  Banknote, CalendarDays, BookOpen, MousePointer, Fingerprint,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
