@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { MarketSizeBarChart, CompetitorRadarChart, PainPointsChart } from "./InvestorCharts";
 
 // ─── Block 1: Market Size Stats ───
 const MARKET_STATS = [
