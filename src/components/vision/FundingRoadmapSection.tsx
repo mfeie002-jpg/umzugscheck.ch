@@ -16,9 +16,9 @@ import type { VisionLanguage } from "@/lib/vision-translations";
 const FUNDING = {
   total: 80_000,
   tranches: [
-    { amount: 20_000, label: "Proof of Concept", phase: "TRANCHE 1", months: "1–3" },
-    { amount: 25_000, label: "Profitabel skalieren", phase: "TRANCHE 2", months: "4–8" },
-    { amount: 35_000, label: "Break-Even Capital", phase: "TRANCHE 3", months: "9–15" },
+    { amount: 20_000, label: "Zündung", phase: "TRANCHE 1", months: "1–3" },
+    { amount: 25_000, label: "Skalierung", phase: "TRANCHE 2", months: "4–8" },
+    { amount: 35_000, label: "Break-Even", phase: "TRANCHE 3", months: "9–15" },
   ],
   maxRisk: 20_000,
   horizonMonths: "12–18",
@@ -30,9 +30,6 @@ const FUNDING = {
   ],
 };
 
-const fmt = (n: number) =>
-  new Intl.NumberFormat("de-CH", { style: "decimal" }).format(n);
-
 const trancheConfig = [
   {
     color: "primary",
@@ -40,14 +37,13 @@ const trancheConfig = [
     borderClass: "border-primary/30",
     bgClass: "bg-primary/5",
     Icon: Rocket,
-    description: "Validierung der Technik und des Cost-per-Lead. Produkt marktreif machen und erste zahlende Umzugsfirmen onboarden.",
-    tags: ["Technik validieren", "CPL optimieren", "Partner-Akquise"],
-    milestoneTitle: "MILESTONES FÜR FREIGABE TRANCHE 2",
+    description: "Ads-Budget, KI-Finetuning, Lead-Generierung. Dein Geld ist reines Kerosin für das Marketing.",
+    tags: ["Ads-Budget", "KI-Finetuning", "Lead-Generierung"],
+    milestoneTitle: "UNLOCK-BEDINGUNG FÜR TRANCHE 2",
     milestones: [
-      "15–20 Umzugsfirmen aktiv auf der Plattform",
-      "50–100 echte Leads generiert",
-      "Cost per Lead unter CHF 25 validiert",
-      "Erste Provisionseinnahmen erzielt",
+      "CPL unter CHF 200 validiert",
+      "15 Aufträge mit > 30% Marge abgeschlossen",
+      "System und Funnels marktreif bestätigt",
     ],
   },
   {
@@ -56,14 +52,13 @@ const trancheConfig = [
     borderClass: "border-amber-500/30",
     bgClass: "bg-amber-500/5",
     Icon: TrendingUp,
-    description: "Wird nur freigegeben, wenn Tranche 1 nachweislich profitabel skaliert. Marketing skalieren, Conversion-Rate optimieren, regionale Expansion.",
-    tags: ["Profitabel skalieren", "Regionale Expansion", "SEO & Content"],
-    milestoneTitle: "MILESTONES FÜR FREIGABE TRANCHE 3",
+    description: "Eigener 3.5t-LKW, festes Team, Max-Budget Zürich. Wird nur freigegeben, wenn Tranche 1 nachweislich Gewinne abwirft.",
+    tags: ["Eigener LKW", "Festes Team", "Max-Budget Zürich"],
+    milestoneTitle: "UNLOCK-BEDINGUNG FÜR TRANCHE 3",
     milestones: [
-      "Monatlicher Umsatz CHF 1'500–2'500",
-      "200+ Leads pro Monat",
+      "30+ Leads pro Monat generiert",
+      "Stabiler MRR von CHF 25'000",
       "Wiederkehrende Partner-Firmen (Retention bestätigt)",
-      "Klarer Pfad zu Break-even sichtbar",
     ],
   },
   {
@@ -72,13 +67,13 @@ const trancheConfig = [
     borderClass: "border-emerald-500/30",
     bgClass: "bg-emerald-500/5",
     Icon: Target,
-    description: "Strategisches Working Capital zum Erreichen des Break-Evens. Automatisierung ausbauen, organisches Wachstum ernten, Romandie & Tessin starten.",
-    tags: ["Break-Even erreichen", "Automatisierung", "Organisches Wachstum"],
+    description: "SEO-Dominanz aufbauen, Rollout Nachbarkantone, strategischer Puffer. System trägt sich selbst.",
+    tags: ["SEO-Dominanz", "Nachbarkantone", "100% Cashflow-positiv"],
     milestoneTitle: "ENDZIEL",
     milestones: [
-      "Monatlicher Umsatz deckt laufende Kosten (CHF 4'000–5'000)",
+      "100% Cashflow-positiv — System trägt sich selbst",
       "Positiver ROI auf alle Marketing-Kanäle",
-      "Plattform wächst selbsttragend weiter",
+      "Plattform wächst organisch und selbsttragend",
     ],
   },
 ];
