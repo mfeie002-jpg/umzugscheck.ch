@@ -10,6 +10,7 @@ import {
   CheckCircle2, AlertTriangle, Target, Zap, BarChart3,
   TrendingUp, Search,
 } from "lucide-react";
+import { FiveRunProgress } from "./InvestorInfographics";
 
 const RUNS = [
   {
