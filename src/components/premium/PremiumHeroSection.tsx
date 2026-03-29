@@ -421,7 +421,7 @@ export const PremiumHeroSection = () => {
             }}
             className="order-1 lg:order-2"
           >
-            <div className="bg-card rounded-xl md:rounded-2xl shadow-xl border border-border p-4 sm:p-4 md:p-6 relative overflow-hidden">
+            <div className="bg-card rounded-xl md:rounded-2xl shadow-xl border border-border p-3 sm:p-4 md:p-6 relative overflow-hidden max-w-full">
               <div className="space-y-2 sm:space-y-3 md:space-y-4">
                 {/* Form Header - Friendly, not pushy */}
                 <div className="text-center space-y-0.5 md:space-y-1">
