@@ -140,26 +140,9 @@ export const UnitEconomicsDetailed = memo(({ language }: UnitEconomicsDetailedPr
                   </div>
                 </div>
                 
-                {/* Stacked Bar Visualization */}
-                <div className="mb-6">
-                  <div className="h-8 rounded-full overflow-hidden flex">
-                    {revenueBreakdown.map((item, idx) => (
-                      <TooltipProvider key={idx}>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <div 
-                              className={`${item.color} h-full transition-all hover:opacity-80 cursor-pointer`}
-                              style={{ width: `${(item.amount / totalRevenue) * 100}%` }}
-                            />
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p className="font-bold">{revenueLabels[idx].name}</p>
-                            <p className="text-xs">{item.amount} CHF ({Math.round((item.amount / totalRevenue) * 100)}%)</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    ))}
-                  </div>
+                {/* Revenue Pie Chart */}
+                <div className="mb-4">
+                  <RevenuePieChart />
                 </div>
                 
                 {/* Line items */}

@@ -325,6 +325,13 @@ export function MarketDeepDiveSection() {
             <AlertTriangle className="w-5 h-5 text-red-400" />
             7 Schmerzpunkte der Schweizer Konsumenten
           </h3>
+          
+          {/* Pain Points Chart */}
+          <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 mb-6">
+            <h4 className="text-sm font-semibold text-slate-300 mb-2">Ausmass der Probleme</h4>
+            <PainPointsChart />
+          </div>
+          
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {PAIN_POINTS.map((p, i) => {
               const Icon = p.icon;

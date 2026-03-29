@@ -116,7 +116,7 @@ export function FundingRoadmapSection({ language }: Props) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.1 }}
-          className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-14"
+          className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8"
         >
           {[
             { label: "GESAMTBEDARF", value: `CHF ${fmt(FUNDING.total)}`, sub: "Aufgeteilt in 3 Tranchen", icon: BarChart3 },
@@ -130,6 +130,23 @@ export function FundingRoadmapSection({ language }: Props) {
               <div className="text-xs text-muted-foreground mt-0.5">{kpi.sub}</div>
             </div>
           ))}
+        </motion.div>
+
+        {/* ── Charts: Tranche Allocation + Revenue Growth ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-14"
+        >
+          <div className="rounded-xl border border-border bg-card p-5">
+            <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">Kapitalallokation</h4>
+            <TrancheDonutChart />
+          </div>
+          <div className="rounded-xl border border-border bg-card p-5">
+            <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">Revenue vs. Kosten (15 Monate)</h4>
+            <RevenueGrowthChart />
+          </div>
         </motion.div>
 
         {/* ── Tranchen Timeline ──────────────── */}

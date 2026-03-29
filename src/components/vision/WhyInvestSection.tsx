@@ -205,9 +205,15 @@ export function WhyInvestSection({ language = "de" }: WhyInvestSectionProps) {
           <h3 className="text-2xl md:text-3xl font-black text-foreground mb-2">
             Alle 50 Gründe
           </h3>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground mb-6">
             In 5 Themenblöcken — von Marktlogik bis Gründer-DNA.
           </p>
+          
+          {/* Group Stats Chart */}
+          <div className="max-w-2xl mx-auto rounded-xl border border-border bg-card p-5">
+            <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">Argument-Stärke nach Themenblock</h4>
+            <GroupStatsChart />
+          </div>
         </motion.div>
 
         {GROUPS.map((group) => {
