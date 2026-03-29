@@ -166,7 +166,7 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
       </div>
 
       {/* Content */}
-      <div className="container mx-auto px-4 sm:px-6 pt-2 pb-3 sm:py-7 md:py-8 lg:py-8 relative z-10">
+      <div className="container mx-auto px-3 sm:px-6 pt-2 pb-3 sm:py-7 md:py-8 lg:py-8 relative z-10 overflow-hidden">
         <div className="grid lg:grid-cols-2 gap-4 sm:gap-8 lg:gap-12 items-center">
           
           {/* Left Column - Text & CTAs */}

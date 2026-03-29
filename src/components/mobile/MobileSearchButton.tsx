@@ -15,7 +15,7 @@ export const MobileSearchButton: React.FC = () => {
       <motion.button
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsSearchOpen(true)}
-        className="fixed top-20 right-3 z-50 h-10 w-10 rounded-full bg-background border border-border shadow-lg flex items-center justify-center"
+        className="fixed top-[4.5rem] right-2 z-40 h-9 w-9 rounded-full bg-background/90 backdrop-blur-sm border border-border shadow-md flex items-center justify-center"
         style={{ right: 'max(0.75rem, env(safe-area-inset-right))' }}
         aria-label="Suche öffnen"
       >
