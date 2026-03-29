@@ -311,8 +311,8 @@ const investArgs: InvestArg[] = [
   {
     icon: Gauge,
     title: 'Capital Efficiency',
-    stat: 'CHF 60k = Break-even',
-    desc: 'Mit nur CHF 60k zur Selbsttragfähigkeit. Kein Venture-Burn, kein Millionen-Fundraise nötig.',
+    stat: 'CHF 80k = Break-even',
+    desc: 'Mit nur CHF 80k zur Selbsttragfähigkeit. Kein Venture-Burn, kein Millionen-Fundraise nötig.',
     wow: 'Extrem kapitaleffizient — der Investor sieht schnell Ergebnisse.',
     tier: 'strong',
   },
