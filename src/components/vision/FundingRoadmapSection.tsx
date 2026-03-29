@@ -273,29 +273,7 @@ export function FundingRoadmapSection({ language }: Props) {
           </div>
           <p className="text-xs text-muted-foreground mb-5">Ziel: Monat 12–15</p>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {FUNDING.revenue.map((r, i) => (
-              <div key={i} className="bg-background/70 rounded-lg p-3 text-center border border-border/50">
-                <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">
-                  {r.month}
-                </div>
-                <div className="text-lg sm:text-xl font-bold text-foreground">{r.amount}</div>
-                <div className="text-xs text-muted-foreground mt-1">{r.label}</div>
-              </div>
-            ))}
-          </div>
-
-          {/* Arrow progression */}
-          <div className="hidden sm:flex items-center justify-center gap-2 mt-4">
-            {FUNDING.revenue.map((r, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <span className="text-sm font-semibold text-foreground/60">{r.amount}</span>
-                {i < FUNDING.revenue.length - 1 && (
-                  <ArrowRight className="w-4 h-4 text-primary" />
-                )}
-              </div>
-            ))}
-          </div>
+          <MonthlyRevenueTracker />
         </motion.div>
 
         {/* ── CTA ────────────────────────────── */}

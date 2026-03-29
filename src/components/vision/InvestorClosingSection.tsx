@@ -118,6 +118,17 @@ export function InvestorClosingSection() {
           </p>
         </motion.div>
 
+        {/* Risk vs Reward Scale */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="rounded-2xl border border-border bg-card p-6 mb-12"
+        >
+          <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-4 text-center">Risiko vs. Chance</h4>
+          <RiskRewardScale />
+        </motion.div>
+
         {/* Closing */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

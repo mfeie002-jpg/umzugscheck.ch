@@ -152,6 +152,17 @@ export function OverkillVisionSection() {
           </p>
         </motion.div>
 
+        {/* Tier Pyramid Overview */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="rounded-2xl border border-border bg-card p-6 mb-14"
+        >
+          <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-4 text-center">Feature-Architektur</h4>
+          <TierPyramid />
+        </motion.div>
+
         {/* Tier 1 — Sci-Fi Overkill */}
         <div className="mb-16">
           <div className="flex items-center gap-3 mb-6">

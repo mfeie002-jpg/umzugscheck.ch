@@ -11,6 +11,7 @@ import {
   TrendingUp, Search,
 } from "lucide-react";
 import { FiveRunProgress } from "./InvestorInfographics";
+import { RiskRewardScale } from "./InvestorInfographics2";
 
 const RUNS = [
   {

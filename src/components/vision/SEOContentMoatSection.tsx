@@ -226,13 +226,16 @@ export function SEOContentMoatSection({ language }: Props) {
                 {isDE ? "Warum das schwer kopierbar ist" : "Why this is hard to replicate"}
               </h3>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
-              {MOAT_REASONS.map((reason) => (
-                <div key={reason.text} className="flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
-                  <span className="text-sm text-foreground/90">{reason.text}</span>
-                </div>
-              ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-3">
+                {MOAT_REASONS.map((reason) => (
+                  <div key={reason.text} className="flex items-start gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
+                    <span className="text-sm text-foreground/90">{reason.text}</span>
+                  </div>
+                ))}
+              </div>
+              <CompetitiveMoatShield />
             </div>
           </div>
         </motion.div>
