@@ -273,7 +273,14 @@ export function MarketDeepDiveSection() {
           <Badge className="mb-4 bg-yellow-500/20 text-yellow-300 border-yellow-500/30 text-xs">
             Sept 2025: Near-Monopol mit geerbten Problemen
           </Badge>
-          <div className="overflow-x-auto mt-4">
+          
+          {/* Competitor Radar Chart */}
+          <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 mt-4 mb-6">
+            <h4 className="text-sm font-semibold text-slate-300 mb-2 text-center">Feature-Abdeckung im Vergleich</h4>
+            <CompetitorRadarChart />
+          </div>
+          
+          <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-slate-700">
