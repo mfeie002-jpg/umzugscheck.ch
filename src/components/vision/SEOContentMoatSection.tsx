@@ -13,6 +13,7 @@ import {
   CheckCircle2, Lock, Layers
 } from "lucide-react";
 import type { VisionLanguage } from "@/lib/vision-translations";
+import { SEOPipelineInfographic, CompetitiveMoatShield } from "./InvestorInfographics2";
 
 // ═══════════════════════════════════════════════════════
 // CONFIGURABLE NUMBERS
