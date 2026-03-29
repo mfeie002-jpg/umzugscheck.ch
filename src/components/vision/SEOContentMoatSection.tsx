@@ -158,38 +158,9 @@ export function SEOContentMoatSection({ language }: Props) {
             {isDE ? "AI-Agent Pipeline" : "AI Agent Pipeline"}
           </h3>
 
-          {/* Desktop: horizontal */}
-          <div className="hidden md:flex items-center justify-center gap-2">
-            {PIPELINE_STEPS.map((step, i) => (
-              <div key={step.label} className="flex items-center">
-                <div className="bg-card border border-border rounded-xl p-4 text-center min-w-[120px] hover:border-primary/50 transition-colors">
-                  <step.icon className="w-6 h-6 mx-auto mb-2 text-primary" />
-                  <div className="font-semibold text-sm text-foreground">{step.label}</div>
-                  <div className="text-xs text-muted-foreground mt-1">{step.desc}</div>
-                </div>
-                {i < PIPELINE_STEPS.length - 1 && (
-                  <ArrowRight className="w-5 h-5 text-muted-foreground mx-1 flex-shrink-0" />
-                )}
-              </div>
-            ))}
-          </div>
-
-          {/* Mobile: vertical */}
-          <div className="md:hidden space-y-3">
-            {PIPELINE_STEPS.map((step, i) => (
-              <div key={step.label} className="relative">
-                <div className="flex items-center gap-3 bg-card border border-border rounded-xl p-3">
-                  <div className="bg-primary/10 rounded-lg p-2 flex-shrink-0">
-                    <step.icon className="w-5 h-5 text-primary" />
-                  </div>
-                  <div>
-                    <div className="font-semibold text-sm text-foreground">{step.label}</div>
-                    <div className="text-xs text-muted-foreground">{step.desc}</div>
-                  </div>
-                  <Badge variant="secondary" className="ml-auto text-[10px]">{i + 1}</Badge>
-                </div>
-              </div>
-            ))}
+          {/* Infographic Pipeline */}
+          <div className="rounded-2xl border border-border bg-card p-4 md:p-6">
+            <SEOPipelineInfographic />
           </div>
         </motion.div>
 
