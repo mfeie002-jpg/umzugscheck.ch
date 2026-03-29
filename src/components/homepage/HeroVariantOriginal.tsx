@@ -289,7 +289,7 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
             className="order-1 lg:order-2"
           >
             {/* Form Card with primary border accent like 4-Tab Hero */}
-            <div className="bg-card rounded-2xl shadow-xl border-2 border-primary/20 hover:border-primary/40 transition-colors p-4 md:p-6 relative ring-1 ring-primary/10 overflow-hidden">
+            <div className="bg-card rounded-2xl shadow-xl border-2 border-primary/20 hover:border-primary/40 transition-colors p-3 sm:p-4 md:p-6 relative ring-1 ring-primary/10 overflow-hidden max-w-full">
               {/* Best Price Badge - positioned inside card with proper spacing */}
               <div className="flex justify-center mb-3 sm:mb-4">
                 <span className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 bg-secondary text-white text-xs font-bold rounded-full shadow-lg whitespace-nowrap">
