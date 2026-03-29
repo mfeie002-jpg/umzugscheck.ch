@@ -1,56 +1,41 @@
 
 
-# "Why Invest" Section auf /investoren
+# WhyInvestSection: 6 → 20 Investment-Argumente
 
-## Kontext
+## Was aendert sich
 
-Die Seite hat bereits: Metrics, Relo-OS, Profitability, Traction, Pillars, Revenue Streams, Unit Economics, Market Potential, Uniqueness, Exit Timeline, Funding Roadmap, SEO Moat, SEO Market Size. Was fehlt: eine klare, kompakte **"Warum investieren?"**-Sektion die alle Argumente auf einen Blick zusammenfasst — der emotionale + rationale Closer.
+Die `WhyInvestSection.tsx` wird von 6 auf **20 Karten** erweitert. Die bestehenden 6 bleiben. 14 neue kommen dazu — alle aus deiner Sprachnachricht professionell formuliert.
 
-## Was wird gebaut
+## Die 14 neuen Argumente
 
-**Neue Datei:** `src/components/vision/WhyInvestSection.tsx`
+| # | Titel | Stat | Kernaussage |
+|---|-------|------|-------------|
+| 7 | Evergreen Market | "Umziehen geht nie weg" | Kein Trend, kein Hype — Menschen muessen immer umziehen. Ewiger Bedarf. |
+| 8 | Kaufkraft Schweiz | "Reichstes Land der Welt" | Schweizer zahlen sofort fuer Convenience. Hoechste Zahlungsbereitschaft. |
+| 9 | Schneeball-Effekt | "Nur eine Frage der Zeit" | SEO waechst exponentiell — einmal oben, bleibt man oben. 6-9 Monate bis Break-even. |
+| 10 | Proven Track Record | "5x Google #1 weltweit" | Gruender hat bereits globale Nr.-1-Rankings aufgebaut (USA, weltweit). Kopiert und skaliert. |
+| 11 | Plattform-Dominanz | "Platzhirsch bleibt Platzhirsch" | Wer einmal dominiert, wird nicht verdraengt. Google baut keine Zuegel-Plattform. |
+| 12 | Cross-Sell Engine | "Umzug = Foot in the Door" | Nach dem Umzug: Reinigung, Entsorgung, Lagerung — wir besitzen den ganzen Prozess. |
+| 13 | Dual-Brand Strategie | "Umzugscheck + Feierabend" | Umzugscheck holt Leads via SEO, Feierabendservices.ch fuehrt aus — systematisch immer bestes Angebot. |
+| 14 | Auto-Discovery | "Jede Firma wird gefunden" | Automatisches Scraping aller Umzugs-/Reinigungsfirmen in jeder Gemeinde — ob sie wollen oder nicht. |
+| 15 | Live Relocation Hubs | "2'110 Gemeinden, live updated" | Jede Gemeinde hat einen dedizierten Hub mit gescrapten Infos — kostenlos fuer jeden Kunden. |
+| 16 | Vergleich ist ewig | "Leute vergleichen immer" | Der Vergleichsprozess beim Umzug aendert sich nie — unser Kern-USP bleibt fuer immer relevant. |
+| 17 | A/B Testing Machine | "5 Durchgaenge optimiert" | Permanentes Testing — irgendetwas MUSS Nr. 1 sein. Wir iterieren bis es mathematisch stimmt. |
+| 18 | 10+ Revenue Streams | "Diversifizierte Einnahmen" | CPL, CPC, Subscriptions, Sponsored, Bidding, Services, Reinigung, Lager, Entsorgung und mehr. |
+| 19 | 20 Jahre SEO-Nerd | "Kein groesserer Experte" | 20 Jahre Vollzeit-SEO. Niemand im Schweizer Umzugsmarkt hat mehr Erfahrung investiert. |
+| 20 | Scheitern unmoeglich | "100% sichere Rendite" | Es geht nur um die Zeitdauer. Aller Profit wird reinvestiert bis zur absoluten Marktdominanz. |
 
-**Platzierung:** Nach SEOMarketSizeSection (Zeile 362), vor Jokes — als Sektion 17. Das ist die letzte inhaltliche Sektion vor dem Footer CTA, also der perfekte "Closer".
+## Layout
 
-### Aufbau der Komponente:
-
-1. **Header** — Badge "Investment Thesis" + Titel "Warum jetzt investieren?" + Subline
-
-2. **6 Investment-Argumente als Cards** (2x3 Grid desktop, stacked mobile):
-   - **Timing** — "450'000 Umzuege/Jahr, kein digitaler Marktfuehrer" + Schweizer Markt ist fragmentiert
-   - **Unit Economics** — "CHF 553 Revenue pro Kunde bei 90%+ Marge" + kapitaleffizientes Modell
-   - **Technical Moat** — "2'110 Gemeinde-SEO + AI-Pipeline = schwer kopierbar" + organischer Traffic-Flywheel
-   - **Skin in the Game** — "Gruender arbeitet ohne Lohn, 100% reinvestiert" + maximale Alignment
-   - **De-Risked Structure** — "Meilenstein-basierte Tranchen, max CHF 15k Erstrisiko" + Investor-Schutz
-   - **Scalability** — "95% Automation, 6 Revenue Streams, Multi-Brand ready" + Plattform nicht Service
-
-3. **Zusammenfassung-Box** — Kompaktes Statement:
-   > "CHF 60k Pre-Seed. 3 Tranchen. Klare Milestones. Break-even in 6-9 Monaten. Kein Gruenderlohn. Der Schweizer Umzugsmarkt hat keinen digitalen Champion — wir bauen ihn."
-
-### Styling:
-- Framer Motion `whileInView` Animationen
-- Lucide Icons (Clock, Calculator, Shield, Heart, Lock, Rocket)
-- Cards mit leichtem Gradient und Icon-Akzent
-- Navy/Primary Farbschema passend zum Rest
-- Responsive: Mobile stacked, Desktop 2x3 grid
-
-## Integration
-
-In `InvestorenLanding.tsx` nach SEOMarketSizeSection (Zeile 363):
-
-```tsx
-import { WhyInvestSection } from "@/components/vision/WhyInvestSection";
-// ...
-{/* 17. WHY INVEST — Investment Thesis Summary */}
-<ScrollReveal>
-  <WhyInvestSection language={language} />
-</ScrollReveal>
-```
+- Subline: "Sechs Gruende" → **"20 Gruende"**
+- Grid bleibt `grid-cols-1 md:grid-cols-2 lg:grid-cols-3`
+- Neue Lucide Icons: Globe, Coins, TrendingUp, Trophy, Crown, ShoppingCart, Layers, Radar, MapPin, RefreshCw, FlaskConical, Wallet, Brain, Infinity
 
 ## Dateien
 
 | Datei | Aktion |
 |---|---|
-| `src/components/vision/WhyInvestSection.tsx` | Neu erstellen |
-| `src/pages/InvestorenLanding.tsx` | Import + einfuegen nach Zeile 363 |
+| `src/components/vision/WhyInvestSection.tsx` | Erweitern: 14 neue Karten, Subline anpassen, neue Icons importieren |
+
+Keine Aenderung an `InvestorenLanding.tsx` noetig — Komponente ist bereits eingebunden.
 
