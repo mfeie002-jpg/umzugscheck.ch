@@ -601,7 +601,7 @@ export function WhyInvestSection({ language = 'de' }: WhyInvestSectionProps) {
           className="rounded-2xl border-2 border-primary/20 bg-primary/5 p-6 md:p-10 text-center max-w-4xl mx-auto"
         >
           <p className="text-lg md:text-xl font-semibold text-foreground leading-relaxed">
-            CHF 60k Pre-Seed. 3 Tranchen. Klare Milestones. Break-even in 6–9 Monaten.
+            CHF 80k Pre-Seed. 3 Tranchen (20k / 25k / 35k). Klare Milestones. Break-even in 6–9 Monaten.
             <br className="hidden sm:block" />
             Kein Gründerlohn. Der Schweizer Umzugsmarkt hat keinen digitalen Champion —{' '}
             <span className="text-primary">wir bauen ihn.</span>
