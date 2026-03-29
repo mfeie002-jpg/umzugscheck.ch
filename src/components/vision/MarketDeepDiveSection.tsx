@@ -229,6 +229,11 @@ export function MarketDeepDiveSection() {
             <TrendingUp className="w-5 h-5 text-primary" />
             Marktgrösse mit harten Zahlen
           </h3>
+          {/* Market Size Chart */}
+          <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 mb-6">
+            <h4 className="text-sm font-semibold text-slate-300 mb-3">Umzüge pro Jahr nach Segment</h4>
+            <MarketSizeBarChart />
+          </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
             {MARKET_STATS.map((stat, i) => {
               const Icon = stat.icon;
