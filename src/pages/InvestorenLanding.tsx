@@ -345,6 +345,11 @@ export default function InvestorenLanding() {
         <ExitTimeline language={language} />
       </ScrollReveal>
 
+      {/* 14. FUNDING ROADMAP */}
+      <ScrollReveal>
+        <FundingRoadmapSection language={language} />
+      </ScrollReveal>
+
       {/* JOKES SECTION - Only for BG/IT */}
       {(language === 'bg' || language === 'it') && (
         <section className="py-12 bg-muted/10">
