@@ -366,6 +366,13 @@ export function MarketDeepDiveSection() {
             <Zap className="w-5 h-5 text-yellow-400" />
             Digitale Lücken = Unsere Chance
           </h3>
+          
+          {/* Digital Gap Visual */}
+          <div className="bg-slate-900/80 border border-yellow-500/20 rounded-xl p-5 mb-6">
+            <h4 className="text-sm font-semibold text-yellow-300 mb-4">Marktabdeckung heute (ohne Umzugscheck)</h4>
+            <DigitalGapVisual />
+          </div>
+          
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {DIGITAL_GAPS.map((g, i) => {
               const Icon = g.icon;
