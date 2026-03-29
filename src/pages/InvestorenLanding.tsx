@@ -336,6 +336,11 @@ export default function InvestorenLanding() {
         </div>
       </section>
 
+      {/* 11b. MARKET DEEP DIVE — Research-backed analysis */}
+      <ScrollReveal>
+        <MarketDeepDiveSection />
+      </ScrollReveal>
+
       {/* PERSONA INTERRUPT CARD */}
       {isPersonalized && (
         <FunInterruptCard persona={persona} page="investoren" afterSection="market" />
