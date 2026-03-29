@@ -70,21 +70,21 @@ const TIER2_EXCELLENCE: TechUSP[] = [
 ];
 
 const TIER3_DETAIL: TechUSP[] = [
-  { icon: Gift, title: "First-Night Kit", description: "Willkommenspaket mit Essentials für die erste Nacht.", whyWow: "Kleine Geste, riesiger Wow-Effekt." },
-  { icon: CalendarDays, title: "Waste Calendar Sync", description: "Abfuhrkalender der neuen Gemeinde automatisch im Kalender.", whyWow: "Micro-Service mit Macro-Dankbarkeit." },
-  { icon: Building2, title: "Elevator Booking Bot", description: "Liftreservierung im Gebäude automatisch organisieren.", whyWow: "Eliminiert den nervigsten Admin-Schritt." },
-  { icon: Flower2, title: "Plant Care Guide", description: "Umzugstipps für jede Pflanze basierend auf Art und Jahreszeit.", whyWow: "Zeigt: wir denken an ALLES." },
-  { icon: Coins, title: "In-App Tipping", description: "Trinkgeld digital an die Umzugshelfer senden.", whyWow: "Cashless und fair." },
-  { icon: GraduationCap, title: "Schulanmeldung", description: "Automatische Schulummeldung für Kinder generieren.", whyWow: "Familien-Feature das Herzen gewinnt." },
-  { icon: Dumbbell, title: "Gym Canceller", description: "Fitness-Abo automatisch kündigen oder transferieren.", whyWow: "Sonderkündigungsrecht nutzen per Klick." },
-  { icon: Sun, title: "Sun Simulator", description: "Sonnenverlauf in der neuen Wohnung simulieren.", whyWow: "Kein dunkles Wohnzimmer-Risiko mehr." },
-  { icon: QrCode, title: "QR Box Tracking", description: "Jeder Karton hat einen QR-Code — immer wissen wo was ist.", whyWow: "Nie wieder 'Wo ist der Karton mit den Gläsern?'" },
-  { icon: Palette, title: "Farbpsychologie", description: "KI schlägt Wandfarben vor basierend auf Raumgrösse und Lichteinfall.", whyWow: "Interior Design als Gratis-Feature." },
-  { icon: Car, title: "Parking Permit", description: "Halteverbotszone automatisch bei der Gemeinde beantragen.", whyWow: "Ein Formular weniger, ein Problem weniger." },
-  { icon: UtensilsCrossed, title: "Kühlschrank-Rezepte", description: "Rezeptvorschläge aus Resten vor dem Umzug.", whyWow: "Kein Food Waste — und ein Schmunzler." },
-  { icon: HeartPulse, title: "Erste-Hilfe-Guide", description: "Ergonomie-Tipps und Notfallanweisungen für den Umzugstag.", whyWow: "Sicherheit als USP." },
-  { icon: CloudRain, title: "Wetterwarnung", description: "Automatische Warnung wenn am Umzugstag Regen droht.", whyWow: "Planung die mitdenkt." },
-  { icon: Music, title: "Spotify Welcome", description: "Automatische Playlist für den Einzugstag.", whyWow: "Der emotionale Moment — powered by uns." },
+  { icon: Gift, title: "First-Night Survival Kit", description: "Wenn der Umzug als 'abgeschlossen' markiert wird, bestellt die App automatisch eine Pizza und Toilettenpapier.", whyWow: "Das beste, viralste Marketing-Tool aller Zeiten." },
+  { icon: CalendarDays, title: "Local Waste Calendar Integration", description: "Der Abfallkalender der neuen Gemeinde synchronisiert sich lautlos mit dem Google/Apple Kalender.", whyWow: "Beendet die Kehricht-Verwirrung im neuen Kanton sofort." },
+  { icon: Building2, title: "Automated Elevator Reservation Bot", description: "Die KI schreibt der Immobilienverwaltung autonom eine E-Mail, um den Lift für den Umzugstag zu reservieren.", whyWow: "Ein Administrationsschritt weniger, an den man denken muss." },
+  { icon: Flower2, title: "Post-Move Plant Survival Guide AI", description: "Die KI analysiert den 3D-Grundriss und sagt dir, in welches Eck deine Monstera muss für perfektes Licht.", whyWow: "Eine charmante, verrückte Nutzung der erhobenen Raumdaten." },
+  { icon: Coins, title: "In-App Twint Tipping", description: "Wenn die Crew gut war, kann via Twint direkt in der App ein Trinkgeld an die Arbeiter gesendet werden.", whyWow: "Motivation pur für die Handwerker; steigert Servicequalität." },
+  { icon: GraduationCap, title: "Kinder-Schulanmeldungs-Assistent", description: "Die App generiert automatisch vorausgefüllte PDFs für den neuen Schulkreis.", whyWow: "Entlastet Familien in der stressigsten Phase massiv." },
+  { icon: Dumbbell, title: "Gym-Membership Auto-Canceller", description: "Die KI scannt Bankdaten (Open Banking), findet das alte Fitness-Abo und kündigt es automatisch.", whyWow: "Holt dem Kunden bares Geld zurück." },
+  { icon: Sun, title: "Sun & Noise Simulator", description: "Vor dem Einzug per AR simulieren, wie die Sonne um 16:00 Uhr fällt und wie laut die Strasse ist.", whyWow: "Schafft irre Vorfreude und Bindung an die App." },
+  { icon: QrCode, title: "Humanoid Robot Packing", description: "Premium-Kunden können humanoide Roboter zum Einpacken der Kisten dazubuchen.", whyWow: "Der ultimative 'Übertreibungs-Flex' im Pitch." },
+  { icon: Palette, title: "AI Color Psychology Advisor", description: "Die KI schlägt Wandfarben für neue Räume vor, basierend darauf, ob man 'ruhig arbeiten' oder 'energiegeladen' sein möchte.", whyWow: "Verbindet Umzug direkt mit Interior-Design." },
+  { icon: Car, title: "Automatic Parking Permit API", description: "Verlinkt automatisch zum blauen-Zonen-Antrag der neuen Stadt und füllt das Formular für das Auto aus.", whyWow: "Schützt vor der ersten Parkbusse im neuen Heim." },
+  { icon: UtensilsCrossed, title: "Fridge Leftover AI Chef", description: "Man fotografiert den halbleeren Kühlschrank, und die KI generiert ein Rezept, damit nichts weggeworfen wird.", whyWow: "Spielerische Nachhaltigkeit, die unfassbar sympathisch wirkt." },
+  { icon: HeartPulse, title: "Digital First-Aid Video Guides", description: "SOS-Kurzvideos in der App: 'Wie stoppe ich das Wasser unter dem Spülbecken?'", whyWow: "Rettet den Nutzer in Momenten purer Panik." },
+  { icon: CloudRain, title: "Extreme Weather Predictive Alerts", description: "Warnt 3 Tage vor dem Umzug vor starkem Schneefall und bucht automatisch Schutzplanen dazu.", whyWow: "Proaktives Krisenmanagement." },
+  { icon: Music, title: "Welcome Home Smart Speaker Playlist", description: "Wenn das GPS registriert, dass man den ersten Abend in der neuen Wohnung verbringt, startet eine kuratierte Spotify-Playlist.", whyWow: "Der perfekte, emotionale Gänsehaut-Abschluss." },
 ];
 
 function TierCard({ usp, tier }: { usp: TechUSP; tier: 'scifi' | 'excellence' | 'detail' }) {

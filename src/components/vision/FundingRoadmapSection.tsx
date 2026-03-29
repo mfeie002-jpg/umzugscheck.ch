@@ -40,8 +40,8 @@ const trancheConfig = [
     borderClass: "border-primary/30",
     bgClass: "bg-primary/5",
     Icon: Rocket,
-    description: "Produkt marktreif machen, erste zahlende Umzugsfirmen onboarden und die Unit Economics mit echten Leads validieren.",
-    tags: ["Google Ads Setup", "Partner-Akquise", "Plattform-Feinschliff"],
+    description: "Validierung der Technik und des Cost-per-Lead. Produkt marktreif machen und erste zahlende Umzugsfirmen onboarden.",
+    tags: ["Technik validieren", "CPL optimieren", "Partner-Akquise"],
     milestoneTitle: "MILESTONES FÜR FREIGABE TRANCHE 2",
     milestones: [
       "15–20 Umzugsfirmen aktiv auf der Plattform",
@@ -56,8 +56,8 @@ const trancheConfig = [
     borderClass: "border-amber-500/30",
     bgClass: "bg-amber-500/5",
     Icon: TrendingUp,
-    description: "Marketing skalieren, Conversion-Rate optimieren, regionale Expansion in die gesamte Deutschschweiz und erste Schritte in die Romandie.",
-    tags: ["Paid Marketing skalieren", "Regionale Expansion", "SEO & Content"],
+    description: "Wird nur freigegeben, wenn Tranche 1 nachweislich profitabel skaliert. Marketing skalieren, Conversion-Rate optimieren, regionale Expansion.",
+    tags: ["Profitabel skalieren", "Regionale Expansion", "SEO & Content"],
     milestoneTitle: "MILESTONES FÜR FREIGABE TRANCHE 3",
     milestones: [
       "Monatlicher Umsatz CHF 1'500–2'500",
@@ -72,8 +72,8 @@ const trancheConfig = [
     borderClass: "border-emerald-500/30",
     bgClass: "bg-emerald-500/5",
     Icon: Target,
-    description: "Break-even erreichen, Automatisierung ausbauen, organisches Wachstum über SEO ernten und optionaler Start in der Romandie und im Tessin.",
-    tags: ["Romandie & Tessin", "Automatisierung", "Organisches Wachstum"],
+    description: "Strategisches Working Capital zum Erreichen des Break-Evens. Automatisierung ausbauen, organisches Wachstum ernten, Romandie & Tessin starten.",
+    tags: ["Break-Even erreichen", "Automatisierung", "Organisches Wachstum"],
     milestoneTitle: "ENDZIEL",
     milestones: [
       "Monatlicher Umsatz deckt laufende Kosten (CHF 4'000–5'000)",
