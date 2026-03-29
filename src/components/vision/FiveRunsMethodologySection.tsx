@@ -1,13 +1,14 @@
 /**
- * FiveRunsMethodologySection — 5-Run Optimization Kill Switch + AI Risk Assessment
- * The final intellectual "mic drop" on the /investor page
+ * FiveRunsMethodologySection — 5-Run Optimization + nuanced AI Risk Assessment
+ * Updated with honest per-run expectations and refined kill-switch logic
  */
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import {
-  RotateCcw, TrendingUp, XCircle, Brain, ChevronDown,
+  RotateCcw, XCircle, Brain, ChevronDown,
   CheckCircle2, AlertTriangle, Target, Zap, BarChart3,
+  TrendingUp, Search,
 } from "lucide-react";
 
 const RUNS = [
@@ -15,41 +16,46 @@ const RUNS = [
     run: 1,
     title: "Baseline messen",
     desc: "Ads starten, erste Leads generieren, CPL und Conversion messen. Rohdaten sammeln.",
-    metric: "CPL, Conversion Rate, Lead-Qualität",
-    action: "Daten sammeln, nichts optimieren — nur messen.",
+    goal: "Nachfrage testen, CPL verstehen, erste Leadqualität sehen, Reibung erkennen.",
+    expectation: "Noch nicht profitabel. Run 1 macht den echten Engpass brutal ehrlich sichtbar.",
+    profitChance: "10–15%",
     icon: BarChart3,
   },
   {
     run: 2,
-    title: "Funnel optimieren",
-    desc: "Landingpages, CTAs, Formulare und Ansprache basierend auf Run-1-Daten verbessern.",
-    metric: "CPL-Reduktion, Conversion-Steigerung",
-    action: "A/B-Tests, Copy-Optimierung, UX-Fixes.",
+    title: "Engpass beheben & Conversion steigern",
+    desc: "Klarsten Engpass beheben, Conversion verbessern, Leadqualität erhöhen, Monetarisierung schärfen.",
+    goal: "Erster profitabler Kern sollte hier sichtbar werden.",
+    expectation: "Erste realistische Chance auf profitablen Kern. Hier sollte man den Gewinner riechen.",
+    profitChance: "35–45%",
     icon: Target,
   },
   {
     run: 3,
-    title: "Kanal-Mix kalibrieren",
-    desc: "Budget-Allokation zwischen Google Ads, SEO, WhatsApp und Direktmarketing optimieren.",
-    metric: "ROAS pro Kanal, Kanal-Attribution",
-    action: "Budget auf performante Kanäle shiften.",
+    title: "Gewinner-Funnel stabilisieren",
+    desc: "WhatsApp + KI + Offertenprozess enger machen, Add-ons monetarisieren, Partnerseite optimieren.",
+    goal: "Profitabler Kern muss sichtbar sein — oder es wird unangenehm.",
+    expectation: "Bis hier sollte man sagen können: Ja, das Ding lebt — oder: Es ist schwieriger als gedacht.",
+    profitChance: "55–65%",
     icon: TrendingUp,
   },
   {
     run: 4,
-    title: "Unit Economics validieren",
-    desc: "Kundenwert (AOV), Marge pro Auftrag und Wiederkaufsrate endgültig validieren.",
-    metric: "AOV > CHF 2'000, Marge > 30%",
-    action: "Pricing anpassen, Cross-Selling aktivieren.",
+    title: "Gewinner verdichten & Schwächen abschneiden",
+    desc: "Nur noch skalierbare Dinge pushen, schwache Bereiche eliminieren, wiederholbares Muster bestätigen.",
+    goal: "Nicht nur ein Kern profitabel — ein wiederholbares Muster muss sichtbar sein.",
+    expectation: "Spätestens hier sollte ein belastbares, wiederholbares Profitabilitätsmuster stehen.",
+    profitChance: "70–75%",
     icon: Zap,
   },
   {
     run: 5,
-    title: "Profitabilität oder Kill Switch",
-    desc: "Wenn nach 5 Optimierungszyklen kein profitables Modell steht: Projekt wird sauber beendet.",
-    metric: "Break-even erreichbar: Ja oder Nein",
-    action: "Scale oder Kill. Kein 6. Versuch.",
-    icon: AlertTriangle,
+    title: "Urteil: Skalieren oder Stoppen",
+    desc: "Final bestätigen. Wirtschaftliche Wahrheit akzeptieren. Keine Ausreden, kein 'vielleicht noch ein bisschen'.",
+    goal: "Glasklar: Ja, wir skalieren — oder: Nein, wir stoppen.",
+    expectation: "Run 5 ist nicht der Start von Hoffnung. Run 5 ist das Urteil.",
+    profitChance: "75–80%",
+    icon: Search,
   },
 ];
 
@@ -66,22 +72,22 @@ export function FiveRunsMethodologySection() {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <Badge className="mb-4 bg-amber-500/10 text-amber-600">
+          <Badge className="mb-4 bg-accent text-accent-foreground">
             <RotateCcw className="w-3.5 h-3.5 mr-1" />
             Risiko-Management
           </Badge>
           <h2 className="text-3xl md:text-4xl font-black text-foreground mb-3">
-            5 Runs. 5 Optimierungen. Dann Klarheit.
+            Fünf Runs. Dann Wahrheit.
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Wir optimieren nicht endlos. Wir geben dem System exakt 5 Zyklen, 
-            um sich zu beweisen. Jeder Run analysiert, verbessert und misst. 
-            Wenn nach dem 5. Run kein profitables Modell steht — beenden wir alles. Sauber.
+            Wir geben dem Modell fünf echte Optimierungszyklen. 
+            Nicht fünf kosmetische Anpassungen, sondern fünf vollständige Runs aus: 
+            <span className="text-foreground font-semibold"> Analyse → Engpass → Verbesserung → Messung → Entscheidung.</span>
           </p>
         </motion.div>
 
         {/* 5 Run Cards */}
-        <div className="space-y-4 mb-12">
+        <div className="space-y-4 mb-8">
           {RUNS.map((run, i) => (
             <motion.div
               key={run.run}
@@ -89,55 +95,64 @@ export function FiveRunsMethodologySection() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.08 }}
-              className={`rounded-xl border p-5 flex gap-4 items-start ${
+              className={`rounded-xl border p-5 ${
                 run.run === 5
-                  ? "border-red-500/30 bg-red-500/5"
+                  ? "border-destructive/30 bg-destructive/5"
                   : "border-border bg-card"
               }`}
             >
-              <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 font-black text-lg ${
-                run.run === 5
-                  ? "bg-red-500/20 text-red-500"
-                  : "bg-primary/10 text-primary"
-              }`}>
-                {run.run}
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className={`font-bold text-base mb-1 ${
-                  run.run === 5 ? "text-red-500" : "text-foreground"
+              <div className="flex gap-4 items-start">
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 font-black text-lg ${
+                  run.run === 5
+                    ? "bg-destructive/20 text-destructive"
+                    : "bg-primary/10 text-primary"
                 }`}>
-                  {run.title}
-                </h3>
-                <p className="text-sm text-muted-foreground mb-2">{run.desc}</p>
-                <div className="flex flex-wrap gap-2">
-                  <span className="text-xs bg-muted px-2 py-1 rounded-md text-muted-foreground">
-                    📊 {run.metric}
-                  </span>
-                  <span className="text-xs bg-muted px-2 py-1 rounded-md text-muted-foreground">
-                    ⚡ {run.action}
-                  </span>
+                  {run.run}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2 mb-1">
+                    <h3 className={`font-bold text-base ${
+                      run.run === 5 ? "text-destructive" : "text-foreground"
+                    }`}>
+                      {run.title}
+                    </h3>
+                    <Badge variant="outline" className="text-xs flex-shrink-0 hidden sm:flex">
+                      P(profitabel): {run.profitChance}
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-2">{run.desc}</p>
+                  <p className="text-xs text-foreground/70 italic">{run.expectation}</p>
+                  <Badge variant="outline" className="text-xs mt-2 sm:hidden">
+                    P(profitabel): {run.profitChance}
+                  </Badge>
                 </div>
               </div>
             </motion.div>
           ))}
         </div>
 
-        {/* Kill Switch Statement */}
+        {/* Kill Switch — refined */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="rounded-2xl border-2 border-red-500/20 bg-gradient-to-r from-red-500/5 to-transparent p-6 mb-12 text-center"
+          className="rounded-2xl border-2 border-destructive/20 bg-gradient-to-r from-destructive/5 to-transparent p-6 mb-8"
         >
-          <XCircle className="w-8 h-8 text-red-500 mx-auto mb-3" />
-          <p className="font-bold text-foreground text-lg mb-2">
-            Der Kill Switch ist real.
-          </p>
-          <p className="text-muted-foreground text-sm max-w-xl mx-auto">
-            Wenn nach 5 kompletten Optimierungszyklen kein profitables Modell steht, 
-            wird das Projekt sauber abgewickelt. Kein ewiges Hoffen, kein Geld verbrennen. 
-            Das ist keine leere Drohung — das ist Professionalität.
-          </p>
+          <div className="flex items-start gap-4">
+            <XCircle className="w-7 h-7 text-destructive flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="font-bold text-foreground text-base mb-2">
+                Die intelligente Kill-Switch-Regel
+              </p>
+              <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+                Wenn nach 5 echten Runs <span className="text-foreground font-semibold">kein glaubwürdiger profitabler Kern</span> sichtbar ist, stoppen wir.
+              </p>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Wenn der profitable Kern sichtbar ist, aber noch verdichtet werden muss, <span className="text-foreground font-semibold">skalieren wir weiter</span>. 
+                Das ist ein riesiger Unterschied — und genau diese Unterscheidung macht die Regel schlau statt stur.
+              </p>
+            </div>
+          </div>
         </motion.div>
 
         {/* Intro Text */}
@@ -181,91 +196,138 @@ export function FiveRunsMethodologySection() {
           </div>
 
           <div className="space-y-4 mb-6">
-            {/* Risk Number */}
-            <div className="rounded-xl bg-amber-500/10 border border-amber-500/20 p-5">
-              <p className="text-sm font-medium text-amber-700 dark:text-amber-400 mb-2">
-                Risiko, dass es auch nach 5 echten Runs keinen profitablen Kern gibt:
-              </p>
-              <p className="text-4xl md:text-5xl font-black text-amber-600 dark:text-amber-400 mb-1">
-                ca. 25–35%
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Zentral geschätzt: rund 30%
-              </p>
-            </div>
-
-            {/* Success Number */}
-            <div className="rounded-xl bg-emerald-500/10 border border-emerald-500/20 p-5">
-              <p className="text-sm font-medium text-emerald-700 dark:text-emerald-400 mb-2">
-                Chance, dass bis spätestens Run 5 ein tragfähiges, profitables Modell entsteht:
-              </p>
-              <p className="text-4xl md:text-5xl font-black text-emerald-600 dark:text-emerald-400 mb-1">
-                ca. 70%
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Nicht 100%. Nicht garantiert. Aber stark genug, dass ein konsequent geführter Versuch absolut rational ist.
-              </p>
-            </div>
-
-            {/* What increases the chance */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-              <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4">
-                <p className="text-sm font-bold text-emerald-600 dark:text-emerald-400 mb-3">
-                  ✅ Was die Chance erhöht
+            {/* Risk & Success side by side on desktop */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="rounded-xl bg-accent/50 border border-border p-5">
+                <p className="text-sm font-medium text-muted-foreground mb-2">
+                  Risiko, dass nach 5 echten Runs kein profitabler Kern entsteht:
                 </p>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  {[
-                    "Dauerhafter Markt — Menschen ziehen immer um",
-                    "Natürlicher Vergleichsbedarf bei Kunden",
-                    "Hoher Warenkorbwert durch modulare Zusatzleistungen",
-                    "WhatsApp als direkter Intake-/Vertriebskanal",
-                    "KI reduziert Aufwand und erhöht Geschwindigkeit",
-                    "Setup ist live, nicht nur Theorie",
-                    "Gründer ist extrem committed, kein Lohn = niedriger Burn",
-                    "Mehrere Optimierungshebel statt nur einer Wette",
-                  ].map((item) => (
-                    <li key={item} className="flex items-start gap-2">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 mt-0.5 flex-shrink-0" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
+                <p className="text-4xl font-black text-foreground mb-1">
+                  ca. 20–25%
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Zentral geschätzt: rund 22%
+                </p>
               </div>
 
-              <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4">
-                <p className="text-sm font-bold text-amber-600 dark:text-amber-400 mb-3">
-                  ⚠️ Was das Risiko real hält
+              <div className="rounded-xl bg-primary/5 border border-primary/20 p-5">
+                <p className="text-sm font-medium text-muted-foreground mb-2">
+                  Chance auf tragfähiges, profitables Modell bis Run 5:
                 </p>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  {[
-                    "SEO kann länger dauern als erhofft",
-                    "Leadqualität kann schlechter sein als gedacht",
-                    "B2B-Partner können unzuverlässig oder preissensibel sein",
-                    "Paid Traffic kann anfangs zu teuer sein",
-                    "Conversion und Monetarisierung können zu schwach sein",
-                    "5 Runs helfen nur, wenn sie echte Hypothesen testen",
-                  ].map((item) => (
-                    <li key={item} className="flex items-start gap-2">
-                      <AlertTriangle className="w-3.5 h-3.5 text-amber-500 mt-0.5 flex-shrink-0" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
+                <p className="text-4xl font-black text-primary mb-1">
+                  ca. 75–80%
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Profitabler Kern erwartet ab Run 2–3
+                </p>
               </div>
             </div>
+
+            {/* Timeline expectation */}
+            <div className="rounded-xl bg-muted/30 border border-border p-5">
+              <p className="text-sm font-semibold text-foreground mb-3">
+                Ab wann wird es profitabel? Meine beste Schätzung:
+              </p>
+              <div className="space-y-2 text-sm">
+                <div className="flex items-center gap-3">
+                  <span className="w-16 text-xs font-mono text-muted-foreground">Run 2–3</span>
+                  <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+                    <div className="h-full bg-primary/60 rounded-full" style={{ width: "50%" }} />
+                  </div>
+                  <span className="text-xs text-muted-foreground w-36 text-right">Profitabler Kern sichtbar</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="w-16 text-xs font-mono text-muted-foreground">Run 4–5</span>
+                  <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+                    <div className="h-full bg-primary rounded-full" style={{ width: "80%" }} />
+                  </div>
+                  <span className="text-xs text-muted-foreground w-36 text-right">Gesamt-Break-Even-Nähe</span>
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground mt-3 italic">
+                Wenn das Modell funktioniert, sollte man den profitablen Kern schon in Run 2 oder 3 riechen. 
+                Run 5 ist nicht der Start von Hoffnung — Run 5 ist das Urteil.
+              </p>
+            </div>
+
+            {/* Expandable: Chance vs Risk factors */}
+            <button
+              onClick={() => setExpanded(!expanded)}
+              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors w-full"
+            >
+              <ChevronDown className={`w-4 h-4 transition-transform ${expanded ? "rotate-180" : ""}`} />
+              <span>Was die Chance erhöht — und was das Risiko real hält</span>
+            </button>
+
+            <AnimatePresence>
+              {expanded && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  className="overflow-hidden"
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                    <div className="rounded-xl border border-primary/20 bg-primary/5 p-4">
+                      <p className="text-sm font-bold text-primary mb-3">
+                        ✅ Was die Chance erhöht
+                      </p>
+                      <ul className="space-y-2 text-sm text-muted-foreground">
+                        {[
+                          "Dauerhafter Markt — Menschen ziehen immer um",
+                          "Natürlicher Vergleichsbedarf bei Kunden",
+                          "Hoher Warenkorbwert (CHF 2'660) durch Cross-Selling",
+                          "WhatsApp als direkter Intake-/Vertriebskanal — live",
+                          "KI reduziert Aufwand und erhöht Geschwindigkeit",
+                          "Setup ist live und getestet, nicht nur Theorie",
+                          "Gründer zieht keinen Lohn = extrem niedriger Burn",
+                          "Mehrere Optimierungshebel statt nur einer Wette",
+                        ].map((item) => (
+                          <li key={item} className="flex items-start gap-2">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-primary mt-0.5 flex-shrink-0" />
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div className="rounded-xl border border-border bg-accent/30 p-4">
+                      <p className="text-sm font-bold text-foreground mb-3">
+                        ⚠️ Was das Risiko real hält
+                      </p>
+                      <ul className="space-y-2 text-sm text-muted-foreground">
+                        {[
+                          "Lead-Qualität kann anfangs schlechter sein als gedacht",
+                          "Paid Traffic kann zu Beginn zu teuer sein",
+                          "B2B-Partner können unzuverlässig oder preissensibel sein",
+                          "SEO ist stark, aber braucht 6–12 Monate",
+                          "Conversion und Monetarisierung können trotz gutem Produkt zu schwach starten",
+                          "5 Runs helfen nur, wenn sie echte Hypothesen testen und genug Daten haben",
+                        ].map((item) => (
+                          <li key={item} className="flex items-start gap-2">
+                            <AlertTriangle className="w-3.5 h-3.5 text-muted-foreground mt-0.5 flex-shrink-0" />
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* Final Statement */}
-          <div className="border-t border-border pt-6 mt-6">
+          <div className="border-t border-border pt-6 mt-4">
             <p className="text-foreground font-semibold leading-relaxed text-center text-base md:text-lg">
               Wir geben diesem Modell fünf volle Chancen, sich wirtschaftlich zu beweisen.
               <br />
-              Wenn es bis dann nicht trägt, beenden wir es.
+              Wenn es bis dann keinen profitablen Kern zeigt, beenden wir es.
               <br />
               Wenn es trägt, skalieren wir kompromisslos.
             </p>
             <p className="text-xs text-muted-foreground/60 mt-4 text-center italic">
-              — Ehrliche KI-Schätzung basierend auf Marktanalyse, Wettbewerbsdaten und Projektinfrastruktur
+              — Ehrliche KI-Schätzung basierend auf Marktanalyse, Infrastruktur-Status und Gründer-Commitment
             </p>
           </div>
         </motion.div>
