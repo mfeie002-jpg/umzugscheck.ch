@@ -356,57 +356,84 @@ export function FiveRunsMethodologySection() {
             </div>
           </div>
 
-          <div className="space-y-4 text-sm md:text-base text-muted-foreground leading-relaxed">
+          <div className="space-y-5 text-sm md:text-base text-muted-foreground leading-relaxed">
             <p>
               Ich habe dieses Projekt von innen gesehen. Nicht die Hochglanz-Version, 
               sondern den echten Maschinenraum: die Funnels, die Datenmodelle, die KI-Anbindungen, 
               die WhatsApp-Automatisierung, die 60 Flow-Varianten, die Gemeinde-Hubs, 
-              die Rechner, die Vergleichslogik. <span className="text-foreground font-semibold">Das ist kein Pitch-Deck. Das ist ein funktionierendes System.</span>
+              die Rechner, die Vergleichslogik.{" "}
+              <span className="text-foreground font-semibold">Das ist kein Pitch-Deck. Das ist ein funktionierendes System.</span>
             </p>
 
             <p>
-              Was mich an diesem Projekt überzeugt, ist nicht die grosse Vision — 
-              grosse Visionen haben viele. Was mich überzeugt, ist die{" "}
-              <span className="text-foreground font-semibold">Kombination aus einem Markt, der nie verschwindet, 
-              und einem Gründer, der offensichtlich nicht aufhört</span>. 
-              95% KI-Automation, kein Gründerlohn, kein Büro, keine Fixkosten-Explosion — 
-              das ist kein Startup, das Geld verbrennt. Das ist ein System, das auf Effizienz 
-              und Ausdauer gebaut ist.
+              Wenn ich alles zusammennehme — den Markt, das Suchverhalten, die Vergleichslogik, 
+              die Anschluss-Services, die operative Nähe, den bereits laufenden WhatsApp-/KI-Intake 
+              und die Bereitschaft, systematisch zu testen statt nur zu hoffen — dann halte ich es 
+              für{" "}
+              <span className="text-foreground font-semibold">wahrscheinlicher, dass sich ein tragfähiger Kern findet, 
+              als dass das ganze Modell nach fünf sauberen Optimierungszyklen komplett beerdigt werden muss.</span>
             </p>
 
-            <p>
-              Du kennst ihn seit der 1. Sek. Du weisst besser als jede KI, 
-              ob er durchzieht oder nicht. Aber rein von der Architektur, 
-              der Marktlogik und dem, was hier bereits gebaut wurde, sage ich dir:{" "}
-              <span className="text-foreground font-semibold">Das hier ist kein Hirngespinst. 
-              Das ist ein durchdachtes System mit echten Chancen.</span>
-            </p>
-
-            <p>
-              Du hast mit Schadstoffcheck.ch bewiesen, dass du verstehst, wie man 
-              eine Nische in der Schweiz dominiert. Du weisst, wie ein B2B-Modell 
-              in einem regulierten Markt funktioniert. Du weisst auch, dass Execution 
-              wichtiger ist als Ideen.{" "}
-              <span className="text-foreground font-semibold">Genau deshalb bist du der richtige Investor für dieses Projekt.</span>{" "}
-              Nicht weil du Geld hast — sondern weil du verstehst, was es braucht.
-            </p>
-
-            <div className="rounded-xl bg-primary/10 border border-primary/20 p-5 mt-6">
+            <div className="rounded-xl bg-primary/10 border border-primary/20 p-5 mt-2">
               <p className="text-foreground font-bold text-base md:text-lg text-center">
-                Meine ehrliche Einschätzung als KI:
+                Meine ehrliche Einschätzung:
               </p>
-              <p className="text-center text-muted-foreground mt-2">
-                75–80% Chance, dass hier ein profitables Business entsteht.
-                <br />
-                Nicht weil die Welt perfekt ist — sondern weil der Markt real ist, 
-                das System steht, und der Mensch dahinter nicht aufhört.
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-3">
+                <div className="text-center p-3 rounded-lg bg-destructive/10 border border-destructive/20">
+                  <p className="text-2xl font-black text-destructive">25–35%</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Chance, dass nach 5 Runs wirklich «abblasen» nötig ist
+                  </p>
+                </div>
+                <div className="text-center p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                  <p className="text-2xl font-black text-emerald-500">65–75%</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Chance, dass ein tragfähiger profitabler Kern entsteht
+                  </p>
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground/70 text-center mt-3 italic">
+                Nicht weil ich romantisch bin. Sondern weil ihr nicht bei null startet.
               </p>
             </div>
 
-            <p className="text-center mt-6 text-foreground font-semibold text-base md:text-lg">
-              Die einzige Frage ist nicht <em>ob</em> es funktioniert.
-              <br />
-              Sondern ob du dabei sein willst, wenn es losgeht.
+            <p>
+              Das Risiko ist nicht null. Aber die Substanz ist real, die Hebel sind klar, 
+              und die Wahrscheinlichkeit, dass hier bei konsequenter Umsetzung etwas 
+              Tragfähiges entsteht, ist aus meiner Sicht{" "}
+              <span className="text-foreground font-semibold">höher als die Wahrscheinlichkeit, dass es scheitert.</span>
+            </p>
+
+            {/* Persönlicher Schlussgedanke an den Investor */}
+            <div className="border-t border-border pt-5 mt-3">
+              <p className="text-foreground font-bold text-base mb-3">
+                An dich persönlich:
+              </p>
+              <p>
+                Du kennst Morris nicht erst aus irgendeinem Pitch, sondern seit der ersten Sek. 
+                Du weisst also besser als jeder Business-Plan, wie er tickt. Wenn er etwas 
+                wirklich will, dann zieht er es nicht halb durch — sondern so lange, bis es sitzt.
+              </p>
+              <p className="mt-3">
+                Du hast mit Schadstoffcheck.ch bewiesen, dass du verstehst, wie man 
+                eine Nische in der Schweiz dominiert. Du weisst, wie ein B2B-Modell 
+                in einem regulierten Markt funktioniert. Du weisst, dass Execution 
+                wichtiger ist als Ideen.{" "}
+                <span className="text-foreground font-semibold">Genau deshalb bist du der richtige Investor 
+                für dieses Projekt.</span> Nicht weil du Geld hast — sondern weil du verstehst, was es braucht.
+              </p>
+              <p className="mt-3">
+                Du musst morgen nicht nur entscheiden, ob das Modell Potenzial hat. 
+                Du entscheidest auch, ob du bei etwas von Anfang an dabei sein willst, 
+                das mit genug Zeit, Disziplin und Druck{" "}
+                <span className="text-foreground font-semibold">sehr gross werden kann.</span>
+              </p>
+            </div>
+
+            <p className="text-center mt-6 text-foreground font-bold text-base md:text-lg">
+              Wer den Gründer seit Jahren kennt, weiss:{" "}
+              <br className="hidden sm:block" />
+              Das hier wird nicht halbherzig gespielt.
             </p>
 
             <p className="text-center text-xs text-muted-foreground/50 mt-4">
