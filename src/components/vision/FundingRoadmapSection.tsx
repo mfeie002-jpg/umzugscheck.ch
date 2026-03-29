@@ -12,6 +12,7 @@ import {
   Zap, BarChart3, Lock, Mail
 } from "lucide-react";
 import type { VisionLanguage } from "@/lib/vision-translations";
+import { RevenueGrowthChart, TrancheDonutChart } from "./InvestorCharts";
 
 const FUNDING = {
   total: 80_000,
