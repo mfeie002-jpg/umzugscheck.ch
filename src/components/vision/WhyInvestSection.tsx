@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { GroupStatsChart } from "./InvestorCharts";
+import { ServiceChainInfographic, RevenueWaterfall } from "./InvestorInfographics";
 
 type Tier = "nuclear-wow" | "big-wow" | "deep-usp";
 
