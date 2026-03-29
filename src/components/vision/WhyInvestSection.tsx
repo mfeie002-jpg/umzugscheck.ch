@@ -15,6 +15,7 @@ import {
   Wrench, FileCode, Infinity, Globe2, Rocket, CheckCircle2, ChevronDown,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { GroupStatsChart } from "./InvestorCharts";
 
 type Tier = "nuclear-wow" | "big-wow" | "deep-usp";
 
