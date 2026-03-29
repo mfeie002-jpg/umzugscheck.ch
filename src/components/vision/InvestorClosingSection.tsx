@@ -4,6 +4,7 @@
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Rocket, Shield, Heart, CheckCircle2 } from "lucide-react";
+import { InvestmentGauge, RiskRewardScale } from "./InvestorInfographics2";
 
 export function InvestorClosingSection() {
   return (
@@ -23,6 +24,17 @@ export function InvestorClosingSection() {
           <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
             Die erste Runde soll nicht ein unfertiges Experiment retten, sondern ein bereits logisch starkes Modell beschleunigen.
           </p>
+        </motion.div>
+
+        {/* Investment Gauge Infographic */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="rounded-2xl border border-border bg-card p-6 mb-10"
+        >
+          <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-4 text-center">Kapitalallokation auf einen Blick</h4>
+          <InvestmentGauge />
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
