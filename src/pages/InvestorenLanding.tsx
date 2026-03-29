@@ -363,6 +363,11 @@ export default function InvestorenLanding() {
         <SEOMarketSizeSection language={language} />
       </ScrollReveal>
 
+      {/* 17. WHY INVEST — Investment Thesis Summary */}
+      <ScrollReveal>
+        <WhyInvestSection language={language} />
+      </ScrollReveal>
+
       {/* JOKES SECTION - Only for BG/IT */}
       {(language === 'bg' || language === 'it') && (
         <section className="py-12 bg-muted/10">
