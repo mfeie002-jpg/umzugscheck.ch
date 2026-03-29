@@ -1,70 +1,49 @@
 
 
-# Status & Plan: Investoren-Seite erweitern
+# "Why Invest" Section auf /investoren
 
-## Aktueller Stand
+## Kontext
 
-**Funding Roadmap IST drin** — Zeile 348-351 in `InvestorenLanding.tsx`. Die `FundingRoadmapSection` mit den CHF 60k / 3 Tranchen (15k/20k/25k) wird korrekt nach der ExitTimeline gerendert.
-
-**Municipality SEO Moat FEHLT komplett** — Es gibt keine Sektion auf `/investoren`, die das 2'110-Gemeinden-Programm, die AI-Agent-Pipeline oder die 10 Content-Marketing-Projekte zeigt. Du hast recht: das ist einer der staerksten USPs fuer einen Investor (technischer Moat, 95% Automation, organischer Traffic-Flywheel).
-
----
+Die Seite hat bereits: Metrics, Relo-OS, Profitability, Traction, Pillars, Revenue Streams, Unit Economics, Market Potential, Uniqueness, Exit Timeline, Funding Roadmap, SEO Moat, SEO Market Size. Was fehlt: eine klare, kompakte **"Warum investieren?"**-Sektion die alle Argumente auf einen Blick zusammenfasst — der emotionale + rationale Closer.
 
 ## Was wird gebaut
 
-**Neue Datei:** `src/components/vision/SEOContentMoatSection.tsx`
+**Neue Datei:** `src/components/vision/WhyInvestSection.tsx`
 
-**Platzierung:** Nach FundingRoadmap (Zeile 351), vor Jokes — als Sektion 15.
+**Platzierung:** Nach SEOMarketSizeSection (Zeile 362), vor Jokes — als Sektion 17. Das ist die letzte inhaltliche Sektion vor dem Footer CTA, also der perfekte "Closer".
 
-### Sektionen der Komponente:
+### Aufbau der Komponente:
 
-1. **Header** — Badge "Technical Moat" + Titel "2'110 Gemeinden. 1 System." + Subline ueber programmatische SEO-Dominanz
+1. **Header** — Badge "Investment Thesis" + Titel "Warum jetzt investieren?" + Subline
 
-2. **KPI-Leiste (4 Karten)**
-   - 2'110 Ziel-Gemeinden
-   - 26 Kantone als Hubs
-   - 10 Content-Projekte
-   - 95% Automation
+2. **6 Investment-Argumente als Cards** (2x3 Grid desktop, stacked mobile):
+   - **Timing** — "450'000 Umzuege/Jahr, kein digitaler Marktfuehrer" + Schweizer Markt ist fragmentiert
+   - **Unit Economics** — "CHF 553 Revenue pro Kunde bei 90%+ Marge" + kapitaleffizientes Modell
+   - **Technical Moat** — "2'110 Gemeinde-SEO + AI-Pipeline = schwer kopierbar" + organischer Traffic-Flywheel
+   - **Skin in the Game** — "Gruender arbeitet ohne Lohn, 100% reinvestiert" + maximale Alignment
+   - **De-Risked Structure** — "Meilenstein-basierte Tranchen, max CHF 15k Erstrisiko" + Investor-Schutz
+   - **Scalability** — "95% Automation, 6 Revenue Streams, Multi-Brand ready" + Plattform nicht Service
 
-3. **Pipeline-Visualisierung** — Horizontaler Flow:
-   `Scrape → Enrich → Draft → QA → Publish → Monitor`
-   Zeigt wie die AI-Agents die Seiten automatisch erstellen
-
-4. **Die 10 Projekte als kompakte Liste/Grid** (Top 5 hervorgehoben):
-   - Swiss Relocation Command Center
-   - Swiss Move Cost Index
-   - Personalized Move Plan Generator
-   - Interactive Calculators
-   - Data-driven Infographics
-   - (5 weitere collapsed/kleiner)
-
-5. **Competitive Moat Box** — Warum das schwer kopierbar ist:
-   - "2'110 lokale Landing Pages mit echten Gemeindedaten"
-   - "AI-Pipeline: 15h Setup → automatische Skalierung"
-   - "Backlinks von Gemeinden, Expat-Guides, Medien"
-   - "Organischer Traffic-Flywheel ohne laufende Ad-Kosten"
-
-6. **Rollout-Timeline** (3 Phasen):
-   - Phase 1 (M1-3): 26 Kantone + Top 50 Gemeinden
-   - Phase 2 (M4-6): 250+ Gemeinden + Cost Index + PR
-   - Phase 3 (M7-9): 500+ Gemeinden + Full Automation
+3. **Zusammenfassung-Box** — Kompaktes Statement:
+   > "CHF 60k Pre-Seed. 3 Tranchen. Klare Milestones. Break-even in 6-9 Monaten. Kein Gruenderlohn. Der Schweizer Umzugsmarkt hat keinen digitalen Champion — wir bauen ihn."
 
 ### Styling:
-- Gleicher Stack wie FundingRoadmap: Tailwind + Framer Motion `whileInView`
-- Lucide Icons (Globe, MapPin, Bot, Search, Database, Zap)
-- Responsive: Mobile stacked, Desktop grid
-- Navy/Blau Farbschema passend zum Rest
+- Framer Motion `whileInView` Animationen
+- Lucide Icons (Clock, Calculator, Shield, Heart, Lock, Rocket)
+- Cards mit leichtem Gradient und Icon-Akzent
+- Navy/Primary Farbschema passend zum Rest
+- Responsive: Mobile stacked, Desktop 2x3 grid
 
 ## Integration
 
-In `InvestorenLanding.tsx` nach FundingRoadmap (Zeile 351):
+In `InvestorenLanding.tsx` nach SEOMarketSizeSection (Zeile 363):
 
 ```tsx
-import { SEOContentMoatSection } from "@/components/vision/SEOContentMoatSection";
+import { WhyInvestSection } from "@/components/vision/WhyInvestSection";
 // ...
-{/* 15. SEO & CONTENT MOAT */}
+{/* 17. WHY INVEST — Investment Thesis Summary */}
 <ScrollReveal>
-  <SEOContentMoatSection language={language} />
+  <WhyInvestSection language={language} />
 </ScrollReveal>
 ```
 
@@ -72,6 +51,6 @@ import { SEOContentMoatSection } from "@/components/vision/SEOContentMoatSection
 
 | Datei | Aktion |
 |---|---|
-| `src/components/vision/SEOContentMoatSection.tsx` | Neu erstellen |
-| `src/pages/InvestorenLanding.tsx` | Import + einfuegen nach Zeile 351 |
+| `src/components/vision/WhyInvestSection.tsx` | Neu erstellen |
+| `src/pages/InvestorenLanding.tsx` | Import + einfuegen nach Zeile 363 |
 
