@@ -17,6 +17,8 @@ import { SEOMarketSizeSection } from "@/components/vision/SEOMarketSizeSection";
 import { WhyInvestSection } from "@/components/vision/WhyInvestSection";
 import { WhatsAppDemoSection } from "@/components/vision/WhatsAppDemoSection";
 import { MarketDeepDiveSection } from "@/components/vision/MarketDeepDiveSection";
+import { AlreadyLiveSection } from "@/components/vision/AlreadyLiveSection";
+import { InvestorClosingSection } from "@/components/vision/InvestorClosingSection";
 import { OverkillVisionSection } from "@/components/vision/OverkillVisionSection";
 import { VisionUniqueness } from "@/components/vision/VisionUniqueness";
 import { VisionTractionDashboard } from "@/components/vision/VisionTractionDashboard";
@@ -371,9 +373,14 @@ export default function InvestorenLanding() {
         <SEOMarketSizeSection language={language} />
       </ScrollReveal>
 
-      {/* 17. WHY INVEST — Investment Thesis Summary */}
+      {/* 17. WHY INVEST — 50 Gründe (Final Structure) */}
       <ScrollReveal>
         <WhyInvestSection language={language} />
+      </ScrollReveal>
+
+      {/* 17b. ALREADY LIVE — Proof Block */}
+      <ScrollReveal>
+        <AlreadyLiveSection />
       </ScrollReveal>
 
       {/* 18. WHATSAPP LIVE-DEMO — QR Code for Pitch */}
@@ -384,6 +391,11 @@ export default function InvestorenLanding() {
       {/* 19. OVERKILL VISION — 50 Tech-USPs */}
       <ScrollReveal>
         <OverkillVisionSection />
+      </ScrollReveal>
+
+      {/* 20. INVESTOR CLOSING — Investment Logic + Emotional Close */}
+      <ScrollReveal>
+        <InvestorClosingSection />
       </ScrollReveal>
 
       {/* JOKES SECTION - Only for BG/IT */}
