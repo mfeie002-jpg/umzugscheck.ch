@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   MessageCircle, ImageIcon, Bot, BarChart3, CheckCircle2,
 } from "lucide-react";
+import { FunnelFlowDiagram, PlatformFlywheel } from "./InvestorInfographics";
 
 const proofCards = [
   {
