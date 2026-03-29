@@ -200,7 +200,7 @@ export function FundingRoadmapSection({ language }: Props) {
             <Calculator className="w-3.5 h-3.5 mr-1.5" />
             {l.badge}
           </Badge>
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-3">
             {l.title}
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-base md:text-lg">
@@ -256,25 +256,27 @@ export function FundingRoadmapSection({ language }: Props) {
                   {/* Timeline dot (desktop) */}
                   <div className={`absolute left-3.5 md:left-4 top-6 w-4 h-4 rounded-full ${style.dot} border-2 border-background z-10 hidden md:block`} />
 
-                  <div className={`md:ml-14 rounded-xl border ${style.border} ${style.bg} p-5 md:p-6 ${!isActive ? 'opacity-80' : ''}`}>
+                  <div className={`md:ml-14 rounded-xl border ${style.border} ${style.bg} p-4 sm:p-5 md:p-6 ${!isActive ? 'opacity-80' : ''}`}>
                     {/* Header row */}
-                    <div className="flex flex-wrap items-center gap-3 mb-4">
-                      <div className={`p-2 rounded-lg ${style.bg}`}>
-                        <Icon className={`w-5 h-5 ${style.statusColor}`} />
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-bold text-foreground text-lg">
-                            {l.tranche} {i + 1} — {tranche.label}
-                          </span>
-                          {!isActive && <Lock className="w-4 h-4 text-muted-foreground" />}
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-4">
+                      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                        <div className={`p-2 rounded-lg ${style.bg} shrink-0`}>
+                          <Icon className={`w-5 h-5 ${style.statusColor}`} />
                         </div>
-                        <div className="text-sm text-muted-foreground">
-                          {language === 'de' ? 'Monat' : language === 'bg' ? 'Месец' : 'Mese'} {tranche.months}
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span className="font-bold text-foreground text-base sm:text-lg">
+                              {l.tranche} {i + 1} — {tranche.label}
+                            </span>
+                            {!isActive && <Lock className="w-3.5 h-3.5 text-muted-foreground shrink-0" />}
+                          </div>
+                          <div className="text-xs sm:text-sm text-muted-foreground">
+                            {language === 'de' ? 'Monat' : language === 'bg' ? 'Месец' : 'Mese'} {tranche.months}
+                          </div>
                         </div>
                       </div>
-                      <div className="ml-auto">
-                        <span className="text-xl font-bold text-foreground">
+                      <div className="sm:ml-auto pl-11 sm:pl-0">
+                        <span className="text-lg sm:text-xl font-bold text-foreground">
                           CHF {fmt(tranche.amount)}
                         </span>
                       </div>
@@ -365,9 +367,9 @@ export function FundingRoadmapSection({ language }: Props) {
             <h3 className="font-bold text-foreground">{l.marginTitle}</h3>
           </div>
           <p className="text-sm text-muted-foreground max-w-xl mx-auto">{l.marginSub}</p>
-          <div className="flex items-center justify-center gap-3 mt-4 text-lg font-semibold text-foreground">
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mt-4 text-base sm:text-lg font-semibold text-foreground">
             <span>CHF {fmt(FUNDING.marginPerJob)}</span>
-            <ArrowRight className="w-4 h-4 text-primary" />
+            <ArrowRight className="w-4 h-4 text-primary shrink-0" />
             <span className="text-primary">CHF {fmt(FUNDING.reinvestPerJob)} Reinvest</span>
           </div>
         </motion.div>
