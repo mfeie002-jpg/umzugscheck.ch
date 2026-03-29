@@ -367,9 +367,9 @@ export function FundingRoadmapSection({ language }: Props) {
             <h3 className="font-bold text-foreground">{l.marginTitle}</h3>
           </div>
           <p className="text-sm text-muted-foreground max-w-xl mx-auto">{l.marginSub}</p>
-          <div className="flex items-center justify-center gap-3 mt-4 text-lg font-semibold text-foreground">
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mt-4 text-base sm:text-lg font-semibold text-foreground">
             <span>CHF {fmt(FUNDING.marginPerJob)}</span>
-            <ArrowRight className="w-4 h-4 text-primary" />
+            <ArrowRight className="w-4 h-4 text-primary shrink-0" />
             <span className="text-primary">CHF {fmt(FUNDING.reinvestPerJob)} Reinvest</span>
           </div>
         </motion.div>
