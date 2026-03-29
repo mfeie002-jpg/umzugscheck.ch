@@ -10,6 +10,7 @@ import {
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { MarketSizeBarChart, CompetitorRadarChart, PainPointsChart } from "./InvestorCharts";
+import { MarketBubbles, FunnelFlowDiagram, DigitalGapVisual } from "./InvestorInfographics";
 
 // ─── Block 1: Market Size Stats ───
 const MARKET_STATS = [
