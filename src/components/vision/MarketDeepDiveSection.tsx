@@ -230,6 +230,11 @@ export function MarketDeepDiveSection() {
             <TrendingUp className="w-5 h-5 text-primary" />
             Marktgrösse mit harten Zahlen
           </h3>
+          {/* TAM/SAM/SOM Bubbles */}
+          <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-5 mb-6">
+            <h4 className="text-sm font-semibold text-slate-300 mb-2 text-center">Marktgrössen-Proportionen</h4>
+            <MarketBubbles />
+          </div>
           {/* Market Size Chart */}
           <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 mb-6">
             <h4 className="text-sm font-semibold text-slate-300 mb-3">Umzüge pro Jahr nach Segment</h4>
