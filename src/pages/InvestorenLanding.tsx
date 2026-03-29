@@ -316,6 +316,11 @@ export default function InvestorenLanding() {
         </div>
       </section>
 
+      {/* 10b. MODULARER WARENKORB — Cross-Selling AOV */}
+      <ScrollReveal>
+        <ModularerWarenkorbSection />
+      </ScrollReveal>
+
       {/* PERSONA SECTION INTRO - Economics */}
       {isPersonalized && (
         <FunSectionIntro persona={persona} page="investoren" sectionId="economics" />
