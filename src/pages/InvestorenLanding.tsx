@@ -16,6 +16,7 @@ import { SEOContentMoatSection } from "@/components/vision/SEOContentMoatSection
 import { SEOMarketSizeSection } from "@/components/vision/SEOMarketSizeSection";
 import { WhyInvestSection } from "@/components/vision/WhyInvestSection";
 import { WhatsAppDemoSection } from "@/components/vision/WhatsAppDemoSection";
+import { MarketDeepDiveSection } from "@/components/vision/MarketDeepDiveSection";
 import { OverkillVisionSection } from "@/components/vision/OverkillVisionSection";
 import { VisionUniqueness } from "@/components/vision/VisionUniqueness";
 import { VisionTractionDashboard } from "@/components/vision/VisionTractionDashboard";
