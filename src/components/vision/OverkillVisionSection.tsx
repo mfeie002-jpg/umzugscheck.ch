@@ -5,6 +5,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
+import { TierPyramid } from "./InvestorInfographics2";
 import {
   Video, Landmark, Glasses, FileCode, Bot, CreditCard,
   Target, TrendingUp, Blocks, Banknote, Leaf, Fingerprint,
@@ -149,6 +150,17 @@ export function OverkillVisionSection() {
             Von KI-Video-Analyse über Blockchain-Tracking bis zur Spotify-Einzugsplaylist — 
             das ist die Zukunft des Umzugsmarkts. Und wir bauen sie.
           </p>
+        </motion.div>
+
+        {/* Tier Pyramid Overview */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="rounded-2xl border border-border bg-card p-6 mb-14"
+        >
+          <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-4 text-center">Feature-Architektur</h4>
+          <TierPyramid />
         </motion.div>
 
         {/* Tier 1 — Sci-Fi Overkill */}
