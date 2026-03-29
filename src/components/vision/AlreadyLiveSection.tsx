@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   MessageCircle, ImageIcon, Bot, BarChart3, CheckCircle2,
 } from "lucide-react";
+import { FunnelFlowDiagram, PlatformFlywheel } from "./InvestorInfographics";
 
 const proofCards = [
   {
@@ -59,6 +60,18 @@ export function AlreadyLiveSection() {
             Das hier ist kein PowerPoint. Diese Systeme laufen heute.
           </p>
         </motion.div>
+
+        {/* Infographic: Funnel Flow + Flywheel */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+          <div className="rounded-2xl border border-border bg-slate-950 p-6">
+            <h4 className="text-sm font-semibold text-slate-300 mb-4 text-center uppercase tracking-wide">Der automatisierte Verkaufstrichter</h4>
+            <FunnelFlowDiagram />
+          </div>
+          <div className="rounded-2xl border border-border bg-slate-950 p-6">
+            <h4 className="text-sm font-semibold text-slate-300 mb-4 text-center uppercase tracking-wide">Das Platform-Flywheel</h4>
+            <PlatformFlywheel />
+          </div>
+        </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           {proofCards.map((card, i) => (

@@ -10,6 +10,7 @@ import {
   CheckCircle2, AlertTriangle, Target, Zap, BarChart3,
   TrendingUp, Search,
 } from "lucide-react";
+import { FiveRunProgress } from "./InvestorInfographics";
 
 const RUNS = [
   {
@@ -84,6 +85,19 @@ export function FiveRunsMethodologySection() {
             Nicht fünf kosmetische Anpassungen, sondern fünf vollständige Runs aus: 
             <span className="text-foreground font-semibold"> Analyse → Engpass → Verbesserung → Messung → Entscheidung.</span>
           </p>
+        </motion.div>
+
+        {/* Five Run Progress Infographic */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="rounded-2xl border border-border bg-card p-6 mb-10"
+        >
+          <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-4 text-center">
+            Kumulative Erfolgswahrscheinlichkeit pro Run
+          </h4>
+          <FiveRunProgress />
         </motion.div>
 
         {/* 5 Run Cards */}
