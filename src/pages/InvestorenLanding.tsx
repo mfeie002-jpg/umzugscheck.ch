@@ -11,6 +11,7 @@ import { RevenueStreamExamples } from "@/components/vision/RevenueStreamExamples
 import { UnitEconomicsDetailed } from "@/components/vision/UnitEconomicsDetailed";
 import { MarketPotentialSection } from "@/components/vision/MarketPotentialSection";
 import { ExitTimeline } from "@/components/vision/ExitTimeline";
+import { FundingRoadmapSection } from "@/components/vision/FundingRoadmapSection";
 import { VisionUniqueness } from "@/components/vision/VisionUniqueness";
 import { VisionTractionDashboard } from "@/components/vision/VisionTractionDashboard";
 import { VisionProfitabilityRoadmap } from "@/components/vision/VisionProfitabilityRoadmap";
