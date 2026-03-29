@@ -149,7 +149,7 @@ export function WhyInvestSection({ language = 'de' }: WhyInvestSectionProps) {
             Warum jetzt investieren?
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Sechs Gründe, warum Umzugscheck.ch das attraktivste Pre-Seed-Investment im Schweizer Logistik-Markt ist.
+            20 Gründe, warum Umzugscheck.ch das attraktivste Pre-Seed-Investment im Schweizer Logistik-Markt ist.
           </p>
         </motion.div>
 
