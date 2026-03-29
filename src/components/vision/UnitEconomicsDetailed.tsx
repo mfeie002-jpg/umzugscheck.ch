@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/tooltip";
 import type { VisionLanguage } from "@/lib/vision-translations";
 import { getVisionTranslation } from "@/lib/vision-translations";
+import { RevenuePieChart } from "./InvestorCharts";
 
 interface UnitEconomicsDetailedProps {
   language: VisionLanguage;
