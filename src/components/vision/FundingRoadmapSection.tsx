@@ -17,14 +17,14 @@ import type { VisionLanguage } from "@/lib/vision-translations";
 // EASILY ADJUSTABLE NUMBERS — change here, updates everywhere
 // ═══════════════════════════════════════════════════════
 const FUNDING = {
-  total: 60_000,
+  total: 80_000,
   tranches: [
-    { amount: 15_000, label: "Launchpad", months: "1–3" },
-    { amount: 20_000, label: "Scale-up", months: "4–6" },
-    { amount: 25_000, label: "Sustainability", months: "7–9" },
+    { amount: 20_000, label: "Proof of Concept", months: "1–3" },
+    { amount: 25_000, label: "Scale-up", months: "4–6" },
+    { amount: 35_000, label: "Break-Even Capital", months: "7–9" },
   ],
-  maxRisk: 15_000,
-  horizonMonths: "6–8",
+  maxRisk: 20_000,
+  horizonMonths: "6–9",
   marginPerJob: 1_590,
   reinvestPerJob: 990,
 };

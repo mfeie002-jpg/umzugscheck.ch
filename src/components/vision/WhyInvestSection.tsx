@@ -6,6 +6,8 @@ import {
   Zap, Eye, Users, BarChart3, FileCheck, Video, Search, Star,
   Building2, Phone, Target, Cpu, GitBranch, Database, Gauge,
   PiggyBank, Handshake, Scale, BadgeCheck, Network,
+  MessageCircle, Milestone, Bot, MousePointerClick, ShieldCheck,
+  Banknote, CalendarDays, BookOpen, MousePointer, Fingerprint,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -65,9 +67,17 @@ const investArgs: InvestArg[] = [
   {
     icon: Lock,
     title: 'De-Risked Structure',
-    stat: 'Max CHF 15k Erstrisiko',
+    stat: 'Max CHF 20k Erstrisiko',
     desc: 'Meilenstein-basierte Tranchen. Kapital wird nur freigegeben, wenn messbare Ziele erreicht sind.',
     wow: 'Investor-Schutz eingebaut — kein blindes Vertrauen nötig.',
+    tier: 'legendary',
+  },
+  {
+    icon: MessageCircle,
+    title: 'WhatsApp + KI Sales Agent',
+    stat: 'Bereits live & autonom',
+    desc: 'WhatsApp Business Katalog + OpenClaw AI übernimmt Kundeninteraktion komplett. Offerten, Vergleiche, Beratung — alles automatisch. Mensch segnet nur noch ab.',
+    wow: 'Kein Pitch-Deck-Feature — das läuft HEUTE. Autonomer KI-Vertrieb via WhatsApp.',
     tier: 'legendary',
   },
 
@@ -301,8 +311,8 @@ const investArgs: InvestArg[] = [
   {
     icon: Gauge,
     title: 'Capital Efficiency',
-    stat: 'CHF 60k = Break-even',
-    desc: 'Mit nur CHF 60k zur Selbsttragfähigkeit. Kein Venture-Burn, kein Millionen-Fundraise nötig.',
+    stat: 'CHF 80k = Break-even',
+    desc: 'Mit nur CHF 80k zur Selbsttragfähigkeit. Kein Venture-Burn, kein Millionen-Fundraise nötig.',
     wow: 'Extrem kapitaleffizient — der Investor sieht schnell Ergebnisse.',
     tier: 'strong',
   },
@@ -344,6 +354,78 @@ const investArgs: InvestArg[] = [
     stat: 'Alles rund ums Umziehen',
     desc: 'Nicht nur Zügeln — sondern Reinigung, Entsorgung, Lagerung, Versicherung, Adressänderung, alles.',
     wow: 'One-Stop-Shop für den gesamten Umzugsprozess — maximale Convenience.',
+    tier: 'strong',
+  },
+  {
+    icon: Milestone,
+    title: 'Exit-Optionen',
+    stat: '3 klare Wege zum ROI',
+    desc: 'M&A an Marktführer, DACH-Skalierung oder SaaS-Lizenzierung. Jeder Exit ist profitabel.',
+    wow: 'Nicht ein Exit-Plan, sondern drei — der Investor wählt den besten.',
+    tier: 'strong',
+  },
+  {
+    icon: Bot,
+    title: 'KI-validierte Strategie',
+    stat: '95% KI-generiert',
+    desc: 'Die gesamte Plattform ist die KI-Interpretation des perfekten Marktplatzes — datengetrieben, nicht Bauchgefühl.',
+    wow: 'Das Vorzeigemodell einer KI-gesteuerten Vergleichsplattform.',
+    tier: 'strong',
+  },
+  {
+    icon: MousePointerClick,
+    title: 'Kaufnaher Suchintent',
+    stat: '100% transaktionale Suchen',
+    desc: 'Wer "Umzugsfirma Zürich" googelt, will JETZT buchen. Kein Awareness-Marketing nötig.',
+    wow: 'Bottom-of-Funnel Traffic — die wertvollsten Klicks im Internet.',
+    tier: 'strong',
+  },
+  {
+    icon: ShieldCheck,
+    title: 'Regulatorischer Burggraben',
+    stat: 'Schweiz = hohe Hürde',
+    desc: 'Schweizer Datenschutz, Kantonale Regeln, eUmzug-Systeme — internationalen Playern fehlt das Know-how.',
+    wow: 'Die Komplexität der Schweiz ist unser Schutzwall.',
+    tier: 'strong',
+  },
+  {
+    icon: Banknote,
+    title: 'Kein Venture-Burn',
+    stat: 'Unter CHF 400/Mt. Fixkosten',
+    desc: 'Software-Stack kostet unter CHF 400/Monat. Kein Office, kein Team, kein Overhead.',
+    wow: 'Das kapitaleffizienteste Start-up-Modell das es gibt.',
+    tier: 'strong',
+  },
+  {
+    icon: CalendarDays,
+    title: 'Planbare Saisonalität',
+    stat: 'Peaks im März & September',
+    desc: 'Umzugssaison ist vorhersehbar. Budget-Allokation und Ads können perfekt getimed werden.',
+    wow: 'Keine Überraschungen — die Nachfrage folgt einem klaren Kalender.',
+    tier: 'strong',
+  },
+  {
+    icon: BookOpen,
+    title: 'Content-Monopol',
+    stat: '500+ SEO-optimierte Seiten',
+    desc: 'Ratgeber, Gemeinde-Hubs, Rechner, Checklisten — ein Content-Universum das kein Konkurrent hat.',
+    wow: 'Content is King — und wir haben das ganze Königreich.',
+    tier: 'strong',
+  },
+  {
+    icon: MousePointer,
+    title: 'Zero-Friction UX',
+    stat: 'Kein Login, kein Download',
+    desc: 'Offerte in 11 Sekunden ohne Registrierung. WhatsApp statt App. Browser statt Installation.',
+    wow: 'Jede Hürde eliminiert = maximale Conversion.',
+    tier: 'strong',
+  },
+  {
+    icon: Fingerprint,
+    title: 'Founder-Market Fit',
+    stat: '20 Jahre + Passion',
+    desc: 'SEO-Nerd seit 20 Jahren, Schweizer Umzugsmarkt-Experte, Vollzeit ohne Lohn. Es gibt keinen besseren Fit.',
+    wow: 'Der Gründer IST das Produkt — untrennbar verbunden.',
     tier: 'strong',
   },
 ];
@@ -519,7 +601,7 @@ export function WhyInvestSection({ language = 'de' }: WhyInvestSectionProps) {
           className="rounded-2xl border-2 border-primary/20 bg-primary/5 p-6 md:p-10 text-center max-w-4xl mx-auto"
         >
           <p className="text-lg md:text-xl font-semibold text-foreground leading-relaxed">
-            CHF 60k Pre-Seed. 3 Tranchen. Klare Milestones. Break-even in 6–9 Monaten.
+            CHF 80k Pre-Seed. 3 Tranchen (20k / 25k / 35k). Klare Milestones. Break-even in 6–9 Monaten.
             <br className="hidden sm:block" />
             Kein Gründerlohn. Der Schweizer Umzugsmarkt hat keinen digitalen Champion —{' '}
             <span className="text-primary">wir bauen ihn.</span>
