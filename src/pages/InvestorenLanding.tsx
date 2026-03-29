@@ -13,6 +13,7 @@ import { MarketPotentialSection } from "@/components/vision/MarketPotentialSecti
 import { ExitTimeline } from "@/components/vision/ExitTimeline";
 import { FundingRoadmapSection } from "@/components/vision/FundingRoadmapSection";
 import { SEOContentMoatSection } from "@/components/vision/SEOContentMoatSection";
+import { SEOMarketSizeSection } from "@/components/vision/SEOMarketSizeSection";
 import { VisionUniqueness } from "@/components/vision/VisionUniqueness";
 import { VisionTractionDashboard } from "@/components/vision/VisionTractionDashboard";
 import { VisionProfitabilityRoadmap } from "@/components/vision/VisionProfitabilityRoadmap";
@@ -354,6 +355,11 @@ export default function InvestorenLanding() {
       {/* 15. SEO & CONTENT MOAT */}
       <ScrollReveal>
         <SEOContentMoatSection language={language} />
+      </ScrollReveal>
+
+      {/* 16. SEO MARKET SIZE — Keywords, Volumes, Traffic */}
+      <ScrollReveal>
+        <SEOMarketSizeSection language={language} />
       </ScrollReveal>
 
       {/* JOKES SECTION - Only for BG/IT */}
