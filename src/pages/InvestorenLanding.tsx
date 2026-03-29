@@ -17,6 +17,7 @@ import { SEOMarketSizeSection } from "@/components/vision/SEOMarketSizeSection";
 import { WhyInvestSection } from "@/components/vision/WhyInvestSection";
 import { WhatsAppDemoSection } from "@/components/vision/WhatsAppDemoSection";
 import { MarketDeepDiveSection } from "@/components/vision/MarketDeepDiveSection";
+import { ModularerWarenkorbSection } from "@/components/vision/ModularerWarenkorbSection";
 import { AlreadyLiveSection } from "@/components/vision/AlreadyLiveSection";
 import { InvestorClosingSection } from "@/components/vision/InvestorClosingSection";
 import { OverkillVisionSection } from "@/components/vision/OverkillVisionSection";
@@ -314,6 +315,11 @@ export default function InvestorenLanding() {
           <UnitEconomicsDetailed language={language} />
         </div>
       </section>
+
+      {/* 10b. MODULARER WARENKORB — Cross-Selling AOV */}
+      <ScrollReveal>
+        <ModularerWarenkorbSection />
+      </ScrollReveal>
 
       {/* PERSONA SECTION INTRO - Economics */}
       {isPersonalized && (
