@@ -196,6 +196,18 @@ export function WhyInvestSection({ language = "de" }: WhyInvestSectionProps) {
           ))}
         </div>
 
+        {/* ═══ INFOGRAPHICS: Revenue Waterfall + Service Chain ═══ */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
+          <div className="rounded-2xl border border-border bg-slate-950 p-6">
+            <h4 className="text-sm font-semibold text-slate-300 mb-4 text-center uppercase tracking-wide">Revenue pro Kunde (Waterfall)</h4>
+            <RevenueWaterfall />
+          </div>
+          <div className="rounded-2xl border border-border bg-card p-6">
+            <h4 className="text-sm font-semibold text-muted-foreground mb-4 text-center uppercase tracking-wide">Cross-Sell Service-Kette</h4>
+            <ServiceChainInfographic />
+          </div>
+        </div>
+
         {/* ═══ ALL 50 IN 5 THEMED BLOCKS ═══ */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
