@@ -67,9 +67,17 @@ const investArgs: InvestArg[] = [
   {
     icon: Lock,
     title: 'De-Risked Structure',
-    stat: 'Max CHF 15k Erstrisiko',
+    stat: 'Max CHF 20k Erstrisiko',
     desc: 'Meilenstein-basierte Tranchen. Kapital wird nur freigegeben, wenn messbare Ziele erreicht sind.',
     wow: 'Investor-Schutz eingebaut — kein blindes Vertrauen nötig.',
+    tier: 'legendary',
+  },
+  {
+    icon: MessageCircle,
+    title: 'WhatsApp + KI Sales Agent',
+    stat: 'Bereits live & autonom',
+    desc: 'WhatsApp Business Katalog + OpenClaw AI übernimmt Kundeninteraktion komplett. Offerten, Vergleiche, Beratung — alles automatisch. Mensch segnet nur noch ab.',
+    wow: 'Kein Pitch-Deck-Feature — das läuft HEUTE. Autonomer KI-Vertrieb via WhatsApp.',
     tier: 'legendary',
   },
 
