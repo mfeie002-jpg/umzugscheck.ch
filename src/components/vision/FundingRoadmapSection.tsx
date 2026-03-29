@@ -200,7 +200,7 @@ export function FundingRoadmapSection({ language }: Props) {
             <Calculator className="w-3.5 h-3.5 mr-1.5" />
             {l.badge}
           </Badge>
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-3">
             {l.title}
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-base md:text-lg">
