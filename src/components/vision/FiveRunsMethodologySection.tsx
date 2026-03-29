@@ -87,6 +87,19 @@ export function FiveRunsMethodologySection() {
           </p>
         </motion.div>
 
+        {/* Five Run Progress Infographic */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="rounded-2xl border border-border bg-card p-6 mb-10"
+        >
+          <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-4 text-center">
+            Kumulative Erfolgswahrscheinlichkeit pro Run
+          </h4>
+          <FiveRunProgress />
+        </motion.div>
+
         {/* 5 Run Cards */}
         <div className="space-y-4 mb-8">
           {RUNS.map((run, i) => (
