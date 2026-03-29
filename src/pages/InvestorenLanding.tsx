@@ -404,6 +404,11 @@ export default function InvestorenLanding() {
         <InvestorClosingSection />
       </ScrollReveal>
 
+      {/* 21. FIVE RUNS METHODOLOGY — Kill Switch + AI Risk Assessment */}
+      <ScrollReveal>
+        <FiveRunsMethodologySection />
+      </ScrollReveal>
+
       {/* JOKES SECTION - Only for BG/IT */}
       {(language === 'bg' || language === 'it') && (
         <section className="py-12 bg-muted/10">
