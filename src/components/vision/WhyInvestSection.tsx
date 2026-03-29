@@ -161,7 +161,7 @@ export function WhyInvestSection({ language = 'de' }: WhyInvestSectionProps) {
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.08 }}
+              transition={{ delay: i * 0.04 }}
               className="relative group rounded-2xl border border-border bg-card p-6 hover:shadow-lg transition-shadow overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
