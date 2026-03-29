@@ -1,5 +1,9 @@
 import { motion } from 'framer-motion';
-import { Clock, Calculator, Shield, Heart, Lock, Rocket } from 'lucide-react';
+import {
+  Clock, Calculator, Shield, Heart, Lock, Rocket,
+  Globe, Coins, TrendingUp, Trophy, Crown, ShoppingCart,
+  Layers, Radar, MapPin, RefreshCw, FlaskConical, Wallet, Brain, Infinity,
+} from 'lucide-react';
 
 const investArgs = [
   {
@@ -38,8 +42,91 @@ const investArgs = [
     stat: '95% Automation',
     desc: '6 Revenue Streams, Multi-Brand ready. Plattform, nicht Service — skaliert ohne linearen Personalaufbau.',
   },
+  {
+    icon: Globe,
+    title: 'Evergreen Market',
+    stat: 'Umziehen geht nie weg',
+    desc: 'Kein Trend, kein Hype — Menschen müssen immer umziehen. Ewiger Bedarf, konjunkturunabhängig.',
+  },
+  {
+    icon: Coins,
+    title: 'Kaufkraft Schweiz',
+    stat: 'Reichstes Land der Welt',
+    desc: 'Schweizer zahlen sofort für Convenience. Höchste Zahlungsbereitschaft weltweit.',
+  },
+  {
+    icon: TrendingUp,
+    title: 'Schneeball-Effekt',
+    stat: 'Nur eine Frage der Zeit',
+    desc: 'SEO wächst exponentiell — einmal oben, bleibt man oben. 6–9 Monate bis Break-even.',
+  },
+  {
+    icon: Trophy,
+    title: 'Proven Track Record',
+    stat: '5x Google #1 weltweit',
+    desc: 'Gründer hat bereits globale Nr.-1-Rankings aufgebaut (USA, weltweit). Kopiert und skaliert.',
+  },
+  {
+    icon: Crown,
+    title: 'Plattform-Dominanz',
+    stat: 'Platzhirsch bleibt Platzhirsch',
+    desc: 'Wer einmal dominiert, wird nicht verdrängt. Google baut keine Zügel-Plattform.',
+  },
+  {
+    icon: ShoppingCart,
+    title: 'Cross-Sell Engine',
+    stat: 'Umzug = Foot in the Door',
+    desc: 'Nach dem Umzug: Reinigung, Entsorgung, Lagerung — wir besitzen den ganzen Prozess.',
+  },
+  {
+    icon: Layers,
+    title: 'Dual-Brand Strategie',
+    stat: 'Umzugscheck + Feierabend',
+    desc: 'Umzugscheck holt Leads via SEO, Feierabendservices.ch führt aus — systematisch immer bestes Angebot.',
+  },
+  {
+    icon: Radar,
+    title: 'Auto-Discovery',
+    stat: 'Jede Firma wird gefunden',
+    desc: 'Automatisches Scraping aller Umzugs-/Reinigungsfirmen in jeder Gemeinde — ob sie wollen oder nicht.',
+  },
+  {
+    icon: MapPin,
+    title: 'Live Relocation Hubs',
+    stat: "2'110 Gemeinden, live updated",
+    desc: 'Jede Gemeinde hat einen dedizierten Hub mit gescrapten Infos — kostenlos für jeden Kunden.',
+  },
+  {
+    icon: RefreshCw,
+    title: 'Vergleich ist ewig',
+    stat: 'Leute vergleichen immer',
+    desc: 'Der Vergleichsprozess beim Umzug ändert sich nie — unser Kern-USP bleibt für immer relevant.',
+  },
+  {
+    icon: FlaskConical,
+    title: 'A/B Testing Machine',
+    stat: '5 Durchgänge optimiert',
+    desc: 'Permanentes Testing — irgendetwas MUSS Nr. 1 sein. Wir iterieren bis es mathematisch stimmt.',
+  },
+  {
+    icon: Wallet,
+    title: '10+ Revenue Streams',
+    stat: 'Diversifizierte Einnahmen',
+    desc: 'CPL, CPC, Subscriptions, Sponsored, Bidding, Services, Reinigung, Lager, Entsorgung und mehr.',
+  },
+  {
+    icon: Brain,
+    title: '20 Jahre SEO-Nerd',
+    stat: 'Kein grösserer Experte',
+    desc: '20 Jahre Vollzeit-SEO. Niemand im Schweizer Umzugsmarkt hat mehr Erfahrung investiert.',
+  },
+  {
+    icon: Infinity,
+    title: 'Scheitern unmöglich',
+    stat: '100% sichere Rendite',
+    desc: 'Es geht nur um die Zeitdauer. Aller Profit wird reinvestiert bis zur absoluten Marktdominanz.',
+  },
 ];
-
 interface WhyInvestSectionProps {
   language?: string;
 }
@@ -62,7 +149,7 @@ export function WhyInvestSection({ language = 'de' }: WhyInvestSectionProps) {
             Warum jetzt investieren?
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Sechs Gründe, warum Umzugscheck.ch das attraktivste Pre-Seed-Investment im Schweizer Logistik-Markt ist.
+            20 Gründe, warum Umzugscheck.ch das attraktivste Pre-Seed-Investment im Schweizer Logistik-Markt ist.
           </p>
         </motion.div>
 
@@ -74,7 +161,7 @@ export function WhyInvestSection({ language = 'de' }: WhyInvestSectionProps) {
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.08 }}
+              transition={{ delay: i * 0.04 }}
               className="relative group rounded-2xl border border-border bg-card p-6 hover:shadow-lg transition-shadow overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
