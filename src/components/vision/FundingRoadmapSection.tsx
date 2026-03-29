@@ -1,7 +1,7 @@
 /**
  * FundingRoadmapSection
  * Visual funding roadmap for /investoren page
- * CHF 70k Pre-Seed in 3 milestone-based tranches
+ * CHF 80k Pre-Seed in 3 milestone-based tranches
  */
 
 import { motion } from "framer-motion";
@@ -14,11 +14,11 @@ import {
 import type { VisionLanguage } from "@/lib/vision-translations";
 
 const FUNDING = {
-  total: 70_000,
+  total: 80_000,
   tranches: [
-    { amount: 20_000, label: "Validation", phase: "TRANCHE 1", months: "1–4" },
-    { amount: 25_000, label: "Traction", phase: "TRANCHE 2", months: "5–9" },
-    { amount: 25_000, label: "Scale to Break-even", phase: "TRANCHE 3", months: "10–15" },
+    { amount: 20_000, label: "Proof of Concept", phase: "TRANCHE 1", months: "1–3" },
+    { amount: 25_000, label: "Profitabel skalieren", phase: "TRANCHE 2", months: "4–8" },
+    { amount: 35_000, label: "Break-Even Capital", phase: "TRANCHE 3", months: "9–15" },
   ],
   maxRisk: 20_000,
   horizonMonths: "12–18",
