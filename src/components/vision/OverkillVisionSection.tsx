@@ -5,6 +5,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
+import { TierPyramid } from "./InvestorInfographics2";
 import {
   Video, Landmark, Glasses, FileCode, Bot, CreditCard,
   Target, TrendingUp, Blocks, Banknote, Leaf, Fingerprint,
