@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import type { VisionLanguage } from "@/lib/vision-translations";
 import { RevenueGrowthChart, TrancheDonutChart } from "./InvestorCharts";
+import { MonthlyRevenueTracker } from "./InvestorInfographics2";
 
 const FUNDING = {
   total: 80_000,
