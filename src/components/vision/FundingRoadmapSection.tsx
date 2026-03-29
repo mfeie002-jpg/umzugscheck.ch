@@ -82,6 +82,9 @@ interface Props {
   language: VisionLanguage;
 }
 
+const fmt = (n: number) =>
+  new Intl.NumberFormat("de-CH", { style: "decimal" }).format(n);
+
 export function FundingRoadmapSection({ language }: Props) {
   return (
     <section className="py-16 md:py-24 bg-background" id="funding-roadmap">
