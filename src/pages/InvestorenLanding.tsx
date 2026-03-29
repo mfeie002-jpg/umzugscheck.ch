@@ -16,6 +16,7 @@ import { SEOContentMoatSection } from "@/components/vision/SEOContentMoatSection
 import { SEOMarketSizeSection } from "@/components/vision/SEOMarketSizeSection";
 import { WhyInvestSection } from "@/components/vision/WhyInvestSection";
 import { WhatsAppDemoSection } from "@/components/vision/WhatsAppDemoSection";
+import { MarketDeepDiveSection } from "@/components/vision/MarketDeepDiveSection";
 import { OverkillVisionSection } from "@/components/vision/OverkillVisionSection";
 import { VisionUniqueness } from "@/components/vision/VisionUniqueness";
 import { VisionTractionDashboard } from "@/components/vision/VisionTractionDashboard";
@@ -334,6 +335,11 @@ export default function InvestorenLanding() {
           <MarketPotentialSection language={language} />
         </div>
       </section>
+
+      {/* 11b. MARKET DEEP DIVE — Research-backed analysis */}
+      <ScrollReveal>
+        <MarketDeepDiveSection />
+      </ScrollReveal>
 
       {/* PERSONA INTERRUPT CARD */}
       {isPersonalized && (
