@@ -301,7 +301,7 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
               <div className="space-y-4 sm:space-y-5">
                 {/* Form Header */}
                 <div className="text-center space-y-1 sm:space-y-2">
-                  <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-foreground">
+                  <h2 className="text-base sm:text-xl md:text-2xl font-bold text-foreground truncate">
                     200+ Firmen vergleichen
                   </h2>
                   <p className="text-xs sm:text-sm text-muted-foreground">
