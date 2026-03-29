@@ -1,613 +1,268 @@
-import { motion } from 'framer-motion';
+/**
+ * WhyInvestSection — Final 50 Investment Reasons
+ * Structure: Top-7 Nuclear → 5 Themed Blocks (10 each)
+ */
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Badge } from "@/components/ui/badge";
 import {
-  Clock, Calculator, Shield, Heart, Lock, Rocket,
-  Globe, Coins, TrendingUp, Trophy, Crown, ShoppingCart,
-  Layers, Radar, MapPin, RefreshCw, FlaskConical, Wallet, Brain, Infinity,
-  Zap, Eye, Users, BarChart3, FileCheck, Video, Search, Star,
-  Building2, Phone, Target, Cpu, GitBranch, Database, Gauge,
-  PiggyBank, Handshake, Scale, BadgeCheck, Network,
-  MessageCircle, Milestone, Bot, MousePointerClick, ShieldCheck,
-  Banknote, CalendarDays, BookOpen, MousePointer, Fingerprint,
-} from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
+  Home, Package, ShieldCheck, Coins, Crown, ArrowLeftRight, GitBranch,
+  Route, GitMerge, TrendingUp, Search, Shield, Monitor, MapPin, Building2,
+  Globe, Trophy, Zap, LayoutGrid, MousePointerClick, Settings, Network,
+  Target, Radar, Banknote, RefreshCw, Brain, Database, Eye, CircuitBoard,
+  Cpu, Bot, Users, MessageCircle, LayoutList, MessageSquarePlus, Workflow,
+  Flag, Crosshair, Layers, BarChart3, FlaskConical, ArrowUpCircle,
+  Wrench, FileCode, Infinity, Globe2, Rocket, CheckCircle2, ChevronDown,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
-type WowTier = 'legendary' | 'epic' | 'strong';
+type Tier = "nuclear-wow" | "big-wow" | "deep-usp";
 
-interface InvestArg {
+interface Reason {
+  id: number;
   icon: LucideIcon;
   title: string;
-  stat: string;
   desc: string;
   wow: string;
-  tier: WowTier;
+  tier: Tier;
+  group: string;
 }
 
-const investArgs: InvestArg[] = [
-  // ═══ LEGENDARY — Die absoluten Killer-Argumente ═══
-  {
-    icon: Infinity,
-    title: 'Scheitern unmöglich',
-    stat: '100% sichere Rendite',
-    desc: 'Es geht nur um die Zeitdauer. Aller Profit wird reinvestiert bis zur absoluten Marktdominanz.',
-    wow: 'Mathematische Gewissheit — nicht Hoffnung, sondern Iteration bis zum Ergebnis.',
-    tier: 'legendary',
-  },
-  {
-    icon: Heart,
-    title: 'Skin in the Game',
-    stat: 'Kein Gründerlohn',
-    desc: 'Gründer arbeitet ohne Lohn. 100% des Kapitals wird direkt reinvestiert. Maximale Alignment.',
-    wow: 'Totales Commitment — der Gründer muss gewinnen, es gibt keinen Plan B.',
-    tier: 'legendary',
-  },
-  {
-    icon: Trophy,
-    title: 'Proven Track Record',
-    stat: '5x Google #1 weltweit',
-    desc: 'Gründer hat bereits globale Nr.-1-Rankings aufgebaut (USA, weltweit). Kopiert und skaliert.',
-    wow: 'Kein Anfänger — bewiesene Dominanz in 5 verschiedenen Märkten.',
-    tier: 'legendary',
-  },
-  {
-    icon: Shield,
-    title: 'Technical Moat',
-    stat: "2'110 Gemeinde-SEO",
-    desc: 'AI-Pipeline + programmatische Gemeinde-Seiten = organischer Traffic-Flywheel, der schwer kopierbar ist.',
-    wow: 'Niemand wird 2\'110 Seiten manuell nachbauen — der Vorsprung ist permanent.',
-    tier: 'legendary',
-  },
-  {
-    icon: Globe,
-    title: 'Evergreen Market',
-    stat: 'Umziehen geht nie weg',
-    desc: 'Kein Trend, kein Hype — Menschen müssen immer umziehen. Ewiger Bedarf, konjunkturunabhängig.',
-    wow: 'Rezessionssicher — einer der wenigen Märkte, die NIE verschwinden.',
-    tier: 'legendary',
-  },
-  {
-    icon: Lock,
-    title: 'De-Risked Structure',
-    stat: 'Max CHF 20k Erstrisiko',
-    desc: 'Meilenstein-basierte Tranchen. Kapital wird nur freigegeben, wenn messbare Ziele erreicht sind.',
-    wow: 'Investor-Schutz eingebaut — kein blindes Vertrauen nötig.',
-    tier: 'legendary',
-  },
-  {
-    icon: MessageCircle,
-    title: 'WhatsApp + KI Sales Agent',
-    stat: 'Bereits live & autonom',
-    desc: 'WhatsApp Business Katalog + OpenClaw AI übernimmt Kundeninteraktion komplett. Offerten, Vergleiche, Beratung — alles automatisch. Mensch segnet nur noch ab.',
-    wow: 'Kein Pitch-Deck-Feature — das läuft HEUTE. Autonomer KI-Vertrieb via WhatsApp.',
-    tier: 'legendary',
-  },
+// ═══════════════════════════════════════════════════════════
+// THE 50 FINAL REASONS
+// ═══════════════════════════════════════════════════════════
 
-  // ═══ EPIC — Sehr starke, differenzierende Argumente ═══
-  {
-    icon: Crown,
-    title: 'Plattform-Dominanz',
-    stat: 'Platzhirsch bleibt Platzhirsch',
-    desc: 'Wer einmal dominiert, wird nicht verdrängt. Google baut keine Zügel-Plattform.',
-    wow: 'Winner-takes-most Dynamik — der Erste mit Netzwerkeffekt gewinnt.',
-    tier: 'epic',
-  },
-  {
-    icon: Brain,
-    title: '20 Jahre SEO-Nerd',
-    stat: 'Kein grösserer Experte',
-    desc: '20 Jahre Vollzeit-SEO. Niemand im Schweizer Umzugsmarkt hat mehr Erfahrung investiert.',
-    wow: '20 Jahre fokussierte Expertise — unmöglich aufzuholen.',
-    tier: 'epic',
-  },
-  {
-    icon: Calculator,
-    title: 'Unit Economics',
-    stat: 'CHF 553 Revenue/Kunde',
-    desc: '90%+ Marge bei einem asset-light Plattformmodell. Kapitaleffizient ab Tag 1.',
-    wow: 'Software-Margen in einem physischen Markt — das Beste aus beiden Welten.',
-    tier: 'epic',
-  },
-  {
-    icon: TrendingUp,
-    title: 'Schneeball-Effekt',
-    stat: 'Nur eine Frage der Zeit',
-    desc: 'SEO wächst exponentiell — einmal oben, bleibt man oben. 6–9 Monate bis Break-even.',
-    wow: 'Compound Growth — jeder Monat baut auf dem vorherigen auf.',
-    tier: 'epic',
-  },
-  {
-    icon: Coins,
-    title: 'Kaufkraft Schweiz',
-    stat: 'Reichstes Land der Welt',
-    desc: 'Schweizer zahlen sofort für Convenience. Höchste Zahlungsbereitschaft weltweit.',
-    wow: 'Premium-Markt mit Premium-Zahlungsbereitschaft — ideales Umfeld.',
-    tier: 'epic',
-  },
-  {
-    icon: Layers,
-    title: 'Dual-Brand Strategie',
-    stat: 'Umzugscheck + Feierabend',
-    desc: 'Umzugscheck holt Leads via SEO, Feierabendservices.ch führt aus — systematisch immer bestes Angebot.',
-    wow: 'Vertikale Integration — wir kontrollieren Nachfrage UND Angebot.',
-    tier: 'epic',
-  },
-  {
-    icon: ShoppingCart,
-    title: 'Cross-Sell Engine',
-    stat: 'Umzug = Foot in the Door',
-    desc: 'Nach dem Umzug: Reinigung, Entsorgung, Lagerung — wir besitzen den ganzen Prozess.',
-    wow: 'Ein Kunde, 5+ Services — Customer Lifetime Value multipliziert sich.',
-    tier: 'epic',
-  },
-  {
-    icon: Rocket,
-    title: 'Scalability',
-    stat: '95% Automation',
-    desc: '6 Revenue Streams, Multi-Brand ready. Plattform, nicht Service — skaliert ohne linearen Personalaufbau.',
-    wow: 'Software-Skalierung in einem Offline-Markt — der heilige Gral.',
-    tier: 'epic',
-  },
-  {
-    icon: Radar,
-    title: 'Auto-Discovery',
-    stat: 'Jede Firma wird gefunden',
-    desc: 'Automatisches Scraping aller Umzugs-/Reinigungsfirmen in jeder Gemeinde — ob sie wollen oder nicht.',
-    wow: 'Vollständige Marktabdeckung ohne Sales-Team — rein technisch.',
-    tier: 'epic',
-  },
-  {
-    icon: Wallet,
-    title: '10+ Revenue Streams',
-    stat: 'Diversifizierte Einnahmen',
-    desc: 'CPL, CPC, Subscriptions, Sponsored, Bidding, Services, Reinigung, Lager, Entsorgung und mehr.',
-    wow: 'Kein Single-Point-of-Failure — wenn ein Stream schwächelt, tragen die anderen.',
-    tier: 'epic',
-  },
-  {
-    icon: Clock,
-    title: 'Timing',
-    stat: "450'000 Umzüge/Jahr",
-    desc: 'Kein digitaler Marktführer. Der Schweizer Umzugsmarkt ist hochfragmentiert — perfektes Fenster für eine Plattform.',
-    wow: 'First-Mover-Advantage in einem CHF 2 Mrd. Markt ohne Champion.',
-    tier: 'epic',
-  },
+const ALL_REASONS: Reason[] = [
+  // ─── BLOCK 1: MARKT & NACHFRAGE ───
+  { id: 1, icon: Home, title: "Ein Markt, der nie weggeht", desc: "Menschen ziehen immer um. Wohnungen, Häuser, Büros und Lebenssituationen ändern sich dauerhaft.", wow: "Kein Trend, kein Hype, kein kurzfristiges Produkt. Die Grundnachfrage bleibt.", tier: "nuclear-wow", group: "market" },
+  { id: 2, icon: Package, title: "Der Umzug ist ein echtes Schmerzproblem", desc: "Umziehen ist stressig, zeitkritisch, emotional und organisatorisch anstrengend.", wow: "Hoher Schmerz macht die Zahlungsbereitschaft und Abschlussnähe grösser.", tier: "big-wow", group: "market" },
+  { id: 3, icon: ShieldCheck, title: "Kunden zahlen für Entlastung, nicht Transport", desc: "Der Kunde kauft Zeit, Ruhe, Sicherheit und weniger Chaos.", wow: "Der wahrgenommene Wert liegt höher als der reine physische Service.", tier: "big-wow", group: "market" },
+  { id: 4, icon: Coins, title: "Die Schweiz passt perfekt zu diesem Modell", desc: "Hohe Kaufkraft, hohe Qualitätsansprüche und Bereitschaft, für Komfort zu zahlen.", wow: "Der Markt belohnt Zuverlässigkeit und Bequemlichkeit überdurchschnittlich.", tier: "big-wow", group: "market" },
+  { id: 5, icon: Crown, title: "Klein genug für Dominanz, stark genug für Margen", desc: "National überschaubar, wirtschaftlich stark, digital fragmentiert.", wow: "Ideal, um schrittweise die ganze Fläche abzudecken.", tier: "big-wow", group: "market" },
+  { id: 6, icon: ArrowLeftRight, title: "Vergleich ist natürliches Verhalten", desc: "Menschen wollen bei Umzug, Reinigung und Räumung fast automatisch vergleichen.", wow: "Das Nutzerverhalten spielt der Plattform direkt in die Hände.", tier: "big-wow", group: "market" },
+  { id: 7, icon: GitBranch, title: "Gross genug für Spezialisierung", desc: "Seniorenumzug, Firmenumzug, Expressumzug, Spezialumzug, Reinigung und mehr.", wow: "Ihr könnt in der Nische wachsen und gleichzeitig neue Nischen erschliessen.", tier: "deep-usp", group: "market" },
+  { id: 8, icon: Route, title: "Der Umzug ist nur der Anfang", desc: "Nach dem Umzug folgen Reinigung, Räumung, Entsorgung, Lagerung, Montage, Halteverbotszone und mehr.", wow: "Ein Lead ist nicht das Ende, sondern der Einstieg in eine Service-Kette.", tier: "nuclear-wow", group: "market" },
+  { id: 9, icon: GitMerge, title: "Cross-Selling ist natürlich, nicht erzwungen", desc: "Die Zusatzbedürfnisse entstehen logisch aus dem Umzugsprozess.", wow: "Mehr Umsatz pro Kunde ohne künstlichen Upsell.", tier: "big-wow", group: "market" },
+  { id: 10, icon: TrendingUp, title: "Jeder Service erhöht den Kundenwert", desc: "Der erste Kontakt kann in mehrere Servicebuchungen übergehen.", wow: "Höherer Lifetime Value pro gewonnenem Kunden.", tier: "big-wow", group: "market" },
 
-  // ═══ STRONG — Solide, ergänzende Argumente ═══
-  {
-    icon: MapPin,
-    title: 'Live Relocation Hubs',
-    stat: "2'110 Gemeinden, live updated",
-    desc: 'Jede Gemeinde hat einen dedizierten Hub mit gescrapten Infos — kostenlos für jeden Kunden.',
-    wow: 'Einzigartiger Content-Moat den kein Konkurrent replizieren wird.',
-    tier: 'strong',
-  },
-  {
-    icon: RefreshCw,
-    title: 'Vergleich ist ewig',
-    stat: 'Leute vergleichen immer',
-    desc: 'Der Vergleichsprozess beim Umzug ändert sich nie — unser Kern-USP bleibt für immer relevant.',
-    wow: 'Das Nutzerverhalten ist fix — unser Produkt altert nicht.',
-    tier: 'strong',
-  },
-  {
-    icon: FlaskConical,
-    title: 'A/B Testing Machine',
-    stat: '5 Durchgänge optimiert',
-    desc: 'Permanentes Testing — irgendetwas MUSS Nr. 1 sein. Wir iterieren bis es mathematisch stimmt.',
-    wow: 'Datengetriebene Optimierung statt Bauchgefühl.',
-    tier: 'strong',
-  },
-  {
-    icon: Video,
-    title: 'AI Video-Scanner',
-    stat: 'Offerte per Handy-Video',
-    desc: 'Kunden filmen ihre Wohnung, die KI erkennt Möbel und erstellt automatisch eine Inventarliste + Preisschätzung.',
-    wow: 'Kein Besichtigungstermin nötig — Conversion in Sekunden statt Tagen.',
-    tier: 'strong',
-  },
-  {
-    icon: Zap,
-    title: '11-Sekunden-Offerte',
-    stat: 'Schnellster Vergleich der CH',
-    desc: 'Von PLZ-Eingabe bis fertige Offerte in 11 Sekunden. Kein Login, kein Warten.',
-    wow: 'Extrem niedrige Hürde — maximale Conversion Rate.',
-    tier: 'strong',
-  },
-  {
-    icon: Eye,
-    title: 'Transparenz als USP',
-    stat: 'Echter Preisvergleich',
-    desc: 'Keine versteckten Kosten, keine Dark Patterns. Kunden sehen sofort, was es kostet.',
-    wow: 'Vertrauen ist in diesem Markt die knappste Ressource — wir haben sie.',
-    tier: 'strong',
-  },
-  {
-    icon: Users,
-    title: '48+ Partner-Firmen',
-    stat: 'Netzwerk wächst organisch',
-    desc: 'Bereits 48+ verifizierte Umzugsfirmen im Netzwerk — und jede Woche kommen neue dazu.',
-    wow: 'Netzwerkeffekt — mehr Firmen = bessere Preise = mehr Kunden = mehr Firmen.',
-    tier: 'strong',
-  },
-  {
-    icon: BarChart3,
-    title: '60+ Funnel-Varianten',
-    stat: 'Mehr getestet als jeder andere',
-    desc: 'Über 60 dokumentierte Flow-Varianten (V9 Zero Friction, Ultimate V7 etc.) — systematisch optimiert.',
-    wow: 'Wissenschaftlicher Approach — jede Conversion-Rate ist messbar verbessert.',
-    tier: 'strong',
-  },
-  {
-    icon: FileCheck,
-    title: 'Regulatorisches Know-how',
-    stat: '26 Kantone abgedeckt',
-    desc: 'Jeder Kanton hat eigene Regeln für Ab-/Anmeldung, Fristen, eUmzug. Wir kennen alle.',
-    wow: 'Schweiz-spezifisches Wissen das kein internationaler Player mitbringt.',
-    tier: 'strong',
-  },
-  {
-    icon: Search,
-    title: '43\'890+ Keywords',
-    stat: 'Riesiger SEO-Markt',
-    desc: '43\'890+ monatliche Suchanfragen allein im Schweizer Umzugsmarkt — und wir decken alle Cluster ab.',
-    wow: 'Der organische Traffic-Kuchen ist riesig — und niemand holt sich das grösste Stück.',
-    tier: 'strong',
-  },
-  {
-    icon: Star,
-    title: 'Bester Preis garantiert',
-    stat: 'Systematisch günstigstes Angebot',
-    desc: 'Feierabendservices.ch wird systematisch so optimiert, dass wir IMMER das beste Angebot haben.',
-    wow: 'Nicht Zufall, sondern System — der beste Preis ist eine Maschine.',
-    tier: 'strong',
-  },
-  {
-    icon: Building2,
-    title: 'B2B + B2C',
-    stat: 'Zwei Kundengruppen',
-    desc: 'Endkunden zahlen für Service, Firmen zahlen für Leads. Doppelte Monetarisierung derselben Plattform.',
-    wow: 'Zwei Seiten des Marktplatzes generieren unabhängig Umsatz.',
-    tier: 'strong',
-  },
-  {
-    icon: Phone,
-    title: 'WhatsApp-First',
-    stat: 'Wo die Kunden sind',
-    desc: 'Offerten per WhatsApp, Statusupdates per Chat. Kein App-Download, keine Registrierung nötig.',
-    wow: '95% der Schweizer nutzen WhatsApp — null Adoption-Hürde.',
-    tier: 'strong',
-  },
-  {
-    icon: Target,
-    title: 'Lokale SEO-Dominanz',
-    stat: 'Jede Stadt, jede Gemeinde',
-    desc: 'Programmatische Landingpages für jede Schweizer Gemeinde — hyper-lokaler Content der rankt.',
-    wow: 'Long-Tail SEO im grossen Stil — tausende kleine Siege ergeben eine grosse Dominanz.',
-    tier: 'strong',
-  },
-  {
-    icon: Cpu,
-    title: 'KI-Setup: 60% Mensch, 40% KI',
-    stat: 'Effizientes Building',
-    desc: 'Beim Aufbau arbeiten Mensch und KI zusammen. Im Betrieb übernimmt die KI 95% — der Mensch nur 5%.',
-    wow: 'Die Maschine baut sich quasi selbst — und wird dann autonom.',
-    tier: 'strong',
-  },
-  {
-    icon: GitBranch,
-    title: 'Multi-Brand Ready',
-    stat: 'Kopierbare Architektur',
-    desc: 'Die Plattform-Architektur kann auf andere Märkte und Brands repliziert werden (Reinigung, Handwerk etc.).',
-    wow: 'Ein Playbook, unendlich viele Vertikalen — jede neue Brand ist fast gratis.',
-    tier: 'strong',
-  },
-  {
-    icon: Database,
-    title: 'Daten-Flywheel',
-    stat: 'Jeder Nutzer macht uns besser',
-    desc: 'Jeder Vergleich, jede Offerte, jeder Auftrag = Daten die Preise, Rankings und Empfehlungen verbessern.',
-    wow: 'Selbstverstärkender Kreislauf — Wettbewerber ohne Daten können nicht mithalten.',
-    tier: 'strong',
-  },
-  {
-    icon: Gauge,
-    title: 'Capital Efficiency',
-    stat: 'CHF 80k = Break-even',
-    desc: 'Mit nur CHF 80k zur Selbsttragfähigkeit. Kein Venture-Burn, kein Millionen-Fundraise nötig.',
-    wow: 'Extrem kapitaleffizient — der Investor sieht schnell Ergebnisse.',
-    tier: 'strong',
-  },
-  {
-    icon: PiggyBank,
-    title: '100% Reinvestition',
-    stat: 'Null Entnahme',
-    desc: 'Sämtlicher Profit wird sofort reinvestiert um den Wachstumsprozess zu beschleunigen.',
-    wow: 'Maximale Kapitaleffizienz — jeder Franken arbeitet für Wachstum.',
-    tier: 'strong',
-  },
-  {
-    icon: Handshake,
-    title: 'DHL & Post Partnerschaften',
-    stat: 'Enterprise-Partner live',
-    desc: 'Bereits Partnerschaften mit DHL und Schweizerischer Post — Validierung durch grosse Namen.',
-    wow: 'Enterprise-Partner in der Pre-Seed-Phase — das hat fast niemand.',
-    tier: 'strong',
-  },
-  {
-    icon: Scale,
-    title: 'Asset-Light Modell',
-    stat: 'Kein Lager, kein LKW',
-    desc: 'Plattform-Modell ohne physische Assets. Skaliert wie Software, liefert wie Logistik.',
-    wow: 'Die Marge eines SaaS mit dem Markt eines Logistikers.',
-    tier: 'strong',
-  },
-  {
-    icon: BadgeCheck,
-    title: 'Verifizierte Qualität',
-    stat: 'Jede Firma geprüft',
-    desc: 'Alle Partner-Firmen werden verifiziert. Bewertungen, Response-Zeiten und Erfolgsquoten sind transparent.',
-    wow: 'Qualitätssicherung die Vertrauen schafft — und Kunden zurückbringt.',
-    tier: 'strong',
-  },
-  {
-    icon: Network,
-    title: 'Ökosystem-Effekt',
-    stat: 'Alles rund ums Umziehen',
-    desc: 'Nicht nur Zügeln — sondern Reinigung, Entsorgung, Lagerung, Versicherung, Adressänderung, alles.',
-    wow: 'One-Stop-Shop für den gesamten Umzugsprozess — maximale Convenience.',
-    tier: 'strong',
-  },
-  {
-    icon: Milestone,
-    title: 'Exit-Optionen',
-    stat: '3 klare Wege zum ROI',
-    desc: 'M&A an Marktführer, DACH-Skalierung oder SaaS-Lizenzierung. Jeder Exit ist profitabel.',
-    wow: 'Nicht ein Exit-Plan, sondern drei — der Investor wählt den besten.',
-    tier: 'strong',
-  },
-  {
-    icon: Bot,
-    title: 'KI-validierte Strategie',
-    stat: '95% KI-generiert',
-    desc: 'Die gesamte Plattform ist die KI-Interpretation des perfekten Marktplatzes — datengetrieben, nicht Bauchgefühl.',
-    wow: 'Das Vorzeigemodell einer KI-gesteuerten Vergleichsplattform.',
-    tier: 'strong',
-  },
-  {
-    icon: MousePointerClick,
-    title: 'Kaufnaher Suchintent',
-    stat: '100% transaktionale Suchen',
-    desc: 'Wer "Umzugsfirma Zürich" googelt, will JETZT buchen. Kein Awareness-Marketing nötig.',
-    wow: 'Bottom-of-Funnel Traffic — die wertvollsten Klicks im Internet.',
-    tier: 'strong',
-  },
-  {
-    icon: ShieldCheck,
-    title: 'Regulatorischer Burggraben',
-    stat: 'Schweiz = hohe Hürde',
-    desc: 'Schweizer Datenschutz, Kantonale Regeln, eUmzug-Systeme — internationalen Playern fehlt das Know-how.',
-    wow: 'Die Komplexität der Schweiz ist unser Schutzwall.',
-    tier: 'strong',
-  },
-  {
-    icon: Banknote,
-    title: 'Kein Venture-Burn',
-    stat: 'Unter CHF 400/Mt. Fixkosten',
-    desc: 'Software-Stack kostet unter CHF 400/Monat. Kein Office, kein Team, kein Overhead.',
-    wow: 'Das kapitaleffizienteste Start-up-Modell das es gibt.',
-    tier: 'strong',
-  },
-  {
-    icon: CalendarDays,
-    title: 'Planbare Saisonalität',
-    stat: 'Peaks im März & September',
-    desc: 'Umzugssaison ist vorhersehbar. Budget-Allokation und Ads können perfekt getimed werden.',
-    wow: 'Keine Überraschungen — die Nachfrage folgt einem klaren Kalender.',
-    tier: 'strong',
-  },
-  {
-    icon: BookOpen,
-    title: 'Content-Monopol',
-    stat: '500+ SEO-optimierte Seiten',
-    desc: 'Ratgeber, Gemeinde-Hubs, Rechner, Checklisten — ein Content-Universum das kein Konkurrent hat.',
-    wow: 'Content is King — und wir haben das ganze Königreich.',
-    tier: 'strong',
-  },
-  {
-    icon: MousePointer,
-    title: 'Zero-Friction UX',
-    stat: 'Kein Login, kein Download',
-    desc: 'Offerte in 11 Sekunden ohne Registrierung. WhatsApp statt App. Browser statt Installation.',
-    wow: 'Jede Hürde eliminiert = maximale Conversion.',
-    tier: 'strong',
-  },
-  {
-    icon: Fingerprint,
-    title: 'Founder-Market Fit',
-    stat: '20 Jahre + Passion',
-    desc: 'SEO-Nerd seit 20 Jahren, Schweizer Umzugsmarkt-Experte, Vollzeit ohne Lohn. Es gibt keinen besseren Fit.',
-    wow: 'Der Gründer IST das Produkt — untrennbar verbunden.',
-    tier: 'strong',
-  },
+  // ─── BLOCK 2: SEO, SICHTBARKEIT & DOMINANZ ───
+  { id: 11, icon: Search, title: "Wer SEO kontrolliert, kontrolliert den Eingang", desc: "Menschen suchen aktiv nach Umzug, Reinigung, Offerten und Vergleich.", wow: "Wer dort oben steht, sitzt direkt am Markt-Eingang.", tier: "nuclear-wow", group: "seo" },
+  { id: 12, icon: Shield, title: "SEO baut einen echten Burggraben", desc: "Gute Rankings arbeiten weiter, während bezahlte Werbung stoppt, sobald das Budget stoppt.", wow: "Langfristige Sichtbarkeit ist ein struktureller Vorteil.", tier: "big-wow", group: "seo" },
+  { id: 13, icon: Monitor, title: "Der Markt ist digital noch schwach", desc: "Viele Anbieter existieren operativ, aber sind in SEO, UX und Datenstrategie schwach.", wow: "Genau dort kann ein systematischer Player aufholen und vorbeiziehen.", tier: "big-wow", group: "seo" },
+  { id: 14, icon: MapPin, title: "Lokale Hubs machen nationale Skalierung relevant", desc: "Gemeinden, Städte und Regionen können als eigene digitale Einstiege aufgebaut werden.", wow: "Skalierung und lokale Nähe gleichzeitig.", tier: "nuclear-wow", group: "seo" },
+  { id: 15, icon: Building2, title: "Jede Gemeinde wird ein Relocation Hub", desc: "Gemeinde-spezifische Seiten, Daten und Services erhöhen Relevanz und Abdeckung.", wow: "Das geht weit über normale Landingpages hinaus.", tier: "big-wow", group: "seo" },
+  { id: 16, icon: Globe, title: "Wir kartieren den ganzen Markt", desc: "Gemeinden, Anbieter, Services, Suchintentionen und Vergleiche werden systematisch abgebildet.", wow: "Andere bauen eine Website. Wir bauen eine Landkarte.", tier: "nuclear-wow", group: "seo" },
+  { id: 17, icon: Trophy, title: "Wenn wir Referenz sind, orientiert sich der Markt", desc: "Nutzer und Anbieter gewöhnen sich an Umzugscheck als Startpunkt.", wow: "Dann gewinnt ihr nicht nur Klicks, sondern Deutungshoheit.", tier: "nuclear-wow", group: "seo" },
+  { id: 18, icon: Zap, title: "Je länger wir laufen, desto unfairer der Vorsprung", desc: "Seiten, Daten, Tests, Rankings und Prozesse stapeln sich über Zeit.", wow: "Der Abstand zur Konkurrenz wächst kumulativ.", tier: "nuclear-wow", group: "seo" },
+  { id: 19, icon: LayoutGrid, title: "Einmal gebaut, beliebig skalierbar", desc: "Content-Modelle, Seitenstrukturen und Datenmodelle lassen sich vervielfältigen.", wow: "Hoher Initialaufwand, aber sinkende Grenzkosten pro neuer Region.", tier: "nuclear-wow", group: "seo" },
+  { id: 20, icon: MousePointerClick, title: "Standard sein macht alles leichter", desc: "Sobald Nutzer automatisch bei euch vergleichen, wird jede Akquise günstiger.", wow: "Nachfrage landet natürlicher bei euch statt teuer gejagt zu werden.", tier: "big-wow", group: "seo" },
+
+  // ─── BLOCK 3: PLATTFORM, DATEN & MARKTMACHT ───
+  { id: 21, icon: Settings, title: "Wir kombinieren, was andere getrennt denken", desc: "Vergleichsplattform, SEO-Maschine, KI-System, lokaler Content und eigene Services.", wow: "Diese Kombination ist schwer kopierbar.", tier: "nuclear-wow", group: "platform" },
+  { id: 22, icon: Network, title: "Plattform schlägt Einzeldienstleister", desc: "Eine Plattform bündelt Nachfrage und steuert Auswahl zentral.", wow: "Ein einzelner Anbieter sieht nur seinen kleinen Ausschnitt.", tier: "big-wow", group: "platform" },
+  { id: 23, icon: Target, title: "Der Vergleich gewinnt den ganzen Prozess", desc: "Wer den Nutzer im Vergleich überzeugt, bleibt zentral.", wow: "Dann seid ihr Schaltzentrale statt blosse Weiterleitung.", tier: "nuclear-wow", group: "platform" },
+  { id: 24, icon: Radar, title: "Markttransparenz ist selbst ein Produkt", desc: "Ihr verkauft nicht nur Leistungen, sondern Orientierung.", wow: "Das schafft Vertrauen und wirkt grösser als reine Eigenwerbung.", tier: "big-wow", group: "platform" },
+  { id: 25, icon: Banknote, title: "Die Plattform wird zum Preisanker", desc: "Wenn Nutzer regelmässig vergleichen, beeinflusst ihr Preiswahrnehmung und Erwartung.", wow: "Wer die Referenz setzt, kontrolliert mehr als Sichtbarkeit.", tier: "big-wow", group: "platform" },
+  { id: 26, icon: RefreshCw, title: "Das System verbessert sich durch Nutzung", desc: "Jede Anfrage, jeder Vergleich, jede Offerte liefert neue Signale.", wow: "Wachstum bringt nicht nur Umsatz, sondern Lernvorsprung.", tier: "big-wow", group: "platform" },
+  { id: 27, icon: Brain, title: "Jeder Datensatz macht das System schlauer", desc: "Mit jeder Firma, Region und Servicekombination wächst das Marktverständnis.", wow: "Das Projekt wird mit der Zeit intelligenter, nicht nur grösser.", tier: "big-wow", group: "platform" },
+  { id: 28, icon: Database, title: "Die Plattform wird zum Marktgedächtnis", desc: "Anbieter, Services, Preisrahmen und Muster werden laufend strukturiert erfasst.", wow: "Das ist Marktintelligenz, nicht nur Traffic.", tier: "deep-usp", group: "platform" },
+  { id: 29, icon: Eye, title: "Plattform lernt schneller als einzelne Anbieter", desc: "Eine Plattform sieht breiteres Verhalten als eine einzelne Umzugsfirma.", wow: "Mehr Sicht auf den Markt = schnellere Optimierung.", tier: "big-wow", group: "platform" },
+  { id: 30, icon: CircuitBoard, title: "Jeder Teilnehmer macht das Modell wertvoller", desc: "Mehr Firmen, mehr Regionen, mehr Vergleiche machen die Plattform nützlicher.", wow: "Plattformlogik verstärkt sich selbst.", tier: "deep-usp", group: "platform" },
+
+  // ─── BLOCK 4: KI, WHATSAPP & AUTOMATION ───
+  { id: 31, icon: Cpu, title: "95% KI macht das Modell extrem skalierbar", desc: "KI übernimmt Content, Analyse, Struktur, Aktualisierung und grosse Teile der Maintenance.", wow: "Mehr Output mit weniger menschlichem Aufwand.", tier: "nuclear-wow", group: "ai" },
+  { id: 32, icon: Bot, title: "KI ist hier kein Gimmick, sondern Produktionsmaschine", desc: "KI unterstützt nicht dekorativ, sondern operativ.", wow: "Sie produziert echten Vorsprung.", tier: "nuclear-wow", group: "ai" },
+  { id: 33, icon: Users, title: "KI + Mensch statt KI statt Mensch", desc: "Der Mensch setzt Richtung und Qualitätskontrolle, KI vervielfacht Tempo und Abdeckung.", wow: "Genau die Kombination ist unfair stark.", tier: "nuclear-wow", group: "ai" },
+  { id: 34, icon: MessageCircle, title: "WhatsApp ist bei uns Vertrieb, nicht Support", desc: "Kunden können direkt im Messenger Leistungen auswählen, anfragen und interagieren.", wow: "Ein Kanal, den die Leute sowieso nutzen, wird zum Verkaufsweg.", tier: "nuclear-wow", group: "ai" },
+  { id: 35, icon: LayoutList, title: "WhatsApp-Katalog macht Einstieg sofort konkret", desc: "Bilder, Leistungen, Beschreibungen und Preise sind direkt im Chat sichtbar.", wow: "Kein abstraktes 'meld dich mal', sondern direkte Auswahl.", tier: "big-wow", group: "ai" },
+  { id: 36, icon: MessageSquarePlus, title: "Kunde sagt direkt im Chat, was er braucht", desc: "Statt langen Formularen oder Mails kann die Auswahl direkt in WhatsApp passieren.", wow: "Maximale Reibungsreduktion.", tier: "big-wow", group: "ai" },
+  { id: 37, icon: Workflow, title: "OpenClaw übernimmt den operativen Mittelteil", desc: "Intake, Verarbeitung, Interaktion und Vorbereitung der Offerte werden automatisiert.", wow: "Die mühsame Mitte verschwindet.", tier: "nuclear-wow", group: "ai" },
+  { id: 38, icon: Bot, title: "KI macht schon heute aktives Kundenmanagement", desc: "Kommunikation, Rückfragen und Interaktion laufen bereits KI-gestützt.", wow: "Nicht Vision, sondern startklare Realität.", tier: "nuclear-wow", group: "ai" },
+  { id: 39, icon: CheckCircle2, title: "Mensch bleibt nur finale Freigabeinstanz", desc: "Am Ende prüfst du nur noch Offerte oder Lead und gibst frei.", wow: "Menschliche Kontrolle ohne menschlichen Flaschenhals.", tier: "big-wow", group: "ai" },
+  { id: 40, icon: Rocket, title: "Von Google → WhatsApp → vollautomatisch zur Offerte", desc: "SEO bringt Nachfrage, WhatsApp fängt ab, KI übernimmt, am Schluss nur noch Freigabe.", wow: "Sichtbarkeit, Kommunikation und Automatisierung verschmelzen.", tier: "nuclear-wow", group: "ai" },
+
+  // ─── BLOCK 5: EXECUTION, TESTING & GRÜNDERHEBEL ───
+  { id: 41, icon: Flag, title: "Die Person, die das baut, hört nicht auf", desc: "Dieses Projekt wird nicht halbherzig betrieben, sondern so lange weiterentwickelt, bis es funktioniert.", wow: "Viele Ideen scheitern nicht am Markt, sondern an fehlender Ausdauer.", tier: "nuclear-wow", group: "execution" },
+  { id: 42, icon: Crosshair, title: "Grösster Sicherheitsfaktor: kompromisslose Execution", desc: "Hier arbeitet nicht jemand nebenbei, sondern fokussiert und mit persönlichem Druck.", wow: "Für den Investor ist genau das der eigentliche Vertrauenshebel.", tier: "big-wow", group: "execution" },
+  { id: 43, icon: Layers, title: "20 Jahre SEO-/System-Denken", desc: "Das Wissen kommt nicht aus Theorie, sondern aus jahrelanger Praxis mit Ranking und Skalieren.", wow: "Execution-Qualität ist hier kein Zufall.", tier: "big-wow", group: "execution" },
+  { id: 44, icon: BarChart3, title: "60 dokumentierte Funnel- und Flow-Varianten", desc: "Von Zero Friction bis Chat, Swiss, Video, Trust, Marketplace und Archetypen.", wow: "Das zeigt systematisches Bauen, nicht nur schöne Worte.", tier: "nuclear-wow", group: "execution" },
+  { id: 45, icon: FlaskConical, title: "Testing ist hier Betriebssystem, nicht Option", desc: "Unterschiedliche Funnels, UX-Ansätze und Preislogiken werden gegeneinander getestet.", wow: "Schnellere Lernzyklen schlagen grössere, trägere Konkurrenz.", tier: "big-wow", group: "execution" },
+  { id: 46, icon: ArrowUpCircle, title: "Das Modell ist kumulativ, nicht linear", desc: "Eine Erkenntnis kann in viele Seiten, Funnels und Prozesse gleichzeitig einfliessen.", wow: "Einmal lernen, mehrfach profitieren.", tier: "big-wow", group: "execution" },
+  { id: 47, icon: Wrench, title: "Operative Realität schützt vor Fantasie-Business", desc: "Weil echte Services dahinterstehen, bleibt das Ganze marktnäher als reine Lead-Portale.", wow: "Weniger Bullshit, mehr Wirklichkeit.", tier: "deep-usp", group: "execution" },
+  { id: 48, icon: FileCode, title: "Systemlogik statt Bauchgefühl", desc: "Nachfrage, Suchverhalten, Vergleichslogik, lokale Relevanz und Automatisierung greifen zusammen.", wow: "Das Modell steht auf Hebeln, nicht nur auf Euphorie.", tier: "big-wow", group: "execution" },
+  { id: 49, icon: Infinity, title: "Nicht das Nötige, sondern das Mögliche", desc: "Alle Gemeinden, alle Services, alle Daten, alle Hebel, alle Tests, alle Kanäle.", wow: "Genau diese Radikalität macht aus einer guten Idee ein Dominanzmodell.", tier: "nuclear-wow", group: "execution" },
+  { id: 50, icon: Globe2, title: "Schweiz ist nicht das Ende, sondern der Anfang", desc: "Danach sind Exit, White-Label, Länderausbau oder Systemverkauf möglich.", wow: "Die Story endet nicht bei lokalen Leads, sondern kann in Asset-Wert übergehen.", tier: "big-wow", group: "execution" },
 ];
 
-const tierConfig = {
-  legendary: {
-    label: '🔥 Game-Changer',
-    gridClass: 'md:col-span-2 lg:col-span-1',
-    cardClass: 'border-primary/30 bg-gradient-to-br from-primary/10 via-card to-card shadow-md',
-    iconBoxClass: 'w-14 h-14 rounded-2xl bg-primary/20',
-    iconClass: 'w-7 h-7 text-primary',
-    titleClass: 'text-xl font-extrabold',
-    showWow: true,
+const TOP_7_IDS = [1, 8, 11, 16, 31, 40, 49];
+
+const GROUPS = [
+  { key: "market", label: "Markt & Nachfrage", emoji: "📊", color: "primary" },
+  { key: "seo", label: "SEO, Sichtbarkeit & Dominanz", emoji: "🔍", color: "blue-500" },
+  { key: "platform", label: "Plattform, Daten & Marktmacht", emoji: "🏗️", color: "purple-500" },
+  { key: "ai", label: "KI, WhatsApp & Automation", emoji: "🤖", color: "green-500" },
+  { key: "execution", label: "Execution, Testing & Gründerhebel", emoji: "🎯", color: "amber-500" },
+];
+
+const tierStyles = {
+  "nuclear-wow": {
+    card: "border-primary/30 bg-gradient-to-br from-primary/10 via-card to-card shadow-md",
+    iconBox: "w-12 h-12 rounded-2xl bg-primary/20",
+    iconCls: "w-6 h-6 text-primary",
+    titleCls: "text-lg font-extrabold",
   },
-  epic: {
-    label: '⚡ Stark',
-    gridClass: '',
-    cardClass: 'border-border bg-card',
-    iconBoxClass: 'w-11 h-11 rounded-xl bg-primary/10',
-    iconClass: 'w-5 h-5 text-primary',
-    titleClass: 'text-lg font-bold',
-    showWow: true,
+  "big-wow": {
+    card: "border-border bg-card",
+    iconBox: "w-10 h-10 rounded-xl bg-primary/10",
+    iconCls: "w-5 h-5 text-primary",
+    titleCls: "text-base font-bold",
   },
-  strong: {
-    label: '✓ Solide',
-    gridClass: '',
-    cardClass: 'border-border/60 bg-card/80',
-    iconBoxClass: 'w-9 h-9 rounded-lg bg-muted',
-    iconClass: 'w-4 h-4 text-muted-foreground',
-    titleClass: 'text-base font-semibold',
-    showWow: false,
+  "deep-usp": {
+    card: "border-border/60 bg-card/80",
+    iconBox: "w-9 h-9 rounded-lg bg-muted",
+    iconCls: "w-4 h-4 text-muted-foreground",
+    titleCls: "text-sm font-semibold",
   },
 };
+
+function ReasonCard({ reason, index, large }: { reason: Reason; index: number; large?: boolean }) {
+  const s = tierStyles[reason.tier];
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.04 }}
+      className={`relative group rounded-2xl border ${large ? "p-6 md:p-7" : "p-5"} hover:shadow-xl transition-all overflow-hidden ${s.card}`}
+    >
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+      <div className="relative z-10">
+        <div className={`${s.iconBox} flex items-center justify-center mb-3`}>
+          <reason.icon className={s.iconCls} />
+        </div>
+        <h3 className={`${s.titleCls} text-foreground mb-1.5`}>{reason.title}</h3>
+        <p className="text-muted-foreground text-sm leading-relaxed mb-2">{reason.desc}</p>
+        <p className="text-xs text-primary/80 font-medium italic border-t border-primary/10 pt-2 mt-2">
+          💡 {reason.wow}
+        </p>
+      </div>
+    </motion.div>
+  );
+}
 
 interface WhyInvestSectionProps {
   language?: string;
 }
 
-export function WhyInvestSection({ language = 'de' }: WhyInvestSectionProps) {
-  const legendary = investArgs.filter((a) => a.tier === 'legendary');
-  const epic = investArgs.filter((a) => a.tier === 'epic');
-  const strong = investArgs.filter((a) => a.tier === 'strong');
+export function WhyInvestSection({ language = "de" }: WhyInvestSectionProps) {
+  const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
+  const top7 = ALL_REASONS.filter((r) => TOP_7_IDS.includes(r.id));
 
   return (
-    <section className="py-16 md:py-24 px-4">
+    <section className="py-16 md:py-24 px-4" id="50-gruende">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
+        {/* ═══ HEADER ═══ */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-12 md:mb-16"
+          className="text-center mb-6"
         >
-          <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-semibold mb-4">
-            Investment Thesis
-          </span>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
-            Warum jetzt investieren?
+          <Badge className="mb-4 bg-primary/10 text-primary">Investment Thesis</Badge>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-foreground mb-4">
+            Warum das hier funktionieren muss
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            50 Gründe, warum Umzugscheck.ch das attraktivste Pre-Seed-Investment im Schweizer Logistik-Markt ist.
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-3">
+            Nicht weil wir hoffen. Sondern weil Markt, Suchverhalten, Plattformlogik, KI, WhatsApp und kompromisslose Execution zusammen ein Modell ergeben, das mit genug Zeit nach oben drückt.
+          </p>
+          <p className="text-sm text-muted-foreground/60 italic max-w-xl mx-auto">
+            Hinweis: Diese Seite ist die bewusst übertriebene Freundschafts-Version.
+            Wenn dir die ersten 5 Gründe reichen, gut. Wenn nicht, haben wir noch 45 weitere.
           </p>
         </motion.div>
 
-        {/* ═══ LEGENDARY TIER ═══ */}
-        <div className="mb-6">
-          <span className="inline-block px-3 py-1 rounded-full bg-primary/15 text-primary text-xs font-bold uppercase tracking-wider mb-4">
-            🔥 Game-Changer Argumente
+        {/* ═══ TOP-7 NUCLEAR WOW ═══ */}
+        <div className="mb-8">
+          <span className="inline-block px-4 py-1.5 rounded-full bg-primary/15 text-primary text-sm font-bold uppercase tracking-wider mb-5">
+            🔥 Die 7 härtesten Gründe
           </span>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 mb-12 md:mb-16">
-          {legendary.map((arg, i) => {
-            const cfg = tierConfig.legendary;
-            return (
-              <motion.div
-                key={arg.title}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.06 }}
-                className={`relative group rounded-2xl border p-6 md:p-7 hover:shadow-xl transition-all overflow-hidden ${cfg.cardClass}`}
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="relative z-10">
-                  <div className={`${cfg.iconBoxClass} flex items-center justify-center mb-4`}>
-                    <arg.icon className={cfg.iconClass} />
-                  </div>
-                  <h3 className={`${cfg.titleClass} text-foreground mb-1`}>{arg.title}</h3>
-                  <p className="text-primary font-semibold text-sm mb-2">{arg.stat}</p>
-                  <p className="text-muted-foreground text-sm leading-relaxed mb-3">{arg.desc}</p>
-                  <p className="text-xs text-primary/80 font-medium italic border-t border-primary/10 pt-2 mt-2">
-                    💡 {arg.wow}
-                  </p>
-                </div>
-              </motion.div>
-            );
-          })}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 mb-16 md:mb-20">
+          {top7.map((r, i) => (
+            <ReasonCard key={r.id} reason={r} index={i} large />
+          ))}
         </div>
 
-        {/* ═══ EPIC TIER ═══ */}
-        <div className="mb-6">
-          <span className="inline-block px-3 py-1 rounded-full bg-accent/50 text-foreground text-xs font-bold uppercase tracking-wider mb-4">
-            ⚡ Starke Differenzierung
-          </span>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 mb-12 md:mb-16">
-          {epic.map((arg, i) => {
-            const cfg = tierConfig.epic;
-            return (
-              <motion.div
-                key={arg.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.04 }}
-                className={`relative group rounded-2xl border p-5 md:p-6 hover:shadow-lg transition-shadow overflow-hidden ${cfg.cardClass}`}
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="relative z-10">
-                  <div className={`${cfg.iconBoxClass} flex items-center justify-center mb-3`}>
-                    <arg.icon className={cfg.iconClass} />
-                  </div>
-                  <h3 className={`${cfg.titleClass} text-foreground mb-1`}>{arg.title}</h3>
-                  <p className="text-primary font-semibold text-xs mb-2">{arg.stat}</p>
-                  <p className="text-muted-foreground text-sm leading-relaxed">{arg.desc}</p>
-                  <p className="text-xs text-muted-foreground/70 italic mt-2">
-                    💡 {arg.wow}
-                  </p>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
-
-        {/* ═══ STRONG TIER ═══ */}
-        <div className="mb-6">
-          <span className="inline-block px-3 py-1 rounded-full bg-muted text-muted-foreground text-xs font-bold uppercase tracking-wider mb-4">
-            ✓ Weitere Vorteile
-          </span>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4 mb-12 md:mb-16">
-          {strong.map((arg, i) => {
-            const cfg = tierConfig.strong;
-            return (
-              <motion.div
-                key={arg.title}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.03 }}
-                className={`relative group rounded-xl border p-4 hover:shadow-md transition-shadow overflow-hidden ${cfg.cardClass}`}
-              >
-                <div className="relative z-10 flex gap-3 items-start">
-                  <div className={`${cfg.iconBoxClass} flex-shrink-0 flex items-center justify-center`}>
-                    <arg.icon className={cfg.iconClass} />
-                  </div>
-                  <div className="min-w-0">
-                    <h3 className={`${cfg.titleClass} text-foreground leading-tight`}>{arg.title}</h3>
-                    <p className="text-primary/80 font-medium text-xs mb-1">{arg.stat}</p>
-                    <p className="text-muted-foreground text-xs leading-relaxed">{arg.desc}</p>
-                  </div>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
-
-        {/* Summary Box */}
+        {/* ═══ ALL 50 IN 5 THEMED BLOCKS ═══ */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="rounded-2xl border-2 border-primary/20 bg-primary/5 p-6 md:p-10 text-center max-w-4xl mx-auto"
+          className="text-center mb-10"
+        >
+          <h3 className="text-2xl md:text-3xl font-black text-foreground mb-2">
+            Alle 50 Gründe
+          </h3>
+          <p className="text-muted-foreground">
+            In 5 Themenblöcken — von Marktlogik bis Gründer-DNA.
+          </p>
+        </motion.div>
+
+        {GROUPS.map((group) => {
+          const reasons = ALL_REASONS.filter((r) => r.group === group.key);
+          const isOpen = expandedGroup === group.key;
+
+          return (
+            <div key={group.key} className="mb-6">
+              <button
+                onClick={() => setExpandedGroup(isOpen ? null : group.key)}
+                className="w-full flex items-center justify-between px-5 py-4 rounded-xl border border-border bg-card hover:bg-accent/50 transition-colors text-left"
+              >
+                <span className="flex items-center gap-3">
+                  <span className="text-xl">{group.emoji}</span>
+                  <span className="font-bold text-foreground">{group.label}</span>
+                  <Badge variant="secondary" className="text-xs">{reasons.length}</Badge>
+                </span>
+                <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform ${isOpen ? "rotate-180" : ""}`} />
+              </button>
+
+              <AnimatePresence>
+                {isOpen && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-4 pb-2">
+                      {reasons.map((r, i) => (
+                        <ReasonCard key={r.id} reason={r} index={i} />
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          );
+        })}
+
+        {/* ═══ SUMMARY ═══ */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="rounded-2xl border-2 border-primary/20 bg-primary/5 p-6 md:p-10 text-center max-w-4xl mx-auto mt-12"
         >
           <p className="text-lg md:text-xl font-semibold text-foreground leading-relaxed">
-            CHF 80k Pre-Seed. 3 Tranchen (20k / 25k / 35k). Klare Milestones. Break-even in 6–9 Monaten.
+            50 Gründe. 5 Blöcke. 7 Nuclear-Argumente oben.
             <br className="hidden sm:block" />
-            Kein Gründerlohn. Der Schweizer Umzugsmarkt hat keinen digitalen Champion —{' '}
+            Der Schweizer Umzugsmarkt hat keinen digitalen Champion —{" "}
             <span className="text-primary">wir bauen ihn.</span>
           </p>
           <p className="text-sm text-muted-foreground mt-4">
-            50 Argumente. Null Hoffnung. Nur Mathematik, Execution und Zeit.
+            Kein Gründerlohn. Kompromisslose Execution. Nur Mathematik und Zeit.
           </p>
         </motion.div>
       </div>
