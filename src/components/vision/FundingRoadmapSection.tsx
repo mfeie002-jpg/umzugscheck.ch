@@ -1,190 +1,93 @@
 /**
  * FundingRoadmapSection
  * Visual funding roadmap for /investoren page
- * CHF 60k Pre-Seed in 3 milestone-based tranches
+ * CHF 70k Pre-Seed in 3 milestone-based tranches
  */
 
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Rocket, Target, TrendingUp, Shield, Lock, 
+import {
+  Rocket, Target, TrendingUp, Shield,
   CheckCircle2, ArrowRight, Heart, Calculator,
-  Zap, BarChart3, Users
+  Zap, BarChart3, Lock, Mail
 } from "lucide-react";
 import type { VisionLanguage } from "@/lib/vision-translations";
 
-// ═══════════════════════════════════════════════════════
-// EASILY ADJUSTABLE NUMBERS — change here, updates everywhere
-// ═══════════════════════════════════════════════════════
 const FUNDING = {
-  total: 80_000,
+  total: 70_000,
   tranches: [
-    { amount: 20_000, label: "Proof of Concept", months: "1–3" },
-    { amount: 25_000, label: "Scale-up", months: "4–6" },
-    { amount: 35_000, label: "Break-Even Capital", months: "7–9" },
+    { amount: 20_000, label: "Validation", phase: "TRANCHE 1", months: "1–4" },
+    { amount: 25_000, label: "Traction", phase: "TRANCHE 2", months: "5–9" },
+    { amount: 25_000, label: "Scale to Break-even", phase: "TRANCHE 3", months: "10–15" },
   ],
   maxRisk: 20_000,
-  horizonMonths: "6–9",
-  marginPerJob: 1_590,
-  reinvestPerJob: 990,
+  horizonMonths: "12–18",
+  revenue: [
+    { month: "Monat 3", amount: "CHF 500", label: "Erste Provisionen" },
+    { month: "Monat 6", amount: "CHF 1'800", label: "Wachsende Leads" },
+    { month: "Monat 9", amount: "CHF 3'200", label: "Nahe Break-even" },
+    { month: "Monat 12–15", amount: "CHF 5'000+", label: "Selbsttragend ✓" },
+  ],
 };
 
 const fmt = (n: number) =>
   new Intl.NumberFormat("de-CH", { style: "decimal" }).format(n);
 
-// ── Translations ──────────────────────────────────────
-const t: Record<VisionLanguage, Record<string, string>> = {
-  de: {
-    badge: "Pre-Seed Funding",
-    title: `CHF ${fmt(FUNDING.total)} bis zur Selbsttragfähigkeit`,
-    subtitle:
-      "Milestone-basiert. Risikobegrenzt. 100 % in Wachstum investiert — kein Gründerlohn.",
-    kpi1: "Gesamtbedarf",
-    kpi2: "Max. Erst-Risiko",
-    kpi3: "Zeithorizont",
-    months: "Monate",
-    tranche: "Tranche",
-    unlockTitle: "Freigabe-Bedingung",
-    riskTitle: "Risikobegrenzung",
-    riskBody: `Maximaler Verlust: CHF ${fmt(FUNDING.maxRisk)}. Tranche 2 und 3 werden nur bei nachgewiesenen Milestones freigegeben.`,
-    skinTitle: "Skin in the Game",
-    skinBody:
-      "Gründer arbeitet Vollzeit ohne Lohn. 100 % des Kapitals fliesst direkt in Wachstum und Infrastruktur.",
-    marginTitle: "Finanzierungslogik",
-    marginSub: `Jeder Auftrag generiert Ø CHF ${fmt(FUNDING.marginPerJob)} Umsatz — davon ~CHF ${fmt(FUNDING.reinvestPerJob)} werden direkt reinvestiert.`,
-    ctaTitle: "Interesse an einem Gespräch?",
-    ctaSub: `Einstieg ab CHF ${fmt(FUNDING.tranches[0].amount)} möglich. Grössere Beteiligung über milestone-basierte Tranchen.`,
-    ctaBtn: "Kontakt aufnehmen",
-    active: "Aktiv",
-    locked: "Milestone-gesperrt",
+const trancheConfig = [
+  {
+    color: "primary",
+    dotClass: "bg-primary",
+    borderClass: "border-primary/30",
+    bgClass: "bg-primary/5",
+    Icon: Rocket,
+    description: "Produkt marktreif machen, erste zahlende Umzugsfirmen onboarden und die Unit Economics mit echten Leads validieren.",
+    tags: ["Google Ads Setup", "Partner-Akquise", "Plattform-Feinschliff"],
+    milestoneTitle: "MILESTONES FÜR FREIGABE TRANCHE 2",
+    milestones: [
+      "15–20 Umzugsfirmen aktiv auf der Plattform",
+      "50–100 echte Leads generiert",
+      "Cost per Lead unter CHF 25 validiert",
+      "Erste Provisionseinnahmen erzielt",
+    ],
   },
-  bg: {
-    badge: "Pre-Seed Финансиране",
-    title: `CHF ${fmt(FUNDING.total)} до самоиздръжка`,
-    subtitle:
-      "На базата на етапи. Ограничен риск. 100 % инвестирано в растеж — без заплата за основателя.",
-    kpi1: "Общ бюджет",
-    kpi2: "Макс. риск",
-    kpi3: "Хоризонт",
-    months: "месеца",
-    tranche: "Транш",
-    unlockTitle: "Условие за отключване",
-    riskTitle: "Ограничаване на риска",
-    riskBody: `Максимална загуба: CHF ${fmt(FUNDING.maxRisk)}. Транш 2 и 3 само при доказани етапи.`,
-    skinTitle: "Skin in the Game",
-    skinBody:
-      "Основателят работи на пълен работен ден без заплата. 100 % отива директно в растеж.",
-    marginTitle: "Финансова логика",
-    marginSub: `Всяка поръчка генерира Ø CHF ${fmt(FUNDING.marginPerJob)} — ~CHF ${fmt(FUNDING.reinvestPerJob)} се реинвестират.`,
-    ctaTitle: "Интерес за разговор?",
-    ctaSub: `Вход от CHF ${fmt(FUNDING.tranches[0].amount)}. По-голямо участие чрез етапни траншове.`,
-    ctaBtn: "Свържете се",
-    active: "Активен",
-    locked: "Заключен",
+  {
+    color: "amber",
+    dotClass: "bg-amber-500",
+    borderClass: "border-amber-500/30",
+    bgClass: "bg-amber-500/5",
+    Icon: TrendingUp,
+    description: "Marketing skalieren, Conversion-Rate optimieren, regionale Expansion in die gesamte Deutschschweiz und erste Schritte in die Romandie.",
+    tags: ["Paid Marketing skalieren", "Regionale Expansion", "SEO & Content"],
+    milestoneTitle: "MILESTONES FÜR FREIGABE TRANCHE 3",
+    milestones: [
+      "Monatlicher Umsatz CHF 1'500–2'500",
+      "200+ Leads pro Monat",
+      "Wiederkehrende Partner-Firmen (Retention bestätigt)",
+      "Klarer Pfad zu Break-even sichtbar",
+    ],
   },
-  it: {
-    badge: "Pre-Seed Funding",
-    title: `CHF ${fmt(FUNDING.total)} fino all'autosufficienza`,
-    subtitle:
-      "Basato su milestone. Rischio limitato. 100 % investito nella crescita — nessuno stipendio per il fondatore.",
-    kpi1: "Budget totale",
-    kpi2: "Rischio max.",
-    kpi3: "Orizzonte",
-    months: "mesi",
-    tranche: "Tranche",
-    unlockTitle: "Condizione di sblocco",
-    riskTitle: "Limitazione del rischio",
-    riskBody: `Perdita massima: CHF ${fmt(FUNDING.maxRisk)}. Tranche 2 e 3 solo con milestone verificati.`,
-    skinTitle: "Skin in the Game",
-    skinBody:
-      "Il fondatore lavora a tempo pieno senza stipendio. Il 100 % va nella crescita.",
-    marginTitle: "Logica di finanziamento",
-    marginSub: `Ogni ordine genera Ø CHF ${fmt(FUNDING.marginPerJob)} — ~CHF ${fmt(FUNDING.reinvestPerJob)} vengono reinvestiti.`,
-    ctaTitle: "Interessato a parlarne?",
-    ctaSub: `Ingresso da CHF ${fmt(FUNDING.tranches[0].amount)}. Partecipazione maggiore tramite tranche milestone.`,
-    ctaBtn: "Contattaci",
-    active: "Attivo",
-    locked: "Bloccato",
+  {
+    color: "emerald",
+    dotClass: "bg-emerald-500",
+    borderClass: "border-emerald-500/30",
+    bgClass: "bg-emerald-500/5",
+    Icon: Target,
+    description: "Break-even erreichen, Automatisierung ausbauen, organisches Wachstum über SEO ernten und optionaler Start in der Romandie und im Tessin.",
+    tags: ["Romandie & Tessin", "Automatisierung", "Organisches Wachstum"],
+    milestoneTitle: "ENDZIEL",
+    milestones: [
+      "Monatlicher Umsatz deckt laufende Kosten (CHF 4'000–5'000)",
+      "Positiver ROI auf alle Marketing-Kanäle",
+      "Plattform wächst selbsttragend weiter",
+    ],
   },
-};
-
-// ── Tranche details ───────────────────────────────────
-const trancheDetails: Record<VisionLanguage, { tags: string[]; milestones: string[] }[]> = {
-  de: [
-    {
-      tags: ["GmbH-Gründung", "ERP v2", "Tech-Setup", "Stripe"],
-      milestones: [
-        "GmbH formell gegründet",
-        "Zahlungslogik end-to-end live",
-        "Tracking & CRM sauber aufgesetzt",
-        "Erste Partner onboarded",
-      ],
-    },
-    {
-      tags: ["Google Ads", "SEO/Content", "Partner-Akquise", "Automatisierung"],
-      milestones: [
-        "15+ Offerten / Monat",
-        "8+ abgeschlossene Jobs",
-        "Messbare CPA/CAC-Korridore",
-        "Erste wiederkehrende Umsätze",
-      ],
-    },
-    {
-      tags: ["Expansion", "Vollautomatisierung", "Team-Vorbereitung"],
-      milestones: [
-        "CHF 15k Umsatz / Monat",
-        "Deckungsbeitrag ≥ Fixkosten",
-        "Organisches Wachstum messbar",
-        "Seed-Ready Zustand",
-      ],
-    },
-  ],
-  bg: [
-    {
-      tags: ["ООД регистрация", "ERP v2", "Технически сетъп", "Stripe"],
-      milestones: ["ООД основано", "Плащания live", "Tracking & CRM", "Първи партньори"],
-    },
-    {
-      tags: ["Google Ads", "SEO/Съдържание", "Партньори", "Автоматизация"],
-      milestones: ["15+ оферти/месец", "8+ завършени поръчки", "Измерими CPA", "Първи приходи"],
-    },
-    {
-      tags: ["Експанзия", "Пълна автоматизация", "Екип"],
-      milestones: ["CHF 15k приход/месец", "Break-even", "Органичен растеж", "Seed-Ready"],
-    },
-  ],
-  it: [
-    {
-      tags: ["Fondazione GmbH", "ERP v2", "Setup tecnico", "Stripe"],
-      milestones: ["GmbH fondata", "Pagamenti live", "Tracking & CRM", "Primi partner"],
-    },
-    {
-      tags: ["Google Ads", "SEO/Contenuti", "Partner", "Automazione"],
-      milestones: ["15+ preventivi/mese", "8+ lavori completati", "CPA misurabili", "Primi ricavi"],
-    },
-    {
-      tags: ["Espansione", "Automazione completa", "Team"],
-      milestones: ["CHF 15k ricavi/mese", "Break-even", "Crescita organica", "Seed-Ready"],
-    },
-  ],
-};
-
-// ── Colors per tranche ────────────────────────────────
-const trancheStyles = [
-  { bg: "bg-primary/10", border: "border-primary/30", dot: "bg-primary", icon: Rocket, statusColor: "text-primary" },
-  { bg: "bg-amber-500/10", border: "border-amber-500/30", dot: "bg-amber-500", icon: TrendingUp, statusColor: "text-amber-600" },
-  { bg: "bg-emerald-500/10", border: "border-emerald-500/30", dot: "bg-emerald-500", icon: Target, statusColor: "text-emerald-600" },
 ];
 
-// ── Component ─────────────────────────────────────────
 interface Props {
   language: VisionLanguage;
 }
 
 export function FundingRoadmapSection({ language }: Props) {
-  const l = t[language];
-  const details = trancheDetails[language];
-
   return (
     <section className="py-16 md:py-24 bg-background" id="funding-roadmap">
       <div className="container mx-auto px-4 max-w-5xl">
@@ -198,13 +101,13 @@ export function FundingRoadmapSection({ language }: Props) {
         >
           <Badge variant="outline" className="mb-4 text-sm px-4 py-1.5 border-primary/40 text-primary">
             <Calculator className="w-3.5 h-3.5 mr-1.5" />
-            {l.badge}
+            FUNDING ROADMAP
           </Badge>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground mb-3">
-            {l.title}
+            CHF {fmt(FUNDING.total)} bis zur Selbsttragung
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-base md:text-lg">
-            {l.subtitle}
+            Drei Tranchen, klare Milestones, begrenztes Risiko. Jede Tranche wird nur freigegeben, wenn die vorherige ihre Ziele erreicht hat.
           </p>
         </motion.div>
 
@@ -217,17 +120,15 @@ export function FundingRoadmapSection({ language }: Props) {
           className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-14"
         >
           {[
-            { label: l.kpi1, value: `CHF ${fmt(FUNDING.total)}`, icon: BarChart3 },
-            { label: l.kpi2, value: `CHF ${fmt(FUNDING.maxRisk)}`, icon: Shield },
-            { label: l.kpi3, value: `${FUNDING.horizonMonths} ${l.months}`, icon: Zap },
+            { label: "GESAMTBEDARF", value: `CHF ${fmt(FUNDING.total)}`, sub: "Aufgeteilt in 3 Tranchen", icon: BarChart3 },
+            { label: "MAXIMALES RISIKO", value: `CHF ${fmt(FUNDING.maxRisk)}`, sub: "Falls Tranche 1 scheitert", icon: Shield },
+            { label: "ZEITHORIZONT", value: `${FUNDING.horizonMonths} Monate`, sub: "Bis Break-even", icon: Zap },
           ].map((kpi, i) => (
-            <div
-              key={i}
-              className="rounded-xl border border-border bg-card p-5 text-center"
-            >
+            <div key={i} className="rounded-xl border border-border bg-card p-5 text-center">
               <kpi.icon className="w-5 h-5 mx-auto mb-2 text-primary" />
               <div className="text-2xl font-bold text-foreground">{kpi.value}</div>
-              <div className="text-sm text-muted-foreground mt-1">{kpi.label}</div>
+              <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mt-1">{kpi.label}</div>
+              <div className="text-xs text-muted-foreground mt-0.5">{kpi.sub}</div>
             </div>
           ))}
         </motion.div>
@@ -239,10 +140,9 @@ export function FundingRoadmapSection({ language }: Props) {
 
           <div className="space-y-8">
             {FUNDING.tranches.map((tranche, i) => {
-              const style = trancheStyles[i];
-              const detail = details[i];
+              const config = trancheConfig[i];
               const isActive = i === 0;
-              const Icon = style.icon;
+              const Icon = config.Icon;
 
               return (
                 <motion.div
@@ -253,68 +153,55 @@ export function FundingRoadmapSection({ language }: Props) {
                   transition={{ delay: i * 0.15 }}
                   className="relative"
                 >
-                  {/* Timeline dot (desktop) */}
-                  <div className={`absolute left-3.5 md:left-4 top-6 w-4 h-4 rounded-full ${style.dot} border-2 border-background z-10 hidden md:block`} />
+                  {/* Timeline dot */}
+                  <div className={`absolute left-3.5 md:left-4 top-6 w-4 h-4 rounded-full ${config.dotClass} border-2 border-background z-10 hidden md:block`} />
 
-                  <div className={`md:ml-14 rounded-xl border ${style.border} ${style.bg} p-4 sm:p-5 md:p-6 ${!isActive ? 'opacity-80' : ''}`}>
-                    {/* Header row */}
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-4">
+                  <div className={`md:ml-14 rounded-xl border ${config.borderClass} ${config.bgClass} p-4 sm:p-5 md:p-6 ${!isActive ? 'opacity-85' : ''}`}>
+                    {/* Phase label + amount */}
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-3">
                       <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-                        <div className={`p-2 rounded-lg ${style.bg} shrink-0`}>
-                          <Icon className={`w-5 h-5 ${style.statusColor}`} />
+                        <div className={`p-2 rounded-lg ${config.bgClass} shrink-0`}>
+                          <Icon className="w-5 h-5 text-foreground/70" />
                         </div>
                         <div className="min-w-0">
-                          <div className="flex items-center gap-1.5 flex-wrap">
-                            <span className="font-bold text-foreground text-base sm:text-lg">
-                              {l.tranche} {i + 1} — {tranche.label}
-                            </span>
-                            {!isActive && <Lock className="w-3.5 h-3.5 text-muted-foreground shrink-0" />}
+                          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                            {tranche.phase} · Monat {tranche.months}
                           </div>
-                          <div className="text-xs sm:text-sm text-muted-foreground">
-                            {language === 'de' ? 'Monat' : language === 'bg' ? 'Месец' : 'Mese'} {tranche.months}
+                          <div className="font-bold text-foreground text-lg sm:text-xl">
+                            {tranche.label}
                           </div>
                         </div>
                       </div>
                       <div className="sm:ml-auto pl-11 sm:pl-0">
-                        <span className="text-lg sm:text-xl font-bold text-foreground">
+                        <span className="text-xl sm:text-2xl font-bold text-foreground">
                           CHF {fmt(tranche.amount)}
                         </span>
                       </div>
                     </div>
 
+                    {/* Description */}
+                    <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+                      {config.description}
+                    </p>
+
                     {/* Tags */}
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {detail.tags.map((tag) => (
+                    <div className="flex flex-wrap gap-2 mb-5">
+                      {config.tags.map((tag) => (
                         <Badge key={tag} variant="secondary" className="text-xs">
                           {tag}
                         </Badge>
                       ))}
                     </div>
 
-                    {/* Status badge */}
-                    <div className="flex items-center gap-2 mb-3">
-                      {isActive ? (
-                        <Badge className="bg-primary text-primary-foreground text-xs">
-                          <CheckCircle2 className="w-3 h-3 mr-1" />
-                          {l.active}
-                        </Badge>
-                      ) : (
-                        <Badge variant="outline" className="text-xs text-muted-foreground">
-                          <Lock className="w-3 h-3 mr-1" />
-                          {l.locked}
-                        </Badge>
-                      )}
-                    </div>
-
                     {/* Milestones */}
                     <div className="bg-background/60 rounded-lg p-4 border border-border/50">
-                      <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
-                        {l.unlockTitle}
+                      <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3">
+                        {config.milestoneTitle}
                       </div>
-                      <ul className="space-y-1.5">
-                        {detail.milestones.map((m, j) => (
+                      <ul className="space-y-2">
+                        {config.milestones.map((m, j) => (
                           <li key={j} className="flex items-start gap-2 text-sm text-foreground/80">
-                            <ArrowRight className="w-3.5 h-3.5 mt-0.5 text-primary shrink-0" />
+                            <CheckCircle2 className="w-4 h-4 mt-0.5 text-primary shrink-0" />
                             {m}
                           </li>
                         ))}
@@ -334,43 +221,63 @@ export function FundingRoadmapSection({ language }: Props) {
           viewport={{ once: true }}
           className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-14"
         >
-          <div className="rounded-xl border border-border bg-card p-5">
+          <div className="rounded-xl border border-border bg-card p-5 border-l-4 border-l-emerald-500">
             <div className="flex items-center gap-3 mb-3">
-              <div className="p-2 rounded-lg bg-primary/10">
-                <Shield className="w-5 h-5 text-primary" />
-              </div>
-              <h3 className="font-bold text-foreground">{l.riskTitle}</h3>
+              <Shield className="w-5 h-5 text-emerald-600" />
+              <h3 className="font-bold text-foreground">Risikobegrenzung für Investoren</h3>
             </div>
-            <p className="text-sm text-muted-foreground leading-relaxed">{l.riskBody}</p>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Durch die Tranchenstruktur ist das maximale Verlustrisiko auf CHF {fmt(FUNDING.maxRisk)} begrenzt. 
+              Tranche 2 und 3 werden nur bei nachgewiesener Traction freigegeben — keine Spekulation, nur Daten.
+            </p>
           </div>
 
-          <div className="rounded-xl border border-border bg-card p-5">
+          <div className="rounded-xl border border-border bg-card p-5 border-l-4 border-l-primary">
             <div className="flex items-center gap-3 mb-3">
-              <div className="p-2 rounded-lg bg-emerald-500/10">
-                <Heart className="w-5 h-5 text-emerald-600" />
-              </div>
-              <h3 className="font-bold text-foreground">{l.skinTitle}</h3>
+              <Heart className="w-5 h-5 text-primary" />
+              <h3 className="font-bold text-foreground">100% Invest — kein Gründerlohn</h3>
             </div>
-            <p className="text-sm text-muted-foreground leading-relaxed">{l.skinBody}</p>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Der Gründer arbeitet Vollzeit ohne Lohn. Jeder Franken fliesst direkt in Wachstum — Marketing, Tools, Content. Maximaler Skin in the Game.
+            </p>
           </div>
         </motion.div>
 
-        {/* ── Finanzierungslogik ──────────────── */}
+        {/* ── Break-even Projection ───────────── */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mt-8 rounded-xl border border-primary/20 bg-primary/5 p-6 text-center"
+          className="mt-8 rounded-xl border border-primary/20 bg-primary/5 p-6"
         >
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <Calculator className="w-5 h-5 text-primary" />
-            <h3 className="font-bold text-foreground">{l.marginTitle}</h3>
+          <div className="flex items-center gap-2 mb-1">
+            <TrendingUp className="w-5 h-5 text-primary" />
+            <h3 className="font-bold text-foreground">Weg zum Break-even</h3>
           </div>
-          <p className="text-sm text-muted-foreground max-w-xl mx-auto">{l.marginSub}</p>
-          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mt-4 text-base sm:text-lg font-semibold text-foreground">
-            <span>CHF {fmt(FUNDING.marginPerJob)}</span>
-            <ArrowRight className="w-4 h-4 text-primary shrink-0" />
-            <span className="text-primary">CHF {fmt(FUNDING.reinvestPerJob)} Reinvest</span>
+          <p className="text-xs text-muted-foreground mb-5">Ziel: Monat 12–15</p>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {FUNDING.revenue.map((r, i) => (
+              <div key={i} className="bg-background/70 rounded-lg p-3 text-center border border-border/50">
+                <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">
+                  {r.month}
+                </div>
+                <div className="text-lg sm:text-xl font-bold text-foreground">{r.amount}</div>
+                <div className="text-xs text-muted-foreground mt-1">{r.label}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Arrow progression */}
+          <div className="hidden sm:flex items-center justify-center gap-2 mt-4">
+            {FUNDING.revenue.map((r, i) => (
+              <div key={i} className="flex items-center gap-2">
+                <span className="text-sm font-semibold text-foreground/60">{r.amount}</span>
+                {i < FUNDING.revenue.length - 1 && (
+                  <ArrowRight className="w-4 h-4 text-primary" />
+                )}
+              </div>
+            ))}
           </div>
         </motion.div>
 
@@ -379,18 +286,23 @@ export function FundingRoadmapSection({ language }: Props) {
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mt-14 text-center"
+          className="mt-14 rounded-2xl bg-gradient-to-br from-[hsl(var(--primary)/0.9)] to-[hsl(var(--primary))] p-8 sm:p-10 text-center text-primary-foreground"
         >
-          <h3 className="text-2xl font-bold text-foreground mb-2">{l.ctaTitle}</h3>
-          <p className="text-sm text-muted-foreground mb-6 max-w-lg mx-auto">{l.ctaSub}</p>
+          <h3 className="text-2xl sm:text-3xl font-bold mb-3">
+            Interesse an einem Gespräch?
+          </h3>
+          <p className="text-sm sm:text-base opacity-90 mb-6 max-w-lg mx-auto">
+            Wir suchen einen strategischen Partner, der an die Zukunft des Schweizer Umzugsmarktes glaubt.
+          </p>
           <a
             href="mailto:invest@umzugscheck.ch?subject=Investor%20Interesse%20Pre-Seed"
-            className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-primary-foreground font-semibold hover:bg-primary/90 transition-colors"
+            className="inline-flex items-center gap-2 bg-background text-foreground font-semibold px-6 py-3 rounded-lg hover:bg-background/90 transition-colors"
           >
-            <Users className="w-4 h-4" />
-            {l.ctaBtn}
+            <Mail className="w-4 h-4" />
+            Kontakt aufnehmen
           </a>
         </motion.div>
+
       </div>
     </section>
   );
