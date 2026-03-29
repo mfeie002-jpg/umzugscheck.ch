@@ -370,6 +370,16 @@ export default function InvestorenLanding() {
         <WhyInvestSection language={language} />
       </ScrollReveal>
 
+      {/* 18. WHATSAPP LIVE-DEMO — QR Code for Pitch */}
+      <ScrollReveal>
+        <WhatsAppDemoSection />
+      </ScrollReveal>
+
+      {/* 19. OVERKILL VISION — 50 Tech-USPs */}
+      <ScrollReveal>
+        <OverkillVisionSection />
+      </ScrollReveal>
+
       {/* JOKES SECTION - Only for BG/IT */}
       {(language === 'bg' || language === 'it') && (
         <section className="py-12 bg-muted/10">
