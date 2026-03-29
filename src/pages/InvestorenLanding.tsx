@@ -20,6 +20,7 @@ import { MarketDeepDiveSection } from "@/components/vision/MarketDeepDiveSection
 import { ModularerWarenkorbSection } from "@/components/vision/ModularerWarenkorbSection";
 import { AlreadyLiveSection } from "@/components/vision/AlreadyLiveSection";
 import { InvestorClosingSection } from "@/components/vision/InvestorClosingSection";
+import { FiveRunsMethodologySection } from "@/components/vision/FiveRunsMethodologySection";
 import { OverkillVisionSection } from "@/components/vision/OverkillVisionSection";
 import { VisionUniqueness } from "@/components/vision/VisionUniqueness";
 import { VisionTractionDashboard } from "@/components/vision/VisionTractionDashboard";
@@ -402,6 +403,11 @@ export default function InvestorenLanding() {
       {/* 20. INVESTOR CLOSING — Investment Logic + Emotional Close */}
       <ScrollReveal>
         <InvestorClosingSection />
+      </ScrollReveal>
+
+      {/* 21. FIVE RUNS METHODOLOGY — Kill Switch + AI Risk Assessment */}
+      <ScrollReveal>
+        <FiveRunsMethodologySection />
       </ScrollReveal>
 
       {/* JOKES SECTION - Only for BG/IT */}
