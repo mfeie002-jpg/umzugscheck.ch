@@ -29,21 +29,21 @@ interface TechUSP {
 }
 
 const TIER1_SCIFI: TechUSP[] = [
-  { icon: Video, title: "AI Video Scan", description: "Smartphone-Video der Wohnung → KI erkennt Inventar, Volumen, Preis in 60 Sekunden.", whyWow: "Keine Besichtigung nötig. Kein Konkurrent hat das." },
-  { icon: Landmark, title: "ETF-Kaution", description: "Mietkaution wird in ETFs angelegt statt auf dem Sperrkonto zu gammeln.", whyWow: "Rendite statt totes Kapital — FinTech meets Umzug." },
-  { icon: Glasses, title: "AR Möbel-Preview", description: "Möbel via AR in der neuen Wohnung platzieren bevor der Umzug startet.", whyWow: "IKEA-Level Tech für eine Umzugsplattform." },
-  { icon: FileCode, title: "eUmzug API", description: "Direkte Anbindung an kantonale eUmzug-Systeme für automatische Ummeldung.", whyWow: "Bürokratie in 30 Sekunden erledigt." },
-  { icon: Bot, title: "Agentic AI Concierge", description: "Autonomer KI-Agent koordiniert den gesamten Umzug end-to-end.", whyWow: "Nicht Chatbot — vollautonomer Prozessmanager." },
-  { icon: CreditCard, title: "Move Now, Pay Later", description: "0%-Ratenzahlung für den kompletten Umzug via FinTech-APIs.", whyWow: "Zerstört die Einstiegsbarriere bei Doppelmieten." },
-  { icon: Target, title: "Predictive Lead Scoring", description: "KI bewertet jeden Lead nach Abschlusswahrscheinlichkeit in Echtzeit.", whyWow: "Firmen zahlen mehr für heisse Leads — höherer CPL." },
-  { icon: TrendingUp, title: "Dynamic Pricing Engine", description: "Preise passen sich live an Nachfrage, Saison und Kapazität an.", whyWow: "Uber-Surge-Pricing für die Umzugsbranche." },
-  { icon: Blocks, title: "Blockchain Digital Twin", description: "Unveränderliche digitale Kopie jedes Gegenstands für Versicherung & Haftung.", whyWow: "Schluss mit 'das war schon kaputt'-Diskussionen." },
-  { icon: Banknote, title: "B2B Micro-Loans", description: "Kleine Umzugsfirmen erhalten Mikrokredite basierend auf ihrer Plattform-Performance.", whyWow: "Wir werden zur Bank unserer Partner." },
-  { icon: Leaf, title: "Carbon Neutral Moving", description: "CO₂-Tracking pro Umzug mit automatischer Kompensation.", whyWow: "ESG-konform — öffnet Firmenumzug-Budgets." },
-  { icon: Fingerprint, title: "Biometric Access", description: "Umzugscrew erhält temporären FaceID-Zugang zur Wohnung.", whyWow: "Keine Schlüsselübergabe, kein Risiko." },
-  { icon: Route, title: "Route Optimization AI", description: "KI berechnet optimale Routen für mehrere Umzüge am selben Tag.", whyWow: "30% weniger Fahrzeit = 30% mehr Marge für Partner." },
-  { icon: Plane, title: "Drone Inspection", description: "Drohnenflug für Grossumzüge zur volumetrischen Vermessung.", whyWow: "Enterprise-Feature das niemand sonst anbietet." },
-  { icon: Languages, title: "Multilingual AI", description: "KI kommuniziert in DE/FR/IT/EN + 20 weiteren Sprachen.", whyWow: "40% der Schweizer Umzüge sind interkantonal/multilingual." },
+  { icon: Video, title: "Instant AI Inventory via Video", description: "Der Nutzer filmt sein Wohnzimmer; die KI generiert in unter 3 Sekunden ein farbcodiertes 3D-Inventar inkl. exakter Kubikmeter-Berechnung.", whyWow: "Das lästige Formular-Ausfüllen stirbt. Pure Bequemlichkeit." },
+  { icon: Landmark, title: "Evorest ETF-Kautions-Investment", description: "Die Mietkaution wird über API-Anbindung an Evorest sofort in Blackrock-ETFs investiert statt auf einem Nullzins-Konto zu verstauben.", whyWow: "Der Nutzer baut beim Umziehen Vermögen auf." },
+  { icon: Glasses, title: "True Holographic 3D Room Preview", description: "Nutzer projizieren via Light Field Lab-Technologie ihre Möbel als echte, schwebende Hologramme in die neue, leere Wohnung.", whyWow: "Reiner Sci-Fi-Moment. Die Hardware existiert bereits." },
+  { icon: FileCode, title: "Fully Automated eUmzugCH & Swiss Post API", description: "Ein Klick, und die KI ändert die Adresse bei der alten und neuen Gemeinde (eUmzugCH) sowie bei der Schweizer Post inkl. Nachsendeauftrag.", whyWow: "Digitalisiert den Schweizer Bürokratie-Horror komplett." },
+  { icon: Bot, title: "Agentic AI Relocation Concierge", description: "Eine völlig autonome KI, die selbstständig Mails an Verwaltungen schreibt, Termine koordiniert und Handwerker anweist.", whyWow: "Ersetzt einen menschlichen Personal Assistant komplett." },
+  { icon: CreditCard, title: "Embedded Finance: Move Now, Pay Later", description: "Über FinTech-APIs wird der komplette Umzug in Sekunden mit einer 0%-Ratenzahlung vorfinanziert.", whyWow: "Zerstört die finanzielle Einstiegsbarriere bei Doppelmieten." },
+  { icon: Target, title: "AI Lead Scoring & Ranking", description: "Die KI bewertet jeden Lead sofort nach Abschlusswahrscheinlichkeit. Firmen kaufen nur Leads mit dem höchsten Profit-Score.", whyWow: "Effizienz-Boost für Handwerker; sie werden die Plattform lieben." },
+  { icon: TrendingUp, title: "Real-Time Dynamic Pricing", description: "Ein KI-Pricing-Modell, das Umzugspreise minütlich anpasst — basierend auf Auslastung, Wetter und Verkehr.", whyWow: "Uber-Surge-Pricing für die Umzugsbranche." },
+  { icon: Blocks, title: "Blockchain-gestützter Digital Twin", description: "Ein fälschungssicherer 3D-Scan der Wohnung wird auf der Blockchain gespeichert, um Kautionsstreitigkeiten mathematisch unmöglich zu machen.", whyWow: "Löst das grösste juristische Problem bei Umzügen." },
+  { icon: Banknote, title: "B2B Micro-Loans", description: "Wenn beim Zügelunternehmen der LKW kaputtgeht, gewährt die Plattform sofortige Mikrokredite basierend auf Lead-Historie.", whyWow: "Bindet B2B-Partner lebenslang — wir werden zur Hausbank." },
+  { icon: Leaf, title: "Carbon-Neutral Routing (ESG)", description: "Die KI berechnet die exakten CO₂-Emissionen der LKW-Flotte und kompensiert in Echtzeit für Firmenumzüge.", whyWow: "Monopolisten-Status für B2B-Konzernumzüge mit ESG-Pflichten." },
+  { icon: Fingerprint, title: "Smart Lock Biometric Integration", description: "API-Anbindung an smarte Gebäude. Die Putzcrew erhält per temporärer FaceID Zugang zur Wohnung.", whyWow: "Spart Stunden an Logistik, eliminiert Schlüssel-Risiko." },
+  { icon: Route, title: "Exoskelette für Zügel-Crews", description: "B2B-Partner können KI-gestützte, tragbare Exoskelett-Anzüge leasen, um Klaviere und Tresore ohne Rückenschäden zu tragen.", whyWow: "Software-Plattform meets industrielle Robotik." },
+  { icon: Plane, title: "Automated Drone Facade Inspection", description: "Autonome Drohne analysiert Gebäudefassaden, bevor eine Offerte für hohe Fenster erstellt wird.", whyWow: "Katapultiert die Plattform in den High-End-Gewerbemarkt." },
+  { icon: Languages, title: "Swiss Tax Relocation Optimizer", description: "Integrierte Steuer-API berechnet, ob der Nutzer am 31. Dezember oder 1. Januar umziehen sollte, um tausende Franken zu sparen.", whyWow: "Die Plattform bezahlt sich durch Steuerersparnisse selbst." },
 ];
 
 const TIER2_EXCELLENCE: TechUSP[] = [
