@@ -1,53 +1,77 @@
 
 
-# Funding Roadmap Section auf /investoren einbauen
+# Status & Plan: Investoren-Seite erweitern
 
-## Kontext
+## Aktueller Stand
 
-Morgen ist ein Investor-Meeting. Die `/investoren`-Seite braucht eine visuelle, professionelle **Funding Roadmap**, die den CHF-Ask, Tranchen und Milestones auf einen Blick zeigt. Basierend auf der Konversation mit allen AI-Agents konsolidiere ich die Zahlen.
+**Funding Roadmap IST drin** — Zeile 348-351 in `InvestorenLanding.tsx`. Die `FundingRoadmapSection` mit den CHF 60k / 3 Tranchen (15k/20k/25k) wird korrekt nach der ExitTimeline gerendert.
 
-## Konsolidierte Zahlen
+**Municipality SEO Moat FEHLT komplett** — Es gibt keine Sektion auf `/investoren`, die das 2'110-Gemeinden-Programm, die AI-Agent-Pipeline oder die 10 Content-Marketing-Projekte zeigt. Du hast recht: das ist einer der staerksten USPs fuer einen Investor (technischer Moat, 95% Automation, organischer Traffic-Flywheel).
 
-Die Empfehlungen der verschiedenen Agents reichen von CHF 55k bis 200k. Ich baue die Komponente **flexibel mit den Zahlen aus der letzten Gemini-Empfehlung (CHF 60k: 15k/20k/25k)** als Default, da diese am konservativsten und für ein erstes Angel-Gespräch am glaubwürdigsten sind. Die Komponente wird so gebaut, dass die Zahlen leicht anpassbar sind (als Konstanten oben in der Datei).
+---
 
 ## Was wird gebaut
 
-**Neue Datei:** `src/components/vision/FundingRoadmapSection.tsx`
+**Neue Datei:** `src/components/vision/SEOContentMoatSection.tsx`
 
-### Sektionen:
+**Platzierung:** Nach FundingRoadmap (Zeile 351), vor Jokes — als Sektion 15.
 
-1. **Header** — Badge "Pre-Seed Funding" + Titel "CHF 60'000 bis zur Selbsttragfähigkeit" + Subline
-2. **3 KPI-Karten** — Gesamtbedarf (60k) | Max. Erst-Risiko (15k) | Zeithorizont (6-8 Monate)
-3. **3 Tranchen-Timeline** mit vertikaler Linie:
-   - **Tranche 1 "Launchpad" (15k)** — GmbH, ERP v2, initiales Setup. Status: Blau/Aktiv
-   - **Tranche 2 "Scale-up" (20k)** — 15 Quotes/8 Jobs pro Monat bewiesen → Ads skalieren. Status: Amber/Locked
-   - **Tranche 3 "Sustainability" (25k)** — 15k Umsatz/Monat → Automatisierung, Selbsttragfähigkeit. Status: Gruen/Locked
-   - Jede Karte mit Milestone-Checkliste als Unlock-Bedingung
-4. **Risk-Cards** (2er Grid) — Risikobegrenzung (max 15k) + Skin in the Game (kein Lohn)
-5. **Finanzierungslogik-Box** — Zeigt die CHF 1'590 Marge → ~990 Reinvest Mechanik
-6. **CTA** — "Interesse an einem Gespräch?" mit Kontakt-Link
+### Sektionen der Komponente:
+
+1. **Header** — Badge "Technical Moat" + Titel "2'110 Gemeinden. 1 System." + Subline ueber programmatische SEO-Dominanz
+
+2. **KPI-Leiste (4 Karten)**
+   - 2'110 Ziel-Gemeinden
+   - 26 Kantone als Hubs
+   - 10 Content-Projekte
+   - 95% Automation
+
+3. **Pipeline-Visualisierung** — Horizontaler Flow:
+   `Scrape → Enrich → Draft → QA → Publish → Monitor`
+   Zeigt wie die AI-Agents die Seiten automatisch erstellen
+
+4. **Die 10 Projekte als kompakte Liste/Grid** (Top 5 hervorgehoben):
+   - Swiss Relocation Command Center
+   - Swiss Move Cost Index
+   - Personalized Move Plan Generator
+   - Interactive Calculators
+   - Data-driven Infographics
+   - (5 weitere collapsed/kleiner)
+
+5. **Competitive Moat Box** — Warum das schwer kopierbar ist:
+   - "2'110 lokale Landing Pages mit echten Gemeindedaten"
+   - "AI-Pipeline: 15h Setup → automatische Skalierung"
+   - "Backlinks von Gemeinden, Expat-Guides, Medien"
+   - "Organischer Traffic-Flywheel ohne laufende Ad-Kosten"
+
+6. **Rollout-Timeline** (3 Phasen):
+   - Phase 1 (M1-3): 26 Kantone + Top 50 Gemeinden
+   - Phase 2 (M4-6): 250+ Gemeinden + Cost Index + PR
+   - Phase 3 (M7-9): 500+ Gemeinden + Full Automation
 
 ### Styling:
-- Tailwind + Framer Motion `whileInView` (wie alle anderen Vision-Sektionen)
-- Lucide Icons (Shield, Lock, Unlock, TrendingUp, Target, Rocket)
-- Responsive: Mobile stacked, Desktop 3-column grid
-- Farbkodierung: Blau (aktiv), Amber (locked), Gruen (Ziel)
-- Timeline-Linie via CSS pseudo-elements
+- Gleicher Stack wie FundingRoadmap: Tailwind + Framer Motion `whileInView`
+- Lucide Icons (Globe, MapPin, Bot, Search, Database, Zap)
+- Responsive: Mobile stacked, Desktop grid
+- Navy/Blau Farbschema passend zum Rest
 
 ## Integration
 
-In `src/pages/InvestorenLanding.tsx` nach ExitTimeline (Zeile 345) und vor Jokes (Zeile 347):
+In `InvestorenLanding.tsx` nach FundingRoadmap (Zeile 351):
 
 ```tsx
-import { FundingRoadmapSection } from "@/components/vision/FundingRoadmapSection";
+import { SEOContentMoatSection } from "@/components/vision/SEOContentMoatSection";
 // ...
-<ScrollReveal><FundingRoadmapSection language={language} /></ScrollReveal>
+{/* 15. SEO & CONTENT MOAT */}
+<ScrollReveal>
+  <SEOContentMoatSection language={language} />
+</ScrollReveal>
 ```
 
 ## Dateien
 
 | Datei | Aktion |
 |---|---|
-| `src/components/vision/FundingRoadmapSection.tsx` | Neu erstellen |
-| `src/pages/InvestorenLanding.tsx` | Import + einfuegen Zeile 345 |
+| `src/components/vision/SEOContentMoatSection.tsx` | Neu erstellen |
+| `src/pages/InvestorenLanding.tsx` | Import + einfuegen nach Zeile 351 |
 
