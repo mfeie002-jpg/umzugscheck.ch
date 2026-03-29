@@ -12,6 +12,7 @@ import { UnitEconomicsDetailed } from "@/components/vision/UnitEconomicsDetailed
 import { MarketPotentialSection } from "@/components/vision/MarketPotentialSection";
 import { ExitTimeline } from "@/components/vision/ExitTimeline";
 import { FundingRoadmapSection } from "@/components/vision/FundingRoadmapSection";
+import { SEOContentMoatSection } from "@/components/vision/SEOContentMoatSection";
 import { VisionUniqueness } from "@/components/vision/VisionUniqueness";
 import { VisionTractionDashboard } from "@/components/vision/VisionTractionDashboard";
 import { VisionProfitabilityRoadmap } from "@/components/vision/VisionProfitabilityRoadmap";
@@ -348,6 +349,11 @@ export default function InvestorenLanding() {
       {/* 14. FUNDING ROADMAP */}
       <ScrollReveal>
         <FundingRoadmapSection language={language} />
+      </ScrollReveal>
+
+      {/* 15. SEO & CONTENT MOAT */}
+      <ScrollReveal>
+        <SEOContentMoatSection language={language} />
       </ScrollReveal>
 
       {/* JOKES SECTION - Only for BG/IT */}
