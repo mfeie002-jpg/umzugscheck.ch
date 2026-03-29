@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { MarketSizeBarChart, CompetitorRadarChart, PainPointsChart } from "./InvestorCharts";
 
 // ─── Block 1: Market Size Stats ───
 const MARKET_STATS = [
@@ -228,6 +229,11 @@ export function MarketDeepDiveSection() {
             <TrendingUp className="w-5 h-5 text-primary" />
             Marktgrösse mit harten Zahlen
           </h3>
+          {/* Market Size Chart */}
+          <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 mb-6">
+            <h4 className="text-sm font-semibold text-slate-300 mb-3">Umzüge pro Jahr nach Segment</h4>
+            <MarketSizeBarChart />
+          </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
             {MARKET_STATS.map((stat, i) => {
               const Icon = stat.icon;
@@ -267,7 +273,14 @@ export function MarketDeepDiveSection() {
           <Badge className="mb-4 bg-yellow-500/20 text-yellow-300 border-yellow-500/30 text-xs">
             Sept 2025: Near-Monopol mit geerbten Problemen
           </Badge>
-          <div className="overflow-x-auto mt-4">
+          
+          {/* Competitor Radar Chart */}
+          <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 mt-4 mb-6">
+            <h4 className="text-sm font-semibold text-slate-300 mb-2 text-center">Feature-Abdeckung im Vergleich</h4>
+            <CompetitorRadarChart />
+          </div>
+          
+          <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-slate-700">
@@ -312,6 +325,13 @@ export function MarketDeepDiveSection() {
             <AlertTriangle className="w-5 h-5 text-red-400" />
             7 Schmerzpunkte der Schweizer Konsumenten
           </h3>
+          
+          {/* Pain Points Chart */}
+          <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 mb-6">
+            <h4 className="text-sm font-semibold text-slate-300 mb-2">Ausmass der Probleme</h4>
+            <PainPointsChart />
+          </div>
+          
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {PAIN_POINTS.map((p, i) => {
               const Icon = p.icon;
