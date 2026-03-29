@@ -315,7 +315,7 @@ export const PremiumHeroSection = () => {
       <GridPattern className="hidden md:block" size={32} fade />
       
       {/* Content Container - Minimal top padding on mobile for above-the-fold CTA */}
-      <div className="container mx-auto px-4 sm:px-6 pt-0 pb-1 sm:py-4 md:py-8 lg:py-8 relative z-10">
+      <div className="container mx-auto px-3 sm:px-6 pt-0 pb-1 sm:py-4 md:py-8 lg:py-8 relative z-10 overflow-hidden">
         {/* Mobile: Form first, Desktop: Text first */}
         <div className="grid lg:grid-cols-2 gap-2 sm:gap-4 lg:gap-12 items-start lg:items-center">
           
@@ -421,7 +421,7 @@ export const PremiumHeroSection = () => {
             }}
             className="order-1 lg:order-2"
           >
-            <div className="bg-card rounded-xl md:rounded-2xl shadow-xl border border-border p-4 sm:p-4 md:p-6 relative overflow-hidden">
+            <div className="bg-card rounded-xl md:rounded-2xl shadow-xl border border-border p-3 sm:p-4 md:p-6 relative overflow-hidden max-w-full">
               <div className="space-y-2 sm:space-y-3 md:space-y-4">
                 {/* Form Header - Friendly, not pushy */}
                 <div className="text-center space-y-0.5 md:space-y-1">
