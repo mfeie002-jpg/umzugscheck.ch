@@ -14,6 +14,7 @@ import {
 import type { VisionLanguage } from "@/lib/vision-translations";
 import { RevenueGrowthChart, TrancheDonutChart } from "./InvestorCharts";
 import { MonthlyRevenueTracker } from "./InvestorInfographics2";
+import { FundingMilestoneTimeline } from "./FundingMilestoneTimeline";
 
 const FUNDING = {
   total: 80_000,
@@ -110,6 +111,9 @@ export function FundingRoadmapSection({ language }: Props) {
             Drei Tranchen, klare Milestones, begrenztes Risiko. Jede Tranche wird nur freigegeben, wenn die vorherige ihre Ziele erreicht hat.
           </p>
         </motion.div>
+
+        {/* ── Milestone Timeline Infographic ── */}
+        <FundingMilestoneTimeline />
 
         {/* ── KPI Bar ────────────────────────── */}
         <motion.div
