@@ -209,6 +209,9 @@ export const VisionEmotionalHero = memo(({ language, variant = 'full' }: VisionE
             <Heart className="w-4 h-4 fill-secondary text-secondary" />
           </motion.div>
           
+          {/* System Graphic - only for investor variant */}
+          {variant === 'investor' && <HeroSystemGraphic />}
+          
         </div>
       </div>
       

@@ -100,6 +100,11 @@ export function ModularerWarenkorbSection() {
           Bei 10–15% branchenüblicher CAC = bis CHF 375 Akquisebudget pro Vollauftrag.
           Verkauft an 3–5 Firmen sinkt der CPL pro Firma auf CHF 40–70.
         </p>
+
+        {/* Visual Stack Chart */}
+        <div className="mt-10">
+          <WarenkorbStackChart />
+        </div>
       </div>
     </section>
   );

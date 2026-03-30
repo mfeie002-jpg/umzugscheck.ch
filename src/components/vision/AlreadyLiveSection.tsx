@@ -74,7 +74,10 @@ export function AlreadyLiveSection() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        {/* UI Proof Mockups */}
+        <ProofMockups />
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-10">
           {proofCards.map((card, i) => (
             <motion.div
               key={card.title}
