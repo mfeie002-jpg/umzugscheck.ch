@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   Truck, SprayCan, Trash2, Package, Plus, ArrowRight, TrendingUp,
 } from "lucide-react";
+import { WarenkorbStackChart } from "./WarenkorbStackChart";
 
 const modules = [
   { icon: Truck, label: "Basis-Umzug (3 Zimmer)", price: 1650, note: "Standard-Auftrag", highlight: false },
@@ -99,6 +100,11 @@ export function ModularerWarenkorbSection() {
           Bei 10–15% branchenüblicher CAC = bis CHF 375 Akquisebudget pro Vollauftrag.
           Verkauft an 3–5 Firmen sinkt der CPL pro Firma auf CHF 40–70.
         </p>
+
+        {/* Visual Stack Chart */}
+        <div className="mt-10">
+          <WarenkorbStackChart />
+        </div>
       </div>
     </section>
   );

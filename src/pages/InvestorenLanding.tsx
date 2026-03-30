@@ -23,6 +23,7 @@ import { InvestorClosingSection } from "@/components/vision/InvestorClosingSecti
 import { FiveRunsMethodologySection } from "@/components/vision/FiveRunsMethodologySection";
 import { OverkillVisionSection } from "@/components/vision/OverkillVisionSection";
 import { GrowthPRStrategySection } from "@/components/vision/GrowthPRStrategySection";
+import { AIWorkloadComparison } from "@/components/vision/AIWorkloadComparison";
 import { VisionUniqueness } from "@/components/vision/VisionUniqueness";
 import { VisionTractionDashboard } from "@/components/vision/VisionTractionDashboard";
 import { VisionProfitabilityRoadmap } from "@/components/vision/VisionProfitabilityRoadmap";
@@ -384,6 +385,11 @@ export default function InvestorenLanding() {
       {/* 17. WHY INVEST — 50 Gründe (Final Structure) */}
       <ScrollReveal>
         <WhyInvestSection language={language} />
+      </ScrollReveal>
+
+      {/* 17a. AI WORKLOAD COMPARISON — Was 95% KI wirklich bedeutet */}
+      <ScrollReveal>
+        <AIWorkloadComparison />
       </ScrollReveal>
 
       {/* 17b. ALREADY LIVE — Proof Block */}

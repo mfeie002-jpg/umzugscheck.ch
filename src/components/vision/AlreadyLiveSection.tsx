@@ -7,6 +7,7 @@ import {
   MessageCircle, ImageIcon, Bot, BarChart3, CheckCircle2,
 } from "lucide-react";
 import { FunnelFlowDiagram, PlatformFlywheel } from "./InvestorInfographics";
+import { ProofMockups } from "./ProofMockups";
 
 const proofCards = [
   {
@@ -73,7 +74,10 @@ export function AlreadyLiveSection() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        {/* UI Proof Mockups */}
+        <ProofMockups />
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-10">
           {proofCards.map((card, i) => (
             <motion.div
               key={card.title}
