@@ -126,7 +126,7 @@ export function FundingRoadmapSection({ language }: Props) {
           {[
             { label: "GESAMTBEDARF", value: `CHF ${fmt(FUNDING.total)}`, sub: "Aufgeteilt in 3 Tranchen", icon: BarChart3 },
             { label: "MAXIMALES RISIKO", value: `CHF ${fmt(FUNDING.maxRisk)}`, sub: "Falls Tranche 1 scheitert", icon: Shield },
-            { label: "ZEITHORIZONT", value: `${FUNDING.horizonMonths} Monate`, sub: "Bis Break-even", icon: Zap },
+            { label: "ZEITHORIZONT", value: `12 Monate`, sub: "Bis Break-even", icon: Zap },
           ].map((kpi, i) => (
             <div key={i} className="rounded-xl border border-border bg-card p-5 text-center">
               <kpi.icon className="w-5 h-5 mx-auto mb-2 text-primary" />
