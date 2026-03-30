@@ -391,6 +391,11 @@ export default function InvestorenLanding() {
         <AlreadyLiveSection />
       </ScrollReveal>
 
+      {/* 17c. GROWTH & PR STRATEGY — Das Projekt ist der Content */}
+      <ScrollReveal>
+        <GrowthPRStrategySection />
+      </ScrollReveal>
+
       {/* 18. WHATSAPP LIVE-DEMO — QR Code for Pitch */}
       <ScrollReveal>
         <WhatsAppDemoSection />
