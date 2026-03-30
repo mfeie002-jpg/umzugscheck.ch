@@ -1,53 +1,49 @@
 
 
-# 10%-Sample: 3 selbsterklärende Infografiken
+# Update Milestone-Timeline + neue Growth/PR-Sektion
 
-## Ziel
-3 Infografiken bauen, die **ohne umgebenden Text** verständlich sind. Jede Grafik enthält Titel, Zahlen, Labels, Legenden und visuelle Hierarchie direkt im SVG. Wie eine echte Infografik — Text im Bild ist erwünscht.
+## Status: Was existiert bereits
 
-## Die 3 Samples
+- `FundingMilestoneTimeline.tsx` — existiert, startet bei Nov 2025, geht bis Aug 2026 ✅
+- `FundingRoadmapSection.tsx` — Zeithorizont auf 12 Monate gesetzt ✅
+- **Growth/PR Strategy Section — fehlt komplett** ❌
 
-### Sample 1: Revenue Waterfall (RevenueStreamExamples)
-Gestapeltes Wasserfall-Diagramm im SVG:
-- Titel im Bild: **"10 Revenue Streams → CHF 553 pro Lead"**
-- 10 farbige Blöcke die sich aufeinander stapeln (von links nach rechts aufbauend)
-- Jeder Block: Emoji + Name + CHF-Betrag + Kategorie-Farbe (Quick/Medium/Complex)
-- Kumulative Linie oben die den Gesamtwert zeigt
-- Legende unten: 3 Kategorien mit Farbcodes
-- Abschluss-Label rechts: **"CHF 553 AOV"** gross und prominent
+## Was zu tun ist
 
-### Sample 2: TAM/SAM/SOM Konzentrische Kreise (MarketPotentialSection)
-Drei ineinander liegende Kreise im SVG:
-- Äusserster Kreis: **TAM — CHF 1 Mrd.+ / "Schweizer Umzugsmarkt gesamt"**
-- Mittlerer Kreis: **SAM — CHF 50 Mio. / "Digital erreichbar"**
-- Innerster Kreis: **SOM — CHF 3'200 / "Jahr 1 Ziel"**
-- Proportional skaliert (nicht 1:1 — sonst wäre SOM unsichtbar, also logarithmisch)
-- 4 Acquisition-Channel-Pfeile die in den SOM-Kreis zeigen (SEO 70%, TV 15%, Referral 10%, Social 5%)
-- Titel oben: **"Marktpotenzial Schweiz"**
-- Kontext-Label: **"120'000 Umzüge/Jahr"**
+### 1. Milestone-Zusammenfassung verbessern (FundingMilestoneTimeline)
 
-### Sample 3: Break-Even-Pfad (VisionProfitabilityRoadmap)
-Horizontale Timeline-Grafik im SVG:
-- X-Achse: Monate M1–M18
-- Y-Achse: Revenue CHF 0 → 6'000+
-- Aufsteigende Kurve mit Datenpunkten
-- **Rote Zone** (unter Break-Even) und **Grüne Zone** (über Break-Even)
-- Horizontale gestrichelte Linie bei **CHF 6'000 = "Break-Even"**
-- Meilenstein-Marker auf der Kurve: "Erste Leads" (M2), "100 Leads/Mo" (M6), "Break-Even" (M12-15)
-- 5 Phase-Labels am unteren Rand (aus den bestehenden Milestones)
-- Titel oben: **"Von Null auf Profitabel"**
-- Untertitel: **"Der 15-Monats-Pfad zum selbsttragenden Modell"**
+Die bestehende Timeline hat bereits Phase 0 (Nov–Mar) und die 3 Funding-Phasen. Ergänzungen:
 
-## Technische Umsetzung
+- **Gate-Logik visueller machen**: Schloss-Icons zwischen den Phasen (F1 → F2 → F3), die zeigen: "Unlock nur bei Target-Erreichen"
+- **30-Tage-Deadline** pro Phase klar beschriften: "30 Tage ODER Targets erreicht — was zuerst kommt"
+- **Kill-Switch** visuell markieren: Wenn nach 3 Runden kein Fortschritt → Stopp
 
-| Aspekt | Detail |
-|--------|--------|
-| **Neues File** | `src/components/vision/InvestorInfographics3.tsx` |
-| **Tech** | Reines SVG + Framer Motion (viewBox-basiert, responsive) |
-| **Farben** | Brand-Tokens: Teal `#008080`, Orange `#FF6B1A`, Slate-Töne, Grün/Rot für Zonen |
-| **Text im Bild** | Titel, Subtitel, Labels, Zahlen, Legenden — alles als SVG `<text>` |
-| **Integration** | Einfügen in `RevenueStreamExamples.tsx`, `MarketPotentialSection.tsx`, `VisionProfitabilityRoadmap.tsx` |
+### 2. Neue Sektion: Growth & PR Strategy
 
-## Nach Approval
-Wenn der Stil passt, folgen die restlichen 7 Infografiken im gleichen Standard.
+**Neues Component:** `src/components/vision/GrowthPRStrategySection.tsx`
+
+Kernthese: Das grösste Marketing-Asset ist das Projekt selbst — "95% AI-built Startup im kompetitivsten Markt der Welt."
+
+**Infografik-Blöcke (SVG + Framer Motion):**
+
+| Block | Inhalt |
+|-------|--------|
+| **Die Story** | Card: "KI baut 95% dieses Startups · Kompetitivster Markt · Reichstes Land" — warum das weltweit einzigartig ist |
+| **Outreach-Map** | SVG-Weltkarte mit Zielgruppen: TechCrunch, Wired, t3n, Japan, ProductHunt, HackerNews — jeweils mit "Warum die darüber schreiben" |
+| **Award-Pipeline** | Timeline: Swiss Startup Award, AI Innovation Awards, "Best Case: KI im härtesten Markt" |
+| **Content-Flywheel** | Kreislauf-SVG: Projekt-Story → Presse → Backlinks → SEO-Boost → Traffic → Bessere Story |
+| **Pitch-Angles** | 3 Cards pro Region: Japan ("How AI solves relocations"), USA ("95% AI-built"), EU/DACH ("Letzte analoge Branche automatisiert") |
+| **Multilingual** | Hinweis: AI-Translation in alle Sprachen → direktes Outreach in Landessprache |
+
+### 3. Integration in InvestorenLanding.tsx
+
+- Growth/PR Section nach "Already Live" und vor "Overkill Vision" einfügen
+- Neue Import + Component-Platzierung
+
+## Technisch
+
+- Reines SVG + Framer Motion (wie bestehende Infographics)
+- Brand-Farben: Teal `#008080`, Orange `#FF6B1A`
+- Alle Labels direkt im Bild (Infographic-Standard)
+- Responsive via `viewBox`
 
