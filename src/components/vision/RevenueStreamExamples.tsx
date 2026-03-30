@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { VisionLanguage } from "@/lib/vision-translations";
 import { getVisionTranslation } from "@/lib/vision-translations";
+import { RevenueWaterfallInfographic } from "./InvestorInfographics3";
 
 interface RevenueStreamExamplesProps {
   language: VisionLanguage;
@@ -80,6 +81,9 @@ export const RevenueStreamExamples = memo(({ language }: RevenueStreamExamplesPr
           </p>
         </motion.div>
         
+        {/* Infographic */}
+        <RevenueWaterfallInfographic />
+
         {/* Summary Stats */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
