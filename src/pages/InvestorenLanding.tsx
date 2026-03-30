@@ -387,6 +387,11 @@ export default function InvestorenLanding() {
         <WhyInvestSection language={language} />
       </ScrollReveal>
 
+      {/* 17a. AI WORKLOAD COMPARISON — Was 95% KI wirklich bedeutet */}
+      <ScrollReveal>
+        <AIWorkloadComparison />
+      </ScrollReveal>
+
       {/* 17b. ALREADY LIVE — Proof Block */}
       <ScrollReveal>
         <AlreadyLiveSection />
