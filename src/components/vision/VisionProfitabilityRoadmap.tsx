@@ -14,6 +14,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import type { VisionLanguage } from "@/lib/vision-translations";
+import { BreakEvenPathInfographic } from "./InvestorInfographics3";
 
 interface VisionProfitabilityRoadmapProps {
   language: VisionLanguage;
