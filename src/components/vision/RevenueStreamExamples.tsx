@@ -81,6 +81,9 @@ export const RevenueStreamExamples = memo(({ language }: RevenueStreamExamplesPr
           </p>
         </motion.div>
         
+        {/* Infographic */}
+        <RevenueWaterfallInfographic />
+
         {/* Summary Stats */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

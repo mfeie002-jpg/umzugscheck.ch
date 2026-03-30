@@ -117,6 +117,9 @@ export const MarketPotentialSection = memo(({ language }: MarketPotentialSection
           </p>
         </div>
 
+        {/* Concentric Circles Infographic */}
+        <MarketConcentricInfographic />
+
         {/* Market Size Funnel */}
         <div className="grid gap-6 md:grid-cols-3 mb-12">
           {/* Total Market */}

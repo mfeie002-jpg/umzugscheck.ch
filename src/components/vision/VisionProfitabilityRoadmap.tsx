@@ -223,6 +223,9 @@ export const VisionProfitabilityRoadmap = memo(({ language }: VisionProfitabilit
             <p className="text-sm md:text-base text-muted-foreground">{t.subtitle}</p>
           </motion.div>
           
+          {/* Break-Even Path Infographic */}
+          <BreakEvenPathInfographic />
+
           {/* Progress Summary */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
