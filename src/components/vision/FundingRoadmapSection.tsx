@@ -112,6 +112,9 @@ export function FundingRoadmapSection({ language }: Props) {
           </p>
         </motion.div>
 
+        {/* ── Milestone Timeline Infographic ── */}
+        <FundingMilestoneTimeline />
+
         {/* ── KPI Bar ────────────────────────── */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
