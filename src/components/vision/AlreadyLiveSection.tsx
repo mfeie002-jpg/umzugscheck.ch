@@ -7,6 +7,7 @@ import {
   MessageCircle, ImageIcon, Bot, BarChart3, CheckCircle2,
 } from "lucide-react";
 import { FunnelFlowDiagram, PlatformFlywheel } from "./InvestorInfographics";
+import { ProofMockups } from "./ProofMockups";
 
 const proofCards = [
   {
