@@ -7,6 +7,7 @@
 import { memo } from "react";
 import { motion } from "framer-motion";
 import { Globe, ArrowRight, Heart, Sparkles, Users, TrendingUp, Shield, Zap } from "lucide-react";
+import { HeroSystemGraphic } from "./HeroSystemGraphic";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import type { VisionLanguage } from "@/lib/vision-translations";
