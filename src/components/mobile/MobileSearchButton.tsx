@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { Search } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { MobileSearchOverlay } from './MobileSearchOverlay';
 
 export const MobileSearchButton: React.FC = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const isMobile = useIsMobile();
+  const location = useLocation();
 
-  if (!isMobile) return null;
+  if (!isMobile || location.pathname === '/') return null;
 
   return (
     <>

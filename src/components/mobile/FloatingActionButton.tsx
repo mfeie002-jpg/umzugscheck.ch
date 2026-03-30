@@ -13,6 +13,7 @@ const actions = [
 
 // Pages where FAB should be hidden to avoid covering form elements
 const HIDDEN_ON_PATHS = [
+  '/',
   '/umzugsofferten-v',
   '/umzugsrechner',
   '/offerte',
@@ -26,7 +27,7 @@ export const FloatingActionButton = () => {
   const location = useLocation();
 
   // Hide FAB on flow pages to prevent overlapping with form elements
-  const shouldHide = HIDDEN_ON_PATHS.some(path => location.pathname.includes(path));
+  const shouldHide = location.pathname === '/' || HIDDEN_ON_PATHS.some(path => path !== '/' && location.pathname.includes(path));
   
   if (!isMobile || shouldHide) return null;
 

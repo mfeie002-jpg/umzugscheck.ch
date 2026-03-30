@@ -119,9 +119,10 @@ export const UnifiedABToggle = memo(function UnifiedABToggle() {
   const isProduction = window.location.hostname === 'umzugscheck.ch' || 
                        window.location.hostname === 'www.umzugscheck.ch' ||
                        window.location.hostname === 'umzugscheckv2.lovable.app';
+  const isMobileViewport = window.innerWidth < 768;
   
   // Only show on homepage AND only in development AND not in lab mode
-  if (location.pathname !== '/' || isProduction || isLabMode) {
+  if (location.pathname !== '/' || isProduction || isLabMode || isMobileViewport) {
     return null;
   }
 
