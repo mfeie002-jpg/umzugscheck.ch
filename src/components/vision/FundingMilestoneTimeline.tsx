@@ -1,7 +1,7 @@
 /**
  * FundingMilestoneTimeline
  * Full SVG infographic: Nov 2025 → Aug 2026
- * Phase 0 (pre-funding) + 3 Funding Tranches
+ * Phase 0 (pre-funding) + 3 Funding Tranches with Gate-Logic & Kill-Switch
  */
 
 import { memo } from "react";
@@ -21,7 +21,6 @@ const COLORS = {
   muted: "#CBD5E1",
 };
 
-// Timeline months
 const MONTHS = [
   { key: "Nov", label: "Nov 25", x: 0 },
   { key: "Dez", label: "Dez 25", x: 1 },
@@ -37,7 +36,7 @@ const MONTHS = [
 
 export const FundingMilestoneTimeline = memo(() => {
   const W = 1000;
-  const H = 620;
+  const H = 720;
   const padL = 40;
   const padR = 40;
   const timelineY = 260;
@@ -45,15 +44,13 @@ export const FundingMilestoneTimeline = memo(() => {
 
   const getX = (monthIdx: number) => padL + monthIdx * barW + barW / 2;
 
-  // Phases
   const phase0 = { start: 0, end: 4, color: COLORS.teal, label: "PHASE 0 — Aufbau", sub: "Motor bauen" };
   const phases = [
-    { start: 5, end: 5, color: COLORS.orange, label: "FUNDING 1", sub: "Zündung", amount: "CHF 20k" },
-    { start: 6, end: 6, color: COLORS.amber, label: "FUNDING 2", sub: "Skalierung", amount: "CHF 25k" },
-    { start: 7, end: 7, color: COLORS.green, label: "FUNDING 3", sub: "Break-Even", amount: "CHF 35k" },
+    { start: 5, end: 5, color: COLORS.orange, label: "FUNDING 1", sub: "Zündung", amount: "CHF 20k", deadline: "30 Tage" },
+    { start: 6, end: 6, color: COLORS.amber, label: "FUNDING 2", sub: "Skalierung", amount: "CHF 25k", deadline: "30 Tage" },
+    { start: 7, end: 7, color: COLORS.green, label: "FUNDING 3", sub: "Break-Even", amount: "CHF 35k", deadline: "30 Tage" },
   ];
 
-  // Milestones on the timeline
   const milestones = [
     { month: 0, label: "Projektstart", emoji: "🚀", y: -40 },
     { month: 1, label: "KI-Architektur", emoji: "🧠", y: -40 },
@@ -67,7 +64,6 @@ export const FundingMilestoneTimeline = memo(() => {
     { month: 9, label: "Profitabel", emoji: "👑", y: -40 },
   ];
 
-  // Phase 0 achievements
   const phase0Items = [
     "500+ Stunden Entwicklung",
     "20+ Funnels & Rechner",
@@ -76,15 +72,19 @@ export const FundingMilestoneTimeline = memo(() => {
     "50+ Business-Logiken implementiert",
   ];
 
-  // Funding targets
   const fundingTargets = [
-    { phase: 1, items: ["CPL < CHF 200", "15 profitable Aufträge", "Funnels marktreif"] },
-    { phase: 2, items: ["30+ Leads/Monat", "MRR CHF 25k", "Partner-Retention"] },
-    { phase: 3, items: ["Cashflow-positiv", "ROI alle Kanäle", "Organisches Wachstum"] },
+    { phase: 1, items: ["CPL < CHF 200", "15 profitable Aufträge", "Funnels marktreif"], gate: "Targets erreicht → Unlock F2" },
+    { phase: 2, items: ["30+ Leads/Monat", "MRR CHF 25k", "Partner-Retention"], gate: "Targets erreicht → Unlock F3" },
+    { phase: 3, items: ["Cashflow-positiv", "ROI alle Kanäle", "Organisches Wachstum"], gate: "Selbsttragend ✓" },
   ];
 
-  // "Today" marker at end of March (index 4.9)
   const todayX = getX(4) + barW * 0.4;
+
+  // Gate positions between funding phases
+  const gatePositions = [
+    { x: padL + 6 * barW, fromColor: COLORS.orange, toColor: COLORS.amber },
+    { x: padL + 7 * barW, fromColor: COLORS.amber, toColor: COLORS.green },
+  ];
 
   return (
     <motion.div
@@ -100,7 +100,6 @@ export const FundingMilestoneTimeline = memo(() => {
         role="img"
         aria-label="Funding Milestone Timeline: November 2025 bis August 2026"
       >
-        {/* Background */}
         <rect width={W} height={H} rx="16" fill={COLORS.bg} />
 
         {/* Title */}
@@ -109,6 +108,12 @@ export const FundingMilestoneTimeline = memo(() => {
         </text>
         <text x={W / 2} y="58" textAnchor="middle" fill={COLORS.muted} fontSize="13">
           November 2025 → August 2026 · 10 Monate · 4 Phasen
+        </text>
+
+        {/* Deadline rule */}
+        <rect x={W / 2 - 175} y="68" width="350" height="22" rx="11" fill={COLORS.orange} opacity="0.15" />
+        <text x={W / 2} y="83" textAnchor="middle" fill={COLORS.orange} fontSize="10" fontWeight="700">
+          ⏱ Regel: 30 Tage pro Phase ODER alle Targets erreicht — was zuerst kommt
         </text>
 
         {/* Phase 0 bar (Nov–Mar) */}
@@ -168,6 +173,32 @@ export const FundingMilestoneTimeline = memo(() => {
           </g>
         ))}
 
+        {/* Gate locks between funding phases */}
+        {gatePositions.map((gate, i) => (
+          <g key={`gate-${i}`}>
+            {/* Gate line */}
+            <line
+              x1={gate.x}
+              y1={timelineY - 18}
+              x2={gate.x}
+              y2={timelineY + 18}
+              stroke={COLORS.white}
+              strokeWidth="2"
+              strokeDasharray="3 2"
+              opacity="0.5"
+            />
+            {/* Lock icon circle */}
+            <circle cx={gate.x} cy={timelineY - 24} r="10" fill={COLORS.cardBg} stroke={COLORS.white} strokeWidth="1.5" />
+            <text x={gate.x} y={timelineY - 20} textAnchor="middle" fontSize="10">
+              🔒
+            </text>
+            {/* Gate label */}
+            <text x={gate.x} y={timelineY + 32} textAnchor="middle" fill={COLORS.white} fontSize="7" fontWeight="600" opacity="0.7">
+              GATE
+            </text>
+          </g>
+        ))}
+
         {/* Reserve/Buffer zone (Jul–Aug) */}
         <rect
           x={padL + 8 * barW + 4}
@@ -198,7 +229,6 @@ export const FundingMilestoneTimeline = memo(() => {
               <text x={cx} y={timelineY + 36} textAnchor="middle" fill={COLORS.muted} fontSize="10" fontWeight="500">
                 {m.label}
               </text>
-              {/* Dot on timeline */}
               <circle
                 cx={cx}
                 cy={timelineY}
@@ -218,7 +248,7 @@ export const FundingMilestoneTimeline = memo(() => {
           HEUTE
         </text>
 
-        {/* Arrow: "Motor läuft → braucht Benzin" */}
+        {/* Arrow text */}
         <text x={todayX + 8} y={timelineY + 55} fill={COLORS.orange} fontSize="11" fontWeight="700" textAnchor="start">
           Motor läuft → jetzt braucht er Benzin 🔥
         </text>
@@ -266,13 +296,13 @@ export const FundingMilestoneTimeline = memo(() => {
           → Eigenleistung: 500+ Stunden · CHF 0 Fremdkapital
         </text>
 
-        {/* ─── Bottom Section: Funding Targets ─── */}
+        {/* ─── Bottom Section: Funding Targets with Gate Logic ─── */}
         <rect x={W / 2 + 10} y={timelineY + 75} width={W / 2 - padR - 10} height={180} rx="10" fill={COLORS.cardBg} />
         <text x={W / 2 + 26} y={timelineY + 98} fill={COLORS.orange} fontSize="12" fontWeight="800">
-          🎯 FUNDING-ZIELE (Phase 1–3)
+          🎯 FUNDING-ZIELE mit Gate-Logik
         </text>
         <text x={W / 2 + 26} y={timelineY + 113} fill={COLORS.slateLight} fontSize="10">
-          Apr – Aug 2026 · 3×30 Tage · CHF 80k total
+          Apr – Aug 2026 · 3×30 Tage · CHF 80k total · 🔒 Unlock bei Target
         </text>
 
         {fundingTargets.map((ft, phaseIdx) => {
@@ -292,6 +322,16 @@ export const FundingMilestoneTimeline = memo(() => {
             </g>
           );
         })}
+
+        {/* ─── Kill-Switch Banner ─── */}
+        <rect x={padL} y={H - 95} width={W - padL - padR} height="36" rx="8" fill={COLORS.red} opacity="0.12" />
+        <rect x={padL} y={H - 95} width={W - padL - padR} height="36" rx="8" fill="none" stroke={COLORS.red} strokeWidth="1.5" strokeDasharray="6 3" />
+        <text x={padL + 20} y={H - 73} fill={COLORS.red} fontSize="11" fontWeight="700">
+          ⛔ KILL-SWITCH:
+        </text>
+        <text x={padL + 150} y={H - 73} fill={COLORS.muted} fontSize="11">
+          Wenn nach 3 Runden kein tragfähiger Kern → Stopp. Kein weiteres Kapital. Transparent & fair.
+        </text>
 
         {/* ─── Bottom bar: Key message ─── */}
         <rect x={padL} y={H - 50} width={W - padL - padR} height={36} rx="8" fill={COLORS.teal} opacity="0.15" />

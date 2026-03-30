@@ -22,6 +22,7 @@ import { AlreadyLiveSection } from "@/components/vision/AlreadyLiveSection";
 import { InvestorClosingSection } from "@/components/vision/InvestorClosingSection";
 import { FiveRunsMethodologySection } from "@/components/vision/FiveRunsMethodologySection";
 import { OverkillVisionSection } from "@/components/vision/OverkillVisionSection";
+import { GrowthPRStrategySection } from "@/components/vision/GrowthPRStrategySection";
 import { VisionUniqueness } from "@/components/vision/VisionUniqueness";
 import { VisionTractionDashboard } from "@/components/vision/VisionTractionDashboard";
 import { VisionProfitabilityRoadmap } from "@/components/vision/VisionProfitabilityRoadmap";
@@ -388,6 +389,11 @@ export default function InvestorenLanding() {
       {/* 17b. ALREADY LIVE — Proof Block */}
       <ScrollReveal>
         <AlreadyLiveSection />
+      </ScrollReveal>
+
+      {/* 17c. GROWTH & PR STRATEGY — Das Projekt ist der Content */}
+      <ScrollReveal>
+        <GrowthPRStrategySection />
       </ScrollReveal>
 
       {/* 18. WHATSAPP LIVE-DEMO — QR Code for Pitch */}
