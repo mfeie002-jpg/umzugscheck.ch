@@ -14,6 +14,7 @@ import {
 import type { VisionLanguage } from "@/lib/vision-translations";
 import { RevenueGrowthChart, TrancheDonutChart } from "./InvestorCharts";
 import { MonthlyRevenueTracker } from "./InvestorInfographics2";
+import { FundingMilestoneTimeline } from "./FundingMilestoneTimeline";
 
 const FUNDING = {
   total: 80_000,
