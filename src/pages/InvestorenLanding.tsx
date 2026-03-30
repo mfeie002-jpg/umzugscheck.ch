@@ -22,6 +22,7 @@ import { AlreadyLiveSection } from "@/components/vision/AlreadyLiveSection";
 import { InvestorClosingSection } from "@/components/vision/InvestorClosingSection";
 import { FiveRunsMethodologySection } from "@/components/vision/FiveRunsMethodologySection";
 import { OverkillVisionSection } from "@/components/vision/OverkillVisionSection";
+import { GrowthPRStrategySection } from "@/components/vision/GrowthPRStrategySection";
 import { VisionUniqueness } from "@/components/vision/VisionUniqueness";
 import { VisionTractionDashboard } from "@/components/vision/VisionTractionDashboard";
 import { VisionProfitabilityRoadmap } from "@/components/vision/VisionProfitabilityRoadmap";
