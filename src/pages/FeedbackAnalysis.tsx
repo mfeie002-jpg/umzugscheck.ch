@@ -147,6 +147,7 @@ const TOC_ITEMS = [
   { id: 'external-blueprint', label: '27. External Blueprint', block: '27' },
   { id: 'final-strategy', label: '28. Final Strategy Blueprint', block: '28' },
   { id: 'claim-ampel', label: '29. Claim Audit Ampel', block: '29' },
+  { id: 'master-blueprint-final', label: '30. Master Blueprint Final', block: '30' },
 ];
 
 // ─── TOC Sidebar ───
