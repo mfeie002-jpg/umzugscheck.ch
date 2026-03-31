@@ -2237,6 +2237,9 @@ const FeedbackAnalysis = () => {
           </section>
         </Reveal>
 
+        {/* ═══ BLOCK 30: Master Blueprint Final ═══ */}
+        <MasterBlueprintFinal />
+
         {/* ═══ FOOTER ═══ */}
         <Reveal>
           <div className="text-center py-12 space-y-4 border-t border-white/5 mt-8">
