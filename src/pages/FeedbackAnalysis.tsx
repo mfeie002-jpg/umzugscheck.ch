@@ -14,6 +14,7 @@ import GeminiBlueprint from '@/components/feedback/GeminiBlueprint';
 import UltimateBlueprint from '@/components/feedback/UltimateBlueprint';
 import ExternalBlueprintContent from '@/components/feedback/ExternalBlueprintContent';
 import FinalStrategyBlueprint from '@/components/feedback/FinalStrategyBlueprint';
+import MasterBlueprintFinal from '@/components/feedback/MasterBlueprintFinal';
 
 // ─── Status Badge Component ───
 const StatusBadge = ({ status }: { status: string }) => {
