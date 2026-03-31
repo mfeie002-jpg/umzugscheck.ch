@@ -2252,7 +2252,7 @@ const FeedbackAnalysis = () => {
             </p>
             <p className="text-xs text-white/30 max-w-xl mx-auto">
               Konsolidiert aus 5 Analyse-Runden, Final Strategic Verdict, AI Execution Masterplan, 
-              Gemini Blueprint, Ultimate Blueprint, externen PDFs, Final Strategy Blueprint und Consolidated Claim Audit. 29 Blöcke. Stand: 31. März 2026.
+              Gemini Blueprint, Ultimate Blueprint, externen PDFs, Final Strategy Blueprint, Consolidated Claim Audit und Master Blueprint Final. 30 Blöcke. Stand: 31. März 2026.
             </p>
             <div className="flex justify-center gap-1.5 flex-wrap max-w-lg mx-auto">
               <SourceBadge source="ANALYSE 1" />
@@ -2265,6 +2265,7 @@ const FeedbackAnalysis = () => {
               <SourceBadge source="GEMINI" />
               <SourceBadge source="ULTIMATE" />
               <SourceBadge source="EXTERNAL" />
+              <SourceBadge source="BLUEPRINT FINAL" />
             </div>
             <p className="text-[10px] text-white/20 mt-4">
               Umzugscheck.ch · Feierabendservices.ch · Internes Red-Team-Dokument · Nicht zur externen Weitergabe ohne Freigabe
