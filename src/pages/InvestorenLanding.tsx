@@ -26,6 +26,7 @@ import { ThreeLayerSystemMap } from "@/components/vision/ThreeLayerSystemMap";
 import { NarrativeMoatSection } from "@/components/vision/NarrativeMoatSection";
 import { TwoPillarModel } from "@/components/vision/TwoPillarModel";
 import { MarketAttractivenessSection } from "@/components/vision/MarketAttractivenessSection";
+import { BusinessCaseOverviewSection } from "@/components/vision/BusinessCaseOverviewSection";
 import { WhyWeWinSection } from "@/components/vision/WhyWeWinSection";
 import { UseOfFundsSection } from "@/components/vision/UseOfFundsSection";
 import { Button } from "@/components/ui/button";
@@ -176,6 +177,13 @@ export default function InvestorenLanding() {
       {/* ═══════════════════════════════════════════ */}
       <ScrollReveal>
         <TwoPillarModel />
+      </ScrollReveal>
+
+      {/* ═══════════════════════════════════════════ */}
+      {/* 4.5. BUSINESS CASE OVERVIEW */}
+      {/* ═══════════════════════════════════════════ */}
+      <ScrollReveal>
+        <BusinessCaseOverviewSection />
       </ScrollReveal>
 
       {/* ═══════════════════════════════════════════ */}
