@@ -2008,11 +2008,19 @@ const FeedbackAnalysis = () => {
 
         {/* ═══ FOOTER ═══ */}
         <Reveal>
-          <div className="text-center py-8 space-y-2">
-            <p className="text-xs text-white/30">
-              Konsolidiert aus 5 Analyse-Runden + Final Verdict + Masterplan + Gemini Blueprint + Ultimate Blueprint + External PDFs · Stand: März 2026 · Internes Red-Team-Dokument
+          <div className="text-center py-12 space-y-4 border-t border-white/5 mt-8">
+            <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-4 py-1.5">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="text-xs font-bold text-emerald-400">FINAL VERSION · v1.0</span>
+            </div>
+            <p className="text-sm text-white/50 font-medium">
+              Investor Readiness & De-Risking Blueprint
             </p>
-            <div className="flex justify-center gap-2 flex-wrap">
+            <p className="text-xs text-white/30 max-w-xl mx-auto">
+              Konsolidiert aus 5 Analyse-Runden, Final Strategic Verdict, AI Execution Masterplan, 
+              Gemini Blueprint, Ultimate Blueprint und externen PDFs. 27 Blöcke. Stand: 31. März 2026.
+            </p>
+            <div className="flex justify-center gap-1.5 flex-wrap max-w-lg mx-auto">
               <SourceBadge source="ANALYSE 1" />
               <SourceBadge source="ANALYSE 2" />
               <SourceBadge source="ANALYSE 3" />
@@ -2024,6 +2032,9 @@ const FeedbackAnalysis = () => {
               <SourceBadge source="ULTIMATE" />
               <SourceBadge source="EXTERNAL" />
             </div>
+            <p className="text-[10px] text-white/20 mt-4">
+              Umzugscheck.ch · Feierabendservices.ch · Internes Red-Team-Dokument · Nicht zur externen Weitergabe ohne Freigabe
+            </p>
           </div>
         </Reveal>
 
