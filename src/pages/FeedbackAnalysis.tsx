@@ -184,7 +184,7 @@ const TableOfContents = () => {
 // ═══════════════════════════════════════════════
 const FeedbackAnalysis = () => {
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white">
+    <div className="min-h-screen bg-[#0a0a0a] text-white lg:pr-64">
       {/* Print Styles */}
       <style>{`
         @media print {
