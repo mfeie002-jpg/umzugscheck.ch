@@ -52,6 +52,7 @@ import { FunSectionIntro } from "@/components/persona/FunSectionIntro";
 import { FunCTA } from "@/components/persona/FunCTA";
 import { VIPWelcomeBanner } from "@/components/persona/VIPWelcomeBanner";
 import { TwoPillarModel } from "@/components/vision/TwoPillarModel";
+import { USPFrameworkSection } from "@/components/vision/USPFrameworkSection";
 
 // Translations
 const translations: Record<'de' | 'bg' | 'it', {
@@ -416,6 +417,11 @@ export default function InvestorenLanding() {
       {/* 19. OVERKILL VISION — 50 Tech-USPs */}
       <ScrollReveal>
         <OverkillVisionSection />
+      </ScrollReveal>
+
+      {/* 19b. 50-PUNKTE USP FRAMEWORK — Psychologische Hierarchie */}
+      <ScrollReveal>
+        <USPFrameworkSection />
       </ScrollReveal>
 
       {/* 20. INVESTOR CLOSING — Investment Logic + Emotional Close */}
