@@ -1267,7 +1267,375 @@ const FeedbackAnalysis = () => {
           </section>
         </Reveal>
 
-        {/* Footer */}
+        {/* ═══════════════════════════════════════════════════════ */}
+        {/* BLOCK 17: EXECUTIVE ACTION SUMMARY                    */}
+        {/* ═══════════════════════════════════════════════════════ */}
+        <Reveal>
+          <section id="executive-action">
+            <Card className="bg-white/[0.03] border-white/10">
+              <CardHeader>
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 text-[10px]">BLOCK 17</Badge>
+                  <SourceBadge source="ANALYSE 4" />
+                </div>
+                <CardTitle className="text-xl text-white flex items-center gap-2">
+                  <Zap className="w-5 h-5 text-orange-400" />
+                  Executive Action Summary
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div>
+                  <h4 className="text-sm font-bold text-white mb-3">5 wichtigste Baustellen</h4>
+                  <div className="space-y-2">
+                    {[
+                      { nr: 1, title: 'Revenue-Loop beweisen', typ: 'Beweisproblem', desc: 'Kein einziger dokumentierter Portal→Auftrag→Zahlung-Fall existiert.' },
+                      { nr: 2, title: 'Neutralitätskonflikt lösen', typ: 'Strukturproblem', desc: 'Portal + Eigenausführung ohne Governance = strukturell angreifbar.' },
+                      { nr: 3, title: 'Team/Advisor aufbauen', typ: 'Operationsproblem', desc: 'Solo-Founder-Setup ist nicht investierbar.' },
+                      { nr: 4, title: 'GSC-Daten & Traffic-Nachweis', typ: 'Beweisproblem', desc: 'Ohne Traffic-Proof ist die SEO-These leer.' },
+                      { nr: 5, title: 'Fokus-Cut durchführen', typ: 'Strategieproblem', desc: '4 Brands, 10 Streams = Verzettelung. Runter auf 2 Marken, 1-2 Streams.' },
+                    ].map(b => (
+                      <div key={b.nr} className="bg-white/5 rounded p-3 border border-white/10 flex gap-3">
+                        <span className="text-orange-400 font-bold text-sm min-w-[20px]">{b.nr}.</span>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-0.5">
+                            <h5 className="text-sm font-bold text-white">{b.title}</h5>
+                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/10 text-white/50">{b.typ}</span>
+                          </div>
+                          <p className="text-xs text-white/50">{b.desc}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div className="bg-red-500/5 border border-red-500/10 rounded-lg p-4">
+                    <h4 className="text-xs font-bold text-red-400 mb-2">3 KRITISCHSTE VOR INVESTOR</h4>
+                    {['Revenue-Loop mit echten Zahlen', 'Routing-Governance schriftlich', 'Unit Economics mit Vollkosten'].map((p, i) => (
+                      <p key={i} className="text-xs text-white/60 py-0.5">• {p}</p>
+                    ))}
+                  </div>
+                  <div className="bg-orange-500/5 border border-orange-500/10 rounded-lg p-4">
+                    <h4 className="text-xs font-bold text-orange-400 mb-2">3 HÄUFIGSTE SCHEITER-GRÜNDE</h4>
+                    {['Kein Proof = kein Investment', 'Operativer Engpass bei Skalierung', 'Partner-Abwanderung durch Cherry-Picking'].map((p, i) => (
+                      <p key={i} className="text-xs text-white/60 py-0.5">• {p}</p>
+                    ))}
+                  </div>
+                  <div className="bg-teal-500/5 border border-teal-500/10 rounded-lg p-4">
+                    <h4 className="text-xs font-bold text-teal-400 mb-2">3 GRÖSSTE HEBEL</h4>
+                    {['5 Jobs mit Vollkosten = Economics-Beweis', 'GSC-Export = Traffic-Beweis', 'Fokus-Cut = Klarheit für alle Stakeholder'].map((p, i) => (
+                      <p key={i} className="text-xs text-white/60 py-0.5">• {p}</p>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="bg-white/5 rounded-lg p-4 border border-white/10">
+                  <h4 className="text-sm font-bold text-white mb-2">Problem-Typ-Verteilung</h4>
+                  <div className="grid grid-cols-3 gap-2 text-center">
+                    {[
+                      { label: 'Kommunikation', count: '~30%', color: 'text-yellow-400' },
+                      { label: 'Beweis', count: '~45%', color: 'text-red-400' },
+                      { label: 'Modell/Operation', count: '~25%', color: 'text-orange-400' },
+                    ].map((t, i) => (
+                      <div key={i} className="bg-white/5 rounded p-2">
+                        <p className={`text-lg font-bold ${t.color}`}>{t.count}</p>
+                        <p className="text-[10px] text-white/40">{t.label}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </section>
+        </Reveal>
+
+        {/* ═══════════════════════════════════════════════════════ */}
+        {/* BLOCK 18: MASTER ACTION LIST                          */}
+        {/* ═══════════════════════════════════════════════════════ */}
+        <Reveal>
+          <section id="master-actions">
+            <Card className="bg-white/[0.03] border-white/10">
+              <CardHeader>
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 text-[10px]">BLOCK 18</Badge>
+                  <SourceBadge source="ANALYSE 4" />
+                </div>
+                <CardTitle className="text-xl text-white flex items-center gap-2">
+                  <Target className="w-5 h-5 text-teal-400" />
+                  Master Action List — Priorisierte Massnahmen
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                {[
+                  { title: '5 echte Jobs mit Vollkostenrechnung', kategorie: 'Proof / Data', dringlichkeit: 'kritisch', hebel: 'hoch', schwierigkeit: 'mittel', betrifft: 'Feierabend', typ: 'Beweisproblem', output: 'CM2-Nachweis pro Auftragstyp', erfolg: 'CM2 > 25% auf mind. 5 Jobs' },
+                  { title: 'GSC-Daten exportieren & aufbereiten', kategorie: 'SEO / Akquise', dringlichkeit: 'kritisch', hebel: 'hoch', schwierigkeit: 'niedrig', betrifft: 'Umzugscheck', typ: 'Beweisproblem', output: '90-Tage-Traffic-Report', erfolg: 'Kommerzielle Queries sichtbar' },
+                  { title: 'Routing-Governance definieren', kategorie: 'Legal / Struktur', dringlichkeit: 'kritisch', hebel: 'hoch', schwierigkeit: 'mittel', betrifft: 'Beide', typ: 'Strukturproblem', output: 'Schriftliche Routing-Policy', erfolg: 'Partner können Regeln einsehen' },
+                  { title: 'Partner-LOIs einholen (3–5)', kategorie: 'Markt', dringlichkeit: 'hoch', hebel: 'hoch', schwierigkeit: 'mittel', betrifft: 'Umzugscheck', typ: 'Beweisproblem', output: 'LOIs / Zahlungsbereitschafts-Feedback', erfolg: 'Mind. 3 Partner mit Preis-Reaktion' },
+                  { title: 'Pitch auf 250–300 CHF Kern reduzieren', kategorie: 'Pitch / Investor', dringlichkeit: 'hoch', hebel: 'hoch', schwierigkeit: 'niedrig', betrifft: 'Beide', typ: 'Kommunikationsproblem', output: 'Überarbeitetes Pitchdeck', erfolg: 'Kein Claim ohne Quelle' },
+                  { title: 'Fokus-Cut: 2 Marken, 1–2 Streams', kategorie: 'Positionierung', dringlichkeit: 'hoch', hebel: 'hoch', schwierigkeit: 'niedrig', betrifft: 'Beide', typ: 'Strategieproblem', output: 'Markenstrategie-Dokument', erfolg: 'Zusatzmarken geparkt/redirected' },
+                  { title: '500 CHF Paid-Channel-Test', kategorie: 'Conversion', dringlichkeit: 'hoch', hebel: 'mittel', schwierigkeit: 'niedrig', betrifft: 'Umzugscheck', typ: 'Beweisproblem', output: 'CPL-Benchmark', erfolg: 'CPL < 50 CHF' },
+                  { title: 'Team-/Advisor-Plan erstellen', kategorie: 'Operations', dringlichkeit: 'hoch', hebel: 'mittel', schwierigkeit: 'mittel', betrifft: 'Beide', typ: 'Operationsproblem', output: 'Organigramm + Hiring-Plan', erfolg: '2. Schlüsselperson identifiziert' },
+                  { title: 'End-to-End Funnel-Tracking', kategorie: 'Conversion', dringlichkeit: 'hoch', hebel: 'hoch', schwierigkeit: 'mittel', betrifft: 'Umzugscheck', typ: 'Beweisproblem', output: 'CRM mit Lead-Status bis Zahlung', erfolg: 'Conversion-Rate messbar' },
+                  { title: 'Automatisierungsclaim mit Prozessliste', kategorie: 'Proof / Data', dringlichkeit: 'mittel', hebel: 'mittel', schwierigkeit: 'niedrig', betrifft: 'Beide', typ: 'Kommunikationsproblem', output: 'Prozesslandkarte alt vs. neu', erfolg: 'Zeitersparnis in Stunden beziffert' },
+                  { title: 'Wettbewerber-Analyse (Movu, Compero)', kategorie: 'Markt', dringlichkeit: 'mittel', hebel: 'mittel', schwierigkeit: 'niedrig', betrifft: 'Umzugscheck', typ: 'Beweisproblem', output: 'Feature-/Preis-/Traffic-Vergleich', erfolg: 'Differenzierung klar dokumentiert' },
+                  { title: 'Proof Memo erstellen (1–2 Seiten)', kategorie: 'Pitch / Investor', dringlichkeit: 'mittel', hebel: 'hoch', schwierigkeit: 'mittel', betrifft: 'Beide', typ: 'Kommunikationsproblem', output: 'Investor-ready Proof Memo', erfolg: 'Alle Claims mit Quellen' },
+                ].map((action, i) => (
+                  <Collapsible key={i} title={`${action.title}`} icon={action.dringlichkeit === 'kritisch' ? AlertTriangle : action.dringlichkeit === 'hoch' ? AlertCircle : Lightbulb}>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+                      <div><span className="text-white/30">Kategorie:</span> <span className="text-white/70">{action.kategorie}</span></div>
+                      <div><span className="text-white/30">Betrifft:</span> <span className="text-white/70">{action.betrifft}</span></div>
+                      <div><span className="text-white/30">Dringlichkeit:</span> <span className={action.dringlichkeit === 'kritisch' ? 'text-red-400' : action.dringlichkeit === 'hoch' ? 'text-orange-400' : 'text-yellow-400'}>{action.dringlichkeit}</span></div>
+                      <div><span className="text-white/30">Hebel:</span> <span className="text-teal-400">{action.hebel}</span></div>
+                      <div><span className="text-white/30">Schwierigkeit:</span> <span className="text-white/70">{action.schwierigkeit}</span></div>
+                      <div><span className="text-white/30">Problem-Typ:</span> <span className="text-white/70">{action.typ}</span></div>
+                      <div className="col-span-2"><span className="text-white/30">Output:</span> <span className="text-white/70">{action.output}</span></div>
+                    </div>
+                    <p className="text-xs text-teal-400 mt-2">✓ Erfolg: {action.erfolg}</p>
+                  </Collapsible>
+                ))}
+              </CardContent>
+            </Card>
+          </section>
+        </Reveal>
+
+        {/* ═══════════════════════════════════════════════════════ */}
+        {/* BLOCK 19: PRIORITY MATRIX                             */}
+        {/* ═══════════════════════════════════════════════════════ */}
+        <Reveal>
+          <section id="priority-matrix">
+            <Card className="bg-white/[0.03] border-white/10">
+              <CardHeader>
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 text-[10px]">BLOCK 19</Badge>
+                  <SourceBadge source="ANALYSE 4" />
+                </div>
+                <CardTitle className="text-xl text-white flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5 text-yellow-400" />
+                  Priority Matrix — 4 Felder
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="bg-red-500/5 border border-red-500/20 rounded-lg p-4">
+                    <h4 className="text-sm font-black text-red-400 mb-3">A) SOFORT — Hoher Hebel, hohe Dringlichkeit</h4>
+                    {[
+                      { thema: 'Revenue-Proof (5 Jobs mit Vollkosten)', risiko: 'Ohne = keine Economics-Basis' },
+                      { thema: 'GSC-Daten exportieren', risiko: 'Ohne = Traffic-These leer' },
+                      { thema: 'Fokus-Cut (2 Marken)', risiko: 'Ohne = Verzettelung sichtbar' },
+                      { thema: 'Routing-Governance definieren', risiko: 'Ohne = Neutralitätskonflikt offen' },
+                    ].map((item, i) => (
+                      <div key={i} className="mb-2">
+                        <p className="text-xs text-white/70 font-medium">• {item.thema}</p>
+                        <p className="text-[10px] text-red-400/60 ml-3">{item.risiko}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="bg-orange-500/5 border border-orange-500/20 rounded-lg p-4">
+                    <h4 className="text-sm font-black text-orange-400 mb-3">B) BALD — Hoher Hebel, nicht sofort kritisch</h4>
+                    {[
+                      { thema: 'Partner-Validation (3–5 LOIs)', risiko: 'Ohne = Plattformmodell theoretisch' },
+                      { thema: 'Teamplan / 2. Schlüsselperson', risiko: 'Ohne = Solo-Founder-Risiko offen' },
+                      { thema: 'Paid-Channel-Test (500 CHF)', risiko: 'Ohne = kein CPL-Benchmark' },
+                      { thema: 'End-to-End Funnel-Tracking', risiko: 'Ohne = Conversion unmessbar' },
+                    ].map((item, i) => (
+                      <div key={i} className="mb-2">
+                        <p className="text-xs text-white/70 font-medium">• {item.thema}</p>
+                        <p className="text-[10px] text-orange-400/60 ml-3">{item.risiko}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="bg-yellow-500/5 border border-yellow-500/20 rounded-lg p-4">
+                    <h4 className="text-sm font-black text-yellow-400 mb-3">C) NACHGELAGERT — Sinnvoll, aber nicht entscheidend</h4>
+                    {[
+                      { thema: 'Internationalisierung', risiko: 'Ablenkung vom regionalen Proof' },
+                      { thema: 'Premium-Packages', risiko: 'Erst relevant nach Basis-Revenue' },
+                      { thema: 'Exit-Szenarien im Pitch', risiko: 'Zu früh ohne Traktion' },
+                      { thema: 'Wettbewerber-Deep-Dive', risiko: 'Gut, aber nicht blockernd' },
+                    ].map((item, i) => (
+                      <div key={i} className="mb-2">
+                        <p className="text-xs text-white/70 font-medium">• {item.thema}</p>
+                        <p className="text-[10px] text-yellow-400/60 ml-3">{item.risiko}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="bg-white/5 border border-white/20 rounded-lg p-4">
+                    <h4 className="text-sm font-black text-white/60 mb-3">D) NICHT DISKUTIEREN bis belegt</h4>
+                    {[
+                      { thema: '6+ Revenue Streams', risiko: 'Wirkt wie Wunschliste' },
+                      { thema: '92% Profitabilität / Automatisierung', risiko: 'Undefiniert und unglaubwürdig' },
+                      { thema: '"100% safe" Investment', risiko: 'Zerstört Investor-Vertrauen' },
+                      { thema: '"Zero CAC"', risiko: 'Widerspruch zur Investitionslogik' },
+                    ].map((item, i) => (
+                      <div key={i} className="mb-2">
+                        <p className="text-xs text-white/70 font-medium">• {item.thema}</p>
+                        <p className="text-[10px] text-white/30 ml-3">{item.risiko}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </section>
+        </Reveal>
+
+        {/* ═══════════════════════════════════════════════════════ */}
+        {/* BLOCK 20: INTERNAL WORKSTREAMS                        */}
+        {/* ═══════════════════════════════════════════════════════ */}
+        <Reveal>
+          <section id="workstreams">
+            <Card className="bg-white/[0.03] border-white/10">
+              <CardHeader>
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 text-[10px]">BLOCK 20</Badge>
+                  <SourceBadge source="ANALYSE 4" />
+                </div>
+                <CardTitle className="text-xl text-white flex items-center gap-2">
+                  <TrendingUp className="w-5 h-5 text-teal-400" />
+                  Internal Workstreams
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {[
+                  { nr: 1, title: 'Markt- und Modellklarheit', ziel: 'Eindeutige Positionierung für Runde 1', fragen: ['Portal oder Eigenvertrieb?', '2 oder 4 Marken?', 'Welcher Haupt-Revenue-Stream?'], deliverables: ['Positionierungspapier', 'Markenfokus-Entscheidung'], risiko: 'Investor Confusion' },
+                  { nr: 2, title: 'Proof / Kennzahlen / Nachweise', ziel: 'Belastbare Zahlen für jede Kernthese', fragen: ['Wie viele Jobs für valide CM2?', 'Welche GSC-Metriken relevant?', 'Was ist der echte blended CAC?'], deliverables: ['5–10 Job-Kalkulationen', 'GSC-Report', 'CPL-Test'], risiko: 'Kein Investment ohne Zahlen' },
+                  { nr: 3, title: 'Positionierung / Story / Pitch', ziel: 'Pitchdeck das nur Belegtes behauptet', fragen: ['Welche Claims streichen?', 'Wie Runde 1 framen?', 'Was ist die Hauptstory?'], deliverables: ['Überarbeitetes Deck', 'Proof Memo', 'Claim-Control-Liste'], risiko: 'Storyinflation = Vertrauensverlust' },
+                  { nr: 4, title: 'Operations / Delivery / Skalierbarkeit', ziel: 'Nachweisbare operative Kompetenz', fragen: ['Wochenkapazität?', 'Subunternehmer-Setup?', 'Reklamationsquote?'], deliverables: ['Operations-Matrix', 'Kapazitätsplan', 'SLA-Entwurf'], risiko: 'Delivery-Engpass bei Wachstum' },
+                  { nr: 5, title: 'Portal vs. Eigenausführung', ziel: 'Aufgelöster Governance-Konflikt', fragen: ['Routing-Regeln?', 'Partner-Transparenz?', 'Getrennte P&Ls?'], deliverables: ['Routing-Policy', 'Partner-Kommunikation', 'Getrenntes Reporting'], risiko: 'Cherry-Picking = Partner-KO' },
+                  { nr: 6, title: 'Investor Readiness / DD-Vorbereitung', ziel: 'Gesprächsbereiter Case', fragen: ['Was fehlt für DD?', 'Datenraum-Inhalt?', 'Welche Fragen kommen?'], deliverables: ['DD-Light-Mappe', 'FAQ-Vorbereitung', 'Finanzmodell'], risiko: 'Unvorbereitet = unprofessionell' },
+                ].map(ws => (
+                  <Collapsible key={ws.nr} title={`WS${ws.nr}: ${ws.title}`} icon={Target}>
+                    <div className="space-y-2">
+                      <p className="text-xs text-teal-400">Ziel: {ws.ziel}</p>
+                      <div>
+                        <p className="text-[10px] text-white/30 font-bold">OFFENE FRAGEN</p>
+                        {ws.fragen.map((f, i) => <p key={i} className="text-xs text-white/50">• {f}</p>)}
+                      </div>
+                      <div>
+                        <p className="text-[10px] text-white/30 font-bold">DELIVERABLES</p>
+                        {ws.deliverables.map((d, i) => <p key={i} className="text-xs text-white/60">• {d}</p>)}
+                      </div>
+                      <p className="text-xs text-red-400/60">Risiko wenn nicht gemacht: {ws.risiko}</p>
+                    </div>
+                  </Collapsible>
+                ))}
+              </CardContent>
+            </Card>
+          </section>
+        </Reveal>
+
+        {/* ═══════════════════════════════════════════════════════ */}
+        {/* BLOCK 21: WHAT TO PROVE FIRST                         */}
+        {/* ═══════════════════════════════════════════════════════ */}
+        <Reveal>
+          <section id="prove-first">
+            <Card className="bg-white/[0.03] border-white/10">
+              <CardHeader>
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 text-[10px]">BLOCK 21</Badge>
+                  <SourceBadge source="ANALYSE 4" />
+                </div>
+                <CardTitle className="text-xl text-white flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-teal-400" />
+                  What To Prove First
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-2 gap-4">
+                  {[
+                    { label: '5 Dinge BEWEISEN', color: 'teal', items: [
+                      'Dass der Funnel echte Leads produziert (nicht nur Impressions)',
+                      'Dass ein Job profitabel ist (CM2 > 25%)',
+                      'Dass Partner bereit sind, für Leads zu zahlen',
+                      'Dass Feierabend Qualität bei Volumen halten kann',
+                      'Dass 2 Marken sich gegenseitig verstärken (nicht kannibalisieren)',
+                    ]},
+                    { label: '5 Dinge MESSEN', color: 'orange', items: [
+                      'CPL organisch vs. paid',
+                      'Conversion-Rate pro Funnel-Step',
+                      'Vollkosten pro Auftragstyp',
+                      'Time-to-Quote und Time-to-Completion',
+                      'Kundenweiterempfehlungsrate',
+                    ]},
+                    { label: '5 Dinge KLARER FORMULIEREN', color: 'yellow', items: [
+                      'Was Umzugscheck in Runde 1 ist (1 Satz)',
+                      'Was der Haupt-Revenue-Stream ist',
+                      'Was "KI-gestützt" konkret bedeutet',
+                      'Warum Eigenausführung ein Vorteil ist',
+                      'Was Runde 1 beweist (Proof-Gates)',
+                    ]},
+                    { label: '5 Dinge TESTEN', color: 'blue', items: [
+                      '500 CHF Google Ads → CPL-Benchmark',
+                      '3 verschiedene Landing-Page-Varianten',
+                      'WhatsApp-Bot vs. Formular Conversion',
+                      'Premium-Preis vs. Markt-Preis Akzeptanz',
+                      'Partner-Reaktion auf offene Hybridlogik',
+                    ]},
+                  ].map((block, bi) => (
+                    <div key={bi} className={`bg-${block.color}-500/5 border border-${block.color}-500/10 rounded-lg p-4`}>
+                      <h4 className={`text-sm font-bold text-${block.color}-400 mb-2`}>{block.label}</h4>
+                      {block.items.map((item, i) => (
+                        <p key={i} className="text-xs text-white/60 py-0.5">• {item}</p>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+                <div className="bg-red-500/5 border border-red-500/10 rounded-lg p-4 mt-4">
+                  <h4 className="text-sm font-bold text-red-400 mb-2">3 Dinge NICHT MEHR NUR ERZÄHLEN, SONDERN BELEGEN</h4>
+                  {[
+                    { claim: '"Wir haben einen funktionierenden Funnel"', beweis: '→ Zeige Conversion-Daten' },
+                    { claim: '"Die Margen sind attraktiv"', beweis: '→ Zeige 5 echte Job-Kalkulationen' },
+                    { claim: '"Partner wollen mit uns arbeiten"', beweis: '→ Zeige LOIs oder Zahlungen' },
+                  ].map((c, i) => (
+                    <div key={i} className="mb-2">
+                      <p className="text-xs text-white/60">{c.claim}</p>
+                      <p className="text-xs text-teal-400">{c.beweis}</p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </section>
+        </Reveal>
+
+        {/* ═══════════════════════════════════════════════════════ */}
+        {/* BLOCK 22: RED FLAGS IN INVESTOR MEETINGS               */}
+        {/* ═══════════════════════════════════════════════════════ */}
+        <Reveal>
+          <section id="red-flags">
+            <Card className="bg-white/[0.03] border-white/10">
+              <CardHeader>
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 text-[10px]">BLOCK 22</Badge>
+                  <SourceBadge source="ANALYSE 4" />
+                </div>
+                <CardTitle className="text-xl text-white flex items-center gap-2">
+                  <AlertTriangle className="w-5 h-5 text-red-400" />
+                  Red Flags in Investor Meetings
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {[
+                  { punkt: 'Neutralitätskonflikt', frage: '"Wie stellen Sie sicher, dass Ihr Portal fair vermittelt, wenn Sie die besten Leads selbst bedienen?"', gefahr: 'Investor sieht strukturellen Interessenkonflikt', vorbereitung: 'Routing-Policy schriftlich haben, Prozentsätze nennen', nicht_sagen: '"Wir sind trotzdem neutral" — ohne Governance.' },
+                  { punkt: 'Revenue-Nachweis', frage: '"Zeigen Sie mir einen einzigen Portal-Auftrag von Anfang bis Zahlung."', gefahr: 'Wenn keiner existiert, ist der Case theoretisch', vorbereitung: 'Mind. 3 dokumentierte Fälle vor dem Meeting', nicht_sagen: '"Wir sind kurz davor" — ohne Beweis.' },
+                  { punkt: 'Solo-Founder-Risiko', frage: '"Was passiert, wenn Sie ausfallen?"', gefahr: 'Key-Person-Dependency = Deal-Breaker', vorbereitung: 'Teamplan + Advisor/Co-Founder-Pipeline', nicht_sagen: '"Ich mache alles selbst, das reicht" — das reicht nie.' },
+                  { punkt: 'Unit Economics', frage: '"Wie berechnen Sie die 40-45% DB-Marge? Sind Gründergehalt, Fahrzeug, Versicherung, Nacharbeit drin?"', gefahr: 'Wenn die Antwort "nein" ist, bricht die Economics-These zusammen', vorbereitung: 'Vollkostenrechnung mit allen Positionen', nicht_sagen: 'Jede Marge ohne Vollkosten-Basis.' },
+                  { punkt: 'CAC-Claim', frage: '"Sie sagen Zero CAC — aber wer bezahlt die Website, das SEO, Ihre Zeit?"', gefahr: 'Wirkt naiv oder unehrlich', vorbereitung: 'Blended CAC ehrlich berechnen und zeigen', nicht_sagen: '"Zero" — weil es nie Null ist.' },
+                  { punkt: 'Skalierbarkeit der Delivery', frage: '"Was passiert bei 50 Aufträgen pro Monat? Bei 200?"', gefahr: 'Keine Antwort = kein Plan', vorbereitung: 'Kapazitätsplanung mit Engpass-Szenarien', nicht_sagen: '"Wir skalieren einfach mit Subunternehmern" — ohne Details.' },
+                ].map((rf, i) => (
+                  <div key={i} className="bg-white/5 rounded-lg p-4 border border-white/10 space-y-2">
+                    <h4 className="text-sm font-bold text-red-400">{i + 1}. {rf.punkt}</h4>
+                    <p className="text-xs text-white/50 italic">Harte Rückfrage: {rf.frage}</p>
+                    <p className="text-xs text-orange-400/70">⚠ Gefahr: {rf.gefahr}</p>
+                    <p className="text-xs text-teal-400">✓ Vorbereitung: {rf.vorbereitung}</p>
+                    <p className="text-xs text-red-400/50">✗ Nicht sagen: {rf.nicht_sagen}</p>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </section>
+        </Reveal>
+
+
         <Reveal>
           <div className="text-center py-8 space-y-2">
             <p className="text-xs text-white/30">
