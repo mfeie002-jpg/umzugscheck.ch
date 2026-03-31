@@ -144,6 +144,7 @@ const TOC_ITEMS = [
   { id: 'gemini-blueprint', label: '25. Gemini Blueprint', block: '25' },
   { id: 'ultimate-blueprint', label: '26. Ultimate Blueprint', block: '26' },
   { id: 'external-blueprint', label: '27. External Blueprint', block: '27' },
+  { id: 'final-strategy', label: '28. Final Strategy Blueprint', block: '28' },
 ];
 
 // ─── TOC Sidebar ───
