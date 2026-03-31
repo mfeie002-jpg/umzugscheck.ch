@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useSwipeNavigation } from '@/hooks/use-swipe-navigation';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
+import { shouldSuppressSwipeOverlay } from '@/lib/mobile-overlay-policy';
 
 interface SwipeNavigationWrapperProps {
   children: ReactNode;
@@ -33,9 +34,8 @@ export const SwipeNavigationWrapper = ({ children }: SwipeNavigationWrapperProps
     prevPage 
   } = useSwipeNavigation();
 
-  // Wenn nicht mobile oder auf deaktivierten Routen: Children normal rendern ohne Wrapper
-  const disabledRoutes = ['/flow-tester', '/capture', '/admin'];
-  const isDisabled = !isMobile || disabledRoutes.some(route => location.pathname.startsWith(route));
+  // Suppress all overlays on critical funnel/hero routes
+  const isDisabled = !isMobile || shouldSuppressSwipeOverlay(location.pathname);
   
   if (isDisabled) {
     return <>{children}</>;
