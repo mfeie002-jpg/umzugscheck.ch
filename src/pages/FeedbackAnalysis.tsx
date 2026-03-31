@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AIExecutionMasterplan from '@/components/feedback/AIExecutionMasterplan';
 import GeminiBlueprint from '@/components/feedback/GeminiBlueprint';
+import UltimateBlueprint from '@/components/feedback/UltimateBlueprint';
 
 // ─── Status Badge Component ───
 const StatusBadge = ({ status }: { status: string }) => {
@@ -39,6 +40,7 @@ const SourceBadge = ({ source }: { source: string }) => {
     'FINAL VERDICT': 'bg-emerald-500/10 text-emerald-400',
     'MASTERPLAN': 'bg-cyan-500/10 text-cyan-400',
     'GEMINI': 'bg-violet-500/10 text-violet-400',
+    'ULTIMATE': 'bg-rose-500/10 text-rose-400',
   };
   return (
     <span className={`inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium rounded ${styles[source] || 'bg-gray-500/10 text-gray-400'}`}>
@@ -1892,11 +1894,26 @@ const FeedbackAnalysis = () => {
         {/* ═══ BLOCK 25: GEMINI BLUEPRINT ═══ */}
         <GeminiBlueprint />
 
+        {/* ═══ BLOCK 26: ULTIMATE BLUEPRINT ═══ */}
+        <Reveal>
+          <section className="space-y-4">
+            <div className="flex items-center gap-3">
+              <FileText className="w-7 h-7 text-rose-400" />
+              <h2 className="text-2xl font-black text-white">Block 26: Investor Readiness Blueprint — Ultimate Edition</h2>
+              <SourceBadge source="ULTIMATE" />
+            </div>
+            <p className="text-sm text-white/60">
+              Konsolidierung aller 5 Analyse-Runden + Gemini-Audit in ein einziges, operativ nutzbares Strategie- und Investor-Readiness-Dokument. 14 Sektionen. Nicht nur Diagnose — sondern Blueprint.
+            </p>
+            <UltimateBlueprint />
+          </section>
+        </Reveal>
+
         {/* ═══ FOOTER ═══ */}
         <Reveal>
           <div className="text-center py-8 space-y-2">
             <p className="text-xs text-white/30">
-              Konsolidiert aus 4 Analyse-Runden + Final Verdict + Masterplan + Gemini Blueprint · Stand: März 2026 · Internes Red-Team-Dokument
+              Konsolidiert aus 5 Analyse-Runden + Final Verdict + Masterplan + Gemini Blueprint + Ultimate Blueprint · Stand: März 2026 · Internes Red-Team-Dokument
             </p>
             <div className="flex justify-center gap-2 flex-wrap">
               <SourceBadge source="ANALYSE 1" />
@@ -1907,6 +1924,7 @@ const FeedbackAnalysis = () => {
               <SourceBadge source="FINAL VERDICT" />
               <SourceBadge source="MASTERPLAN" />
               <SourceBadge source="GEMINI" />
+              <SourceBadge source="ULTIMATE" />
             </div>
           </div>
         </Reveal>
