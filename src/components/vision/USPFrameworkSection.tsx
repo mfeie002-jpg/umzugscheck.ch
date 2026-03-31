@@ -1,19 +1,19 @@
 /**
  * USPFrameworkSection — 50-Point USP Framework
  * 3-Tier visual hierarchy: Whoa (10) → Core (20) → Foundation (20)
- * Bento-grid layout with decreasing visual weight per tier
+ * All USPs are Umzugscheck/Feierabend-specific
  */
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Brain, Glasses, Zap, Video, Activity, Vibrate, Mic, MonitorPlay, ShieldAlert, Smartphone,
-  Bell, Trophy, Puzzle, Heart, TrendingUp, Users, Hourglass, Radar, Layout, MessageSquare,
-  Moon, Footprints, Globe, Maximize, Crown, Code2, MousePointerClick, Lock, Headphones, RefreshCw,
-  Receipt, Server, KeyRound, DatabaseBackup, Monitor, ShieldCheck, Shield, WifiOff, Download, Webhook,
-  X, Search, BookOpen, FlaskConical, UserCheck, Undo2, Paintbrush, MapPin, KeySquare, Newspaper,
-  ChevronDown, ChevronUp, Sparkles, Layers, Settings2
+  Brain, ScanLine, Zap, DollarSign, Cog, Video, Scale, FileSignature, ShieldAlert, Smartphone,
+  MessageSquare, Cherry, GitBranch, Newspaper, MapPin, ShoppingCart, Clock, BarChart3, Truck, Sparkles,
+  Phone, Target, Users, Globe, Search, Calculator, Star, Award, Layers3, HeartHandshake,
+  Shield, Lock, Receipt, Server, Monitor, CheckCircle, Home, Paintbrush, Key, FileCheck,
+  BookOpen, Leaf, Headphones, RefreshCw, Wifi, Database, Eye, Handshake, Building2, Settings2,
+  ChevronDown, ChevronUp, Layers, ShieldCheck
 } from "lucide-react";
 
 interface USP {
@@ -25,62 +25,62 @@ interface USP {
 }
 
 const TIER1_USPS: USP[] = [
-  { id: 1, title: "Hyper-Adaptive KI-Schnittstelle", description: "UI ordnet Layout, Navigation und Tonfall dynamisch an, basierend auf Echtzeitverhalten und historischen Workflows.", trigger: "Arousal & Empathie", icon: <Brain className="w-6 h-6" /> },
-  { id: 2, title: "AR Spatial Workspaces", description: "Verschmilzt physische und virtuelle Umgebungen — Teams projizieren 3D-Datenvisualisierungen in ihren Büroraum.", trigger: "Neuheit & Immersion", icon: <Glasses className="w-6 h-6" /> },
-  { id: 3, title: "Prädiktive Autonome Workflows", description: "KI führt mehrstufige Aufgaben autonom aus, indem sie die Absicht basierend auf globalen Marktdaten vorhersagt.", trigger: "Zeitersparnis & Bequemlichkeit", icon: <Zap className="w-6 h-6" /> },
-  { id: 4, title: "Generative Video-Repurposing-Engine", description: "Schneidet lange Inhalte automatisch in plattformspezifische Kurzvideos (TikTok, Reels, Shorts).", trigger: "Sofortige Wertrealisierung", icon: <Video className="w-6 h-6" /> },
-  { id: 5, title: "Neurologische Sentiment-Analyse", description: "Deckt verborgene emotionale Treiber im Kundenfeedback auf und liefert Echtzeit-UX-Feedback.", trigger: "Autorität & Präzision", icon: <Activity className="w-6 h-6" /> },
-  { id: 6, title: "Zero-Latency Haptic Collaboration", description: "Integriert taktiles Feedback in mobile Apps — Benutzer \"fühlen\" erfolgreiche Datenübertragungen physisch.", trigger: "Sensorisches Engagement", icon: <Vibrate className="w-6 h-6" /> },
-  { id: 7, title: "Sprachgesteuerte Datenabfrage", description: "Benutzer sprechen Anfragen in natürlicher Sprache → System generiert sofort komplexe visuelle Berichte.", trigger: "Einfachheit & Effizienz", icon: <Mic className="w-6 h-6" /> },
-  { id: 8, title: "Immersive Video-in-UI-Overlays", description: "Durchscheinende Video-Overlays und kaufbare Videostreams direkt im Kern-Workflow.", trigger: "Nahtlose Integration", icon: <MonitorPlay className="w-6 h-6" /> },
-  { id: 9, title: "Automatisierte Fixkosten-Eliminierung", description: "KI-gesteuertes Audit-Tool identifiziert und eliminiert Überzahlungen proaktiv in allen Kategorien.", trigger: "Verlustaversion", icon: <ShieldAlert className="w-6 h-6" /> },
-  { id: 10, title: "NFC Cloud Bridge", description: "Verbindet physische Hardware direkt mit der Cloud-SaaS — sofortiges Onboarding ohne App-Installation.", trigger: "Reibungslose Reziprozität", icon: <Smartphone className="w-6 h-6" /> },
+  { id: 1, title: "Hyper-Adaptive KI-Schnittstelle", description: "Die UI ordnet Layout und Navigation dynamisch nach dem Echtzeitverhalten des Nutzers an — personalisiert für jeden Umzugskunden.", trigger: "Arousal & Faszination", icon: <Brain className="w-6 h-6" /> },
+  { id: 2, title: "LIDAR AI View Scan", description: "Erstellt via Smartphone-Video einen «Digital Twin» des Haushalts zur exakten Volumenberechnung. Keine Hausbesuche mehr nötig.", trigger: "Immersion & Technologie-Magie", icon: <ScanLine className="w-6 h-6" /> },
+  { id: 3, title: "Smart Escrow (Treuhand)", description: "Sichere Zahlung via Stripe-Treuhand. Auszahlung an Firmen erst nach erfolgreicher Übergabe. Das «Stripe für Umzüge».", trigger: "Sicherheit & Vertrauen", icon: <ShieldAlert className="w-6 h-6" /> },
+  { id: 4, title: "Dynamic Pricing Engine", description: "Berechnet Festpreise basierend auf Distanz, Volumen, Saison und Echtzeit-Verfügbarkeit. Keine versteckten Kosten.", trigger: "Transparenz & Erleichterung", icon: <DollarSign className="w-6 h-6" /> },
+  { id: 5, title: "Prädiktive Auto-Workflows", description: "Die KI führt operative Aufgaben autonom aus: Gemeinde-Ummeldung, Strom-Abmeldung, Nachsendeauftrag. Der «Bürokratie-Butler».", trigger: "Zeitersparnis & Bequemlichkeit", icon: <Zap className="w-6 h-6" /> },
+  { id: 6, title: "Zero-UI Experience", description: "Kein langes Ausfüllen von Formularen. Video hochladen → KI analysiert → Preis erhalten. Radikale Reduktion kognitiver Last.", trigger: "Simplicity & Effizienz", icon: <Video className="w-6 h-6" /> },
+  { id: 7, title: "Quality-Weighted Bidding", description: "Algorithmus wählt Top-Firmen basierend auf Preis UND geprüfter Qualität aus. Senkt das Risiko schlechter Dienstleister drastisch.", trigger: "Vertrauen & Qualitätssicherung", icon: <Scale className="w-6 h-6" /> },
+  { id: 8, title: "Swiss Handover Protocol", description: "Digitales Übergabeprotokoll nach OR Art. 14 mit rechtsgültiger Signatur. Fotos pro Raum, Checkliste, Kautionsschutz.", trigger: "Rechtssicherheit & Compliance", icon: <FileSignature className="w-6 h-6" /> },
+  { id: 9, title: "Fixkosten-Eliminierung", description: "Automatisiertes Audit bei jedem Umzug: Telco-, Versicherungs- und Energieverträge werden optimiert. Direkter finanzieller Vorteil.", trigger: "Verlustaversion & Profit", icon: <Cog className="w-6 h-6" /> },
+  { id: 10, title: "NFC Cloud Bridge", description: "Physische Schlüsselkarten oder Mailings verbinden sich direkt mit dem Onboarding-Portal. Verbindung von physischer Welt und Cloud.", trigger: "Neuheit & Reibungslosigkeit", icon: <Smartphone className="w-6 h-6" /> },
 ];
 
 const TIER2_USPS: USP[] = [
-  { id: 11, title: "Smart Reminder Ecosystem", description: "Kontextbezogenes Benachrichtigungssystem, das zum optimalen Moment anstupst.", trigger: "Mikro-Engagement", icon: <Bell className="w-5 h-5" /> },
-  { id: 12, title: "Gamifizierte Loyalitätsmeilensteine", description: "Automatische Belohnungen bei Workflow-Zielerreichung.", trigger: "Besitztumseffekt", icon: <Trophy className="w-5 h-5" /> },
-  { id: 13, title: "Universelle Konnektoren", description: "4.000+ native Integrationen über visuellen If/Then-Builder.", trigger: "Interoperabilität", icon: <Puzzle className="w-5 h-5" /> },
-  { id: 14, title: "Mental Health Dashboard", description: "Anonymisiertes Team-Wohlbefinden-Tracking mit Burnout-Warnsystem.", trigger: "Empathie", icon: <Heart className="w-5 h-5" /> },
-  { id: 15, title: "Real-Time Revenue Attribution", description: "LTV, CAC, ARR korreliert mit spezifischen Software-Aktionen.", trigger: "Ergebnis-Rechtfertigung", icon: <TrendingUp className="w-5 h-5" /> },
-  { id: 16, title: "Dynamische Social-Proof-Engine", description: "Echtzeit-Nutzungsdaten und Peer-Reviews direkt in Entscheidungsmodulen.", trigger: "Peer-Einfluss", icon: <Users className="w-5 h-5" /> },
-  { id: 17, title: "Smart Scarcity Allokator", description: "Personalisierte Ressourcenlimits statt generischer Warnungen.", trigger: "Dringlichkeit", icon: <Hourglass className="w-5 h-5" /> },
-  { id: 18, title: "Proaktives Visibility-Tracking", description: "KI-gesteuerte Echtzeit-Verfolgung ohne externe Tracking-IDs.", trigger: "Angstreduzierung", icon: <Radar className="w-5 h-5" /> },
-  { id: 19, title: "Visueller Custom Type Builder", description: "Drag-and-Drop Architekturschnittstelle für dynamische Layouts.", trigger: "Kreative Ermächtigung", icon: <Layout className="w-5 h-5" /> },
-  { id: 20, title: "Voice of the Customer Synthesizer", description: "Aggregiert Feedback und priorisiert die Produkt-Roadmap automatisch.", trigger: "Reziprozität", icon: <MessageSquare className="w-5 h-5" /> },
-  { id: 21, title: "Dark Mode & Ästhetische Fluidität", description: "Kontrastreiche, barrierefreie UI-Themen per Sofort-Toggle.", trigger: "Personalisierung", icon: <Moon className="w-5 h-5" /> },
-  { id: 22, title: "Interaktive Workflow-Walkthroughs", description: "Geführte In-App-Produkttouren statt statischer Dokumentation.", trigger: "Time-to-Value", icon: <Footprints className="w-5 h-5" /> },
-  { id: 23, title: "Auto Multi-Language Lokalisierung", description: "Sofortige kulturelle Adaptation für globale Bereitstellung.", trigger: "Globale Kompetenz", icon: <Globe className="w-5 h-5" /> },
-  { id: 24, title: "Infinite Canvas Architekturen", description: "Endloser, zoombarer Raum für Brainstorming und Projektmanagement.", trigger: "Eskapismus", icon: <Maximize className="w-5 h-5" /> },
-  { id: 25, title: "Dedizierte Account-Identifikatoren", description: "Massgeschneiderte Dashboards für Enterprise-Kunden.", trigger: "Status & Autorität", icon: <Crown className="w-5 h-5" /> },
-  { id: 26, title: "Reibungslose No-Code Umgebung", description: "Visuelle, blockbasierte Programmierung für Nicht-Techniker.", trigger: "Demokratisierung", icon: <Code2 className="w-5 h-5" /> },
-  { id: 27, title: "Echtzeit-Kollaborations-Sync", description: "Dutzende Benutzer gleichzeitig ohne Verzögerung oder Konflikte.", trigger: "Gemeinschaft", icon: <MousePointerClick className="w-5 h-5" /> },
-  { id: 28, title: "Ethische KI & Datenschutz-Leitplanken", description: "Privacy-by-Design mit integrierten Nachhaltigkeitskennzahlen.", trigger: "Authentizität", icon: <Lock className="w-5 h-5" /> },
-  { id: 29, title: "Automatisierter kontextbezogener Support", description: "KI-Chatbot analysiert aktuellen Bildschirm für proaktive Lösungen.", trigger: "Frustrationseliminierung", icon: <Headphones className="w-5 h-5" /> },
-  { id: 30, title: "Continuous Deployment CI/CD", description: "Nahtlose Updates ohne Ausfallzeiten unter der Haube.", trigger: "Zuverlässigkeit", icon: <RefreshCw className="w-5 h-5" /> },
+  { id: 11, title: "WhatsApp Commerce", description: "Komplette Offerten-Anfrage, Preisauskunft und Buchung direkt über WhatsApp — ohne App-Download.", trigger: "Niedrigschwelliger Zugang", icon: <MessageSquare className="w-5 h-5" /> },
+  { id: 12, title: "Cherry & Chaff Sorting", description: "Leads werden automatisch in «Kirschen» (Feierabend-tauglich) und «Spreu» (Marktplatz-Weiterleitung) sortiert.", trigger: "Effizienz-Maximierung", icon: <Cherry className="w-5 h-5" /> },
+  { id: 13, title: "Multi-Brand Routing", description: "Intelligente Lead-Verteilung zwischen Umzugscheck-Partnern und Feierabend Services je nach Kapazität und Marge.", trigger: "Operative Intelligenz", icon: <GitBranch className="w-5 h-5" /> },
+  { id: 14, title: "KI-Content-Pipeline", description: "Automatische Generierung von SEO-optimierten Ratgebern, Checklisten und Stadtseiten für 2'110 Schweizer Gemeinden.", trigger: "Skalierbare Reichweite", icon: <Newspaper className="w-5 h-5" /> },
+  { id: 15, title: "2'110 Gemeinden SEO", description: "Jede Schweizer Gemeinde hat eine eigene, lokal optimierte Landingpage mit Preisen, Firmen und Regulationen.", trigger: "Lokale Dominanz", icon: <MapPin className="w-5 h-5" /> },
+  { id: 16, title: "Modularer Warenkorb", description: "Cross-Selling von Reinigung, Entsorgung, Lager, Packservice — durchschnittlicher Warenkorb CHF 553 statt CHF 180.", trigger: "Revenue-Maximierung", icon: <ShoppingCart className="w-5 h-5" /> },
+  { id: 17, title: "Echtzeit-Verfügbarkeit", description: "Firmen-Kalender synchronisiert — Kunden sehen sofort freie Slots und können direkt buchen.", trigger: "Sofortige Gratifikation", icon: <Clock className="w-5 h-5" /> },
+  { id: 18, title: "10 Revenue Streams", description: "CPL, CPC, Subscriptions, Escrow-Fees, Affiliate, Ads, Premium-Listings, Data, White-Label, Consulting.", trigger: "Diversifizierte Monetarisierung", icon: <BarChart3 className="w-5 h-5" /> },
+  { id: 19, title: "Feierabend A-Z Service", description: "Ein Anbieter für alles: Umzug + Räumung + Reinigung + Entsorgung. Kein Koordinations-Chaos.", trigger: "Convenience & Vertrauen", icon: <Truck className="w-5 h-5" /> },
+  { id: 20, title: "KI-Preisrechner Suite", description: "5 spezialisierte Rechner: Umzug, Reinigung, Entsorgung, Lager, Packservice — alle mit Sofort-Ergebnis.", trigger: "Transparenz & Self-Service", icon: <Calculator className="w-5 h-5" /> },
+  { id: 21, title: "Smart Reminder System", description: "Automatische Erinnerungen für Ummeldung, Kündigungsfristen, Zählerstand-Ablesung — zeitlich perfekt getaktet.", trigger: "Proaktive Fürsorge", icon: <Phone className="w-5 h-5" /> },
+  { id: 22, title: "Provider Quality Score", description: "Algorithmus berechnet Qualitätsscore aus Bewertungen, Response-Zeit, Reklamationsquote und Abschlussrate.", trigger: "Datengestützte Sicherheit", icon: <Target className="w-5 h-5" /> },
+  { id: 23, title: "Community Trust Engine", description: "Verifizierte Bewertungen mit Umzugsnachweis — keine Fake-Reviews, echte Erfahrungsberichte.", trigger: "Social Proof", icon: <Users className="w-5 h-5" /> },
+  { id: 24, title: "Auto Multi-Language", description: "Portal automatisch in DE, FR, IT, EN — die 4 Schweizer Sprachen plus internationaler Zugang.", trigger: "Globale Kompetenz", icon: <Globe className="w-5 h-5" /> },
+  { id: 25, title: "Firmen-Comparison Matrix", description: "Side-by-Side Vergleich von bis zu 5 Firmen: Preis, Bewertung, Services, Verfügbarkeit.", trigger: "Entscheidungshilfe", icon: <Layers3 className="w-5 h-5" /> },
+  { id: 26, title: "Sponsored Bidding System", description: "Firmen bieten auf Premium-Platzierungen — transparentes Auktionssystem mit Qualitäts-Minimum.", trigger: "Faire Monetarisierung", icon: <Star className="w-5 h-5" /> },
+  { id: 27, title: "60-Flow Testing Matrix", description: "Jeder Funnel wird in 60 Varianten getestet — A/B/C Testing auf Steroiden für maximale Conversion.", trigger: "Wissenschaftliche Optimierung", icon: <Sparkles className="w-5 h-5" /> },
+  { id: 28, title: "Affiliate Partner Network", description: "Immobilien-Portale, Versicherungen und Gemeinden als Zulieferer — Zero-CAC durch organische Partnerschaften.", trigger: "Netzwerk-Effekte", icon: <HeartHandshake className="w-5 h-5" /> },
+  { id: 29, title: "Proaktiver KI-Support", description: "Chatbot analysiert aktuellen Kontext und beantwortet Fragen bevor sie gestellt werden.", trigger: "Frustrations-Eliminierung", icon: <Headphones className="w-5 h-5" /> },
+  { id: 30, title: "Award-Ready Case Study", description: "Das Projekt selbst als weltweiter PR-Hook: «95% KI-gebaut, im kompetitivsten Land der Erde».", trigger: "Meta-Marketing", icon: <Award className="w-5 h-5" /> },
 ];
 
 const TIER3_USPS: USP[] = [
-  { id: 31, title: "Transparente Rechnungsstellung", description: "Kristallklare Aufschlüsselungen ohne versteckte Gebühren.", trigger: "Ehrlichkeit", icon: <Receipt className="w-4 h-4" /> },
-  { id: 32, title: "99,99% Uptime SLA", description: "Redundante, global verteilte Cloud-Infrastruktur.", trigger: "Risikominderung", icon: <Server className="w-4 h-4" /> },
-  { id: 33, title: "Single Sign-On (SSO)", description: "Nahtlose Authentifizierung über Okta, Google, AD.", trigger: "Sicherheits-Einfachheit", icon: <KeyRound className="w-4 h-4" /> },
-  { id: 34, title: "Auto Daten-Backup & Recovery", description: "Kontinuierliche Snapshots mit Ein-Klick-Wiederherstellung.", trigger: "Sicherheitspuffer", icon: <DatabaseBackup className="w-4 h-4" /> },
-  { id: 35, title: "Responsive Cross-Platform", description: "Fehlerfreie Parität auf Desktop, Tablet und Mobile.", trigger: "Allgegenwärtiger Zugang", icon: <Monitor className="w-4 h-4" /> },
-  { id: 36, title: "Granulare RBAC", description: "Hochgradig anpassbare rollenbasierte Zugriffskontrolle.", trigger: "Administrative Autorität", icon: <ShieldCheck className="w-4 h-4" /> },
-  { id: 37, title: "SOC2 & GDPR Native", description: "Automatische Compliance mit internationalen Standards.", trigger: "Institutionelles Vertrauen", icon: <Shield className="w-4 h-4" /> },
-  { id: 38, title: "Offline-Modus Sync", description: "Weiterarbeiten ohne Internet, automatische Konfliktlösung.", trigger: "Unterbrechungsfreier Fluss", icon: <WifiOff className="w-4 h-4" /> },
-  { id: 39, title: "Ein-Klick Datenexport", description: "Sofortiger Export in CSV, JSON — kein Vendor Lock-In.", trigger: "Anti-Lock-In", icon: <Download className="w-4 h-4" /> },
-  { id: 40, title: "Developer API & Webhooks", description: "Dokumentiertes RESTful-API-System für Custom-Integrationen.", trigger: "Skalierbarkeit", icon: <Webhook className="w-4 h-4" /> },
-  { id: 41, title: "'No Thanks' UI-Klarheit", description: "Alle Opt-outs sichtbar — keine Dark Patterns.", trigger: "Ethische UX", icon: <X className="w-4 h-4" /> },
-  { id: 42, title: "Echtzeit-Datenindizierung", description: "Massive Datenmengen sofort durchsuchbar und umsetzbar.", trigger: "Kognitive Entlastung", icon: <Search className="w-4 h-4" /> },
-  { id: 43, title: "Educational Content Hub", description: "Eingebettete Bibliothek zugeschnitten auf Branche und Reifegrad.", trigger: "Ermächtigung", icon: <BookOpen className="w-4 h-4" /> },
-  { id: 44, title: "Auto UX A/B-Testing", description: "Mehrere Workflow-Varianten gleichzeitig testen und optimieren.", trigger: "Datengesteuerte Gewissheit", icon: <FlaskConical className="w-4 h-4" /> },
-  { id: 45, title: "Customer Success Manager", description: "Dedizierte menschliche Strategen für Enterprise-Kunden.", trigger: "Menschliche Verbindung", icon: <UserCheck className="w-4 h-4" /> },
-  { id: 46, title: "Globale Ein-Klick Undo", description: "Universelles Sicherheitsnetz — jede Aktion sofort rückgängig.", trigger: "Angstfreie Erkundung", icon: <Undo2 className="w-4 h-4" /> },
-  { id: 47, title: "Custom Domain & White-Label", description: "Branding vollständig unter eigener Unternehmensidentität.", trigger: "Markenerweiterung", icon: <Paintbrush className="w-4 h-4" /> },
-  { id: 48, title: "Dynamische Content-Lokalisierung", description: "Auto-Anpassung von Währungen, Daten, Compliance per IP.", trigger: "Globale Reichweite", icon: <MapPin className="w-4 h-4" /> },
-  { id: 49, title: "Zero-Knowledge Verschlüsselung", description: "Lokale Verschlüsselung vor Übertragung — selbst wir können nichts lesen.", trigger: "Absolute Privatsphäre", icon: <KeySquare className="w-4 h-4" /> },
-  { id: 50, title: "Interaktives Produkt-Changelog", description: "Gamifizierter Feed zeigt wie Feedback zu Features wird.", trigger: "Community-Investition", icon: <Newspaper className="w-4 h-4" /> },
+  { id: 31, title: "OR Art. 14 Compliance", description: "Alle Übergabeprotokolle entsprechen dem Schweizer Obligationenrecht.", trigger: "Rechtssicherheit", icon: <FileCheck className="w-4 h-4" /> },
+  { id: 32, title: "DSG Datenschutz Native", description: "Schweizer Datenschutzgesetz und DSGVO von Anfang an integriert.", trigger: "Institutionelles Vertrauen", icon: <Shield className="w-4 h-4" /> },
+  { id: 33, title: "Transparente Preise", description: "Kristallklare Aufschlüsselungen ohne versteckte Gebühren oder Nachverhandlungen.", trigger: "Ehrlichkeit", icon: <Receipt className="w-4 h-4" /> },
+  { id: 34, title: "Abnahmegarantie", description: "Feierabend garantiert: Reinigung wird bis zur Vermieter-Abnahme wiederholt.", trigger: "Risiko-Eliminierung", icon: <CheckCircle className="w-4 h-4" /> },
+  { id: 35, title: "Schweizer Hosting", description: "Alle Daten auf Schweizer Servern — keine Daten verlassen das Land.", trigger: "Datensouveränität", icon: <Server className="w-4 h-4" /> },
+  { id: 36, title: "Mobile-First UX", description: "Fehlerfreie Parität auf Desktop, Tablet und Mobile. Touch-Targets ≥ 44px.", trigger: "Allgegenwärtiger Zugang", icon: <Monitor className="w-4 h-4" /> },
+  { id: 37, title: "Kautionsschutz-System", description: "Digitale Dokumentation verhindert ungerechtfertigte Kautionsabzüge.", trigger: "Finanzieller Schutz", icon: <Home className="w-4 h-4" /> },
+  { id: 38, title: "Verifizierte Firmen", description: "200+ geprüfte Schweizer Umzugsfirmen mit Handelsregister-Verifizierung.", trigger: "Qualitätskontrolle", icon: <ShieldCheck className="w-4 h-4" /> },
+  { id: 39, title: "Keine Dark Patterns", description: "Alle Opt-outs sichtbar, keine versteckten Kosten, keine Manipulations-UX.", trigger: "Ethische UX", icon: <Eye className="w-4 h-4" /> },
+  { id: 40, title: "Fixpreis-Option", description: "Verbindliche Festpreise statt unverbindlicher Schätzungen — Planungssicherheit.", trigger: "Budgetsicherheit", icon: <Lock className="w-4 h-4" /> },
+  { id: 41, title: "Familienbetrieb seit 1980", description: "Feierabend Services als operativer Partner mit 45+ Jahren Erfahrung.", trigger: "Tradition & Vertrauen", icon: <Building2 className="w-4 h-4" /> },
+  { id: 42, title: "Reinigung mit Garantie", description: "Professionelle Endreinigung mit Abnahmegarantie — oder kostenlose Nachbesserung.", trigger: "Risikofrei", icon: <Paintbrush className="w-4 h-4" /> },
+  { id: 43, title: "Schlüsselübergabe-Protokoll", description: "Digitale Dokumentation der Schlüsselübergabe mit Zeitstempel und Foto.", trigger: "Lückenlose Dokumentation", icon: <Key className="w-4 h-4" /> },
+  { id: 44, title: "Umzugs-Checkliste KI", description: "Personalisierte 30-Tage-Checkliste basierend auf Umzugsdatum und Situation.", trigger: "Orientierung & Struktur", icon: <BookOpen className="w-4 h-4" /> },
+  { id: 45, title: "Nachhaltige Entsorgung", description: "Recycling-optimierte Räumung mit dokumentierter Entsorgung nach Schweizer Standards.", trigger: "Umweltbewusstsein", icon: <Leaf className="w-4 h-4" /> },
+  { id: 46, title: "Echtzeit-Tracking", description: "Live-Status des Umzugs-Fortschritts — von Beladung bis Übergabe.", trigger: "Kontrolle & Transparenz", icon: <Wifi className="w-4 h-4" /> },
+  { id: 47, title: "Kantonale Regulationen", description: "Automatische Anpassung an 26 verschiedene Kantons-Vorschriften (Fristen, Feiertage, eUmzug).", trigger: "Lokale Kompetenz", icon: <Database className="w-4 h-4" /> },
+  { id: 48, title: "WhatsApp Direktkontakt", description: "Sofortige Kommunikation ohne Warteschleife — direkt per WhatsApp zum Team.", trigger: "Erreichbarkeit", icon: <Handshake className="w-4 h-4" /> },
+  { id: 49, title: "Kostenlos & Unverbindlich", description: "Alle Offerten, Rechner und Vergleiche ohne Kosten und ohne Verpflichtung.", trigger: "Keine Eintrittsbarriere", icon: <RefreshCw className="w-4 h-4" /> },
+  { id: 50, title: "Continuous Improvement", description: "5-Run Optimierungsmethodik: Jeder Funnel wird iterativ verbessert bis Score ≥ 85.", trigger: "Wissenschaftliche Exzellenz", icon: <Search className="w-4 h-4" /> },
 ];
 
 function Tier1Card({ usp }: { usp: USP }) {
@@ -172,8 +172,8 @@ export function USPFrameworkSection() {
             Die Architektur der emotionalen Resonanz
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-base">
-            50 USPs strukturiert nach psychologischer Wirkung — von viszeralem «Whoa» bis zur rationalen Absicherung. 
-            Jede Ebene triggert spezifische kognitive Zustände: Arousal, Pleasure, Vertrauen.
+            50 plattformspezifische USPs — von LIDAR-Scans über Smart Escrow bis zur Abnahmegarantie.
+            Jede Ebene triggert spezifische kognitive Zustände: Faszination, Vertrauen, Sicherheit.
           </p>
         </motion.div>
 
@@ -190,7 +190,7 @@ export function USPFrameworkSection() {
             </div>
             <div>
               <h3 className="text-lg font-bold text-foreground">Sektion 1 — Die «Whoa»-Kategorie</h3>
-              <p className="text-xs text-muted-foreground">10 Funktionen mit massivem Impact · Sofortige viszerale Reaktion</p>
+              <p className="text-xs text-muted-foreground">10 Technologie-Innovationen mit massivem Impact · Sofortige viszerale Reaktion</p>
             </div>
             <Badge className="ml-auto bg-primary/10 text-primary text-xs">XL</Badge>
           </motion.div>
@@ -209,8 +209,8 @@ export function USPFrameworkSection() {
               <Settings2 className="w-5 h-5 text-secondary" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-foreground">Sektion 2 — Kernunterscheidungsmerkmale</h3>
-              <p className="text-xs text-muted-foreground">20 Funktionen · Workflow-Automatisierung, emotionale UX, Zeitspar-Mechanismen</p>
+              <h3 className="text-lg font-bold text-foreground">Sektion 2 — Plattform-Kernlogik</h3>
+              <p className="text-xs text-muted-foreground">20 Funktionen · Lead-Routing, Revenue-Streams, Conversion-Optimierung</p>
             </div>
             <Badge className="ml-auto bg-secondary/10 text-secondary text-xs">M</Badge>
           </div>
@@ -251,20 +251,20 @@ export function USPFrameworkSection() {
               <ShieldCheck className="w-5 h-5 text-muted-foreground" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-foreground">Sektion 3 — Fundamentale USPs</h3>
-              <p className="text-xs text-muted-foreground">20 Funktionen · Sicherheit, Compliance, Quality-of-Life</p>
+              <h3 className="text-lg font-bold text-foreground">Sektion 3 — Schweizer Fundament</h3>
+              <p className="text-xs text-muted-foreground">20 Funktionen · Compliance, Qualität, Vertrauen, operative Exzellenz</p>
             </div>
             <Badge className="ml-auto bg-muted text-muted-foreground text-xs">S</Badge>
           </div>
 
           <Button
-            variant="ghost"
+            variant="outline"
             size="sm"
             onClick={() => setShowTier3(!showTier3)}
             className="mb-4 min-h-[44px] w-full sm:w-auto gap-2"
           >
             {showTier3 ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-            {showTier3 ? "Einklappen" : "20 Basis-USPs anzeigen"}
+            {showTier3 ? "Einklappen" : "20 Fundament-USPs anzeigen"}
           </Button>
 
           <AnimatePresence>
@@ -276,7 +276,7 @@ export function USPFrameworkSection() {
                 transition={{ duration: 0.3 }}
                 className="overflow-hidden"
               >
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 bg-muted/20 rounded-xl p-3 border border-border/30">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
                   {TIER3_USPS.map(usp => (
                     <Tier3Card key={usp.id} usp={usp} />
                   ))}
