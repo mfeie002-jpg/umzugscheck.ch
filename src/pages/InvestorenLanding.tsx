@@ -52,6 +52,7 @@ import { FunSectionIntro } from "@/components/persona/FunSectionIntro";
 import { FunCTA } from "@/components/persona/FunCTA";
 import { VIPWelcomeBanner } from "@/components/persona/VIPWelcomeBanner";
 import { TwoPillarModel } from "@/components/vision/TwoPillarModel";
+import { USPFrameworkSection } from "@/components/vision/USPFrameworkSection";
 
 // Translations
 const translations: Record<'de' | 'bg' | 'it', {
