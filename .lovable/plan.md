@@ -1,70 +1,41 @@
 
 
-# /feedback Seite erweitern: Execution Plan (10 neue Blöcke)
+# /feedback Seite: 10 neue Execution-Plan-Blöcke (Block 9–18)
 
 ## Was sich ändert
 
-Die bestehende `/feedback`-Seite hat 8 Blöcke (Readiness Score bis Strategische Empfehlung). Jetzt kommen 10 neue Blöcke dazu — der finale, handlungsorientierte Teil, der aus Kritik konkrete Massnahmen macht.
+Die bestehende `/feedback`-Seite hat 8 Blöcke (619 Zeilen). Jetzt kommen 10 neue Blöcke dazu — der gesamte Inhalt aus der Nachricht des Users wird 1:1 als hardcoded Content eingefügt.
 
-## Kontextanpassung: Pre-Launch Startup
+## Neue Blöcke
 
-Wichtiger Rahmen: Das Projekt ist ein Pre-Launch Startup. Noch kein Live-Traffic, keine Umsätze — das ist der erwartete Zustand vor dem Go-Live am 1. April. Die Analyse wird dies berücksichtigen und zwischen "fehlt, weil Pre-Launch" und "fehlt, weil strukturelles Problem" unterscheiden.
+| Block | Titel | Inhalt |
+|-------|-------|--------|
+| 9 | Investor Readiness Overview | Gesamtbewertung 3/10 mit detaillierter Begründung, Stark/Schwach/Substanz/Story-Trennung |
+| 10 | Gap Map | 9 Kategorien (A–I) mit je 2 Lücken, Status-Badges, Quellen, konkrete Fixes |
+| 11 | Proof Requirements | 5 Kategorien (A–E) mit je 3 Beweispunkten, Dringlichkeit, Beschaffungsweg |
+| 12 | Pitch Claim Audit (erweitert) | 4 Gruppen: sicher/vorsichtig/zu gross/nicht sagen — detaillierter als Block 5 |
+| 13 | Investor Confusion Points | 6 Punkte wo Investoren aussteigen, mit Problemtyp strukturell/kommunikativ |
+| 14 | What Must Be Fixed | 4 Listen (A–D): 10+5+5+5 konkrete Fixes vor Investorengesprächen |
+| 15 | Investor Ready Roadmap | 3 Horizonte: 14 Tage / 30 Tage / Vor Investoren (detaillierter als Block 7) |
+| 16 | Final Decision Frame | 7 harte Schlussantworten + Investitionsschwelle |
 
-## Neue Blöcke (9–18)
-
-```text
- 9. EXECUTIVE ACTION SUMMARY    — 5 Baustellen, 3 kritische Punkte, 3 Hebel
-10. MASTER ACTION LIST          — Priorisierte Massnahmen mit Kategorie/Dringlichkeit/Hebel
-11. PRIORITY MATRIX             — 4-Felder (Sofort/Bald/Nachgelagert/Nicht diskutieren)
-12. INVESTOR PREP CHECKLIST     — Was vor Pitch/DD/Datenraum bereit sein muss
-13. CLAIM CONTROL LIST          — Sicher/Vorsichtig/Zu gross/Nicht sagen (erweitert Block 5)
-14. INTERNAL WORKSTREAMS        — 6 Arbeitsstränge mit Zielen & Deliverables
-15. 30-60 DAY EXECUTION PLAN   — Phase 1 (7d) / Phase 2 (30d) / Phase 3 (60d)
-16. WHAT TO PROVE FIRST         — Top-5-Listen: beweisen/messen/formulieren/testen/belegen
-17. RED FLAGS IN INVESTOR MEETINGS — Gefährliche Punkte + Vorbereitung
-18. FINAL INTERNAL VERDICT      — Hartes Schlussurteil + Erfolgseinschätzung + Investitionsschwelle
-```
-
-## Inhaltliche Kernpunkte (destilliert aus allen 3 Analysen + Meta-Feedback)
-
-**Executive Action Summary:**
-- 5 Baustellen: Revenue-Loop beweisen, Neutralitätskonflikt lösen, Team/Advisor, GSC-Daten, Fokus-Cut
-- Kommunikation vs. Beweis vs. Modellproblem klar getrennt
-
-**Master Action List (~15 Massnahmen):**
-- z.B. "5 echte Jobs mit Vollkostenrechnung", "GSC-Daten exportieren", "Partner-LOIs einholen", "Pitch auf 250-300 CHF Kern reduzieren", "Governance-Modell für Routing definieren"
-- Jede mit Kategorie, Dringlichkeit, Hebel, Problem-Typ
-
-**Priority Matrix:**
-- Sofort: Revenue-Proof, GSC, Fokus-Cut
-- Bald: Partner-Validation, Teamplan, Paid-Channel-Test
-- Nachgelagert: Internationalisierung, Premium-Packages, Exit-Szenarien
-- Nicht diskutieren: 6 Revenue Streams, 92% Profitabilität, "100% safe"
-
-**30-60 Day Plan:**
-- Phase 1 (7d): GSC exportieren, erste 2-3 Jobs starten, Routing-Governance definieren
-- Phase 2 (30d): 5-10 Jobs mit P&L, CPL via 500 CHF Test, 3 Partner-LOIs
-- Phase 3 (60d): CM2-Nachweis, Proof Memo erstellen, Pitch überarbeiten
-
-**Final Verdict mit Investitionsschwelle:**
-- Erfolgswahrscheinlichkeit: ehrliche Einschätzung für Pre-Launch Startup
-- Wann investierbar: konkreter Threshold (X Jobs, Y% Marge, Z Traffic)
-- Grösster Denkfehler, grösstes Risiko, grösste unbelegte Hoffnung
+Dazu werden Block 9–10 als Tabs organisiert (Gap Map hat 9 Kategorien), und Block 14 nutzt Collapsibles.
 
 ## Design
 
-- Gleiche UI-Patterns wie Block 1-8 (StatusBadge, SourceBadge, SeverityBar, Collapsible, Tabs)
-- Neue visuelle Elemente: Priority Matrix als 2×2 Grid, Execution Timeline als vertikale Zeitleiste
-- Badge `ANALYSE 4` für die neuen Inhalte (orange)
+- Gleiche UI-Patterns: `StatusBadge`, `SourceBadge`, `SeverityBar`, `Collapsible`, `Reveal`, `Card`, `Tabs`
+- Neuer `SourceBadge` Wert: `ANALYSE 4` (orange) für die neuen Inhalte
+- Gap Map als Tabs (A–I Kategorien)
+- Priority-Punkte mit farbigen Dots (rot/orange/gelb nach Dringlichkeit)
+- Final Verdict als gradient Card (wie Block 8)
 
 ## Dateien
 
 | Aktion | Datei |
 |--------|-------|
-| Rewrite | `src/pages/FeedbackAnalysis.tsx` — Block 9-18 hinzufügen (gleiche Komponenten-Patterns) |
+| Edit | `src/pages/FeedbackAnalysis.tsx` — Blöcke 9–16 nach Block 8 einfügen (vor closing divs) |
 
-## Technisch
-- Gleiche Standalone-Architektur, keine neuen Dependencies
-- Alle Inhalte hardcoded
-- Geschätzter Umfang: ~400-500 zusätzliche Zeilen
+## Umfang
+
+~500–600 zusätzliche Zeilen hardcoded Content, gleiche Komponenten-Patterns, keine neuen Dependencies.
 
