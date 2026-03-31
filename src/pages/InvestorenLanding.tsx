@@ -51,6 +51,7 @@ import { FunInterruptCard } from "@/components/persona/FunInterruptCard";
 import { FunSectionIntro } from "@/components/persona/FunSectionIntro";
 import { FunCTA } from "@/components/persona/FunCTA";
 import { VIPWelcomeBanner } from "@/components/persona/VIPWelcomeBanner";
+import { TwoPillarModel } from "@/components/vision/TwoPillarModel";
 
 // Translations
 const translations: Record<'de' | 'bg' | 'it', {
@@ -223,6 +224,11 @@ export default function InvestorenLanding() {
 
       {/* 4. VISUAL DIVIDER */}
       <VisionVisualDivider language={language} variant="business" />
+
+      {/* ZWEI-SÄULEN-MODELL — Portal × Dienstleister Ökosystem */}
+      <ScrollReveal>
+        <TwoPillarModel />
+      </ScrollReveal>
 
       {/* NEW: RELO-OS 6-PHASE JOURNEY - Full for Investors */}
       <ReloOSJourneySection language={language} variant="full" />
