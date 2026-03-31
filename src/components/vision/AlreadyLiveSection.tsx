@@ -78,6 +78,9 @@ export function AlreadyLiveSection() {
         {/* UI Proof Mockups */}
         <ProofMockups />
 
+        {/* Flow Testing Matrix */}
+        <FlowTestingMatrix />
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-10">
           {proofCards.map((card, i) => (
             <motion.div
