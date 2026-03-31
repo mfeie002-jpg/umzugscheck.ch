@@ -151,7 +151,7 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
   }, [fromPostal, toPostal, apartmentSize, flowPath, navigate, lockScrollForSubmit]);
 
   return (
-    <section className="relative sm:min-h-[62vh] lg:min-h-[55vh] flex items-start sm:items-center overflow-hidden">
+    <section className="relative sm:min-h-[62vh] lg:min-h-[55vh] flex items-start sm:items-center overflow-x-hidden overflow-y-visible">
       {/* Background Image */}
       <div className="absolute inset-0">
         <img 
@@ -166,7 +166,7 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
       </div>
 
       {/* Content */}
-      <div className="container mx-auto px-3 sm:px-6 pt-2 pb-3 sm:py-7 md:py-8 lg:py-8 relative z-10 overflow-hidden">
+      <div className="container mx-auto px-3 sm:px-6 pt-2 pb-3 sm:py-7 md:py-8 lg:py-8 relative z-10 overflow-x-hidden max-w-full">
         <div className="grid lg:grid-cols-2 gap-4 sm:gap-8 lg:gap-12 items-center">
           
           {/* Left Column - Text & CTAs */}
@@ -289,7 +289,7 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
             className="order-1 lg:order-2"
           >
             {/* Form Card with primary border accent like 4-Tab Hero */}
-            <div className="bg-card rounded-2xl shadow-xl border-2 border-primary/20 hover:border-primary/40 transition-colors p-3 sm:p-4 md:p-6 relative ring-1 ring-primary/10 overflow-hidden max-w-full">
+            <div className="bg-card rounded-2xl shadow-xl border-2 border-primary/20 hover:border-primary/40 transition-colors p-3 sm:p-4 md:p-6 relative ring-1 ring-primary/10 overflow-hidden max-w-full w-full">
               {/* Best Price Badge - positioned inside card with proper spacing */}
               <div className="flex justify-center mb-3 sm:mb-4">
                 <span className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 bg-secondary text-white text-xs font-bold rounded-full shadow-lg whitespace-nowrap">
@@ -480,7 +480,7 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
                 </form>
 
                 {/* Trust Badges */}
-                <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground pt-1">
+                <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs text-muted-foreground pt-1">
                   <span className="inline-flex items-center gap-1">
                     <Check className="w-3.5 h-3.5 text-primary" />
                     Kostenlos
