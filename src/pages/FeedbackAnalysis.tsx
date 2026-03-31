@@ -215,9 +215,9 @@ const FeedbackAnalysis = () => {
         {/* ═══ BLOCK 1: READINESS SCORE ═══ */}
         <Reveal>
           <section id="readiness-score" className="space-y-4 scroll-mt-16">
-            <div className="flex items-center gap-3">
-              <Badge className="bg-teal-500/20 text-teal-400 border-teal-500/30">BLOCK 1</Badge>
-              <h1 className="text-2xl font-bold">Investor Readiness Score</h1>
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+              <Badge className="bg-teal-500/20 text-teal-400 border-teal-500/30 text-[10px] sm:text-xs">BLOCK 1</Badge>
+              <h1 className="text-xl sm:text-2xl font-bold">Investor Readiness Score</h1>
             </div>
             
             <Card className="bg-white/5 border-white/10">
