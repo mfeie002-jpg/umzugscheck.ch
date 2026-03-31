@@ -524,7 +524,7 @@ const FeedbackAnalysis = () => {
 
         {/* ═══ BLOCK 7: 30-TAGE DE-RISKING ═══ */}
         <Reveal delay={0.05}>
-          <section className="space-y-4">
+          <section id="roadmap" className="space-y-4 scroll-mt-16">
             <div className="flex items-center gap-3">
               <Badge className="bg-teal-500/20 text-teal-400 border-teal-500/30">BLOCK 7</Badge>
               <h2 className="text-xl font-bold">30-Tage De-Risking Plan</h2>
