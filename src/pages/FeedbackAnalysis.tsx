@@ -197,7 +197,7 @@ const FeedbackAnalysis = () => {
       <TableOfContents />
 
       {/* Header */}
-      <div className="sticky top-0 z-50 bg-[#0a0a0a]/90 backdrop-blur-md border-b border-white/10 print:static print:bg-white print:border-gray-200 lg:mr-64">
+      <div className="sticky top-0 z-50 bg-[#0a0a0a]/90 backdrop-blur-md border-b border-white/10 print:static print:bg-white print:border-gray-200">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
           <Link to="/investoren" className="flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm print:hidden">
             <ArrowLeft className="w-4 h-4" /> <span className="hidden sm:inline">Zurück</span>
