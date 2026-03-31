@@ -237,13 +237,57 @@ const FeedbackAnalysis = () => {
                       (43'890 Keywords, 130+ Landingpages, 20 Funnels, KI-Automatisierung), aber <span className="text-red-400">kein einziger 
                       dokumentierter End-to-End-Umsatz über das Portal</span>. Ohne bewiesenen Revenue-Loop ist das Modell nicht investierbar.
                     </p>
+                    <p className="text-xs text-white/40">Nicht wegen fehlender Vision, sondern wegen fehlender Beweise, fehlender Modellklarheit und ungelöster Strukturkonflikte.</p>
                     <div className="flex flex-wrap gap-2">
                       <SourceBadge source="ANALYSE 1" />
                       <SourceBadge source="ANALYSE 2" />
                       <SourceBadge source="ANALYSE 3" />
                       <SourceBadge source="FEEDBACK" />
+                      <SourceBadge source="EXTERNAL" />
                     </div>
                   </div>
+                </div>
+
+                {/* 14-Field Investability Scorecard */}
+                <div className="mt-6">
+                  <h3 className="text-sm font-bold text-white/80 mb-3">Investability Scorecard — 14 Felder</h3>
+                  <div className="space-y-1.5">
+                    {[
+                      { field: 'Markt / Problem', score: 6, status: 'mittel', note: 'Problem real; Fragmentierung plausibel, aber kein Moat.' },
+                      { field: 'Nachfragequalität', score: 4, status: 'kritisch', note: 'Kategorie-Nachfrage plausibel, eigene kaufbare Nachfrage NICHT BELEGT.' },
+                      { field: 'Positionierung', score: 3, status: 'kritisch', note: 'Portal / Marktplatz / Eigenvertrieb / Hybrid — Identität unklar.' },
+                      { field: 'Leadgen / Akquise', score: 3, status: 'kritisch', note: 'Echter Performance-Beweis zu schwach.' },
+                      { field: 'Conversion', score: 2, status: 'kritisch', note: 'Nicht belastbar dokumentiert.' },
+                      { field: 'Economics', score: 2, status: 'kritisch', note: 'DB-Marge und CAC aktuell nicht sauber belegt.' },
+                      { field: 'Operations', score: 3, status: 'kritisch', note: 'Kapazität und Skalierbarkeit zu wenig dokumentiert.' },
+                      { field: 'Delivery / Fulfillment', score: 3, status: 'kritisch', note: 'Premium-Versprechen vorhanden, Operations-Proof unzureichend.' },
+                      { field: 'Trust / Brand', score: 4, status: 'mittel', note: 'Feierabend hat bessere Vertrauensbasis als das Plattformmodell.' },
+                      { field: 'Skalierbarkeit', score: 2, status: 'kritisch', note: 'Scale-Story grösser als lokaler Proof.' },
+                      { field: 'Automatisierung / Systeme', score: 4, status: 'mittel', note: 'Automatisierungsansatz vorhanden, ROI NICHT BELEGT.' },
+                      { field: 'Beweislage / Traktion', score: 2, status: 'kritisch', note: 'Kernmetriken fehlen oder sind nicht konsolidiert.' },
+                      { field: 'Investor Narrative', score: 3, status: 'kritisch', note: 'Story stärker als Beweisarchitektur.' },
+                      { field: 'Strukturklarheit', score: 2, status: 'kritisch', note: 'Hybrid-Governance ungelöst.' },
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-center gap-2 text-xs">
+                        <span className="text-white/50 w-[140px] sm:w-[180px] truncate flex-shrink-0">{item.field}</span>
+                        <div className="flex-1 h-4 bg-white/5 rounded-full overflow-hidden relative">
+                          <div
+                            className={`h-full rounded-full transition-all ${
+                              item.score >= 5 ? 'bg-emerald-500/60' : item.score >= 4 ? 'bg-yellow-500/60' : 'bg-red-500/60'
+                            }`}
+                            style={{ width: `${item.score * 10}%` }}
+                          />
+                        </div>
+                        <span className={`font-mono font-bold w-6 text-right ${
+                          item.score >= 5 ? 'text-emerald-400' : item.score >= 4 ? 'text-yellow-400' : 'text-red-400'
+                        }`}>{item.score}</span>
+                        <span className={`text-[10px] px-1.5 py-0.5 rounded ${
+                          item.status === 'kritisch' ? 'bg-red-500/15 text-red-400' : 'bg-yellow-500/15 text-yellow-400'
+                        }`}>{item.status}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-[10px] text-white/30 mt-2">Interne Scorecard (1-10) — nicht als Marktwert, sondern als Reifegrad- und Risikoindikator zu lesen.</p>
                 </div>
 
                 <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
