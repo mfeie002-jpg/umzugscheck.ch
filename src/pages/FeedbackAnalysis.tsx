@@ -1637,17 +1637,252 @@ const FeedbackAnalysis = () => {
         </Reveal>
 
 
+        {/* ═══════════════════════════════════════════════════════════════
+            BLOCK 23 — FINAL STRATEGIC VERDICT
+        ═══════════════════════════════════════════════════════════════ */}
+        <Reveal>
+          <section className="space-y-6">
+            <div className="flex items-center gap-3 mb-2">
+              <Shield className="w-6 h-6 text-emerald-400" />
+              <h2 className="text-2xl font-black text-white tracking-tight">23. FINAL STRATEGIC VERDICT</h2>
+              <SourceBadge source="FINAL VERDICT" />
+            </div>
+
+            {/* 23.1 — Strategische Entscheidung */}
+            <Card className="bg-gradient-to-br from-emerald-900/40 via-[#0a1628] to-teal-900/30 border-emerald-500/30">
+              <CardHeader>
+                <CardTitle className="text-lg text-emerald-400">Strategische Entscheidung: Proof-First Hybrid mit harter Governance</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-sm text-white/80 leading-relaxed">
+                  Von allen analysierten Varianten ist weder der reine SaaS-Pivot noch der reine Operator-Pivot die richtige Linie. 
+                  Die beste Linie ist ein <span className="text-emerald-400 font-bold">Proof-First Hybrid mit harter Governance</span>.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3">
+                    <h4 className="text-xs font-bold text-red-400 mb-1">✗ Nicht: Pure SaaS</h4>
+                    <p className="text-xs text-white/50">Kein Beweis, dass Partnerseite allein trägt. Einziger Execution-Lernkanal würde abgeschnitten.</p>
+                  </div>
+                  <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3">
+                    <h4 className="text-xs font-bold text-red-400 mb-1">✗ Nicht: Pure Operator</h4>
+                    <p className="text-xs text-white/50">Umzugscheck verliert strategischen Wert. Case wird "lokaler Dienstleister mit gutem Intake".</p>
+                  </div>
+                  <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-3">
+                    <h4 className="text-xs font-bold text-emerald-400 mb-1">✓ Richtig: Proof-First Hybrid</h4>
+                    <p className="text-xs text-white/50">Hybridmodell brutal präzise begrenzen. Kontrolliertes Testdesign statt struktureller Konflikt.</p>
+                  </div>
+                </div>
+                <div className="bg-white/5 rounded-lg p-4 border border-white/10">
+                  <p className="text-xs text-white/60 italic">
+                    "Das Projekt verwechselt stellenweise Infrastruktur mit Traktion. Genau das müsst ihr jetzt heilen."
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* 23.2 — Die Routing-Regel */}
+            <Card className="bg-[#0d1b2a]/80 border-white/10">
+              <CardHeader>
+                <CardTitle className="text-lg text-white">Die Routing-Regel — Phase 1 Governance</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-xs text-white/50">Nicht weich. Nicht "je nach Gefühl". Nicht "beste Leads zu uns". Sondern:</p>
+                <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-lg p-4 space-y-3">
+                  <h4 className="text-sm font-bold text-emerald-400">Feierabend darf nur Leads übernehmen wenn:</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {[
+                      { regel: 'Region', detail: 'Nur Zürich / Zug' },
+                      { regel: 'Serviceart', detail: 'Definierte Kernservices' },
+                      { regel: 'Grössenklasse', detail: 'Definierter Scope (z.B. 2–4 Zimmer)' },
+                      { regel: 'Kapazität', detail: 'Nur wenn Kapazität bestätigt' },
+                    ].map((r, i) => (
+                      <div key={i} className="bg-white/5 rounded p-2 flex items-start gap-2">
+                        <CheckCircle2 className="w-3 h-3 text-emerald-400 mt-0.5 shrink-0" />
+                        <div>
+                          <span className="text-xs font-bold text-white">{r.regel}:</span>
+                          <span className="text-xs text-white/60 ml-1">{r.detail}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-xs text-orange-400/80 mt-2">
+                    ⚠ Alles ausserhalb dieses Scopes geht an Partner oder bleibt externes Matching.
+                  </p>
+                </div>
+                <p className="text-xs text-white/40 italic">
+                  Dann ist Feierabend kein geheimer Gewinner des Systems, sondern ein klar definierter Pilot-Operator innerhalb eines begrenzten Fensters.
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* 23.3 — Pitch-Formel */}
+            <Card className="bg-[#0d1b2a]/80 border-white/10">
+              <CardHeader>
+                <CardTitle className="text-lg text-white">Pitch-Formel</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-lg p-4">
+                  <p className="text-sm text-white/80 leading-relaxed italic">
+                    "Wir finanzieren den Proof eines fokussierten Hybridmodells. Umzugscheck strukturiert und qualifiziert Nachfrage. 
+                    Feierabend dient in einem klar begrenzten Startscope als kontrollierter Execution-Case, damit wir Economics, 
+                    Routing und Delivery-Qualität real messen können. Ob und wie weit das Modell danach für Partner geöffnet wird, 
+                    hängt an definierten Proof-Kriterien."
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <h4 className="text-xs font-bold text-red-400 flex items-center gap-1">
+                      <XCircle className="w-3 h-3" /> STREICHEN
+                    </h4>
+                    {[
+                      '"neutral" / "unabhängig"',
+                      '"Zero CAC"',
+                      '"92–95% automatisiert"',
+                      '"4 Brands"',
+                      '"10 Revenue Streams"',
+                      '"skalierbares Ökosystem"',
+                      '"Premium" (wenn nicht operationalisiert)',
+                      '"seit 1980" als Belastbarkeitsbeweis',
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-center gap-2 text-xs text-red-400/70">
+                        <span className="w-1 h-1 rounded-full bg-red-400 shrink-0" />
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="space-y-2">
+                    <h4 className="text-xs font-bold text-emerald-400 flex items-center gap-1">
+                      <CheckCircle2 className="w-3 h-3" /> DRINLASSEN / SCHÄRFEN
+                    </h4>
+                    {[
+                      'Markt ist fragmentiert',
+                      'Funnel- und Testing-Arbeit ist real',
+                      'Hybrid kann Vorteil sein',
+                      'Automatisierung kann Reibung senken',
+                      'Diese Runde finanziert Proof, nicht Expansion',
+                      'Getrennte Economics (Portal/Vermittlung/Ausführung)',
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-center gap-2 text-xs text-emerald-400/70">
+                        <span className="w-1 h-1 rounded-full bg-emerald-400 shrink-0" />
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* 23.4 — 5 wichtigste Entscheidungen */}
+            <Card className="bg-[#0d1b2a]/80 border-white/10">
+              <CardHeader>
+                <CardTitle className="text-lg text-white">5 wichtigste Entscheidungen — jetzt</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {[
+                  { nr: 1, frage: 'Was seid ihr in Phase 1?', antwort: 'Proof-gesteuerter Hybrid-Pilot mit begrenzter Eigenausführung', nicht: 'Kein neutraler Marktplatz. Kein reiner Operator.' },
+                  { nr: 2, frage: 'Welche 1 Region zuerst?', antwort: 'Zürich / Zug', nicht: 'Nicht halb Schweiz — ihr seid keine göttliche API.' },
+                  { nr: 3, frage: 'Welche 1 Kernservice-Linie?', antwort: 'Die Linie mit standardisierbarem Pricing, modellierbaren Margen, beherrschbarer Delivery', nicht: 'Nicht alles gleichzeitig.' },
+                  { nr: 4, frage: 'Welcher 1 Hauptfunnel?', antwort: 'Ein Funnel. Maximal zwei.', nicht: 'Nicht 17 kreative Varianten.' },
+                  { nr: 5, frage: 'Was ist der 1 Hauptbeweis?', antwort: 'Profitable, attributable Aufträge', nicht: 'Nicht Traffic. Nicht Keywords. Nicht Flows.' },
+                ].map((e) => (
+                  <div key={e.nr} className="bg-white/5 rounded-lg p-3 border border-white/10">
+                    <div className="flex items-start gap-3">
+                      <span className="bg-emerald-500/20 text-emerald-400 text-xs font-black rounded-full w-6 h-6 flex items-center justify-center shrink-0">{e.nr}</span>
+                      <div className="space-y-1">
+                        <h4 className="text-sm font-bold text-white">{e.frage}</h4>
+                        <p className="text-xs text-emerald-400">→ {e.antwort}</p>
+                        <p className="text-xs text-red-400/60">✗ {e.nicht}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+
+            {/* 23.5 — Phase-1 Arbeitsformel */}
+            <Card className="bg-gradient-to-br from-[#0d1b2a] to-teal-900/20 border-teal-500/20">
+              <CardHeader>
+                <CardTitle className="text-lg text-teal-400">Phase-1 Arbeitsformel</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="bg-white/5 rounded-lg p-4 border border-white/10">
+                  <p className="text-xs text-white/40 uppercase tracking-wider mb-1">Hauptfrage</p>
+                  <p className="text-sm text-white font-medium">Ist das Hybridmodell ein echter Vorteil oder ein struktureller Konflikt?</p>
+                </div>
+                <div className="bg-white/5 rounded-lg p-4 border border-white/10">
+                  <p className="text-xs text-white/40 uppercase tracking-wider mb-1">Phase-1-Ziel</p>
+                  <p className="text-sm text-white/80">Beweisen, dass ein digital strukturierter Demand-Layer in einem klar begrenzten Scope profitabel in operativ saubere Aufträge übersetzt werden kann — und dass die definierte Eigenausführung ökonomisch Sinn ergibt.</p>
+                </div>
+                <div>
+                  <p className="text-xs text-white/40 uppercase tracking-wider mb-2">5 Kernbeweise</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-5 gap-2">
+                    {['Nachfragequalität', 'Funnel-Conversion', 'Vollkosten-Economics', 'Routing-Logik', 'Delivery-Zuverlässigkeit'].map((b, i) => (
+                      <div key={i} className="bg-teal-500/10 border border-teal-500/20 rounded-lg p-2 text-center">
+                        <span className="text-xs font-bold text-teal-400">{b}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* 23.6 — Operating Plan Template */}
+            <Card className="bg-[#0d1b2a]/80 border-white/10">
+              <CardHeader>
+                <CardTitle className="text-lg text-white">Operating Plan Template</CardTitle>
+                <p className="text-xs text-white/40">7-Spalten-Vorlage — ausfüllen, bevor der nächste Pitch stattfindet</p>
+              </CardHeader>
+              <CardContent>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-xs border-collapse">
+                    <thead>
+                      <tr className="border-b border-white/10">
+                        {['Workstream', 'Owner', 'Deliverable', 'Deadline', 'Abhängigkeit', 'Proof Output', 'Kill Criterion'].map((h) => (
+                          <th key={h} className="text-left text-white/60 font-bold py-2 px-2 whitespace-nowrap">{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[
+                        { ws: 'Revenue Proof', owner: '—', del: '5 Jobs mit Vollkosten-P&L', deadline: '30 Tage', dep: 'Go-Live', proof: 'CM2 pro Job', kill: 'Kein positiver CM2 nach 5 Jobs' },
+                        { ws: 'Demand Validation', owner: '—', del: 'GSC-Export + CPL via Paid', deadline: '14 Tage', dep: 'Keine', proof: 'Organische Impressions + CPL', kill: 'Kein organischer Traffic nach 30d' },
+                        { ws: 'Routing Governance', owner: '—', del: 'Schriftliche Routing-Regel', deadline: '7 Tage', dep: 'Keine', proof: 'Dokument + erste Anwendung', kill: '—' },
+                        { ws: 'Partner Validation', owner: '—', del: '3 LOIs von Umzugsfirmen', deadline: '30 Tage', dep: 'Revenue Proof', proof: 'Unterschriebene LOIs', kill: 'Null Partner-Interesse' },
+                        { ws: 'Team Setup', owner: '—', del: 'Advisor/Co-Founder Pipeline', deadline: '60 Tage', dep: 'Keine', proof: '2+ Gespräche', kill: 'Kein Fortschritt nach 60d' },
+                        { ws: 'Pitch Überarbeitung', owner: '—', del: 'Proof Memo (1-2 Seiten)', deadline: '60 Tage', dep: 'Revenue + Demand', proof: 'Fertiges Dokument', kill: '—' },
+                      ].map((row, i) => (
+                        <tr key={i} className="border-b border-white/5 hover:bg-white/5">
+                          <td className="py-2 px-2 text-white font-medium">{row.ws}</td>
+                          <td className="py-2 px-2 text-white/40">{row.owner}</td>
+                          <td className="py-2 px-2 text-white/70">{row.del}</td>
+                          <td className="py-2 px-2 text-teal-400">{row.deadline}</td>
+                          <td className="py-2 px-2 text-white/40">{row.dep}</td>
+                          <td className="py-2 px-2 text-emerald-400">{row.proof}</td>
+                          <td className="py-2 px-2 text-red-400/70">{row.kill}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
+
+          </section>
+        </Reveal>
+
+        {/* ═══ FOOTER ═══ */}
         <Reveal>
           <div className="text-center py-8 space-y-2">
             <p className="text-xs text-white/30">
-              Konsolidiert aus 4 Analyse-Runden · Stand: März 2026 · Internes Red-Team-Dokument
+              Konsolidiert aus 4 Analyse-Runden + Final Verdict · Stand: März 2026 · Internes Red-Team-Dokument
             </p>
-            <div className="flex justify-center gap-2">
+            <div className="flex justify-center gap-2 flex-wrap">
               <SourceBadge source="ANALYSE 1" />
               <SourceBadge source="ANALYSE 2" />
               <SourceBadge source="ANALYSE 3" />
               <SourceBadge source="ANALYSE 4" />
               <SourceBadge source="FEEDBACK" />
+              <SourceBadge source="FINAL VERDICT" />
             </div>
           </div>
         </Reveal>
