@@ -1976,7 +1976,7 @@ const FeedbackAnalysis = () => {
 
         {/* ═══ BLOCK 26: ULTIMATE BLUEPRINT ═══ */}
         <Reveal>
-          <section className="space-y-4">
+          <section id="ultimate-blueprint" className="space-y-4 scroll-mt-16">
             <div className="flex items-center gap-3">
               <FileText className="w-7 h-7 text-rose-400" />
               <h2 className="text-2xl font-black text-white">Block 26: Investor Readiness Blueprint — Ultimate Edition</h2>
