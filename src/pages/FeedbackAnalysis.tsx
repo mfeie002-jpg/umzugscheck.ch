@@ -210,7 +210,7 @@ const FeedbackAnalysis = () => {
           </div>
         </div>
       </div>
-      <div className="max-w-5xl mx-auto px-3 sm:px-6 py-6 sm:py-8 space-y-8 sm:space-y-10 lg:mr-64">
+      <div className="max-w-5xl mx-auto px-3 sm:px-6 py-6 sm:py-8 space-y-8 sm:space-y-10">
 
         {/* ═══ BLOCK 1: READINESS SCORE ═══ */}
         <Reveal>
