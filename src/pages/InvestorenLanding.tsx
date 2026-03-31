@@ -51,6 +51,7 @@ import { FunInterruptCard } from "@/components/persona/FunInterruptCard";
 import { FunSectionIntro } from "@/components/persona/FunSectionIntro";
 import { FunCTA } from "@/components/persona/FunCTA";
 import { VIPWelcomeBanner } from "@/components/persona/VIPWelcomeBanner";
+import { TwoPillarModel } from "@/components/vision/TwoPillarModel";
 
 // Translations
 const translations: Record<'de' | 'bg' | 'it', {
