@@ -480,7 +480,7 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
                 </form>
 
                 {/* Trust Badges */}
-                <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground pt-1">
+                <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs text-muted-foreground pt-1">
                   <span className="inline-flex items-center gap-1">
                     <Check className="w-3.5 h-3.5 text-primary" />
                     Kostenlos
