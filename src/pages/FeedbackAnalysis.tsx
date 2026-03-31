@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AIExecutionMasterplan from '@/components/feedback/AIExecutionMasterplan';
+import GeminiBlueprint from '@/components/feedback/GeminiBlueprint';
 
 // ─── Status Badge Component ───
 const StatusBadge = ({ status }: { status: string }) => {
@@ -37,6 +38,7 @@ const SourceBadge = ({ source }: { source: string }) => {
     'FEEDBACK': 'bg-amber-500/10 text-amber-400',
     'FINAL VERDICT': 'bg-emerald-500/10 text-emerald-400',
     'MASTERPLAN': 'bg-cyan-500/10 text-cyan-400',
+    'GEMINI': 'bg-violet-500/10 text-violet-400',
   };
   return (
     <span className={`inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium rounded ${styles[source] || 'bg-gray-500/10 text-gray-400'}`}>
@@ -1887,11 +1889,14 @@ const FeedbackAnalysis = () => {
           </section>
         </Reveal>
 
+        {/* ═══ BLOCK 25: GEMINI BLUEPRINT ═══ */}
+        <GeminiBlueprint />
+
         {/* ═══ FOOTER ═══ */}
         <Reveal>
           <div className="text-center py-8 space-y-2">
             <p className="text-xs text-white/30">
-              Konsolidiert aus 4 Analyse-Runden + Final Verdict + Masterplan · Stand: März 2026 · Internes Red-Team-Dokument
+              Konsolidiert aus 4 Analyse-Runden + Final Verdict + Masterplan + Gemini Blueprint · Stand: März 2026 · Internes Red-Team-Dokument
             </p>
             <div className="flex justify-center gap-2 flex-wrap">
               <SourceBadge source="ANALYSE 1" />
@@ -1901,6 +1906,7 @@ const FeedbackAnalysis = () => {
               <SourceBadge source="FEEDBACK" />
               <SourceBadge source="FINAL VERDICT" />
               <SourceBadge source="MASTERPLAN" />
+              <SourceBadge source="GEMINI" />
             </div>
           </div>
         </Reveal>
