@@ -1991,9 +1991,7 @@ const FeedbackAnalysis = () => {
 
         {/* ═══ BLOCK 27: EXTERNAL BLUEPRINT CONTENT ═══ */}
         <Reveal>
-          <section className="space-y-4">
-            <div className="flex items-center gap-3">
-              <FileText className="w-7 h-7 text-indigo-400" />
+          <section id="external-blueprint" className="space-y-4 scroll-mt-16">
               <h2 className="text-2xl font-black text-white">Block 27: External Blueprint — Detaillierte Umsetzung</h2>
               <SourceBadge source="EXTERNAL" />
             </div>
