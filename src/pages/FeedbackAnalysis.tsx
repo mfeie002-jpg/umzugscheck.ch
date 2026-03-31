@@ -1727,7 +1727,7 @@ const FeedbackAnalysis = () => {
             BLOCK 23 — FINAL STRATEGIC VERDICT
         ═══════════════════════════════════════════════════════════════ */}
         <Reveal>
-          <section className="space-y-6">
+          <section id="final-verdict" className="space-y-6 scroll-mt-16">
             <div className="flex items-center gap-3 mb-2">
               <Shield className="w-6 h-6 text-emerald-400" />
               <h2 className="text-2xl font-black text-white tracking-tight">23. FINAL STRATEGIC VERDICT</h2>
