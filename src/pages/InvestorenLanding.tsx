@@ -419,6 +419,11 @@ export default function InvestorenLanding() {
         <OverkillVisionSection />
       </ScrollReveal>
 
+      {/* 19b. 50-PUNKTE USP FRAMEWORK — Psychologische Hierarchie */}
+      <ScrollReveal>
+        <USPFrameworkSection />
+      </ScrollReveal>
+
       {/* 20. INVESTOR CLOSING — Investment Logic + Emotional Close */}
       <ScrollReveal>
         <InvestorClosingSection />
