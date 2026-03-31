@@ -315,9 +315,7 @@ const FeedbackAnalysis = () => {
 
         {/* ═══ BLOCK 3: UNBELEGTE ANNAHMEN ═══ */}
         <Reveal delay={0.05}>
-          <section className="space-y-4">
-            <div className="flex items-center gap-3">
-              <Badge className="bg-teal-500/20 text-teal-400 border-teal-500/30">BLOCK 3</Badge>
+          <section id="unbelegte-annahmen" className="space-y-4 scroll-mt-16">
               <h2 className="text-xl font-bold">Unbelegte Annahmen</h2>
             </div>
 
