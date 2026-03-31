@@ -27,7 +27,14 @@ interface TechUSP {
   title: string;
   description: string;
   whyWow: string;
+  status?: 'live' | 'buildable' | 'future';
 }
+
+const STATUS_CONFIG = {
+  live: { label: "Live", color: "bg-green-500/20 text-green-400 border-green-500/40", dot: "🟢" },
+  buildable: { label: "Buildable", color: "bg-amber-500/20 text-amber-400 border-amber-500/40", dot: "🟡" },
+  future: { label: "Future", color: "bg-purple-500/20 text-purple-400 border-purple-500/40", dot: "🔮" },
+};
 
 const TIER1_SCIFI: TechUSP[] = [
   { icon: Video, title: "Instant AI Inventory via Video", description: "Der Nutzer filmt sein Wohnzimmer; die KI generiert in unter 3 Sekunden ein farbcodiertes 3D-Inventar inkl. exakter Kubikmeter-Berechnung.", whyWow: "Das lästige Formular-Ausfüllen stirbt. Pure Bequemlichkeit." },
