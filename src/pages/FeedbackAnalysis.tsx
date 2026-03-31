@@ -314,7 +314,8 @@ const FeedbackAnalysis = () => {
           <section id="kill-points" className="space-y-4 scroll-mt-16">
             <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <Badge className="bg-teal-500/20 text-teal-400 border-teal-500/30">BLOCK 2</Badge>
-              <h2 className="text-xl font-bold">Top 7 Kill Points</h2>
+              <h2 className="text-xl font-bold">Top 9 Kill Points</h2>
+              <span className="text-[10px] text-white/30">mit Schwere (S) × Wahrscheinlichkeit (W)</span>
             </div>
 
             <div className="space-y-2">
@@ -362,8 +363,12 @@ const FeedbackAnalysis = () => {
                       <StatusBadge status={point.status} />
                       <SourceBadge source={point.source} />
                       <SeverityBar level={point.severity} />
+                      <span className="text-[10px] font-mono text-white/30 bg-white/5 px-1.5 py-0.5 rounded">S:{point.schwere} × W:{point.wahrsch} = {point.schwere * point.wahrsch}</span>
                     </div>
                     <p className="text-sm text-white/60">{point.desc}</p>
+                    {point.frueh && (
+                      <p className="text-xs text-yellow-400/70"><AlertCircle className="w-3 h-3 inline mr-1" />Frühindikator: {point.frueh}</p>
+                    )}
                     <div className="bg-teal-500/10 rounded p-2 border border-teal-500/20">
                       <p className="text-xs text-teal-400"><strong>Fix:</strong> {point.fix}</p>
                     </div>
