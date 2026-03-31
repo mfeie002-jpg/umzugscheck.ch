@@ -153,7 +153,7 @@ const TableOfContents = () => {
       {/* Mobile TOC toggle */}
       <button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-4 right-4 z-50 lg:hidden bg-white/10 backdrop-blur-md border border-white/20 rounded-full p-3 text-white shadow-lg hover:bg-white/20 transition-colors print:hidden"
+        className="fixed bottom-4 right-4 z-50 lg:hidden bg-white/10 backdrop-blur-md border border-white/20 rounded-full p-3.5 text-white shadow-lg hover:bg-white/20 transition-colors print:hidden min-w-[48px] min-h-[48px] flex items-center justify-center"
         aria-label="Inhaltsverzeichnis"
       >
         {open ? <X className="w-5 h-5" /> : <List className="w-5 h-5" />}
