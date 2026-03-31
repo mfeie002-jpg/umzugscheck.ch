@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { FunnelFlowDiagram, PlatformFlywheel } from "./InvestorInfographics";
 import { ProofMockups } from "./ProofMockups";
+import { FlowTestingMatrix } from "./FlowTestingMatrix";
 
 const proofCards = [
   {
@@ -76,6 +77,9 @@ export function AlreadyLiveSection() {
 
         {/* UI Proof Mockups */}
         <ProofMockups />
+
+        {/* Flow Testing Matrix */}
+        <FlowTestingMatrix />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-10">
           {proofCards.map((card, i) => (

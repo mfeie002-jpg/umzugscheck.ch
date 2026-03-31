@@ -17,6 +17,7 @@ import {
 import type { LucideIcon } from "lucide-react";
 import { GroupStatsChart } from "./InvestorCharts";
 import { ServiceChainInfographic, RevenueWaterfall } from "./InvestorInfographics";
+import { NUCLEAR_VISUALS } from "./NuclearWowVisuals";
 
 type Tier = "nuclear-wow" | "big-wow" | "deep-usp";
 
@@ -129,6 +130,7 @@ const tierStyles = {
 
 function ReasonCard({ reason, index, large }: { reason: Reason; index: number; large?: boolean }) {
   const s = tierStyles[reason.tier];
+  const NuclearVisual = large ? NUCLEAR_VISUALS[reason.id] : undefined;
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -139,6 +141,11 @@ function ReasonCard({ reason, index, large }: { reason: Reason; index: number; l
     >
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
       <div className="relative z-10">
+        {NuclearVisual && (
+          <div className="mb-4 rounded-xl overflow-hidden bg-slate-950/50 p-2 border border-border/30">
+            <NuclearVisual />
+          </div>
+        )}
         <div className={`${s.iconBox} flex items-center justify-center mb-3`}>
           <reason.icon className={s.iconCls} />
         </div>

@@ -27,65 +27,72 @@ interface TechUSP {
   title: string;
   description: string;
   whyWow: string;
+  status?: 'live' | 'buildable' | 'future';
 }
 
+const STATUS_CONFIG = {
+  live: { label: "Live", color: "bg-green-500/20 text-green-400 border-green-500/40", dot: "🟢" },
+  buildable: { label: "Buildable", color: "bg-amber-500/20 text-amber-400 border-amber-500/40", dot: "🟡" },
+  future: { label: "Future", color: "bg-purple-500/20 text-purple-400 border-purple-500/40", dot: "🔮" },
+};
+
 const TIER1_SCIFI: TechUSP[] = [
-  { icon: Video, title: "Instant AI Inventory via Video", description: "Der Nutzer filmt sein Wohnzimmer; die KI generiert in unter 3 Sekunden ein farbcodiertes 3D-Inventar inkl. exakter Kubikmeter-Berechnung.", whyWow: "Das lästige Formular-Ausfüllen stirbt. Pure Bequemlichkeit." },
-  { icon: Landmark, title: "Evorest ETF-Kautions-Investment", description: "Die Mietkaution wird über API-Anbindung an Evorest sofort in Blackrock-ETFs investiert statt auf einem Nullzins-Konto zu verstauben.", whyWow: "Der Nutzer baut beim Umziehen Vermögen auf." },
-  { icon: Glasses, title: "True Holographic 3D Room Preview", description: "Nutzer projizieren via Light Field Lab-Technologie ihre Möbel als echte, schwebende Hologramme in die neue, leere Wohnung.", whyWow: "Reiner Sci-Fi-Moment. Die Hardware existiert bereits." },
-  { icon: FileCode, title: "Fully Automated eUmzugCH & Swiss Post API", description: "Ein Klick, und die KI ändert die Adresse bei der alten und neuen Gemeinde (eUmzugCH) sowie bei der Schweizer Post inkl. Nachsendeauftrag.", whyWow: "Digitalisiert den Schweizer Bürokratie-Horror komplett." },
-  { icon: Bot, title: "Agentic AI Relocation Concierge", description: "Eine völlig autonome KI, die selbstständig Mails an Verwaltungen schreibt, Termine koordiniert und Handwerker anweist.", whyWow: "Ersetzt einen menschlichen Personal Assistant komplett." },
-  { icon: CreditCard, title: "Embedded Finance: Move Now, Pay Later", description: "Über FinTech-APIs wird der komplette Umzug in Sekunden mit einer 0%-Ratenzahlung vorfinanziert.", whyWow: "Zerstört die finanzielle Einstiegsbarriere bei Doppelmieten." },
-  { icon: Target, title: "AI Lead Scoring & Ranking", description: "Die KI bewertet jeden Lead sofort nach Abschlusswahrscheinlichkeit. Firmen kaufen nur Leads mit dem höchsten Profit-Score.", whyWow: "Effizienz-Boost für Handwerker; sie werden die Plattform lieben." },
-  { icon: TrendingUp, title: "Real-Time Dynamic Pricing", description: "Ein KI-Pricing-Modell, das Umzugspreise minütlich anpasst — basierend auf Auslastung, Wetter und Verkehr.", whyWow: "Uber-Surge-Pricing für die Umzugsbranche." },
-  { icon: Blocks, title: "Blockchain-gestützter Digital Twin", description: "Ein fälschungssicherer 3D-Scan der Wohnung wird auf der Blockchain gespeichert, um Kautionsstreitigkeiten mathematisch unmöglich zu machen.", whyWow: "Löst das grösste juristische Problem bei Umzügen." },
-  { icon: Banknote, title: "B2B Micro-Loans", description: "Wenn beim Zügelunternehmen der LKW kaputtgeht, gewährt die Plattform sofortige Mikrokredite basierend auf Lead-Historie.", whyWow: "Bindet B2B-Partner lebenslang — wir werden zur Hausbank." },
-  { icon: Leaf, title: "Carbon-Neutral Routing (ESG)", description: "Die KI berechnet die exakten CO₂-Emissionen der LKW-Flotte und kompensiert in Echtzeit für Firmenumzüge.", whyWow: "Monopolisten-Status für B2B-Konzernumzüge mit ESG-Pflichten." },
-  { icon: Fingerprint, title: "Smart Lock Biometric Integration", description: "API-Anbindung an smarte Gebäude. Die Putzcrew erhält per temporärer FaceID Zugang zur Wohnung.", whyWow: "Spart Stunden an Logistik, eliminiert Schlüssel-Risiko." },
-  { icon: Route, title: "Exoskelette für Zügel-Crews", description: "B2B-Partner können KI-gestützte, tragbare Exoskelett-Anzüge leasen, um Klaviere und Tresore ohne Rückenschäden zu tragen.", whyWow: "Software-Plattform meets industrielle Robotik." },
-  { icon: Plane, title: "Automated Drone Facade Inspection", description: "Autonome Drohne analysiert Gebäudefassaden, bevor eine Offerte für hohe Fenster erstellt wird.", whyWow: "Katapultiert die Plattform in den High-End-Gewerbemarkt." },
-  { icon: Languages, title: "Swiss Tax Relocation Optimizer", description: "Integrierte Steuer-API berechnet, ob der Nutzer am 31. Dezember oder 1. Januar umziehen sollte, um tausende Franken zu sparen.", whyWow: "Die Plattform bezahlt sich durch Steuerersparnisse selbst." },
+  { icon: Video, title: "Instant AI Inventory via Video", description: "Der Nutzer filmt sein Wohnzimmer; die KI generiert in unter 3 Sekunden ein farbcodiertes 3D-Inventar inkl. exakter Kubikmeter-Berechnung.", whyWow: "Das lästige Formular-Ausfüllen stirbt. Pure Bequemlichkeit.", status: "buildable" },
+  { icon: Landmark, title: "Evorest ETF-Kautions-Investment", description: "Die Mietkaution wird über API-Anbindung an Evorest sofort in Blackrock-ETFs investiert statt auf einem Nullzins-Konto zu verstauben.", whyWow: "Der Nutzer baut beim Umziehen Vermögen auf.", status: "buildable" },
+  { icon: Glasses, title: "True Holographic 3D Room Preview", description: "Nutzer projizieren via Light Field Lab-Technologie ihre Möbel als echte, schwebende Hologramme in die neue, leere Wohnung.", whyWow: "Reiner Sci-Fi-Moment. Die Hardware existiert bereits.", status: "future" },
+  { icon: FileCode, title: "Fully Automated eUmzugCH & Swiss Post API", description: "Ein Klick, und die KI ändert die Adresse bei der alten und neuen Gemeinde (eUmzugCH) sowie bei der Schweizer Post inkl. Nachsendeauftrag.", whyWow: "Digitalisiert den Schweizer Bürokratie-Horror komplett.", status: "buildable" },
+  { icon: Bot, title: "Agentic AI Relocation Concierge", description: "Eine völlig autonome KI, die selbstständig Mails an Verwaltungen schreibt, Termine koordiniert und Handwerker anweist.", whyWow: "Ersetzt einen menschlichen Personal Assistant komplett.", status: "buildable" },
+  { icon: CreditCard, title: "Embedded Finance: Move Now, Pay Later", description: "Über FinTech-APIs wird der komplette Umzug in Sekunden mit einer 0%-Ratenzahlung vorfinanziert.", whyWow: "Zerstört die finanzielle Einstiegsbarriere bei Doppelmieten.", status: "buildable" },
+  { icon: Target, title: "AI Lead Scoring & Ranking", description: "Die KI bewertet jeden Lead sofort nach Abschlusswahrscheinlichkeit. Firmen kaufen nur Leads mit dem höchsten Profit-Score.", whyWow: "Effizienz-Boost für Handwerker; sie werden die Plattform lieben.", status: "live" },
+  { icon: TrendingUp, title: "Real-Time Dynamic Pricing", description: "Ein KI-Pricing-Modell, das Umzugspreise minütlich anpasst — basierend auf Auslastung, Wetter und Verkehr.", whyWow: "Uber-Surge-Pricing für die Umzugsbranche.", status: "buildable" },
+  { icon: Blocks, title: "Blockchain-gestützter Digital Twin", description: "Ein fälschungssicherer 3D-Scan der Wohnung wird auf der Blockchain gespeichert, um Kautionsstreitigkeiten mathematisch unmöglich zu machen.", whyWow: "Löst das grösste juristische Problem bei Umzügen.", status: "future" },
+  { icon: Banknote, title: "B2B Micro-Loans", description: "Wenn beim Zügelunternehmen der LKW kaputtgeht, gewährt die Plattform sofortige Mikrokredite basierend auf Lead-Historie.", whyWow: "Bindet B2B-Partner lebenslang — wir werden zur Hausbank.", status: "future" },
+  { icon: Leaf, title: "Carbon-Neutral Routing (ESG)", description: "Die KI berechnet die exakten CO₂-Emissionen der LKW-Flotte und kompensiert in Echtzeit für Firmenumzüge.", whyWow: "Monopolisten-Status für B2B-Konzernumzüge mit ESG-Pflichten.", status: "buildable" },
+  { icon: Fingerprint, title: "Smart Lock Biometric Integration", description: "API-Anbindung an smarte Gebäude. Die Putzcrew erhält per temporärer FaceID Zugang zur Wohnung.", whyWow: "Spart Stunden an Logistik, eliminiert Schlüssel-Risiko.", status: "future" },
+  { icon: Route, title: "Exoskelette für Zügel-Crews", description: "B2B-Partner können KI-gestützte, tragbare Exoskelett-Anzüge leasen, um Klaviere und Tresore ohne Rückenschäden zu tragen.", whyWow: "Software-Plattform meets industrielle Robotik.", status: "future" },
+  { icon: Plane, title: "Automated Drone Facade Inspection", description: "Autonome Drohne analysiert Gebäudefassaden, bevor eine Offerte für hohe Fenster erstellt wird.", whyWow: "Katapultiert die Plattform in den High-End-Gewerbemarkt.", status: "future" },
+  { icon: Languages, title: "Swiss Tax Relocation Optimizer", description: "Integrierte Steuer-API berechnet, ob der Nutzer am 31. Dezember oder 1. Januar umziehen sollte, um tausende Franken zu sparen.", whyWow: "Die Plattform bezahlt sich durch Steuerersparnisse selbst.", status: "buildable" },
 ];
 
 const TIER2_EXCELLENCE: TechUSP[] = [
-  { icon: PlugZap, title: "1-Click Utility Switcher", description: "Kündigt den alten Strom-/Internetanbieter und schliesst vollautomatisch den günstigsten am neuen Ort ab.", whyWow: "Generiert massive Affiliate-Zusatzgewinne ohne Extrakosten." },
-  { icon: Recycle, title: "Zero-Waste Eco Box Network", description: "Ein geschlossener Kreislauf für wiederverwendbare Smart-Plastikboxen, die geliefert und wieder abgeholt werden.", whyWow: "Trifft den Nerv der Zeit und löst das Karton-Entsorgungsproblem." },
-  { icon: Gavel, title: "B2B Reverse Auction Lead Bidding", description: "Besonders lukrative Leads werden in Echtzeit zwischen den Handwerkern versteigert, statt zu Fixpreisen verkauft.", whyWow: "Maximiert den Profit der Plattform ins Unermessliche." },
-  { icon: MapPin, title: "Real-Time Fleet GPS Tracking", description: "Kunden sehen am Umzugstag live auf der Karte, wo sich der LKW mit ihren Möbeln befindet.", whyWow: "Nimmt dem Kunden die komplette Paranoia am Umzugstag." },
-  { icon: Calculator, title: "Predictive Cleaning AI", description: "Nach dem Einzug verbindet sich die App mit dem Smart Home und schickt die Reinigungsfirma automatisch bei hohem Pollenflug.", whyWow: "Aus einmaligem Umzug wird lebenslanges Abo-Modell." },
-  { icon: SprayCan, title: "AI-Translated Expat Communication", description: "Google-Expats schreiben auf Englisch, die KI übersetzt in Echtzeit auf Schweizerdeutsch für das Tablet des Handwerkers.", whyWow: "Überwindet Sprachbarrieren für lukrative internationale Kunden." },
-  { icon: Package, title: "Smart Packing AI (IKEA Hacker)", description: "Handy-Kamera auf den PAX-Schrank richten. Die KI erkennt ihn und zeigt das Video, wie man ihn in 3 Minuten abbaut.", whyWow: "Löst das frustrierendste Problem beim Selber-Packen." },
-  { icon: Scissors, title: "Fractional Service Booking", description: "Zügelmänner nur für eine Stunde buchen — etwa nur, um das schwere Sofa in den 4. Stock zu tragen.", whyWow: "Erschliesst den gigantischen Markt der DIY-Umzieher." },
-  { icon: ShieldCheck, title: "Verified Trust Score via Blockchain", description: "Bewertungen der Zügelfirmen sind an reale, krypto-verifizierte Transaktionen gebunden.", whyWow: "Fake-Reviews sind mathematisch unmöglich." },
-  { icon: FileCheck, title: "Instant Automated Claim Settlement", description: "Kratzer im Parkett? Foto machen. Die KI erkennt den Schaden, prüft die Versicherung und zahlt in 3 Sekunden aus.", whyWow: "Beendet den grausamen Streit mit Haftpflichtversicherungen." },
-  { icon: Gamepad2, title: "Sunk-Cost Gamification Dashboard", description: "Ein psychologisches Level-System. Jeder erledigte Schritt füllt einen Balken, der Rabatte für IKEA oder Möbelhäuser freischaltet.", whyWow: "Zwingt den Nutzer förmlich dazu, den Prozess über unsere App zu beenden." },
-  { icon: Store, title: "P2P Marketplace", description: "Möbel verkaufen/verschenken direkt an den Nachmieter innerhalb der Plattform.", whyWow: "Craiglist meets Umzugsplattform." },
-  { icon: Share2, title: "One-Click Social Network Sync", description: "Automatischer Vorstellungs-Post in Nachbarschafts-Apps der neuen Gemeinde.", whyWow: "Schafft Community-Feeling ab Sekunde Null." },
-  { icon: Home, title: "Smart Home Pre-Conditioning", description: "API-Zugriff auf Thermostate. Wenn der Umzugswagen vorfährt, ist das Wohnzimmer bereits auf 22 Grad geheizt.", whyWow: "Luxus pur beim Betreten der neuen vier Wände." },
-  { icon: PawPrint, title: "Pet-Relocation Matching AI", description: "Ein Spezial-Filter, der nur Zügelfirmen vorschlägt, die auf stressfreie Umzüge für Hunde/Katzen spezialisiert sind.", whyWow: "Haustierbesitzer zahlen für diesen Service jeden Preis." },
-  { icon: LayoutDashboard, title: "Enterprise Expat Dashboard", description: "Ein SaaS-Dashboard für HR-Abteilungen von Novartis oder Google, um den Umzug ganzer Abteilungen zu managen.", whyWow: "Öffnet den extrem lukrativen Corporate-Relocation Markt." },
-  { icon: Mail, title: "IoT Smart Moving Boxes", description: "Premium-Umzugskartons mit integrierten IoT-Sensoren für Temperatur, Feuchtigkeit und Erschütterung.", whyWow: "Tracking auf FedEx-Niveau für jeden privaten Umzugskarton." },
-  { icon: Wifi, title: "Wi-Fi Deadzone Scanner", description: "Die AR-App scannt den neuen Grundriss und sagt exakt, wo der Router für perfekten Empfang stehen muss.", whyWow: "Das wichtigste Überlebens-Feature im Home-Office-Zeitalter." },
-  { icon: MonitorPlay, title: "End-of-Tenancy Cleaning Livestream", description: "Der Kunde sitzt im Büro, während der Putztrupp per Videoanruf die saubere Wohnung zeigt.", whyWow: "Ultimative Zeitersparnis für den Endkunden." },
-  { icon: Navigation, title: "No-Box-Left-Behind RFID Tracking", description: "Kunden drucken RFID-Tags/QR-Codes. Die App schlägt Alarm, wenn eine Kiste im LKW vergessen wurde.", whyWow: "100% Sicherheit für Wertsachen." },
+  { icon: PlugZap, title: "1-Click Utility Switcher", description: "Kündigt den alten Strom-/Internetanbieter und schliesst vollautomatisch den günstigsten am neuen Ort ab.", whyWow: "Generiert massive Affiliate-Zusatzgewinne ohne Extrakosten.", status: "buildable" },
+  { icon: Recycle, title: "Zero-Waste Eco Box Network", description: "Ein geschlossener Kreislauf für wiederverwendbare Smart-Plastikboxen, die geliefert und wieder abgeholt werden.", whyWow: "Trifft den Nerv der Zeit und löst das Karton-Entsorgungsproblem.", status: "buildable" },
+  { icon: Gavel, title: "B2B Reverse Auction Lead Bidding", description: "Besonders lukrative Leads werden in Echtzeit zwischen den Handwerkern versteigert, statt zu Fixpreisen verkauft.", whyWow: "Maximiert den Profit der Plattform ins Unermessliche.", status: "buildable" },
+  { icon: MapPin, title: "Real-Time Fleet GPS Tracking", description: "Kunden sehen am Umzugstag live auf der Karte, wo sich der LKW mit ihren Möbeln befindet.", whyWow: "Nimmt dem Kunden die komplette Paranoia am Umzugstag.", status: "buildable" },
+  { icon: Calculator, title: "Predictive Cleaning AI", description: "Nach dem Einzug verbindet sich die App mit dem Smart Home und schickt die Reinigungsfirma automatisch bei hohem Pollenflug.", whyWow: "Aus einmaligem Umzug wird lebenslanges Abo-Modell.", status: "future" },
+  { icon: SprayCan, title: "AI-Translated Expat Communication", description: "Google-Expats schreiben auf Englisch, die KI übersetzt in Echtzeit auf Schweizerdeutsch für das Tablet des Handwerkers.", whyWow: "Überwindet Sprachbarrieren für lukrative internationale Kunden.", status: "live" },
+  { icon: Package, title: "Smart Packing AI (IKEA Hacker)", description: "Handy-Kamera auf den PAX-Schrank richten. Die KI erkennt ihn und zeigt das Video, wie man ihn in 3 Minuten abbaut.", whyWow: "Löst das frustrierendste Problem beim Selber-Packen.", status: "buildable" },
+  { icon: Scissors, title: "Fractional Service Booking", description: "Zügelmänner nur für eine Stunde buchen — etwa nur, um das schwere Sofa in den 4. Stock zu tragen.", whyWow: "Erschliesst den gigantischen Markt der DIY-Umzieher.", status: "buildable" },
+  { icon: ShieldCheck, title: "Verified Trust Score via Blockchain", description: "Bewertungen der Zügelfirmen sind an reale, krypto-verifizierte Transaktionen gebunden.", whyWow: "Fake-Reviews sind mathematisch unmöglich.", status: "future" },
+  { icon: FileCheck, title: "Instant Automated Claim Settlement", description: "Kratzer im Parkett? Foto machen. Die KI erkennt den Schaden, prüft die Versicherung und zahlt in 3 Sekunden aus.", whyWow: "Beendet den grausamen Streit mit Haftpflichtversicherungen.", status: "buildable" },
+  { icon: Gamepad2, title: "Sunk-Cost Gamification Dashboard", description: "Ein psychologisches Level-System. Jeder erledigte Schritt füllt einen Balken, der Rabatte für IKEA oder Möbelhäuser freischaltet.", whyWow: "Zwingt den Nutzer förmlich dazu, den Prozess über unsere App zu beenden.", status: "buildable" },
+  { icon: Store, title: "P2P Marketplace", description: "Möbel verkaufen/verschenken direkt an den Nachmieter innerhalb der Plattform.", whyWow: "Craiglist meets Umzugsplattform.", status: "buildable" },
+  { icon: Share2, title: "One-Click Social Network Sync", description: "Automatischer Vorstellungs-Post in Nachbarschafts-Apps der neuen Gemeinde.", whyWow: "Schafft Community-Feeling ab Sekunde Null.", status: "buildable" },
+  { icon: Home, title: "Smart Home Pre-Conditioning", description: "API-Zugriff auf Thermostate. Wenn der Umzugswagen vorfährt, ist das Wohnzimmer bereits auf 22 Grad geheizt.", whyWow: "Luxus pur beim Betreten der neuen vier Wände.", status: "future" },
+  { icon: PawPrint, title: "Pet-Relocation Matching AI", description: "Ein Spezial-Filter, der nur Zügelfirmen vorschlägt, die auf stressfreie Umzüge für Hunde/Katzen spezialisiert sind.", whyWow: "Haustierbesitzer zahlen für diesen Service jeden Preis.", status: "buildable" },
+  { icon: LayoutDashboard, title: "Enterprise Expat Dashboard", description: "Ein SaaS-Dashboard für HR-Abteilungen von Novartis oder Google, um den Umzug ganzer Abteilungen zu managen.", whyWow: "Öffnet den extrem lukrativen Corporate-Relocation Markt.", status: "buildable" },
+  { icon: Mail, title: "IoT Smart Moving Boxes", description: "Premium-Umzugskartons mit integrierten IoT-Sensoren für Temperatur, Feuchtigkeit und Erschütterung.", whyWow: "Tracking auf FedEx-Niveau für jeden privaten Umzugskarton.", status: "future" },
+  { icon: Wifi, title: "Wi-Fi Deadzone Scanner", description: "Die AR-App scannt den neuen Grundriss und sagt exakt, wo der Router für perfekten Empfang stehen muss.", whyWow: "Das wichtigste Überlebens-Feature im Home-Office-Zeitalter.", status: "buildable" },
+  { icon: MonitorPlay, title: "End-of-Tenancy Cleaning Livestream", description: "Der Kunde sitzt im Büro, während der Putztrupp per Videoanruf die saubere Wohnung zeigt.", whyWow: "Ultimative Zeitersparnis für den Endkunden.", status: "buildable" },
+  { icon: Navigation, title: "No-Box-Left-Behind RFID Tracking", description: "Kunden drucken RFID-Tags/QR-Codes. Die App schlägt Alarm, wenn eine Kiste im LKW vergessen wurde.", whyWow: "100% Sicherheit für Wertsachen.", status: "buildable" },
 ];
 
 const TIER3_DETAIL: TechUSP[] = [
-  { icon: Gift, title: "First-Night Survival Kit", description: "Wenn der Umzug als 'abgeschlossen' markiert wird, bestellt die App automatisch eine Pizza und Toilettenpapier.", whyWow: "Das beste, viralste Marketing-Tool aller Zeiten." },
-  { icon: CalendarDays, title: "Local Waste Calendar Integration", description: "Der Abfallkalender der neuen Gemeinde synchronisiert sich lautlos mit dem Google/Apple Kalender.", whyWow: "Beendet die Kehricht-Verwirrung im neuen Kanton sofort." },
-  { icon: Building2, title: "Automated Elevator Reservation Bot", description: "Die KI schreibt der Immobilienverwaltung autonom eine E-Mail, um den Lift für den Umzugstag zu reservieren.", whyWow: "Ein Administrationsschritt weniger, an den man denken muss." },
-  { icon: Flower2, title: "Post-Move Plant Survival Guide AI", description: "Die KI analysiert den 3D-Grundriss und sagt dir, in welches Eck deine Monstera muss für perfektes Licht.", whyWow: "Eine charmante, verrückte Nutzung der erhobenen Raumdaten." },
-  { icon: Coins, title: "In-App Twint Tipping", description: "Wenn die Crew gut war, kann via Twint direkt in der App ein Trinkgeld an die Arbeiter gesendet werden.", whyWow: "Motivation pur für die Handwerker; steigert Servicequalität." },
-  { icon: GraduationCap, title: "Kinder-Schulanmeldungs-Assistent", description: "Die App generiert automatisch vorausgefüllte PDFs für den neuen Schulkreis.", whyWow: "Entlastet Familien in der stressigsten Phase massiv." },
-  { icon: Dumbbell, title: "Gym-Membership Auto-Canceller", description: "Die KI scannt Bankdaten (Open Banking), findet das alte Fitness-Abo und kündigt es automatisch.", whyWow: "Holt dem Kunden bares Geld zurück." },
-  { icon: Sun, title: "Sun & Noise Simulator", description: "Vor dem Einzug per AR simulieren, wie die Sonne um 16:00 Uhr fällt und wie laut die Strasse ist.", whyWow: "Schafft irre Vorfreude und Bindung an die App." },
-  { icon: QrCode, title: "Humanoid Robot Packing", description: "Premium-Kunden können humanoide Roboter zum Einpacken der Kisten dazubuchen.", whyWow: "Der ultimative 'Übertreibungs-Flex' im Pitch." },
-  { icon: Palette, title: "AI Color Psychology Advisor", description: "Die KI schlägt Wandfarben für neue Räume vor, basierend darauf, ob man 'ruhig arbeiten' oder 'energiegeladen' sein möchte.", whyWow: "Verbindet Umzug direkt mit Interior-Design." },
-  { icon: Car, title: "Automatic Parking Permit API", description: "Verlinkt automatisch zum blauen-Zonen-Antrag der neuen Stadt und füllt das Formular für das Auto aus.", whyWow: "Schützt vor der ersten Parkbusse im neuen Heim." },
-  { icon: UtensilsCrossed, title: "Fridge Leftover AI Chef", description: "Man fotografiert den halbleeren Kühlschrank, und die KI generiert ein Rezept, damit nichts weggeworfen wird.", whyWow: "Spielerische Nachhaltigkeit, die unfassbar sympathisch wirkt." },
-  { icon: HeartPulse, title: "Digital First-Aid Video Guides", description: "SOS-Kurzvideos in der App: 'Wie stoppe ich das Wasser unter dem Spülbecken?'", whyWow: "Rettet den Nutzer in Momenten purer Panik." },
-  { icon: CloudRain, title: "Extreme Weather Predictive Alerts", description: "Warnt 3 Tage vor dem Umzug vor starkem Schneefall und bucht automatisch Schutzplanen dazu.", whyWow: "Proaktives Krisenmanagement." },
-  { icon: Music, title: "Welcome Home Smart Speaker Playlist", description: "Wenn das GPS registriert, dass man den ersten Abend in der neuen Wohnung verbringt, startet eine kuratierte Spotify-Playlist.", whyWow: "Der perfekte, emotionale Gänsehaut-Abschluss." },
+  { icon: Gift, title: "First-Night Survival Kit", description: "Wenn der Umzug als 'abgeschlossen' markiert wird, bestellt die App automatisch eine Pizza und Toilettenpapier.", whyWow: "Das beste, viralste Marketing-Tool aller Zeiten.", status: "buildable" },
+  { icon: CalendarDays, title: "Local Waste Calendar Integration", description: "Der Abfallkalender der neuen Gemeinde synchronisiert sich lautlos mit dem Google/Apple Kalender.", whyWow: "Beendet die Kehricht-Verwirrung im neuen Kanton sofort.", status: "live" },
+  { icon: Building2, title: "Automated Elevator Reservation Bot", description: "Die KI schreibt der Immobilienverwaltung autonom eine E-Mail, um den Lift für den Umzugstag zu reservieren.", whyWow: "Ein Administrationsschritt weniger, an den man denken muss.", status: "buildable" },
+  { icon: Flower2, title: "Post-Move Plant Survival Guide AI", description: "Die KI analysiert den 3D-Grundriss und sagt dir, in welches Eck deine Monstera muss für perfektes Licht.", whyWow: "Eine charmante, verrückte Nutzung der erhobenen Raumdaten.", status: "future" },
+  { icon: Coins, title: "In-App Twint Tipping", description: "Wenn die Crew gut war, kann via Twint direkt in der App ein Trinkgeld an die Arbeiter gesendet werden.", whyWow: "Motivation pur für die Handwerker; steigert Servicequalität.", status: "buildable" },
+  { icon: GraduationCap, title: "Kinder-Schulanmeldungs-Assistent", description: "Die App generiert automatisch vorausgefüllte PDFs für den neuen Schulkreis.", whyWow: "Entlastet Familien in der stressigsten Phase massiv.", status: "buildable" },
+  { icon: Dumbbell, title: "Gym-Membership Auto-Canceller", description: "Die KI scannt Bankdaten (Open Banking), findet das alte Fitness-Abo und kündigt es automatisch.", whyWow: "Holt dem Kunden bares Geld zurück.", status: "buildable" },
+  { icon: Sun, title: "Sun & Noise Simulator", description: "Vor dem Einzug per AR simulieren, wie die Sonne um 16:00 Uhr fällt und wie laut die Strasse ist.", whyWow: "Schafft irre Vorfreude und Bindung an die App.", status: "future" },
+  { icon: QrCode, title: "Humanoid Robot Packing", description: "Premium-Kunden können humanoide Roboter zum Einpacken der Kisten dazubuchen.", whyWow: "Der ultimative 'Übertreibungs-Flex' im Pitch.", status: "future" },
+  { icon: Palette, title: "AI Color Psychology Advisor", description: "Die KI schlägt Wandfarben für neue Räume vor, basierend darauf, ob man 'ruhig arbeiten' oder 'energiegeladen' sein möchte.", whyWow: "Verbindet Umzug direkt mit Interior-Design.", status: "buildable" },
+  { icon: Car, title: "Automatic Parking Permit API", description: "Verlinkt automatisch zum blauen-Zonen-Antrag der neuen Stadt und füllt das Formular für das Auto aus.", whyWow: "Schützt vor der ersten Parkbusse im neuen Heim.", status: "buildable" },
+  { icon: UtensilsCrossed, title: "Fridge Leftover AI Chef", description: "Man fotografiert den halbleeren Kühlschrank, und die KI generiert ein Rezept, damit nichts weggeworfen wird.", whyWow: "Spielerische Nachhaltigkeit, die unfassbar sympathisch wirkt.", status: "buildable" },
+  { icon: HeartPulse, title: "Digital First-Aid Video Guides", description: "SOS-Kurzvideos in der App: 'Wie stoppe ich das Wasser unter dem Spülbecken?'", whyWow: "Rettet den Nutzer in Momenten purer Panik.", status: "buildable" },
+  { icon: CloudRain, title: "Extreme Weather Predictive Alerts", description: "Warnt 3 Tage vor dem Umzug vor starkem Schneefall und bucht automatisch Schutzplanen dazu.", whyWow: "Proaktives Krisenmanagement.", status: "buildable" },
+  { icon: Music, title: "Welcome Home Smart Speaker Playlist", description: "Wenn das GPS registriert, dass man den ersten Abend in der neuen Wohnung verbringt, startet eine kuratierte Spotify-Playlist.", whyWow: "Der perfekte, emotionale Gänsehaut-Abschluss.", status: "buildable" },
 ];
 
 function TierCard({ usp, tier }: { usp: TechUSP; tier: 'scifi' | 'excellence' | 'detail' }) {
@@ -107,12 +114,18 @@ function TierCard({ usp, tier }: { usp: TechUSP; tier: 'scifi' | 'excellence' | 
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.4 }}
-      className={`p-4 md:p-5 rounded-xl border transition-all duration-300 ${tierStyles[tier]}`}
+      className={`p-4 md:p-5 rounded-xl border transition-all duration-300 relative ${tierStyles[tier]}`}
     >
+      {/* Status Badge */}
+      {usp.status && (
+        <span className={`absolute top-2 right-2 text-[10px] font-bold px-2 py-0.5 rounded-full border ${STATUS_CONFIG[usp.status].color}`}>
+          {STATUS_CONFIG[usp.status].dot} {STATUS_CONFIG[usp.status].label}
+        </span>
+      )}
       <div className={`${iconStyles[tier]} flex items-center justify-center mb-3`}>
         <usp.icon className={tier === 'scifi' ? 'w-6 h-6' : tier === 'excellence' ? 'w-5 h-5' : 'w-4 h-4'} />
       </div>
-      <h4 className={`font-semibold text-foreground mb-1 ${tier === 'scifi' ? 'text-lg' : tier === 'excellence' ? 'text-base' : 'text-sm'}`}>
+      <h4 className={`font-semibold text-foreground mb-1 ${tier === 'scifi' ? 'text-lg pr-20' : tier === 'excellence' ? 'text-base pr-16' : 'text-sm pr-14'}`}>
         {usp.title}
       </h4>
       <p className={`text-muted-foreground mb-2 ${tier === 'detail' ? 'text-xs' : 'text-sm'}`}>
