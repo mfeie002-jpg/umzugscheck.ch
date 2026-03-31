@@ -32,7 +32,7 @@ const content = {
     },
     subheadline: {
       family: "Während andere googeln, haben Sie schon 5 Offerten.",
-      investor: "10 Revenue Streams. 95% KI. 90%+ Marge.",
+      investor: "Wir haben den Motor bereits gebaut. Jetzt finanzieren wir die kontrollierte Inbetriebnahme bis zur Selbsttragfähigkeit.",
       full: "KI-Präzision. Escrow-Sicherheit. Ein Ökosystem."
     },
     stats: [

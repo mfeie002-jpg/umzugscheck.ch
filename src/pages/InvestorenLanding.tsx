@@ -1,47 +1,34 @@
 /**
- * Investoren Landing Page
- * Business-focused page with visual impact
- * Clean metrics, minimal text, strong visuals
+ * Investoren Landing Page — Restructured
+ * 5 Beweise: Gebaut → Wirtschaftlich → Skalierbar → Moat → Risikoreduktion
  */
 
 import { useState } from "react";
 import { SEOHead } from "@/components/SEOHead";
-import { Vision10PillarSection } from "@/components/homepage/Vision10PillarSection";
 import { RevenueStreamExamples } from "@/components/vision/RevenueStreamExamples";
 import { UnitEconomicsDetailed } from "@/components/vision/UnitEconomicsDetailed";
-import { MarketPotentialSection } from "@/components/vision/MarketPotentialSection";
-import { ExitTimeline } from "@/components/vision/ExitTimeline";
 import { FundingRoadmapSection } from "@/components/vision/FundingRoadmapSection";
 import { SEOContentMoatSection } from "@/components/vision/SEOContentMoatSection";
-import { SEOMarketSizeSection } from "@/components/vision/SEOMarketSizeSection";
 import { WhyInvestSection } from "@/components/vision/WhyInvestSection";
-import { WhatsAppDemoSection } from "@/components/vision/WhatsAppDemoSection";
-import { MarketDeepDiveSection } from "@/components/vision/MarketDeepDiveSection";
 import { ModularerWarenkorbSection } from "@/components/vision/ModularerWarenkorbSection";
-import { AlreadyLiveSection } from "@/components/vision/AlreadyLiveSection";
 import { InvestorClosingSection } from "@/components/vision/InvestorClosingSection";
 import { FiveRunsMethodologySection } from "@/components/vision/FiveRunsMethodologySection";
 import { OverkillVisionSection } from "@/components/vision/OverkillVisionSection";
-import { GrowthPRStrategySection } from "@/components/vision/GrowthPRStrategySection";
-import { AIWorkloadComparison } from "@/components/vision/AIWorkloadComparison";
-import { VisionUniqueness } from "@/components/vision/VisionUniqueness";
-import { VisionTractionDashboard } from "@/components/vision/VisionTractionDashboard";
-import { VisionProfitabilityRoadmap } from "@/components/vision/VisionProfitabilityRoadmap";
 import { VisionEmotionalHero } from "@/components/vision/VisionEmotionalHero";
 import { VisionQuickStats } from "@/components/vision/VisionQuickStats";
-import { VisionVisualDivider } from "@/components/vision/VisionVisualDivider";
 import { VisionLanguageSwitcher } from "@/components/vision/VisionLanguageSwitcher";
 import { ExpandAllToggle } from "@/components/vision/ExpandAllToggle";
 import { VisionContactCTA } from "@/components/vision/VisionContactCTA";
-import { VisionLiveStats } from "@/components/vision/VisionLiveStats";
 import { VisionProgressIndicator } from "@/components/vision/VisionProgressIndicator";
-import { ReloOSJourneySection } from "@/components/vision/ReloOSJourneySection";
-import { ReloOSFeaturesGrid } from "@/components/vision/ReloOSFeaturesGrid";
+import { USPFrameworkSection } from "@/components/vision/USPFrameworkSection";
+import { BuildTimelineSection } from "@/components/vision/BuildTimelineSection";
+import { ThreeLayerSystemMap } from "@/components/vision/ThreeLayerSystemMap";
+import { NarrativeMoatSection } from "@/components/vision/NarrativeMoatSection";
+import { TwoPillarModel } from "@/components/vision/TwoPillarModel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import type { VisionLanguage } from "@/lib/vision-translations";
 import { StakeholderJokeBanner, StakeholderJokesGrid } from "@/components/stakeholder/StakeholderJokeBanner";
@@ -51,8 +38,6 @@ import { FunInterruptCard } from "@/components/persona/FunInterruptCard";
 import { FunSectionIntro } from "@/components/persona/FunSectionIntro";
 import { FunCTA } from "@/components/persona/FunCTA";
 import { VIPWelcomeBanner } from "@/components/persona/VIPWelcomeBanner";
-import { TwoPillarModel } from "@/components/vision/TwoPillarModel";
-import { USPFrameworkSection } from "@/components/vision/USPFrameworkSection";
 
 // Translations
 const translations: Record<'de' | 'bg' | 'it', {
@@ -60,12 +45,8 @@ const translations: Record<'de' | 'bg' | 'it', {
   fullVision: string;
   badge: string;
   sections: { 
-    businessModel: string; 
-    pillarsTitle: string; 
-    pillarsSubtitle: string; 
     revenueTitle: string; 
     unitTitle: string; 
-    marketTitle: string 
   };
   footer: { interested: string; cta: string; visionBtn: string; familyBtn: string };
 }> = {
@@ -74,12 +55,8 @@ const translations: Record<'de' | 'bg' | 'it', {
     fullVision: "Vollständige Vision",
     badge: "Investor Hub",
     sections: {
-      businessModel: "Business Model",
-      pillarsTitle: "10 Strategische Säulen",
-      pillarsSubtitle: "Jede Säule ist ein eigenständiger Profit Center.",
       revenueTitle: "10 Einnahmequellen",
       unitTitle: "Unit Economics",
-      marketTitle: "Marktpotenzial"
     },
     footer: {
       interested: "Interessiert?",
@@ -93,12 +70,8 @@ const translations: Record<'de' | 'bg' | 'it', {
     fullVision: "Пълна визия",
     badge: "Investor Hub",
     sections: {
-      businessModel: "Бизнес модел",
-      pillarsTitle: "10 Стратегически стълба",
-      pillarsSubtitle: "Всеки стълб е самостоятелен Profit Center.",
       revenueTitle: "10 източници на приходи",
       unitTitle: "Unit Economics",
-      marketTitle: "Пазарен потенциал"
     },
     footer: {
       interested: "Заинтересовани?",
@@ -112,12 +85,8 @@ const translations: Record<'de' | 'bg' | 'it', {
     fullVision: "Visione Completa",
     badge: "Investor Hub",
     sections: {
-      businessModel: "Business Model",
-      pillarsTitle: "10 Pilastri Strategici",
-      pillarsSubtitle: "Ogni pilastro è un Profit Center autonomo.",
       revenueTitle: "10 Fonti di Reddito",
       unitTitle: "Unit Economics",
-      marketTitle: "Potenziale di Mercato"
     },
     footer: {
       interested: "Interessati?",
@@ -131,23 +100,11 @@ const translations: Record<'de' | 'bg' | 'it', {
 export default function InvestorenLanding() {
   const [language, setLanguage] = useState<VisionLanguage>(() => {
     const params = new URLSearchParams(window.location.search);
-    
-    // 1. Priority: URL lang parameter
     const urlLang = params.get('lang');
-    if (urlLang === 'bg' || urlLang === 'de' || urlLang === 'it') {
-      return urlLang as VisionLanguage;
-    }
-    
-    // 2. Auto-detect language from persona
+    if (urlLang === 'bg' || urlLang === 'de' || urlLang === 'it') return urlLang as VisionLanguage;
     const urlPersona = params.get('persona');
-    if (urlPersona && ['bg1', 'bg2', 'bg3'].includes(urlPersona)) {
-      return 'bg';
-    }
-    if (urlPersona === 'it') {
-      return 'it';
-    }
-    
-    // 3. Fallback: default
+    if (urlPersona && ['bg1', 'bg2', 'bg3'].includes(urlPersona)) return 'bg';
+    if (urlPersona === 'it') return 'it';
     return 'de';
   });
   const [allExpanded, setAllExpanded] = useState(false);
@@ -156,13 +113,9 @@ export default function InvestorenLanding() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Progress Indicator */}
       <VisionProgressIndicator />
       
-      <SEOHead
-        pageType="home"
-        url="https://umzugscheck.ch/investoren"
-      />
+      <SEOHead pageType="home" url="https://umzugscheck.ch/investoren" />
 
       {/* Compact Header */}
       <div className="bg-background border-b border-secondary/20">
@@ -174,23 +127,13 @@ export default function InvestorenLanding() {
                 {t.back}
               </Button>
             </Link>
-            
-            {/* Badge */}
             <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-bold">
               <TrendingUp className="w-3.5 h-3.5" />
               {t.badge}
             </div>
-            
             <div className="flex items-center gap-2">
-              <ExpandAllToggle
-                isExpanded={allExpanded}
-                onToggle={() => setAllExpanded(!allExpanded)}
-                language={language}
-              />
-              <VisionLanguageSwitcher 
-                currentLang={language} 
-                onLanguageChange={setLanguage} 
-              />
+              <ExpandAllToggle isExpanded={allExpanded} onToggle={() => setAllExpanded(!allExpanded)} language={language} />
+              <VisionLanguageSwitcher currentLang={language} onLanguageChange={setLanguage} />
               <Link to="/vision">
                 <Button variant="outline" size="sm" className="min-h-[44px] border-secondary/20 hover:bg-secondary/5">
                   {t.fullVision}
@@ -204,234 +147,125 @@ export default function InvestorenLanding() {
       {/* VIP Welcome Banner */}
       {isPersonalized && <VIPWelcomeBanner persona={persona} />}
 
-      {/* 1. HERO - Investor variant */}
+      {/* ═══════════════════════════════════════════ */}
+      {/* 1. HERO — "Der Motor ist gebaut" */}
+      {/* ═══════════════════════════════════════════ */}
       <VisionEmotionalHero language={language} variant="investor" />
 
-      {/* PERSONA SECTION INTRO - Hero */}
-      {isPersonalized && (
-        <FunSectionIntro persona={persona} page="investoren" sectionId="hero" />
-      )}
+      {isPersonalized && <FunSectionIntro persona={persona} page="investoren" sectionId="hero" />}
 
-      {/* 2. LIVE STATS - Animated investor metrics */}
-      <VisionLiveStats language={language} variant="investor" />
-
-      {/* PERSONA INTERRUPT CARD */}
-      {isPersonalized && (
-        <FunInterruptCard persona={persona} page="investoren" afterSection="stats" />
-      )}
-
-      {/* 3. QUICK STATS - Investor-focused metrics */}
+      {/* ═══════════════════════════════════════════ */}
+      {/* 2. PROOF-KACHELN — Konsolidiert */}
+      {/* ═══════════════════════════════════════════ */}
       <VisionQuickStats language={language} variant="investor" />
 
-      {/* 4. VISUAL DIVIDER */}
-      <VisionVisualDivider language={language} variant="business" />
+      {isPersonalized && <FunInterruptCard persona={persona} page="investoren" afterSection="stats" />}
 
-      {/* ZWEI-SÄULEN-MODELL — Portal × Dienstleister Ökosystem */}
+      {/* ═══════════════════════════════════════════ */}
+      {/* 3. BUILD TIMELINE — Nov 2025–Mär 2026 */}
+      {/* ═══════════════════════════════════════════ */}
+      <ScrollReveal>
+        <BuildTimelineSection />
+      </ScrollReveal>
+
+      {/* ═══════════════════════════════════════════ */}
+      {/* 4. ZWEI-SÄULEN-MODELL */}
+      {/* ═══════════════════════════════════════════ */}
       <ScrollReveal>
         <TwoPillarModel />
       </ScrollReveal>
 
-      {/* NEW: RELO-OS 6-PHASE JOURNEY - Full for Investors */}
-      <ReloOSJourneySection language={language} variant="full" />
+      {/* ═══════════════════════════════════════════ */}
+      {/* 5. 3-LAYER SYSTEM MAP — Capture/Transaction/Expansion */}
+      {/* ═══════════════════════════════════════════ */}
+      <ScrollReveal>
+        <ThreeLayerSystemMap />
+      </ScrollReveal>
 
-      {/* NEW: RELO-OS FEATURES GRID - Full Tech Details */}
-      <ReloOSFeaturesGrid language={language} variant="full" />
+      {isPersonalized && <FunSectionIntro persona={persona} page="investoren" sectionId="pillars" />}
 
-      {/* 4. PROFITABILITY ROADMAP */}
-      <VisionProfitabilityRoadmap language={language} />
-
-      {/* PERSONA SECTION INTRO - Roadmap */}
-      {isPersonalized && (
-        <FunSectionIntro persona={persona} page="investoren" sectionId="roadmap" />
-      )}
-
-      {/* 5. TRACTION DASHBOARD */}
-      <VisionTractionDashboard language={language} />
-
-      {/* PERSONA INTERRUPT CARD */}
-      {isPersonalized && (
-        <FunInterruptCard persona={persona} page="investoren" afterSection="traction" />
-      )}
-
-      {/* 6. VISUAL DIVIDER */}
-      <VisionVisualDivider language={language} variant="journey" />
-
-      {/* 7. 10 BUSINESS PILLARS */}
-      <section className="py-12 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-10"
-          >
-            <Badge className="mb-4 bg-primary/10 text-primary">{t.sections.businessModel}</Badge>
-            <h2 className="text-3xl md:text-4xl font-black text-foreground mb-4">
-              {t.sections.pillarsTitle}
-            </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              {t.sections.pillarsSubtitle}
-            </p>
-          </motion.div>
-          <Vision10PillarSection allExpanded={allExpanded} language={language} />
-        </div>
-      </section>
-
-      {/* PERSONA SECTION INTRO - Pillars */}
-      {isPersonalized && (
-        <FunSectionIntro persona={persona} page="investoren" sectionId="pillars" />
-      )}
-
-      {/* 8. REVENUE STREAMS */}
+      {/* ═══════════════════════════════════════════ */}
+      {/* 6. REVENUE + UNIT ECONOMICS + WARENKORB */}
+      {/* ═══════════════════════════════════════════ */}
       <section className="py-12">
         <div className="container mx-auto px-4">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-10"
-          >
-            <Badge className="mb-4 bg-secondary/10 text-secondary">553 CHF</Badge>
-            <h2 className="text-3xl md:text-4xl font-black text-foreground mb-4">
-              {t.sections.revenueTitle}
-            </h2>
-          </motion.div>
+          <Badge className="mb-4 bg-secondary/10 text-secondary">553 CHF</Badge>
+          <h2 className="text-3xl md:text-4xl font-black text-foreground mb-8">{t.sections.revenueTitle}</h2>
           <RevenueStreamExamples language={language} />
         </div>
       </section>
 
-      {/* PERSONA INTERRUPT CARD */}
-      {isPersonalized && (
-        <FunInterruptCard persona={persona} page="investoren" afterSection="revenue" />
-      )}
+      {isPersonalized && <FunInterruptCard persona={persona} page="investoren" afterSection="revenue" />}
 
-      {/* 9. VISUAL DIVIDER */}
-      <VisionVisualDivider language={language} variant="family" />
-
-      {/* 10. UNIT ECONOMICS */}
       <section className="py-12 bg-muted/30">
         <div className="container mx-auto px-4">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-10"
-          >
-            <Badge className="mb-4 bg-primary/10 text-primary">90%+ Marge</Badge>
-            <h2 className="text-3xl md:text-4xl font-black text-foreground mb-4">
-              {t.sections.unitTitle}
-            </h2>
-          </motion.div>
+          <Badge className="mb-4 bg-primary/10 text-primary">90%+ Marge</Badge>
+          <h2 className="text-3xl md:text-4xl font-black text-foreground mb-8">{t.sections.unitTitle}</h2>
           <UnitEconomicsDetailed language={language} />
         </div>
       </section>
 
-      {/* 10b. MODULARER WARENKORB — Cross-Selling AOV */}
       <ScrollReveal>
         <ModularerWarenkorbSection />
       </ScrollReveal>
 
-      {/* PERSONA SECTION INTRO - Economics */}
-      {isPersonalized && (
-        <FunSectionIntro persona={persona} page="investoren" sectionId="economics" />
-      )}
+      {isPersonalized && <FunSectionIntro persona={persona} page="investoren" sectionId="economics" />}
 
-      {/* 11. MARKET POTENTIAL */}
-      <section className="py-12">
-        <div className="container mx-auto px-4">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-10"
-          >
-            <Badge className="mb-4 bg-secondary/10 text-secondary">450k</Badge>
-            <h2 className="text-3xl md:text-4xl font-black text-foreground mb-4">
-              {t.sections.marketTitle}
-            </h2>
-          </motion.div>
-          <MarketPotentialSection language={language} />
-        </div>
-      </section>
-
-      {/* 11b. MARKET DEEP DIVE — Research-backed analysis */}
+      {/* ═══════════════════════════════════════════ */}
+      {/* 7. NARRATIVE MOAT — Why Now + Flywheel + Moat */}
+      {/* ═══════════════════════════════════════════ */}
       <ScrollReveal>
-        <MarketDeepDiveSection />
+        <NarrativeMoatSection />
       </ScrollReveal>
 
-      {/* PERSONA INTERRUPT CARD */}
-      {isPersonalized && (
-        <FunInterruptCard persona={persona} page="investoren" afterSection="market" />
-      )}
-
-      {/* 12. UNIQUENESS */}
-      <ScrollReveal>
-        <VisionUniqueness language={language} />
-      </ScrollReveal>
-
-      {/* 13. EXIT TIMELINE */}
-      <ScrollReveal>
-        <ExitTimeline language={language} />
-      </ScrollReveal>
-
-      {/* 14. FUNDING ROADMAP */}
-      <ScrollReveal>
-        <FundingRoadmapSection language={language} />
-      </ScrollReveal>
-
-      {/* 15. SEO & CONTENT MOAT */}
+      {/* ═══════════════════════════════════════════ */}
+      {/* 8. SEO & CONTENT MOAT */}
+      {/* ═══════════════════════════════════════════ */}
       <ScrollReveal>
         <SEOContentMoatSection language={language} />
       </ScrollReveal>
 
-      {/* 16. SEO MARKET SIZE — Keywords, Volumes, Traffic */}
+      {/* ═══════════════════════════════════════════ */}
+      {/* 9. FUNDING ROADMAP — 80k in 3 Tranchen */}
+      {/* ═══════════════════════════════════════════ */}
       <ScrollReveal>
-        <SEOMarketSizeSection language={language} />
+        <FundingRoadmapSection language={language} />
       </ScrollReveal>
 
-      {/* 17. WHY INVEST — 50 Gründe (Final Structure) */}
+      {isPersonalized && <FunSectionIntro persona={persona} page="investoren" sectionId="roadmap" />}
+
+      {/* ═══════════════════════════════════════════ */}
+      {/* 10. FIVE RUNS METHODOLOGY — Kill Switch */}
+      {/* ═══════════════════════════════════════════ */}
+      <ScrollReveal>
+        <FiveRunsMethodologySection />
+      </ScrollReveal>
+
+      {isPersonalized && <FunInterruptCard persona={persona} page="investoren" afterSection="market" />}
+
+      {/* ═══════════════════════════════════════════ */}
+      {/* 11. WHY INVEST — 50 Gründe */}
+      {/* ═══════════════════════════════════════════ */}
       <ScrollReveal>
         <WhyInvestSection language={language} />
       </ScrollReveal>
 
-      {/* 17a. AI WORKLOAD COMPARISON — Was 95% KI wirklich bedeutet */}
-      <ScrollReveal>
-        <AIWorkloadComparison />
-      </ScrollReveal>
-
-      {/* 17b. ALREADY LIVE — Proof Block */}
-      <ScrollReveal>
-        <AlreadyLiveSection />
-      </ScrollReveal>
-
-      {/* 17c. GROWTH & PR STRATEGY — Das Projekt ist der Content */}
-      <ScrollReveal>
-        <GrowthPRStrategySection />
-      </ScrollReveal>
-
-      {/* 18. WHATSAPP LIVE-DEMO — QR Code for Pitch */}
-      <ScrollReveal>
-        <WhatsAppDemoSection />
-      </ScrollReveal>
-
-      {/* 19. OVERKILL VISION — 50 Tech-USPs */}
+      {/* ═══════════════════════════════════════════ */}
+      {/* 12. OVERKILL VISION + USP FRAMEWORK */}
+      {/* ═══════════════════════════════════════════ */}
       <ScrollReveal>
         <OverkillVisionSection />
       </ScrollReveal>
 
-      {/* 19b. 50-PUNKTE USP FRAMEWORK — Psychologische Hierarchie */}
       <ScrollReveal>
         <USPFrameworkSection />
       </ScrollReveal>
 
-      {/* 20. INVESTOR CLOSING — Investment Logic + Emotional Close */}
+      {/* ═══════════════════════════════════════════ */}
+      {/* 13. CLOSING — Giuseppe-Brief */}
+      {/* ═══════════════════════════════════════════ */}
       <ScrollReveal>
         <InvestorClosingSection />
-      </ScrollReveal>
-
-      {/* 21. FIVE RUNS METHODOLOGY — Kill Switch + AI Risk Assessment */}
-      <ScrollReveal>
-        <FiveRunsMethodologySection />
       </ScrollReveal>
 
       {/* JOKES SECTION - Only for BG/IT */}
@@ -450,24 +284,17 @@ export default function InvestorenLanding() {
       <section className="py-12 bg-primary/5">
         <div className="container mx-auto px-4 text-center">
           <h3 className="text-2xl font-bold mb-4">{t.footer.interested}</h3>
-          <p className="text-muted-foreground mb-6 max-w-xl mx-auto">
-            {t.footer.cta}
-          </p>
+          <p className="text-muted-foreground mb-6 max-w-xl mx-auto">{t.footer.cta}</p>
           
-          {/* Persona CTA */}
           {isPersonalized ? (
             <FunCTA persona={persona} page="investoren" index={0} />
           ) : (
             <div className="flex flex-wrap items-center justify-center gap-4">
               <Link to="/vision">
-                <Button size="lg">
-                  {t.footer.visionBtn}
-                </Button>
+                <Button size="lg">{t.footer.visionBtn}</Button>
               </Link>
               <Link to="/family">
-                <Button variant="outline" size="lg">
-                  {t.footer.familyBtn}
-                </Button>
+                <Button variant="outline" size="lg">{t.footer.familyBtn}</Button>
               </Link>
             </div>
           )}
