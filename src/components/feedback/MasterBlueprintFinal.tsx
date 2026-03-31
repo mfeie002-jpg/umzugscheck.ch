@@ -288,19 +288,27 @@ const MasterBlueprintFinal = () => (
           3-Schienen-Direktive für die nächsten 90 Tage:
         </p>
         <div className="space-y-3">
-          {[
-            { nr: '1', title: 'BEWEISEN', desc: 'Traffic-Test → CPL messen → Conversion validieren → Unit Economics berechnen. Alles andere ist sekundär.', color: 'emerald' },
-            { nr: '2', title: 'BEREINIGEN', desc: 'Hybrid-Governance dokumentieren, Interessenkonflikt lösen, Claims auf belegbare Aussagen reduzieren.', color: 'amber' },
-            { nr: '3', title: 'VORBEREITEN', desc: 'Data Room aufbauen, Pitch Deck mit echten Zahlen, Investor-FAQ mit ehrlichen Antworten.', color: 'sky' },
-          ].map((s) => (
-            <div key={s.nr} className={`flex gap-3 items-start bg-${s.color}-500/5 border border-${s.color}-500/15 rounded-lg p-3`}>
-              <span className={`text-${s.color}-400 font-black text-lg shrink-0`}>{s.nr}</span>
-              <div>
-                <p className={`text-xs font-bold text-${s.color}-400 mb-0.5`}>{s.title}</p>
-                <p className="text-xs sm:text-sm text-white/70">{s.desc}</p>
-              </div>
+          <div className="flex gap-3 items-start bg-emerald-500/5 border border-emerald-500/15 rounded-lg p-3">
+            <span className="text-emerald-400 font-black text-lg shrink-0">1</span>
+            <div>
+              <p className="text-xs font-bold text-emerald-400 mb-0.5">BEWEISEN</p>
+              <p className="text-xs sm:text-sm text-white/70">Traffic-Test → CPL messen → Conversion validieren → Unit Economics berechnen. Alles andere ist sekundär.</p>
             </div>
-          ))}
+          </div>
+          <div className="flex gap-3 items-start bg-amber-500/5 border border-amber-500/15 rounded-lg p-3">
+            <span className="text-amber-400 font-black text-lg shrink-0">2</span>
+            <div>
+              <p className="text-xs font-bold text-amber-400 mb-0.5">BEREINIGEN</p>
+              <p className="text-xs sm:text-sm text-white/70">Hybrid-Governance dokumentieren, Interessenkonflikt lösen, Claims auf belegbare Aussagen reduzieren.</p>
+            </div>
+          </div>
+          <div className="flex gap-3 items-start bg-sky-500/5 border border-sky-500/15 rounded-lg p-3">
+            <span className="text-sky-400 font-black text-lg shrink-0">3</span>
+            <div>
+              <p className="text-xs font-bold text-sky-400 mb-0.5">VORBEREITEN</p>
+              <p className="text-xs sm:text-sm text-white/70">Data Room aufbauen, Pitch Deck mit echten Zahlen, Investor-FAQ mit ehrlichen Antworten.</p>
+            </div>
+          </div>
         </div>
         <div className="border-t border-white/10 pt-3 mt-3">
           <p className="text-xs text-white/50 text-center italic">
