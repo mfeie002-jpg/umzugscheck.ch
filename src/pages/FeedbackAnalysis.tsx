@@ -2036,7 +2036,7 @@ const FeedbackAnalysis = () => {
             </p>
             <p className="text-xs text-white/30 max-w-xl mx-auto">
               Konsolidiert aus 5 Analyse-Runden, Final Strategic Verdict, AI Execution Masterplan, 
-              Gemini Blueprint, Ultimate Blueprint und externen PDFs. 27 Blöcke. Stand: 31. März 2026.
+              Gemini Blueprint, Ultimate Blueprint, externen PDFs und Final Strategy Blueprint. 28 Blöcke. Stand: 31. März 2026.
             </p>
             <div className="flex justify-center gap-1.5 flex-wrap max-w-lg mx-auto">
               <SourceBadge source="ANALYSE 1" />
