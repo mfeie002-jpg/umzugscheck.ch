@@ -23,6 +23,7 @@ import { motion } from "framer-motion";
 import type { VisionLanguage } from "@/lib/vision-translations";
 import { getVisionTranslation } from "@/lib/vision-translations";
 import { MarketConcentricInfographic } from "./InvestorInfographics3";
+import { SwissCoverageMap } from "./SwissCoverageMap";
 
 interface MarketPotentialSectionProps {
   language: VisionLanguage;

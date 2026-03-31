@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { FunnelFlowDiagram, PlatformFlywheel } from "./InvestorInfographics";
 import { ProofMockups } from "./ProofMockups";
+import { FlowTestingMatrix } from "./FlowTestingMatrix";
 
 const proofCards = [
   {
