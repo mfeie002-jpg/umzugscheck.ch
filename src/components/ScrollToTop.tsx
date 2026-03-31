@@ -38,7 +38,7 @@ export const ScrollToTop = memo(() => {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.8, y: 20 }}
           transition={{ type: "spring", stiffness: 400, damping: 30 }}
-          className="fixed bottom-24 md:bottom-8 right-4 md:right-8 z-40"
+          className="fixed bottom-20 md:bottom-8 right-4 md:right-6 z-30"
         >
           <motion.button
             onClick={scrollToTop}
