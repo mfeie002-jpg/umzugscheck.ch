@@ -1889,11 +1889,14 @@ const FeedbackAnalysis = () => {
           </section>
         </Reveal>
 
+        {/* ═══ BLOCK 25: GEMINI BLUEPRINT ═══ */}
+        <GeminiBlueprint />
+
         {/* ═══ FOOTER ═══ */}
         <Reveal>
           <div className="text-center py-8 space-y-2">
             <p className="text-xs text-white/30">
-              Konsolidiert aus 4 Analyse-Runden + Final Verdict + Masterplan · Stand: März 2026 · Internes Red-Team-Dokument
+              Konsolidiert aus 4 Analyse-Runden + Final Verdict + Masterplan + Gemini Blueprint · Stand: März 2026 · Internes Red-Team-Dokument
             </p>
             <div className="flex justify-center gap-2 flex-wrap">
               <SourceBadge source="ANALYSE 1" />
@@ -1903,6 +1906,7 @@ const FeedbackAnalysis = () => {
               <SourceBadge source="FEEDBACK" />
               <SourceBadge source="FINAL VERDICT" />
               <SourceBadge source="MASTERPLAN" />
+              <SourceBadge source="GEMINI" />
             </div>
           </div>
         </Reveal>
