@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { 
   ArrowLeft, AlertTriangle, Shield, TrendingUp, Target, 
   CheckCircle2, XCircle, AlertCircle, ChevronDown, ChevronRight,
-  FileText, Lightbulb, Clock, Zap, BarChart3, Scale
+  FileText, Lightbulb, Clock, Zap, BarChart3, Scale, List, X
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -114,24 +114,102 @@ const Reveal = ({ children, delay = 0 }: { children: React.ReactNode; delay?: nu
   </motion.div>
 );
 
+// ─── Table of Contents Data ───
+const TOC_ITEMS = [
+  { id: 'readiness-score', label: '1. Readiness Score', block: '1' },
+  { id: 'kill-points', label: '2. Kill Points', block: '2' },
+  { id: 'unbelegte-annahmen', label: '3. Unbelegte Annahmen', block: '3' },
+  { id: 'widersprueche', label: '4. Widersprüche', block: '4' },
+  { id: 'claim-audit', label: '5. Claim Audit', block: '5' },
+  { id: 'proof-checklist', label: '6. Proof Checklist', block: '6' },
+  { id: 'roadmap', label: '7. Roadmap', block: '7' },
+  { id: 'strategie', label: '8. Strategische Empfehlung', block: '8' },
+  { id: 'readiness-overview', label: '9. Readiness Overview', block: '9' },
+  { id: 'gap-map', label: '10. Gap Map', block: '10' },
+  { id: 'proof-disziplin', label: '11. Proof-Disziplin', block: '11' },
+  { id: 'claim-audit-extended', label: '12. Claim Audit Erweitert', block: '12' },
+  { id: 'confusion-points', label: '13. Confusion Points', block: '13' },
+  { id: 'must-fix', label: '14. Must Fix', block: '14' },
+  { id: 'chancen', label: '15. Chancen & Potential', block: '15' },
+  { id: 'founder-assessment', label: '16. Founder Assessment', block: '16' },
+  { id: 'final-decision', label: '17. Final Decision Frame', block: '17' },
+  { id: 'master-actions', label: '18. Master Action List', block: '18' },
+  { id: 'priority-matrix', label: '19. Priority Matrix', block: '19' },
+  { id: 'workstreams', label: '20. Workstreams', block: '20' },
+  { id: 'proof-gates', label: '21. Proof Gates', block: '21' },
+  { id: 'red-flags', label: '22. Red Flags', block: '22' },
+  { id: 'final-verdict', label: '23. Final Verdict', block: '23' },
+  { id: 'ai-masterplan', label: '24. AI Masterplan', block: '24' },
+  { id: 'gemini-blueprint', label: '25. Gemini Blueprint', block: '25' },
+  { id: 'ultimate-blueprint', label: '26. Ultimate Blueprint', block: '26' },
+  { id: 'external-blueprint', label: '27. External Blueprint', block: '27' },
+];
+
+// ─── TOC Sidebar ───
+const TableOfContents = () => {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      {/* Mobile TOC toggle */}
+      <button
+        onClick={() => setOpen(!open)}
+        className="fixed bottom-4 right-4 z-50 lg:hidden bg-white/10 backdrop-blur-md border border-white/20 rounded-full p-3 text-white shadow-lg hover:bg-white/20 transition-colors print:hidden"
+        aria-label="Inhaltsverzeichnis"
+      >
+        {open ? <X className="w-5 h-5" /> : <List className="w-5 h-5" />}
+      </button>
+
+      {/* TOC Panel */}
+      <div className={`fixed top-14 right-0 z-40 h-[calc(100vh-3.5rem)] w-64 bg-[#0a0a0a]/95 backdrop-blur-md border-l border-white/10 overflow-y-auto transition-transform duration-300 print:hidden ${open ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'}`}>
+        <div className="p-4 space-y-1">
+          <p className="text-[10px] text-white/30 uppercase tracking-widest mb-3 font-bold">Inhaltsverzeichnis</p>
+          {TOC_ITEMS.map((item) => (
+            <a
+              key={item.id}
+              href={`#${item.id}`}
+              onClick={() => setOpen(false)}
+              className="block text-xs text-white/50 hover:text-white hover:bg-white/5 rounded px-2 py-1.5 transition-colors truncate"
+            >
+              {item.label}
+            </a>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+};
+
 // ═══════════════════════════════════════════════
 // MAIN COMPONENT
 // ═══════════════════════════════════════════════
 const FeedbackAnalysis = () => {
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white">
+      {/* Print Styles */}
+      <style>{`
+        @media print {
+          body { background: white !important; color: black !important; }
+          .print\\:hidden { display: none !important; }
+          * { color-adjust: exact; -webkit-print-color-adjust: exact; }
+        }
+      `}</style>
+
+      <TableOfContents />
+
       {/* Header */}
-      <div className="sticky top-0 z-50 bg-[#0a0a0a]/90 backdrop-blur-md border-b border-white/10">
+      <div className="sticky top-0 z-50 bg-[#0a0a0a]/90 backdrop-blur-md border-b border-white/10 print:static print:bg-white print:border-gray-200">
         <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-          <Link to="/investoren" className="flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm">
-            <ArrowLeft className="w-4 h-4" /> Zurück zu /investoren
+          <Link to="/investoren" className="flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm print:hidden">
+            <ArrowLeft className="w-4 h-4" /> Zurück
           </Link>
-          <Badge className="bg-red-500/20 text-red-400 border-red-500/30 text-xs">
-            INTERNES DOKUMENT
-          </Badge>
+          <div className="flex items-center gap-3">
+            <span className="text-[10px] text-white/30 hidden sm:inline">v1.0 Final · 31. März 2026</span>
+            <Badge className="bg-red-500/20 text-red-400 border-red-500/30 text-xs">
+              INTERNES DOKUMENT
+            </Badge>
+          </div>
         </div>
       </div>
-
       <div className="max-w-5xl mx-auto px-4 py-8 space-y-10">
 
         {/* ═══ BLOCK 1: READINESS SCORE ═══ */}
