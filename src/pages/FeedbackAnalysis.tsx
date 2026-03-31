@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AIExecutionMasterplan from '@/components/feedback/AIExecutionMasterplan';
 import GeminiBlueprint from '@/components/feedback/GeminiBlueprint';
 import UltimateBlueprint from '@/components/feedback/UltimateBlueprint';
+import ExternalBlueprintContent from '@/components/feedback/ExternalBlueprintContent';
 
 // ─── Status Badge Component ───
 const StatusBadge = ({ status }: { status: string }) => {
