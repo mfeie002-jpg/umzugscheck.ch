@@ -1,5 +1,5 @@
 /**
- * InvestorClosingSection — Investment logic + emotional closing
+ * InvestorClosingSection — Founder Conviction + Closing
  */
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
@@ -103,18 +103,50 @@ export function InvestorClosingSection() {
           </motion.div>
         </div>
 
-        {/* Personal conviction */}
+        {/* ═══════════════════════════════════════════ */}
+        {/* FOUNDER CONVICTION — Polished Version */}
+        {/* ═══════════════════════════════════════════ */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 to-card p-6 md:p-10 text-center max-w-3xl mx-auto mb-16"
+          className="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 to-card p-6 md:p-10 max-w-3xl mx-auto mb-8"
         >
-          <Heart className="w-8 h-8 text-primary mx-auto mb-4" />
-          <p className="text-lg md:text-xl font-semibold text-foreground leading-relaxed italic">
-            «Für mich ist dieses Investment 100% safe, weil ich nicht aufhöre, bis wir oben sind.
-            <br className="hidden sm:block" />
-            Nicht die Logik des Modells ist offen — nur die Geschwindigkeit, mit der wir es zur Dominanz bringen.»
+          <Heart className="w-8 h-8 text-primary mx-auto mb-6" />
+          <h3 className="text-xl font-black text-foreground text-center mb-6">Meine ehrliche Einschätzung</h3>
+          
+          <div className="space-y-4 text-foreground leading-relaxed">
+            <p className="text-lg font-semibold italic">
+              «Für mich persönlich fühlt sich dieses Modell wie 100% an, weil ich nicht aufhöre, bis ein funktionierender profitabler Kern sichtbar ist.»
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Objektiv nenne ich es trotzdem nicht blind 100%, weil Markt, Wettbewerb, Partnerqualität, Timing und Plattformabhängigkeiten nicht vollständig kontrollierbar sind. Genau deshalb bauen wir Umzugscheck nicht auf Hoffnung, sondern auf klare Optimierungszyklen, messbare Signale und harte Disziplin.
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Jede zentrale Hypothese wird strukturiert getestet. Ein Run bedeutet immer: testen, auswerten, Engpass identifizieren, verbessern und erneut testen. Diesen Zyklus wiederholen wir bis zu fünfmal. Nicht, weil wir an blindes Weiterprobieren glauben, sondern weil ein einzelner Test fast nie die Wahrheit zeigt.
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Wenn nach fünf sauberen Optimierungszyklen keine belastbare Wirtschaftlichkeit sichtbar ist, stoppen wir konsequent. Nicht aus Zweifel, sondern aus unternehmerischer Disziplin.
+            </p>
+          </div>
+        </motion.div>
+
+        {/* Schlussgedanke */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="rounded-2xl border-2 border-primary/30 bg-primary/5 p-6 md:p-8 max-w-3xl mx-auto mb-16 text-center"
+        >
+          <h4 className="text-sm font-bold text-primary uppercase tracking-wide mb-4">Schlussgedanke an den Investor</h4>
+          <p className="text-muted-foreground leading-relaxed mb-4">
+            Ich suche kein Kapital für endloses Ausprobieren. Ich suche Kapital für einen klaren, messbaren Aufbauprozess mit echter Lernkurve, konsequenter Optimierung und sauberer Stop-Logik.
+          </p>
+          <p className="text-muted-foreground leading-relaxed mb-6">
+            Wenn das Modell trägt, skalieren wir es entschlossen. Wenn es diesen Nachweis nicht bringt, stoppen wir konsequent.
+          </p>
+          <p className="text-lg font-black text-foreground leading-relaxed">
+            Mein Commitment ist kompromisslos. Ich werde nicht aufhören, bis wir einen funktionierenden profitablen Kern freigelegt haben — oder die Daten eindeutig zeigen, dass er in dieser Form nicht existiert.
           </p>
         </motion.div>
 

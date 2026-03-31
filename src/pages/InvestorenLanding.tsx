@@ -25,6 +25,9 @@ import { BuildTimelineSection } from "@/components/vision/BuildTimelineSection";
 import { ThreeLayerSystemMap } from "@/components/vision/ThreeLayerSystemMap";
 import { NarrativeMoatSection } from "@/components/vision/NarrativeMoatSection";
 import { TwoPillarModel } from "@/components/vision/TwoPillarModel";
+import { MarketAttractivenessSection } from "@/components/vision/MarketAttractivenessSection";
+import { WhyWeWinSection } from "@/components/vision/WhyWeWinSection";
+import { UseOfFundsSection } from "@/components/vision/UseOfFundsSection";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, TrendingUp } from "lucide-react";
@@ -219,7 +222,21 @@ export default function InvestorenLanding() {
       </ScrollReveal>
 
       {/* ═══════════════════════════════════════════ */}
-      {/* 8. SEO & CONTENT MOAT */}
+      {/* 8. MARKT-ATTRAKTIVITÄT */}
+      {/* ═══════════════════════════════════════════ */}
+      <ScrollReveal>
+        <MarketAttractivenessSection />
+      </ScrollReveal>
+
+      {/* ═══════════════════════════════════════════ */}
+      {/* 9. WARUM WIR GEWINNEN */}
+      {/* ═══════════════════════════════════════════ */}
+      <ScrollReveal>
+        <WhyWeWinSection />
+      </ScrollReveal>
+
+      {/* ═══════════════════════════════════════════ */}
+      {/* 10. SEO & CONTENT MOAT */}
       {/* ═══════════════════════════════════════════ */}
       <ScrollReveal>
         <SEOContentMoatSection language={language} />
@@ -230,6 +247,13 @@ export default function InvestorenLanding() {
       {/* ═══════════════════════════════════════════ */}
       <ScrollReveal>
         <FundingRoadmapSection language={language} />
+      </ScrollReveal>
+
+      {/* ═══════════════════════════════════════════ */}
+      {/* 12. USE OF FUNDS — 80k Verteilung */}
+      {/* ═══════════════════════════════════════════ */}
+      <ScrollReveal>
+        <UseOfFundsSection />
       </ScrollReveal>
 
       {isPersonalized && <FunSectionIntro persona={persona} page="investoren" sectionId="roadmap" />}
