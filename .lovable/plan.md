@@ -1,60 +1,53 @@
 
-Ziel
 
-Den Mobile-Fehler an der eigentlichen Ursache beheben — nicht nochmals nur Abstände im Hero nachjustieren.
+# `/feedback` — Ultimatives Verbesserungsdokument
 
-Was ich gefunden habe
+## Was entsteht
 
-- Das Screenshot-Problem ist sehr wahrscheinlich kein reines Hero-Alignment-Problem.
-- Der schwebende rechte Hinweis „Rechner“ und die Dots über dem Bottom-Bereich passen exakt zu `src/components/mobile/SwipeNavigationWrapper.tsx`.
-- Diese Elemente werden global über das Layout eingeblendet und legen sich auf die Homepage-Hero-Fläche.
-- Deshalb wirkt Mobile „immer noch off“, selbst wenn der Hero selbst schon mehrfach angepasst wurde.
-- Bereits ausgeschlossen als Hauptursache auf `/`:
-  - `UnifiedABToggle` ist auf Mobile aus
-  - `MobileSearchButton` ist auf `/` aus
-  - `StickyContactBar` ist Mobile-ausgeblendet
-  - `AIMovingAssistant` ist Desktop-only
+Eine neue Seite unter `/feedback`, die alle kritischen Analysen aus den letzten Gesprächen konsolidiert — nicht als Wiederholung, sondern als strukturiertes, priorisiertes Verbesserungsdokument. Die Seite dient als internes Red-Team-Arbeitswerkzeug.
 
-Plan
+## Inhalt (destilliert aus allen Analyse-Runden)
 
-1. Swipe-Overlay auf Funnel-Routen entfernen
-- Die seitlichen Swipe-Hinweise und den Dot-Pager auf der mobilen Homepage und auf Funnel-Routen ausblenden.
-- Betroffen zuerst:
-  - `/`
-  - zentrale Offerten-/Rechner-/Vergleichs-Routen
-- Dadurch verschwinden genau die Elemente, die im Screenshot über dem Formular liegen.
+Die Seite wird in 8 klare Blöcke gegliedert:
 
-2. Gemeinsame Mobile-Overlay-Regel einführen
-- Eine zentrale Route-Policy für globale Fixed-Elemente definieren.
-- Darüber steuern, was auf hero-/funnel-kritischen Seiten erscheinen darf:
-  - `SwipeNavigationWrapper`
-  - `MobileBottomNav`
-  - `MobileStickyBar`
-  - `ScrollToTop`
-  - weitere Floating-Elemente
+```text
+1. READINESS SCORE        — Gesamtbewertung 3/10 mit Begründung
+2. TOP 7 KILL POINTS      — Die gefährlichsten Bruchstellen, priorisiert
+3. UNBELEGTE ANNAHMEN     — 10 Annahmen mit Status-Labels (BEWIESEN / NICHT BELEGT / REINE ANNAHME)
+4. WIDERSPRÜCHE           — 6 Spannungsfelder mit konkreter Entschärfungs-Empfehlung
+5. PITCH CLAIM AUDIT      — Was man sagen darf vs. was zu gross ist (4 Gruppen)
+6. PROOF CHECKLIST        — Was vor Investorengesprächen bewiesen werden muss
+7. 30-TAGE DE-RISKING     — 10 konkrete Schritte, 5 Tests, 5 Kennzahlen
+8. STRATEGISCHE EMPFEHLUNG — Fokus-Cut, 2-Versionen-Strategie, Modellentscheidung
+```
 
-3. Fix auf Layout-Ebene statt nur im Hero
-- Die Korrektur bewusst nicht nur in `PremiumHeroSection` machen.
-- So greifen die Regeln für alle Homepage-Varianten A/B/C und das Problem kommt nicht bei der nächsten Variant wieder zurück.
+## Design
 
-4. Mobile QA auf echten Engpässen
-- Danach gezielt für schmale Mobile-Breiten prüfen:
-  - kein „Rechner“-Pill mehr über dem Hero
-  - keine Dot-Navigation über Inputs
-  - Bottom Nav / Sticky CTA stapeln sich nicht in den Hero hinein
-  - keine horizontale Verschiebung bei 339px+
+- Gleicher Stil wie `/investoren`: Badge-Header, Cards, Teal/Orange Palette
+- Status-Labels als farbige Badges: BEWIESEN (grün), PLAUSIBEL (gelb), NICHT BELEGT (rot), RISIKO (orange)
+- Severity-Ratings als visuelle Balken (1-5)
+- Collapsible Sections für Tiefe ohne Überforderung
+- Kein Scroll-Marathon: Tabs wo sinnvoll (z.B. Kill Points nach Kategorie)
 
-Technische Details
+## Quellen-Integration
 
-- Hauptdatei: `src/components/mobile/SwipeNavigationWrapper.tsx`
-- Wahrscheinlich mitzubereinigen:
-  - `src/App.tsx`
-  - `src/components/homepage/MobileStickyBar.tsx`
-  - `src/components/MobileBottomNav.tsx`
-  - `src/components/ScrollToTop.tsx`
-- Bestes Vorgehen: kleine gemeinsame Liste für „critical mobile routes“ einführen und diese für alle globalen Overlays wiederverwenden.
+Alle Punkte werden mit Quellen-Labels versehen:
+- `[ANALYSE 1]` — Erste VC-Kritik (7 tödliche Schwachstellen)
+- `[ANALYSE 2]` — Deep Dive (Core Failure Points, Assumption Stress Test)
+- `[ANALYSE 3]` — Investor Readiness (Gap Map, Pitch Claim Audit)
+- `[FEEDBACK]` — Das aktuelle Meta-Feedback (Tonalität-Korrekturen, Fokus-Cut)
 
-Ergebnis
+## Dateien
 
-- Die Mobile-Homepage wird wieder sauber ausgerichtet, weil die störende Wrapper-Ebene entfernt wird.
-- Künftige Mobile-Fixes werden stabiler, weil Overlap-Regeln an einer Stelle gepflegt werden statt verteilt per Einzel-Patch.
+| Aktion | Datei |
+|--------|-------|
+| Create | `src/pages/FeedbackAnalysis.tsx` — Hauptseite mit allen 8 Blöcken |
+| Edit | `src/App.tsx` — Route `/feedback` + lazy import |
+
+## Technisch
+- Standalone-Seite, keine Abhängigkeit von Investoren-Komponenten
+- Framer Motion für ScrollReveal
+- Responsive Cards + Collapsible Accordions
+- Alle Inhalte hardcoded (kein DB nötig — internes Dokument)
+- Back-Button zu `/investoren`
+
