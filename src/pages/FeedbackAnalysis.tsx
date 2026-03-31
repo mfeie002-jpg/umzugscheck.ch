@@ -217,7 +217,7 @@ const FeedbackAnalysis = () => {
           <section id="readiness-score" className="space-y-4 scroll-mt-16">
             <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <Badge className="bg-teal-500/20 text-teal-400 border-teal-500/30 text-[10px] sm:text-xs">BLOCK 1</Badge>
-              <h1 className="text-xl sm:text-2xl font-bold">Investor Readiness Score</h1>
+              <h1 className="text-xl sm:text-xl sm:text-2xl font-bold">Investor Readiness Score</h1>
             </div>
             
             <Card className="bg-white/5 border-white/10">
@@ -266,7 +266,7 @@ const FeedbackAnalysis = () => {
         {/* ═══ BLOCK 2: TOP 7 KILL POINTS ═══ */}
         <Reveal delay={0.05}>
           <section id="kill-points" className="space-y-4 scroll-mt-16">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <Badge className="bg-teal-500/20 text-teal-400 border-teal-500/30">BLOCK 2</Badge>
               <h2 className="text-xl font-bold">Top 7 Kill Points</h2>
             </div>
@@ -316,7 +316,7 @@ const FeedbackAnalysis = () => {
         {/* ═══ BLOCK 3: UNBELEGTE ANNAHMEN ═══ */}
         <Reveal delay={0.05}>
           <section id="unbelegte-annahmen" className="space-y-4 scroll-mt-16">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <Badge className="bg-teal-500/20 text-teal-400 border-teal-500/30">BLOCK 3</Badge>
               <h2 className="text-xl font-bold">Unbelegte Annahmen</h2>
             </div>
@@ -352,7 +352,7 @@ const FeedbackAnalysis = () => {
         {/* ═══ BLOCK 4: WIDERSPRÜCHE ═══ */}
         <Reveal delay={0.05}>
           <section id="widersprueche" className="space-y-4 scroll-mt-16">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <Badge className="bg-teal-500/20 text-teal-400 border-teal-500/30">BLOCK 4</Badge>
               <h2 className="text-xl font-bold">Widersprüche & Spannungsfelder</h2>
             </div>
@@ -402,7 +402,7 @@ const FeedbackAnalysis = () => {
         {/* ═══ BLOCK 5: PITCH CLAIM AUDIT ═══ */}
         <Reveal delay={0.05}>
           <section id="claim-audit" className="space-y-4 scroll-mt-16">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <Badge className="bg-teal-500/20 text-teal-400 border-teal-500/30">BLOCK 5</Badge>
               <h2 className="text-xl font-bold">Pitch Claim Audit</h2>
             </div>
@@ -491,7 +491,7 @@ const FeedbackAnalysis = () => {
         {/* ═══ BLOCK 6: PROOF CHECKLIST ═══ */}
         <Reveal delay={0.05}>
           <section id="proof-checklist" className="space-y-4 scroll-mt-16">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <Badge className="bg-teal-500/20 text-teal-400 border-teal-500/30">BLOCK 6</Badge>
               <h2 className="text-xl font-bold">Proof Checklist — Vor Investorengesprächen</h2>
             </div>
@@ -525,7 +525,7 @@ const FeedbackAnalysis = () => {
         {/* ═══ BLOCK 7: 30-TAGE DE-RISKING ═══ */}
         <Reveal delay={0.05}>
           <section id="roadmap" className="space-y-4 scroll-mt-16">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <Badge className="bg-teal-500/20 text-teal-400 border-teal-500/30">BLOCK 7</Badge>
               <h2 className="text-xl font-bold">30-Tage De-Risking Plan</h2>
             </div>
@@ -617,7 +617,7 @@ const FeedbackAnalysis = () => {
         {/* ═══ BLOCK 8: STRATEGISCHE EMPFEHLUNG ═══ */}
         <Reveal delay={0.05}>
           <section id="strategie" className="space-y-4 scroll-mt-16">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <Badge className="bg-teal-500/20 text-teal-400 border-teal-500/30">BLOCK 8</Badge>
               <h2 className="text-xl font-bold">Strategische Empfehlung</h2>
             </div>
@@ -1730,7 +1730,7 @@ const FeedbackAnalysis = () => {
           <section id="final-verdict" className="space-y-6 scroll-mt-16">
             <div className="flex items-center gap-3 mb-2">
               <Shield className="w-6 h-6 text-emerald-400" />
-              <h2 className="text-2xl font-black text-white tracking-tight">23. FINAL STRATEGIC VERDICT</h2>
+              <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">23. FINAL STRATEGIC VERDICT</h2>
               <SourceBadge source="FINAL VERDICT" />
             </div>
 
@@ -1959,9 +1959,9 @@ const FeedbackAnalysis = () => {
         {/* ═══ BLOCK 24: AI EXECUTION MASTERPLAN ═══ */}
         <Reveal>
           <section id="ai-masterplan" className="space-y-6 scroll-mt-16">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <Zap className="w-7 h-7 text-cyan-400" />
-              <h2 className="text-2xl font-black text-white">Block 24: AI Execution Masterplan</h2>
+              <h2 className="text-xl sm:text-2xl font-black text-white">Block 24: AI Execution Masterplan</h2>
               <SourceBadge source="MASTERPLAN" />
             </div>
             <p className="text-sm text-white/60">
@@ -1977,9 +1977,9 @@ const FeedbackAnalysis = () => {
         {/* ═══ BLOCK 26: ULTIMATE BLUEPRINT ═══ */}
         <Reveal>
           <section id="ultimate-blueprint" className="space-y-4 scroll-mt-16">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <FileText className="w-7 h-7 text-rose-400" />
-              <h2 className="text-2xl font-black text-white">Block 26: Investor Readiness Blueprint — Ultimate Edition</h2>
+              <h2 className="text-xl sm:text-2xl font-black text-white">Block 26: Investor Readiness Blueprint — Ultimate Edition</h2>
               <SourceBadge source="ULTIMATE" />
             </div>
             <p className="text-sm text-white/60">
@@ -1992,9 +1992,9 @@ const FeedbackAnalysis = () => {
         {/* ═══ BLOCK 27: EXTERNAL BLUEPRINT CONTENT ═══ */}
         <Reveal>
           <section id="external-blueprint" className="space-y-4 scroll-mt-16">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <FileText className="w-7 h-7 text-indigo-400" />
-              <h2 className="text-2xl font-black text-white">Block 27: External Blueprint — Detaillierte Umsetzung</h2>
+              <h2 className="text-xl sm:text-2xl font-black text-white">Block 27: External Blueprint — Detaillierte Umsetzung</h2>
               <SourceBadge source="EXTERNAL" />
             </div>
             <p className="text-sm text-white/60">
