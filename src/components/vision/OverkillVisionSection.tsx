@@ -114,12 +114,18 @@ function TierCard({ usp, tier }: { usp: TechUSP; tier: 'scifi' | 'excellence' | 
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.4 }}
-      className={`p-4 md:p-5 rounded-xl border transition-all duration-300 ${tierStyles[tier]}`}
+      className={`p-4 md:p-5 rounded-xl border transition-all duration-300 relative ${tierStyles[tier]}`}
     >
+      {/* Status Badge */}
+      {usp.status && (
+        <span className={`absolute top-2 right-2 text-[10px] font-bold px-2 py-0.5 rounded-full border ${STATUS_CONFIG[usp.status].color}`}>
+          {STATUS_CONFIG[usp.status].dot} {STATUS_CONFIG[usp.status].label}
+        </span>
+      )}
       <div className={`${iconStyles[tier]} flex items-center justify-center mb-3`}>
         <usp.icon className={tier === 'scifi' ? 'w-6 h-6' : tier === 'excellence' ? 'w-5 h-5' : 'w-4 h-4'} />
       </div>
-      <h4 className={`font-semibold text-foreground mb-1 ${tier === 'scifi' ? 'text-lg' : tier === 'excellence' ? 'text-base' : 'text-sm'}`}>
+      <h4 className={`font-semibold text-foreground mb-1 ${tier === 'scifi' ? 'text-lg pr-20' : tier === 'excellence' ? 'text-base pr-16' : 'text-sm pr-14'}`}>
         {usp.title}
       </h4>
       <p className={`text-muted-foreground mb-2 ${tier === 'detail' ? 'text-xs' : 'text-sm'}`}>
