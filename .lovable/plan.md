@@ -1,53 +1,70 @@
 
 
-# `/feedback` — Ultimatives Verbesserungsdokument
+# /feedback Seite erweitern: Execution Plan (10 neue Blöcke)
 
-## Was entsteht
+## Was sich ändert
 
-Eine neue Seite unter `/feedback`, die alle kritischen Analysen aus den letzten Gesprächen konsolidiert — nicht als Wiederholung, sondern als strukturiertes, priorisiertes Verbesserungsdokument. Die Seite dient als internes Red-Team-Arbeitswerkzeug.
+Die bestehende `/feedback`-Seite hat 8 Blöcke (Readiness Score bis Strategische Empfehlung). Jetzt kommen 10 neue Blöcke dazu — der finale, handlungsorientierte Teil, der aus Kritik konkrete Massnahmen macht.
 
-## Inhalt (destilliert aus allen Analyse-Runden)
+## Kontextanpassung: Pre-Launch Startup
 
-Die Seite wird in 8 klare Blöcke gegliedert:
+Wichtiger Rahmen: Das Projekt ist ein Pre-Launch Startup. Noch kein Live-Traffic, keine Umsätze — das ist der erwartete Zustand vor dem Go-Live am 1. April. Die Analyse wird dies berücksichtigen und zwischen "fehlt, weil Pre-Launch" und "fehlt, weil strukturelles Problem" unterscheiden.
+
+## Neue Blöcke (9–18)
 
 ```text
-1. READINESS SCORE        — Gesamtbewertung 3/10 mit Begründung
-2. TOP 7 KILL POINTS      — Die gefährlichsten Bruchstellen, priorisiert
-3. UNBELEGTE ANNAHMEN     — 10 Annahmen mit Status-Labels (BEWIESEN / NICHT BELEGT / REINE ANNAHME)
-4. WIDERSPRÜCHE           — 6 Spannungsfelder mit konkreter Entschärfungs-Empfehlung
-5. PITCH CLAIM AUDIT      — Was man sagen darf vs. was zu gross ist (4 Gruppen)
-6. PROOF CHECKLIST        — Was vor Investorengesprächen bewiesen werden muss
-7. 30-TAGE DE-RISKING     — 10 konkrete Schritte, 5 Tests, 5 Kennzahlen
-8. STRATEGISCHE EMPFEHLUNG — Fokus-Cut, 2-Versionen-Strategie, Modellentscheidung
+ 9. EXECUTIVE ACTION SUMMARY    — 5 Baustellen, 3 kritische Punkte, 3 Hebel
+10. MASTER ACTION LIST          — Priorisierte Massnahmen mit Kategorie/Dringlichkeit/Hebel
+11. PRIORITY MATRIX             — 4-Felder (Sofort/Bald/Nachgelagert/Nicht diskutieren)
+12. INVESTOR PREP CHECKLIST     — Was vor Pitch/DD/Datenraum bereit sein muss
+13. CLAIM CONTROL LIST          — Sicher/Vorsichtig/Zu gross/Nicht sagen (erweitert Block 5)
+14. INTERNAL WORKSTREAMS        — 6 Arbeitsstränge mit Zielen & Deliverables
+15. 30-60 DAY EXECUTION PLAN   — Phase 1 (7d) / Phase 2 (30d) / Phase 3 (60d)
+16. WHAT TO PROVE FIRST         — Top-5-Listen: beweisen/messen/formulieren/testen/belegen
+17. RED FLAGS IN INVESTOR MEETINGS — Gefährliche Punkte + Vorbereitung
+18. FINAL INTERNAL VERDICT      — Hartes Schlussurteil + Erfolgseinschätzung + Investitionsschwelle
 ```
+
+## Inhaltliche Kernpunkte (destilliert aus allen 3 Analysen + Meta-Feedback)
+
+**Executive Action Summary:**
+- 5 Baustellen: Revenue-Loop beweisen, Neutralitätskonflikt lösen, Team/Advisor, GSC-Daten, Fokus-Cut
+- Kommunikation vs. Beweis vs. Modellproblem klar getrennt
+
+**Master Action List (~15 Massnahmen):**
+- z.B. "5 echte Jobs mit Vollkostenrechnung", "GSC-Daten exportieren", "Partner-LOIs einholen", "Pitch auf 250-300 CHF Kern reduzieren", "Governance-Modell für Routing definieren"
+- Jede mit Kategorie, Dringlichkeit, Hebel, Problem-Typ
+
+**Priority Matrix:**
+- Sofort: Revenue-Proof, GSC, Fokus-Cut
+- Bald: Partner-Validation, Teamplan, Paid-Channel-Test
+- Nachgelagert: Internationalisierung, Premium-Packages, Exit-Szenarien
+- Nicht diskutieren: 6 Revenue Streams, 92% Profitabilität, "100% safe"
+
+**30-60 Day Plan:**
+- Phase 1 (7d): GSC exportieren, erste 2-3 Jobs starten, Routing-Governance definieren
+- Phase 2 (30d): 5-10 Jobs mit P&L, CPL via 500 CHF Test, 3 Partner-LOIs
+- Phase 3 (60d): CM2-Nachweis, Proof Memo erstellen, Pitch überarbeiten
+
+**Final Verdict mit Investitionsschwelle:**
+- Erfolgswahrscheinlichkeit: ehrliche Einschätzung für Pre-Launch Startup
+- Wann investierbar: konkreter Threshold (X Jobs, Y% Marge, Z Traffic)
+- Grösster Denkfehler, grösstes Risiko, grösste unbelegte Hoffnung
 
 ## Design
 
-- Gleicher Stil wie `/investoren`: Badge-Header, Cards, Teal/Orange Palette
-- Status-Labels als farbige Badges: BEWIESEN (grün), PLAUSIBEL (gelb), NICHT BELEGT (rot), RISIKO (orange)
-- Severity-Ratings als visuelle Balken (1-5)
-- Collapsible Sections für Tiefe ohne Überforderung
-- Kein Scroll-Marathon: Tabs wo sinnvoll (z.B. Kill Points nach Kategorie)
-
-## Quellen-Integration
-
-Alle Punkte werden mit Quellen-Labels versehen:
-- `[ANALYSE 1]` — Erste VC-Kritik (7 tödliche Schwachstellen)
-- `[ANALYSE 2]` — Deep Dive (Core Failure Points, Assumption Stress Test)
-- `[ANALYSE 3]` — Investor Readiness (Gap Map, Pitch Claim Audit)
-- `[FEEDBACK]` — Das aktuelle Meta-Feedback (Tonalität-Korrekturen, Fokus-Cut)
+- Gleiche UI-Patterns wie Block 1-8 (StatusBadge, SourceBadge, SeverityBar, Collapsible, Tabs)
+- Neue visuelle Elemente: Priority Matrix als 2×2 Grid, Execution Timeline als vertikale Zeitleiste
+- Badge `ANALYSE 4` für die neuen Inhalte (orange)
 
 ## Dateien
 
 | Aktion | Datei |
 |--------|-------|
-| Create | `src/pages/FeedbackAnalysis.tsx` — Hauptseite mit allen 8 Blöcken |
-| Edit | `src/App.tsx` — Route `/feedback` + lazy import |
+| Rewrite | `src/pages/FeedbackAnalysis.tsx` — Block 9-18 hinzufügen (gleiche Komponenten-Patterns) |
 
 ## Technisch
-- Standalone-Seite, keine Abhängigkeit von Investoren-Komponenten
-- Framer Motion für ScrollReveal
-- Responsive Cards + Collapsible Accordions
-- Alle Inhalte hardcoded (kein DB nötig — internes Dokument)
-- Back-Button zu `/investoren`
+- Gleiche Standalone-Architektur, keine neuen Dependencies
+- Alle Inhalte hardcoded
+- Geschätzter Umfang: ~400-500 zusätzliche Zeilen
 
