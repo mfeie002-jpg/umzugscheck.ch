@@ -180,6 +180,13 @@ export default function InvestorenLanding() {
       </ScrollReveal>
 
       {/* ═══════════════════════════════════════════ */}
+      {/* 4.5. BUSINESS CASE OVERVIEW */}
+      {/* ═══════════════════════════════════════════ */}
+      <ScrollReveal>
+        <BusinessCaseOverviewSection />
+      </ScrollReveal>
+
+      {/* ═══════════════════════════════════════════ */}
       {/* 5. 3-LAYER SYSTEM MAP — Capture/Transaction/Expansion */}
       {/* ═══════════════════════════════════════════ */}
       <ScrollReveal>
