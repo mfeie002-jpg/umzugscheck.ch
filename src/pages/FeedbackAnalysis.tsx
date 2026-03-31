@@ -214,7 +214,7 @@ const FeedbackAnalysis = () => {
 
         {/* ═══ BLOCK 1: READINESS SCORE ═══ */}
         <Reveal>
-          <section className="space-y-4">
+          <section id="readiness-score" className="space-y-4 scroll-mt-16">
             <div className="flex items-center gap-3">
               <Badge className="bg-teal-500/20 text-teal-400 border-teal-500/30">BLOCK 1</Badge>
               <h1 className="text-2xl font-bold">Investor Readiness Score</h1>
