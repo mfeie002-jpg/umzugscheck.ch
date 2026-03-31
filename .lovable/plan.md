@@ -1,55 +1,57 @@
 
 
-# Business Case PDF Integration: Sektion + Download
+# /investoren Konsolidierung: 20 Sektionen → 8
 
-## Ausgangslage
+## Problem
 
-- **PDF vorhanden**: 5-seitiger Business Case (Problem → Lösung → KI-Verbindung → Warum 2 Firmen → Synergien → Regionen)
-- **TwoPillarModel existiert bereits**: SVG-Infografik mit Portal vs. Dienstleister, verlinkt auf `/zwei-saeulen-modell.pdf`
-- **Inhaltliche Lücke**: Das PDF enthält 3 starke Argumente, die noch nicht auf der Seite sind:
-  1. **Glaubwürdigkeit** — Portal bleibt neutral, Dienstleister liefert separat
-  2. **Zero CAC** — Feierabend bekommt Kunden ohne eigene Ads
-  3. **Doppelter Einkommensstrom** — Plattform-Marge + operative Marge
+Die Seite hat aktuell 20 einzelne Sektionen mit klaren Doppelungen:
+- TwoPillarModel + BusinessCaseOverview → gleiches Thema
+- RevenueStreams + UnitEconomics + ModularerWarenkorb → alles Wirtschaftlichkeit
+- NarrativeMoat + MarketAttractiveness + WhyWeWin + SEOContentMoat → alles "Warum wir"
+- FundingRoadmap + UseOfFunds → beides Kapitalverwendung
+- WhyInvest (50 Gründe) + OverkillVision + USPFramework → dreifach Features/Gründe
 
-## Was gebaut wird
+## Neue Struktur: 8 Sektionen
 
-### 1. PDF als Download bereitstellen
-- PDF nach `public/business-case-umzugscheck-feierabend.pdf` kopieren
-- Download-Button in der TwoPillarModel-Sektion ergänzen (neben dem bestehenden)
+```text
+1. HERO + PROOF-KACHELN (bestehend, zusammenrücken)
+2. BUILD TIMELINE (bestehend, bleibt)
+3. GESCHÄFTSMODELL (merge: TwoPillarModel + BusinessCase + ThreeLayerSystem)
+4. WIRTSCHAFTLICHKEIT (merge: Revenue + UnitEconomics + Warenkorb)
+5. WETTBEWERBSVORTEIL (merge: NarrativeMoat + WhyWeWin + MarketAttractiveness + SEOMoat)
+6. KAPITAL & ROADMAP (merge: FundingRoadmap + UseOfFunds)
+7. RISIKOKONTROLLE (FiveRunsMethodology, bleibt)
+8. OVERKILL (merge: WhyInvest + OverkillVision + USPFramework → 1 expandable Sektion)
+9. CLOSING (InvestorClosing, bleibt)
+```
 
-### 2. Neue Komponente: `BusinessCaseOverviewSection.tsx`
-Kompakte Sektion mit dem destillierten Business Case aus dem PDF:
+## Konkrete Änderungen
 
-**Block A — "Zwei Projekte. Ein Ökosystem."** (Headline)
-- Problem-Statement: intransparenter Markt, fragmentierte Anbieter
-- Lösung in einem Satz: *"Umzugscheck bringt die Kunden. Feierabend macht die Arbeit. Die KI verbindet beides."*
+### A. `InvestorenLanding.tsx` — Sektionen zusammenführen
 
-**Block B — 3 Vorteile der Trennung** (Cards)
-- Glaubwürdigkeit: Portal bleibt neutral
-- Zero CAC: Feierabend-Kunden fliessen organisch über Portal
-- Doppelter Einkommensstrom: Vermittlung + eigene Ausführung
+Statt 20 separate Komponenten werden inhaltlich verwandte Blöcke in gemeinsame `<section>`-Container mit Tabs oder Accordion gruppiert:
 
-**Block C — Synergie-Tabelle** (2-Spalten)
-- Links: Umzugscheck liefert (Reichweite, Leads, Marktdaten, KI, Skalierung)
-- Rechts: Feierabend liefert (40+ Jahre, Exzellenz, Praxiswissen, Premium, Proof of Concept)
+**Sektion 3 "Geschäftsmodell"**: TwoPillarModel-SVG oben, darunter die 3 BusinessCase-Cards und das ThreeLayerSystem als Tab oder direkt gestapelt — alles unter einer Headline.
 
-**Block D — Download-CTA**
-- Button: "Business Case herunterladen (PDF)"
+**Sektion 4 "Wirtschaftlichkeit"**: Revenue + UnitEconomics + Warenkorb unter einer Headline mit Tabs (Einnahmen | Margen | Warenkorb).
 
-### 3. Integration in InvestorenLanding.tsx
-- Neue Sektion **nach TwoPillarModel** (Position 4.5) einfügen
-- Das ergänzt die bestehende SVG-Infografik mit dem textuellen Business Case
+**Sektion 5 "Wettbewerbsvorteil"**: NarrativeMoat (Flywheel), WhyWeWin (3 Cards), MarketAttractiveness (3 Cards), SEOContentMoat → unter einer Headline, Cards nebeneinander statt als 4 separate full-width Sektionen.
 
-## Dateien
+**Sektion 6 "Kapital"**: FundingRoadmap + UseOfFunds in einer Sektion (Timeline oben, Balken-Chart unten).
+
+**Sektion 8 "Overkill"**: WhyInvest + OverkillVision + USPFramework → eine expandable Sektion mit Tabs.
+
+### B. Dateien
 
 | Aktion | Datei |
 |--------|-------|
-| Copy | PDF → `public/business-case-umzugscheck-feierabend.pdf` |
-| Create | `src/components/vision/BusinessCaseOverviewSection.tsx` |
-| Edit | `src/pages/InvestorenLanding.tsx` (Import + Platzierung nach TwoPillarModel) |
+| Rewrite | `src/pages/InvestorenLanding.tsx` — Neue 8-Sektions-Struktur |
 
-## Technisch
-- Gleicher Stil: Badge, Cards, Framer Motion, Teal/Orange
-- Synergie-Tabelle als responsive 2-Spalten Grid (nicht SVG)
-- PDF-Download als `<a href download>` Button
+Keine neuen Komponenten nötig. Die bestehenden Komponenten werden nur anders gruppiert und unter gemeinsame Überschriften gestellt. Die Einzelkomponenten bleiben unverändert.
+
+## Ergebnis
+
+- Statt 20× scrollen nur noch 8 klare Blöcke
+- Keine Inhalte gehen verloren
+- Dramaturgie wird klarer: Gebaut → Modell → Zahlen → Vorteil → Kapital → Risiko → Overkill → Abschluss
 
