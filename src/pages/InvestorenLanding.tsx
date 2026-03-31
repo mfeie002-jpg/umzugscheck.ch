@@ -249,6 +249,13 @@ export default function InvestorenLanding() {
         <FundingRoadmapSection language={language} />
       </ScrollReveal>
 
+      {/* ═══════════════════════════════════════════ */}
+      {/* 12. USE OF FUNDS — 80k Verteilung */}
+      {/* ═══════════════════════════════════════════ */}
+      <ScrollReveal>
+        <UseOfFundsSection />
+      </ScrollReveal>
+
       {isPersonalized && <FunSectionIntro persona={persona} page="investoren" sectionId="roadmap" />}
 
       {/* ═══════════════════════════════════════════ */}
