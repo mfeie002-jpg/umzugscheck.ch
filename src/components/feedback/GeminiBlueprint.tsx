@@ -1,53 +1,5 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { ChevronDown, ChevronRight, AlertTriangle, CheckCircle2, XCircle, Shield, Zap, Target } from 'lucide-react';
-
-// ─── Local Collapsible ───
-const Collapsible = ({ title, children, defaultOpen = false }: { title: string; children: React.ReactNode; defaultOpen?: boolean }) => {
-  const [open, setOpen] = useState(defaultOpen);
-  return (
-    <div className="border border-white/10 rounded-lg overflow-hidden">
-      <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between p-3 text-left hover:bg-white/5 transition-colors">
-        <span className="text-sm font-semibold text-white/90">{title}</span>
-        {open ? <ChevronDown className="w-4 h-4 text-white/40" /> : <ChevronRight className="w-4 h-4 text-white/40" />}
-      </button>
-      {open && <div className="px-3 pb-3 space-y-2">{children}</div>}
-    </div>
-  );
-};
-
-const Reveal = ({ children }: { children: React.ReactNode }) => (
-  <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}>
-    {children}
-  </motion.div>
-);
-
-const StatusBadge = ({ status }: { status: string }) => {
-  const styles: Record<string, string> = {
-    'BEWIESEN': 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
-    'PLAUSIBEL': 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
-    'NICHT BELEGT': 'bg-red-500/20 text-red-400 border-red-500/30',
-    'REINE ANNAHME': 'bg-orange-500/20 text-orange-400 border-orange-500/30',
-    'RISIKO': 'bg-red-600/20 text-red-300 border-red-600/30',
-    'KRITISCHE LÜCKE': 'bg-red-700/20 text-red-300 border-red-700/30',
-  };
-  return (
-    <span className={`inline-flex items-center px-2 py-0.5 text-xs font-bold rounded border ${styles[status] || 'bg-gray-500/20 text-gray-400'}`}>
-      {status}
-    </span>
-  );
-};
-
-const SourceBadge = () => (
-  <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium rounded bg-violet-500/10 text-violet-400">
-    [GEMINI]
-  </span>
-);
-
-const ScoreCell = ({ score }: { score: number }) => {
-  const color = score <= 3 ? 'text-red-400 bg-red-500/10' : score <= 6 ? 'text-yellow-400 bg-yellow-500/10' : 'text-emerald-400 bg-emerald-500/10';
-  return <span className={`inline-flex items-center justify-center w-8 h-8 rounded-lg font-bold text-sm ${color}`}>{score}</span>;
-};
+import { AlertTriangle, CheckCircle2, XCircle, Shield, Zap, Target } from 'lucide-react';
+import { Reveal, StatusBadge, ScoreCell, Collapsible } from './shared';
 
 const GeminiBlueprint = () => {
   return (
