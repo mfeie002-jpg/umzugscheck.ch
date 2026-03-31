@@ -32,7 +32,8 @@ const SourceBadge = ({ source }: { source: string }) => {
     'ANALYSE 1': 'bg-teal-500/10 text-teal-400',
     'ANALYSE 2': 'bg-blue-500/10 text-blue-400',
     'ANALYSE 3': 'bg-purple-500/10 text-purple-400',
-    'FEEDBACK': 'bg-orange-500/10 text-orange-400',
+    'ANALYSE 4': 'bg-orange-500/10 text-orange-400',
+    'FEEDBACK': 'bg-amber-500/10 text-amber-400',
   };
   return (
     <span className={`inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium rounded ${styles[source] || 'bg-gray-500/10 text-gray-400'}`}>
@@ -596,6 +597,676 @@ const FeedbackAnalysis = () => {
           </section>
         </Reveal>
 
+        {/* ═══════════════════════════════════════════════════════ */}
+        {/* BLOCK 9: INVESTOR READINESS OVERVIEW                  */}
+        {/* ═══════════════════════════════════════════════════════ */}
+        <Reveal>
+          <section id="readiness-overview">
+            <Card className="bg-white/[0.03] border-white/10">
+              <CardHeader>
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 text-[10px]">BLOCK 9</Badge>
+                  <SourceBadge source="ANALYSE 4" />
+                </div>
+                <CardTitle className="text-xl text-white flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5 text-orange-400" />
+                  Investor Readiness Overview
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="bg-gradient-to-r from-red-500/10 to-orange-500/10 border border-red-500/20 rounded-lg p-6 text-center">
+                  <p className="text-white/50 text-sm mb-1">Gesamtbewertung</p>
+                  <p className="text-5xl font-black text-red-400">3<span className="text-2xl text-white/30">/10</span></p>
+                  <p className="text-sm text-white/60 mt-2">Nicht investor-ready, sondern proof-ready mit klaren Lücken</p>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <h4 className="text-sm font-bold text-emerald-400">✓ Was aktuell eher stark ist</h4>
+                    {[
+                      'Grundproblem ist real: fragmentierter Markt, hohe Reibung, Vertrauens- und Preisproblem',
+                      'Produktarbeit ist real: viele Funnel-/Flow-Varianten, KI-/Video-/WhatsApp-Logik',
+                      '2-Marken-These ist intellektuell nachvollziehbar',
+                      'Gestufte Finanzierungsidee sinnvoller als blindes "all-in"',
+                    ].map((item, i) => (
+                      <div key={i} className="bg-emerald-500/5 border border-emerald-500/10 rounded p-2 text-xs text-white/70">{item}</div>
+                    ))}
+                  </div>
+                  <div className="space-y-3">
+                    <h4 className="text-sm font-bold text-red-400">✗ Was aktuell klar zu schwach ist</h4>
+                    {[
+                      'Kein belegter wirtschaftlicher Kern-Loop',
+                      'Unit Economics nicht mit realen Vollkosten belegt',
+                      'Partnerlogik nicht validiert',
+                      'Delivery-Seite operativ zu wenig dokumentiert',
+                      'Pitching verkauft teils Hypothesen als Belegtes',
+                    ].map((item, i) => (
+                      <div key={i} className="bg-red-500/5 border border-red-500/10 rounded p-2 text-xs text-white/70">{item}</div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <h4 className="text-sm font-bold text-teal-400 mb-2">Substanz</h4>
+                    {['Live-Infrastruktur', 'Funnel- und UX-Arbeit', 'Klare Hypothesenlogik', 'Regionaler Startfokus', 'Echte Bereitschaft zum Testen'].map((s, i) => (
+                      <p key={i} className="text-xs text-white/60 py-0.5">• {s}</p>
+                    ))}
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-orange-400 mb-2">Story ohne Beleg</h4>
+                    {['"Zero CAC"', '"40–45% DB-Marge"', '"92–95% KI-automatisiert"', '"10 Revenue Streams"', '"4 Brands als Vorteil"', '"Neutrales Vergleichsportal" bei Eigenausführung'].map((s, i) => (
+                      <p key={i} className="text-xs text-white/60 py-0.5">• {s}</p>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="bg-white/5 rounded-lg p-4 border border-white/10">
+                  <h4 className="text-sm font-bold text-white mb-2">Hauptproblem-Typ</h4>
+                  <p className="text-xs text-white/60">Nicht primär fehlende Grösse, sondern: <strong className="text-white">fehlende Beweise</strong>, <strong className="text-white">fehlende strategische Schärfe</strong>, <strong className="text-white">fehlende operative Glaubwürdigkeit</strong> und ein möglicher <strong className="text-red-400">Modellfehler im Zusammenspiel Portal vs. Eigenausführung</strong>.</p>
+                </div>
+              </CardContent>
+            </Card>
+          </section>
+        </Reveal>
+
+        {/* ═══════════════════════════════════════════════════════ */}
+        {/* BLOCK 10: GAP MAP                                     */}
+        {/* ═══════════════════════════════════════════════════════ */}
+        <Reveal>
+          <section id="gap-map">
+            <Card className="bg-white/[0.03] border-white/10">
+              <CardHeader>
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 text-[10px]">BLOCK 10</Badge>
+                  <SourceBadge source="ANALYSE 4" />
+                </div>
+                <CardTitle className="text-xl text-white flex items-center gap-2">
+                  <Target className="w-5 h-5 text-red-400" />
+                  Gap Map — Alle Lücken nach Kategorie
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Tabs defaultValue="markt" className="w-full">
+                  <TabsList className="flex flex-wrap bg-white/5 h-auto gap-1 p-1">
+                    {[
+                      { value: 'markt', label: 'A: Markt' },
+                      { value: 'economics', label: 'B: Economics' },
+                      { value: 'traktion', label: 'C: Traktion' },
+                      { value: 'ops', label: 'D: Operativ' },
+                      { value: 'tech', label: 'E: Tech/SEO' },
+                      { value: 'brand', label: 'F: Brand' },
+                      { value: 'governance', label: 'G: Governance' },
+                      { value: 'pitch', label: 'H: Pitch' },
+                      { value: 'story', label: 'I: Story' },
+                    ].map(tab => (
+                      <TabsTrigger key={tab.value} value={tab.value} className="text-xs px-2 py-1">{tab.label}</TabsTrigger>
+                    ))}
+                  </TabsList>
+
+                  <TabsContent value="markt" className="space-y-4 mt-4">
+                    {[
+                      { id: 'A1', title: 'Keine belegte Nachfrage-Engine', status: 'KRITISCHE LÜCKE', betrifft: 'Umzugscheck.ch', text: 'Ohne nachgewiesenen organischen oder bezahlten Zufluss ist Umzugscheck keine Engine, sondern Infrastruktur.', fix: 'GSC, Analytics, Top-Queries, Leads pro Landingpage, Conversion nach Kanal — 90-Tage-Trafficdaten.' },
+                      { id: 'A2', title: 'Unklare Marktaufnahme für Hybridmodell', status: 'PLAUSIBEL', betrifft: 'Beide', text: 'Nicht belegt, dass der Schweizer Markt genau diese Kombination aus Vergleich + KI + Eigenausführung will.', fix: '10–20 qualitative Kundeninterviews plus erste Nutzungsdaten.' },
+                    ].map(gap => (
+                      <div key={gap.id} className="bg-white/5 rounded-lg p-4 border border-white/10 space-y-2">
+                        <div className="flex items-center justify-between flex-wrap gap-2">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-mono text-white/40">{gap.id}</span>
+                            <h4 className="text-sm font-bold text-white">{gap.title}</h4>
+                          </div>
+                          <StatusBadge status={gap.status} />
+                        </div>
+                        <p className="text-xs text-white/50">Betrifft: {gap.betrifft}</p>
+                        <p className="text-xs text-white/60">{gap.text}</p>
+                        <p className="text-xs text-teal-400">→ Fix: {gap.fix}</p>
+                      </div>
+                    ))}
+                  </TabsContent>
+
+                  <TabsContent value="economics" className="space-y-4 mt-4">
+                    {[
+                      { id: 'B1', title: 'Keine belegten Unit Economics', status: 'KRITISCHE LÜCKE', betrifft: 'Beide (operativ Feierabend)', text: 'Ohne echte Vollkostenrechnung ist die Profitabilitätsstory wertlos.', fix: '5–10 reale Aufträge mit Vollkostenrechnung.' },
+                      { id: 'B2', title: 'Überbreites Revenue-Modell ohne primären Driver', status: 'RISIKO', betrifft: 'Beide', text: 'Wenn 10 Streams existieren, aber keiner bewiesen ist, gibt es kein Geschäftsmodell, nur Optionen.', fix: 'Definition: 1 Haupt-Stream, 1 optionaler zweiter.' },
+                    ].map(gap => (
+                      <div key={gap.id} className="bg-white/5 rounded-lg p-4 border border-white/10 space-y-2">
+                        <div className="flex items-center justify-between flex-wrap gap-2">
+                          <div className="flex items-center gap-2"><span className="text-xs font-mono text-white/40">{gap.id}</span><h4 className="text-sm font-bold text-white">{gap.title}</h4></div>
+                          <StatusBadge status={gap.status} />
+                        </div>
+                        <p className="text-xs text-white/50">Betrifft: {gap.betrifft}</p>
+                        <p className="text-xs text-white/60">{gap.text}</p>
+                        <p className="text-xs text-teal-400">→ Fix: {gap.fix}</p>
+                      </div>
+                    ))}
+                  </TabsContent>
+
+                  <TabsContent value="traktion" className="space-y-4 mt-4">
+                    {[
+                      { id: 'C1', title: 'Kein dokumentierter End-to-End-Fall', status: 'KRITISCHE LÜCKE', betrifft: 'Beide', text: 'Ohne Portal→Auftrag→Zahlung-Fall ist das Modell theoretisch.', fix: 'Mind. 3, besser 5–10 dokumentierte End-to-End-Fälle.' },
+                      { id: 'C2', title: 'Keine Partner-Validation', status: 'KRITISCHE LÜCKE', betrifft: 'Umzugscheck.ch', text: 'Ohne validierte Partnerseite ist das Plattformmodell nur Behauptung.', fix: '3 Partner-LOIs oder dokumentierte Zahlungsbereitschaftstests.' },
+                    ].map(gap => (
+                      <div key={gap.id} className="bg-white/5 rounded-lg p-4 border border-white/10 space-y-2">
+                        <div className="flex items-center justify-between flex-wrap gap-2">
+                          <div className="flex items-center gap-2"><span className="text-xs font-mono text-white/40">{gap.id}</span><h4 className="text-sm font-bold text-white">{gap.title}</h4></div>
+                          <StatusBadge status={gap.status} />
+                        </div>
+                        <p className="text-xs text-white/50">Betrifft: {gap.betrifft}</p>
+                        <p className="text-xs text-white/60">{gap.text}</p>
+                        <p className="text-xs text-teal-400">→ Fix: {gap.fix}</p>
+                      </div>
+                    ))}
+                  </TabsContent>
+
+                  <TabsContent value="ops" className="space-y-4 mt-4">
+                    {[
+                      { id: 'D1', title: 'Keine belegte Delivery-Kapazität', status: 'KRITISCHE LÜCKE', betrifft: 'Feierabendservices.ch', text: 'Akquise ohne kontrolliertes Fulfillment vernichtet Vertrauen und Marge.', fix: 'Operations-Matrix mit Wochenkapazität, Engpässen und Eskalationslogik.' },
+                      { id: 'D2', title: 'Founder als Bottleneck', status: 'KRITISCHE LÜCKE', betrifft: 'Beide', text: 'Solo-Founder mit Portal, Delivery, Pitch, SEO und KI ist nicht skalierbar.', fix: 'Mind. 1 operative + 1 digitale Verantwortlichkeit.' },
+                    ].map(gap => (
+                      <div key={gap.id} className="bg-white/5 rounded-lg p-4 border border-white/10 space-y-2">
+                        <div className="flex items-center justify-between flex-wrap gap-2">
+                          <div className="flex items-center gap-2"><span className="text-xs font-mono text-white/40">{gap.id}</span><h4 className="text-sm font-bold text-white">{gap.title}</h4></div>
+                          <StatusBadge status={gap.status} />
+                        </div>
+                        <p className="text-xs text-white/50">Betrifft: {gap.betrifft}</p>
+                        <p className="text-xs text-white/60">{gap.text}</p>
+                        <p className="text-xs text-teal-400">→ Fix: {gap.fix}</p>
+                      </div>
+                    ))}
+                  </TabsContent>
+
+                  <TabsContent value="tech" className="space-y-4 mt-4">
+                    {[
+                      { id: 'E1', title: 'Automatisierungsclaim nicht operationalisiert', status: 'REINE ANNAHME', betrifft: 'Beide', text: '"92–95% automatisiert" sagt ohne Prozessdefinition nichts.', fix: 'Prozesslandkarte alt vs. neu, Zeit- und Fehlervergleich.' },
+                      { id: 'E2', title: 'SEO-Moat ist NICHT BELEGT', status: 'RISIKO', betrifft: 'Umzugscheck.ch', text: 'Rankings sind kein Burggraben wenn Traction, Autorität und Differenzierung fehlen.', fix: 'Wettbewerberanalyse plus echte SEO-Daten.' },
+                    ].map(gap => (
+                      <div key={gap.id} className="bg-white/5 rounded-lg p-4 border border-white/10 space-y-2">
+                        <div className="flex items-center justify-between flex-wrap gap-2">
+                          <div className="flex items-center gap-2"><span className="text-xs font-mono text-white/40">{gap.id}</span><h4 className="text-sm font-bold text-white">{gap.title}</h4></div>
+                          <StatusBadge status={gap.status} />
+                        </div>
+                        <p className="text-xs text-white/50">Betrifft: {gap.betrifft}</p>
+                        <p className="text-xs text-white/60">{gap.text}</p>
+                        <p className="text-xs text-teal-400">→ Fix: {gap.fix}</p>
+                      </div>
+                    ))}
+                  </TabsContent>
+
+                  <TabsContent value="brand" className="space-y-4 mt-4">
+                    {[
+                      { id: 'F1', title: 'Premium vs. Sparlogik', status: 'RISIKO', betrifft: 'Beide', text: 'Feierabend verkauft Premium, Umzugscheck zieht mit Preisvergleich an.', fix: 'Klare Segmentierung: welcher Kanal für welchen Kundentyp.' },
+                      { id: 'F2', title: '"Seit 1980" ist stark, aber ungeklärt', status: 'PLAUSIBEL', betrifft: 'Feierabendservices.ch', text: 'Wirkt vertrauensstark, löst aber Herkunfts- und Kapitalfragen aus.', fix: '1 klare Timeline-Slide plus belegbare Historie.' },
+                    ].map(gap => (
+                      <div key={gap.id} className="bg-white/5 rounded-lg p-4 border border-white/10 space-y-2">
+                        <div className="flex items-center justify-between flex-wrap gap-2">
+                          <div className="flex items-center gap-2"><span className="text-xs font-mono text-white/40">{gap.id}</span><h4 className="text-sm font-bold text-white">{gap.title}</h4></div>
+                          <StatusBadge status={gap.status} />
+                        </div>
+                        <p className="text-xs text-white/50">Betrifft: {gap.betrifft}</p>
+                        <p className="text-xs text-white/60">{gap.text}</p>
+                        <p className="text-xs text-teal-400">→ Fix: {gap.fix}</p>
+                      </div>
+                    ))}
+                  </TabsContent>
+
+                  <TabsContent value="governance" className="space-y-4 mt-4">
+                    {[
+                      { id: 'G1', title: 'Keine Governance zwischen Portal und Feierabend', status: 'RISIKO', betrifft: 'Beide', text: 'Ohne Routing-Regeln und Fairnesslogik ist das Modell strukturell angreifbar.', fix: 'Schriftliche Routing-Policy: Portal neutral oder Eigenvertrieb.' },
+                      { id: 'G2', title: 'Keine getrennte Messlogik', status: 'KRITISCHE LÜCKE', betrifft: 'Beide', text: 'Ohne getrennte P&Ls sieht man nicht, ob Portal oder Delivery funktioniert.', fix: 'Getrenntes Reporting pro Modellteil.' },
+                    ].map(gap => (
+                      <div key={gap.id} className="bg-white/5 rounded-lg p-4 border border-white/10 space-y-2">
+                        <div className="flex items-center justify-between flex-wrap gap-2">
+                          <div className="flex items-center gap-2"><span className="text-xs font-mono text-white/40">{gap.id}</span><h4 className="text-sm font-bold text-white">{gap.title}</h4></div>
+                          <StatusBadge status={gap.status} />
+                        </div>
+                        <p className="text-xs text-white/50">Betrifft: {gap.betrifft}</p>
+                        <p className="text-xs text-white/60">{gap.text}</p>
+                        <p className="text-xs text-teal-400">→ Fix: {gap.fix}</p>
+                      </div>
+                    ))}
+                  </TabsContent>
+
+                  <TabsContent value="pitch" className="space-y-4 mt-4">
+                    {[
+                      { id: 'H1', title: 'Zu viele unbelegte Claims auf zu wenig Proof', status: 'RISIKO', betrifft: 'Beide', text: 'Pitchdeck wirkt wie Story-Konstruktion statt De-Risking.', fix: 'Claim-by-Claim-Beleg oder Claim streichen.' },
+                      { id: 'H2', title: 'Runde 1 nicht als Proof-Phase formuliert', status: 'KRITISCHE LÜCKE', betrifft: 'Beide', text: 'Investoren müssen sehen, dass Runde 1 Proof finanziert, nicht Phantasie.', fix: '1 Seite "Was Runde 1 beweist" mit Proof-Gates.' },
+                    ].map(gap => (
+                      <div key={gap.id} className="bg-white/5 rounded-lg p-4 border border-white/10 space-y-2">
+                        <div className="flex items-center justify-between flex-wrap gap-2">
+                          <div className="flex items-center gap-2"><span className="text-xs font-mono text-white/40">{gap.id}</span><h4 className="text-sm font-bold text-white">{gap.title}</h4></div>
+                          <StatusBadge status={gap.status} />
+                        </div>
+                        <p className="text-xs text-white/50">Betrifft: {gap.betrifft}</p>
+                        <p className="text-xs text-white/60">{gap.text}</p>
+                        <p className="text-xs text-teal-400">→ Fix: {gap.fix}</p>
+                      </div>
+                    ))}
+                  </TabsContent>
+
+                  <TabsContent value="story" className="space-y-4 mt-4">
+                    {[
+                      { id: 'I1', title: 'Modell ist schwer einordenbar', status: 'RISIKO', betrifft: 'Beide', text: 'Investoren wissen nicht, ob sie Portal, Operator, Tech, Leadgen oder lokalen Dienstleister bewerten.', fix: 'Klare Antwort: Was ist das primäre Unternehmen in Runde 1?' },
+                      { id: 'I2', title: 'Skalierungsstory läuft Delivery-Realität voraus', status: 'REINE ANNAHME', betrifft: 'Beide', text: 'Nationale Ambition ist zu früh, solange Zürich/Zug nicht bewiesen ist.', fix: 'Pilot-Logik: 1 Region, 1 Funnel, 1 Delivery-Modell, 1 Economics-Satz.' },
+                    ].map(gap => (
+                      <div key={gap.id} className="bg-white/5 rounded-lg p-4 border border-white/10 space-y-2">
+                        <div className="flex items-center justify-between flex-wrap gap-2">
+                          <div className="flex items-center gap-2"><span className="text-xs font-mono text-white/40">{gap.id}</span><h4 className="text-sm font-bold text-white">{gap.title}</h4></div>
+                          <StatusBadge status={gap.status} />
+                        </div>
+                        <p className="text-xs text-white/50">Betrifft: {gap.betrifft}</p>
+                        <p className="text-xs text-white/60">{gap.text}</p>
+                        <p className="text-xs text-teal-400">→ Fix: {gap.fix}</p>
+                      </div>
+                    ))}
+                  </TabsContent>
+                </Tabs>
+              </CardContent>
+            </Card>
+          </section>
+        </Reveal>
+
+        {/* ═══════════════════════════════════════════════════════ */}
+        {/* BLOCK 11: PROOF REQUIREMENTS                          */}
+        {/* ═══════════════════════════════════════════════════════ */}
+        <Reveal>
+          <section id="proof-requirements">
+            <Card className="bg-white/[0.03] border-white/10">
+              <CardHeader>
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 text-[10px]">BLOCK 11</Badge>
+                  <SourceBadge source="ANALYSE 4" />
+                </div>
+                <CardTitle className="text-xl text-white flex items-center gap-2">
+                  <FileText className="w-5 h-5 text-teal-400" />
+                  Proof Requirements — Was belegt werden muss
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {[
+                  { cat: 'A) Mit Zahlen belegen', items: [
+                    { title: 'Organischer Traffic', dringlichkeit: 'maximal', wie: 'GSC + Analytics + 90-Tage-Verlauf' },
+                    { title: 'Visitor → Lead → Auftrag Funnel', dringlichkeit: 'maximal', wie: 'Conversion-Tracking, CRM-Pflichtfelder, Monatsreport' },
+                    { title: 'Vollkosten-DB pro Auftrag', dringlichkeit: 'maximal', wie: '5–10 echte oder pilotnahe Aufträge nachrechnen' },
+                    { title: 'Blended CAC', dringlichkeit: 'hoch', wie: 'SEO-/Content-/Tool-/Founder-Aufwand + Paid-Test separat verbuchen' },
+                  ]},
+                  { cat: 'B) Mit operativen Beweisen belegen', items: [
+                    { title: 'Kapazität', dringlichkeit: 'hoch', wie: 'Wochenkapazität, Teamrollen, Subunternehmer-Setup' },
+                    { title: 'Nachbesserungs-/Reklamationsrisiko', dringlichkeit: 'hoch', wie: 'Pilotfälle protokollieren, Nacharbeitskosten festhalten' },
+                    { title: 'Founder-Entlastung', dringlichkeit: 'hoch', wie: 'Teamplan + zweite Schlüsselperson' },
+                  ]},
+                  { cat: 'C) Mit Marktbelegen belegen', items: [
+                    { title: 'Partner-Zahlungsbereitschaft', dringlichkeit: 'maximal', wie: '3–5 Partnergespräche, Preisreaktion, LOIs' },
+                    { title: 'Kundenreaktion auf Hybridlogik', dringlichkeit: 'mittel-hoch', wie: '5–10 Nutzerinterviews, Messaging-Tests' },
+                    { title: 'Premium-Zahlungsbereitschaft auf realem Traffic', dringlichkeit: 'hoch', wie: 'Win/Loss-Analyse der ersten Angebote' },
+                  ]},
+                  { cat: 'D) Mit realer Nutzung belegen', items: [
+                    { title: 'Erste echte Portal-Aufträge', dringlichkeit: 'maximal', wie: 'Portal-Lead markieren und bis Zahlung tracken' },
+                    { title: 'KI-/Video-/WhatsApp-Nutzung', dringlichkeit: 'hoch', wie: 'Nutzungsquote, Drop-off, Accuracy, Zeitersparnis' },
+                    { title: 'Leadqualität nach Kanal', dringlichkeit: 'hoch', wie: 'Kanal-Tagging und Ergebnisbewertung' },
+                  ]},
+                  { cat: 'E) Mit strategischer Logik erklären', items: [
+                    { title: 'Was Umzugscheck in Runde 1 wirklich ist', dringlichkeit: 'maximal', wie: '1 Satz, 1 Modell, 1 Priorität' },
+                    { title: 'Wie Portal und Feierabend zusammenspielen', dringlichkeit: 'maximal', wie: 'Routing-Regeln + Transparenz + Reporting' },
+                    { title: 'Warum 2 Marken und nicht 4', dringlichkeit: 'hoch', wie: 'Markenfokusentscheidung' },
+                  ]},
+                ].map((category, ci) => (
+                  <Collapsible key={ci} title={category.cat} defaultOpen={ci === 0} icon={CheckCircle2}>
+                    <div className="space-y-3">
+                      {category.items.map((item, ii) => (
+                        <div key={ii} className="bg-white/5 rounded p-3 border border-white/10">
+                          <div className="flex items-center justify-between mb-1">
+                            <h5 className="text-sm font-bold text-white">{item.title}</h5>
+                            <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${item.dringlichkeit === 'maximal' ? 'bg-red-500/20 text-red-400' : item.dringlichkeit === 'hoch' ? 'bg-orange-500/20 text-orange-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
+                              {item.dringlichkeit.toUpperCase()}
+                            </span>
+                          </div>
+                          <p className="text-xs text-white/50">Wie: {item.wie}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </Collapsible>
+                ))}
+              </CardContent>
+            </Card>
+          </section>
+        </Reveal>
+
+        {/* ═══════════════════════════════════════════════════════ */}
+        {/* BLOCK 12: PITCH CLAIM AUDIT (ERWEITERT)               */}
+        {/* ═══════════════════════════════════════════════════════ */}
+        <Reveal>
+          <section id="claim-audit-extended">
+            <Card className="bg-white/[0.03] border-white/10">
+              <CardHeader>
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 text-[10px]">BLOCK 12</Badge>
+                  <SourceBadge source="ANALYSE 4" />
+                </div>
+                <CardTitle className="text-xl text-white flex items-center gap-2">
+                  <Scale className="w-5 h-5 text-yellow-400" />
+                  Pitch Claim Audit — Erweitert
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Tabs defaultValue="sicher" className="w-full">
+                  <TabsList className="flex bg-white/5 h-auto gap-1 p-1">
+                    <TabsTrigger value="sicher" className="text-xs px-2 py-1">✓ Sicher</TabsTrigger>
+                    <TabsTrigger value="vorsichtig" className="text-xs px-2 py-1">⚠ Vorsichtig</TabsTrigger>
+                    <TabsTrigger value="zugross" className="text-xs px-2 py-1">✗ Zu gross</TabsTrigger>
+                    <TabsTrigger value="nicht" className="text-xs px-2 py-1">🚫 Nicht sagen</TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value="sicher" className="space-y-3 mt-4">
+                    {[
+                      { claim: '"Der Markt ist fragmentiert und vertrauenssensibel."', besser: '"Wir adressieren einen fragmentierten, vertrauens- und prozesssensiblen Umzugsmarkt."' },
+                      { claim: '"Wir haben eine Live-Infrastruktur und testen aktiv Funnels."', besser: '"Die Infrastruktur steht; der wirtschaftliche Proof wird in Runde 1 erbracht."' },
+                      { claim: '"Runde 1 ist eine Proof-Phase."', besser: '"Runde 1 dient der Validierung von Traffic, Funnel, Unit Economics und Partnerakzeptanz."' },
+                    ].map((c, i) => (
+                      <div key={i} className="bg-emerald-500/5 rounded-lg p-3 border border-emerald-500/10">
+                        <p className="text-sm text-white font-medium">{c.claim}</p>
+                        <p className="text-xs text-teal-400 mt-1">→ Besser: {c.besser}</p>
+                      </div>
+                    ))}
+                  </TabsContent>
+
+                  <TabsContent value="vorsichtig" className="space-y-3 mt-4">
+                    {[
+                      { claim: '"Zwei Marken, ein System."', problem: 'Zusammenspiel noch unbewiesen', besser: '"Wir testen ein 2-Marken-Modell, bei dem Umzugscheck Nachfrage strukturiert und Feierabend ausgewählte Services liefert."' },
+                      { claim: '"KI-gestützte Vorqualifikation und Offertierung."', problem: 'ROI, Accuracy, Fehlerreduktion unbelegt', besser: '"Wir automatisieren Teile der Lead-Qualifizierung und Voroffertierung."' },
+                      { claim: '"Premium-Positionierung von Feierabend."', problem: 'Premium-Akzeptanz nicht belegt', besser: '"Feierabend wird als qualitäts- und serviceorientierter Anbieter positioniert."' },
+                    ].map((c, i) => (
+                      <div key={i} className="bg-yellow-500/5 rounded-lg p-3 border border-yellow-500/10">
+                        <p className="text-sm text-white font-medium">{c.claim}</p>
+                        <p className="text-xs text-orange-400 mt-1">Problem: {c.problem}</p>
+                        <p className="text-xs text-teal-400 mt-1">→ Besser: {c.besser}</p>
+                      </div>
+                    ))}
+                  </TabsContent>
+
+                  <TabsContent value="zugross" className="space-y-3 mt-4">
+                    {[
+                      { claim: '"10 Revenue Streams"', besser: '"Runde 1 fokussiert auf 1 Portal-Stream und 1 Service-Stream."' },
+                      { claim: '"4 Brands als Wettbewerbsvorteil"', besser: '"Für die Proof-Phase fokussieren wir auf 2 Marken."' },
+                      { claim: '"Skalierbares Modell"', besser: '"Wir testen eine skalierbare Nachfrage-Engine und prüfen, wie weit Delivery kontrolliert mitwachsen kann."' },
+                    ].map((c, i) => (
+                      <div key={i} className="bg-orange-500/5 rounded-lg p-3 border border-orange-500/10">
+                        <p className="text-sm text-white font-medium">{c.claim}</p>
+                        <p className="text-xs text-teal-400 mt-1">→ Besser: {c.besser}</p>
+                      </div>
+                    ))}
+                  </TabsContent>
+
+                  <TabsContent value="nicht" className="space-y-3 mt-4">
+                    {[
+                      { claim: '"Zero CAC via eigenes Portal"', warum: 'Ignoriert SEO-/Content-/Tech-/Founder-Kosten', besser: '"Potenzial für sinkende marginale Akquisitionskosten bei funktionierendem organischem Inbound."' },
+                      { claim: '"90%+ Marge auf Premium"', warum: 'Ökonomisch extrem, ohne Vollkosten-DB', besser: 'Vorerst streichen.' },
+                      { claim: '"92–95% KI-automatisiert"', warum: 'Keine Definition, kein ROI', besser: '"Automatisierte Lead-Qualifizierung in klar definierten Prozessschritten."' },
+                      { claim: '"200+ geprüfte Firmen"', warum: 'Unklar ob aktiv oder nur gelistet', besser: '"X aktiv gelistete / Y validierte / Ziel 200+."' },
+                      { claim: '"Neutrales Vergleichsportal"', warum: 'Kollidiert mit interner Eigenausführung', besser: 'Governance offenlegen oder streichen.' },
+                    ].map((c, i) => (
+                      <div key={i} className="bg-red-500/5 rounded-lg p-3 border border-red-500/10">
+                        <p className="text-sm text-white font-medium">{c.claim}</p>
+                        <p className="text-xs text-red-400 mt-1">Warum nicht: {c.warum}</p>
+                        <p className="text-xs text-teal-400 mt-1">→ Besser: {c.besser}</p>
+                      </div>
+                    ))}
+                  </TabsContent>
+                </Tabs>
+              </CardContent>
+            </Card>
+          </section>
+        </Reveal>
+
+        {/* ═══════════════════════════════════════════════════════ */}
+        {/* BLOCK 13: INVESTOR CONFUSION POINTS                   */}
+        {/* ═══════════════════════════════════════════════════════ */}
+        <Reveal>
+          <section id="confusion-points">
+            <Card className="bg-white/[0.03] border-white/10">
+              <CardHeader>
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 text-[10px]">BLOCK 13</Badge>
+                  <SourceBadge source="ANALYSE 4" />
+                </div>
+                <CardTitle className="text-xl text-white flex items-center gap-2">
+                  <AlertCircle className="w-5 h-5 text-yellow-400" />
+                  Investor Confusion Points — Wo Investoren aussteigen
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {[
+                  { frage: 'Ist das ein Portal oder ein Operator?', gefahr: 'Bewertungslogik und Risiko-Profil unterscheiden sich massiv.', investorfrage: '"In was investiere ich eigentlich?"', typ: 'strukturell', fix: 'Für Runde 1 eine Hauptlogik festlegen.' },
+                  { frage: 'Ist das ein Marktplatz oder ein Eigenvertriebskanal?', gefahr: 'Governance- und Trust-Risiko.', investorfrage: '"Warum sollten Partner in diesem Setup bleiben?"', typ: 'strukturell', fix: 'Explizite Routing-Policy.' },
+                  { frage: 'Ist das ein Tech-/KI-Case oder ein lokaler Servicebetrieb?', gefahr: 'Falsche Investoren werden angesprochen.', investorfrage: '"Wo ist der echte nichtlineare Hebel?"', typ: 'teils strukturell, teils kommunikativ', fix: 'KI als Prozesshebel, nicht als Ersatz für Delivery.' },
+                  { frage: 'Ist das Premium oder Preisvergleich?', gefahr: 'Falsche Kundenerwartung.', investorfrage: '"Welcher Kundentyp ist eigentlich der Zielkunde?"', typ: 'kommunikativ mit strukturellem Kern', fix: 'Segmentierung statt Mischsignal.' },
+                  { frage: 'Ist das Proof- oder Skalierungsfinanzierung?', gefahr: 'Falsche Erwartung an Output der Runde.', investorfrage: '"Wofür genau werden 80–100k eingesetzt?"', typ: 'kommunikativ', fix: 'Runde 1 als Proof-Gate definieren.' },
+                  { frage: 'Ist "seit 1980" Substanz oder nur Vertrauensrahmen?', gefahr: 'Investoren fragen nach Historie, Kapital, Altlasten.', investorfrage: '"Warum braucht ein bestehender Betrieb jetzt dieses Kapital?"', typ: 'kommunikativ', fix: 'Timeline-Slide.' },
+                ].map((cp, i) => (
+                  <div key={i} className="bg-white/5 rounded-lg p-4 border border-white/10">
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="text-sm font-bold text-white">{i + 1}. {cp.frage}</h4>
+                      <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${cp.typ.includes('strukturell') ? 'bg-red-500/20 text-red-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
+                        {cp.typ.toUpperCase()}
+                      </span>
+                    </div>
+                    <p className="text-xs text-red-400/80 mb-1">⚠ {cp.gefahr}</p>
+                    <p className="text-xs text-white/50 italic mb-1">Investorfrage: {cp.investorfrage}</p>
+                    <p className="text-xs text-teal-400">→ {cp.fix}</p>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </section>
+        </Reveal>
+
+        {/* ═══════════════════════════════════════════════════════ */}
+        {/* BLOCK 14: WHAT MUST BE FIXED                          */}
+        {/* ═══════════════════════════════════════════════════════ */}
+        <Reveal>
+          <section id="must-fix">
+            <Card className="bg-white/[0.03] border-white/10">
+              <CardHeader>
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 text-[10px]">BLOCK 14</Badge>
+                  <SourceBadge source="ANALYSE 4" />
+                </div>
+                <CardTitle className="text-xl text-white flex items-center gap-2">
+                  <Zap className="w-5 h-5 text-red-400" />
+                  What Must Be Fixed Before Investors
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Collapsible title="A) 10 Punkte vor Investorengespräch" defaultOpen={true} icon={AlertTriangle}>
+                  <div className="space-y-2">
+                    {[
+                      { nr: 1, title: 'Hauptmodell definieren', was: 'Portal mit Partnerfokus oder Eigenvertrieb mit Overflow-Partnern', risiko: 'Investor steigt an der Modelllogik aus' },
+                      { nr: 2, title: 'GSC + Analytics offenlegen', was: 'Tracking sauber live, 30–90 Tage Verlauf', risiko: 'Akquise-These bleibt leer' },
+                      { nr: 3, title: 'End-to-End-Funnel aufsetzen', was: 'CRM, Pflichtfelder, Status bis Zahlung', risiko: 'Keine belastbare Traktion' },
+                      { nr: 4, title: 'Job-Level-Vollkosten rechnen', was: '5–10 Jobs sauber kalkulieren', risiko: 'Economics unbrauchbar' },
+                      { nr: 5, title: 'Cherry-Picking/Routing regeln', was: 'Schriftliche Routing-Policy + Partner-Logik', risiko: 'Trust-/Partner-Risiko = Kern-KO' },
+                      { nr: 6, title: 'Partner-Validation holen', was: '3–5 Gespräche, LOIs, Preisfeedback', risiko: 'Keine Plattform-These' },
+                      { nr: 7, title: '2 Marken / 1–2 Revenue-Streams', was: 'Zusatzmarken einfrieren, Revenue-Fokus schneiden', risiko: 'Case wirkt überladen' },
+                      { nr: 8, title: 'Automatisierungsclaim definieren', was: 'Prozessliste + KPI-Vergleich', risiko: 'Tech-Story verliert Glaubwürdigkeit' },
+                      { nr: 9, title: 'Team-/Kapazitätsplan erstellen', was: 'Zweite Schlüsselperson, Subunternehmer', risiko: 'Operations nicht investierbar' },
+                      { nr: 10, title: '12-Monats-Cashflow auf Proof umbauen', was: 'Monatsgenauer Einsatzplan mit Proof-Gates', risiko: 'Ask wirkt unsauber' },
+                    ].map(fix => (
+                      <div key={fix.nr} className="bg-white/5 rounded p-3 border border-white/10 flex gap-3">
+                        <span className="text-red-400 font-bold text-sm min-w-[20px]">{fix.nr}.</span>
+                        <div className="flex-1">
+                          <h5 className="text-sm font-bold text-white">{fix.title}</h5>
+                          <p className="text-xs text-white/50">{fix.was}</p>
+                          <p className="text-xs text-red-400/70 mt-0.5">Wenn nicht: {fix.risiko}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </Collapsible>
+
+                <Collapsible title="B) 5 Punkte vor Due Diligence" icon={FileText}>
+                  <div className="space-y-2">
+                    {['Getrennte P&Ls für Portal und Feierabend', '10 echte Vollkostenfälle', 'Partner-LOIs / Vertragsentwürfe / Zahlungsfeedback', 'Lead-Routing- und Governance-Regeln', '12-Monats-Cashflow plus Proof-Milestones'].map((item, i) => (
+                      <div key={i} className="bg-white/5 rounded p-2 border border-white/10 text-xs text-white/70 flex gap-2">
+                        <span className="text-orange-400 font-bold">{i + 1}.</span> {item}
+                      </div>
+                    ))}
+                    <p className="text-xs text-red-400/60 italic">Wenn das fehlt, wird DD eher Autopsie als Finanzierung.</p>
+                  </div>
+                </Collapsible>
+
+                <Collapsible title="C) 5 Pitch-Überarbeitungen" icon={Lightbulb}>
+                  <div className="space-y-2">
+                    {['"Zero CAC" entfernen oder entschärfen', '"92–95% automatisiert" vereinheitlichen und definieren', '"10 Revenue Streams" auf MVP reduzieren', '"Neutrales Vergleichsportal" nur mit Governance', 'Runde 1 klar als Proof-Runde formulieren'].map((item, i) => (
+                      <div key={i} className="bg-white/5 rounded p-2 border border-white/10 text-xs text-white/70 flex gap-2">
+                        <span className="text-yellow-400 font-bold">{i + 1}.</span> {item}
+                      </div>
+                    ))}
+                  </div>
+                </Collapsible>
+
+                <Collapsible title="D) 5 Punkte defensiver darstellen" icon={Shield}>
+                  <div className="space-y-2">
+                    {['SEO als Asset, nicht als bereits funktionierenden Moat', 'KI als Prozesshebel, nicht als Hauptwerttreiber', 'Feierabend als qualitätsorientiert, nicht als bewiesen "Premium"', '2-Marken-These als Testmodell, nicht als bewiesenes Flywheel', 'Ask als Proof-Finanzierung, nicht als Skalierungskapital'].map((item, i) => (
+                      <div key={i} className="bg-white/5 rounded p-2 border border-white/10 text-xs text-white/70 flex gap-2">
+                        <span className="text-teal-400 font-bold">{i + 1}.</span> {item}
+                      </div>
+                    ))}
+                    <p className="text-xs text-white/40 italic">Das macht euch nicht kleiner, nur weniger angreifbar.</p>
+                  </div>
+                </Collapsible>
+              </CardContent>
+            </Card>
+          </section>
+        </Reveal>
+
+        {/* ═══════════════════════════════════════════════════════ */}
+        {/* BLOCK 15: INVESTOR READY ROADMAP                      */}
+        {/* ═══════════════════════════════════════════════════════ */}
+        <Reveal>
+          <section id="investor-roadmap">
+            <Card className="bg-white/[0.03] border-white/10">
+              <CardHeader>
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 text-[10px]">BLOCK 15</Badge>
+                  <SourceBadge source="ANALYSE 4" />
+                </div>
+                <CardTitle className="text-xl text-white flex items-center gap-2">
+                  <Clock className="w-5 h-5 text-teal-400" />
+                  Investor Ready Roadmap
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {[
+                  { phase: 'PHASE 1 — Nächste 14 Tage', color: 'red', items: {
+                    aufgaben: ['Modellentscheidung Portal vs. Eigenvertrieb', 'Tracking sauber einrichten', 'CRM/Funnel-Definition fixieren', 'Claims-Liste: Fakt / Hypothese / Zielwert'],
+                    beweise: ['Erste GSC-/Analytics-Basis', 'Erste saubere Leadklassifikation', 'Erste Vollkostenstruktur'],
+                    pitch: ['"Zero CAC" raus', 'Automatisierungsclaim präzisieren', 'Runde 1 als Proof-Runde formulieren'],
+                    risiko: ['Cherry-Picking nicht als impliziten Vorteil stehen lassen', 'Fokus statt Systembreite'],
+                  }},
+                  { phase: 'PHASE 2 — Nächste 30 Tage', color: 'orange', items: {
+                    aufgaben: ['3–5 Partnergespräche mit offener Modelllogik', '5–10 Jobs vollkostenbasiert rechnen', 'KI-/Video-/WhatsApp-Accuracy testen', 'Wettbewerber-Positionierungsvergleich'],
+                    beweise: ['Erster Funnel mit echten Zahlen', 'DB je Auftrag', 'Partnerreaktion auf CPL / Hybridmodell'],
+                    pitch: ['Revenue-Folie auf MVP umschreiben', 'Proof-Gates Runde 1 → Runde 2 benennen'],
+                    risiko: ['Modellkonflikt verkleinern', 'Economics entnebeln', 'Investor Confusion Points reduzieren'],
+                  }},
+                  { phase: 'PHASE 3 — Vor Investorengespräch', color: 'teal', items: {
+                    aufgaben: ['Pitchdeck auf belegbare Aussagen umbauen', '1 Proof Memo erstellen', 'DD-Light-Datenraum vorbereiten'],
+                    beweise: ['Organischer Traffic', 'Echter Funnel', 'Reale Vollkosten', 'Partner-Validation', 'Team-/Kapazitätsplan'],
+                    pitch: ['Keine Zukunftsarchitektur als Kernstory', 'Kein Multi-Brand-Überbau', 'Kein übergrosser Moat-Claim'],
+                    risiko: ['Weniger Widerspruch', 'Weniger Storyinflation', 'Mehr prüfbare Mechanik'],
+                  }},
+                ].map((phase, pi) => (
+                  <div key={pi} className="relative">
+                    <div className={`border-l-2 ${phase.color === 'red' ? 'border-red-500' : phase.color === 'orange' ? 'border-orange-500' : 'border-teal-500'} pl-4 space-y-3`}>
+                      <h4 className={`text-sm font-black ${phase.color === 'red' ? 'text-red-400' : phase.color === 'orange' ? 'text-orange-400' : 'text-teal-400'}`}>{phase.phase}</h4>
+                      <div className="grid md:grid-cols-2 gap-3">
+                        <div>
+                          <p className="text-[10px] text-white/40 font-bold mb-1">AUFGABEN</p>
+                          {phase.items.aufgaben.map((a, i) => <p key={i} className="text-xs text-white/60">• {a}</p>)}
+                        </div>
+                        <div>
+                          <p className="text-[10px] text-white/40 font-bold mb-1">BEWEISE</p>
+                          {phase.items.beweise.map((b, i) => <p key={i} className="text-xs text-white/60">• {b}</p>)}
+                        </div>
+                        <div>
+                          <p className="text-[10px] text-white/40 font-bold mb-1">PITCH-ANPASSUNGEN</p>
+                          {phase.items.pitch.map((p, i) => <p key={i} className="text-xs text-white/60">• {p}</p>)}
+                        </div>
+                        <div>
+                          <p className="text-[10px] text-white/40 font-bold mb-1">RISIKO-REDUKTION</p>
+                          {phase.items.risiko.map((r, i) => <p key={i} className="text-xs text-white/60">• {r}</p>)}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </section>
+        </Reveal>
+
+        {/* ═══════════════════════════════════════════════════════ */}
+        {/* BLOCK 16: FINAL DECISION FRAME                        */}
+        {/* ═══════════════════════════════════════════════════════ */}
+        <Reveal>
+          <section id="final-verdict">
+            <Card className="bg-gradient-to-br from-white/[0.04] to-white/[0.02] border-white/10">
+              <CardHeader>
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 text-[10px]">BLOCK 16</Badge>
+                  <SourceBadge source="ANALYSE 4" />
+                </div>
+                <CardTitle className="text-xl text-white flex items-center gap-2">
+                  <Shield className="w-5 h-5 text-white" />
+                  Final Decision Frame
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {[
+                  { frage: 'Warum noch nicht investierbar?', antwort: 'Der fehlende Beweis eines funktionierenden wirtschaftlichen Kern-Loops. Nicht die Idee ist das Hauptproblem. Der Nachweis ist es.' },
+                  { frage: 'Was muss das Team jetzt beweisen?', antwort: 'Dass Umzugscheck echte qualifizierte Nachfrage erzeugt, die in bezahlte und profitabel messbare Aufträge kippt.' },
+                  { frage: 'Grösster Kommunikationsfehler?', antwort: 'Hypothesen werden stellenweise wie belegte Systemvorteile verkauft — vor allem bei CAC, Marge, Automatisierung, Neutralität und Multi-Brand-Logik.' },
+                  { frage: 'Grösster strategischer Unsicherheitsfaktor?', antwort: 'Ob Portal und Eigenausführung ein echter Vorteil oder ein struktureller Konflikt sind.' },
+                  { frage: 'Grösster operativer Unsicherheitsfaktor?', antwort: 'Ob Feierabend bei mehr Nachfrage Qualität, Marge und Kapazität halten kann.' },
+                  { frage: 'Grösster unbelegter Werttreiber?', antwort: 'Die Annahme, dass organische Nachfrage + Eigenausführung + Automatisierung zusammen einen echten Venture-Hebel erzeugen.' },
+                ].map((v, i) => (
+                  <div key={i} className="bg-white/5 rounded-lg p-4 border border-white/10">
+                    <p className="text-xs text-white/40 font-bold mb-1">{v.frage}</p>
+                    <p className="text-sm text-white/80">{v.antwort}</p>
+                  </div>
+                ))}
+
+                <div className="bg-gradient-to-r from-teal-500/10 to-orange-500/10 border border-teal-500/20 rounded-lg p-6 mt-4">
+                  <h4 className="text-sm font-black text-white mb-3">Von "zu früh" zu "prüfenswert" — 6 Bedingungen</h4>
+                  <div className="grid md:grid-cols-2 gap-2">
+                    {[
+                      'Echter Traffic-Nachweis',
+                      'Echter Funnel-Nachweis',
+                      'Erste bezahlte Portal-Aufträge',
+                      'Belegte Vollkosten-DB',
+                      'Partner-Validation trotz offenem Modell',
+                      'Radikale Vereinfachung auf 2 Marken + 1–2 Revenue-Streams',
+                    ].map((cond, i) => (
+                      <div key={i} className="flex items-center gap-2">
+                        <div className="w-5 h-5 rounded-full border-2 border-teal-500/50 flex items-center justify-center">
+                          <span className="text-[10px] text-teal-400 font-bold">{i + 1}</span>
+                        </div>
+                        <span className="text-xs text-white/70">{cond}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="bg-red-500/5 border border-red-500/10 rounded-lg p-4">
+                  <p className="text-sm text-white/70">
+                    <strong className="text-red-400">Harte Schlussbewertung:</strong> Aktuell ist das Modell nicht investierbar genug für ein sauberes Investorengespräch, weil die gefährlichsten Punkte nicht nur offen, sondern <em>tragend</em> offen sind. Nicht weil das Projekt schwach gedacht ist — sondern weil es noch zu viel Systemarchitektur und zu wenig bewiesene Mechanik hat.
+                  </p>
+                  <p className="text-xs text-white/40 mt-2 italic">Das ist ein klassischer Gründerfehler. Sehr menschlich, sehr teuer.</p>
+                </div>
+              </CardContent>
+            </Card>
+          </section>
+        </Reveal>
+
         {/* Footer */}
         <Reveal>
           <div className="text-center py-8 space-y-2">
@@ -606,6 +1277,7 @@ const FeedbackAnalysis = () => {
               <SourceBadge source="ANALYSE 1" />
               <SourceBadge source="ANALYSE 2" />
               <SourceBadge source="ANALYSE 3" />
+              <SourceBadge source="ANALYSE 4" />
               <SourceBadge source="FEEDBACK" />
             </div>
           </div>
