@@ -1,73 +1,55 @@
 
 
-# Investor Pitch Content Upgrade: 4 neue Sektionen + Closing-Rewrite
+# Business Case PDF Integration: Sektion + Download
 
-## Was sich ändert
+## Ausgangslage
 
-Der gesamte Text aus dem Gespräch enthält 4 klare, neue Inhaltsblöcke plus eine verbesserte Closing-Sektion. Alles wird in die bestehende Dramaturgie auf `/investoren` eingefügt.
+- **PDF vorhanden**: 5-seitiger Business Case (Problem → Lösung → KI-Verbindung → Warum 2 Firmen → Synergien → Regionen)
+- **TwoPillarModel existiert bereits**: SVG-Infografik mit Portal vs. Dienstleister, verlinkt auf `/zwei-saeulen-modell.pdf`
+- **Inhaltliche Lücke**: Das PDF enthält 3 starke Argumente, die noch nicht auf der Seite sind:
+  1. **Glaubwürdigkeit** — Portal bleibt neutral, Dienstleister liefert separat
+  2. **Zero CAC** — Feierabend bekommt Kunden ohne eigene Ads
+  3. **Doppelter Einkommensstrom** — Plattform-Marge + operative Marge
 
-### 1. Rewrite: `InvestorClosingSection.tsx` — Founder Conviction
+## Was gebaut wird
 
-Die aktuelle "100% safe"-Quote (Zeile 114-118) wird durch die polierte Version ersetzt:
+### 1. PDF als Download bereitstellen
+- PDF nach `public/business-case-umzugscheck-feierabend.pdf` kopieren
+- Download-Button in der TwoPillarModel-Sektion ergänzen (neben dem bestehenden)
 
-> «Für mich persönlich fühlt sich dieses Modell wie 100% an, weil ich nicht aufhöre, bis ein funktionierender profitabler Kern sichtbar ist. Objektiv nenne ich es trotzdem nicht blind 100%, weil Markt, Wettbewerb, Partnerqualität, Timing und Plattformabhängigkeiten nicht vollständig kontrollierbar sind. Genau deshalb bauen wir Umzugscheck nicht auf Hoffnung, sondern auf klare Optimierungszyklen, messbare Signale und harte Disziplin.»
+### 2. Neue Komponente: `BusinessCaseOverviewSection.tsx`
+Kompakte Sektion mit dem destillierten Business Case aus dem PDF:
 
-Plus der "Schlussgedanke an den Investor"-Block und die harte Schlusszeile:
+**Block A — "Zwei Projekte. Ein Ökosystem."** (Headline)
+- Problem-Statement: intransparenter Markt, fragmentierte Anbieter
+- Lösung in einem Satz: *"Umzugscheck bringt die Kunden. Feierabend macht die Arbeit. Die KI verbindet beides."*
 
-> «Mein Commitment ist kompromisslos. Ich werde nicht aufhören, bis wir einen funktionierenden profitablen Kern freigelegt haben oder die Daten eindeutig zeigen, dass er in dieser Form nicht existiert.»
+**Block B — 3 Vorteile der Trennung** (Cards)
+- Glaubwürdigkeit: Portal bleibt neutral
+- Zero CAC: Feierabend-Kunden fliessen organisch über Portal
+- Doppelter Einkommensstrom: Vermittlung + eigene Ausführung
 
-### 2. Neue Komponente: `WhyWeWinSection.tsx`
+**Block C — Synergie-Tabelle** (2-Spalten)
+- Links: Umzugscheck liefert (Reichweite, Leads, Marktdaten, KI, Skalierung)
+- Rechts: Feierabend liefert (40+ Jahre, Exzellenz, Praxiswissen, Premium, Proof of Concept)
 
-3 Cards mit den Argumenten:
-- **Systematisches Testing** — 60 Flow-Varianten, nicht raten sondern iterieren
-- **Nachfrage + Leistung verstanden** — Portal kennt den Klick, Dienstleister kennt den Einsatz
-- **Schnelleres Lernen** — Rückkopplung Portal ↔ Operations = schwerer kopierbar
+**Block D — Download-CTA**
+- Button: "Business Case herunterladen (PDF)"
 
-### 3. Neue Komponente: `MarketAttractivenessSection.tsx`
-
-3 Cards:
-- **Hoher Kundennutzen** — 200+ Firmen, KI-Rechner, Transparenz in unübersichtlichem Markt
-- **Mehrfache Servicebedürfnisse** — Umzug + Räumung + Reinigung = höherer AOV
-- **Digitalisierung nicht ausgeschöpft** — 60 Flow-Varianten zeigen Optimierungspotenzial
-
-### 4. Neue Komponente: `UseOfFundsSection.tsx`
-
-Horizontaler Balken-Chart (SVG) mit der 80k-Verteilung:
-- 35% / CHF 28k → Kundengewinnung (SEO, Ads, Content)
-- 25% / CHF 20k → Produkt & Conversion (Funnel, UX, Tracking)
-- 20% / CHF 16k → Operative Delivery (Prozesse, Qualität)
-- 10% / CHF 8k → Brand & Trust (Reviews, Cases, Creatives)
-- 10% / CHF 8k → Reserve / Working Capital
-
-### 5. Integration in `InvestorenLanding.tsx`
-
-Neue Reihenfolge nach NarrativeMoat:
-
-```text
-7. NarrativeMoatSection (Why Now + Flywheel)
-8. MarketAttractivenessSection ← NEU
-9. WhyWeWinSection ← NEU
-10. SEOContentMoatSection
-11. FundingRoadmapSection
-12. UseOfFundsSection ← NEU
-13. FiveRunsMethodologySection
-14. WhyInvestSection
-15. OverkillVisionSection + USPFrameworkSection
-16. InvestorClosingSection (rewritten)
-```
+### 3. Integration in InvestorenLanding.tsx
+- Neue Sektion **nach TwoPillarModel** (Position 4.5) einfügen
+- Das ergänzt die bestehende SVG-Infografik mit dem textuellen Business Case
 
 ## Dateien
 
 | Aktion | Datei |
 |--------|-------|
-| Create | `src/components/vision/WhyWeWinSection.tsx` |
-| Create | `src/components/vision/MarketAttractivenessSection.tsx` |
-| Create | `src/components/vision/UseOfFundsSection.tsx` |
-| Rewrite | `src/components/vision/InvestorClosingSection.tsx` (Conviction-Text) |
-| Edit | `src/pages/InvestorenLanding.tsx` (3 neue Imports + Platzierung) |
+| Copy | PDF → `public/business-case-umzugscheck-feierabend.pdf` |
+| Create | `src/components/vision/BusinessCaseOverviewSection.tsx` |
+| Edit | `src/pages/InvestorenLanding.tsx` (Import + Platzierung nach TwoPillarModel) |
 
 ## Technisch
-- Gleicher Stil: Framer Motion, Badge, Teal/Orange, responsive Cards
-- UseOfFunds als horizontaler SVG-Balken mit Segment-Labels (viewBox)
-- Alle Texte deutsch, Zahlen konsistent mit 80k-Modell
+- Gleicher Stil: Badge, Cards, Framer Motion, Teal/Orange
+- Synergie-Tabelle als responsive 2-Spalten Grid (nicht SVG)
+- PDF-Download als `<a href download>` Button
 
