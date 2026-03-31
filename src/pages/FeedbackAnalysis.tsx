@@ -1614,7 +1614,7 @@ const FeedbackAnalysis = () => {
         {/* BLOCK 21: WHAT TO PROVE FIRST                         */}
         {/* ═══════════════════════════════════════════════════════ */}
         <Reveal>
-          <section id="prove-first">
+          <section id="proof-gates" className="scroll-mt-16">
             <Card className="bg-white/[0.03] border-white/10">
               <CardHeader>
                 <div className="flex items-center gap-2 mb-2">
