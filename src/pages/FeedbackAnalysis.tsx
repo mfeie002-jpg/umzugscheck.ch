@@ -40,6 +40,7 @@ const SourceBadge = ({ source }: { source: string }) => {
     'FINAL VERDICT': 'bg-emerald-500/10 text-emerald-400',
     'MASTERPLAN': 'bg-cyan-500/10 text-cyan-400',
     'GEMINI': 'bg-violet-500/10 text-violet-400',
+    'ULTIMATE': 'bg-rose-500/10 text-rose-400',
   };
   return (
     <span className={`inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium rounded ${styles[source] || 'bg-gray-500/10 text-gray-400'}`}>
