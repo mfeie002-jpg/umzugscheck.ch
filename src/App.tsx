@@ -602,6 +602,9 @@ const AppRouterContent = () => {
           <Route path="/family" element={<FamilyLanding />} />
           <Route path="/investoren" element={<InvestorenLanding />} />
           <Route path="/feedback" element={<FeedbackAnalysis />} />
+          <Route path="/proof-engine" element={<ProofEngine />} />
+          <Route path="/data-room" element={<DataRoom />} />
+          <Route path="/governance" element={<GovernancePage />} />
           <Route path="/old-home" element={<Index />} />
           <Route path="/v2" element={<HomeOptimized />} />
           <Route path="/v3" element={<NewIndex />} />
