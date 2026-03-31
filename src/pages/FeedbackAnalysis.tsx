@@ -14,6 +14,7 @@ import GeminiBlueprint from '@/components/feedback/GeminiBlueprint';
 import UltimateBlueprint from '@/components/feedback/UltimateBlueprint';
 import ExternalBlueprintContent from '@/components/feedback/ExternalBlueprintContent';
 import FinalStrategyBlueprint from '@/components/feedback/FinalStrategyBlueprint';
+import MasterBlueprintFinal from '@/components/feedback/MasterBlueprintFinal';
 
 // ─── Status Badge Component ───
 const StatusBadge = ({ status }: { status: string }) => {
@@ -44,6 +45,7 @@ const SourceBadge = ({ source }: { source: string }) => {
     'GEMINI': 'bg-violet-500/10 text-violet-400',
     'ULTIMATE': 'bg-rose-500/10 text-rose-400',
     'EXTERNAL': 'bg-indigo-500/10 text-indigo-400',
+    'BLUEPRINT FINAL': 'bg-sky-500/10 text-sky-400',
   };
   return (
     <span className={`inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium rounded ${styles[source] || 'bg-gray-500/10 text-gray-400'}`}>
@@ -146,6 +148,7 @@ const TOC_ITEMS = [
   { id: 'external-blueprint', label: '27. External Blueprint', block: '27' },
   { id: 'final-strategy', label: '28. Final Strategy Blueprint', block: '28' },
   { id: 'claim-ampel', label: '29. Claim Audit Ampel', block: '29' },
+  { id: 'master-blueprint-final', label: '30. Master Blueprint Final', block: '30' },
 ];
 
 // ─── TOC Sidebar ───
@@ -2234,6 +2237,9 @@ const FeedbackAnalysis = () => {
           </section>
         </Reveal>
 
+        {/* ═══ BLOCK 30: Master Blueprint Final ═══ */}
+        <MasterBlueprintFinal />
+
         {/* ═══ FOOTER ═══ */}
         <Reveal>
           <div className="text-center py-12 space-y-4 border-t border-white/5 mt-8">
@@ -2246,7 +2252,7 @@ const FeedbackAnalysis = () => {
             </p>
             <p className="text-xs text-white/30 max-w-xl mx-auto">
               Konsolidiert aus 5 Analyse-Runden, Final Strategic Verdict, AI Execution Masterplan, 
-              Gemini Blueprint, Ultimate Blueprint, externen PDFs, Final Strategy Blueprint und Consolidated Claim Audit. 29 Blöcke. Stand: 31. März 2026.
+              Gemini Blueprint, Ultimate Blueprint, externen PDFs, Final Strategy Blueprint, Consolidated Claim Audit und Master Blueprint Final. 30 Blöcke. Stand: 31. März 2026.
             </p>
             <div className="flex justify-center gap-1.5 flex-wrap max-w-lg mx-auto">
               <SourceBadge source="ANALYSE 1" />
@@ -2259,6 +2265,7 @@ const FeedbackAnalysis = () => {
               <SourceBadge source="GEMINI" />
               <SourceBadge source="ULTIMATE" />
               <SourceBadge source="EXTERNAL" />
+              <SourceBadge source="BLUEPRINT FINAL" />
             </div>
             <p className="text-[10px] text-white/20 mt-4">
               Umzugscheck.ch · Feierabendservices.ch · Internes Red-Team-Dokument · Nicht zur externen Weitergabe ohne Freigabe
