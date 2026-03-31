@@ -225,6 +225,11 @@ export default function InvestorenLanding() {
       {/* 4. VISUAL DIVIDER */}
       <VisionVisualDivider language={language} variant="business" />
 
+      {/* ZWEI-SÄULEN-MODELL — Portal × Dienstleister Ökosystem */}
+      <ScrollReveal>
+        <TwoPillarModel />
+      </ScrollReveal>
+
       {/* NEW: RELO-OS 6-PHASE JOURNEY - Full for Investors */}
       <ReloOSJourneySection language={language} variant="full" />
 
