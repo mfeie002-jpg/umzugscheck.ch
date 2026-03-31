@@ -1,6 +1,7 @@
 /**
- * Investoren Landing Page — Restructured
- * 5 Beweise: Gebaut → Wirtschaftlich → Skalierbar → Moat → Risikoreduktion
+ * Investoren Landing Page — Konsolidiert: 8 Sektionen
+ * 1. Hero + Proof | 2. Build Timeline | 3. Geschäftsmodell | 4. Wirtschaftlichkeit
+ * 5. Wettbewerbsvorteil | 6. Kapital & Roadmap | 7. Risikokontrolle | 8. Overkill | 9. Closing
  */
 
 import { useState } from "react";
@@ -31,9 +32,10 @@ import { WhyWeWinSection } from "@/components/vision/WhyWeWinSection";
 import { UseOfFundsSection } from "@/components/vision/UseOfFundsSection";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, TrendingUp } from "lucide-react";
+import { ArrowLeft, TrendingUp, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ScrollReveal } from "@/components/ScrollReveal";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { VisionLanguage } from "@/lib/vision-translations";
 import { StakeholderJokeBanner, StakeholderJokesGrid } from "@/components/stakeholder/StakeholderJokeBanner";
 import { usePersona } from "@/hooks/usePersona";
@@ -43,61 +45,33 @@ import { FunSectionIntro } from "@/components/persona/FunSectionIntro";
 import { FunCTA } from "@/components/persona/FunCTA";
 import { VIPWelcomeBanner } from "@/components/persona/VIPWelcomeBanner";
 
-// Translations
 const translations: Record<'de' | 'bg' | 'it', {
   back: string;
   fullVision: string;
   badge: string;
-  sections: { 
-    revenueTitle: string; 
-    unitTitle: string; 
-  };
+  sections: { revenueTitle: string; unitTitle: string };
   footer: { interested: string; cta: string; visionBtn: string; familyBtn: string };
 }> = {
   de: {
     back: "Zurück",
     fullVision: "Vollständige Vision",
     badge: "Investor Hub",
-    sections: {
-      revenueTitle: "10 Einnahmequellen",
-      unitTitle: "Unit Economics",
-    },
-    footer: {
-      interested: "Interessiert?",
-      cta: "Offen für strategische Partnerschaften und Investments.",
-      visionBtn: "Vollständige Vision",
-      familyBtn: "Einfache Erklärung"
-    }
+    sections: { revenueTitle: "10 Einnahmequellen", unitTitle: "Unit Economics" },
+    footer: { interested: "Interessiert?", cta: "Offen für strategische Partnerschaften und Investments.", visionBtn: "Vollständige Vision", familyBtn: "Einfache Erklärung" }
   },
   bg: {
     back: "Назад",
     fullVision: "Пълна визия",
     badge: "Investor Hub",
-    sections: {
-      revenueTitle: "10 източници на приходи",
-      unitTitle: "Unit Economics",
-    },
-    footer: {
-      interested: "Заинтересовани?",
-      cta: "Отворени за стратегически партньорства и инвестиции.",
-      visionBtn: "Пълна визия",
-      familyBtn: "Просто обяснение"
-    }
+    sections: { revenueTitle: "10 източници на приходи", unitTitle: "Unit Economics" },
+    footer: { interested: "Заинтересовани?", cta: "Отворени за стратегически партньорства и инвестиции.", visionBtn: "Пълна визия", familyBtn: "Просто обяснение" }
   },
   it: {
     back: "Indietro",
     fullVision: "Visione Completa",
     badge: "Investor Hub",
-    sections: {
-      revenueTitle: "10 Fonti di Reddito",
-      unitTitle: "Unit Economics",
-    },
-    footer: {
-      interested: "Interessati?",
-      cta: "Aperti a partnership strategiche e investimenti.",
-      visionBtn: "Visione Completa",
-      familyBtn: "Spiegazione Semplice"
-    }
+    sections: { revenueTitle: "10 Fonti di Reddito", unitTitle: "Unit Economics" },
+    footer: { interested: "Interessati?", cta: "Aperti a partnership strategiche e investimenti.", visionBtn: "Visione Completa", familyBtn: "Spiegazione Semplice" }
   }
 };
 
@@ -112,13 +86,13 @@ export default function InvestorenLanding() {
     return 'de';
   });
   const [allExpanded, setAllExpanded] = useState(false);
+  const [overkillOpen, setOverkillOpen] = useState(false);
   const t = translations[language];
   const { persona, isPersonalized } = usePersona(language);
 
   return (
     <div className="min-h-screen bg-background">
       <VisionProgressIndicator />
-      
       <SEOHead pageType="home" url="https://umzugscheck.ch/investoren" />
 
       {/* Compact Header */}
@@ -148,126 +122,150 @@ export default function InvestorenLanding() {
         </div>
       </div>
 
-      {/* VIP Welcome Banner */}
       {isPersonalized && <VIPWelcomeBanner persona={persona} />}
 
       {/* ═══════════════════════════════════════════ */}
-      {/* 1. HERO — "Der Motor ist gebaut" */}
+      {/* 1. HERO + PROOF-KACHELN                    */}
       {/* ═══════════════════════════════════════════ */}
       <VisionEmotionalHero language={language} variant="investor" />
-
       {isPersonalized && <FunSectionIntro persona={persona} page="investoren" sectionId="hero" />}
-
-      {/* ═══════════════════════════════════════════ */}
-      {/* 2. PROOF-KACHELN — Konsolidiert */}
-      {/* ═══════════════════════════════════════════ */}
       <VisionQuickStats language={language} variant="investor" />
-
       {isPersonalized && <FunInterruptCard persona={persona} page="investoren" afterSection="stats" />}
 
       {/* ═══════════════════════════════════════════ */}
-      {/* 3. BUILD TIMELINE — Nov 2025–Mär 2026 */}
+      {/* 2. BUILD TIMELINE — Nov 2025–Mär 2026      */}
       {/* ═══════════════════════════════════════════ */}
       <ScrollReveal>
         <BuildTimelineSection />
       </ScrollReveal>
 
       {/* ═══════════════════════════════════════════ */}
-      {/* 4. ZWEI-SÄULEN-MODELL */}
+      {/* 3. GESCHÄFTSMODELL                          */}
+      {/*    TwoPillarModel + BusinessCase + 3-Layer  */}
       {/* ═══════════════════════════════════════════ */}
-      <ScrollReveal>
-        <TwoPillarModel />
-      </ScrollReveal>
+      <section className="py-16 bg-muted/10">
+        <div className="container mx-auto px-4">
+          <Badge className="mb-4 bg-primary/10 text-primary">Geschäftsmodell</Badge>
+          <h2 className="text-3xl md:text-4xl font-black text-foreground mb-2">
+            Zwei Projekte. Ein Ökosystem.
+          </h2>
+          <p className="text-muted-foreground mb-10 max-w-2xl">
+            Portal + Dienstleister + KI = ein vertikal integriertes System mit 10 Einnahmequellen.
+          </p>
+        </div>
 
-      {/* ═══════════════════════════════════════════ */}
-      {/* 4.5. BUSINESS CASE OVERVIEW */}
-      {/* ═══════════════════════════════════════════ */}
-      <ScrollReveal>
-        <BusinessCaseOverviewSection />
-      </ScrollReveal>
+        <ScrollReveal>
+          <TwoPillarModel />
+        </ScrollReveal>
 
-      {/* ═══════════════════════════════════════════ */}
-      {/* 5. 3-LAYER SYSTEM MAP — Capture/Transaction/Expansion */}
-      {/* ═══════════════════════════════════════════ */}
-      <ScrollReveal>
-        <ThreeLayerSystemMap />
-      </ScrollReveal>
+        <ScrollReveal>
+          <BusinessCaseOverviewSection />
+        </ScrollReveal>
+
+        <ScrollReveal>
+          <ThreeLayerSystemMap />
+        </ScrollReveal>
+      </section>
 
       {isPersonalized && <FunSectionIntro persona={persona} page="investoren" sectionId="pillars" />}
 
       {/* ═══════════════════════════════════════════ */}
-      {/* 6. REVENUE + UNIT ECONOMICS + WARENKORB */}
+      {/* 4. WIRTSCHAFTLICHKEIT                       */}
+      {/*    Revenue + UnitEconomics + Warenkorb      */}
       {/* ═══════════════════════════════════════════ */}
-      <section className="py-12">
+      <section className="py-16">
         <div className="container mx-auto px-4">
-          <Badge className="mb-4 bg-secondary/10 text-secondary">553 CHF</Badge>
-          <h2 className="text-3xl md:text-4xl font-black text-foreground mb-8">{t.sections.revenueTitle}</h2>
-          <RevenueStreamExamples language={language} />
+          <Badge className="mb-4 bg-secondary/10 text-secondary">553 CHF · 90%+ Marge</Badge>
+          <h2 className="text-3xl md:text-4xl font-black text-foreground mb-8">
+            Wirtschaftlichkeit
+          </h2>
+
+          <Tabs defaultValue="revenue" className="w-full">
+            <TabsList className="grid w-full max-w-md grid-cols-3 mb-8">
+              <TabsTrigger value="revenue">Einnahmen</TabsTrigger>
+              <TabsTrigger value="margins">Margen</TabsTrigger>
+              <TabsTrigger value="basket">Warenkorb</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="revenue">
+              <RevenueStreamExamples language={language} />
+            </TabsContent>
+
+            <TabsContent value="margins">
+              <UnitEconomicsDetailed language={language} />
+            </TabsContent>
+
+            <TabsContent value="basket">
+              <ModularerWarenkorbSection />
+            </TabsContent>
+          </Tabs>
         </div>
       </section>
 
       {isPersonalized && <FunInterruptCard persona={persona} page="investoren" afterSection="revenue" />}
-
-      <section className="py-12 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <Badge className="mb-4 bg-primary/10 text-primary">90%+ Marge</Badge>
-          <h2 className="text-3xl md:text-4xl font-black text-foreground mb-8">{t.sections.unitTitle}</h2>
-          <UnitEconomicsDetailed language={language} />
-        </div>
-      </section>
-
-      <ScrollReveal>
-        <ModularerWarenkorbSection />
-      </ScrollReveal>
-
       {isPersonalized && <FunSectionIntro persona={persona} page="investoren" sectionId="economics" />}
 
       {/* ═══════════════════════════════════════════ */}
-      {/* 7. NARRATIVE MOAT — Why Now + Flywheel + Moat */}
+      {/* 5. WETTBEWERBSVORTEIL                       */}
+      {/*    NarrativeMoat + WhyWeWin + Market + SEO  */}
       {/* ═══════════════════════════════════════════ */}
-      <ScrollReveal>
-        <NarrativeMoatSection />
-      </ScrollReveal>
+      <section className="py-16 bg-muted/10">
+        <div className="container mx-auto px-4">
+          <Badge className="mb-4 bg-primary/10 text-primary">Wettbewerbsvorteil</Badge>
+          <h2 className="text-3xl md:text-4xl font-black text-foreground mb-2">
+            Warum wir gewinnen
+          </h2>
+          <p className="text-muted-foreground mb-10 max-w-2xl">
+            Flywheel, Marktposition, Content-Moat und strukturelle Vorteile.
+          </p>
+        </div>
+
+        <ScrollReveal>
+          <NarrativeMoatSection />
+        </ScrollReveal>
+
+        <div className="grid md:grid-cols-2 gap-0">
+          <ScrollReveal>
+            <MarketAttractivenessSection />
+          </ScrollReveal>
+          <ScrollReveal>
+            <WhyWeWinSection />
+          </ScrollReveal>
+        </div>
+
+        <ScrollReveal>
+          <SEOContentMoatSection language={language} />
+        </ScrollReveal>
+      </section>
 
       {/* ═══════════════════════════════════════════ */}
-      {/* 8. MARKT-ATTRAKTIVITÄT */}
+      {/* 6. KAPITAL & ROADMAP                        */}
+      {/*    FundingRoadmap + UseOfFunds               */}
       {/* ═══════════════════════════════════════════ */}
-      <ScrollReveal>
-        <MarketAttractivenessSection />
-      </ScrollReveal>
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          <Badge className="mb-4 bg-secondary/10 text-secondary">CHF 80'000</Badge>
+          <h2 className="text-3xl md:text-4xl font-black text-foreground mb-2">
+            Kapital & Roadmap
+          </h2>
+          <p className="text-muted-foreground mb-10 max-w-2xl">
+            3 Tranchen, KPI-gesteuert. Jede Runde entfernt ein zentrales Risiko.
+          </p>
+        </div>
 
-      {/* ═══════════════════════════════════════════ */}
-      {/* 9. WARUM WIR GEWINNEN */}
-      {/* ═══════════════════════════════════════════ */}
-      <ScrollReveal>
-        <WhyWeWinSection />
-      </ScrollReveal>
+        <ScrollReveal>
+          <FundingRoadmapSection language={language} />
+        </ScrollReveal>
 
-      {/* ═══════════════════════════════════════════ */}
-      {/* 10. SEO & CONTENT MOAT */}
-      {/* ═══════════════════════════════════════════ */}
-      <ScrollReveal>
-        <SEOContentMoatSection language={language} />
-      </ScrollReveal>
-
-      {/* ═══════════════════════════════════════════ */}
-      {/* 9. FUNDING ROADMAP — 80k in 3 Tranchen */}
-      {/* ═══════════════════════════════════════════ */}
-      <ScrollReveal>
-        <FundingRoadmapSection language={language} />
-      </ScrollReveal>
-
-      {/* ═══════════════════════════════════════════ */}
-      {/* 12. USE OF FUNDS — 80k Verteilung */}
-      {/* ═══════════════════════════════════════════ */}
-      <ScrollReveal>
-        <UseOfFundsSection />
-      </ScrollReveal>
+        <ScrollReveal>
+          <UseOfFundsSection />
+        </ScrollReveal>
+      </section>
 
       {isPersonalized && <FunSectionIntro persona={persona} page="investoren" sectionId="roadmap" />}
 
       {/* ═══════════════════════════════════════════ */}
-      {/* 10. FIVE RUNS METHODOLOGY — Kill Switch */}
+      {/* 7. RISIKOKONTROLLE — Five Runs Kill Switch  */}
       {/* ═══════════════════════════════════════════ */}
       <ScrollReveal>
         <FiveRunsMethodologySection />
@@ -276,25 +274,55 @@ export default function InvestorenLanding() {
       {isPersonalized && <FunInterruptCard persona={persona} page="investoren" afterSection="market" />}
 
       {/* ═══════════════════════════════════════════ */}
-      {/* 11. WHY INVEST — 50 Gründe */}
+      {/* 8. OVERKILL — Expandable                    */}
+      {/*    WhyInvest + OverkillVision + USPFramework */}
       {/* ═══════════════════════════════════════════ */}
-      <ScrollReveal>
-        <WhyInvestSection language={language} />
-      </ScrollReveal>
+      <section className="py-16 bg-muted/10">
+        <div className="container mx-auto px-4">
+          <button
+            onClick={() => setOverkillOpen(!overkillOpen)}
+            className="w-full flex items-center justify-between text-left group"
+          >
+            <div>
+              <Badge className="mb-4 bg-primary/10 text-primary">Deep Dive</Badge>
+              <h2 className="text-3xl md:text-4xl font-black text-foreground mb-2">
+                Overkill-Sektion
+              </h2>
+              <p className="text-muted-foreground max-w-2xl">
+                50 Gründe, 50 Tech-USPs und die vollständige Vision — für alle, die es genau wissen wollen.
+              </p>
+            </div>
+            <ChevronDown className={`w-8 h-8 text-muted-foreground transition-transform duration-300 flex-shrink-0 ml-4 ${overkillOpen ? 'rotate-180' : ''}`} />
+          </button>
+        </div>
+
+        {overkillOpen && (
+          <div className="mt-8">
+            <Tabs defaultValue="reasons" className="container mx-auto px-4">
+              <TabsList className="grid w-full max-w-lg grid-cols-3 mb-8">
+                <TabsTrigger value="reasons">50 Gründe</TabsTrigger>
+                <TabsTrigger value="vision">Tech-Vision</TabsTrigger>
+                <TabsTrigger value="usps">USP Framework</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="reasons">
+                <WhyInvestSection language={language} />
+              </TabsContent>
+
+              <TabsContent value="vision">
+                <OverkillVisionSection />
+              </TabsContent>
+
+              <TabsContent value="usps">
+                <USPFrameworkSection />
+              </TabsContent>
+            </Tabs>
+          </div>
+        )}
+      </section>
 
       {/* ═══════════════════════════════════════════ */}
-      {/* 12. OVERKILL VISION + USP FRAMEWORK */}
-      {/* ═══════════════════════════════════════════ */}
-      <ScrollReveal>
-        <OverkillVisionSection />
-      </ScrollReveal>
-
-      <ScrollReveal>
-        <USPFrameworkSection />
-      </ScrollReveal>
-
-      {/* ═══════════════════════════════════════════ */}
-      {/* 13. CLOSING — Giuseppe-Brief */}
+      {/* 9. CLOSING — Founder Conviction              */}
       {/* ═══════════════════════════════════════════ */}
       <ScrollReveal>
         <InvestorClosingSection />
@@ -317,7 +345,6 @@ export default function InvestorenLanding() {
         <div className="container mx-auto px-4 text-center">
           <h3 className="text-2xl font-bold mb-4">{t.footer.interested}</h3>
           <p className="text-muted-foreground mb-6 max-w-xl mx-auto">{t.footer.cta}</p>
-          
           {isPersonalized ? (
             <FunCTA persona={persona} page="investoren" index={0} />
           ) : (
@@ -333,18 +360,13 @@ export default function InvestorenLanding() {
         </div>
       </section>
 
-      {/* Floating Contact CTA */}
       <VisionContactCTA language={language} variant="investor" />
 
-      {/* FLOATING JOKE - Only for BG/IT */}
       {(language === 'bg' || language === 'it') && (
         <StakeholderJokeBanner language={language} variant="floating" />
       )}
 
-      {/* Persona Narrator - Floating */}
-      {isPersonalized && (
-        <FunNarrator persona={persona} page="investoren" />
-      )}
+      {isPersonalized && <FunNarrator persona={persona} page="investoren" />}
     </div>
   );
 }
