@@ -153,7 +153,7 @@ const TableOfContents = () => {
       {/* Mobile TOC toggle */}
       <button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-4 right-4 z-50 lg:hidden bg-white/10 backdrop-blur-md border border-white/20 rounded-full p-3 text-white shadow-lg hover:bg-white/20 transition-colors print:hidden"
+        className="fixed bottom-4 right-4 z-50 lg:hidden bg-white/10 backdrop-blur-md border border-white/20 rounded-full p-3.5 text-white shadow-lg hover:bg-white/20 transition-colors print:hidden min-w-[48px] min-h-[48px] flex items-center justify-center"
         aria-label="Inhaltsverzeichnis"
       >
         {open ? <X className="w-5 h-5" /> : <List className="w-5 h-5" />}
@@ -184,7 +184,7 @@ const TableOfContents = () => {
 // ═══════════════════════════════════════════════
 const FeedbackAnalysis = () => {
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white">
+    <div className="min-h-screen bg-[#0a0a0a] text-white lg:pr-64">
       {/* Print Styles */}
       <style>{`
         @media print {
@@ -198,26 +198,26 @@ const FeedbackAnalysis = () => {
 
       {/* Header */}
       <div className="sticky top-0 z-50 bg-[#0a0a0a]/90 backdrop-blur-md border-b border-white/10 print:static print:bg-white print:border-gray-200">
-        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
           <Link to="/investoren" className="flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm print:hidden">
-            <ArrowLeft className="w-4 h-4" /> Zurück
+            <ArrowLeft className="w-4 h-4" /> <span className="hidden sm:inline">Zurück</span>
           </Link>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <span className="text-[10px] text-white/30 hidden sm:inline">v1.0 Final · 31. März 2026</span>
-            <Badge className="bg-red-500/20 text-red-400 border-red-500/30 text-xs">
+            <Badge className="bg-red-500/20 text-red-400 border-red-500/30 text-[10px] sm:text-xs">
               INTERNES DOKUMENT
             </Badge>
           </div>
         </div>
       </div>
-      <div className="max-w-5xl mx-auto px-4 py-8 space-y-10">
+      <div className="max-w-5xl mx-auto px-3 sm:px-6 py-6 sm:py-8 space-y-8 sm:space-y-10">
 
         {/* ═══ BLOCK 1: READINESS SCORE ═══ */}
         <Reveal>
           <section id="readiness-score" className="space-y-4 scroll-mt-16">
-            <div className="flex items-center gap-3">
-              <Badge className="bg-teal-500/20 text-teal-400 border-teal-500/30">BLOCK 1</Badge>
-              <h1 className="text-2xl font-bold">Investor Readiness Score</h1>
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+              <Badge className="bg-teal-500/20 text-teal-400 border-teal-500/30 text-[10px] sm:text-xs">BLOCK 1</Badge>
+              <h1 className="text-xl sm:text-xl sm:text-2xl font-bold">Investor Readiness Score</h1>
             </div>
             
             <Card className="bg-white/5 border-white/10">
@@ -266,7 +266,7 @@ const FeedbackAnalysis = () => {
         {/* ═══ BLOCK 2: TOP 7 KILL POINTS ═══ */}
         <Reveal delay={0.05}>
           <section id="kill-points" className="space-y-4 scroll-mt-16">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <Badge className="bg-teal-500/20 text-teal-400 border-teal-500/30">BLOCK 2</Badge>
               <h2 className="text-xl font-bold">Top 7 Kill Points</h2>
             </div>
@@ -316,7 +316,7 @@ const FeedbackAnalysis = () => {
         {/* ═══ BLOCK 3: UNBELEGTE ANNAHMEN ═══ */}
         <Reveal delay={0.05}>
           <section id="unbelegte-annahmen" className="space-y-4 scroll-mt-16">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <Badge className="bg-teal-500/20 text-teal-400 border-teal-500/30">BLOCK 3</Badge>
               <h2 className="text-xl font-bold">Unbelegte Annahmen</h2>
             </div>
@@ -352,7 +352,7 @@ const FeedbackAnalysis = () => {
         {/* ═══ BLOCK 4: WIDERSPRÜCHE ═══ */}
         <Reveal delay={0.05}>
           <section id="widersprueche" className="space-y-4 scroll-mt-16">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <Badge className="bg-teal-500/20 text-teal-400 border-teal-500/30">BLOCK 4</Badge>
               <h2 className="text-xl font-bold">Widersprüche & Spannungsfelder</h2>
             </div>
@@ -402,7 +402,7 @@ const FeedbackAnalysis = () => {
         {/* ═══ BLOCK 5: PITCH CLAIM AUDIT ═══ */}
         <Reveal delay={0.05}>
           <section id="claim-audit" className="space-y-4 scroll-mt-16">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <Badge className="bg-teal-500/20 text-teal-400 border-teal-500/30">BLOCK 5</Badge>
               <h2 className="text-xl font-bold">Pitch Claim Audit</h2>
             </div>
@@ -491,7 +491,7 @@ const FeedbackAnalysis = () => {
         {/* ═══ BLOCK 6: PROOF CHECKLIST ═══ */}
         <Reveal delay={0.05}>
           <section id="proof-checklist" className="space-y-4 scroll-mt-16">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <Badge className="bg-teal-500/20 text-teal-400 border-teal-500/30">BLOCK 6</Badge>
               <h2 className="text-xl font-bold">Proof Checklist — Vor Investorengesprächen</h2>
             </div>
@@ -525,7 +525,7 @@ const FeedbackAnalysis = () => {
         {/* ═══ BLOCK 7: 30-TAGE DE-RISKING ═══ */}
         <Reveal delay={0.05}>
           <section id="roadmap" className="space-y-4 scroll-mt-16">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <Badge className="bg-teal-500/20 text-teal-400 border-teal-500/30">BLOCK 7</Badge>
               <h2 className="text-xl font-bold">30-Tage De-Risking Plan</h2>
             </div>
@@ -617,7 +617,7 @@ const FeedbackAnalysis = () => {
         {/* ═══ BLOCK 8: STRATEGISCHE EMPFEHLUNG ═══ */}
         <Reveal delay={0.05}>
           <section id="strategie" className="space-y-4 scroll-mt-16">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <Badge className="bg-teal-500/20 text-teal-400 border-teal-500/30">BLOCK 8</Badge>
               <h2 className="text-xl font-bold">Strategische Empfehlung</h2>
             </div>
@@ -1730,7 +1730,7 @@ const FeedbackAnalysis = () => {
           <section id="final-verdict" className="space-y-6 scroll-mt-16">
             <div className="flex items-center gap-3 mb-2">
               <Shield className="w-6 h-6 text-emerald-400" />
-              <h2 className="text-2xl font-black text-white tracking-tight">23. FINAL STRATEGIC VERDICT</h2>
+              <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">23. FINAL STRATEGIC VERDICT</h2>
               <SourceBadge source="FINAL VERDICT" />
             </div>
 
@@ -1959,9 +1959,9 @@ const FeedbackAnalysis = () => {
         {/* ═══ BLOCK 24: AI EXECUTION MASTERPLAN ═══ */}
         <Reveal>
           <section id="ai-masterplan" className="space-y-6 scroll-mt-16">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <Zap className="w-7 h-7 text-cyan-400" />
-              <h2 className="text-2xl font-black text-white">Block 24: AI Execution Masterplan</h2>
+              <h2 className="text-xl sm:text-2xl font-black text-white">Block 24: AI Execution Masterplan</h2>
               <SourceBadge source="MASTERPLAN" />
             </div>
             <p className="text-sm text-white/60">
@@ -1977,9 +1977,9 @@ const FeedbackAnalysis = () => {
         {/* ═══ BLOCK 26: ULTIMATE BLUEPRINT ═══ */}
         <Reveal>
           <section id="ultimate-blueprint" className="space-y-4 scroll-mt-16">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <FileText className="w-7 h-7 text-rose-400" />
-              <h2 className="text-2xl font-black text-white">Block 26: Investor Readiness Blueprint — Ultimate Edition</h2>
+              <h2 className="text-xl sm:text-2xl font-black text-white">Block 26: Investor Readiness Blueprint — Ultimate Edition</h2>
               <SourceBadge source="ULTIMATE" />
             </div>
             <p className="text-sm text-white/60">
@@ -1992,9 +1992,9 @@ const FeedbackAnalysis = () => {
         {/* ═══ BLOCK 27: EXTERNAL BLUEPRINT CONTENT ═══ */}
         <Reveal>
           <section id="external-blueprint" className="space-y-4 scroll-mt-16">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <FileText className="w-7 h-7 text-indigo-400" />
-              <h2 className="text-2xl font-black text-white">Block 27: External Blueprint — Detaillierte Umsetzung</h2>
+              <h2 className="text-xl sm:text-2xl font-black text-white">Block 27: External Blueprint — Detaillierte Umsetzung</h2>
               <SourceBadge source="EXTERNAL" />
             </div>
             <p className="text-sm text-white/60">
