@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AIExecutionMasterplan from '@/components/feedback/AIExecutionMasterplan';
 import GeminiBlueprint from '@/components/feedback/GeminiBlueprint';
 import UltimateBlueprint from '@/components/feedback/UltimateBlueprint';
+import ExternalBlueprintContent from '@/components/feedback/ExternalBlueprintContent';
 
 // ─── Status Badge Component ───
 const StatusBadge = ({ status }: { status: string }) => {
@@ -41,6 +42,7 @@ const SourceBadge = ({ source }: { source: string }) => {
     'MASTERPLAN': 'bg-cyan-500/10 text-cyan-400',
     'GEMINI': 'bg-violet-500/10 text-violet-400',
     'ULTIMATE': 'bg-rose-500/10 text-rose-400',
+    'EXTERNAL': 'bg-indigo-500/10 text-indigo-400',
   };
   return (
     <span className={`inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium rounded ${styles[source] || 'bg-gray-500/10 text-gray-400'}`}>
@@ -1909,11 +1911,28 @@ const FeedbackAnalysis = () => {
           </section>
         </Reveal>
 
+        {/* ═══ BLOCK 27: EXTERNAL BLUEPRINT CONTENT ═══ */}
+        <Reveal>
+          <section className="space-y-4">
+            <div className="flex items-center gap-3">
+              <FileText className="w-7 h-7 text-indigo-400" />
+              <h2 className="text-2xl font-black text-white">Block 27: External Blueprint — Detaillierte Umsetzung</h2>
+              <SourceBadge source="EXTERNAL" />
+            </div>
+            <p className="text-sm text-white/60">
+              Konsolidierte Inhalte aus beiden externen Investor Readiness Blueprint PDFs (v1.0). Enthält detaillierte Solution Blueprints, 
+              erweiterte Contradiction Map mit Entschärfungsstrategien, Claim Control mit besseren Formulierungen, 
+              Human vs AI Responsibility Model, Red Flags für Investorengespräche und Appendix.
+            </p>
+            <ExternalBlueprintContent />
+          </section>
+        </Reveal>
+
         {/* ═══ FOOTER ═══ */}
         <Reveal>
           <div className="text-center py-8 space-y-2">
             <p className="text-xs text-white/30">
-              Konsolidiert aus 5 Analyse-Runden + Final Verdict + Masterplan + Gemini Blueprint + Ultimate Blueprint · Stand: März 2026 · Internes Red-Team-Dokument
+              Konsolidiert aus 5 Analyse-Runden + Final Verdict + Masterplan + Gemini Blueprint + Ultimate Blueprint + External PDFs · Stand: März 2026 · Internes Red-Team-Dokument
             </p>
             <div className="flex justify-center gap-2 flex-wrap">
               <SourceBadge source="ANALYSE 1" />
@@ -1925,6 +1944,7 @@ const FeedbackAnalysis = () => {
               <SourceBadge source="MASTERPLAN" />
               <SourceBadge source="GEMINI" />
               <SourceBadge source="ULTIMATE" />
+              <SourceBadge source="EXTERNAL" />
             </div>
           </div>
         </Reveal>
