@@ -1,34 +1,47 @@
 
 
-# Zwei-Säulen-Modell: Web-Sektion + PDF
+# USP Framework auf Umzugscheck anpassen
 
-## Was gebaut wird
+## Analyse: Was existiert vs. was im Dokument steht
 
-1. **Neue SVG-Infografik-Komponente** `TwoPillarModel.tsx` — zeigt das Ökosystem visuell:
-   - Links: **Umzugscheck.ch** (Portal/Lead-Engine) mit SEO, KI, 10 Revenue Streams
-   - Rechts: **Feierabend Services** (Physischer Dienstleister) mit Services, Premium, A-Z
-   - Mitte: **Lead-Flow** mit Cherry/Chaff-Sorting (Kirschen → Feierabend, Spreu → Marktplatz)
-   - Unten: **Synergie-Effekt** — Zero CAC, Kostentragung durch Spreu-Einnahmen
-   - Alles als selbsterklärende Infografik mit eingebetteten Labels/Zahlen
+**Bereits eingebaut und aktuell:**
+- TwoPillarModel (Zwei-Säulen SVG) ✅
+- FundingRoadmapSection (3 Tranchen) ✅
+- GrowthPRStrategySection ✅
+- InvestorClosingSection (Giuseppe-Brief) ✅
+- OverkillVisionSection (50 Tech-USPs) ✅
 
-2. **Integration in InvestorenLanding.tsx** — nach dem Hero/Stats-Block, vor den Business Pillars (ca. nach Sektion 3/4). Neue Sektion mit Badge "Zwei-Säulen-Modell" und Headline.
+**Das Problem:** Die `USPFrameworkSection` enthält 50 **generische SaaS-USPs** (AR Workspaces, Haptic Collaboration, Mental Health Dashboard etc.), die **nichts mit Umzugscheck zu tun haben**. Das Dokument liefert 10 plattformspezifische "Whoa"-USPs, die deutlich stärker sind:
 
-3. **PDF-Download** — Generiertes 2-Seiten A4 PDF via reportlab:
-   - **Seite 1**: Zwei-Säulen Systemgrafik (Umzugscheck ↔ Feierabend)
-   - **Seite 2**: Cherry & Chaff Logik, Unit Economics Vergleich, Synergie-Zahlen
-   - Download-Button direkt in der Web-Sektion
-   - PDF wird als statisches Asset unter `/mnt/documents/` generiert und in `public/` kopiert
+| # | Generisch (aktuell) | Umzugscheck-spezifisch (Dokument) |
+|---|---------------------|-----------------------------------|
+| 1 | AR Spatial Workspaces | LIDAR AI View Scan |
+| 2 | Haptic Collaboration | Smart Escrow (Treuhand) |
+| 3 | Neurologische Sentiment-Analyse | Dynamic Pricing Engine |
+| 4 | Video-Repurposing-Engine | Swiss Handover Protocol |
+| 5 | NFC Cloud Bridge | Quality-Weighted Bidding |
+
+## Was gemacht wird
+
+**Die USPFrameworkSection mit umzugsspezifischen USPs ersetzen.** Die 3-Tier-Struktur (Whoa/Core/Foundation) bleibt, aber der Inhalt wird auf die Plattform zugeschnitten:
+
+### Tier 1 — "Whoa" (10 USPs, grosse Cards)
+Die 10 aus dem Dokument: Hyper-Adaptive KI, LIDAR AI View Scan, Smart Escrow, Dynamic Pricing Engine, Prädiktive Auto-Workflows, Zero-UI Experience, Quality-Weighted Bidding, Swiss Handover Protocol, Fixkosten-Eliminierung, NFC Cloud Bridge.
+
+### Tier 2 — "Core" (20 USPs)
+Angepasst auf Umzugscheck-Kontext: WhatsApp Commerce, Cherry/Chaff Sorting, Multi-Brand Routing, KI-Content-Pipeline, 2'110 Gemeinden SEO, Modularer Warenkorb (Cross-Selling), Echtzeit-Verfügbarkeit, etc.
+
+### Tier 3 — "Foundation" (20 USPs)
+Schweiz-spezifisch: OR Art. 14 Compliance, Datenschutz DSG, Transparente Preise, Abnahmegarantie, Schweizer Hosting, Mobile-First, etc.
 
 ## Dateien
 
 | Aktion | Datei |
 |--------|-------|
-| Create | `src/components/vision/TwoPillarModel.tsx` |
-| Create | PDF-Generierungsscript → `public/zwei-saeulen-modell.pdf` |
-| Edit | `src/pages/InvestorenLanding.tsx` (Import + Platzierung) |
+| Rewrite | `src/components/vision/USPFrameworkSection.tsx` — alle 50 USPs umzugsspezifisch |
 
 ## Technisch
-- SVG-Infografik: gleicher Stil wie `HeroSystemGraphic.tsx` (Teal/Orange/Dark, Framer Motion, viewBox)
-- PDF: reportlab mit Brand-Farben, clean A4-Layout, Download via `<a href>` Button
-- Alle Texte deutsch, Zahlen aus dem bestehenden Business Case
+- Gleiche 3-Tier Card-Struktur bleibt (expandable Tiers 2+3)
+- Gleiche Icons/Badges/Animationen
+- Nur der Inhalt wird von generisch auf plattformspezifisch umgeschrieben
 
