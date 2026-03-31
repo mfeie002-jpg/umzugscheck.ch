@@ -1,6 +1,12 @@
 import { AlertTriangle, CheckCircle2, XCircle, Shield, Zap, Target } from 'lucide-react';
 import { Reveal, StatusBadge, ScoreCell, Collapsible } from './shared';
 
+const SourceBadge = () => (
+  <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium rounded bg-violet-500/10 text-violet-400">
+    [GEMINI]
+  </span>
+);
+
 const GeminiBlueprint = () => {
   return (
     <div className="space-y-6">
