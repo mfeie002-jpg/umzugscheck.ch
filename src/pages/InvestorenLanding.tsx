@@ -222,7 +222,21 @@ export default function InvestorenLanding() {
       </ScrollReveal>
 
       {/* ═══════════════════════════════════════════ */}
-      {/* 8. SEO & CONTENT MOAT */}
+      {/* 8. MARKT-ATTRAKTIVITÄT */}
+      {/* ═══════════════════════════════════════════ */}
+      <ScrollReveal>
+        <MarketAttractivenessSection />
+      </ScrollReveal>
+
+      {/* ═══════════════════════════════════════════ */}
+      {/* 9. WARUM WIR GEWINNEN */}
+      {/* ═══════════════════════════════════════════ */}
+      <ScrollReveal>
+        <WhyWeWinSection />
+      </ScrollReveal>
+
+      {/* ═══════════════════════════════════════════ */}
+      {/* 10. SEO & CONTENT MOAT */}
       {/* ═══════════════════════════════════════════ */}
       <ScrollReveal>
         <SEOContentMoatSection language={language} />
