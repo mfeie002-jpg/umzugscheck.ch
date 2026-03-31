@@ -1958,7 +1958,7 @@ const FeedbackAnalysis = () => {
 
         {/* ═══ BLOCK 24: AI EXECUTION MASTERPLAN ═══ */}
         <Reveal>
-          <section className="space-y-6">
+          <section id="ai-masterplan" className="space-y-6 scroll-mt-16">
             <div className="flex items-center gap-3">
               <Zap className="w-7 h-7 text-cyan-400" />
               <h2 className="text-2xl font-black text-white">Block 24: AI Execution Masterplan</h2>
