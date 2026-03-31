@@ -1893,11 +1893,26 @@ const FeedbackAnalysis = () => {
         {/* ═══ BLOCK 25: GEMINI BLUEPRINT ═══ */}
         <GeminiBlueprint />
 
+        {/* ═══ BLOCK 26: ULTIMATE BLUEPRINT ═══ */}
+        <Reveal>
+          <section className="space-y-4">
+            <div className="flex items-center gap-3">
+              <FileText className="w-7 h-7 text-rose-400" />
+              <h2 className="text-2xl font-black text-white">Block 26: Investor Readiness Blueprint — Ultimate Edition</h2>
+              <SourceBadge source="ULTIMATE" />
+            </div>
+            <p className="text-sm text-white/60">
+              Konsolidierung aller 5 Analyse-Runden + Gemini-Audit in ein einziges, operativ nutzbares Strategie- und Investor-Readiness-Dokument. 14 Sektionen. Nicht nur Diagnose — sondern Blueprint.
+            </p>
+            <UltimateBlueprint />
+          </section>
+        </Reveal>
+
         {/* ═══ FOOTER ═══ */}
         <Reveal>
           <div className="text-center py-8 space-y-2">
             <p className="text-xs text-white/30">
-              Konsolidiert aus 4 Analyse-Runden + Final Verdict + Masterplan + Gemini Blueprint · Stand: März 2026 · Internes Red-Team-Dokument
+              Konsolidiert aus 5 Analyse-Runden + Final Verdict + Masterplan + Gemini Blueprint + Ultimate Blueprint · Stand: März 2026 · Internes Red-Team-Dokument
             </p>
             <div className="flex justify-center gap-2 flex-wrap">
               <SourceBadge source="ANALYSE 1" />
@@ -1908,6 +1923,7 @@ const FeedbackAnalysis = () => {
               <SourceBadge source="FINAL VERDICT" />
               <SourceBadge source="MASTERPLAN" />
               <SourceBadge source="GEMINI" />
+              <SourceBadge source="ULTIMATE" />
             </div>
           </div>
         </Reveal>
