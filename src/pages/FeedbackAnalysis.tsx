@@ -1295,7 +1295,7 @@ const FeedbackAnalysis = () => {
         {/* BLOCK 16: FINAL DECISION FRAME                        */}
         {/* ═══════════════════════════════════════════════════════ */}
         <Reveal>
-          <section id="final-verdict">
+          <section id="founder-assessment" className="scroll-mt-16">
             <Card className="bg-gradient-to-br from-white/[0.04] to-white/[0.02] border-white/10">
               <CardHeader>
                 <div className="flex items-center gap-2 mb-2">
