@@ -1358,7 +1358,7 @@ const FeedbackAnalysis = () => {
         {/* BLOCK 17: EXECUTIVE ACTION SUMMARY                    */}
         {/* ═══════════════════════════════════════════════════════ */}
         <Reveal>
-          <section id="executive-action">
+          <section id="final-decision" className="scroll-mt-16">
             <Card className="bg-white/[0.03] border-white/10">
               <CardHeader>
                 <div className="flex items-center gap-2 mb-2">
