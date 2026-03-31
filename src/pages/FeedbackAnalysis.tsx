@@ -2089,6 +2089,151 @@ const FeedbackAnalysis = () => {
           </section>
         </Reveal>
 
+        {/* ═══ BLOCK 29: CONSOLIDATED CLAIM AUDIT AMPEL ═══ */}
+        <Reveal>
+          <section id="claim-ampel" className="space-y-4 scroll-mt-16">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+              <Shield className="w-7 h-7 text-amber-400" />
+              <h2 className="text-xl sm:text-2xl font-black text-white">Block 29: Konsolidierte Pitch Claim Audit Ampel</h2>
+              <SourceBadge source="EXTERNAL" />
+            </div>
+            <p className="text-sm text-white/60">
+              Alle Kernclaims aus Pitch, Website und internen Dokumenten — klassifiziert nach Verwendbarkeit mit konkreten besseren Formulierungen. Konsolidiert aus beiden Blueprint-PDFs.
+            </p>
+
+            <Tabs defaultValue="sicher" className="w-full">
+              <TabsList className="bg-white/5 border border-white/10 w-full flex">
+                <TabsTrigger value="sicher" className="flex-1 text-xs data-[state=active]:bg-emerald-500/20 data-[state=active]:text-emerald-400">🟢 Sicher</TabsTrigger>
+                <TabsTrigger value="vorsichtig" className="flex-1 text-xs data-[state=active]:bg-yellow-500/20 data-[state=active]:text-yellow-400">🟡 Vorsichtig</TabsTrigger>
+                <TabsTrigger value="nicht-offensiv" className="flex-1 text-xs data-[state=active]:bg-orange-500/20 data-[state=active]:text-orange-400">🟠 Nicht offensiv</TabsTrigger>
+                <TabsTrigger value="nicht-verwenden" className="flex-1 text-xs data-[state=active]:bg-red-500/20 data-[state=active]:text-red-400">🔴 Nicht verwenden</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="sicher" className="space-y-2 mt-3">
+                {[
+                  { claim: 'Markt ist fragmentiert und vertrauenssensitiv', belegt: 'Marktproblem ist real und nachvollziehbar', nicht: 'Kein Beweisproblem im Kern' },
+                  { claim: 'Wir haben bereits umfangreiche Funnel-Iteration aufgebaut', belegt: 'Assets und Flows sind sichtbar und technisch prüfbar', nicht: 'Outcome/Traffic NICHT BELEGT' },
+                  { claim: 'Komplett bootstrapped aufgebaut', belegt: 'Nachweisbar. Kein Fremdkapital geflossen.', nicht: '—' },
+                  { claim: '20 funktionierende Funnels live', belegt: 'Technisch prüfbar auf der Plattform.', nicht: 'Conversion-Daten fehlen' },
+                  { claim: '130+ Landingpages indexiert', belegt: 'Über Sitemap und Google-Index prüfbar.', nicht: 'Traffic-Daten fehlen' },
+                ].map((item, i) => (
+                  <div key={i} className="bg-emerald-500/5 rounded-lg px-3 py-3 border border-emerald-500/10 space-y-1.5">
+                    <div className="flex gap-2 items-start">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm font-medium text-white/90">{item.claim}</p>
+                    </div>
+                    <div className="ml-6 grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs">
+                      <div><span className="text-emerald-400/70">Was tragfähig:</span> <span className="text-white/50">{item.belegt}</span></div>
+                      <div><span className="text-red-400/70">NICHT BELEGT:</span> <span className="text-white/50">{item.nicht}</span></div>
+                    </div>
+                  </div>
+                ))}
+              </TabsContent>
+
+              <TabsContent value="vorsichtig" className="space-y-2 mt-3">
+                {[
+                  { claim: 'Vertikale Integration kann ein Vorteil sein', belegt: 'Strategisch plausibel', nicht: 'Wirtschaftlicher Vorteil NICHT BELEGT', besser: 'Vertikale Integration wird als Hypothese getestet' },
+                  { claim: 'Teilautomatisierung reduziert manuelle Arbeit', belegt: 'Prozesslogisch plausibel', nicht: 'Echter ROI NICHT BELEGT', besser: 'Teile der Lead- und Admin-Strecke sind automatisiert' },
+                  { claim: 'Hybrid-Modell mit Plattform und Eigenausführung', belegt: 'Korrekt beschrieben', nicht: 'Governance und Fairness NICHT BELEGT', besser: 'Hybridmodell mit dokumentierter Governance-Trennung' },
+                  { claim: 'WhatsApp-Automatisierung skaliert ohne Personal', belegt: 'Für einfache Flows plausibel', nicht: 'Eskalationspfade fehlen', besser: 'Standard-Automatisierung mit Human Handoff' },
+                  { claim: 'KI-Preiskalkulation mit Marktdaten', belegt: 'System existiert', nicht: 'Genauigkeit nicht validiert', besser: 'KI-gestützte Preisindikation, wird kalibriert' },
+                ].map((item, i) => (
+                  <div key={i} className="bg-yellow-500/5 rounded-lg px-3 py-3 border border-yellow-500/10 space-y-1.5">
+                    <div className="flex gap-2 items-start">
+                      <AlertCircle className="w-4 h-4 text-yellow-400 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm font-medium text-white/90">{item.claim}</p>
+                    </div>
+                    <div className="ml-6 space-y-1 text-xs">
+                      <div><span className="text-emerald-400/70">Tragfähig:</span> <span className="text-white/50">{item.belegt}</span></div>
+                      <div><span className="text-red-400/70">NICHT BELEGT:</span> <span className="text-white/50">{item.nicht}</span></div>
+                      <div className="text-teal-400">→ Besser: {item.besser}</div>
+                    </div>
+                  </div>
+                ))}
+              </TabsContent>
+
+              <TabsContent value="nicht-offensiv" className="space-y-2 mt-3">
+                {[
+                  { claim: 'Skalierbares Modell für den Schweizer Markt', belegt: 'Scale-Potenzial als Hypothese', nicht: 'Nicht-lineare Skalierung NICHT BELEGT', besser: 'Lokal validierbares Modell mit Scale-Potenzial' },
+                  { claim: '4 Brands als Verteidigungslinie', belegt: 'Markenliste vorhanden', nicht: 'Strategischer Nutzen NICHT BELEGT', besser: 'Fokus aktuell auf Kernmarken' },
+                  { claim: '10 Revenue Streams', belegt: 'Denkbare Monetarisierungswege', nicht: 'Priorisierung / Traction NICHT BELEGT', besser: 'Kurzfristig Fokus auf 1-2 Revenue Driver' },
+                ].map((item, i) => (
+                  <div key={i} className="bg-orange-500/5 rounded-lg px-3 py-3 border border-orange-500/10 space-y-1.5">
+                    <div className="flex gap-2 items-start">
+                      <AlertTriangle className="w-4 h-4 text-orange-400 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm font-medium text-white/90">{item.claim}</p>
+                    </div>
+                    <div className="ml-6 space-y-1 text-xs">
+                      <div><span className="text-emerald-400/70">Tragfähig:</span> <span className="text-white/50">{item.belegt}</span></div>
+                      <div><span className="text-red-400/70">NICHT BELEGT:</span> <span className="text-white/50">{item.nicht}</span></div>
+                      <div className="text-teal-400">→ Besser: {item.besser}</div>
+                    </div>
+                  </div>
+                ))}
+              </TabsContent>
+
+              <TabsContent value="nicht-verwenden" className="space-y-2 mt-3">
+                {[
+                  { claim: 'Zero CAC', belegt: 'Kein belastbarer Vollkosten-Nachweis', nicht: 'Blended CAC NICHT BELEGT', besser: 'Strukturell günstigere organische Akquise als Ziel' },
+                  { claim: '40-45% DB-Marge', belegt: 'Zielgrösse im Pitch', nicht: 'Reale Vollkostenbasis NICHT BELEGT', besser: 'Marge wird gegen reale Jobs validiert' },
+                  { claim: '92-95% automatisiert', belegt: 'Keine Prozessdefinition', nicht: 'Umfang / ROI NICHT BELEGT', besser: 'Teile der Lead- und Admin-Strecke sind automatisiert' },
+                  { claim: 'Neutrales Vergleichsportal', belegt: 'Widerspricht Eigenausführung / Cherry-Picking', nicht: 'Faire Governance NICHT BELEGT', besser: 'Hybridmodell mit Eigenausführung; kein Neutralitätsclaim' },
+                  { claim: '100% safe Investment', belegt: '—', nicht: 'Gibt es nicht', besser: 'Komplett entfernen' },
+                  { claim: 'Disruptieren den Schweizer Umzugsmarkt', belegt: '—', nicht: 'Zu grosse Worte für Pre-Revenue', besser: 'Komplett entfernen oder ins Appendix' },
+                ].map((item, i) => (
+                  <div key={i} className="bg-red-500/5 rounded-lg px-3 py-3 border border-red-500/10 space-y-1.5">
+                    <div className="flex gap-2 items-start">
+                      <XCircle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm font-medium text-white/90">{item.claim}</p>
+                    </div>
+                    <div className="ml-6 space-y-1 text-xs">
+                      <div><span className="text-white/40">{item.belegt}</span></div>
+                      <div><span className="text-red-400/70">NICHT BELEGT:</span> <span className="text-white/50">{item.nicht}</span></div>
+                      <div className="text-teal-400">→ Besser: {item.besser}</div>
+                    </div>
+                  </div>
+                ))}
+              </TabsContent>
+            </Tabs>
+
+            {/* Red Flags for Investor Meetings */}
+            <Card className="bg-white/5 border-white/10 mt-6">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm text-red-400 flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4" />
+                  Red Flags — Wo Investorengespräche kippen
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                {[
+                  { frage: 'Wie viele bezahlte Aufträge kamen nachweislich über Umzugscheck?', warum: 'Hybrid-Beweis fehlt', muss: 'Source-attributed CRM + Rechnungen', nicht: 'Portal bringt schon zuverlässig profitable Aufträge' },
+                  { frage: 'Warum bleiben Partner, wenn ihr die besten Jobs selbst nehmt?', warum: 'Strukturkonflikt sichtbar', muss: 'Partnerpilot, Routing-Regeln, ehrliche Hybrid-Policy', nicht: 'Das wird schon kein Problem sein' },
+                  { frage: 'Wie rechnet ihr die 40-45% DB?', warum: 'Ungeprüfte Margen = Misstrauen', muss: 'Vollkostenblatt mit echten Jobs', nicht: 'Diese Marge ist realistisch, weil ...' },
+                  { frage: 'Was bedeutet 92-95% automatisiert?', warum: 'Buzzword-Schutzlack-Verdacht', muss: 'Prozessinventur, Automation Inventory, ROI', nicht: 'Fast alles läuft automatisiert' },
+                  { frage: 'Ist das ein Portal, ein Marktplatz oder ein Servicebetrieb?', warum: 'Unklare Modellidentität', muss: '1-seitige Modelllogik', nicht: 'Wir sind im Grunde alles gleichzeitig' },
+                ].map((item, i) => (
+                  <Collapsible key={i} title={item.frage} icon={AlertTriangle}>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                      <div className="bg-red-500/10 rounded p-2 border border-red-500/20">
+                        <p className="text-red-400 font-semibold text-[10px] mb-1">WARUM GEFÄHRLICH</p>
+                        <p className="text-white/60">{item.warum}</p>
+                      </div>
+                      <div className="bg-teal-500/10 rounded p-2 border border-teal-500/20">
+                        <p className="text-teal-400 font-semibold text-[10px] mb-1">WAS VORBEREITET SEIN MUSS</p>
+                        <p className="text-white/60">{item.muss}</p>
+                      </div>
+                      <div className="bg-orange-500/10 rounded p-2 border border-orange-500/20">
+                        <p className="text-orange-400 font-semibold text-[10px] mb-1">NICHT BEHAUPTEN</p>
+                        <p className="text-white/60">{item.nicht}</p>
+                      </div>
+                    </div>
+                  </Collapsible>
+                ))}
+              </CardContent>
+            </Card>
+          </section>
+        </Reveal>
+
         {/* ═══ FOOTER ═══ */}
         <Reveal>
           <div className="text-center py-12 space-y-4 border-t border-white/5 mt-8">
@@ -2101,7 +2246,7 @@ const FeedbackAnalysis = () => {
             </p>
             <p className="text-xs text-white/30 max-w-xl mx-auto">
               Konsolidiert aus 5 Analyse-Runden, Final Strategic Verdict, AI Execution Masterplan, 
-              Gemini Blueprint, Ultimate Blueprint, externen PDFs und Final Strategy Blueprint. 28 Blöcke. Stand: 31. März 2026.
+              Gemini Blueprint, Ultimate Blueprint, externen PDFs, Final Strategy Blueprint und Consolidated Claim Audit. 29 Blöcke. Stand: 31. März 2026.
             </p>
             <div className="flex justify-center gap-1.5 flex-wrap max-w-lg mx-auto">
               <SourceBadge source="ANALYSE 1" />
