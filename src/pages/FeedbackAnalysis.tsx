@@ -491,6 +491,8 @@ const FeedbackAnalysis = () => {
         {/* ═══ BLOCK 6: PROOF CHECKLIST ═══ */}
         <Reveal delay={0.05}>
           <section id="proof-checklist" className="space-y-4 scroll-mt-16">
+            <div className="flex items-center gap-3">
+              <Badge className="bg-teal-500/20 text-teal-400 border-teal-500/30">BLOCK 6</Badge>
               <h2 className="text-xl font-bold">Proof Checklist — Vor Investorengesprächen</h2>
             </div>
 
