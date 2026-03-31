@@ -151,7 +151,7 @@ export const HeroVariantOriginal = memo(function HeroVariantOriginal() {
   }, [fromPostal, toPostal, apartmentSize, flowPath, navigate, lockScrollForSubmit]);
 
   return (
-    <section className="relative sm:min-h-[62vh] lg:min-h-[55vh] flex items-start sm:items-center overflow-hidden">
+    <section className="relative sm:min-h-[62vh] lg:min-h-[55vh] flex items-start sm:items-center overflow-x-hidden overflow-y-visible">
       {/* Background Image */}
       <div className="absolute inset-0">
         <img 
