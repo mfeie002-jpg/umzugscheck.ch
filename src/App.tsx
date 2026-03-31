@@ -51,6 +51,9 @@ const VisionPage = lazy(() => import("./pages/VisionPage"));
 const FamilyLanding = lazy(() => import("./pages/FamilyLanding"));
 const InvestorenLanding = lazy(() => import("./pages/InvestorenLanding"));
 const FeedbackAnalysis = lazy(() => import("./pages/FeedbackAnalysis"));
+const ProofEngine = lazy(() => import("./pages/ProofEngine"));
+const DataRoom = lazy(() => import("./pages/DataRoom"));
+const GovernancePage = lazy(() => import("./pages/Governance"));
 const AdminInternResults = lazy(() => import("./pages/AdminInternResults"));
 const PaidMediaControl = lazy(() => import("./pages/internal/PaidMediaControl"));
 const ABComparisonLab = lazy(() => import("./pages/internal/ABComparisonLab"));
@@ -599,6 +602,9 @@ const AppRouterContent = () => {
           <Route path="/family" element={<FamilyLanding />} />
           <Route path="/investoren" element={<InvestorenLanding />} />
           <Route path="/feedback" element={<FeedbackAnalysis />} />
+          <Route path="/proof-engine" element={<ProofEngine />} />
+          <Route path="/data-room" element={<DataRoom />} />
+          <Route path="/governance" element={<GovernancePage />} />
           <Route path="/old-home" element={<Index />} />
           <Route path="/v2" element={<HomeOptimized />} />
           <Route path="/v3" element={<NewIndex />} />
