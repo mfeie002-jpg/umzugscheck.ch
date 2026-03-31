@@ -197,20 +197,20 @@ const FeedbackAnalysis = () => {
       <TableOfContents />
 
       {/* Header */}
-      <div className="sticky top-0 z-50 bg-[#0a0a0a]/90 backdrop-blur-md border-b border-white/10 print:static print:bg-white print:border-gray-200">
-        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div className="sticky top-0 z-50 bg-[#0a0a0a]/90 backdrop-blur-md border-b border-white/10 print:static print:bg-white print:border-gray-200 lg:mr-64">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
           <Link to="/investoren" className="flex items-center gap-2 text-white/60 hover:text-white transition-colors text-sm print:hidden">
-            <ArrowLeft className="w-4 h-4" /> Zurück
+            <ArrowLeft className="w-4 h-4" /> <span className="hidden sm:inline">Zurück</span>
           </Link>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <span className="text-[10px] text-white/30 hidden sm:inline">v1.0 Final · 31. März 2026</span>
-            <Badge className="bg-red-500/20 text-red-400 border-red-500/30 text-xs">
+            <Badge className="bg-red-500/20 text-red-400 border-red-500/30 text-[10px] sm:text-xs">
               INTERNES DOKUMENT
             </Badge>
           </div>
         </div>
       </div>
-      <div className="max-w-5xl mx-auto px-4 py-8 space-y-10">
+      <div className="max-w-5xl mx-auto px-3 sm:px-6 py-6 sm:py-8 space-y-8 sm:space-y-10 lg:mr-64">
 
         {/* ═══ BLOCK 1: READINESS SCORE ═══ */}
         <Reveal>
