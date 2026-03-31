@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AIExecutionMasterplan from '@/components/feedback/AIExecutionMasterplan';
+import GeminiBlueprint from '@/components/feedback/GeminiBlueprint';
 
 // ─── Status Badge Component ───
 const StatusBadge = ({ status }: { status: string }) => {
