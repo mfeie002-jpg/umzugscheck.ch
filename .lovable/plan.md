@@ -1,61 +1,34 @@
 
 
-# Batch 2 + 3: Remaining Infographics
+# Zwei-Säulen-Modell: Web-Sektion + PDF
 
-## Status
-- **Done**: Hero System Graphic, Warenkorb Stack-Chart, AI Workload Comparison, Proof Mockups ✅
-- **TODO**: 4 remaining infographic components
+## Was gebaut wird
 
-## Batch 2: Flow Matrix + Swiss Territory Map
+1. **Neue SVG-Infografik-Komponente** `TwoPillarModel.tsx` — zeigt das Ökosystem visuell:
+   - Links: **Umzugscheck.ch** (Portal/Lead-Engine) mit SEO, KI, 10 Revenue Streams
+   - Rechts: **Feierabend Services** (Physischer Dienstleister) mit Services, Premium, A-Z
+   - Mitte: **Lead-Flow** mit Cherry/Chaff-Sorting (Kirschen → Feierabend, Spreu → Marktplatz)
+   - Unten: **Synergie-Effekt** — Zero CAC, Kostentragung durch Spreu-Einnahmen
+   - Alles als selbsterklärende Infografik mit eingebetteten Labels/Zahlen
 
-### 1. FlowTestingMatrix (`src/components/vision/FlowTestingMatrix.tsx`)
-- SVG grid of ~60 mini-tiles grouped by funnel type (SEO, WhatsApp, Rechner, Vergleich, Regional, B2B)
-- Top-10 "Winner" flows highlighted in teal, rest as subtle pattern tiles
-- Title embedded: "60 Funnel-Varianten. Systematisch getestet."
-- Stats bar: "12 Archetypen · 60 Varianten · Top-10 identifiziert"
-- **Integration**: In `AlreadyLiveSection.tsx` after ProofMockups
+2. **Integration in InvestorenLanding.tsx** — nach dem Hero/Stats-Block, vor den Business Pillars (ca. nach Sektion 3/4). Neue Sektion mit Badge "Zwei-Säulen-Modell" und Headline.
 
-### 2. SwissCoverageMap (`src/components/vision/SwissCoverageMap.tsx`)
-- Simplified Switzerland silhouette (SVG path)
-- Colored dots/regions: Live (green), Building (amber), Target (gray)
-- Service layer legend: Umzug, Reinigung, Räumung, Entsorgung
-- "2'110 Gemeinden" prominent, KPI bubbles below
-- **Integration**: In `MarketPotentialSection.tsx`
+3. **PDF-Download** — Generiertes 2-Seiten A4 PDF via reportlab:
+   - **Seite 1**: Zwei-Säulen Systemgrafik (Umzugscheck ↔ Feierabend)
+   - **Seite 2**: Cherry & Chaff Logik, Unit Economics Vergleich, Synergie-Zahlen
+   - Download-Button direkt in der Web-Sektion
+   - PDF wird als statisches Asset unter `/mnt/documents/` generiert und in `public/` kopiert
 
-## Batch 3: Nuclear Wow Visuals + Moonshot Badges
+## Dateien
 
-### 3. NuclearWowVisuals (`src/components/vision/NuclearWowVisuals.tsx`)
-- 7 small SVG illustrations replacing icons in the Top-7 cards:
-  1. Swiss map with moving arrows
-  2. Box with services growing out
-  3. SERP view with Umzugscheck dominant
-  4. Municipality network on Swiss silhouette
-  5. Human + AI modules
-  6. Google→WhatsApp→Offerte flow
-  7. Service stack layers
-- **Integration**: In `WhyInvestSection.tsx`, nuclear-wow tier cards get SVG visual above text
+| Aktion | Datei |
+|--------|-------|
+| Create | `src/components/vision/TwoPillarModel.tsx` |
+| Create | PDF-Generierungsscript → `public/zwei-saeulen-modell.pdf` |
+| Edit | `src/pages/InvestorenLanding.tsx` (Import + Platzierung) |
 
-### 4. Moonshot Status Badges (update `OverkillVisionSection.tsx`)
-- Each tech-USP card gets a colored badge:
-  - 🟢 "Live" (green) — items that exist
-  - 🟡 "Buildable" (amber) — technically feasible now
-  - 🔮 "Future" (purple) — vision layer
-- Simple badge addition to existing card rendering
-
-## Technical Approach
-- Pure SVG + Framer Motion, viewBox-based, responsive
-- Brand tokens: Teal `#008080`, Orange `#FF6B1A`, Slate tones
-- All text/labels as SVG `<text>` elements (infographic standard)
-- Same visual language as Batch 1 components
-
-## Files to Create/Edit
-| Action | File |
-|--------|------|
-| Create | `src/components/vision/FlowTestingMatrix.tsx` |
-| Create | `src/components/vision/SwissCoverageMap.tsx` |
-| Create | `src/components/vision/NuclearWowVisuals.tsx` |
-| Edit | `src/components/vision/AlreadyLiveSection.tsx` (add FlowTestingMatrix) |
-| Edit | `src/components/vision/MarketPotentialSection.tsx` (add SwissCoverageMap) |
-| Edit | `src/components/vision/WhyInvestSection.tsx` (add NuclearWowVisuals) |
-| Edit | `src/components/vision/OverkillVisionSection.tsx` (add status badges) |
+## Technisch
+- SVG-Infografik: gleicher Stil wie `HeroSystemGraphic.tsx` (Teal/Orange/Dark, Framer Motion, viewBox)
+- PDF: reportlab mit Brand-Farben, clean A4-Layout, Download via `<a href>` Button
+- Alle Texte deutsch, Zahlen aus dem bestehenden Business Case
 
