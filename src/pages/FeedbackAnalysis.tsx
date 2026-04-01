@@ -2271,6 +2271,7 @@ const FeedbackAnalysis = () => {
               <SourceBadge source="ULTIMATE" />
               <SourceBadge source="EXTERNAL" />
               <SourceBadge source="BLUEPRINT FINAL" />
+              <SourceBadge source="OUTREACH" />
             </div>
             <p className="text-[10px] text-white/20 mt-4">
               Umzugscheck.ch · Feierabendservices.ch · Internes Red-Team-Dokument · Nicht zur externen Weitergabe ohne Freigabe
