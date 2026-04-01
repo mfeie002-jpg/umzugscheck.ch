@@ -35,7 +35,7 @@ const CookieConsentBanner = lazy(() => import("./components/CookieConsentBanner"
 import IndexPremium from "./pages/IndexPremium";
 
 // All other pages lazy loaded for optimal bundle splitting
-const Index = lazy(() => import("./pages/Index"));
+import Index from "./pages/Index";
 const NewIndex = lazy(() => import("./pages/NewIndex"));
 const HomePage = lazy(() => import("./pages/HomePage").then(m => ({ default: m.HomePage })));
 const HomeOptimized = lazy(() => import("./pages/HomeOptimized"));
