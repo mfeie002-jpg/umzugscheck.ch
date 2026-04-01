@@ -596,7 +596,7 @@ const AppRouterContent = () => {
     <MainLayout hideChrome={isStakeholderRoute}>
       <Suspense fallback={<PageLoadingFallback />}>
         <AnimatedRoutes>
-          <Route path="/" element={<Suspense fallback={<PageLoadingFallback />}><Index /></Suspense>} />
+          <Route path="/" element={<Index />} />
           <Route path="/landing" element={<LandingPage />} />
           <Route path="/vision" element={<VisionPage />} />
           <Route path="/family" element={<FamilyLanding />} />
