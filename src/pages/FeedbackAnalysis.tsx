@@ -15,6 +15,7 @@ import UltimateBlueprint from '@/components/feedback/UltimateBlueprint';
 import ExternalBlueprintContent from '@/components/feedback/ExternalBlueprintContent';
 import FinalStrategyBlueprint from '@/components/feedback/FinalStrategyBlueprint';
 import MasterBlueprintFinal from '@/components/feedback/MasterBlueprintFinal';
+import OutreachNarrative from '@/components/feedback/OutreachNarrative';
 
 // ─── Status Badge Component ───
 const StatusBadge = ({ status }: { status: string }) => {
@@ -46,6 +47,7 @@ const SourceBadge = ({ source }: { source: string }) => {
     'ULTIMATE': 'bg-rose-500/10 text-rose-400',
     'EXTERNAL': 'bg-indigo-500/10 text-indigo-400',
     'BLUEPRINT FINAL': 'bg-sky-500/10 text-sky-400',
+    'OUTREACH': 'bg-amber-600/10 text-amber-300',
   };
   return (
     <span className={`inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium rounded ${styles[source] || 'bg-gray-500/10 text-gray-400'}`}>
@@ -2240,6 +2242,9 @@ const FeedbackAnalysis = () => {
         {/* ═══ BLOCK 30: Master Blueprint Final ═══ */}
         <MasterBlueprintFinal />
 
+        {/* ═══ BLOCK 31: Outreach Narrative & Market Leadership Race ═══ */}
+        <OutreachNarrative />
+
         {/* ═══ FOOTER ═══ */}
         <Reveal>
           <div className="text-center py-12 space-y-4 border-t border-white/5 mt-8">
@@ -2252,7 +2257,7 @@ const FeedbackAnalysis = () => {
             </p>
             <p className="text-xs text-white/30 max-w-xl mx-auto">
               Konsolidiert aus 5 Analyse-Runden, Final Strategic Verdict, AI Execution Masterplan, 
-              Gemini Blueprint, Ultimate Blueprint, externen PDFs, Final Strategy Blueprint, Consolidated Claim Audit und Master Blueprint Final. 30 Blöcke. Stand: 31. März 2026.
+              Gemini Blueprint, Ultimate Blueprint, externen PDFs, Final Strategy Blueprint, Consolidated Claim Audit, Master Blueprint Final und Outreach Narrative. 31 Blöcke. Stand: 1. April 2026.
             </p>
             <div className="flex justify-center gap-1.5 flex-wrap max-w-lg mx-auto">
               <SourceBadge source="ANALYSE 1" />
@@ -2266,6 +2271,7 @@ const FeedbackAnalysis = () => {
               <SourceBadge source="ULTIMATE" />
               <SourceBadge source="EXTERNAL" />
               <SourceBadge source="BLUEPRINT FINAL" />
+              <SourceBadge source="OUTREACH" />
             </div>
             <p className="text-[10px] text-white/20 mt-4">
               Umzugscheck.ch · Feierabendservices.ch · Internes Red-Team-Dokument · Nicht zur externen Weitergabe ohne Freigabe
