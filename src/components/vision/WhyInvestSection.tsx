@@ -3,6 +3,7 @@
  * Structure: Top-7 Nuclear → 5 Themed Blocks (10 each)
  */
 import { useState } from "react";
+import { AIWorkloadComparison } from "./AIWorkloadComparison";
 import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -214,6 +215,9 @@ export function WhyInvestSection({ language = "de" }: WhyInvestSectionProps) {
             <ServiceChainInfographic />
           </div>
         </div>
+
+        {/* ═══ AI WORKLOAD: Before/After ═══ */}
+        <AIWorkloadComparison />
 
         {/* ═══ ALL 50 IN 5 THEMED BLOCKS ═══ */}
         <motion.div
