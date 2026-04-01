@@ -35,7 +35,7 @@ const CookieConsentBanner = lazy(() => import("./components/CookieConsentBanner"
 import IndexPremium from "./pages/IndexPremium";
 
 // All other pages lazy loaded for optimal bundle splitting
-const Index = lazy(() => import("./pages/Index"));
+import Index from "./pages/Index";
 const NewIndex = lazy(() => import("./pages/NewIndex"));
 const HomePage = lazy(() => import("./pages/HomePage").then(m => ({ default: m.HomePage })));
 const HomeOptimized = lazy(() => import("./pages/HomeOptimized"));
@@ -596,7 +596,7 @@ const AppRouterContent = () => {
     <MainLayout hideChrome={isStakeholderRoute}>
       <Suspense fallback={<PageLoadingFallback />}>
         <AnimatedRoutes>
-          <Route path="/" element={<Suspense fallback={<PageLoadingFallback />}><Index /></Suspense>} />
+          <Route path="/" element={<Index />} />
           <Route path="/landing" element={<LandingPage />} />
           <Route path="/vision" element={<VisionPage />} />
           <Route path="/family" element={<FamilyLanding />} />
