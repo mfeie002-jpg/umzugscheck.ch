@@ -22,10 +22,10 @@ const HomepageABContext = createContext<HomepageABContextValue | undefined>(unde
 
 export const HomepageABProvider = memo(function HomepageABProvider({ children }: { children: ReactNode }) {
   const [variant, setVariantState] = useState<HomepageVariant>(() => {
-    if (typeof window === 'undefined') return 'B';
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored === 'A' || stored === 'B' || stored === 'C') return stored;
-    return 'A'; // Default to Original Split layout
+    if (typeof window === 'undefined') return 'A';
+    // Force reset to Original Split layout
+    localStorage.setItem(STORAGE_KEY, 'A');
+    return 'A';
   });
 
   const setVariant = useCallback((v: HomepageVariant) => {
