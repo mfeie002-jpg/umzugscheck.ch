@@ -216,6 +216,9 @@ export function WhyInvestSection({ language = "de" }: WhyInvestSectionProps) {
           </div>
         </div>
 
+        {/* ═══ AI WORKLOAD: Before/After ═══ */}
+        <AIWorkloadComparison />
+
         {/* ═══ ALL 50 IN 5 THEMED BLOCKS ═══ */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
