@@ -25,7 +25,7 @@ export const HomepageABProvider = memo(function HomepageABProvider({ children }:
     if (typeof window === 'undefined') return 'B';
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored === 'A' || stored === 'B' || stored === 'C') return stored;
-    return 'B'; // Default to Premium (4-Tab) - best conversion
+    return 'A'; // Default to Original Split layout
   });
 
   const setVariant = useCallback((v: HomepageVariant) => {
