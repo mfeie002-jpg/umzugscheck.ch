@@ -15,6 +15,7 @@ import UltimateBlueprint from '@/components/feedback/UltimateBlueprint';
 import ExternalBlueprintContent from '@/components/feedback/ExternalBlueprintContent';
 import FinalStrategyBlueprint from '@/components/feedback/FinalStrategyBlueprint';
 import MasterBlueprintFinal from '@/components/feedback/MasterBlueprintFinal';
+import OutreachNarrative from '@/components/feedback/OutreachNarrative';
 
 // ─── Status Badge Component ───
 const StatusBadge = ({ status }: { status: string }) => {
