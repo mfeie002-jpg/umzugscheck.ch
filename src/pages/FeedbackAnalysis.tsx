@@ -2242,6 +2242,9 @@ const FeedbackAnalysis = () => {
         {/* ═══ BLOCK 30: Master Blueprint Final ═══ */}
         <MasterBlueprintFinal />
 
+        {/* ═══ BLOCK 31: Outreach Narrative & Market Leadership Race ═══ */}
+        <OutreachNarrative />
+
         {/* ═══ FOOTER ═══ */}
         <Reveal>
           <div className="text-center py-12 space-y-4 border-t border-white/5 mt-8">
