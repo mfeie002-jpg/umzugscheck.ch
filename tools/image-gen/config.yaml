@@ -1,0 +1,134 @@
+# Umzugscheck.ch — Service & Brand Configuration
+# ==================================================
+# Brand anchor is appended to every prompt for consistency.
+# Scenes describe WHAT is in the image; styles.yaml describes HOW.
+
+brand:
+  name: Umzugscheck.ch
+  primary_color: "#0050A8"   # Swiss blue
+  accent_color:  "#E32026"   # Swiss red
+  language_context: Swiss German (de-CH)
+
+  # Appended to every prompt — keeps all images visually cohesive
+  anchor: >
+    Swiss residential or commercial context (NOT American, NOT British).
+    Clean modern architecture typical of Zürich, Bern or Geneva — large windows,
+    light wood floors, neutral palette with subtle navy blue (#0050A8) accents.
+    Professional movers wearing clean navy-blue branded uniforms (NOT red-and-white,
+    NOT US pickup-truck aesthetic). Trustworthy, premium, quality-focused feeling —
+    Swiss attention to detail. Calm, competent, organized atmosphere.
+
+  # Negative prompt — what to avoid for brand consistency
+  negative: >
+    NO stock photo feel, NO American context (no pickup trucks, no US addresses,
+    no baseball caps, no moving trucks with US branding), NO red-white uniforms
+    (avoid MOVU look), NO chaotic or messy scenes, NO exaggerated smiles,
+    NO visible text or logos on boxes unless specified, NO cartoon faces in
+    photorealistic mode, NO cheesy thumbs-up poses, NO overly saturated colors.
+
+services:
+  privatumzug:
+    label: Privatumzug
+    tagline: Kompletter Service für Ihren privaten Umzug in der ganzen Schweiz
+    price_from: CHF 500
+    scene: >
+      Two professional movers in navy-blue uniforms carefully carrying labeled
+      cardboard moving boxes into (or out of) a bright modern Swiss apartment.
+      Large windows showing a typical Swiss urban context (subtle rooftops visible,
+      no specific landmarks). Light hardwood floor, minimal modern furniture
+      partially wrapped in moving blankets. A young family (parent and a child)
+      visible in the background, relaxed, not stressed. Warm natural daylight,
+      calm atmosphere of trust and competence.
+
+  # ========== 2. FIRMENUMZUG ==========
+  firmenumzug:
+    label: Firmenumzug
+    tagline: Professionelle Büro- und Geschäftsumzüge mit minimalen Ausfallzeiten
+    price_from: CHF 2'000
+    scene: >
+      Team of three to four professional movers in navy-blue uniforms working
+      inside a modern open-plan Swiss office. Desks, monitors and office chairs
+      being carefully packed into labeled crates on wheeled trolleys. Large
+      floor-to-ceiling windows with a soft-focus view of a Swiss city skyline.
+      One mover holding a tablet or clipboard, clearly coordinating the team.
+      Organized, efficient, corporate atmosphere. No visible brand logos on
+      computer screens.
+
+  # ========== 3. UMZUGSREINIGUNG ==========
+  umzugsreinigung:
+    label: Umzugsreinigung
+    tagline: End- und Umzugsreinigung mit Abgabegarantie
+    price_from: CHF 300
+    scene: >
+      Professional cleaner in a crisp navy-blue uniform wiping down a spotless
+      empty Swiss apartment ready for final handover to the landlord. Bright
+      natural daylight streaming through clean windows, gleaming hardwood floor,
+      freshly cleaned kitchen visible in the background. Professional cleaning
+      equipment (microfiber cloths, eco-friendly spray bottle) neatly arranged
+      on a surface. Spotless, bright, completion-ready atmosphere.
+
+  # ========== 4. ENTSORGUNG & RÄUMUNG ==========
+  entsorgung:
+    label: Entsorgung & Räumung
+    tagline: Fachgerechte Entsorgung von Möbeln und Hausrat
+    price_from: CHF 200
+    scene: >
+      Two professional movers in navy-blue uniforms carrying old furniture
+      (a worn sofa and a broken bookshelf) out of a Swiss apartment building
+      toward a clean, unbranded moving truck. Urban Swiss street background
+      (cobblestone or modern pavement, typical Swiss building facade). Items
+      visibly separated by category for proper Swiss recycling and disposal.
+      Organized, responsible, sustainable atmosphere.
+
+  # ========== 5. MÖBELLIFT & SPEZIALTRANSPORTE ==========
+  moebellift:
+    label: Möbellift & Spezialtransporte
+    tagline: Für schwere Möbel und enge Treppenhäuser
+    price_from: CHF 300
+    scene: >
+      Furniture lift (Möbellift, a mobile exterior lift) extended up to the
+      window of a classic Swiss apartment building (3rd or 4th floor), with a
+      large wrapped sofa being safely lifted up the facade. Two movers in
+      navy-blue uniforms — one operating the lift controls from the ground,
+      one at the window guiding the load in. Clean exterior of the Swiss
+      apartment building visible. Safe, technical, competent atmosphere.
+
+  # ========== 6. EINLAGERUNG ==========
+  einlagerung:
+    label: Einlagerung
+    tagline: Sichere Möbellagerung klimatisiert und versichert
+    price_from: CHF 100/Monat
+    scene: >
+      Bright modern Swiss self-storage facility interior — numbered secure
+      storage units with roll-up doors, climate-controlled, clean and well-lit
+      hallways with polished concrete floors. A mover in a navy-blue uniform
+      pushing a dolly with labeled cardboard boxes into an open storage unit
+      containing neatly stacked customer belongings (boxes, wrapped furniture).
+      Modern, secure, organized atmosphere.
+
+  # ========== 7. UMZUG MIT REINIGUNG ==========
+  umzug_mit_reinigung:
+    label: Umzug mit Reinigung
+    tagline: Das Komplettpaket — Umzug und Endreinigung aus einer Hand
+    price_from: CHF 1'500
+    scene: >
+      Split-scene composition showing two simultaneous activities in the same
+      Swiss apartment: on the left side, movers in navy-blue uniforms loading
+      the last labeled boxes into a moving truck visible through an open door;
+      on the right side, cleaners in matching navy-blue uniforms deep-cleaning
+      the now-empty apartment interior. Bright natural daylight, coordinated
+      teamwork, complete-service feeling. One seamless connected space, not
+      two separate panels.
+
+  # ========== 8. INTERNATIONALER UMZUG ==========
+  international:
+    label: Internationaler Umzug
+    tagline: Weltweite Umzüge ab der Schweiz mit Zollabwicklung
+    price_from: CHF 3'000
+    scene: >
+      A professional mover in a navy-blue uniform standing beside a labeled
+      international shipping container at a Swiss freight depot, checking a
+      tablet or clipboard with shipping documents. Container shows subtle
+      international destination tags (generic Europe or overseas, no specific
+      country branding). Clean, organized freight yard. Professional,
+      globally-connected, trustworthy atmosphere. Soft daylight.

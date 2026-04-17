@@ -1,0 +1,66 @@
+# Umzugscheck.ch — Visual Style Presets
+# ========================================
+# Each style has 3 prompt fragments:
+#   description — the overall aesthetic
+#   composition — framing, perspective, layout rules
+#   quality     — technical quality markers and anti-patterns
+
+photorealistic:
+  key: photorealistic
+  label: Stil A — Fotorealistisch
+  description: >
+    Photorealistic high-end commercial photography, shot on a medium-format camera,
+    shallow depth of field (f/2.8), natural window light with subtle golden-hour
+    warmth, editorial magazine quality, calm candid composition. Muted cinematic
+    color grading, NOT HDR, NOT oversaturated. Subjects are candid and natural,
+    not posed, not smiling at camera.
+  composition: >
+    Horizontal 3:2 framing. Rule of thirds. Foreground subject tack-sharp, midground
+    slightly soft, background atmospheric blur. Leave clear breathing room on the
+    right third for potential headline overlay. Human subjects framed medium to
+    medium-wide, not close-ups.
+  quality: >
+    Professional DSLR look (Canon R5 / Sony A7R style). No phone-camera look, no
+    fisheye, no selfie angles, no heavy Instagram filters. Restrained teal-and-orange
+    color grade. Realistic skin tones. Sharp focus where it matters.
+
+illustration:
+  key: illustration
+  label: Stil B — Flat Vector Illustration
+  description: >
+    Flat vector illustration in the style of premium SaaS marketing sites
+    (Notion, Linear, Stripe). Clean geometric shapes, modern editorial feel.
+    Limited color palette anchored on Swiss blue (#0050A8), with muted warm
+    greys, warm white, and a single accent red (#E32026) used very sparingly.
+    Characters are stylized but professional adults — NO exaggerated cartoon
+    features, NO big heads, NO childish proportions. Soft long shadows and
+    subtle flat gradients allowed.
+  composition: >
+    Horizontal 3:2 framing. Three-quarter or slight isometric perspective.
+    Clean off-white or very light grey background. Subject centered or slightly
+    offset per rule of thirds. Consistent line weight across all elements.
+    Iconic rather than literal — simplify details.
+  quality: >
+    Vector-clean edges, no photographic texture, no noise. Fully consistent
+    illustration style across the whole 8-image series, as if drawn by a single
+    illustrator in a single session. No mixed styles, no 3D elements creeping in.
+
+isometric_3d:
+  key: isometric_3d
+  label: Stil C — 3D Isometric Render
+  description: >
+    Premium 3D isometric render in the style of modern SaaS marketing pages
+    (Linear, Vercel, Stripe Press). Stylized but near-photorealistic — soft matte
+    surfaces, physically-based rendering materials, subtle ambient occlusion,
+    realistic soft shadows. Palette anchored on Swiss blue (#0050A8) with
+    neutral warm greys. Characters and objects slightly rounded and friendly
+    but professional, NOT toy-like, NOT Pixar-like.
+  composition: >
+    True isometric 30–45 degree angle, or slight three-quarter perspective.
+    Slightly wider than square (4:3 or 3:2). Clean off-white background or
+    a very subtle light-grey gradient. Subject fills the center with generous
+    negative space around it.
+  quality: >
+    Blender or Cinema4D output quality. Soft global illumination, no harsh
+    highlights, subtle depth-of-field. Consistent material and render style
+    across the whole series. No flat-shaded fallback, no wireframe edges.
