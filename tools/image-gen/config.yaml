@@ -27,6 +27,7 @@ brand:
     photorealistic mode, NO cheesy thumbs-up poses, NO overly saturated colors.
 
 services:
+  # ========== 1. PRIVATUMZUG ==========
   privatumzug:
     label: Privatumzug
     tagline: Kompletter Service für Ihren privaten Umzug in der ganzen Schweiz
