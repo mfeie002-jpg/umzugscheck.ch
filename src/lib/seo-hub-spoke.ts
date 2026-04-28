@@ -188,7 +188,7 @@ export const CANTON_HUB_DATA: Record<string, Partial<HubContentData>> = {
       'Schnelle Unternehmensgründung möglich'
     ]
   },
-  basel: {
+  'basel-stadt': {
     taxInfo: {
       taxRate: '24-26%',
       comparedToSwissAvg: 'higher',
@@ -200,8 +200,8 @@ export const CANTON_HUB_DATA: Record<string, Partial<HubContentData>> = {
       comparedToSwissAvg: 'average'
     },
     demographics: {
-      population: '500\'000',
-      populationGrowth: '+0.8%/Jahr',
+      population: '200\'000',
+      populationGrowth: '+0.5%/Jahr',
       expatPercent: '36%',
       avgAge: '41 Jahre'
     },
@@ -219,6 +219,195 @@ export const CANTON_HUB_DATA: Record<string, Partial<HubContentData>> = {
       'Spezielle Regeln für Umzüge in der Altstadt',
       'Hundesteuer: 120 CHF/Jahr'
     ]
+  },
+  aargau: {
+    taxInfo: {
+      taxRate: '18-21%',
+      comparedToSwissAvg: 'lower',
+      explanation: 'Der Aargau bietet attraktive Steuersätze und eine zentrale Lage zwischen den Wirtschaftszentren.'
+    },
+    livingCosts: {
+      avgRent3Room: '1\'400–1\'800 CHF',
+      avgRent4Room: '1\'800–2\'300 CHF',
+      comparedToSwissAvg: 'average'
+    },
+    demographics: {
+      population: '700\'000',
+      populationGrowth: '+1.2%/Jahr',
+      expatPercent: '25%',
+      avgAge: '41 Jahre'
+    },
+    qualityOfLife: { score: 8, highlights: ['Zentrale Lage', 'Schlösserkanton', 'Industriestark', 'Naherholungsgebiete'] },
+    transportLinks: { nearestAirport: 'Flughafen Zürich (30 Min.)', nearestHighway: 'A1, A3', publicTransportScore: 8 },
+    legalNotes: ['Anmeldung bei der Gemeinde innerhalb von 14 Tagen', 'Militärische Meldepflicht beachten']
+  },
+  luzern: {
+    taxInfo: { taxRate: '20-22%', comparedToSwissAvg: 'average', explanation: 'Luzern liegt im gesunden Mittelfeld der Zentralschweizer Steuersätze.' },
+    livingCosts: { avgRent3Room: '1\'600–2\'100 CHF', avgRent4Room: '2\'100–2\'700 CHF', comparedToSwissAvg: 'average' },
+    demographics: { population: '420\'000', populationGrowth: '+0.9%/Jahr', expatPercent: '18%', avgAge: '42 Jahre' },
+    qualityOfLife: { score: 9, highlights: ['Vierwaldstättersee', 'Tourismus-Hotspot', 'Zentralschweizer Zentrum', 'Hoher Freizeitwert'] },
+    transportLinks: { nearestAirport: 'Flughafen Zürich (50 Min.)', nearestHighway: 'A2, A14', publicTransportScore: 9 },
+    legalNotes: ['Parkbewilligung für Seebecken-Umzüge frühzeitig beantragen', 'Hundesteuer variiert']
+  },
+  'st-gallen': {
+    taxInfo: { taxRate: '22-25%', comparedToSwissAvg: 'average', explanation: 'St. Gallen hat eine moderate Steuerbelastung mit Fokus auf Familienförderung.' },
+    livingCosts: { avgRent3Room: '1\'300–1\'700 CHF', avgRent4Room: '1\'700–2\'200 CHF', comparedToSwissAvg: 'lower' },
+    demographics: { population: '515\'000', populationGrowth: '+0.8%/Jahr', expatPercent: '24%', avgAge: '42 Jahre' },
+    qualityOfLife: { score: 8, highlights: ['UNESCO Stiftsbezirk', 'Bildungszentrum (HSG)', 'Nähe zum Bodensee', 'Textiltradition'] },
+    transportLinks: { nearestAirport: 'Flughafen Altenrhein (15 Min.)', nearestHighway: 'A1, A13', publicTransportScore: 8 },
+    legalNotes: ['Abfallentsorgung über städtische Gebührensäcke', 'Meldepflicht bei Zuzug']
+  },
+  tessin: {
+    taxInfo: { taxRate: '19-23%', comparedToSwissAvg: 'average', explanation: 'Das Tessin bietet eine eigene steuerliche Dynamik mit südländischem Flair.' },
+    livingCosts: { avgRent3Room: '1\'400–1\'900 CHF', avgRent4Room: '1\'900–2\'500 CHF', comparedToSwissAvg: 'average' },
+    demographics: { population: '350\'000', populationGrowth: '+0.3%/Jahr', expatPercent: '28%', avgAge: '45 Jahre' },
+    qualityOfLife: { score: 9, highlights: ['Sonniges Klima', 'Seenlandschaft', 'Kulinarik', 'Mischung aus CH/IT Kultur'] },
+    transportLinks: { nearestAirport: 'Flughafen Malpensa (60 Min.)', nearestHighway: 'A2 (Gotthard)', publicTransportScore: 8 },
+    legalNotes: ['Amtssprache ist Italienisch', 'Spezielle Parkregeln in engen Dorfkernen']
+  },
+  waadt: {
+    taxInfo: { taxRate: '23-25%', comparedToSwissAvg: 'higher', explanation: 'Die Waadt hat tendenziell höhere Steuern, bietet aber erstklassige Infrastruktur am Genfersee.' },
+    livingCosts: { avgRent3Room: '1\'900–2\'500 CHF', avgRent4Room: '2\'500–3\'200 CHF', comparedToSwissAvg: 'higher' },
+    demographics: { population: '820\'000', populationGrowth: '+1.3%/Jahr', expatPercent: '33%', avgAge: '40 Jahre' },
+    qualityOfLife: { score: 9, highlights: ['Lavaux Weinberge', 'Bildungshub (EPFL)', 'Riviera-Gefühl', 'Internationales Umfeld'] },
+    transportLinks: { nearestAirport: 'Flughafen Genf (45 Min.)', nearestHighway: 'A1, A9', publicTransportScore: 9 },
+    legalNotes: ['Anmeldung bei der Contrôle des habitants', 'Französisch als Amtssprache']
+  },
+  wallis: {
+    taxInfo: { taxRate: '19-22%', comparedToSwissAvg: 'lower', explanation: 'Das Wallis ist steuerlich attraktiv, besonders für Grenzgänger und Rentner.' },
+    livingCosts: { avgRent3Room: '1\'200–1\'600 CHF', avgRent4Room: '1\'600–2\'100 CHF', comparedToSwissAvg: 'lower' },
+    demographics: { population: '350\'000', populationGrowth: '+0.9%/Jahr', expatPercent: '23%', avgAge: '43 Jahre' },
+    qualityOfLife: { score: 8, highlights: ['Alpenpanorama', 'Outdoor-Paradies', 'Weinbau', 'Zweisprachigkeit (DE/FR)'] },
+    transportLinks: { nearestAirport: 'Flughafen Sion', nearestHighway: 'A9', publicTransportScore: 7 },
+    legalNotes: ['Kurtaxen in Tourismusgemeinden beachten', 'Parkregeln bei Hanglage']
+  },
+  freiburg: {
+    taxInfo: { taxRate: '22-25%', comparedToSwissAvg: 'average', explanation: 'Freiburg bietet eine solide Steuerbasis mit starker Berücksichtigung der Zweisprachigkeit.' },
+    livingCosts: { avgRent3Room: '1\'300–1\'700 CHF', avgRent4Room: '1\'700–2\'200 CHF', comparedToSwissAvg: 'lower' },
+    demographics: { population: '330\'000', populationGrowth: '+1.4%/Jahr', expatPercent: '22%', avgAge: '39 Jahre' },
+    qualityOfLife: { score: 8, highlights: ['Zweisprachigkeit', 'Historische Altstadt', 'Günstige Mieten', 'Bildungsstandort'] },
+    transportLinks: { nearestAirport: 'Flughafen Bern (40 Min.)', nearestHighway: 'A12', publicTransportScore: 8 },
+    legalNotes: ['Zweisprachige Kommunikation mit Behörden möglich', 'Meldepflicht']
+  },
+  solothurn: {
+    taxInfo: { taxRate: '22-25%', comparedToSwissAvg: 'average', explanation: 'Solothurn hat eine moderate Steuerbelastung im schweizerischen Mittelfeld.' },
+    livingCosts: { avgRent3Room: '1\'300–1\'650 CHF', avgRent4Room: '1\'650–2\'100 CHF', comparedToSwissAvg: 'lower' },
+    demographics: { population: '280\'000', populationGrowth: '+0.8%/Jahr', expatPercent: '23%', avgAge: '43 Jahre' },
+    qualityOfLife: { score: 8, highlights: ['Barockstadt', 'Zentrale Lage', 'Jura-Nähe', 'Industriestark'] },
+    transportLinks: { nearestAirport: 'Flughafen Bern (45 Min.)', nearestHighway: 'A1, A5', publicTransportScore: 8 },
+    legalNotes: ['Gebührensäcke für Kehricht obligatorisch', 'Meldung bei Zuzug']
+  },
+  thurgau: {
+    taxInfo: { taxRate: '17-20%', comparedToSwissAvg: 'lower', explanation: 'Der Thurgau ist bekannt für seine tiefe Steuerbelastung, besonders für Wohneigentümer.' },
+    livingCosts: { avgRent3Room: '1\'400–1\'750 CHF', avgRent4Room: '1\'750–2\'300 CHF', comparedToSwissAvg: 'average' },
+    demographics: { population: '285\'000', populationGrowth: '+1.1%/Jahr', expatPercent: '25%', avgAge: '42 Jahre' },
+    qualityOfLife: { score: 8, highlights: ['Bodenseenähe', 'Ländliche Idylle', 'Familienfreundlich', 'Gute Anbindung zu ZH'] },
+    transportLinks: { nearestAirport: 'Flughafen Zürich (35 Min.)', nearestHighway: 'A1, A7', publicTransportScore: 7 },
+    legalNotes: ['Anmeldung Einwohnerkontrolle', 'Hundesteuerpflicht']
+  },
+  'basel-landschaft': {
+    taxInfo: { taxRate: '21-23%', comparedToSwissAvg: 'average', explanation: 'Basel-Land bietet moderate Steuersätze als attraktive Alternative zur Stadt.' },
+    livingCosts: { avgRent3Room: '1\'500–2\'000 CHF', avgRent4Room: '2\'000–2\'600 CHF', comparedToSwissAvg: 'average' },
+    demographics: { population: '290\'000', populationGrowth: '+0.6%/Jahr', expatPercent: '23%', avgAge: '44 Jahre' },
+    qualityOfLife: { score: 8, highlights: ['Grüne Vororte', 'Starke KMU-Struktur', 'Nähe zu Basel-Stadt', 'Guter ÖV'] },
+    transportLinks: { nearestAirport: 'EuroAirport Basel (20 Min.)', nearestHighway: 'A2, A3', publicTransportScore: 8 },
+    legalNotes: ['Abfallmarken-System in vielen Gemeinden', 'Meldepflicht']
+  },
+  graubuenden: {
+    taxInfo: { taxRate: '18-21%', comparedToSwissAvg: 'lower', explanation: 'Graubünden lockt mit tiefen Steuersätzen, besonders in den Tourismusregionen.' },
+    livingCosts: { avgRent3Room: '1\'400–1\'800 CHF', avgRent4Room: '1\'800–2\'400 CHF', comparedToSwissAvg: 'average' },
+    demographics: { population: '200\'000', populationGrowth: '+0.4%/Jahr', expatPercent: '19%', avgAge: '44 Jahre' },
+    qualityOfLife: { score: 9, highlights: ['Ferienregion Nr. 1', 'Natur pur', 'Dreisprachigkeit', 'Hoher Freizeitwert'] },
+    transportLinks: { nearestAirport: 'Flughafen Zürich (90 Min.)', nearestHighway: 'A13', publicTransportScore: 7 },
+    legalNotes: ['Dreisprachigkeit beachten (DE/IT/RR)', 'Spezielle Winter-Parkregeln']
+  },
+  neuenburg: {
+    taxInfo: { taxRate: '24-26%', comparedToSwissAvg: 'higher', explanation: 'Neuenburg hat eine höhere Steuerbelastung, investiert aber stark in Innovation.' },
+    livingCosts: { avgRent3Room: '1\'200–1\'550 CHF', avgRent4Room: '1\'550–2\'000 CHF', comparedToSwissAvg: 'lower' },
+    demographics: { population: '176\'000', populationGrowth: '+0.2%/Jahr', expatPercent: '25%', avgAge: '43 Jahre' },
+    qualityOfLife: { score: 8, highlights: ['Uhrenindustrie', 'See-Lage', 'Forschungszentrum', 'Lebensqualität'] },
+    transportLinks: { nearestAirport: 'Flughafen Genf (70 Min.)', nearestHighway: 'A5', publicTransportScore: 8 },
+    legalNotes: ['Französisch als Amtssprache', 'Anmeldung innerhalb 14 Tage']
+  },
+  genf: {
+    taxInfo: { taxRate: '23-26%', comparedToSwissAvg: 'higher', explanation: 'Genf ist steuerlich anspruchsvoll, bietet aber ein weltweites Diplomatie-Umfeld.' },
+    livingCosts: { avgRent3Room: '2\'500–3\'200 CHF', avgRent4Room: '3\'200–4\'500 CHF', comparedToSwissAvg: 'higher' },
+    demographics: { population: '510\'000', populationGrowth: '+1.0%/Jahr', expatPercent: '40%', avgAge: '41 Jahre' },
+    qualityOfLife: { score: 9, highlights: ['Internationales Flair', 'Jet d’Eau', 'Diplomaten-Hub', 'Global City'] },
+    transportLinks: { nearestAirport: 'Flughafen Genf (10 Min.)', nearestHighway: 'A1', publicTransportScore: 10 },
+    legalNotes: ['Zuzug aus dem Ausland häufig', 'Parkbewilligung fast immer nötig']
+  },
+  schaffhausen: {
+    taxInfo: { taxRate: '20-22%', comparedToSwissAvg: 'average', explanation: 'Schaffhausen bietet solide Konditionen mit Fokus auf Grenznähe.' },
+    livingCosts: { avgRent3Room: '1\'350–1\'700 CHF', avgRent4Room: '1\'700–2\'200 CHF', comparedToSwissAvg: 'lower' },
+    demographics: { population: '85\'000', populationGrowth: '+0.7%/Jahr', expatPercent: '26%', avgAge: '43 Jahre' },
+    qualityOfLife: { score: 8, highlights: ['Rheinfall', 'Charmanter Stadtkern', 'Nähe zu Deutschland', 'Wirtschaftsstark'] },
+    transportLinks: { nearestAirport: 'Flughafen Zürich (35 Min.)', nearestHighway: 'A4', publicTransportScore: 8 },
+    legalNotes: ['Parken in der Altstadt eingeschränkt', 'Meldepflicht']
+  },
+  schwyz: {
+    taxInfo: { taxRate: '12-15%', comparedToSwissAvg: 'lower', explanation: 'Schwyz gehört zu den steuergünstigsten Kantonen der Schweiz.' },
+    livingCosts: { avgRent3Room: '1\'800–2\'400 CHF', avgRent4Room: '2\'400–3\'200 CHF', comparedToSwissAvg: 'higher' },
+    demographics: { population: '165\'000', populationGrowth: '+1.3%/Jahr', expatPercent: '21%', avgAge: '42 Jahre' },
+    qualityOfLife: { score: 9, highlights: ['Tiefste Steuern', 'Zürichsee-Nähe', 'Bergpanorama', 'Hohe Privatsphäre'] },
+    transportLinks: { nearestAirport: 'Flughafen Zürich (45 Min.)', nearestHighway: 'A3, A4', publicTransportScore: 7 },
+    legalNotes: ['Anmeldung bei der Gemeinde', 'Baubewilligungen streng']
+  },
+  jura: {
+    taxInfo: { taxRate: '24-27%', comparedToSwissAvg: 'higher', explanation: 'Der Jura hat eine höhere Steuerbelastung im interkantonalen Vergleich.' },
+    livingCosts: { avgRent3Room: '1\'000–1\'400 CHF', avgRent4Room: '1\'400–1\'800 CHF', comparedToSwissAvg: 'lower' },
+    demographics: { population: '74\'000', populationGrowth: '+0.1%/Jahr', expatPercent: '15%', avgAge: '43 Jahre' },
+    qualityOfLife: { score: 7, highlights: ['Naturerlebnis', 'Pferdezucht', 'Ruhe', 'Günstige Immobilien'] },
+    transportLinks: { nearestAirport: 'Flughafen Basel (45 Min.)', nearestHighway: 'A16', publicTransportScore: 6 },
+    legalNotes: ['Französisch als Amtssprache', 'Ländliche Abfallentsorgung']
+  },
+  'appenzell-ausserrhoden': {
+    taxInfo: { taxRate: '20-22%', comparedToSwissAvg: 'average', explanation: 'Moderate Steuern mit Fokus auf ländliche Lebensqualität.' },
+    livingCosts: { avgRent3Room: '1\'250–1\'600 CHF', avgRent4Room: '1\'600–2\'100 CHF', comparedToSwissAvg: 'lower' },
+    demographics: { population: '56\'000', populationGrowth: '+0.3%/Jahr', expatPercent: '16%', avgAge: '44 Jahre' },
+    qualityOfLife: { score: 8, highlights: ['Tradition', 'Säntis-Nähe', 'Landschaft', 'Sicherheit'] },
+    transportLinks: { nearestAirport: 'Flughafen Altenrhein (20 Min.)', nearestHighway: 'A1', publicTransportScore: 7 },
+    legalNotes: ['Meldung bei Einwohnerkontrolle', 'Landsgemeinde-Tradition']
+  },
+  'appenzell-innerrhoden': {
+    taxInfo: { taxRate: '15-18%', comparedToSwissAvg: 'lower', explanation: 'Innerrhoden ist einer der steuergünstigsten Ostschweizer Kantone.' },
+    livingCosts: { avgRent3Room: '1\'300–1\'650 CHF', avgRent4Room: '1\'650–2\'150 CHF', comparedToSwissAvg: 'lower' },
+    demographics: { population: '16\'000', populationGrowth: '+0.5%/Jahr', expatPercent: '11%', avgAge: '43 Jahre' },
+    qualityOfLife: { score: 9, highlights: ['Höchste Sicherheit', 'Tradition', 'Steuerparadies', 'Natur'] },
+    transportLinks: { nearestAirport: 'Flughafen Altenrhein (30 Min.)', nearestHighway: 'A1', publicTransportScore: 6 },
+    legalNotes: ['Kleinester Kanton (Einwohner)', 'Persönlicher Kontakt zu Behörden']
+  },
+  nidwalden: {
+    taxInfo: { taxRate: '13-16%', comparedToSwissAvg: 'lower', explanation: 'Nidwalden bietet exzellente steuerliche Bedingungen in der Zentralschweiz.' },
+    livingCosts: { avgRent3Room: '1\'750–2\'300 CHF', avgRent4Room: '2\'300–3\'000 CHF', comparedToSwissAvg: 'higher' },
+    demographics: { population: '44\'000', populationGrowth: '+0.8%/Jahr', expatPercent: '15%', avgAge: '43 Jahre' },
+    qualityOfLife: { score: 9, highlights: ['See- und Bergnähe', 'Tiefe Steuern', 'Starke Wirtschaft', 'Sicherheit'] },
+    transportLinks: { nearestAirport: 'Flughafen Zürich (60 Min.)', nearestHighway: 'A2', publicTransportScore: 7 },
+    legalNotes: ['Meldepflicht', 'Hundesteuerpflicht']
+  },
+  obwalden: {
+    taxInfo: { taxRate: '14-17%', comparedToSwissAvg: 'lower', explanation: 'Obwalden hat eine sehr attraktive Flat-Rate Tax eingeführt.' },
+    livingCosts: { avgRent3Room: '1\'500–1\'900 CHF', avgRent4Room: '1\'900–2\'500 CHF', comparedToSwissAvg: 'average' },
+    demographics: { population: '38\'000', populationGrowth: '+0.6%/Jahr', expatPercent: '15%', avgAge: '43 Jahre' },
+    qualityOfLife: { score: 8, highlights: ['Geografisches Zentrum CH', 'Steuerattraktiv', 'Bergnatur', 'Authentisch'] },
+    transportLinks: { nearestAirport: 'Flughafen Zürich (70 Min.)', nearestHighway: 'A8', publicTransportScore: 7 },
+    legalNotes: ['Flat-Rate-Tax Besonderheiten', 'Meldung bei Zuzug']
+  },
+  glarus: {
+    taxInfo: { taxRate: '20-23%', comparedToSwissAvg: 'average', explanation: 'Glarus bietet solide Rahmenbedingungen mit industrieller Tradition.' },
+    livingCosts: { avgRent3Room: '1\'100–1\'500 CHF', avgRent4Room: '1\'500–2\'000 CHF', comparedToSwissAvg: 'lower' },
+    demographics: { population: '41\'000', populationGrowth: '+0.4%/Jahr', expatPercent: '23%', avgAge: '43 Jahre' },
+    qualityOfLife: { score: 7, highlights: ['Landsgemeinde', 'Bergsport', 'Günstiges Wohnen', 'Tradition'] },
+    transportLinks: { nearestAirport: 'Flughafen Zürich (60 Min.)', nearestHighway: 'A3', publicTransportScore: 6 },
+    legalNotes: ['Anmeldung bei der Gemeinde', 'Kehrichtgebühren beachten']
+  },
+  uri: {
+    taxInfo: { taxRate: '17-20%', comparedToSwissAvg: 'lower', explanation: 'Uri ist steuerlich attraktiv und profitiert von seiner Transitlage.' },
+    livingCosts: { avgRent3Room: '1\'250–1\'600 CHF', avgRent4Room: '1\'600–2\'100 CHF', comparedToSwissAvg: 'lower' },
+    demographics: { population: '37\'000', populationGrowth: '+0.5%/Jahr', expatPercent: '13%', avgAge: '44 Jahre' },
+    qualityOfLife: { score: 8, highlights: ['Gotthard-Region', 'Wandern/Ski', 'Zentralschweizer Natur', 'Sicherheit'] },
+    transportLinks: { nearestAirport: 'Flughafen Zürich (75 Min.)', nearestHighway: 'A2', publicTransportScore: 7 },
+    legalNotes: ['Vignettenpflicht Gotthard beachten', 'Meldepflicht']
   }
 };
 
